@@ -2,20 +2,21 @@ package attendance.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AttendanceRecord {
-    private final List<LocalDateTime> attendanceRecord;
+    private final List<AttendanceTime> attendanceRecord;
 
     public AttendanceRecord() {
-        this.attendanceRecord = new ArrayList<>();
+        this.attendanceRecord = Collections.unmodifiableList(new ArrayList<>());
     }
 
     public void addAttendanceTime(LocalDateTime attendanceTime) {
-        this.attendanceRecord.add(attendanceTime);
+        this.attendanceRecord.add(new AttendanceTime(attendanceTime));
     }
 
-    public List<LocalDateTime> getAttendanceRecord() {
+    public List<AttendanceTime> getAttendanceRecord() {
         return attendanceRecord;
     }
 }
