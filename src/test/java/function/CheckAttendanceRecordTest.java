@@ -11,7 +11,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceBook;
+import domain.PenaltyStatus;
 import dto.CheckAttendanceRecordResponse;
+import dto.PenaltyResponse;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,10 +57,23 @@ public class CheckAttendanceRecordTest {
     }
 
     @Test
-    @DisplayName(" 등록되지 않는 닉네임의 경우 예외 메시지를 출력한다.")
+    @DisplayName("등록되지 않는 닉네임의 경우 예외 메시지를 출력한다.")
     void Name_Is_Not_Registered() {
         assertThatThrownBy(() -> attendanceBook.checkAttendanceRecord("미등록"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorMessage.NOTICE_NICKNAME_IS_NOT_REGISTERED.getFormat());
+    }
+
+    @Test
+    @DisplayName("크루 출석 기록을 출력한 후, 출결 상태별 횟수와 패널티 대상자 여부를 출력해야한다.")
+    void Calculate_Attendance_Status_Count_And_Judge_Penalty() {
+        List<CheckAttendanceRecordResponse> responses = attendanceBook.checkAttendanceRecord("쿠키");
+
+        PenaltyResponse penaltyResponse = PenaltyStatus.judgeCrewAttendanceRecord(responses);
+
+        assertThat(penaltyResponse.attendCount()).isEqualTo(1);
+        assertThat(penaltyResponse.lateCount()).isEqualTo(1);
+        assertThat(penaltyResponse.absentCount()).isEqualTo(19);
+        assertThat(penaltyResponse.penalty()).isEqualTo("제적");
     }
 }
