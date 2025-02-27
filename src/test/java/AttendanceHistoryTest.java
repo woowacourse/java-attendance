@@ -116,6 +116,7 @@ public class AttendanceHistoryTest {
                     .hasDayOfMonth(2);
             assertThat(actual.getFirst().isEmpty()).isTrue();
         }
+
     }
 
     @Nested

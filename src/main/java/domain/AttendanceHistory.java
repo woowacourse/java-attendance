@@ -70,10 +70,6 @@ public class AttendanceHistory {
         return attendanceHistory.get(date);
     }
 
-    public Crew getCrew() {
-        return crew;
-    }
-
     public List<AttendanceRecord> findAllUntilBeforeToday(final LocalDate targetDate) {
         return ATTENDANCE_HISTORY_RECORD_BEGIN_DATE.datesUntil(targetDate)
                 .filter(this::isAttendanceDay)
@@ -88,5 +84,9 @@ public class AttendanceHistory {
             return false;
         }
         return true;
+    }
+
+    public Crew getCrew() {
+        return crew;
     }
 }
