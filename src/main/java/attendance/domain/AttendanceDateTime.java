@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Objects;
 
 public class AttendanceDateTime {
 
@@ -73,5 +74,18 @@ public class AttendanceDateTime {
 
     public LocalDateTime getLocalDateTime() {
         return dateTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AttendanceDateTime that = (AttendanceDateTime) o;
+        return Objects.equals(dateTime, that.dateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dateTime);
     }
 }
