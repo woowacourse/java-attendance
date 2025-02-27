@@ -1,3 +1,5 @@
+package domain;
+
 public class WarningCounter {
     private int tardies;
     private int absences;
