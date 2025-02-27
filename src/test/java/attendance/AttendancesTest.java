@@ -14,14 +14,17 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.SystemDateTime;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
 import attendance.utility.CsvReader;
 
 public class AttendancesTest {
     private final CsvReader csvReader = new CsvReader("/attendances.csv");
-    private final AttendanceBook attendanceBook = AttendanceBook.from(csvReader.getLines());
+    private final SystemDateTime systemDateTime = new AttendanceDateTime();
+    private final AttendanceBook attendanceBook = AttendanceBook.of(csvReader.getLines(), systemDateTime);
 
     public AttendancesTest() throws AttendanceFileException {
     }
@@ -36,7 +39,7 @@ public class AttendancesTest {
             var dateTime = LocalDateTime.of(2024, 12, 11, 10, 1);
 
             var attendances = attendanceBook.getAttendances(nickname);
-            var newAttendance = Attendance.from(dateTime);
+            var newAttendance = Attendance.of(dateTime, systemDateTime);
 
             attendances.add(newAttendance);
         }
@@ -47,7 +50,6 @@ public class AttendancesTest {
             var nickname = "이든";
             var dateTime = LocalDateTime.of(2024, 12, 13, 10, 1);
             var attendances = attendanceBook.getAttendances(nickname);
-            var newAttendance = Attendance.from(dateTime);
 
             assertThatThrownBy(() -> attendances.validateDuplicate(dateTime.toLocalDate()))
                 .isInstanceOf(AttendanceArgumentException.class)
@@ -66,7 +68,7 @@ public class AttendancesTest {
             var dateTime = LocalDateTime.of(2024, 12, 2, 10, 2);
 
             var attendances = attendanceBook.getAttendances(nickname);
-            var newAttendance = Attendance.from(dateTime);
+            var newAttendance = Attendance.of(dateTime, systemDateTime);
             Optional<Attendance> oldAttendance = attendanceBook.findAttendance(nickname, dateTime.toLocalDate());
             oldAttendance.ifPresent(attendance -> attendances.remove(attendance.getDate()));
             attendances.add(newAttendance);
@@ -86,7 +88,7 @@ public class AttendancesTest {
             var dateTime = LocalDateTime.of(2024, 12, 11, 10, 1);
 
             var attendances = attendanceBook.getAttendances(nickname);
-            var newAttendance = Attendance.from(dateTime);
+            var newAttendance = Attendance.of(dateTime, systemDateTime);
 
             Optional<Attendance> oldAttendance = attendanceBook.findAttendance(nickname, dateTime.toLocalDate());
             attendances.add(newAttendance);
@@ -115,7 +117,7 @@ public class AttendancesTest {
             var dateTime = LocalDateTime.of(2024, 12, dayOfMonth, hour, minute);
 
             var attendances = attendanceBook.getAttendances(nickname);
-            var newAttendance = Attendance.from(dateTime);
+            var newAttendance = Attendance.of(dateTime, systemDateTime);
             Optional<Attendance> oldAttendance = attendanceBook.findAttendance(nickname, dateTime.toLocalDate());
             oldAttendance.ifPresent(attendance -> attendances.remove(attendance.getDate()));
             attendances.add(newAttendance);

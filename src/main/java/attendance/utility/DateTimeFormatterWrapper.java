@@ -4,7 +4,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public final class DateTimeFormatterWrapper {
-
     private DateTimeFormatterWrapper() {
     }
 

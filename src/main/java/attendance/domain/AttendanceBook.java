@@ -18,22 +18,23 @@ public record AttendanceBook(Map<String, Attendances> attendances, List<HistoryS
     private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
     private static final String REGEX = ",";
 
-    public static AttendanceBook from(List<String> lines) {
+    public static AttendanceBook of(List<String> lines, SystemDateTime systemDateTime) {
         Map<String, Attendances> attendances = new HashMap<>();
         for (String line : lines) {
-            addAttendance(line, attendances);
+            addAttendance(line, attendances, systemDateTime);
         }
         return new AttendanceBook(attendances, new ArrayList<>());
     }
 
-    private static void addAttendance(String line, Map<String, Attendances> attendances) {
+    private static void addAttendance(String line, Map<String, Attendances> attendances,
+        SystemDateTime systemDateTime) {
         var lines = line.split(REGEX);
         var nickname = lines[0];
 
         Attendances attendanceList = attendances.computeIfAbsent(nickname, k -> new Attendances());
         DateTimeFormatter dateTimeFormatter = DateTimeFormatterWrapper.getFormatter(DATETIME_FORMAT);
         var dateTime = LocalDateTime.parse(lines[1], dateTimeFormatter);
-        var attendance = Attendance.from(dateTime);
+        var attendance = Attendance.of(dateTime, systemDateTime);
 
         attendanceList.add(attendance);
     }

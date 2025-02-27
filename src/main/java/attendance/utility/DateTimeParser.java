@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException;
 
 public final class DateTimeParser {
     private static final String ERROR_PARSE_DATE = "[ERROR] 날짜는 숫자로만 입력해야 합니다: ";
-    private static final String ERROR_PARSE_TIME = "[ERROR] 등교 시간 입력은 --:--와 같은 형태야합니다: ";
+    private static final String ERROR_PARSE_TIME = "[ERROR] 시간 입력은 --:--와 같은 형태야합니다: ";
 
     private DateTimeParser() {
     }

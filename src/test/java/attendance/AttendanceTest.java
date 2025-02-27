@@ -11,16 +11,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.SystemDateTime;
 import attendance.exception.AttendanceArgumentException;
 
 public class AttendanceTest {
+    private static final SystemDateTime systemDateTime = new AttendanceDateTime();
 
     @Test
     @DisplayName("등교 시간을 입력하면, 출석 상태를 저장한다.")
     void test_attendance() {
         var time = LocalDateTime.of(2024, 12, 13, 10, 1);
-        var attendance = Attendance.from(time);
+        var attendance = Attendance.of(time, systemDateTime);
 
         assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.ATTENDANCE);
@@ -30,7 +33,7 @@ public class AttendanceTest {
     @DisplayName("출석 시간보다 5분 초과되어 출석할 때, 지각 처리한다.")
     void test_attendanceOfLate() {
         var time = LocalDateTime.of(2024, 12, 13, 10, 6);
-        var attendance = Attendance.from(time);
+        var attendance = Attendance.of(time, systemDateTime);
 
         assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.LATE);
@@ -40,7 +43,7 @@ public class AttendanceTest {
     @DisplayName("출석 시간보다 30분 초과되어 출석할 때, 결석 처리한다.")
     void test_attendanceOfAbsence() {
         var time = LocalDateTime.of(2024, 12, 13, 10, 31);
-        var attendance = Attendance.from(time);
+        var attendance = Attendance.of(time, systemDateTime);
 
         assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.ABSENCE);
@@ -50,7 +53,7 @@ public class AttendanceTest {
     @DisplayName("월요일에 출석할 때, 교육시간이 13시부터이다.")
     void test_attendanceOnMonday() {
         var time = LocalDateTime.of(2024, 12, 16, 13, 4);
-        var attendance = Attendance.from(time);
+        var attendance = Attendance.of(time, systemDateTime);
 
         assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.ATTENDANCE);
@@ -60,7 +63,7 @@ public class AttendanceTest {
     @DisplayName("월요일은 13:05 이후 출석할 경우, 지각 처리된다.")
     void test_attendanceOfLateOnMonday() {
         var time = LocalDateTime.of(2024, 12, 16, 13, 14);
-        var attendance = Attendance.from(time);
+        var attendance = Attendance.of(time, systemDateTime);
 
         assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.LATE);
@@ -70,7 +73,7 @@ public class AttendanceTest {
     @DisplayName("월요일은 13:30 이후 출석할 경우, 결석 처리된다.")
     void test_attendanceOfAbsenceOnMonday() {
         var time = LocalDateTime.of(2024, 12, 16, 13, 34);
-        var attendance = Attendance.from(time);
+        var attendance = Attendance.of(time, systemDateTime);
 
         assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.ABSENCE);
@@ -81,7 +84,7 @@ public class AttendanceTest {
     void error_attendanceOnWeekend() {
         var time = LocalDateTime.of(2024, 12, 14, 10, 34);
 
-        Assertions.assertThatThrownBy(() -> Attendance.from(time))
+        Assertions.assertThatThrownBy(() -> Attendance.of(time, systemDateTime))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessage("[ERROR] 12월 14일 토요일은 등교일이 아닙니다.");
     }
@@ -92,7 +95,7 @@ public class AttendanceTest {
     void error_attendanceOutOfRangeOnSchedule(int hour) {
         var time = LocalDateTime.of(2024, 12, 13, hour, 34);
 
-        Assertions.assertThatThrownBy(() -> Attendance.from(time))
+        Assertions.assertThatThrownBy(() -> Attendance.of(time, systemDateTime))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessage("[ERROR] 등교시간에만 출석 가능합니다.");
     }
@@ -102,7 +105,7 @@ public class AttendanceTest {
     void error_attendanceOnHoliday() {
         var time = LocalDateTime.of(2024, 12, 25, 10, 34);
 
-        Assertions.assertThatThrownBy(() -> Attendance.from(time))
+        Assertions.assertThatThrownBy(() -> Attendance.of(time, systemDateTime))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessage("[ERROR] 12월 25일 수요일은 등교일이 아닙니다.");
     }

@@ -14,9 +14,11 @@ import java.util.stream.Stream;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.Attendances;
 import attendance.domain.HistoryStatistic;
+import attendance.domain.SystemDateTime;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
 import attendance.utility.CsvReader;
@@ -26,6 +28,7 @@ import attendance.view.InputView;
 import attendance.view.OutputView;
 
 public class Application {
+    private static final SystemDateTime systemDateTime = new AttendanceDateTime();
     private static final Map<String, Runnable> optionMenu = new HashMap<>();
     private static final String WRONG_INPUT = "잘못된 입력입니다.";
     private static final String FILE = "/attendances.csv";
@@ -59,7 +62,7 @@ public class Application {
     private static AttendanceBook generateAttendanceBook() throws AttendanceFileException {
         var repository = new CsvReader(FILE);
         var lines = repository.getLines();
-        return AttendanceBook.from(lines);
+        return AttendanceBook.of(lines, systemDateTime);
     }
 
     public static void processAttendanceMenu() {
@@ -73,7 +76,7 @@ public class Application {
 
     private static void handleAttendanceCommands() {
         Stream.generate(() -> {
-                outputView.printRequestMessage(SystemDateConfig.NOW_DATE);
+                outputView.printRequestMessage(systemDateTime.now());
                 outputView.printMethod();
                 return requestInputString();
             })
@@ -102,8 +105,8 @@ public class Application {
 
     private static void requestRegister(String nickname) {
         var attendances = attendanceBook.getAttendances(nickname);
-        LocalDateTime dateTime = SystemDateConfig.NOW_DATETIME;
-        var newAttendance = Attendance.from(dateTime);
+        LocalDateTime dateTime = systemDateTime.now();
+        var newAttendance = Attendance.of(dateTime, systemDateTime);
         attendances.validateDuplicate(dateTime.toLocalDate());
         attendances.add(newAttendance);
     }
@@ -121,7 +124,7 @@ public class Application {
 
     private static void requestModify(String nickname, LocalDateTime dateTime) {
         Attendances attendances = attendanceBook.getAttendances(nickname);
-        Attendance newAttendance = Attendance.from(dateTime);
+        Attendance newAttendance = Attendance.of(dateTime, systemDateTime);
         Optional<Attendance> oldAttendance = attendanceBook.findAttendance(nickname, dateTime.toLocalDate());
         oldAttendance.ifPresent(attendance -> attendances.remove(attendance.getDate()));
         attendances.add(newAttendance);
@@ -141,7 +144,7 @@ public class Application {
     private static void requestStatistic(String nickname) {
         var attendances = attendanceBook.getAttendances(nickname);
         Map<LocalDate, Attendance> attendancesRecord = attendances.getAttendances();
-        var attendanceHistory = AttendanceHistory.from(attendancesRecord);
+        var attendanceHistory = AttendanceHistory.of(attendancesRecord, systemDateTime.extractWorkingDays());
 
         var statusStatistic = new HistoryStatistic(attendanceHistory.countStatusOnHistory(), nickname);
 
@@ -153,7 +156,7 @@ public class Application {
         for (String nickname : attendanceBook.getNicknameSet()) {
             var attendances = attendanceBook.getAttendances(nickname);
             Map<LocalDate, Attendance> attendancesRecord = attendances.getAttendances();
-            var attendanceHistory = AttendanceHistory.from(attendancesRecord);
+            var attendanceHistory = AttendanceHistory.of(attendancesRecord, systemDateTime.extractWorkingDays());
 
             historyStatistics.add(new HistoryStatistic(attendanceHistory.countStatusOnHistory(), nickname));
         }
@@ -180,8 +183,9 @@ public class Application {
         return handleInput(() -> {
             String input = inputView.input();
             InputValidator.validateIsEmpty(input);
-            String date = SystemDateConfig.YEAR_MONTH + input;
-            return DateTimeParser.parseToDate(date);
+            int parsedInt = Integer.parseInt(input); //Todo
+            LocalDateTime current = systemDateTime.now().withDayOfMonth(parsedInt);
+            return current.toLocalDate();
         });
     }
 

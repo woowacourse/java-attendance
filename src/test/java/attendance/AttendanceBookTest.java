@@ -12,13 +12,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceDateTime;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
 import attendance.utility.CsvReader;
 
 public class AttendanceBookTest {
     private final CsvReader csvReader = new CsvReader("/attendances.csv");
-    private final AttendanceBook attendanceBook = AttendanceBook.from(csvReader.getLines());
+    private final AttendanceBook attendanceBook = AttendanceBook.of(csvReader.getLines(), new AttendanceDateTime());
 
     public AttendanceBookTest() throws AttendanceFileException {
     }
@@ -26,7 +27,7 @@ public class AttendanceBookTest {
     @ParameterizedTest
     @MethodSource("getSourceForAttendanceInfo")
     @DisplayName("csv 파일로부터 출석 정보를 불러온다.")
-    void test_getAttendanceInfoFromCSV(String nickname, LocalDate date) {
+    void test_getAttendanceInfoOfCSV(String nickname, LocalDate date) {
         assertThat(attendanceBook.findAttendance(nickname, date)).isNotEmpty();
     }
 

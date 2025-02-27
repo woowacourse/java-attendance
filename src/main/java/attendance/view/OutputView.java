@@ -1,6 +1,6 @@
 package attendance.view;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import attendance.utility.DateTimeFormatterWrapper;
 
@@ -26,7 +26,7 @@ public class OutputView {
         println(message);
     }
 
-    public void printRequestMessage(LocalDate date) {
+    public void printRequestMessage(LocalDateTime date) {
         String message = DateTimeFormatterWrapper.getFormatter(REQUEST_METHOD).format(date);
         println(message);
     }

@@ -13,21 +13,24 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.SystemDateTime;
 
 public class AttendanceHistoryTest {
+    private final SystemDateTime systemDateTime = new AttendanceDateTime();
 
     @Test
     @DisplayName("생성될 때, 등교하지 않은 날을 포함하여, 모든 등교날에 대해 저장한다.")
     void test_createTotalAttendanceHistory() {
         var datetime = LocalDateTime.of(2024, 12, 11, 10, 0);
         var date = datetime.toLocalDate();
-        var newAttendance = Attendance.from(datetime);
+        var newAttendance = Attendance.of(datetime, systemDateTime);
         Map<LocalDate, Attendance> attendances = new HashMap<>();
         attendances.put(date, newAttendance);
 
-        var attendanceHistory = AttendanceHistory.from(attendances);
+        var attendanceHistory = AttendanceHistory.of(attendances, systemDateTime.extractWorkingDays());
         var history = attendanceHistory.history();
 
         assertAll(
@@ -45,13 +48,13 @@ public class AttendanceHistoryTest {
     void test_getAttendanceStateStatistic() {
         var datetime = LocalDateTime.of(2024, 12, 11, 10, 0);
         var date = datetime.toLocalDate();
-        var attendance = Attendance.from(datetime);
-        var attendanceLate = Attendance.from(datetime.plusMinutes(10));
+        var attendance = Attendance.of(datetime, systemDateTime);
+        var attendanceLate = Attendance.of(datetime.plusMinutes(10), systemDateTime);
         Map<LocalDate, Attendance> attendances = new HashMap<>();
         attendances.put(date, attendance);
         attendances.put(date.plusDays(1), attendanceLate);
 
-        var attendanceHistory = AttendanceHistory.from(attendances);
+        var attendanceHistory = AttendanceHistory.of(attendances, systemDateTime.extractWorkingDays());
         EnumMap<AttendanceStatus, Integer> statistic = attendanceHistory.countStatusOnHistory();
 
         assertEquals(1, statistic.get(AttendanceStatus.ATTENDANCE));

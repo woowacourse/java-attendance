@@ -16,15 +16,18 @@ import org.junit.jupiter.api.Test;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.HistoryStatistic;
 import attendance.domain.SanctionLevel;
+import attendance.domain.SystemDateTime;
 import attendance.exception.AttendanceFileException;
 import attendance.utility.CsvReader;
 
 public class HistoryStatisticTest {
     private final CsvReader csvReader = new CsvReader("/attendances.csv");
-    private final AttendanceBook attendanceBook = AttendanceBook.from(csvReader.getLines());
+    private final SystemDateTime systemDateTime = new AttendanceDateTime();
+    private final AttendanceBook attendanceBook = AttendanceBook.of(csvReader.getLines(), systemDateTime);
 
     public HistoryStatisticTest() throws AttendanceFileException {
     }
@@ -35,13 +38,13 @@ public class HistoryStatisticTest {
         var nickname = "이든";
         var datetime = LocalDateTime.of(2024, 12, 11, 10, 0);
         var date = datetime.toLocalDate();
-        var attendance = Attendance.from(datetime);
-        var attendanceLate = Attendance.from(datetime.plusMinutes(10));
+        var attendance = Attendance.of(datetime, systemDateTime);
+        var attendanceLate = Attendance.of(datetime.plusMinutes(10), systemDateTime);
         Map<LocalDate, Attendance> attendances = new HashMap<>();
         attendances.put(date, attendance);
         attendances.put(date.plusDays(1), attendanceLate);
 
-        var attendanceHistory = AttendanceHistory.from(attendances);
+        var attendanceHistory = AttendanceHistory.of(attendances, systemDateTime.extractWorkingDays());
         var statusStatistic = new HistoryStatistic(attendanceHistory.countStatusOnHistory(), nickname);
 
         assertThat(statusStatistic.judgeSanctionLevel()).isEqualTo(SanctionLevel.DISMISS);
@@ -54,7 +57,7 @@ public class HistoryStatisticTest {
         for (String nickname : attendanceBook.getNicknameSet()) {
             var attendances = attendanceBook.getAttendances(nickname);
             Map<LocalDate, Attendance> attendancesRecord = attendances.getAttendances();
-            var attendanceHistory = AttendanceHistory.from(attendancesRecord);
+            var attendanceHistory = AttendanceHistory.of(attendancesRecord, systemDateTime.extractWorkingDays());
 
             historyStatistics.add(new HistoryStatistic(attendanceHistory.countStatusOnHistory(), nickname));
         }
@@ -82,7 +85,7 @@ public class HistoryStatisticTest {
         for (String nickname : attendanceBook.getNicknameSet()) {
             var attendances = attendanceBook.getAttendances(nickname);
             Map<LocalDate, Attendance> attendancesRecord = attendances.getAttendances();
-            var attendanceHistory = AttendanceHistory.from(attendancesRecord);
+            var attendanceHistory = AttendanceHistory.of(attendancesRecord, systemDateTime.extractWorkingDays());
 
             historyStatistics.add(new HistoryStatistic(attendanceHistory.countStatusOnHistory(), nickname));
         }
@@ -103,7 +106,7 @@ public class HistoryStatisticTest {
         for (String nickname : attendanceBook.getNicknameSet()) {
             var attendances = attendanceBook.getAttendances(nickname);
             Map<LocalDate, Attendance> attendancesRecord = attendances.getAttendances();
-            var attendanceHistory = AttendanceHistory.from(attendancesRecord);
+            var attendanceHistory = AttendanceHistory.of(attendancesRecord, systemDateTime.extractWorkingDays());
 
             historyStatistics.add(new HistoryStatistic(attendanceHistory.countStatusOnHistory(), nickname));
         }
