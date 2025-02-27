@@ -70,4 +70,8 @@ public class AttendanceDateTime {
         return (int)Duration.between(otherTime, dateTime)
                 .toMinutes();
     }
+
+    public LocalDateTime getLocalDateTime() {
+        return dateTime;
+    }
 }
