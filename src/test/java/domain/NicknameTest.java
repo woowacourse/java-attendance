@@ -3,6 +3,7 @@ package domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -22,5 +23,17 @@ class NicknameTest {
 
         assertThatThrownBy(() -> Nickname.from(invalidNickname))
                 .hasMessage("닉네임은 2글자 이상 입력해야 합니다.");
+    }
+
+    @Test
+    @DisplayName("닉네임은 값이 같다면 같은 객체로 취급한다.")
+    void nicknameIsVO() {
+        // given
+        String san1 = "강산";
+        String san2 = "강산";
+
+        // when
+        // then
+        assertThat(san1).isEqualTo(san2);
     }
 }

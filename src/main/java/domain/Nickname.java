@@ -1,12 +1,9 @@
 package domain;
 
-public class Nickname {
+public record Nickname(String nickname) {
 
-    private final String nickname;
-
-    private Nickname(String nickname) {
+    public Nickname {
         validate(nickname);
-        this.nickname = nickname;
     }
 
     public static Nickname from(String nickname) {
@@ -21,9 +18,5 @@ public class Nickname {
         if (nickname == null || nickname.length() < 2) {
             throw new IllegalArgumentException("닉네임은 2글자 이상 입력해야 합니다.");
         }
-    }
-
-    public String getNickname() {
-        return nickname;
     }
 }
