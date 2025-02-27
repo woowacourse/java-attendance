@@ -20,7 +20,7 @@ public class AttendanceHistory {
         attendTimes.add(attendTime);
     }
 
-    private void validateDuplicate(AttendTime attendTime) {
+    public void validateDuplicate(AttendTime attendTime) {
         attendTimes.stream()
                 .filter(a -> a.getDayOfMonth() == attendTime.getDayOfMonth())
                 .findAny()
@@ -64,17 +64,20 @@ public class AttendanceHistory {
             }
         }
         total += 21 - attendTimes.size();
-
         return total;
     }
 
     public DangerousStatus getAttendanceStatus() {
-        dangerousStatus = new DangerousStatus(
-                calculateOnTime(), calculateLate(), calculateAbsent());
+        dangerousStatus = new DangerousStatus(calculateOnTime(), calculateLate(), calculateAbsent());
         return dangerousStatus;
     }
 
     public List<AttendTime> getAttendTimes() {
         return attendTimes;
+    }
+
+    public boolean isAlreadyAttend(int date) {
+        return attendTimes.stream()
+                .anyMatch(attendTime -> attendTime.getDayOfMonth() == date);
     }
 }

@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 
 public class Today {
     public static final LocalDateTime TODAY = LocalDateTime.of(
-            DEFAULT_YEAR, DEFAULT_MONTH, LocalDateTime.now()
-                    .getDayOfMonth(), 0, 0);
+            DEFAULT_YEAR, DEFAULT_MONTH, 16,
+            0, 0);
 }

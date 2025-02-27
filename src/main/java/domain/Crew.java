@@ -49,4 +49,7 @@ public class Crew {
         return name;
     }
 
+    public boolean isAlreadyAttend(int date) {
+        return attendanceHistory.isAlreadyAttend(date);
+    }
 }

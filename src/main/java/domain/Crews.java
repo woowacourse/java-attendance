@@ -43,8 +43,10 @@ public class Crews {
     }
 
     public List<Crew> getDangerousCrews(String type) {
-        return crews.stream()
+        List<Crew> dangerousCrews = new ArrayList<>();
+        crews.stream()
                 .filter(crew -> crew.isSameType(type))
-                .toList();
+                .forEach(dangerousCrews::add);
+        return dangerousCrews;
     }
 }

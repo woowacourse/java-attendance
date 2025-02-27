@@ -33,7 +33,7 @@ public class InputView {
 
     public String readTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        LocalDateTime nowTime = LocalDateTime.now();
+        LocalDateTime nowTime = Today.TODAY;
         String year = String.valueOf(nowTime.getYear());
         String month = String.format("%02d", nowTime.getMonthValue());
         String date = String.valueOf(nowTime.getDayOfMonth());

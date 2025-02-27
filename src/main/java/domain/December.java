@@ -57,11 +57,11 @@ public enum December {
                 return;
             }
         }
-        throw new IllegalArgumentException(String.format(
-                "[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
-                attendTime.getMonthValue(),
-                attendTime.getDayOfMonth(),
-                December.getDayByDate(attendTime.getDayOfMonth())));
+        throw new IllegalArgumentException(
+                String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                        attendTime.getMonthValue(),
+                        attendTime.getDayOfMonth(),
+                        December.getDayByDate(attendTime.getDayOfMonth())));
     }
 }
 

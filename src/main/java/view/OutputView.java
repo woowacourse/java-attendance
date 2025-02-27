@@ -37,16 +37,16 @@ public class OutputView {
         System.out.println();
 
         for (int date : December.getWeekDays()) {
-            AttendTime attendTime = crew.findAttendTimeByDate(date);
-            if (attendTime != null) {
+            boolean isAttended = crew.isAlreadyAttend(date);
+            if (isAttended) {
+                AttendTime attendTime = crew.findAttendTimeByDate(date);
                 String attendanceStatus = attendTime.checkAttendanceStatus();
                 printAttendTime(attendTime, attendanceStatus);
                 System.out.println();
                 continue;
             }
 
-            System.out.printf("12월 %02d일 %s --:-- (결석)", date, December.
-                    getDayByDate(date));
+            System.out.printf("12월 %02d일 %s --:-- (결석)", date, December.getDayByDate(date));
             System.out.println();
         }
 
@@ -66,16 +66,16 @@ public class OutputView {
         System.out.println();
     }
 
-
     public void printDismissalCrews(List<Crew> dismissalCrews, List<Crew> interviewCrews, List<Crew> warningCrews) {
         System.out.println("제적 위험자 조회 결과");
 
-        printDismissalCrewsByType(dismissalCrews);
-        printDismissalCrewsByType(interviewCrews);
-        printDismissalCrewsByType(warningCrews);
+        printDangerousCrewsByType(dismissalCrews);
+        printDangerousCrewsByType(interviewCrews);
+        printDangerousCrewsByType(warningCrews);
+        System.out.println();
     }
 
-    private void printDismissalCrewsByType(List<Crew> dangerousCrews) {
+    private void printDangerousCrewsByType(List<Crew> dangerousCrews) {
         Comparator<Crew> comparator = (c1, c2) -> {
             int i = (c2.getAttendanceHistory().calculateLate() / LATE_TO_ABSENT_COUNT + c2.getAttendanceHistory()
                     .calculateAbsent())
@@ -83,8 +83,7 @@ public class OutputView {
                     .calculateAbsent());
             if (i == 0) {
                 int j = (c2.getAttendanceHistory().calculateLate() % LATE_TO_ABSENT_COUNT) - (
-                        c1.getAttendanceHistory().calculateLate()
-                                % LATE_TO_ABSENT_COUNT);
+                        c1.getAttendanceHistory().calculateLate() % LATE_TO_ABSENT_COUNT);
                 if (j == 0) {
                     return c1.getName().compareTo(c2.getName());
                 }
@@ -95,7 +94,8 @@ public class OutputView {
 
         dangerousCrews.sort(comparator);
         dangerousCrews.forEach(crew -> {
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)", crew.getName(),
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)",
+                    crew.getName(),
                     crew.getAttendanceHistory().calculateAbsent(),
                     crew.getAttendanceHistory().calculateLate(),
                     crew.getAttendanceHistory().getAttendanceStatus().getStatus());
