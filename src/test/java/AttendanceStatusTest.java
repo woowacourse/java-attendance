@@ -1,3 +1,4 @@
+import attendance.model.AttendanceStatus;
 import attendance.model.AttendanceTime;
 import java.time.LocalDate;
 import java.util.stream.Stream;

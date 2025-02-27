@@ -34,11 +34,21 @@ public class AttendanceTime {
     }
 
     private void validateOperatingTime(final int hour, final int minute) {
-        
+
         LocalTime inputTime = LocalTime.of(hour, minute);
 
         if (inputTime.isBefore(CAMPUS_START_TIME) || inputTime.isAfter(CAMPUS_END_TIME)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
+    }
+
+    public boolean isMonday() {
+
+        return date.getDayOfWeek() == DayOfWeek.MONDAY;
+    }
+
+    public boolean isBefore(LocalTime localTime) {
+
+        return LocalTime.of(hour, minute).isBefore(localTime);
     }
 }
