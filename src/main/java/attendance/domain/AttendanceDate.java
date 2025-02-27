@@ -17,7 +17,7 @@ public record AttendanceDate(
         return new AttendanceDate(date);
     }
 
-    public boolean isEqualToDate(LocalDate date) {
+    public boolean isEqualToDate(final LocalDate date) {
         return this.date.isEqual(date);
     }
 

@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.constant.ErrorMessage.ALREADY_ATTEND;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,41 +13,32 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-    public Attendance add(Attendance attendance) {
-//        if (existsByDate(date)) {
-//            throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다. 수정 기능을 이용해주세요.");
-//        }
-        if (isSameDate(attendance)) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다. 수정 기능을 이용해주세요.");
+    public Attendance add(final Attendance attendance) {
+        if (existsByDate(attendance)) {
+            throw new IllegalArgumentException(ALREADY_ATTEND.getMessage());
         }
         attendances.add(attendance);
         return attendance;
     }
 
-    private boolean isSameDate(Attendance attendance) {
+    private boolean existsByDate(final Attendance attendance) {
         return attendances.stream()
                 .anyMatch(record -> record.isSameDate(attendance));
     }
 
-    public boolean existsByDate(LocalDate date) {
-        return attendances.stream()
-                .anyMatch(attendance -> attendance.isEqualToDate(date));
-    }
-
-    public Attendance updateAttendance(LocalDateTime updateDateTime) {
+    public Attendance updateAttendance(final LocalDateTime updateDateTime) {
         LocalDate date = LocalDate.from(updateDateTime);
-        Attendance before = findByDate(date);
-        int index = attendances.indexOf(before);
-        before.updateTime(updateDateTime.toLocalTime());
-        attendances.set(index, before);
-        return before;
+        Attendance attendance = findByDate(date);
+        attendance.updateTime(updateDateTime.toLocalTime());
+        attendances.set(attendances.indexOf(attendance), attendance);
+        return attendance;
     }
 
-    public Attendance findByDate(LocalDate date) {
+    public Attendance findByDate(final LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isEqualToDate(date))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 날짜입니다."));
     }
 
     public Warning calculateWarning() {

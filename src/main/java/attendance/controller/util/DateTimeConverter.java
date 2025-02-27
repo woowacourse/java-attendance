@@ -14,7 +14,7 @@ public class DateTimeConverter {
     private DateTimeConverter() {
     }
 
-    public static LocalDateTime convertToDateTime(final String inputDay, final String inputTime, LocalDate date) {
+    public static LocalDateTime convertToDateTime(final String inputDay, final String inputTime, final LocalDate date) {
         validateDay(inputDay);
         int day = Integer.parseInt(inputDay);
         return LocalDateTime.of(date.withDayOfMonth(day), LocalTime.parse(inputTime));

@@ -82,12 +82,10 @@ public class AttendanceController {
                 inputView.readUpdateAttendanceDay(), inputView.readUpdateAttendanceTime(), today);
 
         Attendance before = attendanceBook.findByNicknameAndDate(nickname, dateTime);
-        AttendanceResultResponse beforeResponse = AttendanceResultResponse.from(before);
-
         Attendance after = attendanceBook.updateAttendance(nickname, dateTime);
-        AttendanceResultResponse afterResponse = AttendanceResultResponse.from(after);
 
-        outputView.printUpdateResult(beforeResponse, afterResponse);
+        outputView.printUpdateResult(
+                AttendanceResultResponse.from(before), AttendanceResultResponse.from(after));
     }
 
     private void printAttendancesByCrew() {
