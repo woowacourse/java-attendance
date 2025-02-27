@@ -17,7 +17,7 @@ public class AttendanceControllerExceptionWriteProxy implements AttendanceContro
         try {
             attendanceController.run();
         } catch (RuntimeException e) {
-            writer.writeLine(e.getMessage());
+            writer.writeLine("[ERROR] " + e.getMessage());
             throw e;
         }
     }
