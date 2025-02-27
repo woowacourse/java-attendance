@@ -3,6 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -48,5 +49,26 @@ public class AttendanceRecordsTest {
 
         var records = this.records.getRecords();
         assertThat(records).containsExactly(dateTime1, dateTime2);
+    }
+
+    @Test
+    void 날짜에_해당하는_출석일시가_존재할때_제거할_수_있다() {
+        records.add(dateTime1);
+
+        LocalDate dateToRemove = dateTime1.getDate();
+        records.removeIfAttendedOnDate(dateToRemove);
+
+        assertThat(records.getRecords()).doesNotContain(dateTime1);
+    }
+
+    @Test
+    void 날짜에_해당하는_출석일시가_존재하지_않을때_제거하려하면_아무일도_일어나지_않는다() {
+        int beforeSize = records.getRecords().size();
+
+        LocalDate dateToRemove = dateTime1.getDate();
+        records.removeIfAttendedOnDate(dateToRemove);
+
+        int afterSize = records.getRecords().size();
+        assertThat(afterSize).isEqualTo(beforeSize);
     }
 }

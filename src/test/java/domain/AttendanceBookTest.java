@@ -94,4 +94,30 @@ public class AttendanceBookTest {
 
         assertThat(record).isEmpty();
     }
+
+    @Test
+    void 출석했던_날짜에_대해_수정하면_해당_날짜의_출석기록을_대체한다() {
+        var oldRecord = AttendanceDateTime.of(2025, 2, 27, 10, 0);
+        book.attend(crew, oldRecord);
+
+        LocalDate dateToModify = LocalDate.of(2025, 2, 27);
+        var newRecord = AttendanceDateTime.of(2025, 2, 27, 10, 5);
+        book.modify(crew, dateToModify, newRecord);
+
+        var findRecord = book.findRecordByCrewAndDate(crew, dateToModify).orElseThrow();
+        assertThat(findRecord).isEqualTo(newRecord);
+    }
+
+    @Test
+    void 출석하지_않은_날짜에_대해_수정하면_새로_기록된다() {
+        var unrelatedRecord = AttendanceDateTime.of(2025, 2, 20, 10, 0);
+        book.attend(crew, unrelatedRecord);
+
+        LocalDate dateToModify = LocalDate.of(2025, 2, 27);
+        var newRecord = AttendanceDateTime.of(2025, 2, 27, 10, 5);
+        book.modify(crew, dateToModify, newRecord);
+
+        var findRecord = book.findRecordByCrewAndDate(crew, dateToModify).orElseThrow();
+        assertThat(findRecord).isEqualTo(newRecord);
+    }
 }

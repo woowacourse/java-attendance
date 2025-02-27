@@ -32,4 +32,10 @@ public class AttendanceBook {
             .filter(adt -> adt.isSameDate(date))
             .findAny();
     }
+
+    public void modify(Crew crew, LocalDate dateToModify, AttendanceDateTime newRecord) {
+        AttendanceRecords records = getRecordsOfCrew(crew);
+        records.removeIfAttendedOnDate(dateToModify);
+        records.add(newRecord);
+    }
 }

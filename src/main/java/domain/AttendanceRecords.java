@@ -15,6 +15,10 @@ public class AttendanceRecords {
         records.add(attendanceDateTime);
     }
 
+    public void removeIfAttendedOnDate(LocalDate date) {
+        records.removeIf(attendanceDateTime -> attendanceDateTime.isSameDate(date));
+    }
+
     private boolean existsSameDate(AttendanceDateTime attendanceDateTime) {
         LocalDate date = attendanceDateTime.getDate();
         return records.stream()
