@@ -4,13 +4,15 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceFileParser;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Attendances;
+import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceRemarkDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AttendanceServiceTest {
 
@@ -75,6 +77,54 @@ public class AttendanceServiceTest {
 
         // when & then
         assertThatThrownBy(() -> service.remarkAttendance("빙봉", attendanceDate, attendanceTime))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+    }
+
+    @Test
+    void 출석_수정이_성공하면_dto를_반환한다() {
+        // given
+        AttendanceService service = new AttendanceService(
+            new AttendanceFileParser("src/test/java/resources/testAttendances.csv")
+        );
+        LocalDate editDate = LocalDate.of(2024,12, 13);
+        LocalTime editTime = LocalTime.of(12, 50);
+
+        // when
+        AttendanceEditDto dto = service.editAttendance("빙봉", editDate, editTime);
+
+        // then
+        LocalTime beforeEditTime = LocalTime.of(10,7);
+        assertThat(dto).isEqualTo(
+            AttendanceEditDto.of(editDate, beforeEditTime, AttendanceStatus.LATE, editTime, AttendanceStatus.ABSENCE));
+    }
+
+    @Test
+    void 출석_수정_날짜가_캠퍼스_운영일이_아닌_경우_예외를_반환한다() {
+        // given
+        AttendanceService service = new AttendanceService(
+            new AttendanceFileParser("src/test/java/resources/testAttendances.csv")
+        );
+        LocalDate editDate = LocalDate.of(2024,12, 14);
+        LocalTime editTime = LocalTime.of(12, 50);
+
+        // when & then
+        assertThatThrownBy(() -> service.editAttendance("빙봉",editDate, editTime))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("[ERROR] 12월 14일 토요일은 등교일이 아닙니다.");
+    }
+
+    @Test
+    void 출석_수정_시간이_캠퍼스_운영시간이_아닌_경우_예외를_반환한다() {
+        // given
+        AttendanceService service = new AttendanceService(
+            new AttendanceFileParser("src/test/java/resources/testAttendances.csv")
+        );
+        LocalDate editDate = LocalDate.of(2024,12, 16);
+        LocalTime editTime = LocalTime.of(23, 59);
+
+        // when & then
+        assertThatThrownBy(() -> service.remarkAttendance("빙봉", editDate, editTime))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
     }

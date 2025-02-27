@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceRemarkDto;
 import attendance.service.AttendanceService;
 import attendance.view.InputView;
@@ -37,6 +38,9 @@ public class AttendanceController {
         if (option.equals(AttendanceOption.MARK)) {
             remarkAttendance(today);
         }
+        if (option.equals(AttendanceOption.EDIT)) {
+            editAttendance();
+        }
     }
 
     private void remarkAttendance(LocalDate today) {
@@ -50,5 +54,15 @@ public class AttendanceController {
         LocalTime attendanceTime = inputView.readRemarkAttendanceTime();
         AttendanceRemarkDto attendanceRemarkDto = attendanceService.remarkAttendance(name, today, attendanceTime);
         outputView.printRemarkAttendanceResult(attendanceRemarkDto);
+    }
+
+    private void editAttendance() {
+        String name = inputView.readEditAttendanceName();
+        attendanceService.validateNameExists(name);
+
+        LocalDate editAttendanceDate = inputView.readEditAttendanceDate();
+        LocalTime editAttendanceTime = inputView.readEditAttendanceTime();
+        AttendanceEditDto dto = attendanceService.editAttendance(name, editAttendanceDate, editAttendanceTime);
+        outputView.printEditAttendanceResult(dto);
     }
 }

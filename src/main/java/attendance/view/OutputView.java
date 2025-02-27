@@ -1,5 +1,7 @@
 package attendance.view;
 
+import attendance.domain.AttendanceStatus;
+import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceRemarkDto;
 import attendance.utils.DateConverter;
 
@@ -12,6 +14,22 @@ public class OutputView {
         System.out.printf("%s %s (%s)%n",
             DateConverter.convertToString(attendanceRemarkDto.attendanceDate()),
             DateConverter.convertToString(attendanceRemarkDto.attendanceTime()),
-            attendanceRemarkDto.attendanceStatus());
+            parseString(attendanceRemarkDto.attendanceStatus()));
+    }
+
+    public void printEditAttendanceResult(AttendanceEditDto dto) {
+        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n",
+            DateConverter.convertToString(dto.editDate()),
+            DateConverter.convertToString(dto.beforeEditTime()),
+            parseString(dto.beforeEditStatus()),
+            DateConverter.convertToString(dto.editTime()),
+            parseString(dto.editStatus())
+        );
+    }
+
+    private String parseString(AttendanceStatus attendanceStatus) {
+        if (attendanceStatus == AttendanceStatus.ABSENCE) return "결석";
+        if (attendanceStatus == AttendanceStatus.LATE) return "지각";
+        return "출석";
     }
 }

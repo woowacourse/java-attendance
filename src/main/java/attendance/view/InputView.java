@@ -18,6 +18,9 @@ public class InputView {
         "Q. 종료%n";
     public static final String REMARK_ATTENDANCE_NAME_MESSAGE = "닉네임을 입력해 주세요.";
     public static final String REMARK_ATTENDANCE_TIME_MESSAGE = "등교 시간을 입력해 주세요.";
+    public static final String EDIT_ATTENDANCE_NAME_MESSAGE = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
+    public static final String EDIT_ATTENDANCE_DATE_MESSAGE = "수정하려는 날짜(일)를 입력해 주세요.";
+    public static final String EDIT_ATTENDANCE_TIME_MESSAGE = "언제로 변경하겠습니까?";
 
     public AttendanceOption readAttendanceOption(LocalDate today) {
         System.out.printf(String.format(OPTION_MESSAGE, DateConverter.convertToString(today)));
@@ -34,6 +37,21 @@ public class InputView {
         System.out.println(REMARK_ATTENDANCE_TIME_MESSAGE);
         String input = scanner.nextLine();
         return parseLocalTime(input);
+    }
+
+    public String readEditAttendanceName() {
+        System.out.println(EDIT_ATTENDANCE_NAME_MESSAGE);
+        return scanner.nextLine();
+    }
+
+    public LocalDate readEditAttendanceDate() {
+        System.out.println(EDIT_ATTENDANCE_DATE_MESSAGE);
+        return parseLocalDate(scanner.nextLine());
+    }
+
+    public LocalTime readEditAttendanceTime() {
+        System.out.println(EDIT_ATTENDANCE_TIME_MESSAGE);
+        return parseLocalTime(scanner.nextLine());
     }
 
     private LocalTime parseLocalTime(String input) {

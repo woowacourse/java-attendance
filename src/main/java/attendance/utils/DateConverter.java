@@ -13,6 +13,7 @@ public class DateConverter {
     public static final DateTimeFormatter LOCAL_TIME_FORMAT =  DateTimeFormatter.ofPattern("HH:mm");
     public static final String TIME_STRING_FORMAT = "%d월 %d일 %s요일";
     public static final String SPACE = " ";
+    public static final String ABSENCE_TIME_MESSAGE = "--:--";
 
     private DateConverter() {}
 
@@ -30,6 +31,9 @@ public class DateConverter {
     }
 
     public static String convertToString(LocalTime time) {
+        if (time == null) {
+            return ABSENCE_TIME_MESSAGE;
+        }
         return time.format(LOCAL_TIME_FORMAT);
     }
 
