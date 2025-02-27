@@ -17,6 +17,10 @@ public class AttendanceTimeChecker {
             throw new IllegalArgumentException();
         }
 
+        if (hour == 23 && minute > 0) {
+            throw new IllegalArgumentException();
+        }
+
         if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
             return determineAttendPolicy(hour, minute, CRITERION_HOUR_FOR_MONDAY);
         }
