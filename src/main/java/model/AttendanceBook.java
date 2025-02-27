@@ -81,6 +81,8 @@ public class AttendanceBook {
     }
 
     public Crew findCrewByAttendance(AttendanceHistory attendanceHistory) {
-        return null;
+        return attendances.keySet().stream().filter(crew -> attendances.get(crew).equals(attendanceHistory))
+                .findAny()
+                .orElseThrow(RuntimeException::new);
     }
 }
