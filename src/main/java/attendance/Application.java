@@ -93,6 +93,11 @@ public class Application {
             return;
         }
         LocalDate attendanceDateToModify = InputView.readAttendanceDateToModify(today);
+        boolean isOperationDate = campusManager.isOperationDate(attendanceDateToModify);
+        if (!isOperationDate) {
+            OutputView.printNotOperationDate(attendanceDateToModify);
+            return;
+        }
     }
 
     private static void checkAttendanceHistory() {
