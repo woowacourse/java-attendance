@@ -156,7 +156,7 @@ public class AttendanceHistoryTest {
     @Test
     void test3_3() {
         //given
-        LocalDate requestDate = LocalDate.of(2024, 12, 10);
+        LocalDate requestDate = LocalDate.of(2024, 12, 13);
         AttendanceHistory attendanceHistory = new AttendanceHistory();
 
         List<Attendance> attendances = attendanceHistory.sliceByDateUntilBefore(requestDate);

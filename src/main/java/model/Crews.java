@@ -20,8 +20,8 @@ public class Crews {
         this.crews = crews;
     }
 
-    //TODO : private으로
-    public static List<String> extractUniqueCrewData(List<String> combinedData) {
+    //TODO : combinedData와 관심사 분리
+    private static List<String> extractUniqueCrewData(List<String> combinedData) {
         return combinedData.stream()
                 .map(data -> data.split(",")[0])
                 .distinct()
@@ -30,9 +30,8 @@ public class Crews {
 
     public Optional<Crew> findCrewByName(String name) {
         return crews.stream()
-                .filter(crew -> crew.equals(new Crew(name)))
+                .filter(crew -> crew.getName().equals(name))
                 .findAny();
-        //TODO : getName대신 이거 써도 되나..? 메모리에반데
     }
 
     public List<Crew> getCrews() {

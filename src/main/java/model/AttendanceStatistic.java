@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceStatistic {
-//    private final AttendanceHistory target;
     //TODO : 서로 다른 크루객체끼리도 겹칠 확률 있음. + 안에가 자료구조라 실수로 바뀔 수 있음 -> 논리적동치성 하용하지 말자
     private final Map<AttendanceStatus, Integer> attendanceCount;
     private final PenaltyStatus penaltyStatus;

@@ -1,16 +1,16 @@
 package view;
 
 import common.Common;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
-import model.DateGenerator;
 
 public class InputView {
     Scanner sc = new Scanner(System.in);
 
-    public String readFunctionChoice() {
+    public String readFunctionChoice(LocalDate now) {
         System.out.printf("\n오늘은 %s입니다. 가능을 선택해주세요.\n",
-                DateGenerator.now().format(Common.monthDateDayFormatter)
+                now.format(Common.monthDateDayFormatter)
         );
         System.out.print("""
                 1. 출석 확인

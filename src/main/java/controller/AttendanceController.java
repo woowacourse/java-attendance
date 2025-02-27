@@ -18,9 +18,9 @@ import model.ExistingAttendances;
 import model.AttendanceHistory;
 import model.Crew;
 import model.Crews;
-import model.DateGenerator;
 import model.December;
 import model.PenaltyStatus;
+import model.exception.SystemException;
 import view.InputView;
 import view.OutputView;
 
@@ -36,21 +36,25 @@ public class AttendanceController {
     }
 
     public void start() {
-        List<String> crewAttendanceData = readAttendanceFile();
-        ExistingAttendances existingAttendances = ExistingAttendances.from(crewAttendanceData);
-        Crews crews = Crews.from(crewAttendanceData);
-        AttendanceBook attendanceBook = AttendanceBook.from(crews);
-        attendanceBook.update(existingAttendances.getAttendances(), crews);
+        try {
+            List<String> crewAttendanceData = readAttendanceFile();
+            ExistingAttendances existingAttendances = ExistingAttendances.from(crewAttendanceData);
+            Crews crews = Crews.from(crewAttendanceData);
+            AttendanceBook attendanceBook = AttendanceBook.from(crews);
+            attendanceBook.update(existingAttendances.getAttendances(), crews);
 
-        boolean continueService = true;
-        while (continueService) {
-            continueService = chooseAndDoService(attendanceBook, crews);
+            boolean continueService = true;
+            while (continueService) {
+                continueService = chooseAndDoService(attendanceBook, crews);
+            }
+        } catch (SystemException e) {
+            outputView.printExceptionMessage(e.getMessage());
         }
     }
 
     private boolean chooseAndDoService(AttendanceBook attendanceBook, Crews crews) {
         try {
-            Service serviceChoice = Service.findByValue(inputView.readFunctionChoice());
+            Service serviceChoice = Service.findByValue(inputView.readFunctionChoice(now));
             if (serviceChoice == Service.REGISTER) {
                 doRegisterService(attendanceBook, crews);
                 return true;
@@ -86,7 +90,7 @@ public class AttendanceController {
             }
             return lines;
         } catch (IOException e) {
-            throw new RuntimeException("파일 입력 중 오류가 발생했습니다.");
+            throw new SystemException();
         }
     }
 
@@ -108,7 +112,7 @@ public class AttendanceController {
         Crew crew = crews.findCrewByName(name)
                 .orElseThrow(CrewNotExistException::new);
 
-        LocalDate date = DateGenerator.create(inputView.readModifyDate());
+        LocalDate date = December.createDecemberDateWith(inputView.readModifyDate());
         LocalTime time = inputView.readModifyTime();
 
         AttendanceHistory crewAttendance = attendances.findByCrew(crew);

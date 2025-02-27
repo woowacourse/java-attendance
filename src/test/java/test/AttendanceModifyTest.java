@@ -3,12 +3,12 @@ package test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import model.exception.FutureAttendanceModifyException;
+import model.December;
+import model.exception.FutureAttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import model.Attendance;
 import model.AttendanceHistory;
-import model.DateGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ public class AttendanceModifyTest {
         int rawDate = 3;
 
         //when
-        LocalDate date = DateGenerator.create(rawDate);
+        LocalDate date = December.createDecemberDateWith(rawDate);
 
         //then
         assertThat(date).isEqualTo(LocalDate.of(2024, 12, rawDate));
@@ -74,7 +74,7 @@ public class AttendanceModifyTest {
         //when, then
         assertThatThrownBy(() -> {
             attendanceHistory.modifyFrom(oldAttendance, modifyTime);
-        }).isInstanceOf(FutureAttendanceModifyException.class);
+        }).isInstanceOf(FutureAttendanceException.class);
     }
 
     /**

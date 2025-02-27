@@ -52,20 +52,6 @@ public class AttendanceBook {
         return statistics;
     }
 
-//    public static Map<Crew, AttendanceHistory> initializeAttendanceOf(Crews crews) {
-//        Map<Crew, AttendanceHistory> attendances = new HashMap<>();
-//        for (Crew crew : crews.getCrews()) {
-//            List<Attendance> defaultAttendances = IntStream.range(1, 32)
-//                    .mapToObj(date -> new Attendance(
-//                            LocalDate.of(2024, 12, date),
-//                            Common.noneAttendanceTime))
-//                    .collect(Collectors.toList()); //TODO : toList면 불변이 되어 수정 불가능해짐
-//            attendances.put(crew, new AttendanceHistory(defaultAttendances));
-//        }
-//        return attendances;
-//    }
-
-
     @Override
     public boolean equals(Object object) {
         if (this == object) {
@@ -82,11 +68,5 @@ public class AttendanceBook {
     @Override
     public int hashCode() {
         return Objects.hashCode(attendances);
-    }
-
-    public Crew findCrewByAttendance(AttendanceHistory attendanceHistory) {
-        return attendances.keySet().stream().filter(crew -> attendances.get(crew).equals(attendanceHistory))
-                .findAny()
-                .orElseThrow(RuntimeException::new);
     }
 }
