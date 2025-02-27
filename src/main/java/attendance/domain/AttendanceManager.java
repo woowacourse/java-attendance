@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.domain.AttendancePolicy.calculateAttendanceStatus;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -18,7 +20,7 @@ public class AttendanceManager {
     }
 
     public Attendance addAttendance(final Crew crew, final LocalDate attendanceDate, final LocalTime attendanceTime) {
-        String status = AttendancePolicy.calculateAttendanceStatus(attendanceDate.getDayOfWeek(), attendanceTime);
+        String status = calculateAttendanceStatus(attendanceDate.getDayOfWeek(), attendanceTime);
         AttendanceHistory attendanceHistory = attendanceBook.get(crew);
         Attendance attendance = new Attendance(attendanceDate, attendanceTime, status);
         return attendanceHistory.addAttendance(attendance);
@@ -27,5 +29,13 @@ public class AttendanceManager {
     public Optional<Attendance> findAttendance(final Crew crew, final LocalDate attendanceDate) {
         AttendanceHistory attendanceHistory = attendanceBook.get(crew);
         return attendanceHistory.findAttendance(attendanceDate);
+    }
+
+    public Attendance modifyAttendance(
+            final Crew crew,
+            final LocalDate attendanceDateToModify,
+            final LocalTime modificationTime
+    ) {
+        return null;
     }
 }

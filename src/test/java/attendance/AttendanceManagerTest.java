@@ -116,4 +116,36 @@ class AttendanceManagerTest {
             );
         }
     }
+
+    @Nested
+    class modifyAttendance {
+        @DisplayName("주어진_크루의_출석_기록을_수정하고_수정된_출석을_반환할_수_있다")
+        @Test
+        void should_SaveAndReturnAttendance_WhenModifyAttendance() {
+            //given
+            AttendanceManager attendanceManager = new AttendanceManager();
+            String crewNickname = "레오";
+            Crew crew = new Crew(crewNickname);
+            attendanceManager.addCrew(crew);
+            LocalDate attendanceDate = LocalDate.of(2024, 12, 26);
+            LocalTime attendanceTime = LocalTime.of(10, 0);
+            attendanceManager.addAttendance(crew, attendanceDate, attendanceTime);
+
+            LocalTime modificationTime = LocalTime.of(10, 5);
+
+            //when
+            Attendance result = attendanceManager.modifyAttendance(crew, attendanceDate, modificationTime);
+
+            //then
+            assertAll(
+                    () -> assertThat(result).isNotNull(),
+                    () -> assertThat(result.isDateEquals(attendanceDate)).isTrue(),
+                    () -> assertThat(result.getStatus()).isEqualTo("LATE"),
+                    () -> {
+                        Attendance expected = attendanceManager.findAttendance(crew, attendanceDate).get();
+                        assertThat(result).isEqualTo(expected);
+                    }
+            );
+        }
+    }
 }
