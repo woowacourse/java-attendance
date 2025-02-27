@@ -68,7 +68,7 @@ public class SomeTest {
     }
 
     @Nested
-    @DisplayName("크루 출석 상태 갯수")
+    @DisplayName("크루 출석 상태 갯수 테스트")
     class CountAttendanceStatusTest {
 
         @DisplayName("출석 상태별 개수 반환")
@@ -90,6 +90,28 @@ public class SomeTest {
                     () -> assertThat(crew.getAttendCount()).isEqualTo(3),
                     () -> assertThat(crew.getLateCount()).isEqualTo(2),
                     () -> assertThat(crew.getAbsentCount()).isEqualTo(1)
+            );
+        }
+
+        @DisplayName("출석하지 않은 날을 결석으로 반환")
+        @Test
+        void test2() {
+            // given
+            Crew crew = new Crew("빙봉");
+
+            // when
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 2, 8, 25)); // 출석
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 3, 8, 25)); // 출석
+            // 4일 결석
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 5, 10, 25)); // 지각
+            // 6일 결석
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 9, 15, 0)); // 결석
+
+            // then
+            assertAll(
+                    () -> assertThat(crew.getAttendCount()).isEqualTo(3),
+                    () -> assertThat(crew.getLateCount()).isEqualTo(1),
+                    () -> assertThat(crew.getAbsentCount()).isEqualTo(2)
             );
         }
     }
