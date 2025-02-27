@@ -18,6 +18,9 @@ public enum AttendanceStatus {
         if (isWeekendOrChristmas(attendedTime))
             throw new IllegalArgumentException(ERROR_MESSAGE.CLOSED_DAY.getMessage());
 
+        if (isNotOpenTime(attendedTime))
+            throw new IllegalArgumentException(ERROR_MESSAGE.CLOSED_TIME.getMessage());
+
         int startTime = 10;
         if (attendedTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             startTime = 13;
@@ -32,6 +35,10 @@ public enum AttendanceStatus {
             return LATE;
         }
         return ATTEND;
+    }
+
+    private static boolean isNotOpenTime(LocalDateTime attendedTime) {
+        return attendedTime.getHour() < 8 || attendedTime.getHour() == 23;
     }
 
     private static boolean isWeekendOrChristmas(LocalDateTime attendedTime) {
