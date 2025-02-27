@@ -82,6 +82,24 @@ public class AttendanceTimeTest {
         Assertions.assertThat(result).isEqualTo(expectedResult);
     }
 
+    @ParameterizedTest
+    @CsvSource(value = {
+            "27,true",
+            "26,false"
+    })
+    void 입력_받은_날짜와_출석_기록_날짜가_같은지_비교한다(final int date, final boolean expectedResult) {
+
+        // given
+        AttendanceTime attendanceTime = new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 10);
+
+        // when
+        final boolean result = attendanceTime.isSameDay(LocalDate.of(2025, 2, date));
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+
+    }
+
     private static Stream<Arguments> dateAndResult() {
 
         return Stream.of(
