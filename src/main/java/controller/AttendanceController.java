@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import model.Attendance;
 import model.AttendanceBook;
-import model.AttendanceStatistics;
+import model.AttendanceStatistic;
 import model.AttendanceStatus;
 import model.ExistingAttendances;
 import model.AttendanceHistory;
@@ -112,11 +112,11 @@ public class AttendanceController {
 
             LocalDate now = DateGenerator.now();
             AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
-            AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
+            AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
 
             List<Attendance> attendanceHistories = attendanceHistory.sliceByDateUntilBefore(now);
-            Map<AttendanceStatus, Integer> attendanceStatusHistory = attendanceStatistics.calculateStatusCountUntilBefore(now);
-            PenaltyStatus penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(now);
+            Map<AttendanceStatus, Integer> attendanceStatusHistory = attendanceStatistic.calculateStatusCountUntilBefore(now);
+            PenaltyStatus penaltyStatus = attendanceStatistic.calculatePenaltyUntilBefore(now);
 
             outputView.printAttendanceHistories(attendanceHistories, name);
             outputView.printAttendanceStatusHistory(attendanceStatusHistory);

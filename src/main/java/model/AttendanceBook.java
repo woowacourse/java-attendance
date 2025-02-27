@@ -41,10 +41,11 @@ public class AttendanceBook {
                 .orElseThrow(CrewNotExistException::new);
     }
 
-    public List<AttendanceStatistics> findAllStatistics() {
-        return attendances.keySet().stream()
-                .map(crew -> new AttendanceStatistics(attendances.get(crew)))
+    public AttendanceStatistics findAllStatistics() {
+        List<AttendanceStatistic> statistics = attendances.keySet().stream()
+                .map(crew -> new AttendanceStatistic(attendances.get(crew)))
                 .toList();
+        return new AttendanceStatistics(statistics);
     }
 
 //    public static Map<Crew, AttendanceHistory> initializeAttendanceOf(Crews crews) {

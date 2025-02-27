@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import model.Attendance;
 import model.AttendanceHistory;
-import model.AttendanceStatistics;
+import model.AttendanceStatistic;
 import model.AttendanceStatus;
 import model.PenaltyStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -75,8 +75,8 @@ public class AttendanceHistoryTest {
         attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 31)); //결석
 
         //when
-        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
-        Map<AttendanceStatus, Integer> attendanceStatusCount = attendanceStatistics.calculateStatusCountUntilBefore(requestDate);
+        AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
+        Map<AttendanceStatus, Integer> attendanceStatusCount = attendanceStatistic.calculateStatusCountUntilBefore(requestDate);
 
         //then
         assertThat(attendanceStatusCount.get(AttendanceStatus.NORMAL)).isEqualTo(1);
@@ -96,10 +96,10 @@ public class AttendanceHistoryTest {
         attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
 
-        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
+        AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
 
         //when
-        PenaltyStatus penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistic.calculatePenaltyUntilBefore(requestDate);
 
         //then
         assertThat(penaltyStatus).isEqualTo(PenaltyStatus.NONE);
@@ -116,10 +116,10 @@ public class AttendanceHistoryTest {
         attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
-        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
+        AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
 
         //when
-        PenaltyStatus penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistic.calculatePenaltyUntilBefore(requestDate);
 
         //then
         assertThat(penaltyStatus).isEqualTo(PenaltyStatus.WARNING);
@@ -136,10 +136,10 @@ public class AttendanceHistoryTest {
         attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 31)); //결석
 //        attendanceHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
-        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
+        AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
 
         //when
-        PenaltyStatus penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistic.calculatePenaltyUntilBefore(requestDate);
 
         //then
         assertThat(penaltyStatus).isEqualTo(PenaltyStatus.MEETING);
@@ -151,10 +151,10 @@ public class AttendanceHistoryTest {
         //given
         LocalDate requestDate = LocalDate.of(2024, 12, 10);
         AttendanceHistory attendanceHistory = new AttendanceHistory();
-        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
+        AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
 
         //when
-        PenaltyStatus penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistic.calculatePenaltyUntilBefore(requestDate);
 
         //then
         assertThat(penaltyStatus).isEqualTo(PenaltyStatus.EXPELLED);
