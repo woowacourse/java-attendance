@@ -16,4 +16,13 @@ public class InputValidatorTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR]");
     }
+
+    @DisplayName("닉네임이 1자 이하, 5자 이상일 경우 예외가 발생한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"미", "미미미미미", "", " "})
+    void test2(String invalidNameFormat) {
+        assertThatThrownBy(() -> InputValidator.validateName(invalidNameFormat))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR]");
+    }
 }

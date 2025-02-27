@@ -16,4 +16,8 @@ public class InputValidator {
             throw new IllegalArgumentException(TIME_FORMAT_ERROR);
         }
     }
+
+    public static void validateName(String invalidNameFormat) {
+
+    }
 }
