@@ -1,12 +1,13 @@
 package domain;
 
+import domain.policy.AbsentPolicy;
+import domain.policy.AttendanceState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.*;
-import domain.policy.AbsentPolicy;
-import domain.policy.AttendanceState;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -86,7 +87,7 @@ public class AttendanceSheetTest {
     @DisplayName("크루의 출석 상태 횟수를 계산할 수 있다")
     @MethodSource("provideAttendanceStateForCount")
     public void countAttendanceStateTest(AttendanceState state, int expected) {
-        assertThat(attendanceSheet.countAttendanceState().get(state)).isEqualTo(expected);
+        assertThat(attendanceSheet.countAttendanceState("링크").get(state)).isEqualTo(expected);
     }
 
     static Stream<Arguments> provideAttendanceStateForCount() {
@@ -97,4 +98,23 @@ public class AttendanceSheetTest {
         );
     }
 
+    @Test
+    @DisplayName("제적 위험자를 확인할 수 있다")
+    public void countAttendancesStateTest() {
+        //given
+        //2 3 4 5 6
+        //9 10 11 12 13
+        LocalDate today = LocalDate.of(2024, 12, 13);
+        attendanceSheet = new AttendanceSheet(new AbsentPolicy(),
+                new ArrayList<>(
+                        List.of(new Attendance("링크", LocalDate.of(2024, 12, 9), LocalTime.of(13,10), LATE),
+                                new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(10,10), LATE),
+                                new Attendance("링크", LocalDate.of(2024, 12, 11), LocalTime.of(10,10), LATE),
+                                new Attendance("링크", LocalDate.of(2024, 12, 12), LocalTime.of(10,10), LATE)
+                        ))
+        );
+
+        //when-then
+        assertThat(attendanceSheet.countAttendancesState().get("링크").get(LATE)).isEqualTo(4);
+    }
 }
