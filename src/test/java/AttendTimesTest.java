@@ -26,4 +26,24 @@ public class AttendTimesTest {
         attendTimes.add(attendTime2);
         assertThat(attendTimes.calculateAttendedCount()).isEqualTo(1);
     }
+    @DisplayName("지각한 횟수를 계산 할 수 있다")
+    @Test
+    void test3(){
+        AttendTimes attendTimes = new AttendTimes();
+        AttendTime attendTime = new AttendTime(LocalDate.of(2024,12,3), LocalTime.of(10,12));
+        AttendTime attendTime2 = new AttendTime(LocalDate.of(2024,12,4), LocalTime.of(9,12));
+        attendTimes.add(attendTime);
+        attendTimes.add(attendTime2);
+        assertThat(attendTimes.calculateLateCount()).isEqualTo(1);
+    }
+    @DisplayName("지각한 횟수를 계산 할 수 있다")
+    @Test
+    void test4(){
+        AttendTimes attendTimes = new AttendTimes();
+        AttendTime attendTime = new AttendTime(LocalDate.of(2024,12,11), LocalTime.of(10,12));
+        AttendTime attendTime2 = new AttendTime(LocalDate.of(2024,12,12), LocalTime.of(9,12));
+        attendTimes.add(attendTime);
+        attendTimes.add(attendTime2);
+        assertThat(attendTimes.calculateAbsentCount()).isEqualTo(8);
+    }
 }

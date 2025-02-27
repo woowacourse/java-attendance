@@ -1,5 +1,4 @@
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AttendTime {
@@ -24,7 +23,7 @@ public class AttendTime {
     }
 
     private void validateHoliday(LocalDate localDate) {
-        if (December.checkHolyDay(localDate.getDayOfMonth())) {
+        if (December.checkHoliday(localDate.getDayOfMonth())) {
             throw new IllegalArgumentException("휴일은 출석 할 수 없습니다.");
         }
     }

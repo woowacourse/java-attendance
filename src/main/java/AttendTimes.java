@@ -39,9 +39,7 @@ public class AttendTimes {
                 continue;
             }
 
-            LocalDate localDate = LocalDate.of(todayYear, todayMonthValue, i);
-
-            if (!List.of(6, 7).contains(localDate.getDayOfWeek().getValue())) {
+            if (December.checkWeekDay(i)) {
                 AttendTime absentAttendance = new AttendTime(LocalDate.of(todayYear, todayMonthValue, i), null);
                 allAttendanceFromToday.add(absentAttendance);
             }
@@ -51,6 +49,22 @@ public class AttendTimes {
 
     public int calculateAttendedCount() {
         return (int) attendTimes.stream().filter(attendTime -> attendTime.checkAttendanceStatus().equals(AttendanceStatus.ATTENDED)).count();
+    }
+
+    public int calculateLateCount() {
+        return (int) attendTimes.stream().filter(attendTime -> attendTime.checkAttendanceStatus().equals(AttendanceStatus.LATE)).count();
+    }
+
+    public int calculateAbsentCount() {
+        int total = 0;
+        LocalDate todayLocalDate = LocalDate.parse(AttendanceController.TODAY_LOCAL_DATE, AttendanceController.TODAY_FORMATTER);
+        int todayDayOfMonth = todayLocalDate.getDayOfMonth();
+        for (int i = 1; i < todayDayOfMonth; i++) {
+            AttendTime attendTime = findAttendanceByDate(i).orElse(null);
+            if (attendTime == null && December.checkWeekDay(i))
+                total += 1;
+        }
+        return total + (int) attendTimes.stream().filter(attendTime -> attendTime.checkAttendanceStatus().equals(AttendanceStatus.ABSENT)).count();
     }
 
     public List<AttendTime> getAttendTimes() {
