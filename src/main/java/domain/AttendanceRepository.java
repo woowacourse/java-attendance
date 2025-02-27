@@ -36,15 +36,12 @@ public class AttendanceRepository {
         validateWeekDay(localDate);
         validateExistingCrew(name);
         validateAfterToday(localDate);
+
         List<Attendance> crewAttendances = attendances.get(name);
-
         Attendance beforeAttendance = getBeforeAttendance(localDate, crewAttendances);
-
         List<Attendance> newAttendances = getNewAttendances(localDate, crewAttendances);
 
-        Attendance updatedAttendance = new Attendance(name, localDate, localTime);
-        newAttendances.add(updatedAttendance);
-
+        newAttendances.add(beforeAttendance.updateTime(localTime));
         attendances.put(name, List.copyOf(newAttendances));
 
         return beforeAttendance;
