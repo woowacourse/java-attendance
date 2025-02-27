@@ -1,4 +1,5 @@
 public enum AttendanceStatus {
-    ATTENDANCE
-    ,
+    ATTENDANCE,
+    LATE
+    ;
 }

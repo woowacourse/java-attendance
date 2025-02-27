@@ -86,12 +86,13 @@ public class AttendanceTest {
     }
 
     @DisplayName("제시간에 출석을 기록한 경우, 기록된 출석 내역과 '출석' 상태를 반환할 수 있다.")
-    @Test
-    void test6() {
+    @ParameterizedTest
+    @CsvSource(value = {"10, 0", "10, 1", "10, 5"})
+    void test6(int hour, int minutes) {
         // given
         AttendanceStorage attendanceStorage = new AttendanceStorage();
         LocalDate date = LocalDate.of(2025, 2, 27);
-        LocalTime enterTime = LocalTime.of(10, 0);
+        LocalTime enterTime = LocalTime.of(hour, minutes);
 
         // when
         Attendance attendance = attendanceStorage.register(date, enterTime);
@@ -99,5 +100,22 @@ public class AttendanceTest {
         // then
         assertThat(attendance.getDateTime()).isEqualTo(LocalDateTime.of(date, enterTime));
         assertThat(attendance.getStatus()).isSameAs(AttendanceStatus.ATTENDANCE);
+    }
+
+    @DisplayName("지각 시간에 출석을 기록한 경우, 기록된 출석 내역과 '지각' 상태를 반환할 수 있다.")
+    @ParameterizedTest
+    @CsvSource(value = {"10, 6", "10, 30"})
+    void test7(int hour, int minutes) {
+        // given
+        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        LocalDate date = LocalDate.of(2025, 2, 27);
+        LocalTime enterTime = LocalTime.of(hour, minutes);
+
+        // when
+        Attendance attendance = attendanceStorage.register(date, enterTime);
+
+        // then
+        assertThat(attendance.getDateTime()).isEqualTo(LocalDateTime.of(date, enterTime));
+        assertThat(attendance.getStatus()).isSameAs(AttendanceStatus.LATE);
     }
 }
