@@ -14,6 +14,7 @@ public enum AttendanceStatus {
     private static final int GENERAL_HOUR_LIMIT = 10;
     private static final int LATE_LIMIT = 5;
     private static final int ABSENCE_LIMIT = 30;
+
     AttendanceStatus(final String name) {
         this.name = name;
     }
@@ -22,7 +23,7 @@ public enum AttendanceStatus {
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
         int hour = localDateTime.getHour();
         int minute = localDateTime.getMinute();
-        if (dayOfWeek.getValue() == 1) {
+        if (dayOfWeek.equals(DayOfWeek.MONDAY)) {
             return findMondayAttendanceStatus(hour, minute);
         }
         return findOtherDayAttendanceStatus(hour, minute);
