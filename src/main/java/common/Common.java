@@ -13,6 +13,9 @@ public class Common {
 
     public static final DateTimeFormatter yearMonthDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    public static final LocalTime campusOpenTime = LocalTime.of(8, 0);
+
+    public static final LocalTime campusCloseTime = LocalTime.of(23, 0);
 
     public static final LocalTime noneAttendanceTime = LocalTime.of(0, 0);
 

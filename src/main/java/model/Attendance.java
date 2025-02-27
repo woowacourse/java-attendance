@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 import model.exception.CampusUnavailableException;
-import model.exception.FutureAttendanceModifyException;
+import model.exception.FutureAttendanceException;
 import model.exception.HolidayAttendanceException;
 
 public class Attendance {
@@ -13,10 +13,9 @@ public class Attendance {
     private final LocalTime time;
 
     public Attendance(LocalDate date, LocalTime time) {
-        validateDate(date);
         validateTime(time);
         this.date = date;
-        this.time = time; //TODO : null로 해보기
+        this.time = time;
     }
 
     private void validateTime(LocalTime time) {
@@ -25,15 +24,6 @@ public class Attendance {
         }
         if (time.isBefore(Common.campusOpenTime) || time.isAfter(Common.campusCloseTime)) {
             throw new CampusUnavailableException();
-        }
-    }
-
-    private void validateDate(LocalDate date) {
-        if (date.isAfter(December.now())) {
-            throw new FutureAttendanceModifyException();
-        }
-        if (December.isHolidayAt(date)) {
-            throw new HolidayAttendanceException(date);
         }
     }
 
