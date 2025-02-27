@@ -1,11 +1,11 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static util.loader.FileLoader.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import util.loader.FileLoader;
 
 @Nested
 public class AttendanceBookTest {
@@ -18,7 +18,7 @@ public class AttendanceBookTest {
         @DisplayName("파일(csv)에서 크루별 데이터를 구분할 수 있다.")
         void separateCrew() {
             AttendanceBook attendanceBook = new AttendanceBook();
-            attendanceBook.initializeCrewRecords(FileLoader.loadCSV("src/test/resources/attendances.csv"));
+            attendanceBook.initializeCrewRecords(loadCSV("src/test/resources/attendances.csv"));
 
             assertThat(attendanceBook.countCrew()).isEqualTo(5);
         }

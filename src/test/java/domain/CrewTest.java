@@ -1,6 +1,7 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static util.parser.DateTimeParser.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,7 +10,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import util.parser.DateTimeParser;
 
 @Nested
 public class CrewTest {
@@ -23,15 +23,15 @@ public class CrewTest {
         void separateCrew() {
             Crew crew = new Crew();
             List<LocalDateTime> crewRecords = List.of(
-                DateTimeParser.parseStringToDateTime("2024-12-04 10:08"),
-                DateTimeParser.parseStringToDateTime("2024-12-05 10:02")
+                parseStringToDateTime("2024-12-04 10:08"),
+                parseStringToDateTime("2024-12-05 10:02")
             );
             crew.initializeDailyRecords(crewRecords);
 
-            LocalDate date1 = DateTimeParser.parseStringToDate("2024-12-04");
-            LocalTime time1 = DateTimeParser.parseStringToTime("10:08");
-            LocalDate date2 = DateTimeParser.parseStringToDate("2024-12-05");
-            LocalTime time2 = DateTimeParser.parseStringToTime("10:02");
+            LocalDate date1 = parseStringToDate("2024-12-04");
+            LocalTime time1 = parseStringToTime("10:08");
+            LocalDate date2 = parseStringToDate("2024-12-05");
+            LocalTime time2 = parseStringToTime("10:02");
 
             assertThat(crew.findRecordByDate(date1)).isEqualTo(
                 new DailyRecord(date1.getDayOfWeek(), time1));
