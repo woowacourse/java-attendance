@@ -2,6 +2,7 @@ package attendance.domain;
 
 import attendance.util.FormattedErrorMessage;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -12,6 +13,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("출석 테스트")
 public class AttendanceTest {
@@ -117,6 +119,18 @@ public class AttendanceTest {
                 Arguments.of(EducationTime.GENERAL_LATE.getTime().plusNanos(1), AttendanceStatus.LATE, "목요일 지각 시작 시간"),
                 Arguments.of(EducationTime.GENERAL_ABSENT.getTime(), AttendanceStatus.LATE, "목요일 지각 종료 시간"),
                 Arguments.of(EducationTime.GENERAL_ABSENT.getTime().plusNanos(1), AttendanceStatus.ABSENT, "목요일 결석 시작 시간")
+        );
+    }
+
+    @Test
+    void 입력된_출석의_일자와_현재_출석의_일자가_동일하면_true_아니면_false를_반환한다() {
+        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance sameDateAttendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance differentDateAttendance = new Attendance(LocalDate.of(2024, 12, 13), LocalTime.of(13, 0));
+
+        assertAll(
+                () -> assertThat(attendance.isSameDate(sameDateAttendance)).isTrue(),
+                () -> assertThat(attendance.isSameDate(differentDateAttendance)).isFalse()
         );
     }
 }
