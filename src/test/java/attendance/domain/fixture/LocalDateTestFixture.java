@@ -10,6 +10,7 @@ public class LocalDateTestFixture {
         return IntStream.range(1, now.getMonth().maxLength())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
                 .filter(date -> !isMonday(date))
+                .filter(date -> !isWeekend(date))
                 .findFirst()
                 .orElseThrow();
     }
@@ -23,7 +24,20 @@ public class LocalDateTestFixture {
                 .orElseThrow();
     }
 
+    public static LocalDate createWeekendDate() {
+        LocalDate now = LocalDate.now();
+        return IntStream.range(1, now.getMonth().maxLength())
+                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
+                .filter(date -> isWeekend(date))
+                .findFirst()
+                .orElseThrow();
+    }
+
     private static boolean isMonday(LocalDate date) {
         return date.getDayOfWeek() == DayOfWeek.MONDAY;
+    }
+
+    private static boolean isWeekend(LocalDate date) {
+        return date.getDayOfWeek() == DayOfWeek.SUNDAY || date.getDayOfWeek() == DayOfWeek.SATURDAY;
     }
 }
