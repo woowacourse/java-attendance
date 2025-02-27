@@ -41,6 +41,7 @@ public class AttendancePenaltyTest {
     @DisplayName("모든 크루의 특정 날짜까지의 출결상태가 경고, 면담, 제적인 경우를 반환한다.")
     @Test
     void test1() {
+        LocalDate requestDate = LocalDate.of(2024, 12, 7);
         Crew crew1 = new Crew("빙티");
         Crew crew2 = new Crew("이든");
         AttendanceBook attendanceBook = AttendanceBook.from(Crews.from(List.of("빙티", "이든")));
@@ -62,11 +63,11 @@ public class AttendancePenaltyTest {
         AttendanceStatistics attendanceStatistics = attendanceBook.findAllStatistics();
 
         //when
-        List<AttendanceStatistic> penaltyTargets = attendanceStatistics.findPenaltyTargets();
+        List<AttendanceStatistic> penaltyTargets = attendanceStatistics.findPenaltyTargets(requestDate);
 
         //then
         assertThat(penaltyTargets).isEqualTo(List.of(
-                crewHistory2
+                new AttendanceStatistic(crewHistory2)
         ));
     }
 }
