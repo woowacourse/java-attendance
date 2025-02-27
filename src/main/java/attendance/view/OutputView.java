@@ -1,5 +1,8 @@
 package attendance.view;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
+import static attendance.domain.AttendanceStatus.LATE;
+
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatistics;
 import attendance.domain.AttendanceStatus;
@@ -10,8 +13,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class OutputView {
     public static void printNotOperationDate(final LocalDate attendanceDate) {
@@ -104,5 +110,30 @@ public class OutputView {
         if (crewStatus.equals(CrewStatus.INTERVIEW)) {
             System.out.println("면담 대상자입니다.");
         }
+    }
+
+    public static void printDangerousCrews(final Map<Crew, AttendanceStatistics> dangerousCrews) {
+        List<Crew> crews = sortDangerousCrews(dangerousCrews);
+        for (Crew crew : crews) {
+            String nickname = crew.getNickname();
+            AttendanceStatistics statistics = dangerousCrews.get(crew);
+            int absenceCount = statistics.getStatusCount(ABSENCE);
+            int lateCount = statistics.getStatusCount(LATE);
+            CrewStatus crewStatus = statistics.calculateCrewStatus();
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", nickname, absenceCount, lateCount, crewStatus.getName());
+        }
+    }
+
+    private static List<Crew> sortDangerousCrews(final Map<Crew, AttendanceStatistics> dangerousCrews) {
+        List<Crew> crews = new ArrayList<>(dangerousCrews.keySet());
+        crews.sort(new Comparator<Crew>() {
+            @Override
+            public int compare(Crew firstCrew, Crew secondCrew) {
+                AttendanceStatistics firstCrewStatistics = dangerousCrews.get(firstCrew);
+                AttendanceStatistics secondCrewStatistics = dangerousCrews.get(secondCrew);
+                return firstCrewStatistics.compareTo(secondCrewStatistics);
+            }
+        });
+        return crews;
     }
 }

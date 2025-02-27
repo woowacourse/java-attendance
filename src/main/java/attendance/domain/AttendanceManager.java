@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 public class AttendanceManager {
@@ -51,5 +52,17 @@ public class AttendanceManager {
     public AttendanceStatistics getAttendanceStatistics(final LocalDate today, final Crew crew) {
         AttendanceHistory attendanceHistory = attendanceBook.get(crew);
         return attendanceHistory.getAttendanceStatistics(today);
+    }
+
+    public Map<Crew, AttendanceStatistics> getDangerousCrews(final LocalDate today) {
+        Map<Crew, AttendanceStatistics> dangerousCrewsStatistics = new HashMap<>();
+        for (Entry<Crew, AttendanceHistory> entry : attendanceBook.entrySet()) {
+            AttendanceStatistics attendanceStatistics = entry.getValue().getAttendanceStatistics(today);
+            CrewStatus crewStatus = attendanceStatistics.calculateCrewStatus();
+            if (!crewStatus.equals(CrewStatus.NONE)) {
+                dangerousCrewsStatistics.put(entry.getKey(), attendanceStatistics);
+            }
+        }
+        return dangerousCrewsStatistics;
     }
 }

@@ -7,7 +7,7 @@ import static attendance.domain.CrewStatus.INTERVIEW;
 import static attendance.domain.CrewStatus.NONE;
 import static attendance.domain.CrewStatus.WARNING;
 
-public class AttendanceStatistics {
+public class AttendanceStatistics implements Comparable {
     private final int attendanceCount;
     private final int lateCount;
     private final int absenceCount;
@@ -19,8 +19,7 @@ public class AttendanceStatistics {
     }
 
     public CrewStatus calculateCrewStatus() {
-        int totalAbsence = absenceCount;
-        totalAbsence += (lateCount / 3);
+        int totalAbsence = calculateTotalAbsence();
         if (totalAbsence > 5) {
             return FIRE;
         }
@@ -33,6 +32,12 @@ public class AttendanceStatistics {
         return NONE;
     }
 
+    private int calculateTotalAbsence() {
+        int totalAbsence = absenceCount;
+        totalAbsence += (lateCount / 3);
+        return totalAbsence;
+    }
+
     public int getStatusCount(final AttendanceStatus status) {
         if (status.equals(ATTENDANCE)) {
             return attendanceCount;
@@ -41,5 +46,14 @@ public class AttendanceStatistics {
             return lateCount;
         }
         return absenceCount;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return 0;
+        }
+        AttendanceStatistics that = (AttendanceStatistics) o;
+        return -(that.calculateTotalAbsence() - this.calculateTotalAbsence());
     }
 }

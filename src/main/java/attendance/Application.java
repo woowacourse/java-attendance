@@ -29,10 +29,6 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        /**
-         * 테스트 코드
-         */
-        attendanceManager.addCrew(new Crew("레오"));
         while (true) {
             LocalDate today = LocalDate.now();
             String option = InputView.readOption(today);
@@ -130,7 +126,9 @@ public class Application {
     }
 
     private static void checkDangerousCrews() {
-
+        LocalDate today = now();
+        Map<Crew, AttendanceStatistics> dangerousCrews = attendanceManager.getDangerousCrews(today);
+        OutputView.printDangerousCrews(dangerousCrews);
     }
 
     private static LocalDate now() {
