@@ -42,6 +42,6 @@ public enum AttendanceStatus {
             return LATE;
         }
 
-        return null;
+        return ATTENDANCE;
     }
 }
