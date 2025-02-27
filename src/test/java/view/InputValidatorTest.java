@@ -12,7 +12,7 @@ public class InputValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = {"9:59", "", " ", "a", "1", "10:3", "10;10"})
     void test1(String invalidTimeFormat) {
-        assertThatThrownBy(Inputvalidator.validateTime(invalidTimeFormat))
+        assertThatThrownBy(() -> InputValidator.validateTime(invalidTimeFormat))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR]");
     }
