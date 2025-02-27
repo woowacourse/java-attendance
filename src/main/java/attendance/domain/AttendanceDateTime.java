@@ -79,6 +79,14 @@ public class AttendanceDateTime {
         return attendanceDate.equals(otherDate);
     }
 
+    public boolean isThisDayInCurrentMonth(final int day) {
+        int attendanceDay = this.dateTime.getDayOfMonth();
+        if (attendanceDay == day) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
