@@ -1,6 +1,6 @@
 package domain;
 
-import static util.parser.DateTimeParser.*;
+import static util.parser.DateTimeParser.parseStringToDateTime;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

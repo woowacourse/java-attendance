@@ -17,10 +17,19 @@ public class AttendanceController {
         this.outputView = outputView;
 
         this.attendanceBook = new AttendanceBook();
-        attendanceBook.initializeCrewRecords(loadCSV("src/main/resources/attendances.csv"));
+        handleException(()
+            -> attendanceBook.initializeCrewRecords(loadCSV("src/main/resources/attendances.csv")));
     }
 
     public void selectFunction() {
 
+    }
+
+    private void handleException(Runnable action) {
+        try {
+            action.run();
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+        }
     }
 }

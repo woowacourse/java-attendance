@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 public class FileLoader {
 
+    private static final String FILE_LOAD_ERROR_MESSAGE = "파일을 읽어올 수 없습니다.";
+
     private FileLoader() {
     }
 
@@ -16,7 +18,7 @@ public class FileLoader {
             scanner.nextLine(); // attribute 행 제거
             return scanner;
         } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(FILE_LOAD_ERROR_MESSAGE);
         }
     }
 }

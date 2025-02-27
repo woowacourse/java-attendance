@@ -1,6 +1,6 @@
 package domain;
 
-import static util.parser.DateTimeParser.*;
+import static util.parser.DateTimeParser.parseIntegerToTime;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
