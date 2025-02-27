@@ -6,6 +6,7 @@ import domain.AttendanceRecord;
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -95,6 +96,24 @@ public class AttendanceHistoryTest {
 
             // then
             assertThat(actual.isEmpty()).isTrue();
+        }
+
+
+        @DisplayName("주어진 날짜 이전날까지의 출석 기록을 반환한다.")
+        @Test
+        public void findAllUntilBeforeToday() throws Exception {
+            // given
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
+            final LocalDate targetDate = LocalDate.of(2024, 12, 3);
+
+            // when
+            final List<AttendanceRecord> actual = attendanceHistory.findAllUntilBeforeToday(targetDate);
+
+            // then
+            assertThat(actual).hasSize(1);
+            assertThat(actual.getFirst().getDateTime())
+                    .hasDayOfMonth(2);
         }
     }
 

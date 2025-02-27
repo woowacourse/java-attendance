@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceHistory {
@@ -72,5 +73,9 @@ public class AttendanceHistory {
 
     public Crew getCrew() {
         return crew;
+    }
+
+    public List<AttendanceRecord> findAllUntilBeforeToday(final LocalDate targetDate) {
+        return null;
     }
 }
