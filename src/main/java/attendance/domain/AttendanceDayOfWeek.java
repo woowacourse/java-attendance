@@ -32,7 +32,7 @@ public enum AttendanceDayOfWeek {
 
     private static void validateWeekend(final DayOfWeek dayOfWeek) {
         if (dayOfWeek.getValue() > 5) {
-            throw new IllegalArgumentException("주말은 출석 날짜로 지원하지 않습니다.");
+            throw new IllegalArgumentException("출석 요일은 주말일 수 없습니다.");
         }
     }
 
