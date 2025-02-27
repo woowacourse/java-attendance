@@ -15,6 +15,8 @@ public class AttendanceTimeChecker {
             if (minute > 5) {
                 return AttendPolicy.LATE;
             }
+
+            return AttendPolicy.ATTEND;
         }
 
         if (hour > 10) {
