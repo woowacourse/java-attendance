@@ -1,16 +1,12 @@
 package model;
 
-import common.Common;
 import exception.HolidayAttendanceException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.IntStream;
 
 public class December {
     private static final int YEAR = 2024;
     private static final int MONTH = 12;
-    private static final List<Integer> dates = IntStream.range(1, 32).boxed().toList();
 
     public static void validateHoliday(LocalDate date) {
         if (isHolidayAt(date)) {

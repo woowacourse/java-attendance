@@ -28,20 +28,10 @@ public class AttendanceStatistics {
         return statusStatistics;
     }
 
-    public String calculatePenaltyUntilBefore(LocalDate requestDate) {
+    public PenaltyStatus calculatePenaltyUntilBefore(LocalDate requestDate) {
         Map<AttendanceStatus, Integer> statusStatistics = calculateStatusCountUntilBefore(requestDate);
         int lateCount = statusStatistics.get(AttendanceStatus.LATE);
         int absenceCount = statusStatistics.get(AttendanceStatus.ABSENCE);
-        absenceCount += (lateCount / 3);
-        if (absenceCount >= 6) {
-            return "제적";
-        }
-        if (absenceCount >= 3) {
-            return "면담";
-        }
-        if (absenceCount >= 2) {
-            return "경고";
-        }
-        return "없음";
+        return PenaltyStatus.findByAttendanceCount(lateCount, absenceCount);
     }
 }

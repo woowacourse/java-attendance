@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ExistingAttendances {
+    //TODO : 혹시 만드는게 별로라면 이유는?
     private final Map<String, List<LocalDateTime>> attendances;
 
     public static ExistingAttendances from(List<String> combinedData) {
