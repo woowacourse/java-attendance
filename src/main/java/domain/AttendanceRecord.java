@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import util.DateTimeManager;
 
 public class AttendanceRecord {
     private final Set<Attendance> value;
@@ -82,8 +81,11 @@ public class AttendanceRecord {
     }
 
     private void addWhenNotExistedTo(LocalDate targetDate) {
-        Attendance attendanceCandidate = new Attendance(targetDate, ABSENT_CONSIDERING_TIME);
-        if (DateTimeManager.isHoliday(targetDate) || contains(attendanceCandidate)) return;
-        add(attendanceCandidate);
+        try {
+            Attendance attendanceCandidate = new Attendance(targetDate, ABSENT_CONSIDERING_TIME);
+            if (contains(attendanceCandidate)) return;
+            add(attendanceCandidate);
+        }
+        catch (IllegalArgumentException ignored) {}
     }
 }

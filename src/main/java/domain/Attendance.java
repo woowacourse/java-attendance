@@ -7,10 +7,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
-import util.DateTimeManager;
+import util.Constants;
 
 public class Attendance {
     private static final String NOT_RUNNING_TIME_ERROR = "[ERROR] 캠퍼스 운영시간이 아닙니다.";
+    private static final String HOLIDAY_ERROR = "[ERROR] 주말 및 공휴일은 출석할 수 없습니다.";
     private final LocalDateTime value;
 
     public Attendance(LocalDateTime value) {
@@ -19,9 +20,15 @@ public class Attendance {
         this.value = value;
     }
 
+    public Attendance(LocalDate date, LocalTime time) {
+        validateDate(date);
+        validateTime(time);
+        this.value = LocalDateTime.of(date, time);
+    }
+
     private void validateDate(LocalDate date) {
-        if(DateTimeManager.isHoliday(date)) {
-            throw new IllegalArgumentException("[ERROR] 주말 및 공휴일은 출석할 수 없습니다.");
+        if(isHoliday(date)) {
+            throw new IllegalArgumentException(HOLIDAY_ERROR);
         }
     }
 
@@ -29,10 +36,6 @@ public class Attendance {
         if (time.isBefore(CAMPUS_START_TIME) || time.isAfter(CAMPUS_END_TIME)) {
             throw new IllegalArgumentException(NOT_RUNNING_TIME_ERROR);
         }
-    }
-
-    public Attendance(LocalDate date, LocalTime time) {
-        this.value = LocalDateTime.of(date, time);
     }
 
     public LocalDate getDate() {
@@ -57,5 +60,12 @@ public class Attendance {
         if(object == null || getClass() != object.getClass()) return false;
         Attendance other = (Attendance) object;
         return Objects.equals(value, other.value);
+    }
+
+    private boolean isHoliday(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY
+                || dayOfWeek == DayOfWeek.SUNDAY
+                || Constants.HOLIDAY.contains(date.getDayOfMonth());
     }
 }
