@@ -4,9 +4,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AttendanceHistory {
@@ -90,7 +92,15 @@ public class AttendanceHistory {
         return crew;
     }
 
-    public Map<AttendanceStatus, Integer> calculateAttendanceStatusStatistics(final LocalDate date) {
-        return null;
+    public Map<AttendanceStatus, Integer> calculateAttendanceStatusStatistics(final LocalDate targetDate) {
+        final Map<AttendanceStatus, Integer> statistic = initStatistics();
+        findAllUntilBeforeToday(targetDate)
+                .forEach(record -> statistic.merge(record.calculateAttendanceStatus(), 1, Integer::sum));
+        return statistic;
+    }
+
+    private Map<AttendanceStatus, Integer> initStatistics() {
+        return Arrays.stream(AttendanceStatus.values())
+                .collect(Collectors.toMap(Function.identity(), status -> 0));
     }
 }
