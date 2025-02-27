@@ -41,7 +41,7 @@ public class OutputView {
         Attendances attendances = crew.getAttendances();
         System.out.println(System.lineSeparator() + String.format("이번 달 %s의 출석 기록입니다.", crew.getName()) + System.lineSeparator());
 
-        List<LocalDate> pastEducationDates = AttendanceDate.getPastEducationDates(Constants.NOW_DATE);
+        List<LocalDate> pastEducationDates = AttendanceDate.findPastEducationDates(Constants.NOW_DATE);
         for (LocalDate educationDate : pastEducationDates) {
             System.out.println(generateCrewAttendanceMessage(attendances, educationDate));
         }
@@ -62,7 +62,7 @@ public class OutputView {
                 crew.getName(),
                 crew.getAbsentCount(Constants.NOW_DATE),
                 crew.getLateCount(),
-                crew.getCrewStatus(Constants.NOW_DATE).getStatus());
+                crew.findCrewStatus(Constants.NOW_DATE).getStatus());
     }
 
     private String generateCrewAttendanceMessage(Attendances attendances, LocalDate educationDate) {

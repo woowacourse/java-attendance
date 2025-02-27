@@ -54,7 +54,7 @@ public class AttendancesTest {
                 new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 31)))
         ));
 
-        Assertions.assertThat(normalAttendances.getCrewStatue(LocalDate.of(2024, 12, 4)))
+        Assertions.assertThat(normalAttendances.findCrewStatue(LocalDate.of(2024, 12, 4)))
                 .isEqualTo(CrewStatus.WARNING);
     }
 
@@ -67,7 +67,7 @@ public class AttendancesTest {
                 new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 5)), new AttendanceTime(LocalTime.of(10, 31)))
         ));
 
-        Assertions.assertThat(normalAttendances.getCrewStatue(LocalDate.of(2024, 12, 6)))
+        Assertions.assertThat(normalAttendances.findCrewStatue(LocalDate.of(2024, 12, 6)))
                 .isEqualTo(CrewStatus.INTERVIEW);
     }
 
@@ -76,7 +76,7 @@ public class AttendancesTest {
     void countUnattendedTest() {
         Attendances noAttendances = new Attendances(List.of());
 
-        Assertions.assertThat(noAttendances.getCrewStatue(LocalDate.of(2024, 12, 10)))
+        Assertions.assertThat(noAttendances.findCrewStatue(LocalDate.of(2024, 12, 10)))
                 .isEqualTo(CrewStatus.EXPELLED);
     }
 

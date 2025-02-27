@@ -18,7 +18,7 @@ public class AttendanceDate {
         this.attendanceDate = date;
     }
 
-    public static List<LocalDate> getPastEducationDates(LocalDate nowDate) {
+    public static List<LocalDate> findPastEducationDates(LocalDate nowDate) {
         if (nowDate.isAfter(JANUARY_START_DATE)) {
             nowDate = JANUARY_START_DATE;
         }

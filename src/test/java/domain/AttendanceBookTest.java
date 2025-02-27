@@ -94,7 +94,7 @@ public class AttendanceBookTest {
     @ParameterizedTest
     @MethodSource("provideExpelledCrew")
     void findRiskOfExpulsionCrewTest(Crew crew) {
-        assertThat(crew.getCrewStatus(LocalDate.of(2024, 12, 31))).isNotEqualTo(CrewStatus.NORMAL);
+        assertThat(crew.findCrewStatus(LocalDate.of(2024, 12, 31))).isNotEqualTo(CrewStatus.NORMAL);
     }
 
     private static Stream<Arguments> provideExpelledCrew() {

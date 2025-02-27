@@ -21,7 +21,7 @@ public class CrewTest {
         ));
         Crew crew = new Crew(crewName, attendances);
 
-        assertThat(crew.getCrewStatus(LocalDate.of(2024, 12, 4))).isEqualTo(CrewStatus.WARNING);
+        assertThat(crew.findCrewStatus(LocalDate.of(2024, 12, 4))).isEqualTo(CrewStatus.WARNING);
     }
 
     @DisplayName("크루 이름 동일성 확인 테스트")

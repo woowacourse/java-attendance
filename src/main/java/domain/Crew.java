@@ -14,8 +14,8 @@ public class Crew {
         this.attendances = attendances;
     }
 
-    public CrewStatus getCrewStatus(LocalDate nowDate) {
-        return this.attendances.getCrewStatue(nowDate);
+    public CrewStatus findCrewStatus(LocalDate nowDate) {
+        return this.attendances.findCrewStatue(nowDate);
     }
 
     public boolean isSameName(String name) {
@@ -39,7 +39,7 @@ public class Crew {
     }
 
     public boolean isExpelledStatus(LocalDate nowDate) {
-        return !this.getCrewStatus(nowDate).equals(CrewStatus.NORMAL);
+        return !this.findCrewStatus(nowDate).equals(CrewStatus.NORMAL);
     }
 
     public int getLateCount() {
@@ -55,7 +55,7 @@ public class Crew {
     }
 
     public int getCrewStatusSequence() {
-        return getCrewStatus(Constants.NOW_DATE).getSequence();
+        return findCrewStatus(Constants.NOW_DATE).getSequence();
     }
 
     public String getName() {

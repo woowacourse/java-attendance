@@ -40,7 +40,7 @@ public class AttendanceDateTest {
     @DisplayName("날짜에 따른 교육 날짜들 탐색 테스트")
     @MethodSource("provideTodayDate")
     void findEducationDatesTest(LocalDate date, int expected) {
-        Assertions.assertThat(AttendanceDate.getPastEducationDates(date).size())
+        Assertions.assertThat(AttendanceDate.findPastEducationDates(date).size())
                 .isEqualTo(expected);
     }
 

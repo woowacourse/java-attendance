@@ -19,7 +19,7 @@ public class Attendances {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜에 대한 출석 기록이 존재하지 않습니다."));
     }
 
-    public CrewStatus getCrewStatue(LocalDate nowDate) {
+    public CrewStatus findCrewStatue(LocalDate nowDate) {
         return CrewStatus.checkCrewStatus(this.countLate(), this.countUnattended(nowDate));
     }
 
@@ -46,7 +46,7 @@ public class Attendances {
                 .filter(Attendance::isUnattendedOrNoShow)
                 .count();
 
-        absentCount += (AttendanceDate.getPastEducationDates(nowDate).size() - this.attendances.size());
+        absentCount += (AttendanceDate.findPastEducationDates(nowDate).size() - this.attendances.size());
         return absentCount;
     }
 
