@@ -1,16 +1,14 @@
 package model;
 
 import common.Common;
-import exception.DuplicatedAttendanceRegistrationException;
-import exception.FutureAttendanceModifyException;
+import model.exception.DuplicatedAttendanceRegistrationException;
+import model.exception.FutureAttendanceModifyException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class AttendanceHistory {
     private final List<Attendance> attendances;

@@ -1,6 +1,6 @@
 package model;
 
-import exception.HolidayAttendanceException;
+import model.exception.HolidayAttendanceException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 

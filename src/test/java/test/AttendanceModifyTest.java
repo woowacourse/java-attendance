@@ -3,8 +3,7 @@ package test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import exception.FutureAttendanceModifyException;
-import exception.HolidayAttendanceException;
+import model.exception.FutureAttendanceModifyException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import model.Attendance;
