@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -19,12 +20,21 @@ public class AttendanceRepository {
     }
 
     public void checkIn(String name, LocalDate localDate, LocalTime localTime) {
+        validateWeekDay(localDate);
         attendances.putIfAbsent(name, new ArrayList<>());
-        validateCheckIn(name, localDate);
+        validateDuplicateCheckIn(name, localDate);
         attendances.get(name).add(new Attendance(name, localDate, localTime));
     }
 
-    private void validateCheckIn(String name, LocalDate localDate) {
+    private void validateWeekDay(LocalDate localDate) {
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDate.equals(
+                LocalDate.of(2024, 12, 25))) {
+            throw new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다.");
+        }
+    }
+
+    private void validateDuplicateCheckIn(String name, LocalDate localDate) {
         if (attendances.get(name).stream()
                 .anyMatch(attendance -> attendance.getLocalDate().equals(localDate))) {
             throw new IllegalArgumentException("이미 출석한 크루입니다.");

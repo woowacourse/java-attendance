@@ -103,6 +103,18 @@ public class AttendanceTest {
             // then
             Assertions.assertThat(state.getState()).isEqualTo("결석");
         }
+    }
 
+    @Test
+    void 주말_및_공휴일에는_출석할_수_없다() {
+        // given
+        String name = "fora";
+        LocalDate localDate = LocalDate.of(2024, 12, 1);
+        LocalTime localTime = LocalTime.of(9, 55);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> {
+            repository.checkIn(name, localDate, localTime);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 }
