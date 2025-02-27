@@ -16,6 +16,13 @@ public class AttendanceBook {
     }
 
     public Attendances getAttendances(String nickname) {
-        return crewsAttendances.get(nickname);
+        if (crewsAttendances.containsKey(nickname)) {
+            return crewsAttendances.get(nickname);
+        }
+        throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
+
+    public void recordAllAbsences() {
+        crewsAttendances.forEach((nickname, attendances) -> attendances.recordAbsences());
     }
 }

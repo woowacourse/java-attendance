@@ -12,22 +12,27 @@ public enum CustomDayOfWeek {
     THURSDAY(DayOfWeek.THURSDAY, "목요일", LocalTime.of(10, 0)),
     FRIDAY(DayOfWeek.FRIDAY, "금요일", LocalTime.of(10, 0));
 
-    private final DayOfWeek day;
+    private final DayOfWeek dayOfWeek;
     private final String name;
     private final LocalTime criteriaTime;
 
-    CustomDayOfWeek(java.time.DayOfWeek day, String name, LocalTime criteriaTime) {
-        this.day = day;
+    CustomDayOfWeek(java.time.DayOfWeek dayOfWeek, String name, LocalTime criteriaTime) {
+        this.dayOfWeek = dayOfWeek;
         this.name = name;
         this.criteriaTime = criteriaTime;
     }
 
     public static LocalTime getCriteriaTime(LocalDate date) {
         return Arrays.stream(CustomDayOfWeek.values())
-                .filter(dayOfWeek -> dayOfWeek.day.equals(date.getDayOfWeek()))
+                .filter(dayOfWeek -> dayOfWeek.dayOfWeek.equals(date.getDayOfWeek()))
                 .findFirst()
                 .map(dayOfWeek -> dayOfWeek.criteriaTime)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public static Boolean isWeekDay(LocalDate date) {
+        return Arrays.stream(CustomDayOfWeek.values())
+                .anyMatch(dayOfWeek -> dayOfWeek.dayOfWeek.equals(date.getDayOfWeek()));
     }
 
 }

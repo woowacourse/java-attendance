@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,20 @@ public class Attendances {
                 .filter(attendance -> attendance.has(day))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("[ERROR] 해당일에 출석 기록이 없습니다."));
+    }
+
+    private Boolean isAlreadyAttended(LocalDate date) {
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.has(new Day(date)));
+    }
+
+    public void recordAbsences() {
+        LocalDate.of(2025, 2, 1)
+                .datesUntil(LocalDate.now())
+                .filter(CustomDayOfWeek::isWeekDay)
+                .filter(date -> !Holiday.isHoliday(date))
+                .filter(date -> !isAlreadyAttended(date))
+                .forEach(date -> add(new Attendance(new Day(date), null)));
     }
 
 

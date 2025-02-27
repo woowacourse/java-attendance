@@ -21,12 +21,18 @@ public class Attendance {
     }
 
     private void validateTime(LocalTime time) {
-        if (time.isBefore(OPERATION_START_TIME) || time.isAfter(OPERATION_END_TIME)) {
+        if (time != null && (time.isBefore(OPERATION_START_TIME) || time.isAfter(OPERATION_END_TIME))) {
             throw new IllegalStateException("[ERROR] 운영 시간이 아닙니다.");
         }
     }
 
     private void updateStatus() {
+        if (time == null) {
+            isAbsent = true;
+            isLate = false;
+            return;
+        }
+
         LocalTime criteriaTime = day.getCriteriaTime();
         if (criteriaTime.plusMinutes(ABSENT_CRITERIA_MINUTES).isBefore(time)) {
             isLate = false;

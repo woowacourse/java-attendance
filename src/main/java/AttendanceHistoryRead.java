@@ -16,4 +16,10 @@ public class AttendanceHistoryRead {
         Attendances attendances = attendanceBook.getAttendances(nickname);
         return attendances.getTotalCount() - attendances.getLateCount() - attendances.getAbsentCount();
     }
+
+    public void recordAllAbsence(AttendanceBook attendanceBook) {
+        attendanceBook.recordAllAbsences();
+    }
+
+
 }
