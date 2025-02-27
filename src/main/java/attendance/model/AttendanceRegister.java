@@ -10,11 +10,7 @@ public class AttendanceRegister {
     private final Map<String, AttendanceRecord> register = new HashMap<>();
 
     public void attend(String crewName, LocalDate attendanceDate, LocalTime attendanceTime) {
-        if (!EducationDay.isDuringEducationDay(attendanceDate)) {
-            throw new IllegalArgumentException(
-                    attendanceDate.format(DateTimeFormatter.ofPattern("MM월 dd일 EEE은 등교일이 아닙니다.")
-                    ));
-        }
+        validateDuringEducationDay(attendanceDate);
         AttendanceRecord attendanceRecord = register.getOrDefault(crewName, new AttendanceRecord());
         validateExistAttendance(attendanceDate, attendanceRecord);
         attendanceRecord.add(new AttendanceDateTime(attendanceDate, attendanceTime));
@@ -31,6 +27,14 @@ public class AttendanceRegister {
         AttendanceRecord attendanceRecord = register.get(crewName);
         AttendanceDateTime foundAttendanceDateTime = attendanceRecord.findAttendanceByDate(modifyDate);
         foundAttendanceDateTime.modifyAttendanceTime(modifyTime);
+    }
+
+    private void validateDuringEducationDay(LocalDate attendanceDate) {
+        if (!EducationDay.isDuringEducationDay(attendanceDate)) {
+            throw new IllegalArgumentException(
+                    attendanceDate.format(DateTimeFormatter.ofPattern("MM월 dd일 EEE은 등교일이 아닙니다.")
+                    ));
+        }
     }
 
     private static void validateExistAttendance(LocalDate attendanceDate, AttendanceRecord attendanceRecord) {
