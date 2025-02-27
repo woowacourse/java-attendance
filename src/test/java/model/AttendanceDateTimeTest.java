@@ -1,6 +1,7 @@
 package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.model.AttendanceDate;
 import attendance.model.AttendanceDateTime;
@@ -58,5 +59,29 @@ class AttendanceDateTimeTest {
 
         // then
         assertThat(attendanceDateTime.getAttendanceTime()).isEqualTo(time);
+    }
+
+    @Test
+    @DisplayName("운영시간 이전인 경우")
+    void 캠퍼스_운영시간이_아닌_경우_예외가_발생한다_1() {
+        // given
+
+        // when & then
+        assertThatThrownBy(() -> new AttendanceDateTime(
+                new AttendanceDate(2024, 12, 10),
+                LocalTime.of(7, 59)
+        )).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("운영시간 이후인 경우")
+    void 캠퍼스_운영시간이_아닌_경우_예외가_발생한다_2() {
+        // given
+
+        // when & then
+        assertThatThrownBy(() -> new AttendanceDateTime(
+                new AttendanceDate(2024, 12, 10),
+                LocalTime.of(23, 1)
+        )).isInstanceOf(IllegalArgumentException.class);
     }
 }
