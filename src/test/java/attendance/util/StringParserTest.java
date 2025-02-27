@@ -3,7 +3,6 @@ package attendance.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import attendance.util.StringParser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -68,10 +67,12 @@ class StringParserTest {
     @Test
     void parseLocalDateTest() {
         // Given
+        final int year = 2024;
+        final int month = 12;
         final String input = "11";
 
         // When
-        LocalDate localDate = StringParser.parseLocalDate(input);
+        LocalDate localDate = StringParser.parseLocalDate(year, month, input);
 
         // Then
         assertThat(localDate).isEqualTo(LocalDate.of(2024, 12, 11));
@@ -81,10 +82,12 @@ class StringParserTest {
     @Test
     void invalidLocalDateFormatTest() {
         // Given
+        final int year = 2024;
+        final int month = 12;
         final String input = "40";
 
         // When & Then
-        Assertions.assertThatThrownBy(() -> StringParser.parseLocalDate(input))
+        Assertions.assertThatThrownBy(() -> StringParser.parseLocalDate(year, month, input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 유효한 일자이여야합니다.");
     }
@@ -100,6 +103,18 @@ class StringParserTest {
 
         // Then
         assertThat(localDateTime).isEqualTo(LocalDateTime.of(2024, 12, 3, 10, 6));
+    }
+
+    @DisplayName("유효하지 않은 날짜와 시간 문자열이라면 예외가 발생한다")
+    @Test
+    void invalidLocalDateParseTest() {
+        // Given
+        final String input = "20241203T10:06";
+
+        // When & Then
+        Assertions.assertThatThrownBy(() -> StringParser.parseLocalDateTime(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 날짜 및 시간이 yyyy-MM-dd HH:mm 형식에 맞지 않습니다.");
     }
 
 }

@@ -27,10 +27,10 @@ public class StringParser {
         }
     }
 
-    public static LocalDate parseLocalDate(final String input) {
-        int day = parseInt(input);
+    public static LocalDate parseLocalDate(final int year, final int month, final String inputDay) {
+        int day = parseInt(inputDay);
         try {
-            return LocalDate.of(2024, 12, day);
+            return LocalDate.of(year, month, day);
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("[ERROR] 유효한 일자이여야합니다.");
         }
