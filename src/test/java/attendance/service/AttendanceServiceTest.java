@@ -5,9 +5,11 @@ import attendance.domain.AttendanceFileParser;
 import attendance.domain.AttendancePenalty;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Attendances;
+import attendance.domain.PenaltyCrew;
 import attendance.dto.AttendanceCheckDto;
 import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceInfoDto;
+import attendance.dto.PenaltyCrewDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -157,6 +159,32 @@ public class AttendanceServiceTest {
             ),
             AttendancePenalty.NONE
         );
+
+        assertThat(dto).isEqualTo(expectedDto);
+    }
+
+    @Test
+    void 제적_위험_크루_조회시_dto를_반환한다() {
+        // given
+        AttendanceService service = new AttendanceService(
+            new AttendanceFileParser("src/test/java/resources/testAttendances.csv")
+        );
+        LocalDate today = LocalDate.of(2024, 12, 5);
+
+        // when
+        List<PenaltyCrewDto> dto = service.findPenaltyCrews(today);
+
+        // then
+        List<PenaltyCrewDto> expectedDto = List.of(
+            PenaltyCrewDto.of(
+                new PenaltyCrew("빙봉", Map.of(AttendanceStatus.PRESENCE,0, AttendanceStatus.ABSENCE,3, AttendanceStatus.LATE, 0))),
+            PenaltyCrewDto.of(
+                new PenaltyCrew("빙티", Map.of(AttendanceStatus.PRESENCE,0, AttendanceStatus.ABSENCE,3, AttendanceStatus.LATE, 0))),
+            PenaltyCrewDto.of(
+                new PenaltyCrew("이든", Map.of(AttendanceStatus.PRESENCE,0, AttendanceStatus.ABSENCE,3, AttendanceStatus.LATE, 0))),
+            PenaltyCrewDto.of(
+                new PenaltyCrew("쿠키", Map.of(AttendanceStatus.PRESENCE,0, AttendanceStatus.ABSENCE,3, AttendanceStatus.LATE, 0)))
+            );
 
         assertThat(dto).isEqualTo(expectedDto);
     }

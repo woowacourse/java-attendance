@@ -27,6 +27,10 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
         return penaltyCount.getWeightedLateAndAbsencePoint();
     }
 
+    public int getLateCount() { return penaltyCount.getLateCount();}
+
+    public int getAbsenceCount() { return penaltyCount.getAbsenceCount();}
+
     @Override
     public int compareTo(PenaltyCrew o) {
         return Comparator.comparing(PenaltyCrew::getPenalty)

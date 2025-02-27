@@ -6,13 +6,16 @@ import attendance.domain.AttendanceReader;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Attendances;
 import attendance.domain.PenaltyCount;
+import attendance.domain.PenaltyCrew;
 import attendance.dto.AttendanceCheckDto;
 import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceFileDto;
 import attendance.dto.AttendanceInfoDto;
+import attendance.dto.PenaltyCrewDto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -75,5 +78,26 @@ public class AttendanceService {
                 attendance.getAttendanceDate(), attendance.getAttendanceTime(),
                 AttendanceStatus.findAttendanceStatus(attendance.getAttendanceDate(), attendance.getAttendanceTime())))
             .toList();
+    }
+
+    public List<PenaltyCrewDto> findPenaltyCrews(LocalDate today) {
+        List<String> allCrewNames = attendances.getAllCrewNames();
+
+        List<PenaltyCrew> penaltyCrews = findPenaltyOfCrews(today, allCrewNames);
+
+        return penaltyCrews.stream()
+            .filter(penaltyCrew -> penaltyCrew.getPenalty() != AttendancePenalty.NONE)
+            .sorted()
+            .map(PenaltyCrewDto::of)
+            .toList();
+    }
+
+    private List<PenaltyCrew> findPenaltyOfCrews(LocalDate today, List<String> allCrewNames) {
+        List<PenaltyCrew> penaltyCrews = new ArrayList<>();
+        for (String crewName : allCrewNames) {
+            Map<AttendanceStatus, Integer> attendanceStatusIntegerMap = attendances.countAttendanceStatus(crewName, today);
+            penaltyCrews.add(new PenaltyCrew(crewName, attendanceStatusIntegerMap));
+        }
+        return penaltyCrews;
     }
 }

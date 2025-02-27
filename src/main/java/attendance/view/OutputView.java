@@ -5,6 +5,7 @@ import attendance.domain.AttendanceStatus;
 import attendance.dto.AttendanceCheckDto;
 import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceInfoDto;
+import attendance.dto.PenaltyCrewDto;
 import attendance.utils.DateConverter;
 
 import java.util.List;
@@ -60,15 +61,25 @@ public class OutputView {
         System.out.printf("%s 대상자 입니다.%n%n", parsePenaltyToString(penalty));
     }
 
-    private String parseStatusToString(AttendanceStatus attendanceStatus) {
-        if (attendanceStatus == AttendanceStatus.ABSENCE) return "결석";
-        if (attendanceStatus == AttendanceStatus.LATE) return "지각";
-        return "출석";
+    public void printPenaltyCrews(List<PenaltyCrewDto> penaltyCrewsDto) {
+        for (PenaltyCrewDto penaltyCrewDto : penaltyCrewsDto) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                penaltyCrewDto.name(),
+                penaltyCrewDto.absenceCount(),
+                penaltyCrewDto.lateCount(),
+                parsePenaltyToString(penaltyCrewDto.penalty()));
+        }
     }
 
     private String parsePenaltyToString(AttendancePenalty penalty) {
         if (penalty == AttendancePenalty.EXPULSION) return "제적";
         if (penalty == AttendancePenalty.COUNSELING) return "면담";
         return "경고";
+    }
+
+    private String parseStatusToString(AttendanceStatus attendanceStatus) {
+        if (attendanceStatus == AttendanceStatus.ABSENCE) return "결석";
+        if (attendanceStatus == AttendanceStatus.LATE) return "지각";
+        return "출석";
     }
 }

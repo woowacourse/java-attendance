@@ -24,6 +24,14 @@ public class PenaltyCount {
         return AttendancePenalty.findPenalty(weightedLateAndAbsencePoint);
     }
 
+    public int getLateCount() {
+        return lateCount;
+    }
+
+    public int getAbsenceCount() {
+        return absenceCount;
+    }
+
     public int getWeightedLateAndAbsencePoint() {
         return weightedLateAndAbsencePoint;
     }

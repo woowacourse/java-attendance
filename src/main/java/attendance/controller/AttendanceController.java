@@ -3,12 +3,14 @@ package attendance.controller;
 import attendance.dto.AttendanceCheckDto;
 import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceInfoDto;
+import attendance.dto.PenaltyCrewDto;
 import attendance.service.AttendanceService;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class AttendanceController {
 
@@ -42,8 +44,11 @@ public class AttendanceController {
         if (option.equals(AttendanceOption.EDIT)) {
             editAttendance();
         }
-        if(option.equals(AttendanceOption.CHECK)) {
+        if (option.equals(AttendanceOption.CHECK)) {
             checkAttendance(today);
+        }
+        if (option.equals(AttendanceOption.WARNING)) {
+            findPenaltyCrews(today);
         }
     }
 
@@ -66,15 +71,20 @@ public class AttendanceController {
 
         LocalDate editAttendanceDate = inputView.readEditAttendanceDate();
         LocalTime editAttendanceTime = inputView.readEditAttendanceTime();
-        AttendanceEditDto dto = attendanceService.editAttendance(name, editAttendanceDate, editAttendanceTime);
-        outputView.printEditAttendanceResult(dto);
+        AttendanceEditDto attendanceEditDto = attendanceService.editAttendance(name, editAttendanceDate, editAttendanceTime);
+        outputView.printEditAttendanceResult(attendanceEditDto);
     }
 
     private void checkAttendance(LocalDate today) {
         String name = inputView.readAttendanceName();
         attendanceService.validateNameExists(name);
 
-        AttendanceCheckDto dto = attendanceService.checkAttendance(name, today);
-        outputView.printCheckAttendanceResult(dto);
+        AttendanceCheckDto attendanceCheckDto = attendanceService.checkAttendance(name, today);
+        outputView.printCheckAttendanceResult(attendanceCheckDto);
+    }
+
+    private void findPenaltyCrews(LocalDate today) {
+        List<PenaltyCrewDto> penaltyCrewsDto = attendanceService.findPenaltyCrews(today);
+        outputView.printPenaltyCrews(penaltyCrewsDto);
     }
 }
