@@ -1,12 +1,18 @@
 package attendance.domain;
 
+import static attendance.constant.ErrorMessage.INVALID_ATTEND_DATE;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public record AttendanceDate(
         LocalDate date
 ) {
-    public static AttendanceDate from(LocalDate date) {
+    private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
+
+    public static AttendanceDate from(final LocalDate date) {
         validate(date);
         return new AttendanceDate(date);
     }
@@ -15,11 +21,14 @@ public record AttendanceDate(
         return this.date.isEqual(date);
     }
 
-    private static void validate(LocalDate date) {
+    private static void validate(final LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY ||
-                date.isEqual(LocalDate.of(2024, 12, 25))) {
-            throw new IllegalArgumentException();
+                date.isEqual(CHRISTMAS)) {
+            throw new IllegalArgumentException(String.format(INVALID_ATTEND_DATE.getMessage(),
+                    date.getMonth(),
+                    date.getDayOfMonth(),
+                    date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
         }
     }
 

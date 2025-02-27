@@ -7,14 +7,21 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class DateTimeConverter {
-    public static LocalDateTime convertToDateTime(String inputDay, String inputTime, LocalDate date) {
+    private static final String TIME_FORMAT = "HH:mm";
+    private static final int START_MONTH_OF_YEAR = 1;
+    private static final int LAST_MONTH_OF_YEAR = 12;
+
+    private DateTimeConverter() {
+    }
+
+    public static LocalDateTime convertToDateTime(final String inputDay, final String inputTime, LocalDate date) {
         validateDay(inputDay);
-        int day =  Integer.parseInt(inputDay);
+        int day = Integer.parseInt(inputDay);
         return LocalDateTime.of(date.withDayOfMonth(day), LocalTime.parse(inputTime));
     }
 
-    public static LocalTime convertToTime(String input) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+    public static LocalTime convertToTime(final String input) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
         try {
             return LocalTime.parse(input, formatter);
         } catch (DateTimeParseException e) {
@@ -22,10 +29,10 @@ public class DateTimeConverter {
         }
     }
 
-    private static void validateDay(String inputDay) {
+    private static void validateDay(final String inputDay) {
         try {
-            int day =  Integer.parseInt(inputDay);
-            if (day < 1 || day > 12) {
+            int day = Integer.parseInt(inputDay);
+            if (day < START_MONTH_OF_YEAR || day > LAST_MONTH_OF_YEAR) {
                 throw new IllegalArgumentException("[ERROR] 올바른 날짜를 입력해주세요.");
             }
         } catch (NumberFormatException e) {

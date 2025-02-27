@@ -1,22 +1,22 @@
 package attendance.domain;
 
+import static attendance.constant.CampusOperatingRule.CAMPUS_CLOSE_HOUR;
+import static attendance.constant.CampusOperatingRule.CAMPUS_OPEN_HOUR;
+
+import attendance.constant.CampusOperatingRule;
 import java.time.LocalTime;
 
 public record AttendanceTime(
         LocalTime time
 ) {
-    public static AttendanceTime from(LocalTime time) {
+    public static AttendanceTime from(final LocalTime time) {
         validate(time);
         return new AttendanceTime(time);
     }
 
-    public AttendanceStatus checkAttendanceStatus(boolean isMonday) {
-        LocalTime absenceThreshold = LocalTime.of(10, 30);
-        LocalTime lateThreshold = LocalTime.of(10, 5);
-        if (isMonday) {
-            absenceThreshold = absenceThreshold.withHour(13);
-            lateThreshold = lateThreshold.withHour(13);
-        }
+    public AttendanceStatus checkAttendanceStatus(final boolean isMonday) {
+        LocalTime absenceThreshold = CampusOperatingRule.getAbsenceThreshold(isMonday);
+        LocalTime lateThreshold = CampusOperatingRule.getLateThreshold(isMonday);
         if (time.isAfter(absenceThreshold)) {
             return AttendanceStatus.ABSENCE;
         }
@@ -26,8 +26,8 @@ public record AttendanceTime(
         return AttendanceStatus.ATTEND;
     }
 
-    private static void validate(LocalTime time) {
-        if (time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(23, 0))) {
+    private static void validate(final LocalTime time) {
+        if (time.isBefore(CAMPUS_OPEN_HOUR.getTime()) || time.isAfter(CAMPUS_CLOSE_HOUR.getTime())) {
             throw new IllegalArgumentException();
         }
     }

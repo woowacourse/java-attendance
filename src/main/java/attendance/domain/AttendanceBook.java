@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.constant.ErrorMessage.UNREGISTERED_NICKNAME;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,11 +9,11 @@ import java.util.Map;
 public class AttendanceBook {
     private final Map<String, Attendances> crewAttendances;
 
-    public AttendanceBook(Map<String, Attendances> crewAttendances) {
+    public AttendanceBook(final Map<String, Attendances> crewAttendances) {
         this.crewAttendances = crewAttendances;
     }
 
-    public void attend(String nickname, Attendance attendance) {
+    public void attend(final String nickname, final Attendance attendance) {
         validateNickname(nickname);
         Attendances attendances = crewAttendances.get(nickname);
         attendances.add(attendance);
@@ -35,12 +37,6 @@ public class AttendanceBook {
         return attendances.findByDate(dateTime.toLocalDate());
     }
 
-    private void validateNickname(String nickname) {
-        if (!crewAttendances.containsKey(nickname)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
-    }
-
     public Map<String, Attendances> findWarningCrews() {
         Map<String, Attendances> result = new HashMap<>();
         for (String nickname : crewAttendances.keySet()) {
@@ -50,5 +46,11 @@ public class AttendanceBook {
             }
         }
         return result;
+    }
+
+    private void validateNickname(final String nickname) {
+        if (!crewAttendances.containsKey(nickname)) {
+            throw new IllegalArgumentException(UNREGISTERED_NICKNAME.getMessage());
+        }
     }
 }

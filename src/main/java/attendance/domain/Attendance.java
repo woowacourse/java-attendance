@@ -9,21 +9,25 @@ public class Attendance {
     private final AttendanceDate attendanceDate;
     private AttendanceTime attendanceTime;
 
-    public Attendance(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+    private Attendance(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime) {
         this.attendanceDate = attendanceDate;
         this.attendanceTime = attendanceTime;
     }
 
-    public static Attendance from(LocalDateTime dateTime) {
+    public static Attendance of(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime) {
+        return new Attendance(attendanceDate, attendanceTime);
+    }
+
+    public static Attendance from(final LocalDateTime dateTime) {
         return new Attendance(AttendanceDate.from(LocalDate.from(dateTime)),
                 AttendanceTime.from(LocalTime.from(dateTime)));
     }
 
-    public boolean isEqualToDate(LocalDate date) {
+    public boolean isEqualToDate(final LocalDate date) {
         return this.attendanceDate.isEqualToDate(date);
     }
 
-    public void updateTime(LocalTime time) {
+    public void updateTime(final LocalTime time) {
         this.attendanceTime = AttendanceTime.from(time);
     }
 
@@ -31,7 +35,7 @@ public class Attendance {
         return attendanceTime.checkAttendanceStatus(attendanceDate.isMonday());
     }
 
-    public boolean isSameDate(Attendance attendance) {
+    public boolean isSameDate(final Attendance attendance) {
         return this.attendanceDate.isEqualToDate(attendance.attendanceDate.date());
     }
 
