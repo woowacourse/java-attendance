@@ -31,11 +31,8 @@ class CheckInHistoryTest {
         //given
         CheckInDate checkInDate = CheckInDate.of(LocalDate.of(2024, 12, 4));
         CheckInTime checkInTime = CheckInTime.of(LocalTime.of(10, 0));
-        CheckInDateTime checkInDateTime = CheckInDateTime.of(
-                checkInDate, checkInTime
-        );
         //when
-        history.checkIn(checkInDateTime);
+        history.checkIn(checkInDate, checkInTime);
         //then
         assertThat(history.getCheckInCount()).isEqualTo(2);
     }
@@ -46,12 +43,9 @@ class CheckInHistoryTest {
         //given
         CheckInDate checkInDate = CheckInDate.of(LocalDate.of(2024, 12, 3));
         CheckInTime checkInTime = CheckInTime.of(LocalTime.of(11, 0));
-        CheckInDateTime checkInDateTime = CheckInDateTime.of(
-                checkInDate, checkInTime
-        );
         //when
         //then
-        assertThatThrownBy(() -> history.checkIn(checkInDateTime))
+        assertThatThrownBy(() -> history.checkIn(checkInDate, checkInTime))
                 .isInstanceOf(AppException.class)
                 .hasMessageContaining(AppException.PREFIX);
     }
