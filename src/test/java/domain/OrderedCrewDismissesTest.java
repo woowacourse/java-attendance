@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 import strategy.TestAttendanceCurrentDateGenerateStrategy;
 
-public class CrewDismissesTest {
+public class OrderedCrewDismissesTest {
 
     private static CrewAttendances crewAttendances;
     private static TestAttendanceCurrentDateGenerateStrategy testAttendanceCurrentDateGenerateStrategy;

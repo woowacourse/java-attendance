@@ -9,7 +9,7 @@ public class CrewName {
     private static final String INVALID_NAME_LENGTH = "닉네임은 2-4글자만 허용됩니다.";
     private static final int MIN_NAME_LENGTH = 2;
     private static final int MAX_NAME_LENGTH = 4;
-    
+
     private final String nickname;
 
     public CrewName(String nickname) {
@@ -41,5 +41,9 @@ public class CrewName {
     @Override
     public int hashCode() {
         return Objects.hash(nickname);
+    }
+
+    public String nickname() {
+        return nickname;
     }
 }

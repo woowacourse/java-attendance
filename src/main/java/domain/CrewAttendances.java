@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import strategy.CurrentDateGenerateStrategy;
 
 public class CrewAttendances {
@@ -63,5 +64,12 @@ public class CrewAttendances {
     public boolean isExistAttendance(String nickname) {
         CrewName crewName = new CrewName(nickname);
         return crewAttendances.containsKey(crewName);
+    }
+
+    public List<String> nicknames() {
+        return this.crewAttendances.keySet()
+                .stream()
+                .map(CrewName::nickname)
+                .collect(Collectors.toList());
     }
 }

@@ -29,6 +29,13 @@ public class AttendanceTime {
         schoolAttendanceStartTime = LocalTime.of(NORMAL_SCHOOL_START_HOUR, NORMAL_SCHOOL_START_MINI);
     }
 
+    public static boolean isValidAttendanceTime(LocalTime attendanceTime) {
+        if (attendanceTime.isBefore(SCHOOL_START_HOUR) || attendanceTime.isAfter(SCHOOL_CLOSE_TIME)) {
+            return false;
+        }
+        return true;
+    }
+
     private void validateAttendanceTime(LocalTime attendanceTime) {
         if (attendanceTime.isBefore(SCHOOL_START_HOUR)) {
             throw new AttendanceException(SCHOOL_DOENST_OPEN);

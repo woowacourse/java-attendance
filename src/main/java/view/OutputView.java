@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import view.dto.AttendanceHistoryDto;
+import view.dto.CrewDismissHistoryDto;
 
 public class OutputView {
     private static final String INPUT_METHOD = "기능을 선택해 주세요.\n1. 출석 확인\n"
@@ -39,7 +41,8 @@ public class OutputView {
             + "지각: %d회\n"
             + "결석: %d회";
     private static final String DISMISS_STATUS_FORMAT = "%s 대상자입니다.";
-    private static final String CREW_ATTENDANCE_HISTORY_START_FORMAT = "이번 달 %s의 출석 기록입니다.";
+    private static final String CREW_ATTENDANCE_HISTORY_START_FORMAT = "이번 달 %s의 출석 기록입니다.\n";
+    private static final String CREW_DISMISS_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)\n";
 
 
     public void printError(String errorMessage) {
@@ -136,6 +139,18 @@ public class OutputView {
             return dateTime.format(ABSENCE_DATE_DAY_WEEK_FORMATTER);
         }
         return dateTime.format(DATE_DAY_WEEK_FORMATTER);
+    }
+
+    public void printCrewDismisses(List<CrewDismissHistoryDto> crewDismissHistoryDtos) {
+        StringBuilder crewDismissesHistoryBuilder = new StringBuilder();
+        for (CrewDismissHistoryDto crewDismissHistoryDto : crewDismissHistoryDtos) {
+            String nickname = crewDismissHistoryDto.crewNickname();
+            int absence = crewDismissHistoryDto.absence();
+            int late = crewDismissHistoryDto.late();
+            String status = crewDismissHistoryDto.attendanceStatus();
+            crewDismissesHistoryBuilder.append(String.format(CREW_DISMISS_FORMAT, nickname, absence, late, status));
+        }
+        println(crewDismissesHistoryBuilder.toString());
     }
 }
 

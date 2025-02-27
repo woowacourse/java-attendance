@@ -7,21 +7,27 @@ import domain.CrewAttendance;
 import domain.CrewAttendanceHistories;
 import domain.CrewAttendances;
 import domain.CrewDismiss;
+import domain.CrewDismissHistory;
 import domain.CrewName;
+import domain.DismissStatus;
 import domain.SystemTimeCrewAttendanceHistories;
 import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import strategy.AttendanceCurrentDateGenerateStrategy;
-import view.AttendanceHistoryDto;
 import view.InputMethod;
 import view.InputView;
 import view.OutputView;
+import view.dto.AttendanceHistoryDto;
+import view.dto.CrewDismissHistoryDto;
 
 public class AttendanceController {
 
@@ -68,9 +74,38 @@ public class AttendanceController {
             case ATTENDANCE -> handleAddAttendance();
             case MODIFY -> handleModify();
             case ATTENDANCE_HISTORY -> handleAttendanceHistory();
-//            case DISMISS_HISTORY -> handleInput(handleDismissHistory());
+            case DISMISS_HISTORY -> handleDismissHistory();
             default -> throw new AttendanceException(NOT_SUPPORTED_METHOD);
         }
+    }
+
+    private void handleDismissHistory() {
+        List<CrewDismissHistory> crewDismisses = orderedDismissHistory();
+        outputView.printCrewDismisses(crewDismisses.stream()
+                .map(CrewDismissHistoryDto::from)
+                .collect(Collectors.toList()));
+    }
+
+    private List<CrewDismissHistory> orderedDismissHistory() {
+        List<String> crewNicknames = crewAttendances.nicknames();
+        List<CrewDismissHistory> crewDismisses = new ArrayList<>();
+        for (String crewNickname : crewNicknames) {
+            CrewAttendanceHistories crewAttendanceHistories = crewAttendances.crewAttendancesHistory(crewNickname);
+            SystemTimeCrewAttendanceHistories systemTimeCrewAttendanceHistories = new SystemTimeCrewAttendanceHistories(
+                    crewAttendanceHistories);
+            addDismissHistory(crewNickname, crewDismisses, systemTimeCrewAttendanceHistories);
+        }
+        Collections.sort(crewDismisses);
+        return crewDismisses;
+    }
+
+    private static void addDismissHistory(String crewNickname, List<CrewDismissHistory> crewDismisses,
+                                          SystemTimeCrewAttendanceHistories systemTimeCrewAttendanceHistories) {
+        CrewDismiss crewDismiss = systemTimeCrewAttendanceHistories.crewDismiss();
+        if (crewDismiss.dismissStatus() == DismissStatus.ELSE) {
+            return;
+        }
+        crewDismisses.add(new CrewDismissHistory(crewNickname, crewDismiss));
     }
 
     private void handleAttendanceHistory() {
@@ -91,7 +126,6 @@ public class AttendanceController {
         List<AttendanceHistoryDto> attendanceHistoryDtos = AttendanceHistoryDto.from(dateCrewAttendance);
         outputView.printCrewAttendanceHistory(attendanceHistoryDtos, crewNickname);
     }
-
 
     private void handleModify() {
         String crewNickname = handleInput(this::handleModifyAttendanceNickname);
