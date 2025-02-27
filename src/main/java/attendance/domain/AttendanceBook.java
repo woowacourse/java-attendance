@@ -27,7 +27,7 @@ public class AttendanceBook {
         return attendance;
     }
 
-    public Attendances findByNickname(String nickname) {
+    public Attendances findByNickname(final String nickname) {
         validateNickname(nickname);
         return crewAttendances.get(nickname);
     }

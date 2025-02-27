@@ -10,7 +10,7 @@ public record AttendancesResponse(
         int lateCount,
         int absenceCount
 ) {
-    public static AttendancesResponse of(String nickname, Attendances attendances) {
+    public static AttendancesResponse of(final String nickname, final Attendances attendances) {
         return new AttendancesResponse(
                 nickname,
                 attendances.getAttendances()
