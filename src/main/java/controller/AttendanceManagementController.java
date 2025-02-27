@@ -52,7 +52,7 @@ public class AttendanceManagementController {
     }
 
     public Students updateStudentAttendanceRecord() {
-        Map<String, List<LocalDateTime>> studentRecordRepository = FileInput.createStudentRepository();
+        Map<String, List<LocalDateTime>> studentRecordRepository = FileInput.readFileAndCreateStudentRepository();
         List<Student> students = new ArrayList<>();
         for (String name : studentRecordRepository.keySet()) {
             StudentAttendanceHistory studentAttendanceHistory = new StudentAttendanceHistory(studentRecordRepository.get(name));
