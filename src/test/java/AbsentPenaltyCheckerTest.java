@@ -12,7 +12,7 @@ public class AbsentPenaltyCheckerTest {
         final var absentCount = 2;
 
         // when
-        final var absentPenalty = checker.check(absentCount);
+        final var absentPenalty = checker.determine(absentCount);
 
         // then
         Assertions.assertThat(absentPenalty)
@@ -27,7 +27,7 @@ public class AbsentPenaltyCheckerTest {
         final var absentCount = 3;
 
         // when
-        final var absentPenalty = checker.check(absentCount);
+        final var absentPenalty = checker.determine(absentCount);
 
         // then
         Assertions.assertThat(absentPenalty)
@@ -42,7 +42,7 @@ public class AbsentPenaltyCheckerTest {
         final var absentCount = 6;
 
         // when
-        final var absentPenalty = checker.check(absentCount);
+        final var absentPenalty = checker.determine(absentCount);
 
         // then
         Assertions.assertThat(absentPenalty)
@@ -57,7 +57,7 @@ public class AbsentPenaltyCheckerTest {
         final var absentCount = 1;
 
         // when
-        final var absentPenalty = checker.check(absentCount);
+        final var absentPenalty = checker.determine(absentCount);
 
         // then
         Assertions.assertThat(absentPenalty)

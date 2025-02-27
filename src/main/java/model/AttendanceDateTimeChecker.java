@@ -13,7 +13,7 @@ public class AttendanceDateTimeChecker {
     private static final int CRITERION_MINUTE_FOR_LATE = 5;
     private static final int CRITERION_MINUTE_FOR_ABSENT = 30;
 
-    public AttendPolicy attendanceCheck(LocalDate date, LocalTime time) {
+    public AttendPolicy determine(LocalDate date, LocalTime time) {
         int hour = time.getHour();
         int minute = time.getMinute();
 

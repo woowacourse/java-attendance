@@ -1,10 +1,6 @@
 public class AbsentPenaltyChecker {
 
-    public AbsentPenalty check(int absentCount) {
-        if (absentCount < 2) {
-            return AbsentPenalty.NONE;
-        }
-
+    public AbsentPenalty determine(int absentCount) {
         if (absentCount > 5) {
             return AbsentPenalty.DISMISSAL;
         }
@@ -13,6 +9,10 @@ public class AbsentPenaltyChecker {
             return AbsentPenalty.INTERVIEW;
         }
 
-        return AbsentPenalty.WARNING;
+        if (absentCount == 2) {
+            return AbsentPenalty.WARNING;
+        }
+
+        return AbsentPenalty.NONE;
     }
 }
