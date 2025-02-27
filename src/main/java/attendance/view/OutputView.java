@@ -44,7 +44,7 @@ public class OutputView {
         System.out.printf("%s (%s)", dateTime.format(formatter), status.getMessage());
     }
 
-    public void printAttendancesByCrew(AttendancesResponse response) {
+    public void printAttendancesByCrew(final AttendancesResponse response) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", response.nickname());
         response.attendances()
                 .forEach(this::printAttendResult);
@@ -53,7 +53,7 @@ public class OutputView {
         System.out.printf("%s: %s회\n", AttendanceStatus.ABSENCE.getMessage(), response.absenceCount());
     }
 
-    public void printWarning(Warning warning) {
+    public void printWarning(final Warning warning) {
         System.out.printf("%s 대상자입니다.\n", warning.getMessage());
     }
 
@@ -74,7 +74,7 @@ public class OutputView {
         }
     }
 
-    public void printErrorMessage(String massage) {
+    public void printErrorMessage(final String massage) {
         System.out.println(massage);
     }
 }

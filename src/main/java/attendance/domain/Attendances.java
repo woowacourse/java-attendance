@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Attendances {
+    private static final int LATE_TO_ABSENCE_UNIT = 3;
+
     private final List<Attendance> attendances;
 
     public Attendances(List<Attendance> attendances) {
@@ -42,14 +44,14 @@ public class Attendances {
     }
 
     public Warning calculateWarning() {
-        int countTotalAbsence = countAbsence() + countLate() / 3;
-        if (countTotalAbsence > 5) {
+        int totalAbsenceCount = countAbsence() + countLate() / LATE_TO_ABSENCE_UNIT;
+        if (totalAbsenceCount > 5) {
             return Warning.EXPULSION;
         }
-        if (countTotalAbsence >= 3) {
+        if (totalAbsenceCount >= 3) {
             return Warning.INTERVIEW;
         }
-        if (countTotalAbsence >= 2) {
+        if (totalAbsenceCount >= 2) {
             return Warning.Warning;
         }
         return Warning.NONE;
