@@ -57,7 +57,7 @@ public class OutputView {
         System.out.printf("%s 대상자입니다.\n", warning.getMessage());
     }
 
-    public void printWarningCrews(WarningCrewsResponse response) {
+    public void printWarningCrews(final WarningCrewsResponse response) {
         List<WarningCrew> warningCrews = response.warningCrews()
                 .stream()
                 .sorted(Comparator.comparing(WarningCrew::absenceCount)
