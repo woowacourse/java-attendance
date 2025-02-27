@@ -159,4 +159,18 @@ public class AttendanceTimeCheckTest {
         Assertions.assertThatThrownBy(() -> checker.attendanceCheck(today, attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("운영시간 후에는 출석할 수 없다.")
+    @Test
+    void check12() {
+        // given
+        AttendanceTimeChecker checker = new AttendanceTimeChecker();
+        LocalDate today = LocalDate.of(2024, 12, 3);
+        LocalTime attendanceTime = LocalTime.of(23, 1);
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(today, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
