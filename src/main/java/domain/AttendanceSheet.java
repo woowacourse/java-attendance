@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +56,7 @@ public class AttendanceSheet {
     public Map<AttendanceState, Long> countAttendanceState(String nickname) {
         Map<AttendanceState, Long> counts = attendances.stream()
                 .filter(attendance -> attendance.isSameNickname(nickname))
-                .collect(groupingBy(Attendance::getState, () -> new EnumMap<>(AttendanceState.class), counting()));
+                .collect(groupingBy(Attendance::getState, counting()));
 
         Arrays.stream(AttendanceState.values())
                 .forEach(state -> counts.putIfAbsent(state, 0L));
@@ -80,8 +79,12 @@ public class AttendanceSheet {
 
     public Map<String, Map<AttendanceState, Long>> countAttendancesState() {
         return attendances.stream()
-                .collect(groupingBy(Attendance::getNickname,
-                        groupingBy(Attendance::getState, counting())));
+                .collect(groupingBy(Attendance::getNickname))
+                .keySet().stream()
+                .collect(toMap(
+                        nickname -> nickname,
+                        this::countAttendanceState
+                ));
     }
 
 }
