@@ -35,4 +35,8 @@ public class Student {
                 .filter(record -> record.getValue().equals(attendanceStatus))
                 .count();
     }
+
+    public long convertTardiesToAbsence() {
+        return findAttendanceStatusCount(AttendanceStatus.LATE)/3;
+    }
 }
