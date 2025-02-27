@@ -12,6 +12,10 @@ public class AttendanceDate {
         this.date = date;
     }
 
+    public LocalDate getValue() {
+        return date;
+    }
+
     // TODO: 크리스마스 예외처리
     private void validateDate(LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();

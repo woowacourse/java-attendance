@@ -2,23 +2,22 @@ import exception.DuplicateAttendanceException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AttendanceStorage {
-    private final Map<AttendanceDate, AttendanceTime> attendances;
+    private final List<Attendance> attendances;
 
     public AttendanceStorage() {
-        this.attendances = new HashMap<>();
+        this.attendances = new ArrayList<>();
     }
 
     public Attendance register(LocalDate date, LocalTime time) {
-        AttendanceDate enterDate = new AttendanceDate(date);
-        if (attendances.containsKey(enterDate)) {
+        Attendance attendance = new Attendance(date, time);
+        if (attendances.contains(attendance)) {
             throw new DuplicateAttendanceException();
         }
-        AttendanceTime enterTime = new AttendanceTime(time);
-        attendances.put(enterDate, enterTime);
-        return new Attendance(date, time);
+        attendances.add(attendance);
+        return attendance;
     }
 }

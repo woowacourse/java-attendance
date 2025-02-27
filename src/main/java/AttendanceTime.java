@@ -13,6 +13,10 @@ public class AttendanceTime {
         this.time = time;
     }
 
+    public LocalTime getValue() {
+        return time;
+    }
+
     private void validateTime(LocalTime time) {
         if (time.isBefore(OPERATING_START) || time.isAfter(OPERATING_END)) {
             throw new NotOperatingTimeException();
