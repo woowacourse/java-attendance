@@ -3,6 +3,7 @@ package attendance.view;
 import attendance.controller.MenuCommand;
 import attendance.utility.DateTimeUtility;
 import attendance.view.message.InputMessage;
+import attendance.view.processor.InputPreprocessor;
 import attendance.view.validator.InputValidator;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,44 +21,42 @@ public class InputView {
         String dateContent = DateTimeUtility.formatDateTime(now);
         String menuContent = String.format(InputMessage.MENU.getContent(), dateContent);
         System.out.println(menuContent);
-        String input = readNotBlankInput();
+        String input = readInput();
         return MenuCommand.parse(input);
     }
 
     public String readNickname() {
         System.out.println(InputMessage.NICKNAME.getContent());
-        String input = readNotBlankInput();
-        return input;
+        return readInput();
     }
 
     public LocalTime readArrivalTime() {
         System.out.println(InputMessage.ARRIVAL_TIME.getContent());
-        String input = readNotBlankInput();
+        String input = readInput();
         return DateTimeUtility.parseTimeByDefault(input);
     }
 
     public String readNicknameForUpdate() {
         System.out.println(InputMessage.NICKNAME_FOR_UPDATE.getContent());
-        String input = readNotBlankInput();
-        return input;
+        return readInput();
     }
 
     public int readDayForUpdate() {
         System.out.println(InputMessage.DAY_FOR_UPDATE.getContent());
-        String input = readNotBlankInput();
+        String input = readInput();
         InputValidator.validateNonNumeric(input);
         return Integer.parseInt(input);
     }
 
     public LocalTime readArrivalTimeForUpdate() {
         System.out.println(InputMessage.TIME_FOR_UPDATE.getContent());
-        String input = readNotBlankInput();
+        String input = readInput();
         return DateTimeUtility.parseTimeByDefault(input);
     }
 
-    private String readNotBlankInput() {
+    private String readInput() {
         String input = scanner.nextLine();
         InputValidator.validateBlank(input);
-        return input;
+        return InputPreprocessor.removeSideSpace(input);
     }
 }
