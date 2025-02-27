@@ -1,5 +1,7 @@
 package attendance.view;
 
+import java.time.LocalTime;
+
 import attendance.domain.AttendanceStatus;
 import attendance.dto.AttendanceHistoryResponse;
 import attendance.dto.AttendanceResponse;
@@ -28,20 +30,16 @@ public class OutputView {
         );
     }
 
-    // TODO : 삼항연산자 제거
-    // TODO : forEach 제거
     public static void attendanceHistoryResponse(AttendanceHistoryResponse response) {
         System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", response.name());
-        response.histories().forEach(history -> {
+        for (var history : response.histories()) {
             if (history.status() == AttendanceStatus.DAY_OFF) {
-                return;
+                continue;
             }
-
-            System.out.printf("%s %s (%s)%n",
-                history.date().format(DateTimeUtil.DATE_FORMATTER),
-                history.time() == null ? "--:--" : history.time().format(DateTimeUtil.TIME_FORMATTER),
-                history.status().getName());
-        });
+            System.out.printf("%s", history.date().format(DateTimeUtil.DATE_FORMATTER));
+            System.out.printf(" %s " , convertToTimeFormat(history.time()));
+            System.out.printf("(%s)%n", history.status().getName());
+        }
         System.out.println();
         System.out.printf("""
                 출석: %d회
@@ -56,17 +54,24 @@ public class OutputView {
         }
     }
 
+    private static String convertToTimeFormat(LocalTime time) {
+        if (time == null) {
+            return "--:--";
+        }
+        return time.format(DateTimeUtil.TIME_FORMATTER);
+    }
+
     public static void riskCrewsResponse(RiskCrewsResponse response) {
         System.out.printf("%n제적 위험자 조회 결과%n");
         response.crews().stream()
             .sorted()
             .forEach(crew ->
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
-                crew.name(),
-                crew.statistics().get(AttendanceStatus.ABSENCE),
-                crew.statistics().get(AttendanceStatus.LATENESS),
-                crew.risk().getName()
-            ));
+                System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                    crew.name(),
+                    crew.statistics().get(AttendanceStatus.ABSENCE),
+                    crew.statistics().get(AttendanceStatus.LATENESS),
+                    crew.risk().getName()
+                ));
         System.out.println();
     }
 
