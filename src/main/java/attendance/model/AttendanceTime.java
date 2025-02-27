@@ -6,8 +6,8 @@ import java.time.LocalTime;
 
 public class AttendanceTime {
     private final LocalDate date;
-    private final int hour;
-    private final int minute;
+    private int hour;
+    private int minute;
 
     private static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
     private static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
@@ -53,7 +53,20 @@ public class AttendanceTime {
     }
 
     public boolean isSameDay(LocalDate localDate) {
-        
+
         return date.isEqual(localDate);
+    }
+
+    public void modify(final int targetHour, final int targetMinute) {
+        this.hour = targetHour;
+        this.minute = targetMinute;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public int getMinute() {
+        return minute;
     }
 }
