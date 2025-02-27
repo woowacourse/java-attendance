@@ -4,6 +4,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 public class AttendanceRegister {
     private final Map<String, AttendanceRecord> register = new HashMap<>();
@@ -54,5 +56,13 @@ public class AttendanceRegister {
         if (!register.get(crewName).containsAttendanceDateTimeByDate(modifyDate)) {
             throw new IllegalArgumentException("출석내역이 없는 날짜입니다.");
         }
+    }
+
+    public AttendanceRecord findAttendanceRecordByCrewName(String crewName) {
+        return register.get(crewName);
+    }
+
+    public Stream<Entry<String, AttendanceRecord>> entryStream() {
+        return register.entrySet().stream();
     }
 }
