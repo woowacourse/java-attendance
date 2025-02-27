@@ -22,7 +22,7 @@ public enum Penalty {
         if (attendanceCount.absentCount() >= COUNSELING_CONDITION) {
             return Penalty.COUNSELING;
         }
-        if (attendanceCount.absentCount() >= 2) {
+        if (attendanceCount.absentCount() >= WARNING_CONDITION) {
             return Penalty.WARNING;
         }
         return null;

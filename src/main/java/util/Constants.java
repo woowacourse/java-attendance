@@ -17,4 +17,5 @@ public class Constants {
 
     public static final int EXPULSION_CONDITION = 6;
     public static final int COUNSELING_CONDITION = 3;
+    public static final int WARNING_CONDITION = 2;
 }
