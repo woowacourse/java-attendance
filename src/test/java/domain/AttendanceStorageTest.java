@@ -136,7 +136,7 @@ class AttendanceStorageTest {
         storage.add(crew);
         storage.add(attendanceHistory);
 
-        Assertions.assertThat(storage.getAllHistoriesFrom(crew).size()).isEqualTo(1);
+        Assertions.assertThat(storage.getAllHistoriesOf(crew, 30).size()).isEqualTo(1);
     }
 
     @Test
@@ -147,6 +147,6 @@ class AttendanceStorageTest {
         storage.add(crew);
         storage.add(attendanceHistory);
 
-        Assertions.assertThat(storage.getAllHistoriesFrom(Crew.from("히로")).size()).isEqualTo(0);
+        Assertions.assertThat(storage.getAllHistoriesOf(Crew.from("히로"), 30).size()).isEqualTo(0);
     }
 }
