@@ -36,6 +36,10 @@ public class AttendanceStatistic {
         return PenaltyStatus.findByAttendanceCount(lateCount, absenceCount);
     }
 
+    public AttendanceHistory getAttendanceHistory() {
+        return this.target;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
@@ -51,9 +55,5 @@ public class AttendanceStatistic {
     @Override
     public int hashCode() {
         return Objects.hashCode(target);
-    }
-
-    public AttendanceHistory getAttendanceHistory() {
-        return null;
     }
 }
