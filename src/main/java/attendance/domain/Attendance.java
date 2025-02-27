@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class Attendance {
 
@@ -20,5 +21,23 @@ public class Attendance {
     public Attendance modifyAttendanceTime(LocalTime modifyTime) {
         attendanceTime.modify(modifyTime);
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attendance that = (Attendance) o;
+        return Objects.equals(crewName, that.crewName) &&
+                attendanceTime.isSameLocalDate(that.attendanceTime.getLocalDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(crewName, attendanceTime.getLocalDate());
     }
 }

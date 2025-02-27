@@ -40,4 +40,8 @@ public class Time {
                 .withHour(modifyTime.getHour())
                 .withMinute(modifyTime.getMinute());
     }
+
+    public LocalDate getLocalDate() {
+        return attendanceTime.toLocalDate();
+    }
 }
