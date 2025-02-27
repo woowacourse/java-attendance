@@ -78,17 +78,13 @@ public class AttendanceHistory {
                 .collect(Collectors.toList());
     }
 
-    private boolean isAttendanceDay(final LocalDate date) {
-        final DayOfWeek dayOfWeek = date.getDayOfWeek();
+    private boolean isAttendanceDay(final LocalDate targetDate) {
+        final DayOfWeek dayOfWeek = targetDate.getDayOfWeek();
         if (DayOfWeek.SATURDAY == dayOfWeek || DayOfWeek.SUNDAY == dayOfWeek
-                || (date.getMonthValue() == CHRISTMAS_MONTH && date.getDayOfMonth() == CHRISTMAS_MONTH_OF_DAY)) {
+                || (targetDate.getMonthValue() == CHRISTMAS_MONTH && targetDate.getDayOfMonth() == CHRISTMAS_MONTH_OF_DAY)) {
             return false;
         }
         return true;
-    }
-
-    public Crew getCrew() {
-        return crew;
     }
 
     public Map<AttendanceStatus, Integer> calculateAttendanceStatusStatistics(final LocalDate targetDate) {
@@ -118,5 +114,9 @@ public class AttendanceHistory {
     private int calculateAbsenceCountConsideredThreeLateToAbsence(final LocalDate targetDate) {
         final Map<AttendanceStatus, Integer> statistics = calculateAttendanceStatusStatistics(targetDate);
         return statistics.get(AttendanceStatus.ABSENCE) + statistics.get(AttendanceStatus.LATE) / 3;
+    }
+
+    public Crew getCrew() {
+        return crew;
     }
 }
