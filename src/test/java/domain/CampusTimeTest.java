@@ -101,6 +101,26 @@ class CampusTimeTest {
         assertThat(result2).isTrue();
     }
 
+    @Test
+    void 캠퍼스_시간_이전의_시간일_시_예외를_발생한다() {
+        // given
+        String inputTime = "23:01";
 
+        // when // then
+        assertThatThrownBy(() -> CampusTime.from(inputTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 캠퍼스 운영 시간은 08:00 ~ 23:00 입니다.");
+    }
+
+    @Test
+    void 캠퍼스_시간_이후의_시간일_시_예외를_발생한다() {
+        // given
+        String inputTime = "07:59";
+
+        // when // then
+        assertThatThrownBy(() -> CampusTime.from(inputTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 캠퍼스 운영 시간은 08:00 ~ 23:00 입니다.");
+    }
 
 }
