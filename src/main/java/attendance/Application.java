@@ -110,6 +110,7 @@ public class Application {
             return;
         }
         Attendance modifiedAttendance = attendanceManager.modifyAttendance(crew, dateToModify, modificationTime);
+        OutputView.printAttendanceModificationResult(existingAttendance.get(), modifiedAttendance);
     }
 
     private static void checkAttendanceHistory() {

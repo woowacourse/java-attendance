@@ -44,4 +44,25 @@ public class OutputView {
     public static void printNoAttendanceToModify() {
         System.out.println("[ERROR] 수정할 출석 기록이 없습니다.");
     }
+
+    public static void printAttendanceModificationResult(
+            final Attendance beforeAttendance,
+            final Attendance afterAttendance
+    ) {
+        LocalDate attendanceDate = beforeAttendance.getDate();
+        DayOfWeek attendanceDay = attendanceDate.getDayOfWeek();
+        LocalTime beforeAttendanceTime = beforeAttendance.getTime();
+        LocalTime afterAttendanceTime = afterAttendance.getTime();
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
+                attendanceDate.getMonthValue(),
+                attendanceDate.getDayOfMonth(),
+                attendanceDay.getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                beforeAttendanceTime.getHour(),
+                beforeAttendanceTime.getMinute(),
+                beforeAttendance.getStatus(),
+                afterAttendanceTime.getHour(),
+                afterAttendanceTime.getMinute(),
+                afterAttendance.getStatus()
+        );
+    }
 }
