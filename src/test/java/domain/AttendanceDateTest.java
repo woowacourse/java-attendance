@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -41,5 +42,17 @@ class AttendanceDateTest {
                 () -> assertThatCode(() -> AttendanceDate.of(weekday, attendancePolicy))
                         .doesNotThrowAnyException()
         );
+    }
+
+    @Test
+    @DisplayName("내부 값이 같다면, 같은 출석 날짜으로 취급한다.")
+    void treatedAsTheSameObjectIfValuesAreTheSame() {
+        // given
+        AttendanceDate attendanceDate1 = AttendanceDate.of(LocalDate.of(2024, 12, 13), attendancePolicy);
+        AttendanceDate attendanceDate2 = AttendanceDate.of(LocalDate.of(2024, 12, 13), attendancePolicy);
+
+        // when
+        // then
+        assertThat(attendanceDate1).isEqualTo(attendanceDate2);
     }
 }

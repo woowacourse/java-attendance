@@ -4,6 +4,7 @@ import domain.policy.AttendancePolicy;
 import util.FormatUtil;
 
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class AttendanceTime {
 
@@ -31,5 +32,17 @@ public class AttendanceTime {
 
     public LocalTime toLocalTime() {
         return time;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        AttendanceTime that = (AttendanceTime) o;
+        return Objects.equals(time, that.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(time);
     }
 }

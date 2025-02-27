@@ -27,7 +27,7 @@ class NicknameTest {
 
     @Test
     @DisplayName("닉네임은 값이 같다면 같은 객체로 취급한다.")
-    void nicknameIsVO() {
+    void treatedAsTheSameObjectIfValuesAreTheSame() {
         // given
         String san1 = "강산";
         String san2 = "강산";

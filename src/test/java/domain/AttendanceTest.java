@@ -50,4 +50,22 @@ class AttendanceTest {
                         .isEqualTo(AttendanceStateRule.ABSENT)
         );
     }
+
+    @Test
+    @DisplayName("내부 값이 같다면, 같은 출석으로 취급한다.")
+    void treatedAsTheSameObjectIfValuesAreTheSame() {
+        // given
+        AttendanceDate attendanceDate1 = AttendanceDate.of(LocalDate.of(2024, 12, 13), attendancePolicy);
+        AttendanceDate attendanceDate2 = AttendanceDate.of(LocalDate.of(2024, 12, 13), attendancePolicy);
+
+        AttendanceTime attendanceTime1 = AttendanceTime.of(LocalTime.of(10, 10), attendancePolicy);
+        AttendanceTime attendanceTime2 = AttendanceTime.of(LocalTime.of(10, 10), attendancePolicy);
+
+        Attendance attendance1 = Attendance.of(attendanceDate1, attendanceTime1);
+        Attendance attendance2 = Attendance.of(attendanceDate2, attendanceTime2);
+
+        // when
+        // then
+        assertThat(attendance1).isEqualTo(attendance2);
+    }
 }
