@@ -49,8 +49,7 @@ public class AttendanceRepository {
 
     private void validateWeekDay(LocalDate localDate) {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDate.equals(
-                LocalDate.of(2024, 12, 25))) {
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || Holiday.isHoliday(localDate)) {
             throw new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다.");
         }
     }

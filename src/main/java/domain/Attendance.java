@@ -6,7 +6,7 @@ import java.time.LocalTime;
 public class Attendance {
     private final String name;
     private final LocalDate localDate;
-    private LocalTime localTime;
+    private final LocalTime localTime;
 
     public Attendance(String name, LocalDate localDate, LocalTime localTime) {
         this.name = name;
