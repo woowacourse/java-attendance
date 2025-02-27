@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Attendance {
 
@@ -18,5 +19,22 @@ public class Attendance {
 
     public boolean compareByCrewAndTime(Crew otherCrew, LocalDate day) {
         return crew.equals(otherCrew) && attendanceTime.isIn(day);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attendance that = (Attendance) o;
+        return Objects.equals(crew, that.crew) && Objects.equals(attendanceTime, that.attendanceTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(crew, attendanceTime);
     }
 }

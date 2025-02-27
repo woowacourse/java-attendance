@@ -1,7 +1,9 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Attendances {
 
@@ -20,6 +22,10 @@ public class Attendances {
         if (attendances.stream().anyMatch(attendance -> attendance.isSameCrewAndTime(newAttendance))) {
             throw new IllegalArgumentException("출석이 이미 존재합니다.");
         }
+    }
+
+    public Optional<Attendance> findByCrewAndDate(Crew crew, LocalDate day) {
+        return attendances.stream().filter(attendance -> attendance.compareByCrewAndTime(crew, day)).findFirst();
     }
 
     @Override
