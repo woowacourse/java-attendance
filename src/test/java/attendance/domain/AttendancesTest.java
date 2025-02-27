@@ -82,7 +82,7 @@ class AttendancesTest {
         String crewName = "체체";
 
         // when
-        List<Attendance> currentAttendances = attendances.findAttendancesByCrewName(crewName);
+        List<Attendance> currentAttendances = attendances.findAttendancesByCrewName(crewName, 2025, 2);
 
         // then
         assertThat(currentAttendances.size()).isEqualTo(1);

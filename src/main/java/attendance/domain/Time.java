@@ -34,6 +34,10 @@ public class Time {
                 && this.attendanceTime.getDayOfMonth() == time.getDayOfMonth();
     }
 
+    public boolean isSameYearAndMonth(int year, int month) {
+        return this.attendanceTime.getYear() == year
+                && this.attendanceTime.getMonthValue() == month;
+    }
 
     public void modify(LocalTime modifyTime) {
         attendanceTime = attendanceTime

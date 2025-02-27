@@ -23,6 +23,14 @@ public class Attendance {
         return this;
     }
 
+    public boolean isSameCrewName(String crewName) {
+        return this.crewName.equals(crewName);
+    }
+    
+    public boolean isSameYearAndMonth(int year, int month) {
+        return attendanceTime.isSameYearAndMonth(year, month);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

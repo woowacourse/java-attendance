@@ -75,4 +75,21 @@ class TimeTest {
         // then
         assertThat(isEqual).isEqualTo(result);
     }
+
+    @DisplayName("년 월이 같다면 true, 다르면 false를 반환한다.")
+    @ParameterizedTest
+    @CsvSource(value = {
+            "2025,2,true", "2025,3, false"
+    })
+    void 년_월이_같다면_true_다르면_false를_반환한다(int year, int month, boolean result) {
+
+        // given
+        Time time = new Time(LocalDateTime.of(2025, 2, 27, 10, 5));
+
+        // when
+        boolean isSame = time.isSameYearAndMonth(year, month);
+
+        // then
+        assertThat(isSame).isEqualTo(result);
+    }
 }
