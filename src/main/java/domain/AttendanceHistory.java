@@ -36,12 +36,10 @@ public class AttendanceHistory {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 크루 출석 기록에 존재하지 않는 날짜입니다."));
     }
 
-    public int calculateOnTime() {
+    public int calculateAttended() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {
-            if (attendTime.checkAttendanceStatus().equals(ATTENDED)) {
-                total += 1;
-            }
+            total += addCount(attendTime, ATTENDED);
         }
         return total;
     }
@@ -49,9 +47,7 @@ public class AttendanceHistory {
     public int calculateLate() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {
-            if (attendTime.checkAttendanceStatus().equals(LATE)) {
-                total += 1;
-            }
+            total += addCount(attendTime, LATE);
         }
         return total;
     }
@@ -59,16 +55,21 @@ public class AttendanceHistory {
     public int calculateAbsent() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {
-            if (attendTime.checkAttendanceStatus().equals(ABSENT)) {
-                total += 1;
-            }
+            total += addCount(attendTime, ABSENT);
         }
         total += 21 - attendTimes.size();
         return total;
     }
 
+    private static int addCount(AttendTime attendTime, String status) {
+        if (attendTime.checkAttendanceStatus().equals(status)) {
+            return 1;
+        }
+        return 0;
+    }
+
     public DangerousStatus getAttendanceStatus() {
-        dangerousStatus = new DangerousStatus(calculateOnTime(), calculateLate(), calculateAbsent());
+        dangerousStatus = new DangerousStatus(calculateAttended(), calculateLate(), calculateAbsent());
         return dangerousStatus;
     }
 

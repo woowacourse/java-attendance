@@ -18,7 +18,7 @@ public class DangerousStatusTest {
         attendTimes.add(new AttendTime("2024-12-13 09:59"));
         AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
 
-        DangerousStatus dangerousStatus = new DangerousStatus(attendanceHistory.calculateOnTime(),
+        DangerousStatus dangerousStatus = new DangerousStatus(attendanceHistory.calculateAttended(),
                 attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
         assertThat(dangerousStatus.getStatus()).isEqualTo(DISMISSAL.getStatus());
     }

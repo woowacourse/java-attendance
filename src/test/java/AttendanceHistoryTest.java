@@ -29,7 +29,7 @@ public class AttendanceHistoryTest {
         attendTimes.add(new AttendTime("2024-12-13 09:59"));
         AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
 
-        assertThat(attendanceHistory.calculateOnTime()).isEqualTo(1);
+        assertThat(attendanceHistory.calculateAttended()).isEqualTo(1);
     }
 
     @DisplayName("지각 횟수를 반환한다.")

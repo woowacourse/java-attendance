@@ -53,7 +53,7 @@ public class OutputView {
         System.out.println();
 
         AttendanceHistory attendanceHistory = crew.getAttendanceHistory();
-        System.out.printf("출석: %d회", attendanceHistory.calculateOnTime());
+        System.out.printf("출석: %d회", attendanceHistory.calculateAttended());
         System.out.println();
         System.out.printf("지각: %d회", attendanceHistory.calculateLate());
         System.out.println();
