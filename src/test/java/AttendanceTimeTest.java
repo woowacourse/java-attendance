@@ -97,7 +97,22 @@ public class AttendanceTimeTest {
 
         // then
         Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
 
+    @Test
+    void 입력_받은_이름과_날짜_일시로_출석_기록을_수정한다() {
+
+        // given
+        final AttendanceTime attendanceTime = new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 10);
+        final int targetHour = 10;
+        final int targetMinute = 20;
+
+        // when
+        attendanceTime.modify(targetHour, targetMinute);
+
+        // then
+        Assertions.assertThat(attendanceTime.getHour()).isEqualTo(targetHour);
+        Assertions.assertThat(attendanceTime.getMinute()).isEqualTo(targetMinute);
     }
 
     private static Stream<Arguments> dateAndResult() {
