@@ -33,11 +33,9 @@ public class AttendancesTest {
         AttendanceTime time = new AttendanceTime(LocalDateTime.of(2024, 12, 2, 9, 30));
         Attendance attendance = new Attendance(crew, time);
         Attendances expected = new Attendances(List.of(attendance));
-        //when
+        //when & then
         assertThatThrownBy(() -> expected.add(attendance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출석이 이미 존재합니다.");
-
-        //then
     }
 }
