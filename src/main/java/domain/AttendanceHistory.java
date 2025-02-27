@@ -105,16 +105,19 @@ public class AttendanceHistory {
     }
 
     public boolean isRiskOfExpulsion(final LocalDate targetDate) {
-        final Map<AttendanceStatus, Integer> statistics = calculateAttendanceStatusStatistics(targetDate);
-        final int absenceCount = statistics.get(AttendanceStatus.ABSENCE) + statistics.get(AttendanceStatus.LATE) / 3;
+        final int absenceCount = calculateAbsenceCountConsideredThreeLateToAbsence(targetDate);
         final RiskOfExpulsionStatus status = RiskOfExpulsionStatus.calculateRiskOfExpulsionStatus(
                 absenceCount);
         return status != RiskOfExpulsionStatus.NORMAL;
     }
 
     public RiskOfExpulsionStatus calculateRiskOfExpulsionStatus(final LocalDate targetDate) {
-        final Map<AttendanceStatus, Integer> statistics = calculateAttendanceStatusStatistics(targetDate);
-        final int absenceCount = statistics.get(AttendanceStatus.ABSENCE) + statistics.get(AttendanceStatus.LATE) / 3;
+        final int absenceCount = calculateAbsenceCountConsideredThreeLateToAbsence(targetDate);
         return RiskOfExpulsionStatus.calculateRiskOfExpulsionStatus(absenceCount);
+    }
+
+    private int calculateAbsenceCountConsideredThreeLateToAbsence(final LocalDate targetDate) {
+        final Map<AttendanceStatus, Integer> statistics = calculateAttendanceStatusStatistics(targetDate);
+        return statistics.get(AttendanceStatus.ABSENCE) + statistics.get(AttendanceStatus.LATE) / 3;
     }
 }
