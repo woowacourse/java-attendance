@@ -10,56 +10,46 @@ public class Attendance {
 
     private static final LocalTime OPEN_HOUR = LocalTime.of(8, 0);
     private static final LocalTime CLOSE_HOUR = LocalTime.of(23, 0);
+    private static final int NOT_MONDAY_START_TIME = 10;
+    private static final int MONDAY_START_TIME = 13;
 
-    private LocalDateTime attendanceDateTime;
-    private String attendanceStatus;
+    private final LocalDateTime dateTime;
+    private final AttendanceStatus status;
 
-    public Attendance(LocalDateTime attendanceDateTime) {
-        Holiday.isHoliday(attendanceDateTime);
-        if(Objects.equals(LocalTime.from(attendanceDateTime), LocalTime.MIN)) {
-            this.attendanceDateTime = attendanceDateTime;
-            this.attendanceStatus = "결석";
+    public Attendance(final LocalDateTime dateTime) {
+        Holiday.isHoliday(dateTime);
+        if(Objects.equals(LocalTime.from(dateTime), LocalTime.MIN)) {
+            this.dateTime = dateTime;
+            this.status = AttendanceStatus.ABSENCE;
             return;
         }
-        checkCampusOpen(attendanceDateTime);
+        checkCampusOpen(dateTime);
 
-        this.attendanceDateTime = attendanceDateTime;
-        this.attendanceStatus = checkAttendanceStatus(attendanceDateTime);
+        this.dateTime = dateTime;
+        this.status = AttendanceStatus.checkAttendanceStatus(dateTime);
     }
 
-    public Attendance(LocalDateTime attendanceDateTime, String attendanceStatus) {
-        this.attendanceDateTime = attendanceDateTime;
-        this.attendanceStatus = attendanceStatus;
-    }
-
-    public Attendance updateAttendanceTime(LocalTime updateTime) {
-        return new Attendance(LocalDateTime.of(LocalDate.from(this.attendanceDateTime), updateTime));
-    }
-
-    public boolean isEqualDate(LocalDate date) {
-        return LocalDate.from(attendanceDateTime).isEqual(date);
-    }
-
-    private String checkAttendanceStatus(LocalDateTime attendanceDateTime) {
-        int startHour = checkStartHour(attendanceDateTime);
-        if(attendanceDateTime.getHour() > startHour || (attendanceDateTime.getHour() >= 10 && attendanceDateTime.getMinute() > 30)) {
-            return "결석";
-        }
-        if(attendanceDateTime.getHour() == startHour && attendanceDateTime.getMinute() > 5) {
-            return "지각";
-        }
-        return "출석";
-    }
-
-    private int checkStartHour(LocalDateTime attendanceDateTime) {
-        int startHour = 10;
+    public static int checkStartHour(final LocalDateTime attendanceDateTime) {
+        int startHour = NOT_MONDAY_START_TIME;
         if(attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
-            startHour = 13;
+            startHour = MONDAY_START_TIME;
         }
         return startHour;
     }
 
-    private void checkCampusOpen(LocalDateTime attendanceDateTime) {
+    public Attendance updateAttendanceTime(final LocalTime updateTime) {
+        return new Attendance(LocalDateTime.of(LocalDate.from(this.dateTime), updateTime));
+    }
+
+    public boolean isEqualDate(final LocalDate date) {
+        return LocalDate.from(dateTime).isEqual(date);
+    }
+
+    public boolean isEqualStatus(final AttendanceStatus value) {
+        return this.status.equals(value);
+    }
+
+    private void checkCampusOpen(final LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = LocalTime.from(attendanceDateTime);
         if(attendanceTime.isBefore(OPEN_HOUR) || attendanceTime.isAfter(CLOSE_HOUR)) {
             throw new IllegalArgumentException("캠퍼스 운영 시간은 8:00 ~ 23:00입니다.");
@@ -70,11 +60,11 @@ public class Attendance {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Attendance that = (Attendance) o;
-        return Objects.equals(attendanceDateTime, that.attendanceDateTime) && Objects.equals(attendanceStatus, that.attendanceStatus);
+        return Objects.equals(dateTime, that.dateTime) && Objects.equals(status, that.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attendanceDateTime, attendanceStatus);
+        return Objects.hash(dateTime, status);
     }
 }

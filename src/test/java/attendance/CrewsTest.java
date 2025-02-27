@@ -1,16 +1,17 @@
 package attendance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 public class CrewsTest {
 
@@ -63,7 +64,7 @@ public class CrewsTest {
             Crew crew = crews.add("모루");
 
             assertThat(crew.addAttendance(LocalDateTime.of(2024, 12, 11, 9, 58)))
-                    .hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024, 12, 11, 9, 58));
+                    .hasFieldOrPropertyWithValue("dateTime", LocalDateTime.of(2024, 12, 11, 9, 58));
         }
 
         @Test
@@ -73,7 +74,7 @@ public class CrewsTest {
             Crew crew = crews.add("모루");
 
             assertThat(crew.addAttendance(LocalDateTime.of(2024, 12, 11, 9, 58)))
-                    .hasFieldOrPropertyWithValue("attendanceStatus", "출석");
+                    .hasFieldOrPropertyWithValue("status", AttendanceStatus.ATTEND);
         }
 
         @Test
@@ -83,7 +84,7 @@ public class CrewsTest {
             Crew crew = crews.add("모루");
 
             assertThat(crew.addAttendance(LocalDateTime.of(2024, 12, 11, 10, 6)))
-                    .hasFieldOrPropertyWithValue("attendanceStatus", "지각");
+                    .hasFieldOrPropertyWithValue("status", AttendanceStatus.LATE);
         }
 
         @Test
@@ -93,7 +94,7 @@ public class CrewsTest {
             Crew crew = crews.add("모루");
 
             assertThat(crew.addAttendance(LocalDateTime.of(2024, 12, 11, 10, 36)))
-                    .hasFieldOrPropertyWithValue("attendanceStatus", "결석");
+                    .hasFieldOrPropertyWithValue("status", AttendanceStatus.ABSENCE);
         }
 
         @Test
@@ -104,7 +105,7 @@ public class CrewsTest {
 
             Crew crew = crews.findCrewByNickname("모루");
             assertThat(crew.addAttendance(LocalDateTime.of(2024, 12, 11, 10, 36)))
-                    .hasFieldOrPropertyWithValue("attendanceStatus", "결석");
+                    .hasFieldOrPropertyWithValue("status", AttendanceStatus.ABSENCE);
         }
     }
 
@@ -147,7 +148,7 @@ public class CrewsTest {
             crew.addAttendance(LocalDateTime.of(2024, 12, 12, 10, 6));
 
             assertThat(crew.findAttendanceByDate(LocalDate.of(2024, 12, 11)))
-                    .hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024, 12, 11, 10, 36));
+                    .hasFieldOrPropertyWithValue("dateTime", LocalDateTime.of(2024, 12, 11, 10, 36));
         }
 
         @Test
@@ -178,13 +179,13 @@ public class CrewsTest {
 
             assertSoftly(softly -> {
                 assertThat(updatedAttendance)
-                        .hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024, 12, 11, 10, 0));
+                        .hasFieldOrPropertyWithValue("dateTime", LocalDateTime.of(2024, 12, 11, 10, 0));
                 assertThat(updatedAttendance)
-                        .hasFieldOrPropertyWithValue("attendanceStatus", "출석");
+                        .hasFieldOrPropertyWithValue("status", AttendanceStatus.ATTEND);
 
                 Crew foundCrew = crews.findCrewByNickname("모루");
                 assertThat(foundCrew.findAttendanceByDate(LocalDate.of(2024, 12, 11)))
-                        .hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024, 12, 11, 10, 0));
+                        .hasFieldOrPropertyWithValue("dateTime", LocalDateTime.of(2024, 12, 11, 10, 0));
             });
         }
 

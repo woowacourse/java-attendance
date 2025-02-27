@@ -14,50 +14,50 @@ public class AttendanceTest {
     @Test
     @DisplayName("등교 시간이 입력되면 출석")
     void attendanceBasicTest1() {
-        assertThat(new Attendance(LocalDateTime.of(2024,12,3,9,58))).hasFieldOrPropertyWithValue("attendanceStatus", "출석");
+        assertThat(new Attendance(LocalDateTime.of(2024,12,3,9,58))).hasFieldOrPropertyWithValue("status", AttendanceStatus.ATTEND);
     }
 
     @Test
     @DisplayName("5분 초과는 지각이다")
     void attendanceLateTest1() {
-        assertThat(new Attendance(LocalDateTime.of(2024,12,3,10,6))).hasFieldOrPropertyWithValue("attendanceStatus","지각");
+        assertThat(new Attendance(LocalDateTime.of(2024,12,3,10,6))).hasFieldOrPropertyWithValue("status",AttendanceStatus.LATE);
     }
 
     @Test
     @DisplayName("30분 초과는 결석이다")
     void attendanceAbsenceTest1() {
-        assertThat(new Attendance(LocalDateTime.of(2024,12,3,10,36))).hasFieldOrPropertyWithValue("attendanceStatus","결석");
+        assertThat(new Attendance(LocalDateTime.of(2024,12,3,10,36))).hasFieldOrPropertyWithValue("status",AttendanceStatus.ABSENCE);
     }
 
     @Test
     @DisplayName("0시 0분이면 결석")
     void attendanceAbsenceTest2() {
-        assertThat(new Attendance(LocalDateTime.of(2024,12,3,0,0))).hasFieldOrPropertyWithValue("attendanceStatus","결석");
+        assertThat(new Attendance(LocalDateTime.of(2024,12,3,0,0))).hasFieldOrPropertyWithValue("status",AttendanceStatus.ABSENCE);
     }
 
     @Test
     @DisplayName("1시간 이상 늦어도 결석")
     void attendanceAbsenceTest3() {
-        assertThat(new Attendance(LocalDateTime.of(2024,12,3,11,36))).hasFieldOrPropertyWithValue("attendanceStatus","결석");
+        assertThat(new Attendance(LocalDateTime.of(2024,12,3,11,36))).hasFieldOrPropertyWithValue("status",AttendanceStatus.ABSENCE);
     }
 
     @Test
     @DisplayName("월요일은 13시부터 시작한다. - 출석 테스트")
     void attendanceMondayTest1() {
         LocalDate monday = LocalDate.of(2024, 12, 2);
-        assertThat(new Attendance(LocalDateTime.of(2024,12,2,13,0))).hasFieldOrPropertyWithValue("attendanceStatus","출석");
+        assertThat(new Attendance(LocalDateTime.of(2024,12,2,13,0))).hasFieldOrPropertyWithValue("status",AttendanceStatus.ATTEND);
     }
 
     @Test
     @DisplayName("월요일은 13시부터 시작한다. - 지각 테스트")
     void attendanceMondayTest2() {
-        assertThat(new Attendance(LocalDateTime.of(2024,12,2,13,6))).hasFieldOrPropertyWithValue("attendanceStatus","지각");
+        assertThat(new Attendance(LocalDateTime.of(2024,12,2,13,6))).hasFieldOrPropertyWithValue("status",AttendanceStatus.LATE);
     }
 
     @Test
     @DisplayName("월요일은 13시부터 시작한다. - 결석 테스트")
     void attendanceMondayTest3() {
-        assertThat(new Attendance(LocalDateTime.of(2024,12,2,13,36))).hasFieldOrPropertyWithValue("attendanceStatus","결석");
+        assertThat(new Attendance(LocalDateTime.of(2024,12,2,13,36))).hasFieldOrPropertyWithValue("status",AttendanceStatus.ABSENCE);
     }
 
     @Test
@@ -96,23 +96,23 @@ public class AttendanceTest {
     @DisplayName("출석하면 Attendance를 리턴 - 출석")
     void attendanceTest1() {
         Attendance attend = new Attendance(LocalDateTime.of(2024,12,2,13,0));
-        assertThat(attend).hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024,12,2,13,0));
-        assertThat(attend).hasFieldOrPropertyWithValue("attendanceStatus", "출석");
+        assertThat(attend).hasFieldOrPropertyWithValue("dateTime", LocalDateTime.of(2024,12,2,13,0));
+        assertThat(attend).hasFieldOrPropertyWithValue("status", AttendanceStatus.ATTEND);
     }
 
     @Test
     @DisplayName("출석하면 Attendance를 리턴 - 지각")
     void attendanceTest2() {
         Attendance attend = new Attendance(LocalDateTime.of(2024,12,2,13,6));
-        assertThat(attend).hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024,12,2,13,6));
-        assertThat(attend).hasFieldOrPropertyWithValue("attendanceStatus", "지각");
+        assertThat(attend).hasFieldOrPropertyWithValue("dateTime", LocalDateTime.of(2024,12,2,13,6));
+        assertThat(attend).hasFieldOrPropertyWithValue("status", AttendanceStatus.LATE);
     }
 
     @Test
     @DisplayName("출석하면 Attendance를 리턴 - 결석")
     void attendanceTest3() {
         Attendance attend = new Attendance(LocalDateTime.of(2024,12,2,13,36));
-        assertThat(attend).hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024,12,2,13,36));
-        assertThat(attend).hasFieldOrPropertyWithValue("attendanceStatus", "결석");
+        assertThat(attend).hasFieldOrPropertyWithValue("dateTime", LocalDateTime.of(2024,12,2,13,36));
+        assertThat(attend).hasFieldOrPropertyWithValue("status", AttendanceStatus.ABSENCE);
     }
 }

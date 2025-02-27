@@ -1,6 +1,7 @@
 package attendance;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -42,5 +43,41 @@ public class CrewTest {
         crew.addAttendance(LocalDateTime.of(2024,12,12,8,0));
 
         assertThat(crew.getAttendances().size()).isEqualTo(2);
+    }
+
+    @Nested
+    @DisplayName("크루의 출석 기록에서 출석 상태 세기")
+    class CountAttendanceStatusTest {
+        @Test
+        @DisplayName("크루의 출석 기록에서 출석 횟수 세기")
+        void countAttendanceStatusTest1() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024,12,11,8,0));
+            crew.addAttendance(LocalDateTime.of(2024,12,12,8,0));
+
+            assertThat(crew.countAttendanceStatus(AttendanceStatus.ATTEND)).isEqualTo(2);
+        }
+
+        @Test
+        @DisplayName("크루의 출석 기록에서 지각 횟수 세기")
+        void countAttendanceStatusTest2() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024,12,11,10,6));
+            crew.addAttendance(LocalDateTime.of(2024,12,12,10,6));
+            crew.addAttendance(LocalDateTime.of(2024,12,13,10,6));
+
+            assertThat(crew.countAttendanceStatus(AttendanceStatus.LATE)).isEqualTo(3);
+        }
+
+        @Test
+        @DisplayName("크루의 출석 기록에서 결석 횟수 세기")
+        void countAttendanceStatusTest3() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024,12,11,11,6));
+            crew.addAttendance(LocalDateTime.of(2024,12,12,11,6));
+            crew.addAttendance(LocalDateTime.of(2024,12,13,11,6));
+
+            assertThat(crew.countAttendanceStatus(AttendanceStatus.EXPULSION)).isEqualTo(3);
+        }
     }
 }

@@ -8,25 +8,25 @@ import java.util.List;
 
 public class Crew {
 
-    private String nickname;
-    private List<Attendance> attendances;
+    private final String nickname;
+    private final List<Attendance> attendances;
 
-    public Crew(String nickname) {
+    public Crew(final String nickname) {
         this.nickname = nickname;
         this.attendances = new ArrayList<>();
     }
 
-    public Attendance addAttendance(LocalDateTime attendanceDateTime) {
+    public Attendance addAttendance(final LocalDateTime attendanceDateTime) {
         Attendance attendance = new Attendance(attendanceDateTime);
         attendances.add(attendance);
         return attendance;
     }
 
-    public boolean isEqualCrew(String nickname) {
+    public boolean isEqualCrew(final String nickname) {
         return this.nickname.equals(nickname);
     }
 
-    public Attendance updateAttendance(LocalDate updateDate, LocalTime updateTime) {
+    public Attendance updateAttendance(final LocalDate updateDate, final LocalTime updateTime) {
         Attendance beforeAttendance = findAttendanceByDate(updateDate);
         attendances.remove(beforeAttendance);
         Attendance updatedAttendance = beforeAttendance.updateAttendanceTime(updateTime);
@@ -35,11 +35,17 @@ public class Crew {
     }
 
 
-    public Attendance findAttendanceByDate(LocalDate date) {
+    public Attendance findAttendanceByDate(final LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isEqualDate(date))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 날짜의 출석이 없습니다."));
+    }
+
+    public long countAttendanceStatus(final AttendanceStatus status) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isEqualStatus(status))
+                .count();
     }
 
     public List<Attendance> getAttendances() {
