@@ -95,6 +95,12 @@
 ### ExpulsionRiskController
 - [ ] 제적 위험자 확인 흐름 제어
 
+### AttendanceStoreController
+- [x] 출결 데이터 저장 흐름 제어
+
+  ### AttendanceCsvController
+  - [x] 출결 Csv 파일 데이터 저장 흐름 제어
+
 ---
 
 ## ⚠️Exception
@@ -116,5 +122,5 @@
   - [ ] 시간 범위 유효성 검증 및 시간으로 변환
 
 ### CsvReader
-- [ ] Csv 형식의 파일을 로딩 및 처리
+- [x] Csv 형식의 파일 로딩 및 처리
 
