@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Attendance {
@@ -12,10 +13,8 @@ public class Attendance {
         this.attendanceTime = attendanceTime;
     }
 
-    public void isSameLocalDate(Attendance attendance) {
-        if (this.crewName.equals(attendance.crewName) && attendanceTime.isSameLocalDate(attendance.attendanceTime)) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석 기록이 존재합니다. 수정 기능을 이용해 주세요.");
-        }
+    public boolean isSameLocalDate(String crewName, LocalDate localDate) {
+        return this.crewName.equals(crewName) && attendanceTime.isSameLocalDate(localDate);
     }
 
     public Attendance modifyAttendanceTime(LocalTime modifyTime) {

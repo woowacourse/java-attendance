@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -27,10 +28,10 @@ public class Time {
         }
     }
 
-    public boolean isSameLocalDate(Time time) {
-        return this.attendanceTime.getYear() == time.attendanceTime.getYear()
-                && this.attendanceTime.getMonth() == time.attendanceTime.getMonth()
-                && this.attendanceTime.getDayOfMonth() == time.attendanceTime.getDayOfMonth();
+    public boolean isSameLocalDate(LocalDate time) {
+        return this.attendanceTime.getYear() == time.getYear()
+                && this.attendanceTime.getMonth() == time.getMonth()
+                && this.attendanceTime.getDayOfMonth() == time.getDayOfMonth();
     }
 
 

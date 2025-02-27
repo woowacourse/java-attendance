@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,21 +57,20 @@ class TimeTest {
                 .hasMessage("[ERROR] 주말 및 공휴일은 출석할 수 없습니다.");
     }
 
-    @DisplayName("크루 이름과 년월일이 같다면 true 다르다면 false를 반환한다")
+    @DisplayName("년월일이 같다면 true 다르다면 false를 반환한다")
     @ParameterizedTest
     @CsvSource(value = {
-            "2025,2,27,27,10,0,10,5, true", "2025,2,27,28,10,0,10,0, false"
+            "2025,2,27,27,10,0,true",
+            "2025,2,27,28,10,0,false"
     })
-    void 크루_이름과_년월일이_같다면_true_다르다면_false를_반환한다(int year, int month, int day, int otherDay, int hour,
-                                               int minute,
-                                               int otherHour, int otherMinute, boolean result) {
+    void 년월일이_같다면_true_다르다면_false를_반환한다(int year, int month, int day, int otherDay,
+                                        int hour, int minute, boolean result) {
 
         // given
-        Time time1 = new Time(LocalDateTime.of(year, month, day, hour, minute));
-        Time time2 = new Time(LocalDateTime.of(year, month, otherDay, otherHour, otherMinute));
+        Time time = new Time(LocalDateTime.of(year, month, day, hour, minute));
 
         // when
-        boolean isEqual = time1.isSameLocalDate(time2);
+        boolean isEqual = time.isSameLocalDate(LocalDate.of(year, month, otherDay));
 
         // then
         assertThat(isEqual).isEqualTo(result);
