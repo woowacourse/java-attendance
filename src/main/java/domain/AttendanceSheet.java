@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static config.AppConfig.TODAY;
 import static domain.policy.AttendanceState.ABSENT;
 import static java.util.stream.Collectors.*;
 
@@ -60,9 +61,15 @@ public class AttendanceSheet {
                         });
     }
 
-    public Map<AttendanceState, Long> countAttendanceState(String nickname, LocalDate today) {
-        Map<AttendanceState, Long> counts = attendances.stream()
+    public List<Attendance> findAttendanceByNickname(String nickname) {
+        return attendances.stream()
                 .filter(attendance -> attendance.isSameNickname(nickname))
+                .filter(attendance -> attendance.getDate().isBefore(TODAY))
+                .toList();
+    }
+
+    public Map<AttendanceState, Long> countAttendanceState(String nickname, LocalDate today) {
+        Map<AttendanceState, Long> counts = findAttendanceByNickname(nickname).stream()
                 .collect(groupingBy(Attendance::getState, counting()));
 
         initUndefinedState(counts);
@@ -72,14 +79,14 @@ public class AttendanceSheet {
         return counts;
     }
 
-    private Long calculateAbsentCount(LocalDate today, Map<AttendanceState, Long> counts) {
-        return counts.values().stream()
-                .reduce(dayCount(today), (allDay, attendedDay) -> allDay - attendedDay);
-    }
-
     private static void initUndefinedState(Map<AttendanceState, Long> counts) {
         Arrays.stream(AttendanceState.values())
                 .forEach(state -> counts.putIfAbsent(state, 0L));
+    }
+
+    private Long calculateAbsentCount(LocalDate today, Map<AttendanceState, Long> counts) {
+        return counts.values().stream()
+                .reduce(dayCount(today), (allDay, attendedDay) -> allDay - attendedDay);
     }
 
     private Long dayCount(LocalDate today) {
@@ -112,4 +119,5 @@ public class AttendanceSheet {
                         }
                 ));
     }
+
 }
