@@ -22,14 +22,13 @@ class HolidaysTest {
     void 휴일에_공휴일을_추가한다() {
         // given
         LocalDate addHoliday = LocalDate.of(2024, 12, 25);
-        Holiday holiday = new Holiday(addHoliday);
-        Holidays holidays = new Holidays(List.of(holiday));
+        Holidays holidays = new Holidays();
 
         // when
-        List<Holiday> result = holidays.getHolidays();
+        holidays.addHoliday(addHoliday);
 
         // then
-        assertThat(result).contains(holiday);
+        assertThat(holidays.contains(addHoliday)).isTrue();
     }
 
     @ParameterizedTest
