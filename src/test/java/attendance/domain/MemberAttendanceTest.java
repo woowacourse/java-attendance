@@ -1,12 +1,13 @@
 package attendance.domain;
 
-import attendance.domain.dto.ModifyAttendanceResult;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import attendance.domain.dto.AttendanceResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,16 +16,16 @@ import org.junit.jupiter.api.Test;
 
 public class MemberAttendanceTest {
 
-    private List<Attendance> attendances = new ArrayList<>();
+    private List<Attendance> sampleAttendances = new ArrayList<>();
     private Crew crew = new Crew("Lemon");
 
     @BeforeEach
     void setup() {
-        attendances.add(new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        attendances.add(new Attendance(LocalDateTime.of(2024, 12, 3, 9, 50)));
-        attendances.add(new Attendance(LocalDateTime.of(2024, 12, 4, 14, 30)));
-        attendances.add(new Attendance(LocalDateTime.of(2024, 12, 5, 10, 10)));
-        attendances.add(new Attendance(LocalDateTime.of(2024, 12, 6, 9, 30)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 3, 9, 50)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 4, 14, 30)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 5, 10, 10)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 6, 9, 30)));
 
     }
 
@@ -32,9 +33,8 @@ public class MemberAttendanceTest {
     @DisplayName("닉네임과 등교시간을 입력하면 출석할 수 있다.")
     void testAttendanceWithNicknameAndTime() {
 
-
         //when
-        MemberAttendance memberAttendance = new MemberAttendance(crew, attendances);
+        MemberAttendance memberAttendance = new MemberAttendance(crew, sampleAttendances);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
@@ -52,13 +52,41 @@ public class MemberAttendanceTest {
     void modifyAttendanceTest() {
         //given
         Crew modifier = new Crew("Lemon");
-        LocalDateTime attendanceDateTime =  LocalDateTime.of(2024, 12, 4, 9, 50);
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 4, 9, 50);
+        MemberAttendance memberAttendance = new MemberAttendance(crew, sampleAttendances);
 
-        //when
-        MemberAttendance memberAttendance = new MemberAttendance(crew, attendances);
-
-        //then
+        //expected
         Assertions.assertDoesNotThrow(() -> memberAttendance.modifyAttendanceRecord(attendanceDateTime));
     }
 
+
+    @Test
+    @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 기록을 확인할 수 있다.")
+    void checkCrewAllAttendanceRecord() {
+        //given
+        MemberAttendance memberAttendance = new MemberAttendance(crew, sampleAttendances);
+        List<Attendance> attendances = memberAttendance.getAttendances();
+
+        //then
+        List<AttendanceResult> attendancesResult = attendances.stream()
+            .map(AttendanceResult::from)
+            .toList();
+
+        SoftAssertions.assertSoftly(SoftlyExtension -> {
+            assertThat(attendancesResult.getFirst().attendanceMonth()).isEqualTo(12);
+            assertThat(attendancesResult.getFirst().attendanceDay()).isEqualTo(2);
+            assertThat(attendancesResult.getFirst().attendanceHour()).isEqualTo(13);
+            assertThat(attendancesResult.getFirst().attendanceMinute()).isEqualTo(0);
+            assertThat(attendancesResult.getFirst().attendanceStatus()).isEqualTo("출석");
+        });
+
+        SoftAssertions.assertSoftly(SoftlyExtension -> {
+            assertThat(attendancesResult.get(2).attendanceMonth()).isEqualTo(12);
+            assertThat(attendancesResult.get(2).attendanceDay()).isEqualTo(4);
+            assertThat(attendancesResult.get(2).attendanceHour()).isEqualTo(14);
+            assertThat(attendancesResult.get(2).attendanceMinute()).isEqualTo(30);
+            assertThat(attendancesResult.get(2).attendanceStatus()).isEqualTo("결석");
+        });
+
+    }
 }

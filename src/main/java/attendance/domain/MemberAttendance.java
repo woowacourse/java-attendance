@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import attendance.domain.dto.ModifyAttendanceResult;
 import java.time.LocalDateTime;
 import java.util.List;
 
