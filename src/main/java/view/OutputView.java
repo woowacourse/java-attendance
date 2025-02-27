@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
@@ -16,7 +17,7 @@ public class OutputView {
     }
 
     public static void printAttendanceStatus(AttendanceStatusDto dto) {
-        System.out.printf("%n%02d월 %02d일 %s %02d:%02d (%s)%n",
+        System.out.printf("%n%02d월 %02d일 %s %02d:%02d (%s)%n%n",
                 dto.month(),
                 dto.day(),
                 dto.dayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
@@ -27,5 +28,25 @@ public class OutputView {
 
     public static void printErrorMessage(String message) {
         System.out.println("[ERROR] " + message);
+    }
+
+    public static void printEditAttendanceStatus(List<AttendanceStatusDto> statusDtos) {
+        AttendanceStatusDto oldStatusDto = statusDtos.getFirst();
+        AttendanceStatusDto newStatusDto = statusDtos.getLast();
+
+        // 이전 기록
+        System.out.printf("%n%02d월 %02d일 %s %02d:%02d (%s) -> ",
+                oldStatusDto.month(),
+                oldStatusDto.day(),
+                oldStatusDto.dayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                oldStatusDto.hour(),
+                oldStatusDto.minute(),
+                oldStatusDto.attendanceType().getName());
+
+        // 바뀐 기록
+        System.out.printf("%02d:%02d (%s) 수정 완료!%n%n",
+                newStatusDto.hour(),
+                newStatusDto.minute(),
+                newStatusDto.attendanceType().getName());
     }
 }

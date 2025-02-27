@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.List;
 import service.AttendanceService;
 import view.FeatureType;
 import view.InputView;
@@ -53,7 +54,8 @@ public class AttendanceController {
                 return;
             }
 
-            attendanceService.replaceAttendanceHistoryOf(crew, newDateTime);
+            List<AttendanceStatusDto> statusDtos = attendanceService.replaceAttendanceHistoryOf(crew, newDateTime);
+            OutputView.printEditAttendanceStatus(statusDtos);
             return;
         }
 
