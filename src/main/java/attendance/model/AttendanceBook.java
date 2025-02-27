@@ -26,4 +26,8 @@ public class AttendanceBook {
                 .getFirst();
     }
 
+    public boolean isCrewExists(final String name) {
+        
+        return attendances.containsKey(name);
+    }
 }
