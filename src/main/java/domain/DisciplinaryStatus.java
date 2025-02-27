@@ -1,0 +1,24 @@
+package domain;
+
+public enum DisciplinaryStatus {
+    DISMISSED,
+    COUNSELING,
+    WARNED,
+    NORMAL,
+    ;
+
+    public static DisciplinaryStatus from(int absenceCount, int lateCount) {
+        int additionAbsence = lateCount / 3;
+        absenceCount += additionAbsence;
+        if (absenceCount < 2) {
+            return NORMAL;
+        }
+        if (absenceCount < 3) {
+            return WARNED;
+        }
+        if (absenceCount <= 5) {
+            return COUNSELING;
+        }
+        return DISMISSED;
+    }
+}
