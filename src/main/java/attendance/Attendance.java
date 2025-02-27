@@ -26,7 +26,7 @@ public class Attendance {
         checkCampusOpen(dateTime);
 
         this.dateTime = dateTime;
-        this.status = AttendanceStatus.checkAttendanceStatus(dateTime);
+        this.status = AttendanceStatus.of(dateTime);
     }
 
     public static int checkStartHour(final LocalDateTime attendanceDateTime) {

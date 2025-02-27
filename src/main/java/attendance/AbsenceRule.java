@@ -13,7 +13,7 @@ public enum AbsenceRule {
         this.criteria = criteria;
     }
 
-    public static AbsenceRule checkExpulsionCount(final long totalExpulsionCount) {
+    public static AbsenceRule of(final long totalExpulsionCount) {
         for (AbsenceRule value : AbsenceRule.values()) {
             if(totalExpulsionCount >= value.criteria) {
                 return value;

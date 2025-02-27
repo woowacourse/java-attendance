@@ -11,7 +11,7 @@ public enum AttendanceStatus {
     AttendanceStatus() {
     }
 
-    public static AttendanceStatus checkAttendanceStatus(final LocalDateTime attendanceDateTime) {
+    public static AttendanceStatus of(final LocalDateTime attendanceDateTime) {
         int startHour = Attendance.checkStartHour(attendanceDateTime);
         if(attendanceDateTime.getHour() > startHour || (attendanceDateTime.getHour() >= 10 && attendanceDateTime.getMinute() > 30)) {
             return ABSENCE;

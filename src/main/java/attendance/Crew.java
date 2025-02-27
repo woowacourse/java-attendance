@@ -50,7 +50,7 @@ public class Crew implements Comparable<Crew> {
 
     public AbsenceRule checkAbsenceRule() {
         long totalExpulsionCount = countAttendanceStatus(AttendanceStatus.ABSENCE) + countAttendanceStatus(AttendanceStatus.LATE) / 3;
-        return AbsenceRule.checkExpulsionCount(totalExpulsionCount);
+        return AbsenceRule.of(totalExpulsionCount);
     }
 
     public List<Attendance> getAttendances() {
