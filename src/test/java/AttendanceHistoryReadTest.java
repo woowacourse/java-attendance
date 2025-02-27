@@ -51,4 +51,20 @@ class AttendanceHistoryReadTest {
         assertEquals(5, absentCount);
     }
 
+    //  경고 대상자: 결석 2회 이상
+    //  면담 대상자: 결석 3회 이상
+    //  제적 대상자: 결석 5회 초과
+    @Test
+    void 지각_3회를_결석_1회로_간주하여_어떤_제제의_대상자인지_확인한다() throws IOException {
+        final var nickname = "짱수";
+        setUpAttendances();
+
+        AttendanceHistoryRead attendanceHistoryRead = new AttendanceHistoryRead();
+        attendanceHistoryRead.recordAllAbsence(attendanceBook);
+        final var penaltyStatus = attendanceHistoryRead.getPenaltyStatus(attendanceBook, nickname);
+        final var expected = "면담";
+        assertEquals(expected, penaltyStatus);
+
+    }
+
 }
