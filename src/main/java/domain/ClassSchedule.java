@@ -27,18 +27,15 @@ public enum ClassSchedule {
                 .filter(schedule -> schedule.dayOfWeek == day)
                 .findAny()
                 .orElseThrow(IllegalStateException::new)
-                .getStartTime();
+                .startTime;
     }
 
     public static boolean isDayOff(LocalDate date) {
+        DayOfWeek targetDay = date.getDayOfWeek();
         if (holidays.contains(date)) {
             return true;
         }
         return Arrays.stream(ClassSchedule.values())
-                .noneMatch(schedule -> schedule.dayOfWeek == date.getDayOfWeek());
-    }
-
-    public LocalTime getStartTime() {
-        return startTime;
+                .noneMatch(schedule -> schedule.dayOfWeek == targetDay);
     }
 }
