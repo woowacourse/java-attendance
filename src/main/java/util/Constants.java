@@ -14,4 +14,6 @@ public class Constants {
     public static final List<Integer> HOLIDAY = List.of(25);
 
     public static final LocalTime ABSENT_CONSIDERING_TIME = LocalTime.of(15, 0);
+
+    public static final int EXPULSION_CONDITION = 6;
 }

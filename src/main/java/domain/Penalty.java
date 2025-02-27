@@ -1,5 +1,7 @@
 package domain;
 
+import static util.Constants.EXPULSION_CONDITION;
+
 import dto.AttendanceCount;
 
 public enum Penalty {
@@ -14,7 +16,7 @@ public enum Penalty {
     }
 
     public static Penalty from(AttendanceCount attendanceCount) {
-        if(attendanceCount.absentCount() >= 6) {
+        if(attendanceCount.absentCount() >= EXPULSION_CONDITION) {
             return Penalty.EXPULSION;
         }
         return null;
