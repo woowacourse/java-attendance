@@ -46,4 +46,8 @@ public class Student {
     public StudentAttendanceHistory getStudentAttendanceHistory() {
         return studentAttendanceHistory;
     }
+
+    public void sortStudentAttendanceHistory() {
+        studentAttendanceHistory.sortHistoryBeforePrint();
+    }
 }
