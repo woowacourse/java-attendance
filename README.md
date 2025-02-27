@@ -292,8 +292,8 @@
 
 ### 입력
 
-- [ ]  프로그램을 시작하면 `src/main/resources/attendances.csv` 를 통해 구현에 필요한 정보(출석 시스템에 등록된 크루와 12월 출석 기록)를 조회한다.
-- [ ]  닉네임과 출석 일시가 기록되어 있다.
+- [x]  프로그램을 시작하면 `src/main/resources/attendances.csv` 를 통해 구현에 필요한 정보(출석 시스템에 등록된 크루와 12월 출석 기록)를 조회한다.
+- [x]  닉네임과 출석 일시가 기록되어 있다.
 
     ```
     nickname,datetime
