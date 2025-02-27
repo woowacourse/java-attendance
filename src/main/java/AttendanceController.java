@@ -21,13 +21,24 @@ public class AttendanceController {
         Command command = inputView.getCommand();
         try {
             if (command.equals(Command.ATTEND_TODAY)) {
-        String nickname = inputView.getNickname();
-        String localDateTimeToday = inputView.getTodayLocalDateTime();
-        AttendTime attendTime =crews.addCrewAttendance(nickname, localDateTimeToday);
-        outputView.printAttendanceResult(localDateTimeToday,attendTime.checkAttendanceStatus());
+                attendToday(crews);
+            }
+            if(command.equals(Command.SHOW_CREW_ATTENDANCES)){
+                String nickname=inputView.getNickname();
+                Crew crew= crews.findCrewByNickname(nickname).orElseThrow(()->new IllegalArgumentException("없는 사용자입니다."));
+
+                outputView.printAttendanceTimeLine(crew);
+
             }
         } catch (Exception e) {
             System.out.println("[ERROR]" + e.getMessage());
         }
+    }
+
+    private void attendToday(Crews crews) {
+        String nickname = inputView.getNickname();
+        String localDateTimeToday = inputView.getTodayLocalDateTime();
+        AttendTime attendTime = crews.addCrewAttendance(nickname, localDateTimeToday);
+        outputView.printAttendanceResult(localDateTimeToday,attendTime.checkAttendanceStatus());
     }
 }

@@ -3,8 +3,9 @@ import java.util.List;
 
 public enum Command {
 
-    ATTEND_TODAY(List.of("1"));
-
+    ATTEND_TODAY(List.of("1")),
+    CHANGE_ATTENDANCE(List.of("2")),
+    SHOW_CREW_ATTENDANCES(List.of("3"));
     private final List<String> commands;
 
     Command(List<String> commands) {

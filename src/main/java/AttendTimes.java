@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class AttendTimes {
-    private List<AttendTime> attendTimes;
+    private final List<AttendTime> attendTimes;
 
     public AttendTimes() {
         this.attendTimes = new ArrayList<>();
@@ -68,6 +68,6 @@ public class AttendTimes {
     }
 
     public List<AttendTime> getAttendTimes() {
-        return attendTimes;
+        return new ArrayList<>(attendTimes);
     }
 }
