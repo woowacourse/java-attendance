@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Attendance {
-    private String name;
-    private LocalDate localDate;
+    private final String name;
+    private final LocalDate localDate;
     private LocalTime localTime;
 
     public Attendance(String name, LocalDate localDate, LocalTime localTime) {
@@ -14,6 +14,9 @@ public class Attendance {
         this.localTime = localTime;
     }
 
+    public Attendance updateTime(LocalTime newTime) {
+        return new Attendance(name, localDate, newTime);
+    }
 
     public String getName() {
         return name;
@@ -26,4 +29,5 @@ public class Attendance {
     public LocalTime getLocalTime() {
         return localTime;
     }
+
 }

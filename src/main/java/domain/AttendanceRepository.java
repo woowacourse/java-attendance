@@ -31,18 +31,21 @@ public class AttendanceRepository {
         }
     }
 
-    public void update(String name, LocalDate localDate, LocalTime localTime) {
+    public Attendance update(String name, LocalDate localDate, LocalTime localTime) {
         validateWeekDay(localDate);
         validateExistingCrew(name);
         validateAfterToday(localDate);
         List<Attendance> crewAttendances = attendances.get(name);
 
-        crewAttendances.replaceAll(attendance -> {
+        for (int i = 0; i < crewAttendances.size(); i++) {
+            Attendance attendance = crewAttendances.get(i);
             if (attendance.getLocalDate().equals(localDate)) {
-                return new Attendance(name, localDate, localTime);
+                Attendance updatedAttendance = new Attendance(name, localDate, localTime);
+                crewAttendances.set(i, updatedAttendance);
+                return updatedAttendance;
             }
-            return attendance;
-        });
+        }
+        return null;
     }
 
     private void validateWeekDay(LocalDate localDate) {

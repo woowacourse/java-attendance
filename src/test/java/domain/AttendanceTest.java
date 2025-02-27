@@ -158,8 +158,7 @@ public class AttendanceTest {
         LocalTime localTime = LocalTime.of(10, 10);
 
         // when
-        repository.update(name, localDate, localTime);
-        Attendance attendance = repository.getAttendance(name, localDate);
+        Attendance attendance = repository.update(name, localDate, localTime);
 
         // then
         Assertions.assertThat(attendance.getName()).isEqualTo(name);
@@ -205,6 +204,125 @@ public class AttendanceTest {
                     repository.update(name, localDate, localTime);
                 }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("수정할 수 없는 날짜입니다.");
+    }
 
+    @Nested
+    @DisplayName("출석_수정_후_변경_전과_변경_후의_출석_기록을_확인할_수_있다")
+    class AttendanceUpdateTest {
+        String name = "fora";
+
+        LocalDate localDate = LocalDate.of(2024, 12, 6);
+
+        LocalTime attendanceLocalTime = LocalTime.of(10, 0);
+        LocalTime lateLocalTime = LocalTime.of(10, 6);
+        LocalTime absenceLocalTime = LocalTime.of(10, 31);
+
+        @Test
+        void 출석에서_지각() {
+            // given
+            repository.checkIn(name, localDate, attendanceLocalTime);
+            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
+                    beforeAttendance.getLocalTime());
+
+            // when
+            Attendance afterAttendance = repository.update(name, localDate, lateLocalTime);
+            AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
+                    afterAttendance.getLocalTime());
+
+            // then
+            Assertions.assertThat(beforeState.getState()).isEqualTo("출석");
+            Assertions.assertThat(afterState.getState()).isEqualTo("지각");
+        }
+
+        @Test
+        void 출석에서_결석() {
+            // given
+            repository.checkIn(name, localDate, attendanceLocalTime);
+            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
+                    beforeAttendance.getLocalTime());
+
+            // when
+            Attendance afterAttendance = repository.update(name, localDate, absenceLocalTime);
+            AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
+                    afterAttendance.getLocalTime());
+
+            // then
+            Assertions.assertThat(beforeState.getState()).isEqualTo("출석");
+            Assertions.assertThat(afterState.getState()).isEqualTo("결석");
+        }
+
+        @Test
+        void 지각에서_출석() {
+            // given
+            repository.checkIn(name, localDate, lateLocalTime);
+            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
+                    beforeAttendance.getLocalTime());
+
+            // when
+            Attendance afterAttendance = repository.update(name, localDate, attendanceLocalTime);
+            AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
+                    afterAttendance.getLocalTime());
+
+            // then
+            Assertions.assertThat(beforeState.getState()).isEqualTo("지각");
+            Assertions.assertThat(afterState.getState()).isEqualTo("출석");
+        }
+
+        @Test
+        void 지각에서_결석() {
+            // given
+            repository.checkIn(name, localDate, lateLocalTime);
+            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
+                    beforeAttendance.getLocalTime());
+
+            // when
+            Attendance afterAttendance = repository.update(name, localDate, absenceLocalTime);
+            AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
+                    afterAttendance.getLocalTime());
+
+            // then
+            Assertions.assertThat(beforeState.getState()).isEqualTo("지각");
+            Assertions.assertThat(afterState.getState()).isEqualTo("결석");
+        }
+
+        @Test
+        void 결석에서_출석() {
+            // given
+            repository.checkIn(name, localDate, absenceLocalTime);
+            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
+                    beforeAttendance.getLocalTime());
+
+            // when
+            Attendance afterAttendance = repository.update(name, localDate, attendanceLocalTime);
+            AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
+                    afterAttendance.getLocalTime());
+
+            // then
+            Assertions.assertThat(beforeState.getState()).isEqualTo("결석");
+            Assertions.assertThat(afterState.getState()).isEqualTo("출석");
+        }
+
+        @Test
+        void 결석에서_지각() {
+            // given
+            repository.checkIn(name, localDate, absenceLocalTime);
+            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
+                    beforeAttendance.getLocalTime());
+
+            // when
+            Attendance afterAttendance = repository.update(name, localDate, lateLocalTime);
+            AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
+                    afterAttendance.getLocalTime());
+
+            // then
+            Assertions.assertThat(beforeState.getState()).isEqualTo("결석");
+            Assertions.assertThat(afterState.getState()).isEqualTo("지각");
+        }
     }
 }
