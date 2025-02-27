@@ -29,7 +29,7 @@ public class AttendanceRecord {
     }
 
     public AttendanceStatus calculateAttendanceStatus() {
-        return null;
+        return AttendanceStatus.calculateStatus(attendanceDateTime.toLocalTime(), attendanceDateTime.getDayOfWeek());
     }
 
     public LocalDateTime getDateTime() {

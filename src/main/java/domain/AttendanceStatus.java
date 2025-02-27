@@ -37,7 +37,7 @@ public enum AttendanceStatus {
 
     private static List<AttendanceStatus> sortAscByBoundaryMinute() {
         return Arrays.stream(values())
-                .sorted(Comparator.comparingInt(AttendanceStatus::getBoundaryMinute))
+                .sorted(Comparator.comparingInt(AttendanceStatus::getBoundaryMinute).reversed())
                 .collect(Collectors.toList());
     }
 
