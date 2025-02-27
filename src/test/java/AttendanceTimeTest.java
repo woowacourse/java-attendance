@@ -1,9 +1,12 @@
 import attendance.model.AttendanceTime;
 import java.time.LocalDate;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceTimeTest {
 
@@ -48,5 +51,26 @@ public class AttendanceTimeTest {
 
         // when & then
         org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> new AttendanceTime(localdate, hour, minute));
+    }
+
+    @ParameterizedTest
+    @MethodSource("dateAndResult")
+    void 출석_날짜가_월요일인지_판단한다(final int date, final boolean expectedResult) {
+
+        // given
+        final LocalDate localdate = LocalDate.of(2025, 2, date);
+
+        // when
+        final boolean result = new AttendanceTime(localdate, 10, 10).isMonday();
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
+    private static Stream<Arguments> dateAndResult() {
+        return Stream.of(
+                Arguments.of(24, true),
+                Arguments.of(27, false)
+        );
     }
 }
