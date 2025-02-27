@@ -18,7 +18,7 @@ public class AttendanceDateTime {
         return new AttendanceDateTime(localDateTime);
     }
 
-    public LocalDateTime getDateTime() {
+    public LocalDateTime getLocalDateTime() {
         return dateTime;
     }
 

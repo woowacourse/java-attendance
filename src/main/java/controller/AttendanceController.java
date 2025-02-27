@@ -35,27 +35,42 @@ public class AttendanceController {
             Crew crew = Crew.from(nickname);
             validateHistoryNotAlreadyExists(crew, dateTime);
 
-            AttendanceStatusDto dto = attendanceService.addAttendanceOf(crew, dateTime);
+            AttendanceStatusDto dto = attendanceService.addAttendanceHistoryOf(crew, dateTime);
             OutputView.printAttendanceStatus(dto);
             return;
         }
 
         if (featureType == FeatureType.EDIT_ATTENDANCE) {
+            String nickname = InputView.askNickname(true);
+            validateNicknameRegistered(nickname);
+            Crew crew = Crew.from(nickname);
+
+            LocalDate localDate = InputView.askDayForEdit();
+            LocalTime localTime = InputView.askAttendanceTime(true);
+            LocalDateTime newDateTime = LocalDateTime.of(localDate, localTime);
+            if (!attendanceService.checkHistoryAlreadyExists(crew, newDateTime)) {
+                OutputView.printErrorMessage("해당 날짜의 출석 기록이 존재하지 않습니다. 출석 확인 기능을 이용해주세요.");
+                return;
+            }
+
+            attendanceService.replaceAttendanceHistoryOf(crew, newDateTime);
             return;
         }
 
         if (featureType == FeatureType.CHECK_ATTENDANCE_OF_CREW) {
+            // 닉네임 입력 -> 등록 체크 -> 모든 출석 기록 출력 -> 출석/지각/결석 횟수 출력 -> 대상 패널티 출력
             return;
         }
 
         if (featureType == FeatureType.CHECK_CREW_OF_BAN_RISK) {
+            // 제적 위험자를 모두 가져올 방법 생각 ...
             return;
         }
     }
 
     private void validateHistoryNotAlreadyExists(Crew crew, LocalDateTime dateTime) {
         if (attendanceService.checkHistoryAlreadyExists(crew, dateTime)) {
-           OutputView.printErrorMessage("이미 출석 기록이 있습니다. 수정 기능을 이용하세요.");
+           OutputView.printErrorMessage("해당 날짜에 출석 기록이 이미 존재합니다. 수정 기능을 이용해주세요.");
            throw new IllegalArgumentException();
         }
     }

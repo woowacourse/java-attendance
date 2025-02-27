@@ -1,5 +1,6 @@
 package view;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -37,8 +38,9 @@ public class InputView {
         return LocalTime.parse(scanner.next(), DateTimeFormatter.ofPattern("HH:mm"));
     }
 
-    public static String askDayForEdit() {
-        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return scanner.next();
+    public static LocalDate askDayForEdit() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요. 현재는 12월 시범중이기에 월은 12월로 고정됩니다.");
+        int day = Integer.parseInt(scanner.next());
+        return LocalDate.of(2024, 12, day);
     }
 }

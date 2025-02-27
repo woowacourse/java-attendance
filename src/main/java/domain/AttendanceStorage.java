@@ -15,12 +15,20 @@ public class AttendanceStorage {
         this.attendanceHistories = new ArrayList<>();
     }
 
+    public AttendanceHistory getAttendanceHistory(int index) {
+        return attendanceHistories.get(index);
+    }
     public void add(Crew crew) {
         crews.add(crew);
     }
 
     public void add(AttendanceHistory attendanceHistory) {
         attendanceHistories.add(attendanceHistory);
+    }
+
+    public void replace(AttendanceHistory newHistory) {
+        int replaceIndex = indexOfSameDateAndCrew(newHistory);
+        attendanceHistories.add(replaceIndex, newHistory);
     }
 
     public boolean containsSameNickname(String nickname) {
@@ -30,5 +38,15 @@ public class AttendanceStorage {
     public boolean containsSameHistoryOf(Crew crew, LocalDateTime dateTime) {
         return attendanceHistories.stream()
                 .anyMatch(history -> history.hasSameCrew(crew) && history.hasSameDate(dateTime));
+    }
+
+    public int indexOfSameDateAndCrew(AttendanceHistory attendanceHistory) {
+        AttendanceHistory foundHistory = attendanceHistories.stream()
+                .filter(comparedHistory -> comparedHistory.hasSameCrew(attendanceHistory)
+                        && comparedHistory.hasSameDate(attendanceHistory))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+
+        return attendanceHistories.indexOf(foundHistory);
     }
 }

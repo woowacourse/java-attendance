@@ -19,22 +19,24 @@ public class AttendanceHistory {
         return new AttendanceHistory(crew, AttendanceDateTime.from(dateTime));
     }
 
-    public boolean hasSameDate(LocalDateTime comparedDateTime) {
-        if (dateTime.getDateTime().getYear() != comparedDateTime.getYear()) {
-           return false;
-        }
-       if (dateTime.getDateTime().getMonth() != comparedDateTime.getMonth())  {
-           return false;
-       }
-       if (dateTime.getDateTime().getDayOfMonth() != comparedDateTime.getDayOfMonth()) {
-           return false;
-       }
+    public AttendanceDateTime getDateTime() {
+        return dateTime;
+    }
 
-       return true;
+    public boolean hasSameDate(LocalDateTime comparedDateTime) {
+        return dateTime.getLocalDateTime().toLocalDate().equals(comparedDateTime.toLocalDate());
+    }
+
+    public boolean hasSameDate(AttendanceHistory attendanceHistory) {
+        return hasSameDate(attendanceHistory.dateTime.getLocalDateTime());
     }
 
     public boolean hasSameCrew(Crew comparedCrew) {
        return crew.equals(comparedCrew);
+    }
+
+    public boolean hasSameCrew(AttendanceHistory attendanceHistory) {
+        return crew.equals(attendanceHistory.crew);
     }
 
     public AttendanceType getAttendanceType() {
