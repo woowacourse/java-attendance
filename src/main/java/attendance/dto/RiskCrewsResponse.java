@@ -35,8 +35,8 @@ public record RiskCrewsResponse(
         @Override
         public int compareTo(InnerCrew o) {
             return Integer.compare(
-                AttendanceStatus.getConvertedAbsence(o.statistics),
-                AttendanceStatus.getConvertedAbsence(this.statistics));
+                AttendanceStatus.getSortWeight(o.statistics),
+                AttendanceStatus.getSortWeight(this.statistics));
         }
     }
 }
