@@ -18,4 +18,11 @@ public class AttendanceHistory {
                 .filter(attendance -> attendance.isDateEquals(date))
                 .findAny();
     }
+
+    public Attendance modifyAttendance(final Attendance modifiedAttendance) {
+        LocalDate attendanceDateToModify = modifiedAttendance.getDate();
+        Attendance beforeAttendance = findAttendance(attendanceDateToModify).get();
+        attendances.remove(beforeAttendance);
+        return addAttendance(modifiedAttendance);
+    }
 }

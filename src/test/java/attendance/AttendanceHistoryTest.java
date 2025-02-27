@@ -50,9 +50,9 @@ class AttendanceHistoryTest {
         }
     }
 
-    @DisplayName("출석을_수정하고_새로_추가된_출석을_반환할_수_있다")
+    @DisplayName("출석을_수정하고_수정된_출석을_반환할_수_있다")
     @Test
-    void 출석을_수정하고_새로_추가된_출석을_반환할_수_있다() {
+    void should_ReturnModifiedAttendance_WhenModifyAttendance() {
         //given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
         LocalDate date = LocalDate.of(2024, 12, 26);
