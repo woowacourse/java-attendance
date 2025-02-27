@@ -1,5 +1,6 @@
 package model;
 
+import java.security.PublicKey;
 import java.time.LocalDateTime;
 
 public class Student {
@@ -15,6 +16,10 @@ public class Student {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isSameName(String studentName) {
+        return studentName.equals(name);
     }
 
     public void addTime(LocalDateTime localDateTime) {

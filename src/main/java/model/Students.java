@@ -12,14 +12,14 @@ public class Students {
 
     public boolean isExistStudent(String name) {
         return students.stream()
-                .anyMatch(student -> student.getName().equals(name));
+                .anyMatch(student -> student.isSameName(name));
     }
 
     public Student findStudentByName(String name) {
         return students.stream()
-                .filter(s -> s.getName().equals(name))
+                .filter(student -> student.isSameName(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 학생의 이름입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 학생입니다."));
     }
 
     public void updateEveryStudentNoInformationInFile(TodayDate todayDate) {
