@@ -109,4 +109,17 @@ public class AttendanceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
     }
+
+    @Test
+    @DisplayName("1.4 등교일이 아닐 경우(주말, 공휴일) 예외를 발생시킬 수 있다.")
+    void test() {
+        // given
+        Attendance attendance = new Attendance();
+        Crew crew = new Crew("노랑");
+        LocalDateTime dateTime = LocalDateTime.of(2025, 2, 29, 10, 0);
+        // when & then
+        assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 2월 29일 토요일은 등교일이 아닙니다.");
+    }
 }
