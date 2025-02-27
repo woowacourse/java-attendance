@@ -3,6 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -55,6 +56,27 @@ class CampusDateTest {
         assertThatThrownBy(() -> CampusDate.ofNowAndDay(now.withMonth(month), day))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 해당 월의 가능한 일 수 내에서 입력해 주세요.");
+    }
+
+    @ParameterizedTest
+    @CsvSource(value =
+            {
+                    "17,MONDAY",
+                    "18,TUESDAY",
+                    "19,WEDNESDAY",
+                    "20,THURSDAY",
+                    "21,FRIDAY",
+                    "22,SATURDAY",
+                    "23,SUNDAY"
+            }
+    )
+    void 해당_날짜의_요일을_반환한다(int day, DayOfWeek dayOfWeek) {
+        // given
+        LocalDate now = LocalDate.of(2025, 2, 27);
+        CampusDate campusDate = CampusDate.ofNowAndDay(now, day);
+
+        // when // then
+        assertThat(campusDate.getDayOfWeek()).isEqualTo(dayOfWeek);
     }
 
 }

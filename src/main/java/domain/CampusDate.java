@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.DateTimeException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public class CampusDate {
@@ -34,5 +35,9 @@ public class CampusDate {
 
     public int getDay() {
         return date.getDayOfMonth();
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return date.getDayOfWeek();
     }
 }
