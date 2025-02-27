@@ -25,7 +25,7 @@ public class Attendances {
 
     private boolean existsByDate(final Attendance attendance) {
         return attendances.stream()
-                .anyMatch(record -> record.isSameDate(attendance));
+                .anyMatch(record -> record.isEqaulToDateByAttendance(attendance));
     }
 
     public Attendance updateAttendance(final LocalDateTime updateDateTime) {

@@ -23,20 +23,20 @@ public class Attendance {
                 AttendanceTime.from(LocalTime.from(dateTime)));
     }
 
-    public boolean isEqualToDate(final LocalDate date) {
-        return this.attendanceDate.isEqualToDate(date);
-    }
-
     public void updateTime(final LocalTime time) {
         this.attendanceTime = AttendanceTime.from(time);
     }
 
-    public AttendanceStatus checkAttendanceStatus() {
-        return attendanceTime.checkAttendanceStatus(attendanceDate.isMonday());
+    public boolean isEqualToDate(final LocalDate date) {
+        return this.attendanceDate.isEqualToDate(date);
     }
 
-    public boolean isSameDate(final Attendance attendance) {
+    public boolean isEqaulToDateByAttendance(final Attendance attendance) {
         return this.attendanceDate.isEqualToDate(attendance.attendanceDate.date());
+    }
+
+    public AttendanceStatus checkAttendanceStatus() {
+        return attendanceTime.checkAttendanceStatus(attendanceDate.isMonday());
     }
 
     public AttendanceDate getAttendanceDate() {

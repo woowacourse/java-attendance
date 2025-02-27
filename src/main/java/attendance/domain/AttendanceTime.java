@@ -1,9 +1,8 @@
 package attendance.domain;
 
-import static attendance.constant.CampusOperatingRule.CAMPUS_CLOSE_HOUR;
-import static attendance.constant.CampusOperatingRule.CAMPUS_OPEN_HOUR;
+import static attendance.domain.CampusOperatingRule.CAMPUS_CLOSE_HOUR;
+import static attendance.domain.CampusOperatingRule.CAMPUS_OPEN_HOUR;
 
-import attendance.constant.CampusOperatingRule;
 import java.time.LocalTime;
 
 public record AttendanceTime(
