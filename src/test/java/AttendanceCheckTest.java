@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class AttendanceCheckTest {
     final Day today = new Day(LocalDate.of(2025, 2, 26));
 
-    public static Stream<Arguments> provideEachDayOfWeekAttendance() {
+    private static Stream<Arguments> provideEachDayOfWeekAttendance() {
         return Stream.of(
                 // 월요일
                 Arguments.of(new Day(LocalDate.of(2025, 2, 24)), "에드", LocalTime.of(13, 0), false, false),
@@ -26,7 +26,7 @@ public class AttendanceCheckTest {
                 Arguments.of(new Day(LocalDate.of(2025, 2, 25)), "율무", LocalTime.of(13, 0), false, true));
     }
 
-    public static Stream<Arguments> provideDifferentHoursOfAttendance() {
+    private static Stream<Arguments> provideDifferentHoursOfAttendance() {
         return Stream.of(
                 // 출석
                 Arguments.of("에드", LocalTime.of(10, 4), false, false),

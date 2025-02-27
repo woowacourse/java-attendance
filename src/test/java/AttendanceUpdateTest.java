@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class AttendanceUpdateTest {
-    public static Stream<Arguments> provideModificationInformation() {
+    private static Stream<Arguments> provideModificationInformation() {
         return Stream.of(
                 Arguments.of("에드", LocalTime.of(10, 0), LocalTime.of(10, 6), true, false),
                 Arguments.of("제프", LocalTime.of(10, 6), LocalTime.of(10, 4), false, false),
