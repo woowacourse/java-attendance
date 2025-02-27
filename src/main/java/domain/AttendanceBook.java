@@ -1,6 +1,6 @@
 package domain;
 
-import domain.policy.AttendancePolicy;
+import domain.policy.attend.AttendancePolicy;
 import reader.AttendanceFileReader;
 import reader.FileReadException;
 

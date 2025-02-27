@@ -1,9 +1,9 @@
-package domain.policy;
+package domain.policy.attend;
 
 import domain.Attendance;
-import domain.policy.date.AttendanceDatePolicy;
-import domain.policy.time.AttendanceTimePolicy;
-import domain.policy.time.rule.AttendanceStateRule;
+import domain.policy.attend.date.AttendanceDatePolicy;
+import domain.policy.attend.time.AttendanceTimePolicy;
+import domain.policy.AttendanceStateRule;
 
 import java.time.Duration;
 import java.time.LocalDate;

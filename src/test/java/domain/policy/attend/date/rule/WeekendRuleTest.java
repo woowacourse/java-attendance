@@ -1,5 +1,6 @@
-package domain.policy.date.rule;
+package domain.policy.attend.date.rule;
 
+import domain.policy.attend.date.WeekendRule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

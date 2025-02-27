@@ -1,4 +1,4 @@
-package domain.policy.time.rule;
+package domain.policy.attend.time;
 
 import java.time.LocalTime;
 

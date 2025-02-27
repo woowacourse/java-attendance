@@ -1,5 +1,6 @@
-package domain.policy.time.rule;
+package domain.policy.attend.time.rule;
 
+import domain.policy.AttendanceStateRule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

@@ -1,7 +1,6 @@
-package domain.policy.time;
+package domain.policy.attend.time;
 
-import domain.policy.time.rule.AttendanceStateRule;
-import domain.policy.time.rule.StudyTimeRule;
+import domain.policy.AttendanceStateRule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

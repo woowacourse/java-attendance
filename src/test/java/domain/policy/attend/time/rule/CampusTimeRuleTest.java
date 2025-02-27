@@ -1,5 +1,6 @@
-package domain.policy.time.rule;
+package domain.policy.attend.time.rule;
 
+import domain.policy.attend.time.CampusTimeRule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

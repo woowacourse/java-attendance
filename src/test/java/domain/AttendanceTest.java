@@ -1,9 +1,9 @@
 package domain;
 
-import domain.policy.AttendancePolicy;
-import domain.policy.date.AttendanceDatePolicy;
-import domain.policy.time.AttendanceTimePolicy;
-import domain.policy.time.rule.AttendanceStateRule;
+import domain.policy.attend.AttendancePolicy;
+import domain.policy.attend.date.AttendanceDatePolicy;
+import domain.policy.attend.time.AttendanceTimePolicy;
+import domain.policy.AttendanceStateRule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

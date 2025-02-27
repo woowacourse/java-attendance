@@ -1,6 +1,6 @@
 package domain;
 
-import domain.policy.AttendancePolicy;
+import domain.policy.attend.AttendancePolicy;
 import util.FormatUtil;
 
 import java.time.LocalTime;
