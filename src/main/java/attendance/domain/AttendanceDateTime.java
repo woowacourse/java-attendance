@@ -1,9 +1,6 @@
 package attendance.domain;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Objects;
@@ -74,6 +71,12 @@ public class AttendanceDateTime {
 
     public LocalDateTime getLocalDateTime() {
         return dateTime;
+    }
+
+    public boolean isSameDate(AttendanceDateTime otherDateTime) {
+        LocalDate attendanceDate = this.dateTime.toLocalDate();
+        LocalDate otherDate = otherDateTime.getLocalDateTime().toLocalDate();
+        return attendanceDate.equals(otherDate);
     }
 
     @Override

@@ -10,4 +10,19 @@ public class AttendanceBook {
     public AttendanceBook(final Map<Crew, List<AttendanceDateTime>> crewAttendances) {
         this.crewAttedances = crewAttendances;
     }
+
+    public void validateRegisteredCrew(final Crew crew) {
+        if (!this.crewAttedances.containsKey(crew)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
+    }
+
+    public void validateDuplicateAttendanceDate(final Crew crew, final AttendanceDateTime attendanceDateTime) {
+        List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
+        boolean isSameDateExists = attendances.stream()
+                .anyMatch(datetime -> datetime.isSameDate(attendanceDateTime));
+        if (isSameDateExists) {
+            throw new IllegalArgumentException("오늘은 이미 출석하셨습니다. 출석 수정 기능을 이용해 주세요.");
+        }
+    }
 }
