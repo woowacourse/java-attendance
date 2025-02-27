@@ -1,9 +1,10 @@
 package domain;
 
-import org.junit.jupiter.api.BeforeEach;
+import domain.policy.AttendancePolicy;
+import domain.policy.date.AttendanceDatePolicy;
+import domain.policy.time.AttendanceTimePolicy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.TimeMachine;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,111 +14,83 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AttendancesTest {
 
-    private Attendances attendances;
+    private final AttendancePolicy attendancePolicy = new AttendancePolicy(
+            new AttendanceDatePolicy(),
+            new AttendanceTimePolicy()
+    );
 
-    @BeforeEach
-    void setUp() {
-        attendances = Attendances.create();
+    @Test
+    @DisplayName("출석을 추가할 수 있다.")
+    void canAddAttendance() {
+        // given
+        Attendances attendances = Attendances.initialize();
+        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
+        AttendanceTime attendanceTime = AttendanceTime.of(LocalTime.of(10, 10), attendancePolicy);
+        Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
+
+        // when
+        attendances.add(attendance);
+
+        // then
+        assertThat(attendances.findByDate(attendanceDate).getAttendanceTime())
+                .isEqualTo(attendanceTime);
     }
 
     @Test
-    @DisplayName("출석을 추가할 수 있다")
-    void addAttendance() {
+    @DisplayName("출석을 등록했다면, 날짜를 통해서 출석 존재를 알 수 있다.")
+    void whenAddAttendanceCanCheckExistByDate() {
         // given
-        AttendanceDate date = AttendanceDate.from(LocalDate.of(2024, 12, 10));
-        AttendanceTime time = AttendanceTime.from(LocalTime.of(9, 0));
+        Attendances attendances = Attendances.initialize();
+        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
+        AttendanceTime attendanceTime = AttendanceTime.of(LocalTime.of(10, 10), attendancePolicy);
+        Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
+
+        attendances.add(attendance);
 
         // when
-        Attendance attendance = attendances.add(date, time);
-
         // then
-        assertThat(attendance).isNotNull();
-        assertThat(attendances.existsByDate(date)).isTrue();
-        assertThat(attendances.findByDate(date)).isEqualTo(time);
+        assertThat(attendances.existsByDate(attendanceDate)).isTrue();
     }
 
     @Test
-    @DisplayName("출석을 중복 추가하면 예외가 발생한다")
-    void whenDuplicateAttendanceAdded() {
+    @DisplayName("출석을 등록하지 않았다면, 날짜를 통해서 출석 존재를 알 수 없다.")
+    void whenNotAddAttendanceCannotCheckExistByDate() {
         // given
-        AttendanceDate date = AttendanceDate.from(LocalDate.of(2024, 12, 10));
-        AttendanceTime time = AttendanceTime.from(LocalTime.of(9, 10));
-        attendances.add(date, time);
+        Attendances attendances = Attendances.initialize();
+        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
 
         // when
         // then
-        assertThatThrownBy(() -> attendances.add(date, time))
+        assertThat(attendances.existsByDate(attendanceDate)).isFalse();
+    }
+
+    @Test
+    @DisplayName("출석을 등록했다면, 날짜를 통해서 출석을 찾을 수 있다.")
+    void whenAddAttendanceCanCheckFindByDate() {
+        // given
+        Attendances attendances = Attendances.initialize();
+        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
+        AttendanceTime attendanceTime = AttendanceTime.of(LocalTime.of(10, 10), attendancePolicy);
+        Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
+
+        attendances.add(attendance);
+
+        // when
+        // then
+        assertThat(attendances.findByDate(attendanceDate)).isEqualTo(attendance);
+    }
+
+    @Test
+    @DisplayName("출석을 등록하지 않았다면, 날짜를 통해서 출석 존재를 알 수 없다.")
+    void whenNotAddAttendanceCannotFindByDate() {
+        // given
+        Attendances attendances = Attendances.initialize();
+        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
+
+        // when
+        // then
+        assertThatThrownBy(() -> attendances.findByDate(attendanceDate))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 출석한 경우, 수정 기능을 이용해주세요.");
-    }
-
-    @Test
-    @DisplayName("이전에 출석 확인을 했다면, 그 출석을 수정할 수 있다")
-    void updateAttendanceWhenExists() {
-        // given
-        AttendanceDate date = AttendanceDate.from(LocalDate.of(2024, 12, 10));
-        AttendanceTime oldTime = AttendanceTime.from(LocalTime.of(9, 0));
-        attendances.add(date, oldTime);
-
-        AttendanceTime newTime = AttendanceTime.from(LocalTime.of(9, 30));
-
-        // when
-        Attendance updatedAttendance = attendances.update(date, newTime);
-
-        // then
-        assertThat(updatedAttendance).isNotNull();
-        assertThat(attendances.findByDate(date)).isEqualTo(newTime);
-    }
-
-    @Test
-    @DisplayName("이전에 출석 확인을 하지 않았다면, 그 출석을 수정할 수 없다")
-    void updateAttendanceWhenNotExists() {
-        // given
-        AttendanceDate date = AttendanceDate.from(LocalDate.of(2024, 12, 10));
-        AttendanceTime newTime = AttendanceTime.from(LocalTime.of(9, 30));
-
-        // when
-        // then
-        assertThatThrownBy(() -> attendances.update(date, newTime))
-                .hasMessage("출석하지 않은 경우, 수정 기능을 이용할 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("출석 여부를 확인할 수 있다")
-    void checkIfAttendanceExists() {
-        // given
-        AttendanceDate date = AttendanceDate.from(LocalDate.of(2024, 12, 10));
-        AttendanceTime time = AttendanceTime.from(LocalTime.of(9, 0));
-        attendances.add(date, time);
-
-        // when
-        boolean exists = attendances.existsByDate(date);
-        boolean notExists = attendances.existsByDate(AttendanceDate.from(LocalDate.of(2024, 12, 11)));
-
-        // then
-        assertThat(exists).isTrue();
-        assertThat(notExists).isFalse();
-    }
-
-    @Test
-    @DisplayName("출석 통계를 계산할 수 있다")
-    void calculateAttendanceStatistics() {
-        // given
-        TimeMachine.timeTravelAt(7);
-        String nickname = "강산";
-
-        attendances.add(AttendanceDate.from(LocalDate.of(2024, 12, 2)), AttendanceTime.from(LocalTime.of(9, 0)));
-        attendances.add(AttendanceDate.from(LocalDate.of(2024, 12, 3)), AttendanceTime.from(LocalTime.of(9, 30)));
-        attendances.add(AttendanceDate.from(LocalDate.of(2024, 12, 4)), AttendanceTime.from(LocalTime.of(10, 6)));
-        // 5, 6일 출석 X
-
-        // when
-        AttendanceStatistics statistics = attendances.calculateStatistics(nickname, TimeMachine.dateOfNow());
-
-        // then
-        assertThat(statistics).isNotNull();
-        assertThat(statistics.attendCount()).isEqualTo(2);
-        assertThat(statistics.lateCount()).isEqualTo(1);
-        assertThat(statistics.absentCount()).isEqualTo(2);
+                .hasMessageContaining("해당 날짜에 출석 기록이 없습니다.");
     }
 }
