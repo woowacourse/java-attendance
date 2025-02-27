@@ -19,4 +19,14 @@ public class CrewAttendanceManager {
 
         return newAttendances.findAttendanceByDate(dateTime.toLocalDate());
     }
+
+    public AttendanceUpdate processAttendanceUpdate(final String nickname, final LocalDateTime dateTime) {
+        Attendances attendances = crewAttendance.get(nickname);
+        Attendance beforeAttendance = attendances.findAttendanceByDate(dateTime.toLocalDate());
+
+        Attendances newAttendances = attendances.updateAttendance(dateTime);
+        Attendance afterAttendance = newAttendances.findAttendanceByDate(dateTime.toLocalDate());
+
+        return new AttendanceUpdate(beforeAttendance, afterAttendance);
+    }
 }
