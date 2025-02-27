@@ -10,8 +10,8 @@ public class Attendance {
     private static final LocalTime OPERATION_END_TIME = LocalTime.of(23, 0);
     private final Day day;
     private LocalTime time;
-    private Boolean isLate = false;
-    private Boolean isAbsent = false;
+    private Boolean isLate;
+    private Boolean isAbsent;
 
     public Attendance(Day day, LocalTime time) {
         validateTime(time);
@@ -29,9 +29,11 @@ public class Attendance {
     private void updateStatus() {
         LocalTime criteriaTime = day.getCriteriaTime();
         if (criteriaTime.plusMinutes(ABSENT_CRITERIA_MINUTES).isBefore(time)) {
+            isLate = false;
             isAbsent = true;
             return;
         }
+        isAbsent = false;
         isLate = criteriaTime.plusMinutes(LATE_CRITERIA_MINUTES).isBefore(time);
     }
 

@@ -64,7 +64,7 @@ class AttendanceUpdateTest {
         Boolean isLate = attendance.isLate();
         Boolean isAbsent = attendance.isAbsent();
 
-        //assertEquals(isLateExpected, isLate);
+        assertEquals(isLateExpected, isLate);
         assertEquals(isAbsentExpected, isAbsent);
     }
 }
