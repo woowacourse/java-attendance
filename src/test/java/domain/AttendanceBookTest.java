@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import dto.AttendanceCount;
 import dto.AttendanceHistory;
-import dto.AttendanceLog;
 import dto.InitialInfo;
 import dto.ModifyResult;
 import java.time.LocalDate;
@@ -138,8 +137,5 @@ public class AttendanceBookTest {
         assertThat(attendanceCount.attendCount()).isEqualTo(4);
         assertThat(sortedAttendance.getFirst()).isEqualTo(firstAttendance);
         assertThat(sortedAttendance.getLast()).isEqualTo(expectedLastAttendance);
-
-        // TODO : 별도의 Penalty 검증 테스트 코드 만들기
-//        assertThat(attendanceHistory.getPenalty()).isEqualTo(Penalty.COUNSELING);
     }
 }
