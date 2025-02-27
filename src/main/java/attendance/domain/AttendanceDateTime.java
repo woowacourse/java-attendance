@@ -87,6 +87,11 @@ public class AttendanceDateTime {
         return false;
     }
 
+    public AttendanceDateTime changeTime(LocalTime newTime) {
+        LocalDateTime newDateTime = LocalDateTime.of(this.dateTime.toLocalDate(), newTime);
+        return new AttendanceDateTime(newDateTime);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
