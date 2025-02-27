@@ -95,4 +95,19 @@ public class AttendanceDateTimeTest {
         // When & Then
         assertThat(attendanceDateTime.calculateDayOfWeek()).isEqualTo(expected);
     }
+
+    @CsvSource({
+            "26, false",
+            "27, true"
+    })
+    @ParameterizedTest
+    void 출석한_day가_주어진_day인지_확인한다(int day, boolean expected) {
+        // Given
+        LocalDateTime localDateTime = Year.of(2025).atMonth(2).atDay(27).atTime(13, 30);
+        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(localDateTime);
+
+        // When & Then
+        assertThat(attendanceDateTime.isThisDayInCurrentMonth(day))
+                .isEqualTo(expected);
+    }
 }
