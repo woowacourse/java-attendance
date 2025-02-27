@@ -1,11 +1,13 @@
 package attendance.view;
 
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
+import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -47,7 +49,7 @@ public class InputView {
     }
 
     public static String readModifyCrewNickname() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.\n");
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
         return input();
     }
 
@@ -55,8 +57,14 @@ public class InputView {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         int year = today.getYear();
         int month = today.getMonthValue();
-        int date = scanner.nextInt();
-        return LocalDate.of(year, month, date);
+        try {
+            int date = scanner.nextInt();
+            return LocalDate.of(year, month, date);
+        } catch (InputMismatchException e) {
+            throw new IllegalArgumentException("유효한 날짜를 입력해주세요.");
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("유효한 날짜를 입력해주세요.");
+        }
     }
 
     private static String input() {
