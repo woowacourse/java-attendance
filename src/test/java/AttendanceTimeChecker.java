@@ -8,6 +8,10 @@ public class AttendanceTimeChecker {
         int minute = time.getMinute();
 
         if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
+            if (hour < 13) {
+                return AttendPolicy.ATTEND;
+            }
+
             if (minute > 30) {
                 return AttendPolicy.ABSENT;
             }
