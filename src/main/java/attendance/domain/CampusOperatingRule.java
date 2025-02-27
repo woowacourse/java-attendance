@@ -1,4 +1,4 @@
-package attendance.constant;
+package attendance.domain;
 
 import java.time.LocalTime;
 
