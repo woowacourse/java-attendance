@@ -19,13 +19,14 @@ import attendance.domain.Crew;
 public class AttendanceParser {
 
     private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final int HEADER_HEIGHT = 1;
 
     private AttendanceParser() {
     }
 
     public static List<Crew> parseFile() {
-        try (final Stream<String> lines = Files.lines(Path.of(""))) {
-            return parseLines(lines);
+        try (final Stream<String> lines = Files.lines(Path.of("src/main/resources/attendances.csv"))) {
+            return parseLines(lines.skip(HEADER_HEIGHT));
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -43,7 +44,7 @@ public class AttendanceParser {
 
     public static CrewData parseLine(String line) {
         String[] split = line.split(",");
-        return CrewData.of(split[0], LocalDateTime.parse(split[1], DATETIME_FORMATTER));
+        return CrewData.of(split[0], LocalDateTime.parse(split[HEADER_HEIGHT], DATETIME_FORMATTER));
     }
 
     public record CrewData(

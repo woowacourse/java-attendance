@@ -20,7 +20,7 @@ public class InputView {
                 4. 제적 위험자 확인
                 Q. 종료
                 """,
-            today.getMonth(),
+            today.getMonthValue(),
             today.getDayOfMonth(),
             today.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN));
         return scanner.nextLine();
