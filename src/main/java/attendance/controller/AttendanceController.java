@@ -43,7 +43,7 @@ public class AttendanceController {
         }
     }
 
-    private void manageOption(final MenuOption menuOption) {
+    private void manageOption(MenuOption menuOption) {
         try {
             executeOption(menuOption);
         } catch (IllegalArgumentException e) {
