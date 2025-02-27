@@ -111,4 +111,8 @@ public class AttendanceHistory {
                 absenceCount);
         return status != RiskOfExpulsionStatus.NORMAL;
     }
+
+    public RiskOfExpulsionStatus calculateRiskOfExpulsionStatus(final LocalDate targetDate) {
+        return null;
+    }
 }

@@ -30,23 +30,6 @@ public class AttendanceBookTest {
             assertThat(actual.getCrew()).isEqualTo(crew);
         }
 
-
-        @DisplayName("주어진 크루의 제적 위험 상태를 반환한다.")
-        @Test
-        public void calculateRiskOfExpulsion() throws Exception {
-            // given
-            final var crew = new Crew("헤일러");
-            final var attendanceBook = new AttendanceBook();
-            attendanceBook.registerCrew(crew);
-            final LocalDate today = LocalDate.of(2024, 12, 13);
-
-            // when
-            final RiskOfExpulsionStatus actual = attendanceBook.calculateRiskOfExpulsionStatus(crew, today);
-
-            // then
-            assertThat(actual).isEqualByComparingTo(RiskOfExpulsionStatus.EXPULSION);
-        }
-
         @DisplayName("제적 위험자들의 통계를 반환한다.")
         @Test
         public void calculateRiskOfExpulsionCrewStatistics() throws Exception {

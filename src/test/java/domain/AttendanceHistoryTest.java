@@ -148,6 +148,21 @@ public class AttendanceHistoryTest {
             // then
             assertThat(actual).isTrue();
         }
+
+        @DisplayName("제적 위험 상태를 반환한다.")
+        @Test
+        public void calculateRiskOfExpulsion() throws Exception {
+            // given
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
+            final LocalDate targetDate = LocalDate.of(2024, 12, 13);
+
+            // when
+            final RiskOfExpulsionStatus actual = attendanceHistory.calculateRiskOfExpulsionStatus(targetDate);
+
+            // then
+            assertThat(actual).isEqualByComparingTo(RiskOfExpulsionStatus.EXPULSION);
+        }
     }
 
     @Nested
