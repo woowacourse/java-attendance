@@ -10,7 +10,8 @@ public enum ExceptionMessage {
     FILE_IO_ERROR("[ERROR] 파일을 읽는 도중 오류가 발생했습니다."),
     TIME_FORMAT_ERROR("[ERROR] 지원하지 않는 시간형식이 입력되었습니다."),
     NOT_NUMERIC_INPUT("[ERROR] 숫자가 아닌 형식의 데이터가 입력되었습니다."),
-    BLANK_INPUT("[ERROR] 비어있는 값이 입력되었습니다.");
+    BLANK_INPUT("[ERROR] 비어있는 값이 입력되었습니다."),
+    INVALID_DAY_INPUT("[ERROR] 유효하지 않은 일자가 입력되었습니다.");
 
     private final String message;
 

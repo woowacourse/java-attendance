@@ -1,6 +1,7 @@
 package attendance.view.validator;
 
 import attendance.exception.ExceptionMessage;
+import java.time.Month;
 
 public class InputValidator {
 
@@ -16,5 +17,9 @@ public class InputValidator {
         } catch (NumberFormatException exception) {
             throw new IllegalArgumentException(ExceptionMessage.NOT_NUMERIC_INPUT.getMessage());
         }
+    }
+
+    public static void validateIsInMonth(int year, Month month, int day) {
+
     }
 }
