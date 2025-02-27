@@ -79,4 +79,8 @@ public class AttendanceBook {
     public int hashCode() {
         return Objects.hashCode(attendances);
     }
+
+    public Crew findCrewByAttendance(AttendanceHistory attendanceHistory) {
+        return null;
+    }
 }

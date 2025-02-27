@@ -70,4 +70,26 @@ public class AttendancePenaltyTest {
                 new AttendanceStatistic(crewHistory2)
         ));
     }
+
+    @DisplayName("AttendanceStatistic 객체의 크루를 찾는다.")
+    @Test
+    void test2() {
+        Crew crew = new Crew("빙티");
+        AttendanceBook attendanceBook = AttendanceBook.from(Crews.from(List.of("빙티")));
+        AttendanceHistory crewHistory = attendanceBook.findByCrew(crew); //패널티 없음
+        crewHistory.register(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)); //출석
+        crewHistory.register(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)); //출석
+        crewHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)); //지각
+        crewHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 10)); //지각
+        crewHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
+
+        AttendanceStatistic attendanceStatistic = new AttendanceStatistic(crewHistory);
+
+        //when
+        //TODO : 의존방향이 이상해짐. 하나로 흐르도록 정리 - AttendanceStatistic을 잘 정리해야할듯
+        Crew findingCrew = attendanceBook.findCrewByAttendance(attendanceStatistic.getAttendanceHistory());
+
+        //then
+        assertThat(findingCrew).isEqualTo(crew);
+    }
 }
