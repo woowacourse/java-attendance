@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
@@ -59,5 +60,10 @@ public class AttendanceDateTime {
                     attendanceTime.getMinute()
             ));
         }
+    }
+
+    public int calculateMinuteDifference(final LocalDateTime otherDateTime) {
+        return (int)Duration.between(otherDateTime, dateTime)
+                .toMinutes();
     }
 }
