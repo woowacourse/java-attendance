@@ -43,7 +43,7 @@ public class OutputView {
     private static final String DISMISS_STATUS_FORMAT = "%s 대상자입니다.";
     private static final String CREW_ATTENDANCE_HISTORY_START_FORMAT = "이번 달 %s의 출석 기록입니다.\n";
     private static final String CREW_DISMISS_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)\n";
-    private static final String CREW_DISMISSES_PREFIX = "제적 위험자 확인";
+    private static final String CREW_DISMISSES_PREFIX = "제적 위험자 확인\n";
 
 
     public void printError(String errorMessage) {

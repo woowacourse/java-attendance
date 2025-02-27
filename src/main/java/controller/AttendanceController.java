@@ -71,6 +71,9 @@ public class AttendanceController {
             case MODIFY -> handleModify();
             case ATTENDANCE_HISTORY -> handleAttendanceHistory();
             case DISMISS_HISTORY -> handleDismissHistory();
+            case QUIT -> {
+                return;
+            }
             default -> throw new AttendanceException(NOT_SUPPORTED_METHOD);
         }
     }
