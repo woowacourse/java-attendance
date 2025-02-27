@@ -3,6 +3,7 @@ package attendance.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -32,6 +33,20 @@ class AttendanceStatusTest {
 
             // then
             assertThat(status).isEqualTo(AttendanceStatus.ABSENCE);
+        }
+
+        @Test
+        void 출석시간을_기즌으로_5분초과면_지각이다() {
+            // given
+            Attendance attendance = new Attendance(
+                new AttendanceDate(2024, 12, 2),
+                new AttendanceTime(13, 6));
+
+            // when
+            AttendanceStatus status = AttendanceStatus.from(attendance);
+
+            // then
+            assertThat(status).isEqualTo(AttendanceStatus.LATE);
         }
     }
 }

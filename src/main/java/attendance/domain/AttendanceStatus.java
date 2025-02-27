@@ -37,6 +37,11 @@ public enum AttendanceStatus {
             return ABSENCE;
         }
 
+        if (hour > startHour ||
+            (hour.equals(startHour) && minute > LATE.threshold)) {
+            return LATE;
+        }
+
         return null;
     }
 }
