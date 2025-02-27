@@ -7,18 +7,11 @@ public class Crews {
 
     private List<Crew> crews;
 
-    public Crews(List<String> crewsInFile) {
-        saveCrews(crewsInFile);
-    }
-
-    private void saveCrews(List<String> crewsInFile) {
+    public Crews() {
         this.crews = new ArrayList<>();
-        crewsInFile.forEach(crewInFile ->
-                saveCrew(crewInFile.split(",")[0], crewInFile.split(",")[1])
-        );
     }
 
-    private void saveCrew(final String nickname, final String attendTime) {
+    public void saveCrew(final String nickname, final String attendTime) {
         boolean exists = existsByNickname(nickname);
         if (exists) {
             addAttendTime(nickname, attendTime);

@@ -12,7 +12,6 @@ import domain.Crews;
 import domain.December;
 import infrastructure.AttendanceFileReader;
 import java.time.LocalDateTime;
-import java.util.List;
 import view.InputView;
 import view.OutputView;
 
@@ -27,15 +26,13 @@ public class AttendanceController {
     }
 
     public void run(AttendanceFileReader attendanceFileReader) {
-        List<String> crewsOfFile = attendanceFileReader.readFile("src/main/resources/attendances.csv");
-        Crews crews = new Crews(crewsOfFile);
+        Crews crews = attendanceFileReader.readFile("src/main/resources/attendances.csv");
 
         String command;
         do {
             command = inputView.readCommand();
             execute(command, crews);
         } while (!command.equals("Q"));
-
     }
 
     private void execute(String command, Crews crews) {
@@ -48,9 +45,7 @@ public class AttendanceController {
                 default -> throw new IllegalArgumentException("[ERROR] 올바른 명령어를 입력해주세요.");
             }
         } catch (Exception e) {
-            System.out.println();
-            System.out.println(e.getMessage());
-            System.out.println();
+            outputView.printErrorMessage(e.getMessage());
         }
     }
 
