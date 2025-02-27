@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static config.AppConfig.TODAY;
 import static domain.policy.AttendanceState.ABSENT;
+import static domain.policy.AttendanceState.LATE;
 import static java.util.stream.Collectors.*;
 
 public class AttendanceSheet {
@@ -107,14 +108,20 @@ public class AttendanceSheet {
                 ));
     }
 
-    public Map<String, ExpellState> checkExpellStatus(Map<String, Map<AttendanceState, Long>> attendances) {
+    public ExpellState calculateExpellStatus(Map<AttendanceState, Long> attendanceState) {
+        int lateCount = Math.toIntExact(attendanceState.get(LATE));
+        int absentCount = Math.toIntExact(attendanceState.get(ABSENT));
+        return ExpellState.checkExpellStatus(lateCount, absentCount);
+    }
+
+    public Map<String, ExpellState> calculateAllExpellStatus(Map<String, Map<AttendanceState, Long>> attendances) {
         return attendances.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> {
                             Map<AttendanceState, Long> attendance = entry.getValue();
-                            int lateCount = Math.toIntExact(attendance.getOrDefault(AttendanceState.LATE, 0L));
-                            int absentCount = Math.toIntExact(attendance.getOrDefault(AttendanceState.ABSENT, 0L));
+                            int lateCount = Math.toIntExact(attendance.getOrDefault(LATE, 0L));
+                            int absentCount = Math.toIntExact(attendance.getOrDefault(ABSENT, 0L));
                             return ExpellState.checkExpellStatus(lateCount, absentCount);
                         }
                 ));

@@ -37,4 +37,12 @@ public class Attendance {
     public String getNickname() {
         return nickname;
     }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
 }

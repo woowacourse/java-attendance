@@ -17,7 +17,9 @@ public class ViewMessage {
     public static final String UPDATE_WHEN = "언제로 변경하겠습니까?";
 
     public static final String CURRENT_MONTH_ATTENDANCE_SHEET = "이번 달 %s의 출석 기록입니다.%n";
-    public static final String ATTENDANCE_FORMAT = "12월 %02d일 %s %02d:%02d (%s)%n";
+    public static final String ATTENDANCE_FORMAT = "12월 %02d일 %s %s (%s)%n";
+    public static final String TIME_FORMAT = "%02d:%02d";
+
     public static final String STATISTICS_FORMAT = """
             출석: %d회
             지각: %d회

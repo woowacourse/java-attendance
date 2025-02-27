@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ReadFile<E, T> {
@@ -18,7 +19,7 @@ public abstract class ReadFile<E, T> {
                     .map(this::createInstance)
                     .toList();
 
-            return createInstances(instances);
+            return createInstances(new ArrayList<>(instances));
         } catch (FileNotFoundException e) {
             throw new RuntimeException("[ERROR] 파일 위치가 올바르지 않습니다");
         }

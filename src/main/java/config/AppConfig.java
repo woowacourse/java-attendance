@@ -17,7 +17,7 @@ public enum AppConfig {
     INSTANCE;
 
     private static final Path FILE_PATH = Paths.get("src/main/resources/attendances.csv");
-    public static final LocalDate TODAY = LocalDate.of(2024, 12, 9);
+    public static final LocalDate TODAY = LocalDate.of(2024, 12, 13);
 
     public AttendanceController createAttendanceController() {
         return new AttendanceController(createInputView(), createOutputView(), createAttendanceSheet());

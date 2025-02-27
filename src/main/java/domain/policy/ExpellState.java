@@ -11,7 +11,7 @@ public enum ExpellState {
 
     private static final int LATE_ABSENT_RATE = 3;
 
-    private String state;
+    public String state;
     private int limit;
 
     ExpellState(String state, int limit) {

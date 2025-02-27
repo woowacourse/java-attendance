@@ -139,10 +139,10 @@ public class AttendanceSheetTest {
 
         //when-then
         assertSoftly(softly -> {
-            softly.assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크")).isEqualTo(EXPELL);
-            softly.assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크2")).isEqualTo(INTERVIEW);
-            softly.assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크3")).isEqualTo(WARNING);
-            softly.assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크4")).isEqualTo(NONE);
+            softly.assertThat(attendanceSheet.calculateAllExpellStatus(attendances).get("링크")).isEqualTo(EXPELL);
+            softly.assertThat(attendanceSheet.calculateAllExpellStatus(attendances).get("링크2")).isEqualTo(INTERVIEW);
+            softly.assertThat(attendanceSheet.calculateAllExpellStatus(attendances).get("링크3")).isEqualTo(WARNING);
+            softly.assertThat(attendanceSheet.calculateAllExpellStatus(attendances).get("링크4")).isEqualTo(NONE);
         });
     }
 }

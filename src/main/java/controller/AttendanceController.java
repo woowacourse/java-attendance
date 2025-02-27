@@ -1,11 +1,12 @@
 package controller;
 
 import domain.AttendanceSheet;
+import domain.policy.AttendanceState;
 import view.InputView;
 import view.OutputView;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
 
 import static config.AppConfig.TODAY;
 import static util.ExceptionHandler.runInputCommand;
@@ -17,8 +18,6 @@ public class AttendanceController {
     public static final String ATTENDANCE_SHEET = "3";
     public static final String RISK_OF_EXPLUSTION = "4";
     public static final String QUIT = "Q";
-
-    public static final LocalDate DATE = LocalDate.of(2024, 12, 13);
 
     private InputView inputView;
     private OutputView outputView;
@@ -35,7 +34,7 @@ public class AttendanceController {
     }
 
     private String inputCommand() {
-        String select = inputView.inputMenu(DATE);
+        String select = inputView.inputMenu();
         switch (select) {
             case CREATE_ATTENDANCE -> attend();
             case UPDATE_ATTENDANCE -> updateAttendance();
@@ -64,6 +63,14 @@ public class AttendanceController {
     }
 
     private void printAttendance() {
+        String nickname = inputView.inputNickname();
+        outputView.printAttendanceSheetIntro(nickname);
+
+        outputView.printAttendancesSheet(nickname, attendanceSheet.findAttendanceByNickname(nickname));
+
+        Map<AttendanceState, Long> attendanceState = attendanceSheet.countAttendanceState(nickname, TODAY);
+        outputView.printAttendanceStatistics(attendanceState);
+        outputView.printAbsentPolicy(attendanceSheet.calculateExpellStatus(attendanceState));
     }
 
     private void printRiskOfExpulsion() {

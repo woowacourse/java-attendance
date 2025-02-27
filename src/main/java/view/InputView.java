@@ -3,11 +3,12 @@ package view;
 import view.parser.DayParser;
 import view.parser.TimeParser;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
+
+import static config.AppConfig.TODAY;
 
 public class InputView {
     private final Scanner scanner;
@@ -16,9 +17,9 @@ public class InputView {
         this.scanner = scanner;
     }
 
-    public String inputMenu(LocalDate today) {
-        String koreanDayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        System.out.printf(ViewMessage.SELECT_MENU_INTRO, today.getMonth().getValue(), today.getDayOfMonth(),
+    public String inputMenu() {
+        String koreanDayOfWeek = TODAY.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        System.out.printf(ViewMessage.SELECT_MENU_INTRO, TODAY.getMonth().getValue(), TODAY.getDayOfMonth(),
                 koreanDayOfWeek);
         System.out.println(ViewMessage.SELECT_MENU);
 

@@ -5,9 +5,9 @@ public enum AttendanceState {
     LATE("지각"),
     ABSENT("결석");
 
-    private String state;
+    public final String description;
 
-    AttendanceState(String state) {
-        this.state = state;
+    AttendanceState(String description) {
+        this.description = description;
     }
 }
