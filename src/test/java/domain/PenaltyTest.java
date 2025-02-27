@@ -65,4 +65,22 @@ public class PenaltyTest {
         AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
         assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.COUNSELING);
     }
+
+    @DisplayName("결석이 2회 이상인 경우 경고에 처한다.")
+    @Test
+    void test3() {
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
+        // 7, 8 => 주말
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
+        // 10 => 이미 존재
+        // 11, 12 => 결석
+        LocalDate yesterday = LocalDate.of(2024, 12, 12);
+
+        AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
+        assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.WARNING);
+    }
 }
