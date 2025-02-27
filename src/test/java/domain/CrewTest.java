@@ -103,4 +103,18 @@ public class CrewTest {
 
         assertThat(crew.getAbsentCount(LocalDate.of(2024, 12, 4))).isEqualTo(2);
     }
+
+    @DisplayName("크루의 지각 환산 포함 결석 수 카운트 테스트")
+    @Test
+    void checkCrewAbsentWithLateCountTest() {
+        String crewName = "메이";
+        Attendances attendances = new Attendances(List.of(
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 2)), new AttendanceTime(LocalTime.of(13, 6))),
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 6))),
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 4)), new AttendanceTime(LocalTime.of(10, 6)))
+        ));
+        Crew crew = new Crew(crewName, attendances);
+
+        assertThat(crew.getExpelledAbsentCount(LocalDate.of(2024, 12, 5))).isEqualTo(1);
+    }
 }

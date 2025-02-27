@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -52,4 +53,18 @@ public class AttendanceDateTest {
         );
     }
 
+    @ParameterizedTest
+    @DisplayName("날짜에 따른 교육 날짜들 탐색 테스트")
+    @MethodSource("provideTodayDate")
+    void findEducationDatesTest(LocalDate date, int expected) {
+        Assertions.assertThat(AttendanceDate.getPastEducationDates(date).size())
+                .isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> provideTodayDate() {
+        return Stream.of(
+                Arguments.arguments(LocalDate.of(2025, 2, 27), 21),
+                Arguments.arguments(LocalDate.of(2024, 12, 26), 17)
+        );
+    }
 }

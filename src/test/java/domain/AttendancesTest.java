@@ -74,16 +74,9 @@ public class AttendancesTest {
     @DisplayName("제적 상태 테스트")
     @Test
     void countUnattendedTest() {
-        Attendances normalAttendances = new Attendances(List.of(
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 2)), new AttendanceTime(LocalTime.of(13, 31))),
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 31))),
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 4)), new AttendanceTime(LocalTime.of(10, 31))),
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 5)), new AttendanceTime(LocalTime.of(10, 31))),
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 6)), new AttendanceTime(LocalTime.of(10, 31))),
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 9)), new AttendanceTime(LocalTime.of(13, 31)))
-        ));
+        Attendances noAttendances = new Attendances(List.of());
 
-        Assertions.assertThat(normalAttendances.getCrewStatue(LocalDate.of(2024, 12, 10)))
+        Assertions.assertThat(noAttendances.getCrewStatue(LocalDate.of(2024, 12, 10)))
                 .isEqualTo(CrewStatus.EXPELLED);
     }
 
@@ -131,6 +124,18 @@ public class AttendancesTest {
         ));
 
         Assertions.assertThat(normalAttendances.countUnattended(LocalDate.of(2024, 12, 6)))
+                .isEqualTo(2);
+    }
+
+    @DisplayName("출석 수 카운팅 테스트")
+    @Test
+    void countAttendTest() {
+        Attendances normalAttendances = new Attendances(List.of(
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 2)), new AttendanceTime(LocalTime.of(13, 1))),
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 1)))
+        ));
+
+        Assertions.assertThat(normalAttendances.countAttendance())
                 .isEqualTo(2);
     }
 }
