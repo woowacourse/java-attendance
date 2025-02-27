@@ -1,5 +1,11 @@
 package attendance.controller;
 
+import static attendance.controller.MainOption.CHECK_ATTENDANCE;
+import static attendance.controller.MainOption.CHECK_WARNING;
+import static attendance.controller.MainOption.MODIFY_ATTENDANCE;
+import static attendance.controller.MainOption.QUIT;
+import static attendance.controller.MainOption.VIEW_CREW_HISTORY;
+
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceRecord;
@@ -37,18 +43,28 @@ public class AttendanceController {
     }
 
     public void run() {
-
         Map<MainOption, Runnable> commands = Map.of(
-                MainOption.CHECK_ATTENDANCE, this::processCheckAttendance,
-                MainOption.MODIFY_ATTENDANCE, this::processModifyRecord,
-                MainOption.VIEW_CREW_HISTORY, this::processViewCrewHistory,
-                MainOption.CHECK_WARNING, this::processCheckWarning,
-                MainOption.QUIT, () -> System.exit(0)
+                CHECK_ATTENDANCE, this::processCheckAttendance,
+                MODIFY_ATTENDANCE, this::processModifyRecord,
+                VIEW_CREW_HISTORY, this::processViewCrewHistory,
+                CHECK_WARNING, this::processCheckWarning,
+                QUIT, () -> System.exit(0)
         );
 
-        Runnable action = commands.getOrDefault(MainOption.from(inputView.readOption()), this::run);
+        MainOption option = getOption();
+        Runnable action = commands.get(option);
         action.run();
         run();
+    }
+
+    private MainOption getOption() {
+        while (true) {
+            try {
+                return MainOption.from(inputView.readOption());
+            } catch (IllegalArgumentException e) {
+                outputView.printError(e.getMessage());
+            }
+        }
     }
 
     private void processCheckAttendance() {
@@ -68,15 +84,10 @@ public class AttendanceController {
     private void processModifyRecord() {
         process(() -> {
             Crew crew = crews.findByName(inputView.readModifyName());
-            int modifyDay = inputView.readModifyDay();
-            WoowaDate targetDate = new WoowaDate(clock.createDateFromDay(modifyDay), policy);
+            WoowaDate targetDate = createTargetDate();
 
             Optional<AttendanceRecord> findOldRecord = attendanceBook.findRecordBy(crew.getName(), targetDate);
-
-            AttendanceRecord oldRecord = null;
-            if (findOldRecord.isPresent()) {
-                oldRecord = findOldRecord.get().copy();
-            }
+            AttendanceRecord oldRecord = findOldRecord.map(AttendanceRecord::copy).orElse(null);
 
             LocalTime modifyTime = inputView.readModifyTime();
             attendanceBook.modify(crew.getName(), targetDate, modifyTime);
@@ -84,6 +95,11 @@ public class AttendanceController {
 
             outputView.displayModifyResult(oldRecord, newRecord);
         });
+    }
+
+    private WoowaDate createTargetDate() {
+        int modifyDay = inputView.readModifyDay();
+        return new WoowaDate(clock.createDateFromDay(modifyDay), policy);
     }
 
     private void processViewCrewHistory() {
