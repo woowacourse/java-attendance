@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static domain.policy.AttendanceState.ABSENT;
-import static domain.policy.AttendanceState.LATE;
 import static java.util.stream.Collectors.*;
 
 public class AttendanceSheet {

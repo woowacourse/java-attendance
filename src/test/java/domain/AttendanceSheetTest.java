@@ -137,10 +137,11 @@ public class AttendanceSheetTest {
         Map<String, Map<AttendanceState, Long>> attendances = attendanceSheet.countAttendancesState(today);
 
         //when-then
-        assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크")).isEqualTo(EXPELL);
-        assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크2")).isEqualTo(INTERVIEW);
-        assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크3")).isEqualTo(WARNING);
-        assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크4")).isEqualTo(NONE);
-
+        assertSoftly(softly -> {
+            softly.assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크")).isEqualTo(EXPELL);
+            softly.assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크2")).isEqualTo(INTERVIEW);
+            softly.assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크3")).isEqualTo(WARNING);
+            softly.assertThat(attendanceSheet.checkExpellStatus(attendances).get("링크4")).isEqualTo(NONE);
+        });
     }
 }
