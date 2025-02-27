@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -40,10 +40,10 @@ public class AttendanceBookTest {
             final LocalDate targetDate = LocalDate.of(2024, 12, 13);
 
             // when
-            final Map<Crew, AttendanceHistory> actual = attendanceBook.calculateRiskOfExpulsionCrews(targetDate);
+            final List<AttendanceHistory> actual = attendanceBook.calculateRiskOfExpulsionHistory(targetDate);
 
             // then
-            assertThat(actual).containsKey(crew);
+            assertThat(actual.getFirst().getCrew()).isEqualTo(crew);
         }
 
         @DisplayName("크루가 출석부에 등록되어 있는지 여부를 검사한다.")
