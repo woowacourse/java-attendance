@@ -89,4 +89,8 @@ public class AttendanceHistory {
     public Crew getCrew() {
         return crew;
     }
+
+    public Map<AttendanceStatus, Integer> calculateAttendanceStatusStatistics(final LocalDate date) {
+        return null;
+    }
 }
