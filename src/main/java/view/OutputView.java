@@ -37,7 +37,8 @@ public class OutputView {
                 newAttendance.getAttendanceStatus().getStatus()));
     }
 
-    public void printAttendances(Crew crew, Attendances attendances) {
+    public void printAttendances(Crew crew) {
+        Attendances attendances = crew.getAttendances();
         System.out.println(System.lineSeparator() + String.format("이번 달 %s의 출석 기록입니다.", crew.getName()) + System.lineSeparator());
 
         List<LocalDate> pastEducationDates = AttendanceDate.getPastEducationDates(Constants.NOW_DATE);

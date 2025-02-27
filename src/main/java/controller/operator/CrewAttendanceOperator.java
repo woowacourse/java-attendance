@@ -15,7 +15,6 @@ public class CrewAttendanceOperator implements OptionOperator {
             return attendanceBook.findCrewByName(nameInput);
         });
 
-        Attendances attendances = crew.getAttendances();
-        outputView.printAttendances(crew, attendances);
+        outputView.printAttendances(crew);
     }
 }
