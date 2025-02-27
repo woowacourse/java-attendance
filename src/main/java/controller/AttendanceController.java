@@ -21,8 +21,13 @@ public class AttendanceController {
     }
 
     public void run() {
-        FeatureType featureType = getFeature();
-        runFeature(featureType);
+        while (true) {
+            FeatureType featureType = getFeature();
+            if (featureType == FeatureType.QUIT) {
+                break;
+            }
+            runFeature(featureType);
+        }
     }
 
     private void runFeature(FeatureType featureType) {

@@ -36,7 +36,7 @@ public class AttendanceStorage {
 
     public void replace(AttendanceHistory newHistory) {
         int replaceIndex = indexOfSameDateAndCrew(newHistory);
-        attendanceHistories.add(replaceIndex, newHistory);
+        attendanceHistories.set(replaceIndex, newHistory);
     }
 
     public boolean containsSameNickname(String nickname) {
