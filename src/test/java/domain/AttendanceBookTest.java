@@ -1,7 +1,7 @@
 package domain;
 
-import static org.assertj.core.api.Assertions.*;
-import static util.loader.FileLoader.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static util.loader.FileLoader.loadCSV;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

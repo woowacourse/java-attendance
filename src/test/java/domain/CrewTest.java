@@ -1,7 +1,9 @@
 package domain;
 
-import static org.assertj.core.api.Assertions.*;
-import static util.parser.DateTimeParser.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static util.parser.DateTimeParser.parseStringToDate;
+import static util.parser.DateTimeParser.parseStringToDateTime;
+import static util.parser.DateTimeParser.parseStringToTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
