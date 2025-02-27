@@ -16,6 +16,11 @@ public enum CampusTime {
         this.localTime = localTime;
     }
 
+    public static boolean isOutOfCampusOperationTime(final LocalTime targetTime) {
+        return CAMPUS_OPEN_TIME.getLocalTime().isAfter(targetTime)
+                || CAMPUS_CLOSE_TIME.getLocalTime().isBefore(targetTime);
+    }
+
     public LocalTime getLocalTime() {
         return localTime;
     }
