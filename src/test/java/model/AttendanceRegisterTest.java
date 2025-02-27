@@ -125,5 +125,18 @@ class AttendanceRegisterTest {
                 .hasMessageContaining("등교일이 아닙니다.");
     }
 
+    @Test
+    void 캠퍼스_운영시간이_아닌_시간예_출석을_하면_예외가_발생한다() {
+        // given
+        AttendanceRegister attendanceRegister = new AttendanceRegister();
+        LocalDate date = LocalDate.of(2024, 12, 10);
+        LocalTime time = LocalTime.of(7, 58);
+
+        // when & then
+        assertThatThrownBy(() -> attendanceRegister.attend("한스", date, time))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("등교시간이 아닙니다.");
+    }
+
 
 }
