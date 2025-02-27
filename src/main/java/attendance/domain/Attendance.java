@@ -38,4 +38,8 @@ public class Attendance {
     public AttendanceStatus determineStatus() {
         return AttendanceStatus.determine(attendDate, attendTime);
     }
+
+    public boolean isSameDate(Attendance inputAttendance) {
+        return attendDate.isEqual(inputAttendance.attendDate);
+    }
 }
