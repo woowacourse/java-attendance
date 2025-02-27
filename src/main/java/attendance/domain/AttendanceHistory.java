@@ -1,7 +1,11 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatus.*;
+
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -27,6 +31,28 @@ public class AttendanceHistory {
     }
 
     public AttendanceStatistics returnAttendanceStatistics(final LocalDate today) {
-        return new AttendanceStatistics(1, 2, 3);
+        Map<AttendanceStatus, Integer> statistics = new HashMap<>();
+        initializeStatistics(statistics);
+        for (int i = today.getDayOfMonth() - 1; i > 0; i--) {
+            LocalDate date = today.minusDays(i);
+            boolean isOperationDate = CampusManager.isOperationDate(date);
+            if (!isOperationDate) {
+                continue;
+            }
+            Optional<Attendance> attendance = findAttendance(date);
+            if (attendance.isEmpty()) {
+                statistics.put(ABSENCE, statistics.get(ABSENCE) + 1);
+                continue;
+            }
+            AttendanceStatus status = attendance.get().getStatus();
+            statistics.put(status, statistics.get(status) + 1);
+        }
+        return new AttendanceStatistics(statistics.get(ATTENDANCE), statistics.get(LATE), statistics.get(ABSENCE));
+    }
+
+    private void initializeStatistics(Map<AttendanceStatus, Integer> statistics) {
+        for (AttendanceStatus status : values()) {
+            statistics.put(status, 0);
+        }
     }
 }

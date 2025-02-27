@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
 import static attendance.domain.AttendanceStatus.ATTENDANCE;
 import static attendance.domain.AttendanceStatus.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -93,7 +94,12 @@ class AttendanceHistoryTest {
                 LocalTime.of(10, 0),
                 ATTENDANCE)
         );
-        LocalDate today = LocalDate.of(2024, 12, 6);
+        attendanceHistory.addAttendance(new Attendance(
+                LocalDate.of(2024, 12, 5),
+                LocalTime.of(10, 32),
+                ABSENCE)
+        );
+        LocalDate today = LocalDate.of(2024, 12, 8);
 
         //when
         AttendanceStatistics result = attendanceHistory.returnAttendanceStatistics(today);
@@ -102,7 +108,7 @@ class AttendanceHistoryTest {
         assertAll(
                 () -> assertThat(result).extracting("attendanceCount").isEqualTo(1),
                 () -> assertThat(result).extracting("lateCount").isEqualTo(1),
-                () -> assertThat(result).extracting("absenceCount").isEqualTo(2)
+                () -> assertThat(result).extracting("absenceCount").isEqualTo(3)
         );
     }
 }

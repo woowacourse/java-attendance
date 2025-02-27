@@ -15,7 +15,6 @@ import java.util.Optional;
 public class Application {
     private static final Map<String, Runnable> options;
     private static final String QUIT_OPTION = "Q";
-    private static final CampusManager campusManager = new CampusManager();
     private static final AttendanceManager attendanceManager = new AttendanceManager();
 
     static {
@@ -56,7 +55,7 @@ public class Application {
 
     private static void doAttendance() {
         LocalDate today = now();
-        boolean isOperationDate = campusManager.isOperationDate(today);
+        boolean isOperationDate = CampusManager.isOperationDate(today);
         if (!isOperationDate) {
             OutputView.printNotOperationDate(today);
             return;
@@ -74,7 +73,7 @@ public class Application {
             return;
         }
         LocalTime attendanceTime = InputView.readAttendanceTime();
-        boolean isOperationTime = campusManager.isOperationTime(attendanceTime);
+        boolean isOperationTime = CampusManager.isOperationTime(attendanceTime);
         if (!isOperationTime) {
             OutputView.printNotOperationTime();
             return;
@@ -93,7 +92,7 @@ public class Application {
             return;
         }
         LocalDate dateToModify = InputView.readAttendanceDateToModify(today);
-        boolean isOperationDate = campusManager.isOperationDate(dateToModify);
+        boolean isOperationDate = CampusManager.isOperationDate(dateToModify);
         if (!isOperationDate) {
             OutputView.printNotOperationDate(dateToModify);
             return;
@@ -104,7 +103,7 @@ public class Application {
             return;
         }
         LocalTime modificationTime = InputView.readAttendanceModificationTime();
-        boolean isOperationTime = campusManager.isOperationTime(modificationTime);
+        boolean isOperationTime = CampusManager.isOperationTime(modificationTime);
         if (!isOperationTime) {
             OutputView.printNotOperationTime();
             return;

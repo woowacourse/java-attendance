@@ -9,11 +9,11 @@ public class CampusManager {
     private static final LocalTime OPERATION_TIME_BEGIN_THRESHOLD = LocalTime.of(7, 59);
     private static final LocalTime OPERATION_TIME_END_THRESHOLD = LocalTime.of(23, 01);
 
-    public boolean isOperationDate(final LocalDate date) {
+    public static boolean isOperationDate(final LocalDate date) {
         return !(isHoliday(date) || isWeekend(date));
     }
 
-    private boolean isHoliday(final LocalDate date) {
+    private static boolean isHoliday(final LocalDate date) {
         return date.isEqual(CHRISTMAS);
     }
 
@@ -23,7 +23,7 @@ public class CampusManager {
                 day.equals(DayOfWeek.SUNDAY);
     }
 
-    public boolean isOperationTime(final LocalTime time) {
+    public static boolean isOperationTime(final LocalTime time) {
         return time.isAfter(OPERATION_TIME_BEGIN_THRESHOLD) &&
                 time.isBefore(OPERATION_TIME_END_THRESHOLD);
     }
