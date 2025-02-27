@@ -17,6 +17,10 @@ public enum PenaltyType {
         this.requiredAbsenceCount = requiredAbsenceCount;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public static PenaltyType getFrom(Map<AttendanceType, Integer> attendanceTypeCount) {
         int totalAbsenceCount = attendanceTypeCount.getOrDefault(AttendanceType.ABSENCE, 0) +
                 attendanceTypeCount.getOrDefault(AttendanceType.LATE, 0) / 3;

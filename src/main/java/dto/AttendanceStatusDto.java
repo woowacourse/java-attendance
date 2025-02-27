@@ -7,8 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record AttendanceStatusDto(
-        String month,
-        String day,
+        int month,
+        int day,
         DayOfWeek dayOfWeek,
         String hour,
         String minute,
@@ -16,8 +16,8 @@ public record AttendanceStatusDto(
 ) {
     public static AttendanceStatusDto of(LocalDateTime localDateTime, AttendanceType attendanceType) {
         return new AttendanceStatusDto(
-                String.valueOf(localDateTime.getMonthValue()),
-                String.valueOf(localDateTime.getDayOfMonth()),
+                localDateTime.getMonthValue(),
+                localDateTime.getDayOfMonth(),
                 localDateTime.getDayOfWeek(),
                 String.valueOf(localDateTime.getHour()),
                 String.valueOf(localDateTime.getMinute()),
@@ -27,8 +27,8 @@ public record AttendanceStatusDto(
 
     public static AttendanceStatusDto generateNotRecordedOf(LocalDateTime localDateTime) {
         return new AttendanceStatusDto(
-                String.valueOf(localDateTime.getMonthValue()),
-                String.valueOf(localDateTime.getDayOfMonth()),
+                localDateTime.getMonthValue(),
+                localDateTime.getDayOfMonth(),
                 localDateTime.getDayOfWeek(),
                 "--",
                 "--",

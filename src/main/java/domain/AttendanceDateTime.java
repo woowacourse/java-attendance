@@ -62,6 +62,9 @@ public class AttendanceDateTime {
             attendanceHourThreshold = 13;
         }
 
+        if (!isSchoolTime()) {
+            return AttendanceType.ABSENCE;
+        }
         if (dateTime.getHour() < attendanceHourThreshold || (dateTime.getHour() == attendanceHourThreshold
                 && dateTime.getMinute() <= 5)) {
             return AttendanceType.ATTENDANCE;

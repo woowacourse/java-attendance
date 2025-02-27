@@ -66,7 +66,7 @@ public class AttendanceController {
             String nickname = InputView.askNickname(false);
             validateNicknameRegistered(nickname);
             AttendanceStatusesOfCrewDto statusesDto = attendanceService.getHistoriesDtoFrom(Crew.from(nickname), currentDay);
-//            OutputView.printAttendanceStatus(statusesDto);
+            OutputView.printAttendanceStatus(statusesDto);
             return;
         }
 
