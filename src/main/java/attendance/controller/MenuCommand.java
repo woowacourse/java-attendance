@@ -11,7 +11,7 @@ public enum MenuCommand {
     FOURTH("4"),
     QUIT("Q");
 
-    private String content;
+    private final String content;
 
     MenuCommand(String content) {
         this.content = content;
