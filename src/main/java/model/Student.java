@@ -1,6 +1,5 @@
 package model;
 
-import java.security.PublicKey;
 import java.time.LocalDateTime;
 
 public class Student {
@@ -38,7 +37,7 @@ public class Student {
         studentAttendanceHistory.updateNoInformationInFile(todayDate);
     }
 
-    public void isAlreadyAttendanceDate(TodayDate todayDate) {
+    public void validateAlreadyAttendanceDate(TodayDate todayDate) {
         if (studentAttendanceHistory.isAlreadyAttendanceDate(todayDate)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석한 요일입니다. 수정하고 싶으시면 수정 메뉴를 이용해 주세요.");
         }
