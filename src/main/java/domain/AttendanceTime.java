@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class AttendanceTime {
@@ -14,6 +15,10 @@ public class AttendanceTime {
 
     public boolean isSameDay(AttendanceTime otherTime) {
         return time.toLocalDate().equals(otherTime.time.toLocalDate());
+    }
+
+    public boolean isIn(LocalDate day) {
+        return time.toLocalDate().equals(day);
     }
 
     private void validateOperationTime(LocalDateTime time) {
