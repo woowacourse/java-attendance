@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import attendance.exception.AttendanceArgumentException;
 
@@ -31,4 +32,11 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
         return dateTime.toLocalDate();
     }
 
+    public LocalTime getTime() {
+        return dateTime.toLocalTime();
+    }
+
+    public String getStatusString() {
+        return attendanceStatus.getStatus();
+    }
 }

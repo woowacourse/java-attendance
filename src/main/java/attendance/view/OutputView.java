@@ -3,16 +3,7 @@ package attendance.view;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-import attendance.domain.Attendance;
-import attendance.domain.AttendanceStatus;
-import attendance.domain.HistoryStatistic;
-import attendance.domain.SanctionLevel;
 import attendance.utility.DateTimeFormatterWrapper;
 
 public class OutputView {
@@ -40,8 +31,15 @@ public class OutputView {
     private static final String INITIALIZE_SANCTION_STATISTIC = "\n제적 위험자 조회 결과";
     private static final String FORMAT_SANCTION = "\n- %s: 결석 %d회, 지각 %d회 (%s)";
 
+    private static final StringBuilder stringBuilder = new StringBuilder();
+
     public void println(String string) {
         System.out.println(string);
+    }
+
+    public void printStringBuilder() {
+        System.out.println(stringBuilder.toString());
+        stringBuilder.setLength(0);
     }
 
     public void printError(String message) {
@@ -73,89 +71,66 @@ public class OutputView {
         println(REQUEST_ATTENDANCE_MODIFY_DATE);
     }
 
-    public void printlnRegister(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
-        String format = String.format(ATTENDANCE_FORMAT, attendanceStatus.getStatus());
+    public void printlnRegister(String status, LocalDateTime dateTime) {
+        String format = String.format(ATTENDANCE_FORMAT, status);
         String formattedMessage = DateTimeFormatterWrapper.getFormatter(format).format(dateTime);
 
         println(formattedMessage);
     }
 
-    public void printlnModifyOldAttendance(Attendance oldAttendance, Attendance newAttendance) {
-        String formatOld = String.format(ATTENDANCE_FORMAT, oldAttendance.attendanceStatus().getStatus());
-        String formattedMessageOld = DateTimeFormatterWrapper.getFormatter(formatOld).format(oldAttendance.dateTime());
+    public void appendModifiedOldAttendance(String status, LocalDateTime dateTime) {
+        String formatOld = String.format(ATTENDANCE_FORMAT, status);
+        String formattedMessageOld = DateTimeFormatterWrapper.getFormatter(formatOld).format(dateTime);
 
-        String formatNew = String.format(MODIFY_TIME_FORM, newAttendance.attendanceStatus().getStatus());
-        String formattedMessageNew = DateTimeFormatterWrapper.getFormatter(formatNew).format(newAttendance.dateTime());
-
-        println(formattedMessageOld + formattedMessageNew);
+        stringBuilder.append(formattedMessageOld);
     }
 
-    public void printlnModifyNewAttendance(Attendance newAttendance) {
-        LocalTime time = newAttendance.dateTime().toLocalTime();
-        String formatNew = String.format(MODIFY_TIME_FORM, newAttendance.attendanceStatus().getStatus());
+    public void appendModifiedAbsence(LocalDateTime dateTime) {
+        String formattedMessageOld = DateTimeFormatterWrapper.getFormatter(FORMAT_ATTENDANCE_NOT_EXISTING)
+            .format(dateTime);
+
+        stringBuilder.append(formattedMessageOld);
+    }
+
+    public void printlnModify(String status, LocalTime time) {
+        String formatNew = String.format(MODIFY_TIME_FORM, status);
         String formattedMessageNew = DateTimeFormatterWrapper.getFormatter(formatNew).format(time);
 
-        println(FORMAT_ATTENDANCE_NOT_EXISTING + formattedMessageNew);
+        stringBuilder.append(formattedMessageNew);
+        printStringBuilder();
     }
 
     public void printlnInitializeHistory(String nickname) {
         println(String.format(INITIALIZE_HISTORY, nickname));
     }
 
-    public void printlnHistory(Map<LocalDate, Optional<Attendance>> history) {
-        List<LocalDate> sortedDates = history.keySet().stream()
-            .sorted()
-            .toList();
-        StringBuilder builder = new StringBuilder();
-        for (LocalDate date : sortedDates) {
-            String formattedMessage = formatAttendanceMessage(date, history);
-            builder.append(formattedMessage);
-        }
-        println(builder.toString());
+    public void appendAttendance(LocalDateTime dateTime, String status) {
+        String format = String.format(ATTENDANCE_FORMAT, status);
+        String formattedMessage = DateTimeFormatterWrapper.getFormatter(format).format(dateTime);
+        stringBuilder.append(formattedMessage);
     }
 
-    private String formatAttendanceMessage(LocalDate date, Map<LocalDate, Optional<Attendance>> history) {
-        Optional<Attendance> attendance = history.get(date);
-        if (attendance.isPresent()) {
-            Attendance attendanceData = attendance.get();
-            String format = String.format(ATTENDANCE_FORMAT, attendanceData.attendanceStatus().getStatus());
-            return DateTimeFormatterWrapper.getFormatter(format)
-                .format(attendanceData.dateTime());
-        }
-        return DateTimeFormatterWrapper.getFormatter(FORMAT_ATTENDANCE_NOT_EXISTING)
-            .format(date);
+    public void appendAbsence(LocalDate date) {
+        String formattedMessage = DateTimeFormatterWrapper.getFormatter(FORMAT_ATTENDANCE_NOT_EXISTING).format(date);
+        stringBuilder.append(formattedMessage);
     }
 
-    public void printlnHistoryStatistic(EnumMap<AttendanceStatus, Integer> statistic) {
-        var builder = new StringBuilder();
-        var keySet = statistic.keySet().stream().sorted(Comparator.reverseOrder()).toList();
-        for (AttendanceStatus status : keySet) {
-            String formattedMessage = String.format(FORMAT_STATE, status.getStatus(),
-                statistic.getOrDefault(status, 0));
-            builder.append(formattedMessage);
-        }
-        println(builder.toString());
-
+    public void appendStatisticToBuilder(String status, int count) {
+        String formattedMessage = String.format(FORMAT_STATE, status, count);
+        stringBuilder.append(formattedMessage);
     }
 
-    public void printJudgedSanctionLevel(SanctionLevel sanctionLevel) {
-        println(String.format(SANCTION_LEVEL, sanctionLevel.getValues()));
+    public void printJudgedSanctionLevel(String sanctionLevel) {
+        println(String.format(SANCTION_LEVEL, sanctionLevel));
     }
 
     public void printlnInitializeSanctionStatistic() {
         println(INITIALIZE_SANCTION_STATISTIC);
     }
 
-    public void printlnSanctionStatistic(List<HistoryStatistic> historyStatistics) {
-        var builder = new StringBuilder();
-        for (HistoryStatistic historyStatistic : historyStatistics) {
-            String nickname = historyStatistic.nickname();
-            int absenceCount = historyStatistic.statistic().getOrDefault(AttendanceStatus.ABSENCE, 0);
-            int LateCount = historyStatistic.statistic().getOrDefault(AttendanceStatus.LATE, 0);
-            String sanctionLevel = historyStatistic.judgeSanctionLevel().getValues();
-            String formattedMessage = String.format(FORMAT_SANCTION, nickname, absenceCount, LateCount, sanctionLevel);
-            builder.append(formattedMessage);
-        }
-        println(builder.toString());
+    public void appendSanctionStatistic(String nickname, int absenceCount, int lateCount, String sanctionLevel) {
+        String formattedMessage = String.format(FORMAT_SANCTION, nickname, absenceCount, lateCount, sanctionLevel);
+        stringBuilder.append(formattedMessage);
     }
+
 }

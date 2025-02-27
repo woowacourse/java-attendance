@@ -34,7 +34,7 @@ public class AttendanceHistoryTest {
         var history = attendanceHistory.history();
 
         assertAll(
-            () -> assertThat(history.keySet().size()).isEqualTo(17),
+            () -> assertThat(history.keySet().size()).isEqualTo(18),
             () -> assertThat(history.get(date).get()).isEqualTo(newAttendance),
             () -> assertThat(history.keySet().stream()
                 .filter(d -> !d.equals(date))
@@ -59,7 +59,7 @@ public class AttendanceHistoryTest {
 
         assertEquals(1, statistic.get(AttendanceStatus.ATTENDANCE));
         assertEquals(1, statistic.get(AttendanceStatus.LATE));
-        assertEquals(15, statistic.get(AttendanceStatus.ABSENCE));
+        assertEquals(16, statistic.get(AttendanceStatus.ABSENCE));
     }
 
 }

@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.List;
 
 public record HistoryStatistic(EnumMap<AttendanceStatus, Integer> statistic, String nickname)
     implements Comparable<HistoryStatistic> {
@@ -20,11 +21,19 @@ public record HistoryStatistic(EnumMap<AttendanceStatus, Integer> statistic, Str
             + statistic.getOrDefault(AttendanceStatus.LATE, 0);
     }
 
+    public List<AttendanceStatus> getStatusesReverseOrder() {
+        return statistic.keySet().stream().sorted(Comparator.reverseOrder()).toList();
+    }
+
     @Override
     public int compareTo(HistoryStatistic o) {
         return Comparator.comparing(HistoryStatistic::judgeSanctionLevel)
             .thenComparing(HistoryStatistic::getWeightForComparingSort, Comparator.reverseOrder())
             .thenComparing(HistoryStatistic::nickname)
             .compare(this, o);
+    }
+
+    public int getOrDefault(AttendanceStatus status, int defaultInt) {
+        return statistic.getOrDefault(status, defaultInt);
     }
 }

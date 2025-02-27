@@ -16,7 +16,9 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceStatus;
 import attendance.domain.HistoryStatistic;
+import attendance.domain.SanctionLevel;
 import attendance.domain.SystemDateTime;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
@@ -108,7 +110,7 @@ public class Application {
         var newAttendance = Attendance.of(dateTime, systemDateTime);
         attendances.validateDuplicate(dateTime.toLocalDate());
         attendances.add(newAttendance);
-        outputView.printlnRegister(newAttendance.dateTime(), newAttendance.attendanceStatus());
+        outputView.printlnRegister(newAttendance.getStatusString(), newAttendance.dateTime());
     }
 
     private static void modifyAttendance() {
@@ -126,11 +128,11 @@ public class Application {
         Attendance newAttendance = Attendance.of(dateTime, systemDateTime);
         Optional<Attendance> oldAttendance = attendanceBook.findAttendance(nickname, dateTime.toLocalDate());
         attendances.add(newAttendance);
-        if (oldAttendance.isPresent()) {
-            outputView.printlnModifyOldAttendance(oldAttendance.get(), newAttendance);
-            return;
-        }
-        outputView.printlnModifyNewAttendance(newAttendance);
+        oldAttendance.ifPresentOrElse(
+            attendance -> outputView.appendModifiedOldAttendance(attendance.getStatusString(), attendance.dateTime()),
+            () -> outputView.appendModifiedAbsence(dateTime)
+        );
+        outputView.printlnModify(newAttendance.getStatusString(), newAttendance.getTime());
     }
 
     private static void checkAttendanceStatisticsByCrew() {
@@ -145,19 +147,62 @@ public class Application {
 
     private static void requestStatistic(String nickname) {
         outputView.printlnInitializeHistory(nickname);
-        var attendances = attendanceBook.getAttendances(nickname);
-        Map<LocalDate, Attendance> attendancesRecord = attendances.getAttendances();
-        var attendanceHistory = AttendanceHistory.of(attendancesRecord, systemDateTime.extractWorkingDays());
-        outputView.printlnHistory(attendanceHistory.history());
+        var attendanceHistory = getAttendanceHistory(nickname);
+        displaySortedHistory(attendanceHistory);
 
         var statusStatistic = new HistoryStatistic(attendanceHistory.countStatusOnHistory(), nickname);
-        outputView.printlnHistoryStatistic(statusStatistic.statistic());
+        displayHistoryStatusStatistic(statusStatistic);
 
-        outputView.printJudgedSanctionLevel(statusStatistic.judgeSanctionLevel());
+        SanctionLevel sanctionLevel = statusStatistic.judgeSanctionLevel();
+        outputView.printJudgedSanctionLevel(sanctionLevel.getValues());
+    }
+
+    private static void displaySortedHistory(AttendanceHistory attendanceHistory) {
+        List<LocalDate> sortedDates = attendanceHistory.getSortedHistoryKey();
+        for (LocalDate sortedDate : sortedDates) {
+            attendanceHistory.getAttendance(sortedDate)
+                .ifPresentOrElse(
+                    attendance -> outputView.appendAttendance(attendance.dateTime(), attendance.getStatusString()),
+                    () -> outputView.appendAbsence(sortedDate)
+                );
+        }
+        outputView.printStringBuilder();
+    }
+
+    private static void displayHistoryStatusStatistic(HistoryStatistic statusStatistic) {
+        var keySet = statusStatistic.getStatusesReverseOrder();
+        for (AttendanceStatus status : keySet) {
+            int count = statusStatistic.getOrDefault(status, 0);
+            outputView.appendStatisticToBuilder(status.getStatus(), count);
+        }
+        outputView.printStringBuilder();
+    }
+
+    private static AttendanceHistory getAttendanceHistory(String nickname) {
+        var attendances = attendanceBook.getAttendances(nickname);
+        Map<LocalDate, Attendance> attendancesRecord = attendances.getAttendances();
+        return AttendanceHistory.of(attendancesRecord, systemDateTime.extractWorkingDays());
     }
 
     private static void checkSanctionStatistic() {
         outputView.printlnInitializeSanctionStatistic();
+        List<HistoryStatistic> historyStatistics = getHistoryStatistics();
+        Collections.sort(historyStatistics);
+        displaySanctionStatistic(historyStatistics);
+    }
+
+    private static void displaySanctionStatistic(List<HistoryStatistic> historyStatistics) {
+        for (HistoryStatistic historyStatistic : historyStatistics) {
+            String nickname = historyStatistic.nickname();
+            int absenceCount = historyStatistic.statistic().getOrDefault(AttendanceStatus.ABSENCE, 0);
+            int LateCount = historyStatistic.statistic().getOrDefault(AttendanceStatus.LATE, 0);
+            String sanctionLevel = historyStatistic.judgeSanctionLevel().getValues();
+            outputView.appendSanctionStatistic(nickname, absenceCount, LateCount, sanctionLevel);
+        }
+        outputView.printStringBuilder();
+    }
+
+    private static List<HistoryStatistic> getHistoryStatistics() {
         List<HistoryStatistic> historyStatistics = new ArrayList<>();
         for (String nickname : attendanceBook.getNicknameSet()) {
             var attendances = attendanceBook.getAttendances(nickname);
@@ -165,8 +210,7 @@ public class Application {
                 systemDateTime.extractWorkingDays());
             historyStatistics.add(new HistoryStatistic(attendanceHistory.countStatusOnHistory(), nickname));
         }
-        Collections.sort(historyStatistics);
-        outputView.printlnSanctionStatistic(historyStatistics);
+        return historyStatistics;
     }
 
     private static String requestInputStringForModify() {

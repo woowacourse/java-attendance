@@ -28,5 +28,15 @@ public record AttendanceHistory(Map<LocalDate, Optional<Attendance>> history) {
         }
         return statistics;
     }
+
+    public List<LocalDate> getSortedHistoryKey() {
+        return history.keySet().stream()
+            .sorted()
+            .toList();
+    }
+
+    public Optional<Attendance> getAttendance(LocalDate date) {
+        return history.get(date);
+    }
 }
 

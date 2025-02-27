@@ -10,16 +10,16 @@ public enum SanctionLevel {
     NONE("", weight -> weight <= 1),
     ;
 
-    public String getValues() {
-        return value;
-    }
-
     private final Predicate<Integer> condition;
     private final String value;
 
     SanctionLevel(String value, Predicate<Integer> condition) {
         this.value = value;
         this.condition = condition;
+    }
+
+    public String getValues() {
+        return value;
     }
 
     public boolean matches(int wight) {
