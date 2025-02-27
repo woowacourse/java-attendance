@@ -3,7 +3,7 @@ package domain;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
-public class CampusTime {
+public class CampusTime implements Comparable<CampusTime> {
 
     private final LocalTime time;
 
@@ -14,6 +14,23 @@ public class CampusTime {
 
     public static CampusTime from(String inputTime) {
         return new CampusTime(inputTime);
+    }
+
+    @Override
+    public int compareTo(CampusTime other) {
+        int cmp = Integer.compare(time.getHour(),other.getHour());
+        if (cmp == 0) {
+            cmp = Integer.compare(time.getMinute(), other.getMinute());
+        }
+        return cmp;
+    }
+
+    public boolean isBefore(CampusTime other) {
+        return compareTo(other) < 0;
+    }
+
+    public boolean isAfter(CampusTime other) {
+        return compareTo(other) > 0;
     }
 
     private void validateTimeRangeAndType(String hourColonMinute) {

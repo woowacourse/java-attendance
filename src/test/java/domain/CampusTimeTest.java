@@ -69,4 +69,38 @@ class CampusTimeTest {
                 .hasMessage("[ERROR] 유효한 범위의 숫자를 입력해 주세요.");
     }
 
+    @Test
+    void 다른_캠퍼스시간_이전의_시간인지_확인한다() {
+        // given
+        CampusTime campusTime1 = CampusTime.from("10:30");
+        CampusTime campusTime2 = CampusTime.from("10:31");
+        CampusTime campusTime3 = CampusTime.from("10:32");
+
+        // when
+        boolean result1 = campusTime1.isBefore(campusTime2);
+        boolean result2 = campusTime3.isBefore(campusTime2);
+
+        // then
+        assertThat(result1).isTrue();
+        assertThat(result2).isFalse();
+    }
+
+    @Test
+    void 다른_캠퍼스시간_이후의_시간인지_확인한다() {
+        // given
+        CampusTime campusTime1 = CampusTime.from("10:30");
+        CampusTime campusTime2 = CampusTime.from("10:31");
+        CampusTime campusTime3 = CampusTime.from("10:32");
+
+        // when
+        boolean result1 = campusTime1.isAfter(campusTime2);
+        boolean result2 = campusTime3.isAfter(campusTime2);
+
+        // then
+        assertThat(result1).isFalse();
+        assertThat(result2).isTrue();
+    }
+
+
+
 }
