@@ -1,50 +1,35 @@
 package attendance.domain;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 public class MemberAttendance {
     private final Crew crew;
-    private final List<Attendance> attendances;
+    private final AttendanceLog attendanceLog;
 
 
-    public MemberAttendance(Crew crew, List<Attendance> attendances) {
+    public MemberAttendance(Crew crew, AttendanceLog attendances) {
         this.crew = crew;
-        this.attendances = attendances;
-
+        this.attendanceLog = attendances;
     }
 
     public Crew getCrew() {
         return crew;
     }
 
-    public List<Attendance> getAttendances() {
-        return attendances;
+    public AttendanceLog getAttendances() {
+        return attendanceLog;
     }
 
-    public List<Attendance> modifyAttendanceRecord(LocalDateTime attendanceDateTime) {
-        Attendance modifyOldAttendance = attendances.stream()
-                .filter(attendance -> attendance.getAttendanceDate().equals(attendanceDateTime.toLocalDate()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 날입니다."));
-
-        attendances.remove(modifyOldAttendance);
-        Attendance modifyNewAttendance = new Attendance(attendanceDateTime);
-        attendances.add(modifyNewAttendance);
-
-        return List.of(modifyOldAttendance, modifyNewAttendance);
-    }
-
-    public int countAttendanceStatus(Subject subject) {
-        return Math.toIntExact(attendances.stream()
-            .filter(attendance -> attendance.getAttendanceStatus().equals(subject.getStatus())).count());
-    }
 
     public String checkSubjectStatus(int attendanceCount, int lateCount, int absentCount) {
-        absentCount += lateCount/3;
-        if (absentCount > 5) {return "제적 대상자";}
-        if (absentCount >= 3) {return  "면담 대상자";}
-        if (absentCount >= 2) {return  "경고 대상자";}
+        absentCount += lateCount / 3;
+        if (absentCount > 5) {
+            return "제적 대상자";
+        }
+        if (absentCount >= 3) {
+            return "면담 대상자";
+        }
+        if (absentCount >= 2) {
+            return "경고 대상자";
+        }
         return null;
     }
 

@@ -27,7 +27,7 @@ public class AttendanceTest {
     }
 
     @ParameterizedTest
-    @MethodSource("checkAttendanceStatusTestCases")
+    @MethodSource("determineAttendanceStatusTestCases")
     @DisplayName("등교시간에 따라 출석상태가 출석,지각,등교로 등록되는지 테스트")
     void determineAttendanceStatus(LocalDateTime localDateTime, String status) {
         //when

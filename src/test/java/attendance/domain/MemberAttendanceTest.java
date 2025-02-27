@@ -32,22 +32,23 @@ public class MemberAttendanceTest {
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)));
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 12, 10, 10)));
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 13, 9, 30)));
-
     }
+
+    private AttendanceLog attendanceLog = new AttendanceLog(sampleAttendances);
 
     @Test
     @DisplayName("닉네임과 등교시간을 입력하면 출석할 수 있다.")
     void testAttendanceWithNicknameAndTime() {
 
         //when
-        MemberAttendance memberAttendance = new MemberAttendance(crew, sampleAttendances);
+        MemberAttendance memberAttendance = new MemberAttendance(crew, attendanceLog);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(memberAttendance.getCrew().getName()).isEqualTo("Lemon");
-            softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceDate()).isEqualTo(LocalDate.of(2024, 12, 4));
-            softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceTime()).isEqualTo(LocalTime.of(9, 50));
-            softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceStatus()).isEqualTo("출석");
+            softly.assertThat(memberAttendance.getAttendances().getAttendanceLog().getFirst().getAttendanceDate()).isEqualTo(LocalDate.of(2024, 12, 2));
+            softly.assertThat(memberAttendance.getAttendances().getAttendanceLog().getFirst().getAttendanceTime()).isEqualTo(LocalTime.of(13, 00));
+            softly.assertThat(memberAttendance.getAttendances().getAttendanceLog().getFirst().getAttendanceStatus()).isEqualTo("출석");
         });
     }
 
@@ -56,13 +57,13 @@ public class MemberAttendanceTest {
     void countAttendanceStatusTest() {
 
         //when
-        MemberAttendance memberAttendance = new MemberAttendance(crew, sampleAttendances);
+        MemberAttendance memberAttendance = new MemberAttendance(crew, attendanceLog);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(memberAttendance.countAttendanceStatus(Subject.ATTENDANCE)).isEqualTo(3);
-            softly.assertThat(memberAttendance.countAttendanceStatus(Subject.LATE)).isEqualTo(1);
-            softly.assertThat(memberAttendance.countAttendanceStatus(Subject.ABSENT)).isEqualTo(1);
+            softly.assertThat(memberAttendance.getAttendances().countAttendanceStatus(Subject.ATTENDANCE)).isEqualTo(4);
+            softly.assertThat(memberAttendance.getAttendances().countAttendanceStatus(Subject.LATE)).isEqualTo(3);
+            softly.assertThat(memberAttendance.getAttendances().countAttendanceStatus(Subject.ABSENT)).isEqualTo(3);
         });
     }
 
@@ -71,10 +72,10 @@ public class MemberAttendanceTest {
     void checkSubjectStatusTest() {
 
         //given
-        MemberAttendance memberAttendance = new MemberAttendance(crew, sampleAttendances);
-        int attendanceCount = memberAttendance.countAttendanceStatus(Subject.ATTENDANCE);
-        int lateCount =  memberAttendance.countAttendanceStatus(Subject.LATE);
-        int absentCount = memberAttendance.countAttendanceStatus(Subject.ABSENT);
+        MemberAttendance memberAttendance = new MemberAttendance(crew, attendanceLog);
+        int attendanceCount = memberAttendance.getAttendances().countAttendanceStatus(Subject.ATTENDANCE);
+        int lateCount =  memberAttendance.getAttendances().countAttendanceStatus(Subject.LATE);
+        int absentCount = memberAttendance.getAttendances().countAttendanceStatus(Subject.ABSENT);
 
         //when
         String subjectStatus = memberAttendance.checkSubjectStatus(attendanceCount, lateCount, absentCount);
@@ -91,10 +92,10 @@ public class MemberAttendanceTest {
         //given
         Crew modifier = new Crew("Lemon");
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 4, 9, 50);
-        MemberAttendance memberAttendance = new MemberAttendance(crew, sampleAttendances);
+        MemberAttendance memberAttendance = new MemberAttendance(crew, attendanceLog);
 
         //expected
-        Assertions.assertDoesNotThrow(() -> memberAttendance.modifyAttendanceRecord(attendanceDateTime));
+        Assertions.assertDoesNotThrow(() -> memberAttendance.getAttendances().modifyAttendanceRecord(attendanceDateTime));
     }
 
 
@@ -102,11 +103,12 @@ public class MemberAttendanceTest {
     @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 기록을 확인할 수 있다.")
     void checkCrewAllAttendanceRecord() {
         //given
-        MemberAttendance memberAttendance = new MemberAttendance(crew, sampleAttendances);
-        List<Attendance> attendances = memberAttendance.getAttendances();
+        MemberAttendance memberAttendance = new MemberAttendance(crew, attendanceLog);
+        AttendanceLog attendanceLog = memberAttendance.getAttendances();
 
         //then
-        List<AttendanceResult> attendancesResult = attendances.stream()
+        List<AttendanceResult> attendancesResult =
+            attendanceLog.getAttendanceLog().stream()
             .map(AttendanceResult::from)
             .toList();
 
