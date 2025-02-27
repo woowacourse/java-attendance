@@ -34,14 +34,15 @@ public class AttendanceController {
                 return false;
             }
             default -> {
-                throw new IllegalArgumentException("잘못된 메뉴 입력입니다.");
+                throw new IllegalArgumentException("잘못된 메뉴입니다.");
             }
         }
         return true;
     }
 
     private void attendance() {
-        service.attendance(DateTimeUtil.nowDate(), InputView.attendance());
+        OutputView.attendanceResponse(
+            service.attendance(DateTimeUtil.nowDate(), InputView.attendance()));
     }
 
     private void modifyAttendance() {

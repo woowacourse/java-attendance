@@ -46,4 +46,8 @@ public enum AttendanceStatus {
         int absence = statistics.getOrDefault(AttendanceStatus.ABSENCE, 0);
         return (lateness + absence * LATE_TO_ABSENCE_RATIO) / LATE_TO_ABSENCE_RATIO;
     }
+
+    public String getName() {
+        return name;
+    }
 }
