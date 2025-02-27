@@ -44,7 +44,7 @@ public class AttendanceController {
         }
     }
 
-    private void executeMenu(String input) {
+    private void executeMenu(final String input) {
         Menu selectedMenu = Menu.from(input);
         if (Menu.ATTEND.equals(selectedMenu)) {
             attend();
@@ -66,11 +66,10 @@ public class AttendanceController {
     private void attend() {
         AttendanceDate attendanceDate = AttendanceDate.from(today);
 
-        String inputTime = inputView.readAttendTime();
-        LocalTime time = DateTimeConverter.convertToTime(inputTime);
+        LocalTime time = DateTimeConverter.convertToTime(inputView.readAttendTime());
         AttendanceTime attendanceTime = AttendanceTime.from(time);
 
-        Attendance attendance = new Attendance(attendanceDate, attendanceTime);
+        Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
         attendanceBook.attend(inputView.readNickname(), attendance);
 
         outputView.printAttendResult(AttendanceResultResponse.from(attendance));

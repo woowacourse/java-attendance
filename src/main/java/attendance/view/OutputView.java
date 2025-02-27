@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class OutputView {
-    public void printAttendResult(AttendanceResultResponse response) {
+    public void printAttendResult(final AttendanceResultResponse response) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm");
         LocalDateTime dateTime = response.dateTime();
         AttendanceStatus status = response.status();
@@ -37,7 +37,7 @@ public class OutputView {
         );
     }
 
-    public void printAbsenceResult(AttendanceResultResponse response) {
+    public void printAbsenceResult(final AttendanceResultResponse response) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE --:--");
         LocalDateTime dateTime = response.dateTime();
         AttendanceStatus status = response.status();
