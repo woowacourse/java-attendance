@@ -1,4 +1,4 @@
-package attendance;
+package attendance.constant;
 
 import java.time.LocalTime;
 

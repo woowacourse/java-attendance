@@ -1,10 +1,12 @@
-package attendance;
+package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
+
+import attendance.constant.AttendanceConstant;
 
 public class Crew {
 
