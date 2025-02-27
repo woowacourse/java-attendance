@@ -14,7 +14,6 @@ public enum AttendanceCalculator {
     private final LocalTime absentTime;
     private static final LocalTime UNREGISTERED_TIME = LocalTime.of(0, 0);
 
-
     AttendanceCalculator(LocalTime lateTime, LocalTime absentTime) {
         this.lateTime = lateTime;
         this.absentTime = absentTime;
