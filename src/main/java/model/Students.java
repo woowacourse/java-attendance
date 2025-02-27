@@ -25,7 +25,7 @@ public class Students {
 
     public void updateMissingAttendanceRecords(TodayDate todayDate) {
         for (Student student : students) {
-            student.updateNoInformationInFile(todayDate.getTodayDateTIme());
+            student.updateNoInformationInFile(todayDate.toAttendanceDateTime());
         }
     }
 
