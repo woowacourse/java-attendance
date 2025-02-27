@@ -20,4 +20,7 @@ public class Constants {
     public static final int WARNING_CONDITION = 2;
 
     public static final int ABSENT_CONSIDERING_UNIT = 3;
+
+    public static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
+    public static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
 }

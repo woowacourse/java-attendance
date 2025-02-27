@@ -1,5 +1,7 @@
 package domain;
 
+import static util.Constants.*;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,6 +9,7 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 public class Attendance {
+    private static final String NOT_RUNNING_TIME_ERROR = "[ERROR] 캠퍼스 운영시간이 아닙니다.";
     private final LocalDateTime value;
 
     public Attendance(LocalDateTime value) {
@@ -15,8 +18,8 @@ public class Attendance {
     }
 
     private void validateTime(LocalTime time) {
-        if (time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(23, 0))) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+        if (time.isBefore(CAMPUS_START_TIME) || time.isAfter(CAMPUS_END_TIME)) {
+            throw new IllegalArgumentException(NOT_RUNNING_TIME_ERROR);
         }
     }
 
