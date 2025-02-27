@@ -40,8 +40,7 @@ public class AttendanceBookTest {
             final LocalDate targetDate = LocalDate.of(2024, 12, 13);
 
             // when
-            final Map<Crew, Map<AttendanceStatus, Integer>> actual = attendanceBook.calculateRiskOfExpulsionCrewStatistics(
-                    targetDate);
+            final Map<Crew, AttendanceHistory> actual = attendanceBook.calculateRiskOfExpulsionCrews(targetDate);
 
             // then
             assertThat(actual).containsKey(crew);
