@@ -31,9 +31,9 @@ public class HolidayTest {
 
         // when & then
         assertThatThrownBy(() -> Holiday.validateWeekDay(sunday))
-            .hasMessage("[ERROR] 12월 1일은 등교일이 아닙니다.");
+            .hasMessage("[ERROR] 12월 1일 일요일은 등교일이 아닙니다.");
         assertThatThrownBy(() -> Holiday.validateWeekDay(saturday))
-            .hasMessage("[ERROR] 12월 7일은 등교일이 아닙니다.");
+            .hasMessage("[ERROR] 12월 7일 토요일은 등교일이 아닙니다.");
     }
 
     @Test
@@ -43,6 +43,6 @@ public class HolidayTest {
 
         // when & then
         assertThatThrownBy(() -> Holiday.validateWeekDay(christmas))
-            .hasMessage("[ERROR] 12월 25일은 등교일이 아닙니다.");
+            .hasMessage("[ERROR] 12월 25일 수요일은 등교일이 아닙니다.");
     }
 }

@@ -1,34 +1,43 @@
 package attendance.utils;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class DateConverter {
 
-    public static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final DateTimeFormatter LOCAL_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final DateTimeFormatter LOCAL_TIME_FORMAT =  DateTimeFormatter.ofPattern("HH:mm");
+    public static final String TIME_STRING_FORMAT = "%d월 %d일 %s요일";
+    public static final String SPACE = " ";
 
     private DateConverter() {}
 
-    public static LocalDate convertToLocalDate(String dateAndTime) {
-        try {
-            return LocalDate.parse(dateAndTime, LOCAL_DATE_TIME_FORMATTER);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 날짜 입력 형식이 올바르지 않습니다.");
-        }
+    public static String convertToString(LocalDate date) {
+        return String.format(TIME_STRING_FORMAT, date.getMonthValue(), date.getDayOfMonth(), convertDayOfWeek(date));
     }
 
-    public static LocalTime convertToLocalTime(String dateAndTime) {
-        try {
-            return LocalTime.parse(dateAndTime, LOCAL_DATE_TIME_FORMATTER);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 날짜 입력 형식이 올바르지 않습니다.");
-        }
+    private static String convertDayOfWeek(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN);
     }
 
-    public static String convertToString(LocalDate attendanceDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 d일");
-        return attendanceDate.format(formatter);
+    public static String convertToString(LocalDate date, LocalTime time) {
+        return convertToString(date) + SPACE + convertToString(time);
+    }
+
+    public static String convertToString(LocalTime time) {
+        return time.format(LOCAL_TIME_FORMAT);
+    }
+
+    public static LocalDate convertToDate(String input) {
+        return LocalDate.parse(input, LOCAL_DATE_TIME_FORMAT);
+    }
+
+    public static LocalTime convertToTime(String input) {
+        return LocalTime.parse(input, LOCAL_DATE_TIME_FORMAT);
     }
 }

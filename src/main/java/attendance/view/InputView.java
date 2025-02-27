@@ -4,6 +4,7 @@ import attendance.controller.AttendanceOption;
 import attendance.utils.DateConverter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Scanner;
 
 public class InputView {
@@ -15,10 +16,40 @@ public class InputView {
         "3. 크루별 출석 기록 확인%n" +
         "4. 제적 위험자 확인%n" +
         "Q. 종료%n";
+    public static final String REMARK_ATTENDANCE_NAME_MESSAGE = "닉네임을 입력해 주세요.";
+    public static final String REMARK_ATTENDANCE_TIME_MESSAGE = "등교 시간을 입력해 주세요.";
 
     public AttendanceOption readAttendanceOption(LocalDate today) {
         System.out.printf(String.format(OPTION_MESSAGE, DateConverter.convertToString(today)));
         String input = scanner.nextLine();
         return AttendanceOption.find(input);
+    }
+
+    public String readRemarkAttendanceName() {
+        System.out.println(REMARK_ATTENDANCE_NAME_MESSAGE);
+        return scanner.nextLine();
+    }
+
+    public LocalTime readRemarkAttendanceTime() {
+        System.out.println(REMARK_ATTENDANCE_TIME_MESSAGE);
+        String input = scanner.nextLine();
+        return parseLocalTime(input);
+    }
+
+    private LocalTime parseLocalTime(String input) {
+        try {
+            return LocalTime.parse(input, DateConverter.LOCAL_TIME_FORMAT);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("[ERROR] 잘못된 시간 형식을 입력하셨습니다.");
+        }
+    }
+
+    private LocalDate parseLocalDate(String input) {
+        try {
+            int date = Integer.parseInt(input);
+            return LocalDate.of(2024, 12, date);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("[ERROR] 잘못된 날짜 형식을 입력하셨습니다.");
+        }
     }
 }

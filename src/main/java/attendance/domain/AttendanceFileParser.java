@@ -41,8 +41,8 @@ public class AttendanceFileParser implements AttendanceReader{
         while ((line = br.readLine()) != null) {
             String[] split = line.split(DELIMITER);
             validateSplit(split);
-            LocalDate attendanceDate = DateConverter.convertToLocalDate(split[LOCAL_DATE_TIME_INDEX]);
-            LocalTime attendanceTime = DateConverter.convertToLocalTime(split[LOCAL_DATE_TIME_INDEX]);
+            LocalDate attendanceDate = DateConverter.convertToDate(split[LOCAL_DATE_TIME_INDEX]);
+            LocalTime attendanceTime = DateConverter.convertToTime(split[LOCAL_DATE_TIME_INDEX]);
             attendanceFileDtos.add(AttendanceFileDto.of(split[NAME_INDEX], attendanceDate, attendanceTime));
         }
     }

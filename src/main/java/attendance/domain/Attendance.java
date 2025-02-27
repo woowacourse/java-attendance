@@ -13,7 +13,7 @@ public class Attendance implements Comparable<Attendance> {
     private final LocalTime attendanceTime;
 
     public Attendance(LocalDate attendanceDate, LocalTime attendanceTime) {
-        Holiday.check(attendanceDate);
+        Holiday.validateWeekDay(attendanceDate);
         validateCampusOperatingHours(attendanceTime);
         this.attendanceDate = attendanceDate;
         this.attendanceTime = attendanceTime;

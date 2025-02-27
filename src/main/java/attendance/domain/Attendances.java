@@ -24,6 +24,12 @@ public class Attendances {
         attendances.add(attendance);
     }
 
+    public boolean hasAttendance(String name, LocalDate attendanceDate) {
+        List<Attendance> attendances = attendanceRecord.get(name);
+        return attendances.stream()
+            .anyMatch(attendance -> attendance.hasAttendDate(attendanceDate));
+    }
+
     public boolean hasAttendance(String name, LocalDate attendanceDate, LocalTime attendanceTime) {
         List<Attendance> attendances = attendanceRecord.get(name);
         return attendances.stream()

@@ -195,4 +195,27 @@ public class AttendancesTest {
         // then
         assertThat(crewNames).isEqualTo(List.of("빙티", "빙봉", "루디"));
     }
+
+    @Test
+    void 출석을_원하는_날짜에_출석기록이_있는지_확인한다() {
+        // given
+        Attendances attendances = new Attendances();
+        LocalDate twodaysAgo = LocalDate.of(2024, 12, 3);
+        LocalDate yesterday = LocalDate.of(2024, 12, 4);
+        LocalDate today = LocalDate.of(2024, 12, 5);
+        attendances.addAttendance(
+            "빙티", new Attendance(twodaysAgo, LocalTime.of(10, 1)));
+        attendances.addAttendance(
+            "빙봉", new Attendance(yesterday, LocalTime.of(10, 6)));
+        attendances.addAttendance(
+            "루디", new Attendance(today, LocalTime.of(10, 3)));
+
+        // when
+        boolean hasAttendance1 = attendances.hasAttendance("빙봉", yesterday);
+        boolean hasAttendance2 = attendances.hasAttendance("빙봉", today);
+
+        // then
+        assertThat(hasAttendance1).isTrue();
+        assertThat(hasAttendance2).isFalse();
+    }
 }
