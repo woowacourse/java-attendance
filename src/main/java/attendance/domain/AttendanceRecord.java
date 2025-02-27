@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -35,8 +34,8 @@ public class AttendanceRecord {
         return new AttendanceRecord(this.attendanceDate, this.attendanceTime);
     }
 
-    public LocalDate getDate() {
-        return attendanceDate.toLocalDate();
+    public WoowaDate getWoowaDate() {
+        return attendanceDate;
     }
 
     public LocalDateTime getDateTIme() {

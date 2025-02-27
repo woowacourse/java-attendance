@@ -9,6 +9,7 @@ import attendance.domain.Crews;
 import attendance.domain.CustomClock;
 import attendance.domain.EducationDayPolicy;
 import attendance.domain.WoowaDate;
+import attendance.dto.CrewHistoryDto;
 import attendance.dto.WarningResultDto;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -85,7 +86,7 @@ public class AttendanceController {
             AttendanceHistory history = attendanceBook.getHistoryByName(crew.getName());
 
             AttendanceReport report = history.toReport(clock.getMonthStartDay(), clock.nowDate(), policy);
-            outputView.displayCrewHistory(crew, report);
+            outputView.displayCrewHistory(CrewHistoryDto.of(crew, report));
         });
     }
 
