@@ -27,11 +27,16 @@ public class AttendanceFileReader {
         String line;
 
         while ((line = bufferedReader.readLine()) != null) {
-            if (isFirstLine) {
-                isFirstLine = false;
-                continue;
-            }
-            contents.add(line);
+            isFirstLine = addIfNotFirstLine(contents, isFirstLine, line);
         }
+    }
+
+    private static boolean addIfNotFirstLine(List<String> contents, boolean isFirstLine, String line) {
+        if (isFirstLine) {
+            isFirstLine = false;
+            return isFirstLine;
+        }
+        contents.add(line);
+        return isFirstLine;
     }
 }
