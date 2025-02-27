@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
+import model.AttendanceDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +32,7 @@ class InputViewTest {
     @Test
     @DisplayName("캠퍼스 운영 시간이 아닌 시간에 입실한 경우 예외를 발생하는 메서드 테스트")
     void test2() {
-        assertThatThrownBy(() -> InputView.isNotOpeningHour(LocalDateTime.of(2024,12,12,0,0)))
+        assertThatThrownBy(() -> InputView.isNotOpeningHour(new AttendanceDateTime(LocalDateTime.of(2024,12,12,0,0))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
     }
