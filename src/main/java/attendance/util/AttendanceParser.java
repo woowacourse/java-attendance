@@ -18,8 +18,9 @@ import attendance.domain.Crew;
 
 public class AttendanceParser {
 
-    private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final int HEADER_HEIGHT = 1;
+
+    private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private AttendanceParser() {
     }
