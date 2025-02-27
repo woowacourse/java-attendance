@@ -9,6 +9,7 @@ public enum Penalty {
     public static final int PENALTY_THRESHOLD_EXPULSION = 6;
     public static final int PENALTY_THRESHOLD_INTERVIEW = 3;
     public static final int PENALTY_THRESHOLD_WARNING = 2;
+    public static final int LATE_TO_ABSENT_UNIT = 3;
 
     private final String message;
 
@@ -22,7 +23,7 @@ public enum Penalty {
     }
 
     private static int calculatePenaltyPoint(int lateCount, int absentCount) {
-        return absentCount + (lateCount / 3);
+        return absentCount + (lateCount / LATE_TO_ABSENT_UNIT);
     }
 
     private static Penalty findPenaltyByPenaltyPoint(int penaltyPoint) {
