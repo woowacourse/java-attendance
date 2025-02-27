@@ -47,7 +47,7 @@ public class AttendanceTime {
         return date.getDayOfWeek() == DayOfWeek.MONDAY;
     }
 
-    public boolean isBefore(LocalTime localTime) {
+    public boolean isBefore(final LocalTime localTime) {
 
         return LocalTime.of(hour, minute).isBefore(localTime);
     }
