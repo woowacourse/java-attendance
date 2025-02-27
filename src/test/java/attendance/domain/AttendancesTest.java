@@ -20,10 +20,7 @@ class AttendancesTest {
         attendances.add(attendance1);
         Attendance attendance2 = new Attendance("체체", new Time(LocalDateTime.of(2025, 2, 28, 10, 0)));
 
-        // when
-        attendances.add(attendance2);
-
-        // then
-        assertThat(attendances.contains(attendance2)).isTrue();
+        // when & then
+        assertThat(attendances.add(attendance2)).isTrue();
     }
 }

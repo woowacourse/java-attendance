@@ -10,11 +10,7 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-    public void add(Attendance attendance) {
-        attendances.add(attendance);
-    }
-
-    public boolean contains(Attendance attendance) {
-        return attendances.contains(attendance);
+    public boolean add(Attendance attendance) {
+        return attendances.add(attendance);
     }
 }
