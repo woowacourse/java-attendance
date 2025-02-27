@@ -1,38 +1,38 @@
 package domain;
 
-import domain.rule.AttendanceDateRule;
+import domain.policy.AttendancePolicy;
+import util.FormatUtil;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
-public record AttendanceDate(LocalDate date) {
+public class AttendanceDate {
 
-    public AttendanceDate {
-        validate(date);
+    private final LocalDate date;
+
+    private AttendanceDate(LocalDate date,
+                           AttendancePolicy attendancePolicy) {
+        validate(date, attendancePolicy);
+        this.date = date;
     }
 
-    public static AttendanceDate from(LocalDate date) {
-        return new AttendanceDate(date);
+    public static AttendanceDate of(LocalDate date,
+                                    AttendancePolicy attendancePolicy) {
+        return new AttendanceDate(date, attendancePolicy);
     }
 
-    public boolean isSpecialDay() {
-        return AttendanceDateRule.isSpecialDay(date);
-    }
-
-    private static void validate(LocalDate date) {
-        validateWeekend(date.getDayOfWeek());
-        validateHoliday(date);
-    }
-
-    public static void validateWeekend(DayOfWeek dayOfWeek) {
-        if (AttendanceDateRule.isWeekend(dayOfWeek)) {
-            throw new IllegalArgumentException("주말에는 출석할 수 없습니다.");
+    private void validate(LocalDate date, AttendancePolicy attendancePolicy) {
+        if (attendancePolicy.canAttendDate(date)) {
+            return;
         }
+
+        throw new IllegalArgumentException(String.format("%s %s은 등교일이 아닙니다.",
+                date.format(FormatUtil.DATE_FORMATTER_KOREAN),
+                date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
     }
 
-    private static void validateHoliday(LocalDate date) {
-        if (AttendanceDateRule.isHoliday(date)) {
-            throw new IllegalArgumentException("공휴일에는 출석할 수 없습니다.");
-        }
+    public LocalDate toLocalDate() {
+        return date;
     }
 }
