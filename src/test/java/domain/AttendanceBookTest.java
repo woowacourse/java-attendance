@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceBookTest {
@@ -78,5 +79,25 @@ public class AttendanceBookTest {
                         LocalDateTime.of(2024, 12, 13, 11, 1)
                 )
         ));
+    }
+
+    @Test
+    void 크루의_출석_기록을_조회할_수_있다() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook(
+                new Attendance("pobi", LocalDateTime.of(2024, 11, 24, 10, 1)),
+                new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 13, 1)),
+                new Attendance("neo", LocalDateTime.of(2024, 12, 3, 10, 1))
+        );
+
+        //when
+        List<Attendance> attendances = attendanceBook.findAttendancesByNickname("pobi");
+
+        //then
+        assertThat(attendances)
+                .isEqualTo(List.of(
+                        new Attendance("pobi", LocalDateTime.of(2024, 11, 24, 10, 1)),
+                        new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 13, 1))
+                ));
     }
 }

@@ -56,4 +56,8 @@ public class AttendanceBook {
     public int hashCode() {
         return attendances.hashCode();
     }
+
+    public List<Attendance> findAttendancesByNickname(String nickname) {
+        return List.of();
+    }
 }
