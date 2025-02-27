@@ -8,6 +8,8 @@ public enum WarningStatus {
     WARNING("경고", 2),
     NONE("해당 없음", 0);
 
+    public static final int LATE_TO_ABSENT_FACTOR = 3;
+
     private final String title;
     private final int absenceThreshold;
 
@@ -17,7 +19,7 @@ public enum WarningStatus {
     }
 
     public static WarningStatus from(long absenceCount, long lateCount) {
-        long count = absenceCount + lateCount / 3;
+        long count = absenceCount + lateCount / LATE_TO_ABSENT_FACTOR;
         return Arrays.stream(WarningStatus.values())
                 .filter(status -> count >= status.absenceThreshold)
                 .findFirst()

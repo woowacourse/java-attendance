@@ -33,7 +33,7 @@ public class AttendanceReport {
     }
 
     public long countEffectiveAbsences() {
-        return countAbsent() + countLate() / 3;
+        return countAbsent() + countLate() / WarningStatus.LATE_TO_ABSENT_FACTOR;
     }
 
     public long countAbsent() {
