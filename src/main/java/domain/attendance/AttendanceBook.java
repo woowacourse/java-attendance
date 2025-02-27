@@ -51,18 +51,18 @@ public class AttendanceBook {
         }
     }
 
+    public Crew findCrew(String crewName) {
+        return attendanceBook.keySet().stream()
+                .filter(crew -> crew.isCrew(crewName))
+                .findFirst()
+                .orElseThrow(() -> new ErrorException("등록되지 않은 닉네임입니다."));
+    }
+
     private AttendanceResult calculateCrewAttendanceResult(String crewName) {
         Crew crew = findCrew(crewName);
         AttendanceLogs crewAttendanceLogs = attendanceBook.get(crew);
         Map<AttendanceStatus, Integer> crewAttendanceStatuses = crewAttendanceLogs.calculateLogsStatus();
         return new AttendanceResult(crewAttendanceStatuses);
-    }
-
-    private Crew findCrew(String crewName) {
-        return attendanceBook.keySet().stream()
-                .filter(crew -> crew.isCrew(crewName))
-                .findFirst()
-                .orElseThrow(() -> new ErrorException("존재하지 않은 크루입니다."));
     }
 
     private List<Entry<Crew, AttendanceResult>> sortAttendanceResults(Map<Crew, AttendanceResult> attendanceResults) {

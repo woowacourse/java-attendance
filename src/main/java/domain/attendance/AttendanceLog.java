@@ -1,5 +1,6 @@
 package domain.attendance;
 
+import dto.AttendanceLogDto;
 import exception.ErrorException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -34,6 +35,10 @@ public class AttendanceLog {
 
     public boolean isAttendDate(LocalDate attendDate) {
         return this.attendanceDate.equals(attendDate);
+    }
+
+    public AttendanceLogDto toDto() {
+        return new AttendanceLogDto(attendanceDate, attendanceTime, attendanceStatus);
     }
 
     private void verifyAttendDateTime(LocalDateTime attendDateTime) {
