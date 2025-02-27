@@ -33,10 +33,6 @@ public class StudentAttendanceHistory {
         }
     }
 
-    private boolean isSameDay(AttendanceDateTime firstDateTime, AttendanceDateTime secondDateTime) {
-        return firstDateTime.isSameAttendanceDateTime(secondDateTime);
-    }
-
     public void fillMissingAttendanceRecords(AttendanceDateTime todayDate) {
         LocalDateTime startOfDecember = LocalDateTime.of(2024, 12, 1, 0, 0);
         AttendanceDateTime standard = new AttendanceDateTime(startOfDecember);
@@ -44,6 +40,18 @@ public class StudentAttendanceHistory {
             addTimeRecordIfValid(standard);
             standard = standard.addOneDay();
         }
+    }
+
+    public boolean isAlreadyAttendanceDate(TodayDate todayDate) {
+        return this.isExistSameDay(todayDate.toAttendanceDateTime());
+    }
+
+    public void sortHistoryBeforePrint() {
+        Collections.sort(attendanceHistory);
+    }
+
+    private boolean isSameDay(AttendanceDateTime firstDateTime, AttendanceDateTime secondDateTime) {
+        return firstDateTime.isSameAttendanceDateTime(secondDateTime);
     }
 
     private boolean isExistSameDay(AttendanceDateTime wantToFindDay) {
@@ -59,14 +67,6 @@ public class StudentAttendanceHistory {
 
     private boolean isWeekend(AttendanceDateTime attendanceDateTime) {
         return (attendanceDateTime.isChristmas() || attendanceDateTime.isWeekend());
-    }
-
-    public boolean isAlreadyAttendanceDate(TodayDate todayDate) {
-        return this.isExistSameDay(todayDate.toAttendanceDateTime());
-    }
-
-    public void sortHistoryBeforePrint() {
-        Collections.sort(attendanceHistory);
     }
 
     public List<AttendanceDateTime> getAttendanceHistory() {
