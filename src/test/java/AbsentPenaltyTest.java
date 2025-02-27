@@ -2,17 +2,16 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class AbsentPenaltyCheckerTest {
+public class AbsentPenaltyTest {
 
     @DisplayName("결석이 2회 이상이면 경고 대상자이다.")
     @Test
     void test1() {
         // given
-        AbsentPenaltyChecker checker = new AbsentPenaltyChecker();
         final var absentCount = 2;
 
         // when
-        final var absentPenalty = checker.determine(absentCount);
+        final var absentPenalty = AbsentPenalty.determine(absentCount);
 
         // then
         Assertions.assertThat(absentPenalty)
@@ -23,11 +22,10 @@ public class AbsentPenaltyCheckerTest {
     @Test
     void test2() {
         // given
-        AbsentPenaltyChecker checker = new AbsentPenaltyChecker();
         final var absentCount = 3;
 
         // when
-        final var absentPenalty = checker.determine(absentCount);
+        final var absentPenalty = AbsentPenalty.determine(absentCount);
 
         // then
         Assertions.assertThat(absentPenalty)
@@ -38,11 +36,10 @@ public class AbsentPenaltyCheckerTest {
     @Test
     void test3() {
         // given
-        AbsentPenaltyChecker checker = new AbsentPenaltyChecker();
         final var absentCount = 6;
 
         // when
-        final var absentPenalty = checker.determine(absentCount);
+        final var absentPenalty = AbsentPenalty.determine(absentCount);
 
         // then
         Assertions.assertThat(absentPenalty)
@@ -53,11 +50,10 @@ public class AbsentPenaltyCheckerTest {
     @Test
     void test4() {
         // given
-        AbsentPenaltyChecker checker = new AbsentPenaltyChecker();
         final var absentCount = 1;
 
         // when
-        final var absentPenalty = checker.determine(absentCount);
+        final var absentPenalty = AbsentPenalty.determine(absentCount);
 
         // then
         Assertions.assertThat(absentPenalty)
