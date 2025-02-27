@@ -11,8 +11,9 @@ import java.util.stream.Stream;
 
 public class AttendanceDateTime implements SystemDateTime {
     private static final LocalDate START_CALENDER = LocalDate.of(2024, Month.DECEMBER, 1);
-    private static final LocalDate NOW_DATE = java.time.LocalDate.of(2024, Month.DECEMBER, 25);
-    private static final LocalDateTime NOW_DATETIME = LocalDateTime.of(2024, Month.DECEMBER, 25, 10, 4);
+    private static final LocalDateTime NOW_DATETIME
+        = LocalDateTime.of(2024, Month.DECEMBER, 25, 10, 4);
+    
     private static final List<Integer> DAT_OF_HOLIDAY = List.of(25);
 
     @Override
@@ -23,9 +24,13 @@ public class AttendanceDateTime implements SystemDateTime {
     @Override
     public List<LocalDate> extractWorkingDays() {
         return Stream.iterate(START_CALENDER, date -> date.plusDays(1))
-            .limit(ChronoUnit.DAYS.between(START_CALENDER, NOW_DATE.plusDays(1)))
+            .limit(ChronoUnit.DAYS.between(START_CALENDER, nowDatePlus()))
             .filter(this::isWorkingDay)
             .collect(Collectors.toList());
+    }
+
+    private static LocalDate nowDatePlus() {
+        return NOW_DATETIME.toLocalDate().plusDays(1);
     }
 
     @Override
