@@ -5,6 +5,7 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
+import attendance.controller.Command;
 import attendance.dto.AttendanceHistoryRequest;
 import attendance.dto.AttendanceRequest;
 import attendance.dto.ModifyAttendanceRequest;
@@ -16,7 +17,7 @@ public class InputView {
     private InputView() {
     }
 
-    public static String menu(LocalDate today) {
+    public static Command menu(LocalDate today) {
         System.out.printf("""
                 오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.
                 1. 출석 확인
@@ -28,7 +29,7 @@ public class InputView {
             today.getMonthValue(),
             today.getDayOfMonth(),
             today.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN));
-        return scanner.nextLine();
+        return Command.from(scanner.nextLine());
     }
 
     public static AttendanceRequest attendance() {
