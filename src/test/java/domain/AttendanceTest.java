@@ -75,8 +75,9 @@ public class AttendanceTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> {
-            repository.checkIn(name, localDate, localTime);
-        }).isInstanceOf(IllegalArgumentException.class);
+                    repository.checkIn(name, localDate, localTime);
+                }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 출석한 크루입니다.");
     }
 
     @Nested
@@ -131,8 +132,9 @@ public class AttendanceTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> {
-            repository.checkIn(name, localDate, localTime);
-        }).isInstanceOf(IllegalArgumentException.class);
+                    repository.checkIn(name, localDate, localTime);
+                }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주말 및 공휴일에는 출석할 수 없습니다.");
     }
 
     @Test
@@ -143,8 +145,9 @@ public class AttendanceTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> {
-            repository.checkIn("dompoo", localDate, localTime);
-        }).isInstanceOf(IllegalArgumentException.class);
+                    repository.checkIn("dompoo", localDate, localTime);
+                }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하는 크루의 닉네임을 입력해주세요.");
     }
 
     @Test
@@ -171,8 +174,9 @@ public class AttendanceTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> {
-            repository.update("dompoo", localDate, localTime);
-        }).isInstanceOf(IllegalArgumentException.class);
+                    repository.update("dompoo", localDate, localTime);
+                }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하는 크루의 닉네임을 입력해주세요.");
     }
 
     @Test
@@ -184,7 +188,8 @@ public class AttendanceTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> {
-            repository.update(name, localDate, localTime);
-        }).isInstanceOf(IllegalArgumentException.class);
+                    repository.update(name, localDate, localTime);
+                }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주말 및 공휴일에는 출석할 수 없습니다.");
     }
 }
