@@ -22,10 +22,10 @@ public class AttendanceTest {
         void testPresentAttendance() {
             // given
             Attendance attendance = new Attendance();
-            String nickname = "노랑";
+            Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 5);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(TUESDAY_DATE, time));
+            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("출석");
         }
@@ -35,10 +35,10 @@ public class AttendanceTest {
         void testTardyAttendance() {
             // given
             Attendance attendance = new Attendance();
-            String nickname = "노랑";
+            Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 30);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(TUESDAY_DATE, time));
+            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("지각");
         }
@@ -48,10 +48,10 @@ public class AttendanceTest {
         void testAbsentAttendance() {
             // given
             Attendance attendance = new Attendance();
-            String nickname = "노랑";
+            Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 30, 1);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(TUESDAY_DATE, time));
+            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("결석");
         }
@@ -61,10 +61,10 @@ public class AttendanceTest {
         void testPresentAttendanceOnMonday() {
             // given
             Attendance attendance = new Attendance();
-            String nickname = "노랑";
+            Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 5);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(MONDAY_DATE, time));
+            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("출석");
         }
@@ -74,10 +74,10 @@ public class AttendanceTest {
         void testTardyAttendanceOnMonday() {
             // given
             Attendance attendance = new Attendance();
-            String nickname = "노랑";
+            Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 30);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(MONDAY_DATE, time));
+            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("지각");
         }
@@ -87,10 +87,10 @@ public class AttendanceTest {
         void testAbsentAttendanceOnMonday() {
             // given
             Attendance attendance = new Attendance();
-            String nickname = "노랑";
+            Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 30, 1);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(MONDAY_DATE, time));
+            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("결석");
         }
@@ -98,16 +98,15 @@ public class AttendanceTest {
 
     @Test
     @DisplayName("1.2 이미 출석한 경우 예외를 발생시킬 수 있다.")
-    void test() {
+    void testValidateDuplicateAttendance() {
         // given
         Attendance attendance = new Attendance();
-        String nickname = "노랑";
+        Crew crew = new Crew("노랑");
         LocalDateTime dateTime = TUESDAY_DATE.atTime(10, 0);
-        attendance.checkAttendance(nickname, dateTime);
+        attendance.checkAttendance(crew, dateTime);
         // when & then
-        assertThatThrownBy(() -> attendance.checkAttendance(nickname, dateTime))
+        assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
     }
-
 }
