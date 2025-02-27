@@ -122,12 +122,12 @@ public class AttendanceSheetTest {
     @DisplayName("모든 크루의 출석 상태 횟수를 계산할 수 있다")
     public void countAttendancesStateTest() {
         assertSoftly(softly -> {
-            softly.assertThat(attendanceSheet.countAttendancesState(today).get("링크").get(ATTENDANCE)).isEqualTo(1);
-            softly.assertThat(attendanceSheet.countAttendancesState(today).get("링크").get(LATE)).isEqualTo(0);
-            softly.assertThat(attendanceSheet.countAttendancesState(today).get("링크").get(ABSENT)).isEqualTo(6);
-            softly.assertThat(attendanceSheet.countAttendancesState(today).get("링크2").get(ATTENDANCE)).isEqualTo(2);
-            softly.assertThat(attendanceSheet.countAttendancesState(today).get("링크2").get(LATE)).isEqualTo(2);
-            softly.assertThat(attendanceSheet.countAttendancesState(today).get("링크2").get(ABSENT)).isEqualTo(3);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크").get(ATTENDANCE)).isEqualTo(1);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크").get(LATE)).isEqualTo(0);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크").get(ABSENT)).isEqualTo(6);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크2").get(ATTENDANCE)).isEqualTo(2);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크2").get(LATE)).isEqualTo(2);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크2").get(ABSENT)).isEqualTo(3);
         });
     }
 

@@ -26,7 +26,6 @@ public class ViewMessage {
             결석: %d회""";
     public static final String ABSENT_POLICY_FORMAT = "%s 대상자입니다%n";
     public static final String RISK_OF_EXPULSION_BANNER = "제적 위험자 조회 결과";
-    public static final String RISK_OF_EXPULSION_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n%n";
-    public static final String ABSENT_FORMAT = "12월 %02d일 %s --:-- (결석)%n";
+    public static final String RISK_OF_EXPULSION_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
 
 }

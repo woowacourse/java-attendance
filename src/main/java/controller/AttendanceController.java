@@ -68,12 +68,15 @@ public class AttendanceController {
 
         outputView.printAttendancesSheet(nickname, attendanceSheet.findAttendanceByNickname(nickname));
 
-        Map<AttendanceState, Long> attendanceState = attendanceSheet.countAttendanceState(nickname, TODAY);
+        Map<AttendanceState, Long> attendanceState = attendanceSheet.countAttendanceState(nickname);
         outputView.printAttendanceStatistics(attendanceState);
         outputView.printAbsentPolicy(attendanceSheet.calculateExpellStatus(attendanceState));
     }
 
     private void printRiskOfExpulsion() {
+        Map<String, Map<AttendanceState, Long>> attendanceStatus = attendanceSheet.countAttendancesState();
+
+        outputView.printRiskOfExpulsion(attendanceStatus, attendanceSheet.calculateAllExpellStatus(attendanceStatus));
     }
 
 

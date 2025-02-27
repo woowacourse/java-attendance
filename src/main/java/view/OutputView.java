@@ -12,6 +12,7 @@ import java.util.*;
 
 import static config.AppConfig.TODAY;
 import static domain.policy.AttendanceState.*;
+import static domain.policy.ExpellState.NONE;
 import static view.ViewMessage.*;
 
 public class OutputView {
@@ -67,6 +68,55 @@ public class OutputView {
     }
 
     public void printAbsentPolicy(ExpellState expellState) {
-        System.out.printf(ABSENT_POLICY_FORMAT, expellState.state);
+        System.out.printf(ABSENT_POLICY_FORMAT, expellState.description);
     }
+
+    public void printRiskOfExpulsion(Map<String, Map<AttendanceState, Long>> attendanceStatus, Map<String, ExpellState> expellStates) {
+        System.out.println(ViewMessage.RISK_OF_EXPULSION_BANNER);
+
+        attendanceStatus.keySet().stream()
+                .filter(nickname -> expellStates.get(nickname) != NONE)
+                .sorted(createExpulsionRiskComparator(attendanceStatus, expellStates))
+                .forEach(nickname -> printStudentExpulsionRisk(nickname, attendanceStatus, expellStates));
+    }
+
+    private Comparator<String> createExpulsionRiskComparator(
+            Map<String, Map<AttendanceState, Long>> attendanceStatus,
+            Map<String, ExpellState> expellStates) {
+
+        return (nickname1, nickname2) -> {
+            int stateComparison = expellStates.get(nickname1).compareTo(expellStates.get(nickname2));
+            if (stateComparison != 0) {
+                return stateComparison;
+            }
+
+            long totalAbsent1 = calculateTotalAbsences(attendanceStatus.get(nickname1));
+            long totalAbsent2 = calculateTotalAbsences(attendanceStatus.get(nickname2));
+
+            if (totalAbsent1 != totalAbsent2) {
+                return Long.compare(totalAbsent2, totalAbsent1);
+            }
+
+            return nickname1.compareTo(nickname2);
+        };
+    }
+
+    private long calculateTotalAbsences(Map<AttendanceState, Long> attendance) {
+        long absentCount = attendance.getOrDefault(ABSENT, 0L);
+        long lateCount = attendance.getOrDefault(LATE, 0L);
+        return absentCount + (lateCount / 3);
+    }
+
+    private void printStudentExpulsionRisk(String nickname, Map<String, Map<AttendanceState, Long>> attendanceStatus, Map<String, ExpellState> expellStates) {
+        Map<AttendanceState, Long> attendanceMap = attendanceStatus.get(nickname);
+        ExpellState expellState = expellStates.get(nickname);
+
+        Long absentCount = attendanceMap.getOrDefault(ABSENT, 0L);
+        Long lateCount = attendanceMap.getOrDefault(LATE, 0L);
+
+        System.out.printf(RISK_OF_EXPULSION_FORMAT,
+                nickname, absentCount, lateCount, expellState.description);
+    }
+
+
 }

@@ -69,12 +69,12 @@ public class AttendanceSheet {
                 .toList();
     }
 
-    public Map<AttendanceState, Long> countAttendanceState(String nickname, LocalDate today) {
+    public Map<AttendanceState, Long> countAttendanceState(String nickname) {
         Map<AttendanceState, Long> counts = findAttendanceByNickname(nickname).stream()
                 .collect(groupingBy(Attendance::getState, counting()));
 
         initUndefinedState(counts);
-        Long absentCount = calculateAbsentCount(today, counts);
+        Long absentCount = calculateAbsentCount(counts);
         counts.put(ABSENT, counts.get(ABSENT)*2 + absentCount);
 
         return counts;
@@ -85,26 +85,26 @@ public class AttendanceSheet {
                 .forEach(state -> counts.putIfAbsent(state, 0L));
     }
 
-    private Long calculateAbsentCount(LocalDate today, Map<AttendanceState, Long> counts) {
+    private Long calculateAbsentCount(Map<AttendanceState, Long> counts) {
         return counts.values().stream()
-                .reduce(dayCount(today), (allDay, attendedDay) -> allDay - attendedDay);
+                .reduce(dayCount(), (allDay, attendedDay) -> allDay - attendedDay);
     }
 
-    private Long dayCount(LocalDate today) {
-        return today.withDayOfMonth(1)
-                .datesUntil(today)
+    private Long dayCount() {
+        return TODAY.withDayOfMonth(1)
+                .datesUntil(TODAY)
                 .filter(date -> absentPolicy.isWeekday(date.getDayOfWeek()))
                 .filter(absentPolicy::isNotHoliday)
                 .count();
     }
 
-    public Map<String, Map<AttendanceState, Long>> countAttendancesState(LocalDate today) {
+    public Map<String, Map<AttendanceState, Long>> countAttendancesState() {
         return attendances.stream()
                 .collect(groupingBy(Attendance::getNickname))
                 .keySet().stream()
                 .collect(toMap(
                         nickname -> nickname,
-                        nicknameForCount -> countAttendanceState(nicknameForCount, today)
+                        this::countAttendanceState
                 ));
     }
 

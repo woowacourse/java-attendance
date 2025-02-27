@@ -11,11 +11,11 @@ public enum ExpellState {
 
     private static final int LATE_ABSENT_RATE = 3;
 
-    public String state;
+    public String description;
     private int limit;
 
-    ExpellState(String state, int limit) {
-        this.state = state;
+    ExpellState(String description, int limit) {
+        this.description = description;
         this.limit = limit;
     }
 
