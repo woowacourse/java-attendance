@@ -3,6 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,8 +58,40 @@ public class AttendanceBookTest {
     }
 
     @Test
+    void 크루의_모든_출석기록들을_확인할_수_있다() {
+        var dateTime1 = AttendanceDateTime.of(2025, 2, 26, 10, 0);
+        var dateTime2 = AttendanceDateTime.of(2025, 2, 27, 10, 0);
+        book.attend(crew, dateTime1);
+        book.attend(crew, dateTime2);
+
+        var records = book.getRecordsOfCrew(crew);
+
+        assertThat(records.getRecords()).contains(dateTime1, dateTime2);
+    }
+
+    @Test
     void 크루가_출석한_적이_없으면_출석기록은_비어있다() {
         var records = book.getRecordsOfCrew(crew);
         assertThat(records.getRecords()).isEmpty();
+    }
+
+    @Test
+    void 크루의_특정_날짜의_출석기록을_조회할_수_있다() {
+        var _20250227andTime = AttendanceDateTime.of(2025, 2, 27, 10, 0);
+        book.attend(crew, _20250227andTime);
+
+        LocalDate dateToFind = LocalDate.of(2025, 2, 27);
+        AttendanceDateTime record = book.findRecordByCrewAndDate(crew, dateToFind).orElseThrow();
+
+        assertThat(record).isEqualTo(_20250227andTime);
+    }
+
+    @Test
+    void 크루의_특정_날짜의_출석기록이_없으면_비어있는_Optional을_반환한다() {
+        LocalDate dateToFind = LocalDate.of(2025, 2, 27);
+
+        Optional<AttendanceDateTime> record = book.findRecordByCrewAndDate(crew, dateToFind);
+
+        assertThat(record).isEmpty();
     }
 }

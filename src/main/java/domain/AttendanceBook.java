@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -23,5 +24,12 @@ public class AttendanceBook {
 
     public AttendanceRecords getRecordsOfCrew(Crew crew) {
         return crewRecords.getOrDefault(crew, new AttendanceRecords());
+    }
+
+    public Optional<AttendanceDateTime> findRecordByCrewAndDate(Crew crew, LocalDate date) {
+        return getRecordsOfCrew(crew).getRecords()
+            .stream()
+            .filter(adt -> adt.isSameDate(date))
+            .findAny();
     }
 }
