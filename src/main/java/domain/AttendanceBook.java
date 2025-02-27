@@ -1,10 +1,5 @@
 package domain;
 
-import domain.vo.AttendResult;
-import domain.vo.AttendanceModifyResult;
-import domain.vo.AttendanceRecordFindResults;
-import domain.vo.ExpelWarningResult;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,28 +32,40 @@ public class AttendanceBook {
         ));
     }
     
-    public AttendResult attend(final String nickname, final LocalDate date, final LocalTime time) {
+    public void attend(final String nickname, final LocalDate date, final LocalTime time) {
         validateNicknameExist(nickname);
         
-        return crewAttendances.get(nickname).attend(date, time);
+        crewAttendances.get(nickname).attend(date, time);
     }
     
-    public AttendanceModifyResult modify(final String nickname, final LocalDate targetDate, final LocalTime newTime) {
+    public AttendanceStatus getAttendanceStatusOf(final String nickname, final LocalDate date) {
         validateNicknameExist(nickname);
         
-        return crewAttendances.get(nickname).modify(targetDate, newTime);
+        return crewAttendances.get(nickname).getAttendanceStatusOf(date);
     }
     
-    public AttendanceRecordFindResults findRecords(final String nickname) {
+    public void modify(final String nickname, final LocalDate targetDate, final LocalTime newTime) {
         validateNicknameExist(nickname);
         
-        return crewAttendances.get(nickname).findRecord();
+        crewAttendances.get(nickname).modify(targetDate, newTime);
     }
     
-    public Map<String, ExpelWarningResult> calculateExpelWarnings() {
+    public Set<Attendance> getAllAttendnaces(final String nickname) {
+        validateNicknameExist(nickname);
+        
+        return crewAttendances.get(nickname).getAllAttendances();
+    }
+    
+    public Map<String, ExpelWarning> getExpelWarnings() {
         return crewAttendances.entrySet().stream()
-                .filter(entry -> entry.getValue().calculateExpelWarning().expelWarning() != ExpelWarning.정상)
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().calculateExpelWarning()));
+                .filter(entry -> entry.getValue().getExpelWarning() != ExpelWarning.정상)
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getExpelWarning()));
+    }
+    
+    public int countAttendanceStatusOf(final String nickname, final AttendanceStatus status) {
+        validateNicknameExist(nickname);
+        
+        return crewAttendances.get(nickname).countAttendanceStatusOf(status);
     }
     
     private void validateNicknameExist(final String nickname) {
