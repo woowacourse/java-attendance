@@ -18,6 +18,13 @@ public class AttendanceLogs {
         this.attendanceLogs = new ArrayList<>();
     }
 
+    public AttendanceLog findAttendanceLog(LocalDate attendDate) {
+        return attendanceLogs.stream()
+                .filter(attendanceLog -> attendanceLog.isAttendDate(attendDate))
+                .findFirst()
+                .orElseThrow(() -> new ErrorException("해당 날짜의 출석 기록이 없습니다."));
+    }
+
     public AttendanceLog registerLog(LocalDateTime attendDateTime) {
         if (isAttendanceLog(attendDateTime.toLocalDate())) {
             throw new ErrorException("출석 기록이 이미 등록되었습니다.");
@@ -28,10 +35,7 @@ public class AttendanceLogs {
     }
 
     public AttendanceLog editLog(LocalDate editDate, LocalTime editTime) {
-        AttendanceLog oldAttendanceLog = attendanceLogs.stream()
-                .filter(attendanceLog -> attendanceLog.isAttendDate(editDate))
-                .findFirst()
-                .orElseThrow(() -> new ErrorException("수정할 출석 기록이 없습니다."));
+        AttendanceLog oldAttendanceLog = findAttendanceLog(editDate);
         attendanceLogs.remove(oldAttendanceLog);
         return registerLog(LocalDateTime.of(editDate, editTime));
     }

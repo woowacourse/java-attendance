@@ -96,7 +96,7 @@ public class AttendanceBookTest {
         String crewName = crews.getFirst().getName();
         LocalDateTime attendDateTime = LocalDateTime.of(2025, 2, 13, 10, 0);
         // when & then
-        assertTrue(attendanceBook.registerAttendanceLog(crewName, attendDateTime)
+        assertTrue(attendanceBook.registerCrewAttendanceLog(crewName, attendDateTime)
                 .isAttendDate(attendDateTime.toLocalDate()));
     }
 
@@ -107,7 +107,7 @@ public class AttendanceBookTest {
         String crewName = crews.getFirst().getName();
         LocalDateTime attendDateTime = LocalDateTime.of(2025, 2, 4, 11, 0);
         // when & then
-        assertThatThrownBy(() -> attendanceBook.registerAttendanceLog(crewName, attendDateTime))
+        assertThatThrownBy(() -> attendanceBook.registerCrewAttendanceLog(crewName, attendDateTime))
                 .isInstanceOf(ErrorException.class)
                 .hasMessageContaining("[ERROR]");
     }
@@ -120,7 +120,7 @@ public class AttendanceBookTest {
         LocalDate editDate = LocalDate.of(2025, 2, 4);
         LocalTime editTime = LocalTime.of(10, 0);
         // when & then
-        assertEquals(attendanceBook.editAttendanceLog(crewName, editDate, editTime).getAttendanceTime(), editTime);
+        assertEquals(attendanceBook.editCrewAttendanceLog(crewName, editDate, editTime).getAttendanceTime(), editTime);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class AttendanceBookTest {
         LocalDate editDate = LocalDate.of(2025, 2, 12);
         LocalTime editTime = LocalTime.of(10, 0);
         // when & then
-        assertThatThrownBy(() -> attendanceBook.editAttendanceLog(crewName, editDate, editTime))
+        assertThatThrownBy(() -> attendanceBook.editCrewAttendanceLog(crewName, editDate, editTime))
                 .isInstanceOf(ErrorException.class)
                 .hasMessageContaining("[ERROR]");
     }

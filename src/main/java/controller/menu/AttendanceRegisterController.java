@@ -23,7 +23,7 @@ public class AttendanceRegisterController implements AttendanceMenuController {
 
         LocalTime attendTime = InputView.readAttendanceRegisterAttendTime();
         LocalDateTime attendDateTime = LocalDateTime.of(runDate, attendTime);
-        AttendanceLog attendanceLog = attendanceBook.registerAttendanceLog(crewName, attendDateTime);
+        AttendanceLog attendanceLog = attendanceBook.registerCrewAttendanceLog(crewName, attendDateTime);
         OutputView.printAttendanceRegisterLog(attendanceLog.toDto());
     }
 }

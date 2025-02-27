@@ -21,17 +21,23 @@ public class AttendanceBook {
         this.attendanceBook = attendanceBook;
     }
 
+    public AttendanceLog findCrewAttendanceLog(String crewName, LocalDate attendDate) {
+        Crew crew = findCrew(crewName);
+        AttendanceLogs attendanceLogs = attendanceBook.get(crew);
+        return attendanceLogs.findAttendanceLog(attendDate);
+    }
+
     public AttendanceLogs findCrewAttendanceLogs(String crewName) {
         Crew crew = findCrew(crewName);
         return attendanceBook.get(crew);
     }
 
-    public AttendanceLog registerAttendanceLog(String crewName, LocalDateTime attendDateTime) {
+    public AttendanceLog registerCrewAttendanceLog(String crewName, LocalDateTime attendDateTime) {
         AttendanceLogs crewAttendanceLogs = findCrewAttendanceLogs(crewName);
         return crewAttendanceLogs.registerLog(attendDateTime);
     }
 
-    public AttendanceLog editAttendanceLog(String crewName, LocalDate editDate, LocalTime editTime) {
+    public AttendanceLog editCrewAttendanceLog(String crewName, LocalDate editDate, LocalTime editTime) {
         AttendanceLogs crewAttendanceLogs = findCrewAttendanceLogs(crewName);
         return crewAttendanceLogs.editLog(editDate, editTime);
     }
