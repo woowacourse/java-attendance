@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
-    private static final String CREWNAME_NOT_EXISTED_ERROR = "존재하지 않는 닉네임입니다.";
+    private static final String NAME_NOT_EXISTED_ERROR = "존재하지 않는 닉네임입니다.";
     private final Map<CrewName, AttendanceRecord> value;
 
     public AttendanceBook(InitialInformation initialInformation) {
@@ -22,16 +22,14 @@ public class AttendanceBook {
     }
 
     public Attendance addAttendance(CrewName crewName, Attendance attendance) {
-        AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
-        attendanceRecord.add(attendance);
-        value.put(crewName, attendanceRecord);
+        findAttendanceRecordBy(crewName).add(attendance);
         return attendance;
     }
 
     public AttendanceRecord findAttendanceRecordBy(CrewName crewName) {
         AttendanceRecord attendanceRecord = value.get(crewName);
         if (attendanceRecord == null) {
-            throw new IllegalArgumentException(ERROR_HEADER + CREWNAME_NOT_EXISTED_ERROR);
+            throw new IllegalArgumentException(ERROR_HEADER + NAME_NOT_EXISTED_ERROR);
         }
         return attendanceRecord;
     }
@@ -41,8 +39,7 @@ public class AttendanceBook {
     }
 
     public AttendanceHistory findAttendanceHistoryUntil(CrewName crewName, LocalDate yesterday) {
-        AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
-        return attendanceRecord.findAllSortedUntil(yesterday);
+        return findAttendanceRecordBy(crewName).findAllSortedUntil(yesterday);
     }
 
     public AttendanceCount findCountUntil(CrewName crewName, LocalDate yesterday) {
