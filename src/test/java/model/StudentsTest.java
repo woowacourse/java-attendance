@@ -1,12 +1,15 @@
 package model;
 
 import controller.AttendanceManagementController;
+import controller.TodayDateGenerator;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class StudentsTest {
-    AttendanceManagementController attendanceManagementController = new AttendanceManagementController();
+    TodayDateGenerator dateGenerator = new TodayDateGenerator();
+    AttendanceManagementController attendanceManagementController = new AttendanceManagementController(dateGenerator);
     Students students = attendanceManagementController.updateStudentAttendanceRecord();
 
     @Test
@@ -24,5 +27,10 @@ class StudentsTest {
                 .isTrue();
     }
 
-
+    @Test
+    @DisplayName("이름으로 학생 객체 찾기")
+    void test3() {
+        Assertions.assertThat(students.findStudentByName("이든"))
+                .isEqualTo(new Student("이든", new StudentAttendanceHistory(List.of())));
+    }
 }
