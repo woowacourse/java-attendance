@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import domain.CrewName;
 import dto.InitialInformation;
-import java.io.FileReader;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
