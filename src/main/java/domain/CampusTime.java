@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
@@ -10,15 +11,19 @@ public class CampusTime implements Comparable<CampusTime> {
 
     private final LocalTime time;
 
-    private CampusTime(final String inputTime) {
-        validateTimeRangeAndType(inputTime);
-        LocalTime time = LocalTime.parse(inputTime);
+    private CampusTime(final LocalTime time) {
         validateCampusOpenTimeRange(time);
         this.time = time;
     }
 
     public static CampusTime from(final String inputTime) {
-        return new CampusTime(inputTime);
+        LocalTime time = validateTimeRangeAndType(inputTime);
+        return new CampusTime(time);
+    }
+
+    public static CampusTime of(final int hour, final int minute) {
+        LocalTime time = validateTimeRangeAndType(hour, minute);
+        return new CampusTime(time);
     }
 
     @Override
@@ -38,10 +43,18 @@ public class CampusTime implements Comparable<CampusTime> {
         return compareTo(other) > 0;
     }
 
-    private void validateTimeRangeAndType(final String inputTime) {
+    private static LocalTime validateTimeRangeAndType(final String inputTime) {
         try {
-            LocalTime.parse(inputTime);
+            return LocalTime.parse(inputTime);
         } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 유효한 범위의 숫자를 입력해 주세요.");
+        }
+    }
+
+    private static LocalTime validateTimeRangeAndType(int hour, int minute) {
+        try {
+            return LocalTime.of(hour, minute);
+        } catch (DateTimeException e) {
             throw new IllegalArgumentException("[ERROR] 유효한 범위의 숫자를 입력해 주세요.");
         }
     }

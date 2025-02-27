@@ -23,6 +23,20 @@ class CampusTimeTest {
     }
 
     @Test
+    void 시간과_분을_입력받아_객체를_생성한다() {
+        // given
+        int hour = 12;
+        int minute = 30;
+
+        // when
+        CampusTime campusTime = CampusTime.of(hour, minute);
+
+        // then
+        assertThat(campusTime.getHour()).isEqualTo(12);
+        assertThat(campusTime.getMinute()).isEqualTo(30);
+    }
+
+    @Test
     void 시_및_분의_숫자가_두자리가_아닌경우_예외를_발생시킨다() {
         // given
         String givenData = "1:30";
@@ -36,10 +50,31 @@ class CampusTimeTest {
     @Test
     void 시간_및_분_범위를_초과하는_숫자_입력시_예외를_발생시킨다() {
         // given
-        String givenData = "24:01";
+        String givenData1 = "24:01";
+        String givenData2 = "12:61";
 
         // when // then
-        assertThatThrownBy(() -> CampusTime.from(givenData))
+        assertThatThrownBy(() -> CampusTime.from(givenData1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 유효한 범위의 숫자를 입력해 주세요.");
+        assertThatThrownBy(() -> CampusTime.from(givenData2))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 유효한 범위의 숫자를 입력해 주세요.");
+    }
+
+    @Test
+    void 숫자_생성시_시간_및_분_범위를_초과하는_숫자_입력시_예외를_발생시킨다() {
+        // given
+        int hour1 = 24;
+        int minute1 = 30;
+        int hour2 = 12;
+        int minute2 = 61;
+
+        // when // then
+        assertThatThrownBy(() -> CampusTime.of(hour1, minute1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 유효한 범위의 숫자를 입력해 주세요.");
+        assertThatThrownBy(() -> CampusTime.of(hour2, minute2))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 유효한 범위의 숫자를 입력해 주세요.");
     }
