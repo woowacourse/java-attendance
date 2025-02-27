@@ -8,6 +8,7 @@ import static constants.TestDataMaker.THURSDAY_DATE;
 import static constants.TestDataMaker.TUESDAY_DATE;
 import static constants.TestDataMaker.WEDNESDAY_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceBook;
 import dto.CheckAttendanceRecordResponse;
@@ -15,6 +16,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.ErrorMessage;
 
 public class CheckAttendanceRecordTest {
     private AttendanceBook attendanceBook;
@@ -50,5 +52,13 @@ public class CheckAttendanceRecordTest {
         assertThat(responses.get(3).date()).isEqualTo(THURSDAY_DATE);
         assertThat(responses.get(3).time()).isEqualTo(ABSENT_EXCEPT_MONDAY);
         assertThat(responses.get(3).attendanceStatus()).isEqualTo("결석");
+    }
+
+    @Test
+    @DisplayName(" 등록되지 않는 닉네임의 경우 예외 메시지를 출력한다.")
+    void Name_Is_Not_Registered() {
+        assertThatThrownBy(() -> attendanceBook.checkAttendanceRecord("미등록"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorMessage.NOTICE_NICKNAME_IS_NOT_REGISTERED.getFormat());
     }
 }
