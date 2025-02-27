@@ -1,6 +1,8 @@
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 
 public enum ClassSchedule {
     MONDAY(DayOfWeek.MONDAY, LocalTime.of(13, 0)),
@@ -11,6 +13,7 @@ public enum ClassSchedule {
 
     private final DayOfWeek dayOfWeek;
     private final LocalTime startTime;
+    private static final List<LocalDate> holidays = List.of(LocalDate.of(2024, 12, 25));
 
     ClassSchedule(DayOfWeek dayOfWeek, LocalTime startTime) {
         this.dayOfWeek = dayOfWeek;
@@ -23,6 +26,14 @@ public enum ClassSchedule {
                 .findAny()
                 .orElseThrow(IllegalStateException::new)
                 .getStartTime();
+    }
+
+    public static boolean isDayOff(LocalDate date) {
+        if (holidays.contains(date)) {
+            return true;
+        }
+        return Arrays.stream(ClassSchedule.values())
+                .noneMatch(schedule -> schedule.dayOfWeek == date.getDayOfWeek());
     }
 
     public LocalTime getStartTime() {
