@@ -3,7 +3,7 @@ package test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import exception.DuplicatedAttendanceRegistrationException;
+import model.exception.DuplicatedAttendanceRegistrationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

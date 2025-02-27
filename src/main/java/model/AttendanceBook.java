@@ -1,6 +1,6 @@
 package model;
 
-import exception.CrewNotExistException;
+import model.exception.CrewNotExistException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 package controller;
 
-import exception.CrewNotExistException;
+import model.exception.CrewNotExistException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -27,10 +27,12 @@ import view.OutputView;
 public class AttendanceController {
     private final OutputView outputView;
     private final InputView inputView;
+    private final LocalDate now;
 
-    public AttendanceController(OutputView outputView, InputView inputView) {
+    public AttendanceController(OutputView outputView, InputView inputView, LocalDate now) {
         this.outputView = outputView;
         this.inputView = inputView;
+        this.now = now;
     }
 
     public void start() {
@@ -47,25 +49,29 @@ public class AttendanceController {
     }
 
     private boolean chooseAndDoService(AttendanceBook attendanceBook, Crews crews) {
-        String functionChoice = inputView.readFunctionChoice();
-        if (functionChoice.equals("1")) {
-            doRegisterService(attendanceBook, crews);
+        try {
+            Service serviceChoice = Service.findByValue(inputView.readFunctionChoice());
+            if (serviceChoice == Service.REGISTER) {
+                doRegisterService(attendanceBook, crews);
+                return true;
+            }
+            if (serviceChoice == Service.MODIFY) {
+                doModifyService(attendanceBook, crews);
+                return true;
+            }
+            if (serviceChoice == Service.HISTORY) {
+                doHistoryService(attendanceBook, crews);
+                return true;
+            }
+            if (serviceChoice == Service.PENALTY) {
+                doPenaltyService(attendanceBook);
+                return true;
+            }
+            return false;
+        } catch (IllegalArgumentException e) {
+            outputView.printExceptionMessage(e.getMessage());
             return true;
         }
-        if (functionChoice.equals("2")) {
-            doModifyService(attendanceBook, crews);
-            return true;
-        }
-        if (functionChoice.equals("3")) {
-            doHistoryService(attendanceBook, crews);
-            return true;
-        }
-        if (functionChoice.equals("4")) {
-            doPenaltyService(attendanceBook);
-            return true;
-        }
-        //TODO: 메뉴 선택 enum화
-        return false;
     }
 
     //TODO : 도메인 없는 순수 리더
@@ -85,69 +91,55 @@ public class AttendanceController {
     }
 
     private void doRegisterService(AttendanceBook attendances, Crews crews) {
-        try {
-            String name = inputView.readCrewName();
-            Crew crew = crews.findCrewByName(name)
-                    .orElseThrow(CrewNotExistException::new);
+        String name = inputView.readCrewName();
+        Crew crew = crews.findCrewByName(name)
+                .orElseThrow(CrewNotExistException::new);
 
-            LocalDate date = DateGenerator.now();
-            December.validateHoliday(date);
+        December.validateHoliday(now);
 
-            LocalTime time = inputView.readAttendanceTime();
-            AttendanceHistory crewAttendanceHistory = attendances.findByCrew(crew);
-            Attendance newAttendance = crewAttendanceHistory.register(date, time);
-            outputView.printAttendanceRegisterResult(newAttendance);
-        } catch (IllegalArgumentException e) {
-            outputView.printExceptionMessage(e.getMessage());
-        }
+        LocalTime time = inputView.readAttendanceTime();
+        AttendanceHistory crewAttendanceHistory = attendances.findByCrew(crew);
+        Attendance newAttendance = crewAttendanceHistory.register(now, time);
+        outputView.printAttendanceRegisterResult(newAttendance);
     }
 
     private void doModifyService(AttendanceBook attendances, Crews crews) {
-        try {
-            String name = inputView.readCrewName();
-            Crew crew = crews.findCrewByName(name)
-                    .orElseThrow(CrewNotExistException::new);
+        String name = inputView.readCrewName();
+        Crew crew = crews.findCrewByName(name)
+                .orElseThrow(CrewNotExistException::new);
 
-            LocalDate date = DateGenerator.create(inputView.readModifyDate());
-            LocalTime time = inputView.readModifyTime();
+        LocalDate date = DateGenerator.create(inputView.readModifyDate());
+        LocalTime time = inputView.readModifyTime();
 
-            AttendanceHistory crewAttendance = attendances.findByCrew(crew);
-            Attendance oldAttendance = crewAttendance.findByDate(date);
-            Attendance newAttendance = crewAttendance.modifyFrom(oldAttendance, time);
+        AttendanceHistory crewAttendance = attendances.findByCrew(crew);
+        Attendance oldAttendance = crewAttendance.findByDate(date);
+        Attendance newAttendance = crewAttendance.modifyFrom(oldAttendance, time);
 
-            outputView.printAttendanceModifyResult(oldAttendance, newAttendance);
-        } catch (IllegalArgumentException e) {
-            outputView.printExceptionMessage(e.getMessage());
-        }
+        outputView.printAttendanceModifyResult(oldAttendance, newAttendance);
     }
 
     private void doHistoryService(AttendanceBook attendanceBook, Crews crews) {
-        try {
-            String name = inputView.readCrewName();
-            Crew crew = crews.findCrewByName(name)
-                    .orElseThrow(CrewNotExistException::new);
+        String name = inputView.readCrewName();
+        Crew crew = crews.findCrewByName(name)
+                .orElseThrow(CrewNotExistException::new);
 
-            LocalDate now = DateGenerator.now();
-            AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
+        AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
 
-            List<Attendance> attendanceHistories = attendanceHistory.sliceByDateUntilBefore(now);
-            AttendanceStatistic attendanceStatistic = AttendanceStatistic.from(attendanceHistories);
-            Map<AttendanceStatus, Integer> attendanceStatusHistory = attendanceStatistic.getAttendanceCount();
-            PenaltyStatus penaltyStatus = attendanceStatistic.getPenaltyStatus();
+        List<Attendance> attendanceHistories = attendanceHistory.sliceByDateUntilBefore(now);
+        AttendanceStatistic attendanceStatistic = AttendanceStatistic.from(attendanceHistories);
+        Map<AttendanceStatus, Integer> attendanceStatusHistory = attendanceStatistic.getAttendanceCount();
+        PenaltyStatus penaltyStatus = attendanceStatistic.getPenaltyStatus();
 
-            outputView.printAttendanceHistories(attendanceHistories, name);
-            outputView.printAttendanceStatusHistory(attendanceStatusHistory);
-            outputView.printPenaltyStatus(penaltyStatus);
-        } catch (IllegalArgumentException e) {
-            outputView.printExceptionMessage(e.getMessage());
-        }
+        outputView.printAttendanceHistories(attendanceHistories, name);
+        outputView.printAttendanceStatusHistory(attendanceStatusHistory);
+        outputView.printPenaltyStatus(penaltyStatus);
     }
 
     private void doPenaltyService(AttendanceBook attendanceBook) {
-        LocalDate now = DateGenerator.now(); //TODO : 컨트롤러 생성자
         Map<Crew, List<Attendance>> attendanceHistories = attendanceBook.findAllStatisticsUntilBefore(now);
         AttendanceStatistics attendanceStatistics = AttendanceStatistics.from(attendanceHistories);
         Map<Crew, AttendanceStatistic> penaltyTargets = attendanceStatistics.findPenaltyTargets();
         outputView.printPenaltyResult(penaltyTargets);
     }
+
 }

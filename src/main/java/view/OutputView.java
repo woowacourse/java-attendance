@@ -9,7 +9,6 @@ import model.Attendance;
 import model.AttendanceStatistic;
 import model.AttendanceStatus;
 import model.Crew;
-import model.DateGenerator;
 import model.PenaltyStatus;
 
 public class OutputView {
