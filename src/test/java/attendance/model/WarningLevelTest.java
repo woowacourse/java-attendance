@@ -2,7 +2,7 @@ package attendance.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.domain.model.SubjectType;
+import attendance.domain.model.WarningLevel;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class SubjectTypeTest {
+class WarningLevelTest {
 
     @DisplayName("출석, 지각, 결석 횟수를 통해 제적 위험자인지 결정한다")
     @ParameterizedTest
@@ -27,15 +27,15 @@ class SubjectTypeTest {
 
             "5,2,INTERVIEW"
     })
-    void determineSubjectTypeTest(final int lateCount,
-                                  final int absentCount, final String subjectTypeName) {
+    void determineWarningLevelTest(final int lateCount,
+                                   final int absentCount, final String warningLevelName) {
         // Given
 
         // When
-        SubjectType expected = SubjectType.from(absentCount, lateCount);
+        WarningLevel expected = WarningLevel.from(absentCount, lateCount);
 
         // Then
-        assertThat(expected.name()).isEqualTo(subjectTypeName);
+        assertThat(expected.name()).isEqualTo(warningLevelName);
     }
 
     @Test
@@ -46,7 +46,7 @@ class SubjectTypeTest {
         int absentCount = 3;
 
         // When
-        int totalLateCount = SubjectType.calculateTotalLateCount(lateCount, absentCount);
+        int totalLateCount = WarningLevel.calculateTotalLateCount(lateCount, absentCount);
 
         // Then
         assertThat(totalLateCount).isEqualTo(11);
@@ -55,19 +55,19 @@ class SubjectTypeTest {
     @ParameterizedTest
     @MethodSource
     @DisplayName("적용 가능한 타입인지 확인한다")
-    void 적용_가능한_타입인지_확인한다(final SubjectType subjectType, final boolean expected) {
+    void 적용_가능한_타입인지_확인한다(final WarningLevel warningLevel, final boolean expected) {
         // Given
 
         // When & Then
-        assertThat(subjectType.isApplicable()).isEqualTo(expected);
+        assertThat(warningLevel.isApplicable()).isEqualTo(expected);
     }
 
     private static Stream<Arguments> 적용_가능한_타입인지_확인한다() {
         return Stream.of(
-                Arguments.of(SubjectType.WARNING, true),
-                Arguments.of(SubjectType.INTERVIEW, true),
-                Arguments.of(SubjectType.EXPULSION, true),
-                Arguments.of(SubjectType.NOT_APPLICABLE, false)
+                Arguments.of(WarningLevel.WARNING, true),
+                Arguments.of(WarningLevel.INTERVIEW, true),
+                Arguments.of(WarningLevel.EXPULSION, true),
+                Arguments.of(WarningLevel.NOT_APPLICABLE, false)
         );
     }
 }

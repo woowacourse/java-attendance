@@ -1,6 +1,6 @@
 package attendance.domain.model;
 
-import static attendance.domain.model.AttendanceType.DEFAULT_TIME;
+import static attendance.domain.model.AttendanceStatus.DEFAULT_TIME;
 
 import java.time.Clock;
 import java.time.LocalDate;

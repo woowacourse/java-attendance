@@ -1,6 +1,6 @@
 package attendance.fixture;
 
-import static attendance.domain.model.AttendanceType.DEFAULT_TIME;
+import static attendance.domain.model.AttendanceStatus.DEFAULT_TIME;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -23,8 +23,8 @@ public class CrewHistories {
 
     public Map<String, AttendanceCounter> findDismissalCrews(final LocalDate todayDate) {
         return crews.entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), entry.getValue().countAttendanceType(todayDate)))
-                .filter(entry -> SubjectType.from(entry.getValue().getAbsentCount(), entry.getValue().getLateCount())
+                .map(entry -> Map.entry(entry.getKey(), entry.getValue().countAttendanceStatus(todayDate)))
+                .filter(entry -> WarningLevel.from(entry.getValue().getAbsentCount(), entry.getValue().getLateCount())
                         .isApplicable())
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }

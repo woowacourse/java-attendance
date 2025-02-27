@@ -5,7 +5,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public enum AttendanceType {
+public enum AttendanceStatus {
 
     ATTENDANCE("출석", Duration.ofMinutes(0)),
     LATE("지각", Duration.ofMinutes(5)),
@@ -18,18 +18,18 @@ public enum AttendanceType {
     private final String name;
     private final Duration threshold;
 
-    AttendanceType(final String name, final Duration threshold) {
+    AttendanceStatus(final String name, final Duration threshold) {
         this.name = name;
         this.threshold = threshold;
     }
 
-    public static AttendanceType from(final LocalDateTime attendanceDateTime) {
+    public static AttendanceStatus from(final LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = LocalTime.from(attendanceDateTime);
         LocalTime startTime = getStartTime(attendanceDateTime.getDayOfWeek());
-        return getAttendanceTypeByTime(attendanceTime, startTime);
+        return getWarningLevelByTime(attendanceTime, startTime);
     }
 
-    private static AttendanceType getAttendanceTypeByTime(final LocalTime attendanceTime, final LocalTime startTime) {
+    private static AttendanceStatus getWarningLevelByTime(final LocalTime attendanceTime, final LocalTime startTime) {
         if (attendanceTime.equals(DEFAULT_TIME) || attendanceTime.isAfter(startTime.plus(ABSENCE.threshold))) {
             return ABSENCE;
         }

@@ -1,6 +1,6 @@
 package attendance.controller.command;
 
-import attendance.domain.model.AttendanceType;
+import attendance.domain.model.AttendanceStatus;
 import attendance.domain.model.Campus;
 import attendance.domain.model.CrewHistories;
 import attendance.domain.model.CrewHistory;
@@ -37,7 +37,7 @@ public class AttendCommand implements Command {
         campus.validateOperationTime(attendanceDateTime);
         crewHistory.attend(attendanceDateTime);
         resultView.printAttendanceHistory(
-                TimeFormatter.formatDateTime(attendanceDateTime), AttendanceType.from(attendanceDateTime));
+                TimeFormatter.formatDateTime(attendanceDateTime), AttendanceStatus.from(attendanceDateTime));
     }
 
     private CrewHistory getCrew(final CrewHistories crewHistories) {

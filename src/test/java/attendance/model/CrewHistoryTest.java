@@ -127,7 +127,7 @@ public class CrewHistoryTest {
 
     @DisplayName("출석 타입별 횟수를 계산한다")
     @Test
-    void countAttendanceTypeTest() {
+    void countAttendanceStatusTest() {
         // Given
         LocalDate todayDate = LocalDate.of(2024, 12, 13);
         LocalDateTime dateTime1 = makeAttendance(2);
@@ -144,7 +144,7 @@ public class CrewHistoryTest {
         ));
 
         // When
-        AttendanceCounter attendanceCounter = crewHistory.countAttendanceType(todayDate);
+        AttendanceCounter attendanceCounter = crewHistory.countAttendanceStatus(todayDate);
 
         // Then
         assertAll(

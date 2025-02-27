@@ -40,7 +40,7 @@ public class CrewHistory {
         return previousTime;
     }
 
-    public AttendanceCounter countAttendanceType(final LocalDate todayDate) {
+    public AttendanceCounter countAttendanceStatus(final LocalDate todayDate) {
         List<LocalDateTime> history = getAttendanceHistory(todayDate);
         return new AttendanceCounter(history);
     }

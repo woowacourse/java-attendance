@@ -1,6 +1,6 @@
 package attendance.controller.command;
 
-import attendance.domain.model.AttendanceType;
+import attendance.domain.model.AttendanceStatus;
 import attendance.domain.model.Campus;
 import attendance.domain.model.CrewHistories;
 import attendance.domain.model.CrewHistory;
@@ -36,8 +36,8 @@ public class ModifyCommand implements Command {
         campus.validateOperationTime(modifyTime);
         LocalDateTime previousTime = crewHistory.modify(modifyTime, todayDate);
 
-        resultView.printModifyHistory(TimeFormatter.formatDateTime(previousTime), AttendanceType.from(previousTime),
-                TimeFormatter.formatTime(LocalTime.from(modifyTime)), AttendanceType.from(modifyTime));
+        resultView.printModifyHistory(TimeFormatter.formatDateTime(previousTime), AttendanceStatus.from(previousTime),
+                TimeFormatter.formatTime(LocalTime.from(modifyTime)), AttendanceStatus.from(modifyTime));
     }
 
     private LocalDateTime getModifyLocalDateTime(final int year, final int month) {

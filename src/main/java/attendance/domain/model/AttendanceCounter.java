@@ -7,33 +7,33 @@ import java.util.Map;
 
 public class AttendanceCounter {
 
-    private final Map<AttendanceType, Integer> attendanceByType;
+    private final Map<AttendanceStatus, Integer> attendanceByType;
 
     public AttendanceCounter(final List<LocalDateTime> history) {
         this.attendanceByType = initialize();
 
         for (LocalDateTime attendanceTime : history) {
-            attendanceByType.merge(AttendanceType.from(attendanceTime), 1, Integer::sum);
+            attendanceByType.merge(AttendanceStatus.from(attendanceTime), 1, Integer::sum);
         }
     }
 
-    private Map<AttendanceType, Integer> initialize() {
-        Map<AttendanceType, Integer> attendanceByType = new EnumMap<>(AttendanceType.class);
-        attendanceByType.put(AttendanceType.ATTENDANCE, 0);
-        attendanceByType.put(AttendanceType.LATE, 0);
-        attendanceByType.put(AttendanceType.ABSENCE, 0);
+    private Map<AttendanceStatus, Integer> initialize() {
+        Map<AttendanceStatus, Integer> attendanceByType = new EnumMap<>(AttendanceStatus.class);
+        attendanceByType.put(AttendanceStatus.ATTENDANCE, 0);
+        attendanceByType.put(AttendanceStatus.LATE, 0);
+        attendanceByType.put(AttendanceStatus.ABSENCE, 0);
         return attendanceByType;
     }
 
     public int getAttendanceCount() {
-        return attendanceByType.get(AttendanceType.ATTENDANCE);
+        return attendanceByType.get(AttendanceStatus.ATTENDANCE);
     }
 
     public int getAbsentCount() {
-        return attendanceByType.get(AttendanceType.ABSENCE);
+        return attendanceByType.get(AttendanceStatus.ABSENCE);
     }
 
     public int getLateCount() {
-        return attendanceByType.get(AttendanceType.LATE);
+        return attendanceByType.get(AttendanceStatus.LATE);
     }
 }

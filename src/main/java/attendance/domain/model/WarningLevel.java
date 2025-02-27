@@ -3,28 +3,28 @@ package attendance.domain.model;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public enum SubjectType {
+public enum WarningLevel {
 
     WARNING(2),
     INTERVIEW(3),
     EXPULSION(6),
     NOT_APPLICABLE(0);
 
-    private static final Comparator<SubjectType> COMPARATOR = (baseType, comparedType) ->
+    private static final Comparator<WarningLevel> COMPARATOR = (baseType, comparedType) ->
             Integer.compare(comparedType.threshold, baseType.threshold);
     private static final int CONVERTED_ABSENT_UNIT = 3;
 
     private final int threshold;
 
-    SubjectType(final int threshold) {
+    WarningLevel(final int threshold) {
         this.threshold = threshold;
     }
 
-    public static SubjectType from(final int absentCount, final int lateCount) {
+    public static WarningLevel from(final int absentCount, final int lateCount) {
         int totalAbsentCount = calculateTotalAbsentCount(lateCount, absentCount);
-        return Arrays.stream(SubjectType.values())
+        return Arrays.stream(WarningLevel.values())
                 .sorted(COMPARATOR)
-                .filter(subjectType -> totalAbsentCount >= subjectType.threshold)
+                .filter(warningLevel -> totalAbsentCount >= warningLevel.threshold)
                 .findFirst()
                 .orElse(NOT_APPLICABLE);
     }
@@ -33,7 +33,7 @@ public enum SubjectType {
         return lateCount + absentCount * CONVERTED_ABSENT_UNIT;
     }
 
-    public static Comparator<SubjectType> getComparator() {
+    public static Comparator<WarningLevel> getComparator() {
         return COMPARATOR;
     }
 
@@ -42,6 +42,6 @@ public enum SubjectType {
     }
 
     public boolean isApplicable() {
-        return this != SubjectType.NOT_APPLICABLE;
+        return this != WarningLevel.NOT_APPLICABLE;
     }
 }
