@@ -20,8 +20,7 @@ public class StudentAttendanceHistory {
 
     public LocalDateTime findSameDay(LocalDateTime wantToFindLocalDateTime) {
         return attendanceHistory.stream()
-                .filter(localDateTime -> localDateTime.truncatedTo(ChronoUnit.DAYS)
-                        .isEqual(wantToFindLocalDateTime.truncatedTo(ChronoUnit.DAYS)))
+                .filter(localDateTime -> isSameDay(localDateTime, wantToFindLocalDateTime))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않는 날짜입니다."));
     }
