@@ -96,4 +96,13 @@ public class AttendanceDateTimeTest {
 
         assertThat(result).isFalse();
     }
+
+    @Test
+    void 시간없이_날짜만으로_결석이라는_의미의_출석일시를_생성할_수_있다() {
+        var ofAbsence = AttendanceDateTime.ofAbsence(LocalDate.of(2025, 2, 26));
+
+        assertThat(ofAbsence.getDate()).isEqualTo(LocalDate.of(2025, 2, 26));
+        assertThat(ofAbsence.getTime()).isNull();
+        assertThat(ofAbsence.getAttendanceStatus()).isEqualTo(AttendanceStatus.ABSENCE);
+    }
 }

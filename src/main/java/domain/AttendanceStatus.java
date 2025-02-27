@@ -31,7 +31,7 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus determine(LocalDateTime attendTime) {
-        AttendanceDateTimeValidator.validate(attendTime);
+        AttendanceDateTimeValidator.validateDateTime(attendTime);
 
         LocalDate date = attendTime.toLocalDate();
         LocalTime time = attendTime.toLocalTime();

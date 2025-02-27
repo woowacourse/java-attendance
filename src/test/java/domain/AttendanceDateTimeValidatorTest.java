@@ -22,7 +22,7 @@ class AttendanceDateTimeValidatorTest {
         "2025-02-28T23:00",
     })
     void 날짜와_시간이_출석가능한_시간이면_예외가_발생하지_않는다(LocalDateTime possibleDateTime) {
-        assertThatCode(() -> AttendanceDateTimeValidator.validate(possibleDateTime))
+        assertThatCode(() -> AttendanceDateTimeValidator.validateDateTime(possibleDateTime))
             .doesNotThrowAnyException();
     }
 
@@ -36,7 +36,7 @@ class AttendanceDateTimeValidatorTest {
         "2025-02-28T23:01"
     })
     void 날짜와_시간이_출석가능한_시간이_아니면_예외가_발생한다(LocalDateTime impossibleDateTime) {
-        assertThatThrownBy(() -> AttendanceDateTimeValidator.validate(impossibleDateTime))
+        assertThatThrownBy(() -> AttendanceDateTimeValidator.validateDateTime(impossibleDateTime))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }
