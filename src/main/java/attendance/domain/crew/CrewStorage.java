@@ -9,8 +9,7 @@ import java.util.Set;
 public class CrewStorage {
 
     private final Set<Crew> crews = new HashSet<>();
-
-
+    
     public void add(String nickname) {
         if (checkIsNotContained(nickname)) {
             crews.add(new Crew(nickname));

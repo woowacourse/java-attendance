@@ -35,6 +35,18 @@ public final class AttendanceRecord {
         return this.attendanceType == type;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public AttendanceType getAttendanceType() {
+        return attendanceType;
+    }
+
+    public LocalDateTime getArrivalDateTime() {
+        return arrivalDateTime;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
@@ -51,17 +63,5 @@ public final class AttendanceRecord {
     @Override
     public int hashCode() {
         return Objects.hash(nickname, arrivalDateTime);
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public AttendanceType getAttendanceType() {
-        return attendanceType;
-    }
-
-    public LocalDateTime getArrivalDateTime() {
-        return arrivalDateTime;
     }
 }
