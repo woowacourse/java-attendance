@@ -83,7 +83,7 @@ public class Crew {
         );
     }
 
-    public int getCountByStatus(AttendanceStatus targetStatus) {
+    public int countAttendanceStatus(AttendanceStatus targetStatus) {
         return (int) IntStream.rangeClosed(DECEMBER_DAYS_START, DECEMBER_DAYS_END)
                 .mapToObj(this::getAttendanceStatusByDay)
                 .filter(status -> status == targetStatus)

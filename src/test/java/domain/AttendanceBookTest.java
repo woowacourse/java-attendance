@@ -5,7 +5,7 @@ import static domain.AttendanceStatus.EXCEPT_MONDAY_ATTEND_TIME;
 import static domain.AttendanceStatus.LATE_THRESHOLD_MINUTES;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import dto.PenaltyCountResponse;
+import dto.AttendanceStatusCountResponse;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +25,8 @@ class AttendanceBookTest {
     @Test
     @DisplayName("출석, 지각, 결석 횟수를 종합하여 확인할 수 있다.")
     void attendanceBookTest1() {
-        assertThat(attendanceBook.getPenaltyCountResponseByName(testCrewName))
-                .isEqualTo(new PenaltyCountResponse(0, 0, 31));
+        assertThat(attendanceBook.getAttendanceStatusCountResponseByName(testCrewName))
+                .isEqualTo(new AttendanceStatusCountResponse(0, 0, 31));
 
         Crew testCrew = attendanceBook.findCrewByName(testCrewName);
         testCrew.checkAttendance(LocalDate.of(2024, 12, 3), EXCEPT_MONDAY_ATTEND_TIME);
@@ -35,7 +35,7 @@ class AttendanceBookTest {
         testCrew.checkAttendance(LocalDate.of(2024, 12, 5),
                 EXCEPT_MONDAY_ATTEND_TIME.plusMinutes(ABSENT_THRESHOLD_MINUTES + 1));
 
-        assertThat(attendanceBook.getPenaltyCountResponseByName(testCrewName))
-                .isEqualTo(new PenaltyCountResponse(1, 1, 29));
+        assertThat(attendanceBook.getAttendanceStatusCountResponseByName(testCrewName))
+                .isEqualTo(new AttendanceStatusCountResponse(1, 1, 29));
     }
 }

@@ -1,6 +1,6 @@
 package dto;
 
-public record PenaltyCountResponse(
+public record AttendanceStatusCountResponse(
         int attendCount,
         int lateCount,
         int absentCount

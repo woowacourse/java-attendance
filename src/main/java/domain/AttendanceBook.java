@@ -1,6 +1,6 @@
 package domain;
 
-import dto.PenaltyCountResponse;
+import dto.AttendanceStatusCountResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,15 +16,21 @@ public class AttendanceBook {
         crews.add(newCrew);
     }
 
-    public PenaltyCountResponse getPenaltyCountResponseByName(String name) {
+    public AttendanceStatusCountResponse getAttendanceStatusCountResponseByName(String name) {
         Crew crew = findCrewByName(name);
 
-        return new PenaltyCountResponse(
-                crew.getCountByStatus(AttendanceStatus.ATTEND),
-                crew.getCountByStatus(AttendanceStatus.LATE),
-                crew.getCountByStatus(AttendanceStatus.ABSENT)
+        return new AttendanceStatusCountResponse(
+                crew.countAttendanceStatus(AttendanceStatus.ATTEND),
+                crew.countAttendanceStatus(AttendanceStatus.LATE),
+                crew.countAttendanceStatus(AttendanceStatus.ABSENT)
         );
+    }
 
+    public String getPenaltyMessageByName(String name) {
+        Crew crew = findCrewByName(name);
+        int lateCount = crew.countAttendanceStatus(AttendanceStatus.LATE);
+        int absentCount = crew.countAttendanceStatus(AttendanceStatus.ABSENT);
+        return Penalty.findPenaltyMessageByAttendanceStatusCount(lateCount, absentCount);
     }
 
     public Crew findCrewByName(String name) {
