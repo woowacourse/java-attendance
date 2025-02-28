@@ -1,30 +1,33 @@
 package model.attendance;
 
+import java.util.Arrays;
+import model.exception.SystemException;
+
 public enum PenaltyStatus {
-    NONE("없음"),
-    WARNING("경고"),
-    MEETING("면담"),
-    EXPELLED("제적"),
+    EXPELLED("제적", 6),
+    MEETING("면담", 3),
+    WARNING("경고", 2),
+    NONE("없음", 0),
     ;
 
     private final String meaning;
+    private final int absenceCountLowerBound;
 
-    PenaltyStatus(String meaning) {
+    PenaltyStatus(String meaning, int absenceCountLowerBound) {
         this.meaning = meaning;
+        this.absenceCountLowerBound = absenceCountLowerBound;
     }
+
     public static PenaltyStatus findByAttendanceCount(int lateCount, int absenceCount) {
-        int finalAbsenceCount = absenceCount + (lateCount / 3);
-        //TODO : 추가 리팩토링
-        if (finalAbsenceCount >= 6) {
-            return EXPELLED;
-        }
-        if (finalAbsenceCount >= 3) {
-            return MEETING;
-        }
-        if (finalAbsenceCount >= 2) {
-            return WARNING;
-        }
-        return NONE;
+        int finalAbsenceCount = calculateFinalAbsenceCount(lateCount, absenceCount);
+        return Arrays.stream(PenaltyStatus.values())
+                .filter(penaltyStatus -> finalAbsenceCount >= penaltyStatus.absenceCountLowerBound)
+                .findFirst()
+                .orElseThrow(SystemException::new);
+    }
+
+    public static int calculateFinalAbsenceCount(int lateCount, int absenceCount) {
+        return absenceCount + (lateCount / 3);
     }
 
     public String getMeaning() {
