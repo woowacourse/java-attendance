@@ -1,8 +1,14 @@
 package controller;
 
+import static domain.Feature.ATTENDANCE_CHECK;
+import static domain.Feature.ATTENDANCE_EDIT;
+import static domain.Feature.CREW_RECORDS_CHECK;
+import static domain.Feature.EXPELLED_WARNING_CHECK;
 import static util.loader.FileLoader.loadCSV;
 
 import domain.AttendanceBook;
+import domain.Feature;
+import java.util.Map;
 import view.InputView;
 import view.OutputView;
 
@@ -42,7 +48,12 @@ public class AttendanceController {
     }
 
     protected Runnable selectFunction(String functionNumber) {
-        // TODO: 함수 선택 구현
+        Map<Feature, Runnable> functions = Map.of(
+            ATTENDANCE_CHECK, this::attendanceCheck,
+            ATTENDANCE_EDIT, this::attendanceEdit,
+            CREW_RECORDS_CHECK, this:: crewRecordsCheck,
+            EXPELLED_WARNING_CHECK, this::expelledWarningCheck
+        );
         return null;
     }
 

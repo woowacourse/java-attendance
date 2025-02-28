@@ -19,7 +19,11 @@ public enum Feature {
         this.functionName = functionName;
     }
 
-    public static void isProvided(String input) {
+    public static Feature of(String input) {
+
+    }
+
+    public static void validateProvided(String input) {
         Arrays.stream(values())
             .filter(feature -> feature.functionNumber.equals(input))
             .findFirst()
