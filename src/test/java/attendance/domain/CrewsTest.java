@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 
@@ -53,4 +54,17 @@ public class CrewsTest {
     }
 
     //TODO : findCrew() 해서 반환 검사
+    @Test
+    public void 닉네임_일치_크루_반환() {
+        //given
+        List<Crew> originalCrews = new ArrayList<>();
+        Crew crew = new Crew("우가");
+        originalCrews.add(crew);
+
+        Crews crews = new Crews(originalCrews);
+
+        //when & then
+        Assertions.assertThat(crews.findCrew("우가")).isEqualTo(crew);
+
+    }
 }
