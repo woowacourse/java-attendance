@@ -33,6 +33,10 @@ public class AttendanceBook {
         return attendances.getAttendanceByDay(day);
     }
 
+    public Attendances getAttendanceByNickname(String nickname) {
+        return crewsRecords.get(nickname);
+    }
+
     private Attendances getCrewRecords(String nickname) {
         validateCrewNickname(nickname);
         return crewsRecords.get(nickname);
@@ -42,10 +46,6 @@ public class AttendanceBook {
         if (!crewsRecords.containsKey(nickname)) {
             throw new IllegalArgumentException("존재하지 않는 닉네임입니다.");
         }
-    }
-
-    public Attendances getAttendanceByNickname(String nickname) {
-        return crewsRecords.get(nickname);
     }
 
     public Map<String, Attendances> getCrewsRecords() {

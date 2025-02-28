@@ -12,7 +12,7 @@ public class Attendances {
 
     public Attendance addAttendance(LocalDateTime dateTime) {
         Attendance attendance = new Attendance(dateTime);
-        if (records.contains(attendance)) {
+        if (containSameDay(attendance)) {
             throw new UnsupportedOperationException("오늘 이미 출석하셨습니다. 출석 수정을 이용해주세요");
         }
         records.add(attendance);
@@ -20,14 +20,31 @@ public class Attendances {
         return attendance;
     }
 
+    private boolean containSameDay(Attendance attendance) {
+        return records.stream()
+                .anyMatch(attendance1 -> attendance1.isSameDay(attendance));
+    }
+
     public Attendance updateAttendance(LocalDateTime dateTime, int day) {
         if (dateTime.getDayOfMonth() > day) {
             throw new IllegalArgumentException("미래는 수정할 수 없습니다.");
         }
         Attendance attendance = new Attendance(dateTime);
-        records.remove(attendance);
+        removeAttendance(day);
         records.add(attendance);
         return attendance;
+    }
+
+    private void removeAttendance(int day) {
+        int removeIndex = 0;
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).isSameDay(day)) {
+                removeIndex = i;
+                break;
+            }
+        }
+
+        records.remove(removeIndex);
     }
 
     public CrewStatus calculateCrewStatus(LocalDate today) {
@@ -39,7 +56,7 @@ public class Attendances {
     public Map<AttendanceStatus, Integer> calculateAllAttendanceStatus(LocalDate today) {
         Map<AttendanceStatus, Integer> attendanceStatusCount = initMap();
         for (Attendance attendance : records) {
-            if(attendance.isBefore(today)) {
+            if (attendance.isBefore(today)) {
                 AttendanceStatus attendanceStatus = attendance.calculateAttendanceStatus();
                 attendanceStatusCount.put(attendanceStatus, attendanceStatusCount.get(attendanceStatus) + 1);
             }

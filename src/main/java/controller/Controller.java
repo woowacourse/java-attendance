@@ -41,7 +41,7 @@ public class Controller {
     private void runMenuOption(AttendanceBook attendanceBook) {
         while (true) {
             MenuOption menuOption = MenuOption.selectOption(inputView.readMenuOption(today));
-            if(menuOption == MenuOption.QUIT) {
+            if (menuOption == MenuOption.QUIT) {
                 return;
             }
             if (menuOption == MenuOption.CHECK_ATTENDANCE) {
@@ -67,7 +67,7 @@ public class Controller {
                 LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), time.getHour(),
                         time.getMinute()));
 
-        outputView.printCheckAttendance(checkedAttendance.getDateTime(), checkedAttendance.calculateAttendanceStatus());
+        outputView.printCheckAttendance(checkedAttendance);
     }
 
     private void runChangeAttendance(AttendanceBook attendanceBook) {

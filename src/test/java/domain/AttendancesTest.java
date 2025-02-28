@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +51,6 @@ public class AttendancesTest {
         attendances.addAttendance(LocalDateTime.of(2024, 12, 3, 10, 59));
         attendances.addAttendance(LocalDateTime.of(2024, 12, 4, 11, 0));
         attendances.addAttendance(LocalDateTime.of(2024, 12, 5, 13, 0));
-        Assertions.assertEquals(CrewStatus.COUNSEL, attendances.calculateCrewStatus());
+        Assertions.assertEquals(CrewStatus.COUNSEL, attendances.calculateCrewStatus(LocalDate.of(2024, 12, 6)));
     }
 }

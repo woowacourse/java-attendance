@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
-import java.util.Objects;
 
 public class Attendance implements Comparable<Attendance> {
     private final LocalDateTime dateTime;
@@ -35,21 +34,8 @@ public class Attendance implements Comparable<Attendance> {
         return dateTime.getDayOfMonth() == day;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Attendance that = (Attendance) o;
-        return dateTime.getDayOfMonth() == that.dateTime.getDayOfMonth();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(dateTime.getDayOfMonth());
+    public boolean isSameDay(Attendance attendance) {
+        return dateTime.getDayOfMonth() == attendance.dateTime.getDayOfMonth();
     }
 
     @Override
