@@ -21,8 +21,29 @@ public class AttendanceController {
             -> attendanceBook.initializeCrewRecords(loadCSV("src/main/resources/attendances.csv")));
     }
 
-    public void selectFunction() {
+    public void start() {
 
+    }
+
+    protected void attendanceCheck() {
+        // TODO: 출석 확인 구현
+    }
+
+    protected void attendanceEdit() {
+        // TODO: 출석 수정 구현
+    }
+
+    protected void crewRecordsCheck() {
+        // TODO: 크루별 출석 기록 확인 구현
+    }
+
+    protected void expelledWarningCheck() {
+        // TODO: 제적 위험자 확인 구현
+    }
+
+    protected Runnable selectFunction(String functionNumber) {
+        // TODO: 함수 선택 구현
+        return null;
     }
 
     private void handleException(Runnable action) {

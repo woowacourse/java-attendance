@@ -9,6 +9,6 @@ public class Application {
         OutputView outputView = new OutputView();
 
         AttendanceController attendanceController = new AttendanceController(inputView, outputView);
-        attendanceController.selectFunction();
+        attendanceController.start();
     }
 }
