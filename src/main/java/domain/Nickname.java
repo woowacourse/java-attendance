@@ -1,9 +1,9 @@
 package domain;
 
-public record Nickname(String nickname) {
+public record Nickname(String value) {
 
     public Nickname {
-        validate(nickname);
+        validate(value);
     }
 
     public static Nickname from(String nickname) {

@@ -7,19 +7,19 @@ public enum AttendanceStateRule {
     ABSENT(30, "결석"),
     ;
 
-    private final int cutoff;
+    private final int cutoffMinute;
     private final String description;
 
-    AttendanceStateRule(int cutoff, String description) {
-        this.cutoff = cutoff;
+    AttendanceStateRule(int cutoffMinute, String description) {
+        this.cutoffMinute = cutoffMinute;
         this.description = description;
     }
 
     public static AttendanceStateRule decisionState(long lateMinutes) {
-        if (lateMinutes > ABSENT.cutoff) {
+        if (lateMinutes > ABSENT.cutoffMinute) {
             return ABSENT;
         }
-        if (lateMinutes > LATE.cutoff) {
+        if (lateMinutes > LATE.cutoffMinute) {
             return LATE;
         }
         return ATTEND;
