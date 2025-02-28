@@ -15,8 +15,8 @@ import java.util.Set;
 public class AttendanceRecord {
     private static final String ATTENDANCE_ALREADY_EXISTED_ERROR = "이미 출석 기록이 존재합니다. 수정 메뉴를 이용해주세요.";
     private static final LocalDate YESTERDAY = TODAY.minusDays(1);
+    private static final LocalTime ABSENT_CONSIDERING_TIME = LocalTime.of(15, 0);
     private static final int ABSENT_CONSIDERING_UNIT = 3;
-    public static final LocalTime ABSENT_CONSIDERING_TIME = LocalTime.of(15, 0);
 
     private final Set<Attendance> value;
 
@@ -28,10 +28,6 @@ public class AttendanceRecord {
         return value.stream()
                 .anyMatch(attendance ->
                         attendance.isSameDateWith(targetAttendance));
-    }
-
-    public AttendanceLog findAllSortedUntilYesterday() {
-        return new AttendanceLog(getSortedAllValueUntilYesterday());
     }
 
     public int calculateCountOf(AttendanceStatus attendanceStatus) {
@@ -59,16 +55,8 @@ public class AttendanceRecord {
         return new ModifyingResult(originalAttendance, newAttendance);
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        }
-        AttendanceRecord other = (AttendanceRecord) object;
-        return Objects.equals(value, other.value);
+    public AttendanceLog findAllSortedUntilYesterday() {
+        return new AttendanceLog(getSortedAllValueUntilYesterday());
     }
 
     private Attendance findSameDateAttendanceBy(Attendance targetAttendance) {
@@ -99,5 +87,17 @@ public class AttendanceRecord {
             return;
         }
         add(attendanceCandidate);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        AttendanceRecord other = (AttendanceRecord) object;
+        return Objects.equals(value, other.value);
     }
 }

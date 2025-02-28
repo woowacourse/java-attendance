@@ -18,7 +18,8 @@ public enum MenuOption {
 
     public static MenuOption from(String input) {
         return Arrays.stream(values())
-                .filter(menuOption -> Pattern.matches(menuOption.pattern, input))
+                .filter(menuOption ->
+                        Pattern.matches(menuOption.pattern, input))
                 .findFirst()
                 .orElseThrow(IllegalStateException::new);
     }

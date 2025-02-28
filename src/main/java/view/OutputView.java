@@ -55,6 +55,10 @@ public class OutputView {
         System.out.println();
     }
 
+    public void showErrorMessage(String message) {
+        System.out.println(message);
+    }
+
     private void showPenaltyCrew(AttendanceCount attendanceCount) {
         if (Penalty.from(attendanceCount) == Penalty.NONE) {
             return;
@@ -90,9 +94,5 @@ public class OutputView {
 
     private String formatStatus(Attendance attendance) {
         return "(" + AttendanceStatus.from(attendance).getExpression() + ")";
-    }
-
-    public void showErrorMessage(String message) {
-        System.out.println(message);
     }
 }

@@ -26,6 +26,13 @@ public class Attendance {
         return time.isBefore(CAMPUS_START_TIME) || time.isAfter(CAMPUS_END_TIME);
     }
 
+    public static boolean isHoliday(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY
+                || dayOfWeek == DayOfWeek.SUNDAY
+                || HOLIDAY.contains(date.getDayOfMonth());
+    }
+
     public LocalDate getDate() {
         return value.toLocalDate();
     }
@@ -52,12 +59,5 @@ public class Attendance {
         }
         Attendance other = (Attendance) object;
         return Objects.equals(value, other.value);
-    }
-
-    public static boolean isHoliday(LocalDate date) {
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        return dayOfWeek == DayOfWeek.SATURDAY
-                || dayOfWeek == DayOfWeek.SUNDAY
-                || HOLIDAY.contains(date.getDayOfMonth());
     }
 }

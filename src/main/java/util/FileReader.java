@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class FileReader {
-    private static final String FILE_PATH = "src/main/java/attendances.csv";
     private static final String FILE_PATH_INVALID_ERROR = "[ERROR] 파일 경로가 유효하지 않습니다.";
+    private static final String FILE_PATH = "src/main/java/attendances.csv";
     private static final String PARSE_UNIT = " ";
     private static final int NAME_INDEX = 0;
     private static final int DATE_INDEX = 1;

@@ -17,22 +17,22 @@ public class AttendanceBook {
         this.value = initialInformation.value();
     }
 
-    public Attendance addAttendance(CrewName crewName, Attendance attendance) {
-        findAttendanceRecordBy(crewName).add(attendance);
-        return attendance;
-    }
-
     public boolean isNotExistedName(CrewName crewName) {
         AttendanceRecord attendanceRecord = value.get(crewName);
         return attendanceRecord == null;
     }
 
-    public AttendanceRecord findAttendanceRecordBy(CrewName crewName) {
-        return value.get(crewName);
+    public Attendance addAttendance(CrewName crewName, Attendance attendance) {
+        findAttendanceRecordBy(crewName).add(attendance);
+        return attendance;
     }
 
     public ModifyingResult modify(CrewName crewName, Attendance newAttendance) {
         return findAttendanceRecordBy(crewName).modify(newAttendance);
+    }
+
+    public AttendanceRecord findAttendanceRecordBy(CrewName crewName) {
+        return value.get(crewName);
     }
 
     public AttendanceLog findAttendanceLogUntilYesterday(CrewName crewName) {

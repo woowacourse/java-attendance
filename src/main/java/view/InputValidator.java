@@ -36,12 +36,6 @@ public class InputValidator {
         }
     }
 
-    private static void checkRunningTime(LocalTime time) {
-        if (Attendance.isInvalidTime(time)) {
-            throw new IllegalArgumentException(ERROR_HEADER + NOT_RUNNING_TIME_ERROR);
-        }
-    }
-
     public static void validateName(String name, AttendanceBook attendanceBook) {
         if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
             throw new IllegalArgumentException(ERROR_HEADER + NAME_FORMAT_ERROR);
@@ -61,18 +55,24 @@ public class InputValidator {
         }
     }
 
+    public static void validateSelectedMenu(String selectedMenu) {
+        if (!selectedMenu.matches(MENU_PATTERN)) {
+            throw new IllegalArgumentException(ERROR_HEADER + INVALID_MENU_ERROR);
+        }
+    }
+
+    private static void checkRunningTime(LocalTime time) {
+        if (Attendance.isInvalidTime(time)) {
+            throw new IllegalArgumentException(ERROR_HEADER + NOT_RUNNING_TIME_ERROR);
+        }
+    }
+
     private static void checkRunningDay(LocalDate date) {
         if (date.isAfter(TODAY)) {
             throw new IllegalArgumentException(ERROR_HEADER + INVALID_DATE_ERROR);
         }
         if (Attendance.isHoliday(date)) {
             throw new IllegalArgumentException(ERROR_HEADER + HOLIDAY_ERROR);
-        }
-    }
-
-    public static void validateSelectedMenu(String selectedMenu) {
-        if (!selectedMenu.matches(MENU_PATTERN)) {
-            throw new IllegalArgumentException(ERROR_HEADER + INVALID_MENU_ERROR);
         }
     }
 }
