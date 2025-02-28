@@ -23,19 +23,19 @@ public class AttendanceOperator implements OptionOperator {
         outputView.printAttendanceMessage(attendance);
     }
 
-    private AttendanceTime processTimeInput() {
-        return InputProcessor.processInputUntilSuccess(() -> {
-            LocalTime attendTime = inputView.getAttendTimeInput();
-            return new AttendanceTime(attendTime);
-        });
-    }
-
     private Crew processCrewInput(AttendanceBook attendanceBook, AttendanceDate attendanceDate) {
         return InputProcessor.processInputUntilSuccess(() -> {
             String name = inputView.getNameInput();
             Crew attendCrew = attendanceBook.findCrewByName(name);
             attendanceBook.checkAlreadyAttended(attendCrew, attendanceDate);
             return attendCrew;
+        });
+    }
+
+    private AttendanceTime processTimeInput() {
+        return InputProcessor.processInputUntilSuccess(() -> {
+            LocalTime attendTime = inputView.getAttendTimeInput();
+            return new AttendanceTime(attendTime);
         });
     }
 }

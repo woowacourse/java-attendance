@@ -5,6 +5,7 @@ import controller.operator.CrewAttendanceOperator;
 import controller.operator.EditionOperator;
 import controller.operator.ExpelledCrewOperator;
 import controller.operator.OptionOperator;
+import controller.operator.QuitOperator;
 import domain.AttendanceBook;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -15,7 +16,8 @@ public enum MenuOption {
     EDIT_ATTENDANCE("2", new EditionOperator()),
     SHOW_CREW_ATTENDANCE("3", new CrewAttendanceOperator()),
     SHOW_EXPELLED_CREWS("4", new ExpelledCrewOperator()),
-    QUIT("Q", null)
+//    QUIT("Q", null)
+    QUIT("Q", new QuitOperator())
     ;
 
     private final String command;

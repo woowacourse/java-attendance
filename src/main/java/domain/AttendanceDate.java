@@ -55,15 +55,15 @@ public class AttendanceDate {
         }
     }
 
-    private static boolean isCampusClosed(LocalDate date) {
-        return date.getDayOfWeek().equals(DayOfWeek.SATURDAY)
-                || date.getDayOfWeek().equals(DayOfWeek.SUNDAY)
-                || HOLIDAYS.contains(date);
-    }
-
     private static void addEducationDate(LocalDate date, List<LocalDate> educationDates) {
         if (!isCampusClosed(date)) {
             educationDates.add(date);
         }
+    }
+
+    private static boolean isCampusClosed(LocalDate date) {
+        return date.getDayOfWeek().equals(DayOfWeek.SATURDAY)
+                || date.getDayOfWeek().equals(DayOfWeek.SUNDAY)
+                || HOLIDAYS.contains(date);
     }
 }

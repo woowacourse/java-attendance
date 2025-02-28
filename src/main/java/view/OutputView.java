@@ -57,14 +57,6 @@ public class OutputView {
         System.out.println();
     }
 
-    private String generateExpelledCrewMessage(Crew crew) {
-        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)",
-                crew.getName(),
-                crew.getAbsentCount(Constants.NOW_DATE),
-                crew.getLateCount(),
-                crew.findCrewStatus(Constants.NOW_DATE).getStatus());
-    }
-
     private String generateCrewAttendanceMessage(Attendances attendances, LocalDate educationDate) {
         AttendanceDate attendanceDate = new AttendanceDate(educationDate);
         if (attendances.checkAlreadyAttend(attendanceDate)) {
@@ -72,6 +64,26 @@ public class OutputView {
             return generateAttendanceMessage(attendance);
         }
         return generateAbsentMessage(educationDate);
+    }
+
+    private void printCrewStatusMessage(Attendances attendances) {
+        System.out.println(System.lineSeparator() + String.format("출석: %d회", attendances.countAttendance()) +
+                System.lineSeparator() + String.format("지각: %d회", attendances.countLate()) +
+                System.lineSeparator() + String.format("결석: %d회", attendances.countUnattended(Constants.NOW_DATE)) + System.lineSeparator());
+
+        CrewStatus crewStatus = CrewStatus.checkCrewStatus(attendances.countLate(), attendances.countUnattended(Constants.NOW_DATE));
+
+        if (!crewStatus.equals(CrewStatus.NORMAL)) {
+            System.out.println(String.format("%s입니다.", crewStatus.getStatus()) + System.lineSeparator());
+        }
+    }
+
+    private String generateExpelledCrewMessage(Crew crew) {
+        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)",
+                crew.getName(),
+                crew.getAbsentCount(Constants.NOW_DATE),
+                crew.getLateCount(),
+                crew.findCrewStatus(Constants.NOW_DATE).getStatus());
     }
 
     private String generateAttendanceMessage(Attendance attendance) {
@@ -89,17 +101,5 @@ public class OutputView {
                 date.getMonthValue(),
                 date.getDayOfMonth(),
                 DayOfWeekConvertor.convertToKorean(date.getDayOfWeek()));
-    }
-
-    private void printCrewStatusMessage(Attendances attendances) {
-        System.out.println(System.lineSeparator() + String.format("출석: %d회", attendances.countAttendance()) +
-                System.lineSeparator() + String.format("지각: %d회", attendances.countLate()) +
-                System.lineSeparator() + String.format("결석: %d회", attendances.countUnattended(Constants.NOW_DATE)) + System.lineSeparator());
-
-        CrewStatus crewStatus = CrewStatus.checkCrewStatus(attendances.countLate(), attendances.countUnattended(Constants.NOW_DATE));
-
-        if (!crewStatus.equals(CrewStatus.NORMAL)) {
-            System.out.println(String.format("%s입니다.", crewStatus.getStatus()) + System.lineSeparator());
-        }
     }
 }

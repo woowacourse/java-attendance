@@ -18,12 +18,6 @@ public class AttendanceTime {
         this.attendanceTime = time;
     }
 
-    private void validateCampusOpen(LocalTime time) {
-        if (time.isBefore(CAMPUS_OPEN_TIME) || time.isAfter(CAMPUS_CLOSE_TIME)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
-        }
-    }
-
     public boolean isAfterLateTime(AttendanceDate attendanceDate) {
         LocalTime educationStartTime = EDUCATION_START_TIME;
         if (attendanceDate.isMonday()) {
@@ -52,5 +46,11 @@ public class AttendanceTime {
 
     public int getMinute() {
         return this.attendanceTime.getMinute();
+    }
+
+    private void validateCampusOpen(LocalTime time) {
+        if (time.isBefore(CAMPUS_OPEN_TIME) || time.isAfter(CAMPUS_CLOSE_TIME)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+        }
     }
 }
