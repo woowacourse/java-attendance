@@ -75,22 +75,22 @@ class CrewAttendanceManagerTest {
                 new Attendance(LocalDateTime.of(nowDate, LocalTime.of(13, 0))),
                 new Attendance(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
                 new Attendance(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
-                ));
+        ));
 
         List<Attendance> exceptedRecord = List.of(
                 new Attendance(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
                 new Attendance(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
-        ));
+        );
 
         String nickname = "비타";
 
         attendanceManager.addNewCrew(nickname, baseRecord);
 
         // when
-        AttendanceRecord result = attendanceManager.getAttendanceRecord();
+        AttendanceRecord result = attendanceManager.getAttendanceRecord(nickname);
 
         // then
-        assertThat(result.getRecord)
-                .isEqualTo(exceptedRecord);
+        assertThat(result.getRecord())
+                .containsExactlyElementsOf(exceptedRecord);
     }
 }
