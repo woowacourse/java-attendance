@@ -18,8 +18,8 @@ public class AttendanceDate {
 
     // TODO: 크리스마스 예외처리
     private void validateDate(LocalDate date) {
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+        DayOfWeek attendanceDay = date.getDayOfWeek();
+        if (!EducationTime.isOperatingOn(attendanceDay)) {
             throw new InvalidDateException();
         }
     }
