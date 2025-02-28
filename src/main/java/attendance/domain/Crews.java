@@ -1,14 +1,14 @@
 package attendance.domain;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Crews {
-    private final List<Crew> crews;
+    private final Set<Crew> crews;
 
-    public Crews(List<Crew> crews) {
-        this.crews = new ArrayList<>(crews);
+    public Crews(Set<Crew> crews) {
+        this.crews = new HashSet<>(crews);
     }
 
     public Crew findCrew(String inputCrewName) {
@@ -18,8 +18,8 @@ public class Crews {
                 .orElseThrow();
     }
 
-    public List<Crew> getCrews() {
-        return Collections.unmodifiableList(crews);
+    public Set<Crew> getCrews() {
+        return Collections.unmodifiableSet(crews);
     }
 
 }

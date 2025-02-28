@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.Test;
 
 public class AttendanceBookTest {
@@ -14,7 +15,7 @@ public class AttendanceBookTest {
     public void 출석부_생성() {
         //given
         Crew crew = new Crew("우가");
-        Crews crews = new Crews(List.of(crew));
+        Crews crews = new Crews(Set.of(crew));
         AttendanceTime attendanceTime = new AttendanceTime(LocalDateTime.of(2025, 2, 28, 9, 59));
         AttendanceRecord attendanceRecord = new AttendanceRecord(List.of(attendanceTime));
 
