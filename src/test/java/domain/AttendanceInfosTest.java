@@ -56,8 +56,8 @@ class AttendanceInfosTest {
         AttendanceInfos attendanceInfos = AttendanceInfos.initInfos();
         CampusTime campusTime = CampusTime.from("10:31");
         LocalDate date = LocalDate.of(2025, 2, 27);
-        CampusDate campusDate1 = CampusDate.ofDateAndDay(date, 27);
-        CampusDate campusDate2 = CampusDate.ofDateAndDay(date, 28);
+        CampusDate campusDate1 = CampusDate.ofDateWithDay(date, 27);
+        CampusDate campusDate2 = CampusDate.ofDateWithDay(date, 28);
 
         // when
         attendanceInfos.addInfoByDateAndTime(campusDate1, campusTime);
@@ -76,7 +76,7 @@ class AttendanceInfosTest {
 
         // when
         AttendanceInfo infoByDay = attendanceInfos.findInfoByDate(
-                CampusDate.ofDateAndDay(LocalDate.of(2025, 2, 3), 27));
+                CampusDate.ofDateWithDay(LocalDate.of(2025, 2, 3), 27));
 
         // then
         assertThat(infoByDay.getMonth()).isEqualTo(2);
@@ -92,9 +92,9 @@ class AttendanceInfosTest {
 
         // when
         boolean result1 = attendanceInfos.hasInfoByDate(
-                CampusDate.ofDateAndDay(LocalDate.of(2025, 2, 3), 27));
+                CampusDate.ofDateWithDay(LocalDate.of(2025, 2, 3), 27));
         boolean result2 = attendanceInfos.hasInfoByDate(
-                CampusDate.ofDateAndDay(LocalDate.of(2025, 2, 3), 25));
+                CampusDate.ofDateWithDay(LocalDate.of(2025, 2, 3), 25));
 
         // then
         assertThat(result1).isTrue();
@@ -108,8 +108,8 @@ class AttendanceInfosTest {
         AttendanceInfo attendanceInfo2 = createAttendanceInfo("10:31", 2025, 2, 28);
         AttendanceInfos attendanceInfos = AttendanceInfos.from(List.of(attendanceInfo1, attendanceInfo2));
 
-        CampusDate modifyDate = CampusDate.ofDateAndDay(LocalDate.of(2025, 2, 3), 27);
-        CampusDate unModifyDate = CampusDate.ofDateAndDay(LocalDate.of(2025, 2, 3), 28);
+        CampusDate modifyDate = CampusDate.ofDateWithDay(LocalDate.of(2025, 2, 3), 27);
+        CampusDate unModifyDate = CampusDate.ofDateWithDay(LocalDate.of(2025, 2, 3), 28);
 
         // when
         AttendanceInfos modifiedInfos = attendanceInfos.modifyInfoByDateAndTime(modifyDate, CampusTime.from("10:29"));
@@ -120,6 +120,26 @@ class AttendanceInfosTest {
         assertThat(modifiedInfos.findInfoByDate(modifyDate).getMinute()).isEqualTo(29);
         assertThat(modifiedInfos.findInfoByDate(unModifyDate).getHour()).isEqualTo(10);
         assertThat(modifiedInfos.findInfoByDate(unModifyDate).getMinute()).isEqualTo(31);
+    }
+
+    @Test
+    void 현재까지의_출석_기록에서_출석상태_횟수들을_계산한다() {
+        // given
+        AttendanceInfo attendanceInfo1 = createAttendanceInfo("13:01", 2025, 2, 3);
+        AttendanceInfo attendanceInfo2 = createAttendanceInfo("09:59", 2025, 2, 4);
+        AttendanceInfo attendanceInfo3 = createAttendanceInfo("10:06", 2025, 2, 5);
+        AttendanceInfo attendanceInfo4 = createAttendanceInfo("10:31", 2025, 2, 6);
+        AttendanceInfos attendanceInfos = AttendanceInfos.from(
+                List.of(attendanceInfo1, attendanceInfo2, attendanceInfo3, attendanceInfo4));
+        CampusDate campusDate = CampusDate.ofDateWithDay(LocalDate.of(2025, 2, 3), 10);
+
+        // when
+        AttendanceCounts attendanceCounts = attendanceInfos.countsByDate(campusDate);
+
+        // then
+        assertThat(attendanceCounts.getAttendanceCount()).isEqualTo(2);
+        assertThat(attendanceCounts.getTardinessCount()).isEqualTo(1);
+        assertThat(attendanceCounts.getAbsenceCount()).isEqualTo(2);
     }
 
     private static AttendanceInfo createAttendanceInfo(String inputTime, int year, int month, int day) {

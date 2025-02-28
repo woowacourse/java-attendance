@@ -1,5 +1,7 @@
 package domain;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,12 +33,12 @@ public class AttendanceInfos {
 
     public boolean hasInfoByDate(final CampusDate campusDate) {
         return attendanceInfos.stream()
-                .anyMatch(attendanceInfo -> attendanceInfo.getDay() == campusDate.getDay());
+                .anyMatch(attendanceInfo -> ifDayEqual(campusDate, attendanceInfo));
     }
 
     public AttendanceInfo findInfoByDate(final CampusDate campusDate) {
         return attendanceInfos.stream()
-                .filter(attendanceInfo -> attendanceInfo.getDay() == campusDate.getDay())
+                .filter(attendanceInfo -> ifDayEqual(campusDate, attendanceInfo))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜의 출석 정보를 찾을 수 없습니다."));
     }
@@ -50,8 +52,51 @@ public class AttendanceInfos {
         return new AttendanceInfos(modifiedList);
     }
 
+    public AttendanceCounts countsByDate(final CampusDate campusDate) {
+        int attendanceCount = 0;
+        int tardinessCount = 0;
+        int absenceCount = 0;
+
+        for (int day = 1; day < campusDate.getDay(); day++) {
+            if (isWeekend(LocalDate.of(campusDate.getYear(), campusDate.getMonth(), day))) {
+                continue;
+            }
+            CampusDate currentDate = campusDate.withDay(day);
+            if (notHaveInfoByDate(currentDate)) {
+                absenceCount++;
+                continue;
+            }
+            AttendanceStatus attendanceStatus = findInfoByDate(currentDate).getAttendanceStatus();
+            if (attendanceStatus == AttendanceStatus.ATTENDANCE) {
+                attendanceCount++;
+                continue;
+            }
+            if (attendanceStatus == AttendanceStatus.ABSENCE) {
+                absenceCount++;
+                continue;
+            }
+            if (attendanceStatus == AttendanceStatus.TARDINESS) {
+                tardinessCount++;
+                continue;
+            }
+        }
+        return AttendanceCounts.ofStatusCounts(attendanceCount, tardinessCount, absenceCount);
+    }
+
+    private boolean isWeekend(LocalDate date) {
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
+    private boolean ifDayEqual(final CampusDate campusDate, final AttendanceInfo attendanceInfo) {
+        return attendanceInfo.getDay() == campusDate.getDay();
+    }
+
+    private boolean notHaveInfoByDate(CampusDate campusDate) {
+        return !hasInfoByDate(campusDate);
+    }
+
     private AttendanceInfo modifyInfoIfSameDay(final CampusDate campusDate, final CampusTime campusTime, final AttendanceInfo info) {
-        if (info.getDay() == campusDate.getDay()) {
+        if (ifDayEqual(campusDate, info)) {
             return info.modifyInfoByTime(campusTime);
         }
         return info;
