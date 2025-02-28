@@ -1,5 +1,6 @@
 package domain;
 
+import domain.policy.absent.AbsentRule;
 import domain.policy.attend.AttendancePolicy;
 import reader.AttendanceFileReader;
 import reader.FileReadException;
@@ -47,6 +48,14 @@ public class AttendanceBook {
 
         Attendances attendances = nicknameToAttendances.get(nickname);
         return attendances.add(attendance);
+    }
+
+    public AttendanceStatistics findExpulsionCandidates() {
+        return AttendanceStatistics.from(nicknameToAttendances.entrySet().stream()
+                .map(attendancesByNickname ->
+                        attendancesByNickname.getValue().calculateAttendanceCounts(attendancesByNickname.getKey(), attendancePolicy))
+                .filter(attendanceStatistics -> AbsentRule.calculateAbsentPolicy(attendanceStatistics).isRiskOfExpulsion())
+                .toList());
     }
 
     private void writeNickname(Map<String, Map<LocalDate, LocalTime>> rawAttendances,
