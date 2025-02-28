@@ -29,9 +29,9 @@ public class AttendanceRecords {
         attendanceRecords.add(attendanceRecord);
     }
 
-    public AttendanceRecord find(String nickname, LocalDate date) {
+    public AttendanceRecord find(Crew crew, LocalDate date) {
         return attendanceRecords.stream()
-                .filter(record -> nickname.equals(record.getNickname())
+                .filter(record -> crew.equals(record.getCrew())
                         && date.equals(record.getDate()))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));

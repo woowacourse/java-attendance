@@ -31,7 +31,7 @@ public class AttendanceService {
         Crew crew = crews.findByNickname(request.nickname());
         attendanceRecords.add(AttendanceRecord.of(crew, request.date(), request.time()));
 
-        AttendanceRecord found = attendanceRecords.find(request.nickname(), request.date());
+        AttendanceRecord found = attendanceRecords.find(crew, request.date());
         return SaveAttendanceRecordResponse.of(found);
     }
 }

@@ -81,7 +81,7 @@ public class AttendanceRecordsTest {
             attendanceRecords.add(attendanceRecord);
 
             // when & then
-            AttendanceRecord found = attendanceRecords.find(nickname, checkedDate);
+            AttendanceRecord found = attendanceRecords.find(crew, checkedDate);
             Assertions.assertThat(attendanceRecord).isEqualTo(found);
         }
     }
