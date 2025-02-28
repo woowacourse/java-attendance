@@ -32,6 +32,10 @@ public class Attendance {
         return dateTime.toLocalDate().isBefore(date);
     }
 
+    public boolean isSameState(final AttendanceState state) {
+        return this.state.equals(state);
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
