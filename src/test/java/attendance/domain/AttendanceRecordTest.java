@@ -35,7 +35,7 @@ public class AttendanceRecordTest {
         originalList.add(new AttendanceTime(LocalDateTime.of(2025, 3, 1, 10, 31)));
 
         //then
-        assertEquals(2, attendanceRecord.getAttendanceRecord().size());
+        Assertions.assertThat(attendanceRecord.getAttendanceRecord().size()).isEqualTo(2);
     }
 
     @Test

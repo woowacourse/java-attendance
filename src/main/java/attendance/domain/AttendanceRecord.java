@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AttendanceRecord {
@@ -23,6 +24,10 @@ public class AttendanceRecord {
             return 1;
         }
         return 0;
+    }
+
+    public List<AttendanceTime> getAttendanceRecord() {
+        return Collections.unmodifiableList(attendanceRecord);
     }
 
 }
