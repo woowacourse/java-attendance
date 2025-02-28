@@ -32,7 +32,11 @@ public class OutputView {
         int dayOfMonth = date.getDayOfMonth();
         String dayOfWeek = CustomDayOfWeek.getInstance(date).getName();
 
-        String originalAttendanceTime = originAttendance.getTime().toString();
+        String originalAttendanceTime = "--:--";
+        if (originAttendance.getTime() != null) {
+            originalAttendanceTime = originAttendance.getTime().toString();
+        }
+
         String originalAttendanceStatus = "출석";
         if (originAttendance.isAbsent()) {
             originalAttendanceStatus = "결석";
@@ -77,10 +81,13 @@ public class OutputView {
 //면담 대상자입니다.
     public void printAttendanceHistory(String nickname, Attendances attendances) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", nickname);
-        List<Attendance> attendanceList = attendances.getAttendances();
-        attendanceList.sort(Comparator.comparing(attendance -> attendance.getDay().getDate()));
+        List<Attendance> attendanceHistory = attendances.getAttendances();
+        attendanceHistory.sort(Comparator.comparing(attendance -> attendance.getDay().getDate()));
 
-        for (Attendance attendance : attendanceList) {
+        if (attendanceHistory.getLast().getDay().getDate().equals(LocalDate.now())) {
+            attendanceHistory.removeLast();
+        }
+        for (Attendance attendance : attendanceHistory) {
             int month = attendance.getDay().getDate().getMonthValue();
             int dayOfMonth = attendance.getDay().getDate().getDayOfMonth();
             String dayOfWeek = CustomDayOfWeek.getInstance(attendance.getDay().getDate()).getName();
