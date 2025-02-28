@@ -47,4 +47,51 @@ public class CrewTest {
         assertThat(crew.findAttendanceByDate(16).checkAttendanceStatus()).isEqualTo(AttendanceStatus.LATE);
     }
 
+    @DisplayName("크루는 자신의 출석 기록을 수정할 수 있다")
+    @Test
+    void 크루는_자신의_출석_기록을_수정할_수_있다() {
+        Crew crew = new Crew("슬링키");
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 16, 13, 8);
+        crew.attend(localDateTime);
+        crew.changeAttendanceTime(16, LocalTime.of(14, 6));
+        assertThat(crew.findAttendanceByDate(16).getLocalTime()).isEqualTo(LocalTime.of(14, 6));
+    }
+
+    @DisplayName("크루는 자신이 제적 대상자인지 확인 할 수 있다")
+    @Test
+    void 크루는_자신이_제적_대상자인지_확인할_수_있다() {
+        Crew crew = new Crew("슬링키");
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 16, 13, 8);
+        crew.attend(localDateTime);
+        assertThat(crew.isDismissalCrew()).isTrue();
+    }
+
+    @DisplayName("크루는 자신의 출석 횟수를 구할 수 있다")
+    @Test
+    void 크루는_자신의_출석_횟수를_구할_수_있다() {
+        Crew crew = new Crew("슬링키");
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 16, 3, 8);
+        crew.attend(localDateTime);
+        assertThat(crew.getCrewAttendedCount()).isEqualTo(1);
+    }
+
+    @DisplayName("크루는 자신의 지각 횟수를 구할 수 있다")
+    @Test
+    void 크루는_자신의_지각_횟수를_구할_수_있다() {
+        Crew crew = new Crew("슬링키");
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 16, 13, 8);
+        crew.attend(localDateTime);
+        assertThat(crew.getCrewLateCount()).isEqualTo(1);
+    }
+
+    @DisplayName("크루는 자신의 결석 횟수를 구할 수 있다")
+    @Test
+    void 크루는_자신의_결석_횟수를_구할_수_있다() {
+        Crew crew = new Crew("슬링키");
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 16, 13, 38);
+        crew.attend(localDateTime);
+        assertThat(crew.getCrewAbsentCount()).isEqualTo(11);
+    }
+
+
 }
