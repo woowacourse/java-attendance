@@ -3,14 +3,15 @@ package attendance.domain;
 import attendance.dto.AttendanceFileDto;
 import attendance.utils.DateConverter;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static java.nio.file.Files.lines;
 
 public class AttendanceFileParser implements AttendanceReader{
 
@@ -25,26 +26,21 @@ public class AttendanceFileParser implements AttendanceReader{
     }
 
     public List<AttendanceFileDto> read() {
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            br.readLine();
-
-            List<AttendanceFileDto> attendanceFileDtos = new ArrayList<>();
-            parseToAttendanceFileDto(br, attendanceFileDtos);
-            return attendanceFileDtos;
+        try (Stream<String> lines = lines(Path.of(path))) {
+            return lines.skip(1)
+                .map(this::parseToAttendanceFileDto)
+                .toList();
         } catch (IOException e) {
             throw new UncheckedIOException(String.format("[ERROR] 파일을 읽기에 실패하였습니다. 경로: %s", path), e);
         }
     }
 
-    private void parseToAttendanceFileDto(BufferedReader br, List<AttendanceFileDto> attendanceFileDtos) throws IOException {
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] split = line.split(DELIMITER);
-            validateSplit(split);
-            LocalDate attendanceDate = DateConverter.convertToDate(split[LOCAL_DATE_TIME_INDEX]);
-            LocalTime attendanceTime = DateConverter.convertToTime(split[LOCAL_DATE_TIME_INDEX]);
-            attendanceFileDtos.add(AttendanceFileDto.of(split[NAME_INDEX], attendanceDate, attendanceTime));
-        }
+    private AttendanceFileDto parseToAttendanceFileDto(String line) {
+        String[] split = line.split(DELIMITER);
+        validateSplit(split);
+        LocalDate attendanceDate = DateConverter.convertToDate(split[LOCAL_DATE_TIME_INDEX]);
+        LocalTime attendanceTime = DateConverter.convertToTime(split[LOCAL_DATE_TIME_INDEX]);
+        return AttendanceFileDto.of(split[NAME_INDEX], attendanceDate, attendanceTime);
     }
 
     private void validateSplit(String[] split) {
