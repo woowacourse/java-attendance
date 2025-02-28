@@ -1,11 +1,13 @@
 package domain;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +17,8 @@ class AttendancesTest {
 
     private static Attendances attendances;
 
-    @BeforeAll
-    public static void setAttendances() {
+    @BeforeEach
+    public void setAttendances() {
         attendances = new Attendances(Map.of(
                 "짱수", List.of(
                         new Attendance(LocalDateTime.of(2025, 2, 3, 13, 5)),
@@ -114,6 +116,17 @@ class AttendancesTest {
         Attendance log = attendances.findLogWithNameAndDate(nickname, attendanceDate);
 
         assertThat(log.getLocalDateTime()).isEqualTo(LocalDateTime.of(2025, 2, 5, 13, 0));
+    }
+
+    @Test
+    void 닉네임과_일자를_통해_출석을_추가한다() {
+        String nickname = "짱수";
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2025, 2, 10, 13, 0);
+
+        Attendances testAttendances = new Attendances(new HashMap<>());
+        testAttendances.addAttendanceLog(nickname, attendanceDateTime);
+
+        Assertions.assertDoesNotThrow(() -> testAttendances.findLogWithNameAndDate(nickname, attendanceDateTime.toLocalDate()));
     }
 
     @Test
