@@ -39,7 +39,7 @@ public class AttendanceService {
                         AttendanceStatus.of(request.date(), request.time()))
         );
         AttendanceRecord found = AttendanceRecordRepository.find(request.nickname(), request.date());
-        return SaveAttendanceRecordResponse.of(found.date(), found.time(), found.status().getName());
+        return SaveAttendanceRecordResponse.of(found.date(), found.time(), found.status().getDescription());
     }
 
     public ModifyAttendanceRecordResponse modifyAttendanceRecord(ModifyAttendanceRequest request) {
@@ -57,7 +57,6 @@ public class AttendanceService {
     }
 
     public MonthAttendanceStatisticsResponse getMonthAttendanceStatistics(MonthAttendanceStatisticsRequest request) {
-        validateCrew(request.nickname());
         List<AttendanceRecordResponse> monthRecords = getMonthAttendanceRecordResponses(
                 request.nickname(),
                 request.today());
@@ -71,13 +70,13 @@ public class AttendanceService {
         List<String> nicknames = findCrewNicknames();
         TreeSet<RiskCrew> riskCrews = new TreeSet<>();
         nicknames.forEach(nickname -> {
-            RiskCrew riskCrew = getRiskCrew(request.today(), nickname);
+            RiskCrew riskCrew = getRiskCrew(nickname, request.today());
             riskCrews.add(riskCrew);
         });
         return new RiskCrewsResponse(riskCrews);
     }
 
-    private RiskCrew getRiskCrew(LocalDate today, String nickname) {
+    private RiskCrew getRiskCrew(String nickname, LocalDate today) {
         List<AttendanceRecordResponse> monthRecords = getMonthAttendanceRecordResponses(nickname, today);
         AttendanceStatusCount statusCount = calculateAttendanceStatusCount(monthRecords);
         RiskRank riskRank = calculateRiskRank(statusCount);
@@ -100,7 +99,7 @@ public class AttendanceService {
             return TimeStatus.createAbsentTimeStatus();
         }
         AttendanceRecord found = AttendanceRecordRepository.find(nickName, date);
-        return TimeStatus.of(found.time(), found.status().getName());
+        return TimeStatus.of(found.time(), found.status().getDescription());
     }
 
     private List<AttendanceRecordResponse> getMonthAttendanceRecordResponses(
@@ -129,13 +128,13 @@ public class AttendanceService {
     private AttendanceStatusCount calculateAttendanceStatusCount(
             List<AttendanceRecordResponse> monthAttendanceRecords) {
         int attendanceCount = (int) monthAttendanceRecords.stream()
-                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.ATTENDANCE.getName()))
+                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.ATTENDANCE.getDescription()))
                 .count();
         int lateCount = (int) monthAttendanceRecords.stream()
-                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.LATE.getName()))
+                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.LATE.getDescription()))
                 .count();
         int absentCount = (int) monthAttendanceRecords.stream()
-                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.ABSENT.getName()))
+                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.ABSENT.getDescription()))
                 .count();
         return new AttendanceStatusCount(attendanceCount, lateCount, absentCount);
     }

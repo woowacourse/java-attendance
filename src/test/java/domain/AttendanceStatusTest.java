@@ -26,7 +26,7 @@ class AttendanceStatusTest {
             softAssertions.assertThat(AttendanceStatus.of(monday, mondayLateTime2))
                     .isEqualByComparingTo(AttendanceStatus.LATE);
             softAssertions.assertThat(AttendanceStatus.of(monday, mondayAbsentLateTime))
-                    .isEqualByComparingTo(AttendanceStatus.ABSENT_LATE);
+                    .isEqualByComparingTo(AttendanceStatus.ABSENT);
         });
     }
 }
