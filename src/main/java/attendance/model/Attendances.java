@@ -115,12 +115,8 @@ public class Attendances {
     }
 
     public void modifyAttendance(final LocalDateTime dateTime) {
-        for (Attendance attendance : attendances) {
-            if (attendance.isSameDate(dateTime.toLocalDate())) {
-                attendance.modifyDateTime(dateTime);
-                attendance.calculateAttendanceType();
-            }
-        }
+        findAttendance(dateTime.toLocalDate()).modifyDateTime(dateTime);
+        findAttendance(dateTime.toLocalDate()).calculateAttendanceType();
     }
 
     public boolean hasTodayAttendance() {
