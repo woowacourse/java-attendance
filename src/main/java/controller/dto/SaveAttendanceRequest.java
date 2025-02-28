@@ -1,8 +1,9 @@
 package controller.dto;
 
+import static util.DateTimeUtil.TIME_FORMAT;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public record SaveAttendanceRequest(
@@ -10,8 +11,6 @@ public record SaveAttendanceRequest(
         LocalDate date,
         LocalTime time
 ) {
-
-    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     public static SaveAttendanceRequest of(String nickname, LocalDate date, String time) {
         validateTime(time);
