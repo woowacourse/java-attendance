@@ -25,7 +25,7 @@ public class FileInput {
             reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split(DELIMITER);
-                attendances.add(new AttendanceRecordDto(split[0], Parser.StringToLocalDateTime(split[1])));
+                attendances.add(new AttendanceRecordDto(split[0], Parser.stringToLocalDateTime(split[1])));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

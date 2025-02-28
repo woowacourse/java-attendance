@@ -16,6 +16,6 @@ public class FileInputTest {
         AttendanceSystem attendanceSystem = new AttendanceSystem();
         FileInput fileInput = new FileInput();
         List<AttendanceRecordDto> fileInit = fileInput.getFileInit();
-        Assertions.assertThat(fileInit.get(2)).isEqualTo(new AttendanceRecordDto("빙티", Parser.StringToLocalDateTime("2024-12-13 10:07")));
+        Assertions.assertThat(fileInit.get(2)).isEqualTo(new AttendanceRecordDto("빙티", Parser.stringToLocalDateTime("2024-12-13 10:07")));
     }
 }

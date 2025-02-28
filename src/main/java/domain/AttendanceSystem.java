@@ -15,13 +15,14 @@ public class AttendanceSystem {
     }
 
     public void attendance(String name, LocalTime time) {
-        if (!attendanceBooks.containsKey(name)) {
-            attendanceBooks.put(name, new AttendanceBook());
-        }
         if (attendanceBooks.get(name).hasAttendanceRecord(TODAY)) {
             throw new IllegalArgumentException();
         }
         attendanceBooks.get(name).attendance(TODAY, time);
+    }
+
+    private boolean hasNoName(String name) {
+        return !attendanceBooks.containsKey(name);
     }
 
 
@@ -34,6 +35,9 @@ public class AttendanceSystem {
     }
 
     public void editAttendance(String name, LocalDate date, LocalTime time) {
+        if (hasNoName(name)) {
+            attendanceBooks.put(name, new AttendanceBook());
+        }
         attendanceBooks.get(name).attendance(date, time);
     }
 
@@ -52,5 +56,12 @@ public class AttendanceSystem {
 
     public RiskStatus getRisk(String name) {
         return attendanceBooks.get(name).getRiskStatus(TODAY);
+    }
+
+    public AttendanceBook findByName(String name) {
+        if(hasNoName(name)) {
+            throw new IllegalArgumentException("[ERROR] 존재하지 않는 이름입니다.");
+        }
+        return attendanceBooks.get(name);
     }
 }
