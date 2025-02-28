@@ -17,4 +17,13 @@ public class AttendanceCalculatorTest {
         assertThat(dayOfWeek).isEqualTo(expectedDayOfWeek);
     }
 
+    @DisplayName("2024-12-3이 주어졌을 때, 화요일을 반환해야 한다.")
+    @Test
+    void given_2024_12_3_then_return_tuesday() {
+        String expectedDayOfWeek = "화요일";
+        LocalDate findDate = LocalDate.of(2024, 12, 3);
+        String dayOfWeek = AttendanceCalculator.findDayOfWeek(findDate);
+        assertThat(dayOfWeek).isEqualTo(expectedDayOfWeek);
+    }
+
 }
