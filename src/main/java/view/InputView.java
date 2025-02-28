@@ -22,6 +22,16 @@ public class InputView {
         return readLine();
     }
 
+    public String readName() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return readLine();
+    }
+
+    public String readAttendTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        return readLine();
+    }
+
     private String readLine() {
         String input = scanner.nextLine();
         validateInput(input);
