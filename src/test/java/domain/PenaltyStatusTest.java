@@ -47,10 +47,10 @@ class PenaltyStatusTest {
     void convertLateToAbsenceTest() {
         //given
         int lateCount = 3;
-        int absenceCount = 1;
+        int absenceCount = 2;
         //when
-        int convertedAbsenceCount = PenaltyStatus.convertLateToAbsence(lateCount, absenceCount);
+        PenaltyStatus status = PenaltyStatus.determinePenalty(lateCount, absenceCount);
         //then
-        assertThat(convertedAbsenceCount).isEqualTo(2);
+        assertThat(status).isEqualTo(PenaltyStatus.INTERVIEW);
     }
 }

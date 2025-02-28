@@ -4,11 +4,12 @@ public enum PenaltyStatus {
     WARNING(2),
     INTERVIEW(3),
     EXPULSION(6),
-    NONE(0);;
+    NONE(0),
+    ;
 
     private final int absenceCountLimit;
 
-    private final static int LATE_TO_ABSENCE_RATIO = 3;
+    private static final int LATE_TO_ABSENCE_RATIO = 3;
 
     PenaltyStatus(int absenceCountLimit) {
         this.absenceCountLimit = absenceCountLimit;
@@ -28,7 +29,7 @@ public enum PenaltyStatus {
         return NONE;
     }
 
-    public static int convertLateToAbsence(int lateCount, int absenceCount) {
+    private static int convertLateToAbsence(int lateCount, int absenceCount) {
         return absenceCount + (lateCount / LATE_TO_ABSENCE_RATIO);
     }
 }
