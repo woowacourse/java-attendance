@@ -1,9 +1,14 @@
 package attendance.domain;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.List;
+import java.util.Map;
 
 import static attendance.domain.AttendanceStatusChecker.*;
 import static org.assertj.core.api.Assertions.*;
@@ -33,5 +38,27 @@ public class AttendanceStatusCheckerTest {
 
         // Then
         assertThat(attendanceStatus).isEqualTo(expected);
+    }
+
+    @Test
+    void 출석_시간들을_주면_출석_상태들을_계산해서_알려준다() {
+        // Given
+        List<AttendanceDateTime> attendanceDateTimes = List.of(
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(18).atTime(10, 0)), // 출석
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(19).atTime(10, 0)), // 출석
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(20).atTime(10, 6)), // 지각
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(21).atTime(10, 6)), // 지각
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(24).atTime(13, 6)), // 지각
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(25).atTime(10, 35)), // 결석
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(26).atTime(19, 35)) // 결석
+        );
+        AttendanceStatusChecker attendanceStatusChecker = new AttendanceStatusChecker();
+
+        // When
+        Map<AttendanceStatus, Integer> attendanceStatuses = attendanceStatusChecker.checkStatuses(attendanceDateTimes);
+
+        // Then
+        assertThat(attendanceStatuses)
+                .isEqualTo(Map.of(AttendanceStatus.ATTENDANCE, 2, AttendanceStatus.LATE, 3, AttendanceStatus.ABSENT, 2));
     }
 }
