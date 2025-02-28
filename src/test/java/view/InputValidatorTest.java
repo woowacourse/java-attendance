@@ -13,7 +13,7 @@ public class InputValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = {"0", "" , " "})
     void test4(String invalidSelectedMenu) {
-        assertThatThrownBy(() -> InputValidator.validateSelectedMenu())
+        assertThatThrownBy(() -> InputValidator.validateSelectedMenu(invalidSelectedMenu))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ERROR_HEADER);
     }

@@ -39,4 +39,10 @@ public class InputValidator {
             throw new IllegalArgumentException("[ERROR] 유효하지 않은 날짜입니다.");
         }
     }
+
+    public static void validateSelectedMenu(String selectedMenu) {
+        if(!selectedMenu.matches("1234Qq")) {
+            throw new IllegalArgumentException("[ERROR] 유효하지 않은 메뉴입니다.");
+        }
+    }
 }
