@@ -1,7 +1,6 @@
 import exception.DuplicateAttendanceException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +23,7 @@ public class AttendanceStorage {
 
     public Optional<Attendance> findByDate(LocalDate date) {
         return attendances.stream()
-                .filter(attendance -> {
-                    LocalDateTime attendanceDateTime = attendance.getDateTime();
-                    return attendanceDateTime.toLocalDate().isEqual(date);
-                })
+                .filter(attendance -> attendance.isAttendedOn(date))
                 .findFirst();
     }
 }

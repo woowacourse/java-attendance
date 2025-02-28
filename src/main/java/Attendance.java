@@ -15,6 +15,10 @@ public class Attendance {
         this.status = AttendanceStatus.from(startTime, time);
     }
 
+    public boolean isAttendedOn(LocalDate targetDate) {
+        return date.equals(new AttendanceDate(targetDate));
+    }
+
     public LocalDateTime getDateTime() {
         return LocalDateTime.of(date.getValue(), time.getValue());
     }
