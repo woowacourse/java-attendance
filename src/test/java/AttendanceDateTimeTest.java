@@ -50,4 +50,14 @@ public class AttendanceDateTimeTest {
                 attendanceDateTime.isNotOpeningTime()
         );
     }
+
+    @Test
+    @DisplayName("다른 객체이지만 LocalDateTime 값을 비교하여 같은지 확인하는 메서드 테스트")
+    void test6() {
+        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 12, 12));
+        AttendanceDateTime attendanceDateTime1 = new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 12, 12));
+        Assertions.assertTrue(
+                attendanceDateTime.equals(attendanceDateTime1)
+        );
+    }
 }
