@@ -22,4 +22,8 @@ public class AttendanceRecord {
     public String getNickname() {
         return nickname;
     }
+
+    public Attendances getRecord() {
+        return record;
+    }
 }
