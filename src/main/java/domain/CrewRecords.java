@@ -15,4 +15,8 @@ public class CrewRecords {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다." + System.lineSeparator());
         }
     }
+
+    public void addRecord(Crew crew, AttendanceRecord record) {
+        records.get(crew).add(record);
+    }
 }
