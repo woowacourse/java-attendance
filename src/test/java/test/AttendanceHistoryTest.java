@@ -2,6 +2,7 @@ package test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import common.Campus;
 import common.Common;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,7 +19,8 @@ import org.junit.jupiter.api.Test;
 public class AttendanceHistoryTest {
 
     /**
-     * 전체 반환은 필요 없게됨
+     * Disabled
+     * 크루 기록 전체 반환은 필요 없게됨
      */
 //    @DisplayName("한 크루의 전체 출석 기록을 반환한다.")
 //    @Test
@@ -55,7 +57,7 @@ public class AttendanceHistoryTest {
         //then
         assertThat(attendanceHistories.size()).isEqualTo(9);
         assertThat(attendanceHistories.get(5)).isEqualTo(
-                new Attendance(LocalDate.of(2024, 12, 9), Common.noneAttendanceTime));
+                new Attendance(LocalDate.of(2024, 12, 9), Campus.noneAttendanceTime));
         assertThat(attendanceHistories.get(6)).isEqualTo(
                 new Attendance(LocalDate.of(2024, 12, 10), LocalTime.of(10, 0)));
         assertThat(attendanceHistories.get(7)).isEqualTo(
@@ -140,7 +142,6 @@ public class AttendanceHistoryTest {
         attendanceHistory.register(LocalDate.of(2024, 12, 3), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 31)); //결석
-//        attendanceHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
 
         List<Attendance> attendances = attendanceHistory.sliceByDateUntilBefore(requestDate);
         AttendanceStatistic attendanceStatistic = AttendanceStatistic.from(attendances);

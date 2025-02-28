@@ -20,8 +20,7 @@ import org.junit.jupiter.api.Test;
 public class AttendancePenaltyTest {
 
     /**
-     * Disabled : equals 비교가 불가능해 테스트 불가
-     * (from 메서드를 밖으로 빼야 가능할듯)
+     * Disabled : AttendancdStatistic 객체의 equals 비교가 불가능해 테스트 불가
      */
 //    @DisplayName("모든 크루의 특정 날짜까지의 출결 통계를 계산한 객체를 반환한다.")
 //    @Test
@@ -73,14 +72,6 @@ public class AttendancePenaltyTest {
 
         //when
         Map<Crew, AttendanceStatistic> penaltyTargets = attendanceStatistics.findPenaltyTargets();
-
-        //then
-//        assertThat(penaltyTargets.get(crew1).getAttendanceCount()).isEqualTo(Map.of(
-//                AttendanceStatus.NORMAL, 2,
-//                AttendanceStatus.LATE, 2,
-//                AttendanceStatus.ABSENCE, 1
-//        ));
-//        assertThat(penaltyTargets.get(crew1).getPenaltyStatus()).isEqualTo(PenaltyStatus.NONE);
 
         assertThat(penaltyTargets.get(crew2).getAttendanceCount()).isEqualTo(Map.of(
                 AttendanceStatus.NORMAL, 1,

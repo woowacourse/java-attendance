@@ -16,7 +16,7 @@ public class AttendanceModifyTest {
 
     @DisplayName("수정하려는 날짜를 LocalDate 객체로 반환한다.")
     @Test
-    void test() { //TODO : 좀 필요없는 테스트임 (a=a 테스트)
+    void test() {
         //given
         int rawDate = 3;
 
@@ -27,7 +27,6 @@ public class AttendanceModifyTest {
         assertThat(date).isEqualTo(LocalDate.of(2024, 12, rawDate));
     }
 
-    //TODO : 이미 있는 메서드였음
     @DisplayName("수정하려는 날짜에 맞는 수정전 Attendance 객체를 찾는다.")
     @Test
     void test1() {
@@ -68,7 +67,6 @@ public class AttendanceModifyTest {
         LocalDate futureDate = LocalDate.of(2024, 12, 16);
         LocalTime modifyTime = LocalTime.of(11, 11);
         AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.register(futureDate, LocalTime.of(10, 10));
         Attendance oldAttendance = attendanceHistory.findByDate(futureDate);
 
         //when, then
@@ -78,16 +76,16 @@ public class AttendanceModifyTest {
     }
 
     /**
-     * TODO : 아예 수정날짜까지 등교일을 검사할 필요 없음 -> 한단계 안쪽인 Attenacne에서 처리하는 방향이 좋을듯
+     * Disabled
+     * 등교일이 아닌 날은 Attendance 객체가 아예 없어서 값 세팅 자체가 불가능함
      */
-//    @DisplayName("등교일이 아닌 날을 수정 날짜로 입력할 경우 예외를 반환한다.")
+//    @DisplayName("등교일이 아닌 날을 수정 날짜로 입력할 경우 수정 객체를 만들 때 예외를 반환한다.")
 //    @Test
 //    void test5() {
 //        //given
 //        LocalDate holidayDate = LocalDate.of(2024, 12, 14);
 //        LocalTime modifyTime = LocalTime.of(11, 11);
 //        AttendanceHistory attendanceHistory = new AttendanceHistory();
-//        attendanceHistory.register(holidayDate, LocalTime.of(10, 10));
 //        Attendance oldAttendance = attendanceHistory.findByDate(holidayDate);
 //
 //        //when, then
