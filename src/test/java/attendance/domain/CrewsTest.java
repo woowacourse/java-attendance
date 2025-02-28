@@ -53,7 +53,6 @@ public class CrewsTest {
         });
     }
 
-    //TODO : findCrew() 해서 반환 검사
     @Test
     public void 닉네임_일치_크루_반환() {
         //given
@@ -65,6 +64,6 @@ public class CrewsTest {
 
         //when & then
         Assertions.assertThat(crews.findCrew("우가")).isEqualTo(crew);
-
     }
+
 }
