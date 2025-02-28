@@ -8,13 +8,11 @@ import domain.ERROR_MESSAGE;
 import domain.Penalty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class SomeTest {
+public class CrewTest {
     @Nested
     @DisplayName("크루 출석 기록 저장 테스트")
     class AddAttendanceTest {
