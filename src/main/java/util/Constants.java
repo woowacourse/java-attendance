@@ -1,5 +1,6 @@
 package util;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -29,4 +30,6 @@ public class Constants {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String TIME_FORMAT = "HH:mm";
 
+    public static final LocalDate TODAY = LocalDate.of(2024, 12, 13);
+    public static final LocalDate YESTERDAY = TODAY.minusDays(1);
 }

@@ -9,6 +9,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class InputValidatorTest {
+    @DisplayName("선택한 메뉴가 존재하지 않을 경우 예외가 발생한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"0", "" , " "})
+    void test4(String invalidSelectedMenu) {
+        assertThatThrownBy(() -> InputValidator.validateSelectedMenu())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ERROR_HEADER);
+    }
+
 
     @DisplayName("시간 형식이 올바르지 않을 경우 예외가 발생한다.")
     @ParameterizedTest
