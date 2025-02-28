@@ -177,7 +177,7 @@ public class AttendanceBookTest {
         assertThat(crewNames).isEqualTo(List.of(malone, norang, river, pree));
     }
 
-    private void setAttendanceBook() {
+    void setAttendanceBook() {
         Map<CrewName, AttendanceRecord> testData = new HashMap<>();
         testData.put(malone, new AttendanceRecord());
         testData.put(norang, new AttendanceRecord());
@@ -193,7 +193,7 @@ public class AttendanceBookTest {
         makeSecondExpulsion();
     }
 
-    private void updateConsideredAbsent() { // 면담 4 (2 + 2)
+    void updateConsideredAbsent() { // 면담 4 (2 + 2)
         updateAttendance(river,
                 LocalDateTime.of(2024, 12, 2, 13, 15),
                 LocalDateTime.of(2024, 12, 3, 10, 15),
@@ -205,14 +205,14 @@ public class AttendanceBookTest {
         );
     }
 
-    private void updateEqualAbsent() { // 면담 3 (2 + 1)
+    void updateEqualAbsent() { // 면담 3 (2 + 1)
         updateAttendance(river,
                 LocalDateTime.of(2024, 12, 5, 10, 15),
                 LocalDateTime.of(2024, 12, 6, 10, 15),
                 LocalDateTime.of(2024, 12, 9, 13, 15));
     }
 
-    private void makeFirstExpulsion() { // 결석 6
+    void makeFirstExpulsion() { // 결석 6
         addAttendanceToBook(malone,
                 LocalDateTime.of(2024, 12, 2, 13, 0),
                 LocalDateTime.of(2024, 12, 3, 10, 0),
@@ -220,7 +220,7 @@ public class AttendanceBookTest {
         );
     }
 
-    private void makeSecondExpulsion() { // 결석 5
+    void makeSecondExpulsion() { // 결석 5
         addAttendanceToBook(norang,
                 LocalDateTime.of(2024, 12, 2, 13, 0),
                 LocalDateTime.of(2024, 12, 3, 10, 0),
@@ -229,7 +229,7 @@ public class AttendanceBookTest {
         );
     }
 
-    private void makeFirstCounseling() { // 면담 3
+    void makeFirstCounseling() { // 면담 3
         addAttendanceToBook(pree,
                 LocalDateTime.of(2024, 12, 2, 13, 0),
                 LocalDateTime.of(2024, 12, 3, 10, 0),
@@ -240,7 +240,7 @@ public class AttendanceBookTest {
         );
     }
 
-    private void makeFirstWarning() { // 경고 2
+    void makeFirstWarning() { // 경고 2
         addAttendanceToBook(river,
                 LocalDateTime.of(2024, 12, 2, 13, 0),
                 LocalDateTime.of(2024, 12, 3, 10, 0),
@@ -252,13 +252,13 @@ public class AttendanceBookTest {
         );
     }
 
-    private void addAttendanceToBook(CrewName crewName, LocalDateTime... localDateTimes) {
+    void addAttendanceToBook(CrewName crewName, LocalDateTime... localDateTimes) {
         for (LocalDateTime localDateTime : localDateTimes) {
             attendanceBook.addAttendance(crewName, new Attendance(localDateTime));
         }
     }
 
-    private void updateAttendance(CrewName crewName, LocalDateTime... localDateTimes) {
+    void updateAttendance(CrewName crewName, LocalDateTime... localDateTimes) {
         for (LocalDateTime localDateTime : localDateTimes) {
             attendanceBook.modify(crewName, new Attendance(localDateTime));
         }

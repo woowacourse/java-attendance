@@ -4,15 +4,12 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static util.Constants.ERROR_HEADER;
 
-import domain.Attendance;
 import domain.AttendanceBook;
 import domain.AttendanceRecord;
 import domain.CrewName;
 import dto.InitialInformation;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Map;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,23 +26,24 @@ public class InputValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = {"1", "2", "3", "4", "Q", "q"})
     void test5(String validSelectedMenu) {
-        assertDoesNotThrow(() -> InputValidator.validateSelectedMenu(validSelectedMenu));
+        assertDoesNotThrow(
+                () -> InputValidator.validateSelectedMenu(validSelectedMenu));
     }
 
     @DisplayName("선택한 메뉴가 존재하지 않을 경우 예외가 발생한다.")
     @ParameterizedTest
     @ValueSource(strings = {"0", "" , " "})
     void test4(String invalidSelectedMenu) {
-        assertThatThrownBy(() -> InputValidator.validateSelectedMenu(invalidSelectedMenu))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateSelectedMenu(invalidSelectedMenu));
     }
 
     @DisplayName("시간 형식이 올바를 경우 정상적으로 검증을 마친다.")
     @ParameterizedTest
     @ValueSource(strings = {"09:59", "10:00", "08:00", "23:00"})
     void test6(String validTime) {
-        assertDoesNotThrow(() -> InputValidator.validateTime(validTime));
+        assertDoesNotThrow(
+                () -> InputValidator.validateTime(validTime));
     }
 
 
@@ -53,58 +51,53 @@ public class InputValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = {"9:59", "", " ", "a", "1", "10:3", "10;10"})
     void test1(String invalidTime) {
-        assertThatThrownBy(() -> InputValidator.validateTime(invalidTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateTime(invalidTime));
     }
 
-    @DisplayName("캠퍼스 운영시간 전에는 출석을 받지 않는다.")
+    @DisplayName("캠퍼스 운영시간 전이면 예외가 발생한다.")
     @Test
     void test2() {
-        assertThatThrownBy(() -> InputValidator.validateTime("07:59"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateTime("07:59"));
     }
 
-    @DisplayName("캠퍼스 운영시간 후에는 출석을 받지 않는다.")
+    @DisplayName("캠퍼스 운영시간 후이면 예외가 발생한다.")
     @Test
     void test3() {
-        assertThatThrownBy(() -> InputValidator.validateTime("23:01"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateTime("23:01"));
     }
 
     @DisplayName("닉네임 자릿수가 유효할 경우 정상적으로 검증을 마친다.")
     @ParameterizedTest
     @ValueSource(strings = {"미미", "미미미미"})
     void test7(String validName) {
-
-
-        assertDoesNotThrow(() -> InputValidator.validateName(validName, attendanceBook));
+        assertDoesNotThrow(
+                () -> InputValidator.validateName(validName, attendanceBook));
     }
 
     @DisplayName("닉네임이 1자 이하, 5자 이상일 경우 예외가 발생한다.")
     @ParameterizedTest
     @ValueSource(strings = {"미", "미미미미미", "", " "})
     void test2(String invalidName) {
-        assertThatThrownBy(() -> InputValidator.validateName(invalidName, attendanceBook))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateName(invalidName, attendanceBook));
     }
 
     @DisplayName("출석부에 존재하지 않는 닉네임일 경우 예외가 발생한다.")
     @Test
     void test9() {
-        assertThatThrownBy(() -> InputValidator.validateName("밍트", attendanceBook))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateName("밍트", attendanceBook));
     }
 
     @DisplayName("날짜 형식이 올바를 경우 정상적으로 검증을 마친다.")
     @ParameterizedTest
     @ValueSource(strings = {"2"})
     void test8(String validDay) {
-        assertDoesNotThrow(() -> InputValidator.validateDay(validDay));
+        assertDoesNotThrow(
+                () -> InputValidator.validateDay(validDay));
     }
 
 
@@ -112,23 +105,26 @@ public class InputValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = {"", " ", "32", "0"})
     void test3(String invalidDay) {
-        assertThatThrownBy(() -> InputValidator.validateDay(invalidDay))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateDay(invalidDay));
     }
 
-    @DisplayName("주말에는 출석을 받지 않는다.")
+    @DisplayName("주말을 입력할 경우 예외가 발생한다.")
     @Test
     void test4() {
-        assertThatThrownBy(() -> InputValidator.validateDay("1"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateDay("1"));
     }
 
-    @DisplayName("공휴일에는 출석을 받지 않는다.")
+    @DisplayName("공휴일을 입력할 경우 예외가 발생한다.")
     @Test
     void test5() {
-        assertThatThrownBy(() -> InputValidator.validateDay("25"))
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateDay("25"));
+    }
+
+    void assertThrowsIllegalArgumentException(ThrowingCallable throwingCallable) {
+        assertThatThrownBy(throwingCallable)
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ERROR_HEADER);
     }

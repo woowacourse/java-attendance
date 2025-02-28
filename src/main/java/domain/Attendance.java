@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
-import util.Constants;
 
 public class Attendance {
     private static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
