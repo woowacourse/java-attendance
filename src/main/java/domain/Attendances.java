@@ -64,6 +64,6 @@ public class Attendances {
     }
 
     public List<Attendance> getAttendances() {
-        return attendances;
+        return new ArrayList<>(attendances);
     }
 }
