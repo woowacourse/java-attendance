@@ -137,6 +137,13 @@ public class StudentTest {
         long result = student.convertTardiesToAbsence();
         Assertions.assertEquals(expect, result);
     }
-
-
+    @Test
+    @DisplayName("오늘을 기준으로 출석 기록이 없다면 결석 처리한다.")
+    void 오늘을_기준으로_출석_기록이_없다면_결석_처리(){
+        LocalDate today = LocalDate.of(2024, 12, 13);
+        AttendanceStatus expect = AttendanceStatus.ABSENT;
+        student.nonAttendanceRecordStatusIsAbsent(today);
+        AttendanceStatus result = student.attendanceStatusRecords.get(today);
+        Assertions.assertEquals(expect, result);
+    }
 }
