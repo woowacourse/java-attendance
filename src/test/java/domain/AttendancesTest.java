@@ -16,11 +16,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AttendancesTest {
 
-    private final AttendancePolicy attendancePolicy = new AttendancePolicy(
-            new AttendanceDatePolicy(),
-            new AttendanceTimePolicy()
-    );
-
     @Test
     @DisplayName("출석을 추가할 수 있다.")
     void canAddAttendance() {

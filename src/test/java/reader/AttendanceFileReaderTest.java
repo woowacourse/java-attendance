@@ -16,7 +16,7 @@ class AttendanceFileReaderTest {
 
         // when
         // then
-        assertThatCode(() -> attendanceFileReader.read(AttendanceFileReader.DEFAULT_ATTENDANCE_DATA_PATH))
+        assertThatCode(() -> attendanceFileReader.read(AttendanceFileReader.ATTENDANCE_FILE_PATH))
                 .doesNotThrowAnyException();
     }
 

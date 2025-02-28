@@ -6,6 +6,7 @@ import java.io.FileReader;
 public class AttendanceFileReader {
 
     private static final int HEADER = 1;
+    public static final String ATTENDANCE_FILE_PATH = "src/main/resources/attendances.csv";
 
     public RawAttendances read(String filePath) throws FileReadException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
