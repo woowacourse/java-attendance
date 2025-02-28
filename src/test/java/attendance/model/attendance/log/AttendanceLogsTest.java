@@ -208,4 +208,31 @@ class AttendanceLogsTest {
         // Then
         assertThat(actual).isEqualTo(expected);
     }
+
+    @DisplayName("특정 AttendanceLog 하나를 수정한다.")
+    @Test
+    void update() {
+
+        // Given
+        final AttendanceLog from = AttendanceLog.fromDateTime(
+                LocalDateTime.of(2024, 12, 4, 10, 6),
+                campusOperationPolicy
+        );
+        final AttendanceLog to = AttendanceLog.fromDateTime(
+                LocalDateTime.of(2024, 12, 4, 10, 7),
+                campusOperationPolicy
+        );
+
+        // When
+        attendanceLogs.update(from, to);
+
+        // Then
+        boolean containsTo = attendanceLogs.contains(to);
+        boolean containsFrom = attendanceLogs.contains(from);
+
+        assertAll(
+                () -> assertThat(containsTo).isTrue(),
+                () -> assertThat(containsFrom).isFalse()
+        );
+    }
 }

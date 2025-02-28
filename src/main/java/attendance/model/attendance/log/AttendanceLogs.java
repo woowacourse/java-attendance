@@ -116,6 +116,10 @@ public class AttendanceLogs {
         return attendanceLog.getAttendanceStatus() == AttendanceStatus.ABSENCE;
     }
 
+    public void update(final AttendanceLog from, final AttendanceLog to) {
+
+    }
+
     public boolean contains(final AttendanceLog attendanceLog) {
         return values.contains(attendanceLog);
     }
