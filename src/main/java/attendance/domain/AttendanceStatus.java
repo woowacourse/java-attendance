@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class AttendanceStatus {
+public class AttendanceStatus implements Comparable<AttendanceStatus> {
 
     private final Map<AttendanceState, Integer> status;
     private final AttendanceRisk risk;
@@ -41,5 +41,17 @@ public class AttendanceStatus {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.isSameState(state))
                 .count();
+    }
+
+    @Override
+    public int compareTo(final AttendanceStatus o) {
+        if (risk.equals(o.risk)) {
+
+            int o1Score = status.get(AttendanceState.ABSENCE) + status.get(AttendanceState.TARDY) * 3;
+            int o2Score = o.status.get(AttendanceState.ABSENCE) + o.status.get(AttendanceState.TARDY) * 3;
+
+            return Integer.compare(o2Score, o1Score);
+        }
+        return risk.compareTo(o.risk);
     }
 }
