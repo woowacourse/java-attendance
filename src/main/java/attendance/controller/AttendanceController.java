@@ -197,8 +197,8 @@ public class AttendanceController {
                 new CrewAttendanceDTO(crewName, attendances, attendanceStatusMap, academicStatus));
     }
 
-    private static EnumMap<AttendanceStatus, Integer> getAttendanceStatusMap(int attend, int late,
-                                                                             int absent) {
+    private EnumMap<AttendanceStatus, Integer> getAttendanceStatusMap(int attend, int late,
+                                                                      int absent) {
         EnumMap<AttendanceStatus, Integer> attendanceStatusMap = new EnumMap<>(AttendanceStatus.class);
         attendanceStatusMap.put(AttendanceStatus.ATTEND, attend);
         attendanceStatusMap.put(AttendanceStatus.LATE, late);
