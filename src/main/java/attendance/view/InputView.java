@@ -28,13 +28,40 @@ public class InputView {
 
     public String readAttendanceConfirmNickname() {
         System.out.println("닉네임을 입력해 주세요.");
-        String nickname = scanner.nextLine();
-        validateBlank(nickname);
-        return nickname;
+        return readLine();
     }
 
     public String readAttendanceConfirmTime() {
         System.out.println("등교 시간을 입력해 주세요.");
+        return readTime();
+    }
+
+    public String readAttendanceModificationCrewNickname() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return readLine();
+    }
+
+    public int readAttendanceModificationDate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        try {
+            return Integer.parseInt(readLine());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("숫자를 입력해 주세요.");
+        }
+    }
+
+    public String readAttendanceModificationTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        return readTime();
+    }
+
+    private String readLine() {
+        String input = scanner.nextLine();
+        validateBlank(input);
+        return input;
+    }
+
+    private String readTime() {
         String attendanceTime = scanner.nextLine();
         validateBlank(attendanceTime);
         validateTimeInputPattern(attendanceTime);

@@ -81,6 +81,9 @@ public class AttendanceManagementController {
             if (operationCommand.equals("1")) {
                 runAttendanceConfirmOperation(crews, crewAttendances);
             }
+            if (operationCommand.equals("2")) {
+                runAttendanceModificationOperation(crews, crewAttendances);
+            }
         } catch (IllegalArgumentException e) {
             resultView.printErrorMessage(e.getMessage());
         }
@@ -94,6 +97,33 @@ public class AttendanceManagementController {
         Attendance todayAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, todayDate);
         resultView.printAttendanceConfirmResult(LocalDateTime.of(todayAttendance.getAttendanceLocalDate(),
                 todayAttendance.getAttendanceLocalTime()), todayAttendance.calculateStatus().getText());
+    }
+
+    private void runAttendanceModificationOperation(final Crews crews, final CrewAttendances crewAttendances) {
+        Crew crew = crews.findCrewByNickname(inputView.readAttendanceModificationCrewNickname());
+        LocalDate modificationDate = LocalDate.of(today.getYear(), today.getMonth(),
+                inputView.readAttendanceModificationDate());
+        LocalTime modificationTime = LocalTime.parse(inputView.readAttendanceModificationTime());
+        boolean hasAttendanceRecord = crewAttendances.hasCrewAttendanceByLocalDate(crew, modificationDate);
+        Attendance originAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, modificationDate);
+        crewAttendances.modifyCrewAttendanceByModificationDateTime(
+                crew, LocalDateTime.of(modificationDate, modificationTime), today.toLocalDate()
+        );
+        Attendance modificationAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, modificationDate);
+        printAttendanceModificationResult(hasAttendanceRecord, originAttendance, modificationAttendance);
+    }
+
+    private void printAttendanceModificationResult(
+            final boolean hasAttendanceRecord, final Attendance originAttendance,
+            final Attendance modificationAttendance
+    ) {
+        LocalDateTime originAttendanceDateTime = LocalDateTime.of(originAttendance.getAttendanceLocalDate(),
+                originAttendance.getAttendanceLocalTime());
+        resultView.printOriginAttendanceRecord(hasAttendanceRecord, originAttendanceDateTime,
+                originAttendance.calculateStatus().getText());
+        resultView.printModificationAttendanceRecord(
+                modificationAttendance.getAttendanceLocalTime(), modificationAttendance.calculateStatus().getText()
+        );
     }
 
 }

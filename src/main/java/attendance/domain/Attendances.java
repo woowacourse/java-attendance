@@ -27,13 +27,17 @@ public class Attendances {
     }
 
     public void modifyByModificationDateTime(final LocalDateTime modificationDateTime) {
-        Attendance originAttendance = attendances.stream()
-                .filter(attendance -> attendance.isSameDate(modificationDateTime.toLocalDate()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석기록이 존재하지 않습니다."));
-        Attendance modificationAttendance = originAttendance.changeTime(modificationDateTime);
-        attendances.remove(originAttendance);
-        add(modificationAttendance);
+        if (hasAttendanceByLocalDate(modificationDateTime.toLocalDate())) {
+            Attendance originAttendance = attendances.stream()
+                    .filter(attendance -> attendance.isSameDate(modificationDateTime.toLocalDate()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석기록이 존재하지 않습니다."));
+            Attendance modificationAttendance = originAttendance.changeTime(modificationDateTime);
+            attendances.remove(originAttendance);
+            add(modificationAttendance);
+            return;
+        }
+        add(new Attendance(modificationDateTime));
     }
 
     public void add(final Attendance attendance) {
