@@ -9,11 +9,11 @@ public enum AttendanceStatus {
     LATE("지각"),
     ABSENT("결석");
 
-    public static final int PRESENT_LIMIT_TIME = 5;
-    public static final int LATE_LIMIT_TIME = 30;
-    public static final int MONDAY = 1;
-    public static final int MONDAY_STANDARD_HOUR = 13;
-    public static final int OTHER_DAY_STANDARD_HOUR = 10;
+    private static final int PRESENT_LIMIT_TIME = 5;
+    private static final int LATE_LIMIT_TIME = 30;
+    private static final int MONDAY = 1;
+    private static final int MONDAY_STANDARD_HOUR = 13;
+    private static final int OTHER_DAY_STANDARD_HOUR = 10;
 
     final String korean;
 

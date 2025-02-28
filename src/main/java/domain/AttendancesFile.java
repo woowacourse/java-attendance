@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class AttendancesFile {
-    public static final String DELIMITER = ",";
+    private static final String DELIMITER = ",";
 
     private static void addAbsent(List<Attendance> records, int day) {
         if (DayType.calculateDayType(day) != DayType.WEEKDAY) {

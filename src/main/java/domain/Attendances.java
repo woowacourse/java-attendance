@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Attendances {
+    private static final int ABSENT_HOUR = 23;
+    private static final int ABSENT_MINUTE = 59;
     private final List<Attendance> records = new ArrayList<>();
 
     public Attendance addAttendance(LocalDateTime dateTime) {
@@ -64,7 +66,7 @@ public class Attendances {
         return records.stream()
                 .filter(attendance -> attendance.getDateTime().getDayOfMonth() == day)
                 .findFirst()
-                .orElse(new Attendance(LocalDateTime.of(2024, 12, day, 23, 59)));
+                .orElse(new Attendance(LocalDateTime.of(2024, 12, day, ABSENT_HOUR, ABSENT_MINUTE)));
     }
 
     public List<Attendance> getRecords() {
