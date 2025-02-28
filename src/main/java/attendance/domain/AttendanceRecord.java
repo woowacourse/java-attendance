@@ -5,15 +5,18 @@ import java.util.List;
 public class AttendanceRecord {
 
     private final String nickname;
-    private final List<Attendance> record;
+    private final Attendances record;
+    private final AttendanceStatus status;
 
-    public AttendanceRecord(final String nickname, final List<Attendance> record) {
+    private AttendanceRecord(final String nickname, final Attendances record, final AttendanceStatus status) {
         this.nickname = nickname;
         this.record = record;
+        this.status = status;
     }
 
-    public List<Attendance> getRecord() {
-        return record;
+    public static AttendanceRecord fromNicknameAndAttendances(final String nickname, final List<Attendance> attendances) {
+        AttendanceStatus status = AttendanceStatus.fromAttendances(attendances);
+        return new AttendanceRecord(nickname, new Attendances(attendances), status);
     }
 
     public String getNickname() {
