@@ -1,23 +1,29 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class StudentTest {
-    private final Student student = new Student();
+
+    private final Student student = new Student("빙티", Arrays
+            .asList(LocalDateTime.of(2024,12,2,13,0),
+                    LocalDateTime.of(2024,12,3,10,7)));
 
     @Test
     @DisplayName("출석 등록 시간 확인 테스트")
     void 출석_등록_시간_확인_테스트(){
         LocalDate todayDate = LocalDate.of(2024,12,13);
-        String attendanceTime = "10:59";
+        LocalTime attendanceTime = LocalTime.parse("10:59");
+
         LocalTime expect = LocalTime.of(10,59);
 
         student.registerAttendanceRecord(todayDate, attendanceTime);
-        LocalTime result = student.attendanceTimeRecord.attendanceTimeRecords.get(todayDate);
+        LocalTime result = student.findAttendanceLocalTimeByLocalDate(todayDate);
         Assertions.assertEquals(expect, result);
     }
 
@@ -25,11 +31,12 @@ public class StudentTest {
     @DisplayName("출석 등록 후 출석 상태 확인 테스트")
     void 출석_등록_후_출석_상태_확인_테스트(){
         LocalDate todayDate = LocalDate.of(2024,12,13);
-        String attendanceTime = "10:59";
+        LocalTime attendanceTime = LocalTime.parse("10:59");
+
         AttendanceStatus expect = AttendanceStatus.ABSENT;
 
         student.registerAttendanceRecord(todayDate, attendanceTime);
-        AttendanceStatus result = student.attendanceStatusRecord.attendanceStatusRecords.get(todayDate);
+        AttendanceStatus result = student.findAttendanceStatusByLocalDate(todayDate);
         Assertions.assertEquals(expect, result);
     }
 
@@ -38,15 +45,17 @@ public class StudentTest {
     void 출석_정보_수정_후_수정_시간_확인_테스트(){
         //given
         LocalDate recordData = LocalDate.of(2024,12,13);
-        String attendanceTime = "10:59";
+        LocalTime attendanceTime = LocalTime.parse("10:59");
+
         String modifyDate = "13";
-        String modifyTime = "10:00";
+        LocalTime modifyTime = LocalTime.parse("10:00");
+
         LocalTime expect = LocalTime.of(10,0);
         student.registerAttendanceRecord(recordData, attendanceTime);
         //when
         student.modifyAttendanceRecord(modifyDate, modifyTime);
         //then
-        LocalTime result = student.attendanceTimeRecord.attendanceTimeRecords.get(recordData);
+        LocalTime result = student.findAttendanceLocalTimeByLocalDate(recordData);
         Assertions.assertEquals(expect, result);
     }
 
@@ -55,28 +64,24 @@ public class StudentTest {
     void 출석_정보_수정_후_수정_출결_상태_확인_테스트(){
         //given
         LocalDate recordData = LocalDate.of(2024,12,13);
-        String attendanceTime = "10:59";
+        LocalTime attendanceTime = LocalTime.parse("10:59");
+
         String modifyDate = "13";
-        String modifyTime = "10:00";
+        LocalTime modifyTime = LocalTime.parse("10:00");
+
         AttendanceStatus expect = AttendanceStatus.ATTENDANCE;
         student.registerAttendanceRecord(recordData, attendanceTime);
         //when
         student.modifyAttendanceRecord(modifyDate, modifyTime);
         //then
-        AttendanceStatus result = student.attendanceStatusRecord.attendanceStatusRecords.get(recordData);
+        AttendanceStatus result = student.findAttendanceStatusByLocalDate(recordData);
         Assertions.assertEquals(expect, result);
     }
 
     @Test
     @DisplayName("학생의 출결 횟수 확인 테스트")
     void 학생의_출석_횟수_확인_테스트(){
-        LocalDate todayDate1 = LocalDate.of(2024,12,13);
-        LocalDate todayDate2 = LocalDate.of(2024,12,12);
-        String attendanceTime = "10:04";
-        long expect = 2;
-
-        student.registerAttendanceRecord(todayDate1, attendanceTime);
-        student.registerAttendanceRecord(todayDate2, attendanceTime);
+        long expect = 1;
         student.updateAttendanceCount();
         long result = student.attendanceStatusCount.attendanceStatusCount.get(AttendanceStatus.ATTENDANCE);
 
@@ -86,14 +91,8 @@ public class StudentTest {
     @Test
     @DisplayName("학생의 지각 횟수 확인 테스트")
     void 학생의_지각_횟수_확인_테스트() {
-        LocalDate todayDate1 = LocalDate.of(2024, 12, 13);
-        LocalDate todayDate2 = LocalDate.of(2024, 12, 12);
-        String attendanceTime1 = "10:04";
-        String attendanceTime2 = "10:06";
         long expect = 1;
 
-        student.registerAttendanceRecord(todayDate1, attendanceTime1);
-        student.registerAttendanceRecord(todayDate2, attendanceTime2);
         student.updateAttendanceCount();
         long result = student.attendanceStatusCount.attendanceStatusCount.get(AttendanceStatus.LATE);
 
@@ -105,13 +104,11 @@ public class StudentTest {
         LocalDate todayDate1 = LocalDate.of(2024, 12, 13);
         LocalDate todayDate2 = LocalDate.of(2024, 12, 12);
         LocalDate todayDate3 = LocalDate.of(2024, 12, 11);
-        String attendanceTime1 = "10:06";
-        String attendanceTime2 = "10:06";
-        String attendanceTime3 = "10:07";
+        LocalTime attendanceTime1 = LocalTime.parse("10:06");
         long expect = 1;
         student.registerAttendanceRecord(todayDate1, attendanceTime1);
-        student.registerAttendanceRecord(todayDate2, attendanceTime2);
-        student.registerAttendanceRecord(todayDate3, attendanceTime3);
+        student.registerAttendanceRecord(todayDate2, attendanceTime1);
+        student.registerAttendanceRecord(todayDate3, attendanceTime1);
 
         long result = student.convertTardiesToAbsence();
         Assertions.assertEquals(expect, result);
@@ -126,7 +123,8 @@ public class StudentTest {
         LocalDate todayDate4 = LocalDate.of(2024, 12, 6);
         LocalDate todayDate5 = LocalDate.of(2024, 12, 5);
         LocalDate todayDate6 = LocalDate.of(2024, 12, 4);
-        String attendanceTime = "10:06";
+        LocalTime attendanceTime = LocalTime.parse("10:06");
+
         long expect = 2;
         student.registerAttendanceRecord(todayDate1, attendanceTime);
         student.registerAttendanceRecord(todayDate2, attendanceTime);
@@ -145,7 +143,7 @@ public class StudentTest {
         LocalDate today = LocalDate.of(2024, 12, 13);
         AttendanceStatus expect = AttendanceStatus.ABSENT;
         student.nonAttendanceRecordStatusIsAbsent(today);
-        AttendanceStatus result = student.attendanceStatusRecord.attendanceStatusRecords.get(today);
+        AttendanceStatus result = student.findAttendanceStatusByLocalDate(today);
         Assertions.assertEquals(expect, result);
     }
 
@@ -153,8 +151,8 @@ public class StudentTest {
     @DisplayName("이미 출석 기록이 있을 경우 출석 시도 시 예외 테스트")
     void 이미_출석_기록이_존재하는_경우(){
         LocalDate todayDate = LocalDate.of(2024,12,13);
-        String attendanceTime = "10:59";
-        String duplicateAttendanceTime = "11:02";
+        LocalTime attendanceTime = LocalTime.parse("10:59");
+        LocalTime duplicateAttendanceTime = LocalTime.parse("11:02");
 
         student.registerAttendanceRecord(todayDate, attendanceTime);
 

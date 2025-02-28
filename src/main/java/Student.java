@@ -2,6 +2,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 public class Student {
     final String name;
@@ -14,6 +15,14 @@ public class Student {
         this.attendanceTimeRecord = new AttendanceTimeRecord(localDateTime);
         this.attendanceStatusCount = new AttendanceStatusCount();
         this.name = name;
+    }
+
+    public LocalTime findAttendanceLocalTimeByLocalDate(LocalDate localDate){
+        return attendanceTimeRecord.getAttendanceTimeRecords().get(localDate);
+    }
+
+    public AttendanceStatus findAttendanceStatusByLocalDate(LocalDate localDate){
+        return attendanceStatusRecord.getAttendanceStatusRecords().get(localDate);
     }
 
     public void registerAttendanceRecord(LocalDate todayDate, LocalTime attendanceTime) {
@@ -35,7 +44,7 @@ public class Student {
     }
 
     public void nonAttendanceRecordStatusIsAbsent(LocalDate today) {
-        if (attendanceTimeRecord.checkAttendanceRecordByLocalDate(today)){
+        if (!attendanceTimeRecord.checkAttendanceRecordByLocalDate(today)){
             attendanceTimeRecord.putNullLocalTime(today);
             attendanceStatusRecord.putAttendanceStateToAbsent(today);
         }
@@ -49,5 +58,13 @@ public class Student {
         if (attendanceTimeRecord.checkAttendanceRecordByLocalDate(today)){
             throw new IllegalArgumentException("[ERROR] 출석기록이 존재합니다.");
         }
+    }
+
+    public Map<LocalDate, LocalTime> findAttendanceTimeRecordMap() {
+        return attendanceTimeRecord.getAttendanceTimeRecords();
+    }
+
+    public String getName() {
+        return name;
     }
 }

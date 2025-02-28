@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AttendanceTimeRecord {
-    Map<LocalDate, LocalTime> attendanceTimeRecords;
+    private final Map<LocalDate, LocalTime> attendanceTimeRecords;
 
     public AttendanceTimeRecord(List<LocalDateTime> localDateTimes) {
         Map<LocalDate, LocalTime> map = new HashMap<>();
@@ -30,5 +30,9 @@ public class AttendanceTimeRecord {
 
     public void putNullLocalTime(LocalDate localDate){
         attendanceTimeRecords.put(localDate, null);
+    }
+
+    public Map<LocalDate, LocalTime> getAttendanceTimeRecords() {
+        return attendanceTimeRecords;
     }
 }
