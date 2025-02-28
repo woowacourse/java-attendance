@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public enum AttendanceStatus {
     ATTEND("출석"),
-    LATE("결석"),
+    LATE("지각"),
     ABSENT("결석");
 
     private String status;
@@ -46,5 +46,9 @@ public enum AttendanceStatus {
         return (attendedDay.getDayOfWeek() == DayOfWeek.SATURDAY)
                 || (attendedDay.getDayOfWeek() == DayOfWeek.SUNDAY)
                 || attendedDay.getDayOfMonth() == 25;
+    }
+
+    public String getValue() {
+        return status;
     }
 }
