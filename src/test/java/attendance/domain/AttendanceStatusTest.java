@@ -24,12 +24,12 @@ class AttendanceStatusTest {
             Integer minute
         ) {
             // given
-            Attendance attendance = new Attendance(
+            AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
                 new AttendanceDate(2024, 12, 2),
                 new AttendanceTime(hour, minute));
 
             // when
-            AttendanceStatus status = AttendanceStatus.from(attendance);
+            AttendanceStatus status = AttendanceStatus.from(attendanceDateTime);
 
             // then
             assertThat(status).isEqualTo(AttendanceStatus.ABSENCE);
@@ -38,12 +38,12 @@ class AttendanceStatusTest {
         @Test
         void 출석시간을_기즌으로_5분초과면_지각이다() {
             // given
-            Attendance attendance = new Attendance(
+            AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
                 new AttendanceDate(2024, 12, 2),
                 new AttendanceTime(13, 6));
 
             // when
-            AttendanceStatus status = AttendanceStatus.from(attendance);
+            AttendanceStatus status = AttendanceStatus.from(attendanceDateTime);
 
             // then
             assertThat(status).isEqualTo(AttendanceStatus.LATE);
@@ -62,12 +62,12 @@ class AttendanceStatusTest {
             Integer minute
         ) {
             // given
-            Attendance attendance = new Attendance(
+            AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
                 new AttendanceDate(2024, 12, 2),
                 new AttendanceTime(hour, minute));
 
             // when
-            AttendanceStatus status = AttendanceStatus.from(attendance);
+            AttendanceStatus status = AttendanceStatus.from(attendanceDateTime);
 
             // then
             assertThat(status).isEqualTo(AttendanceStatus.ATTENDANCE);
