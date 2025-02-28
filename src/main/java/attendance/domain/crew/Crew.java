@@ -1,5 +1,7 @@
 package attendance.domain.crew;
 
+import attendance.exception.AttendanceException;
+import attendance.exception.ExceptionMessage;
 import java.util.Objects;
 
 public final class Crew {
@@ -7,6 +9,7 @@ public final class Crew {
     private final String nickname;
 
     public Crew(String nickname) {
+        validateBlankNickname(nickname);
         this.nickname = nickname;
     }
 
@@ -33,5 +36,12 @@ public final class Crew {
     @Override
     public int hashCode() {
         return Objects.hash(nickname);
+    }
+
+    private void validateBlankNickname(String nickname) {
+        if (nickname == null || nickname.isBlank()) {
+            throw new AttendanceException(ExceptionMessage.BLANK_NICKNAME.getMessage());
+        }
+
     }
 }
