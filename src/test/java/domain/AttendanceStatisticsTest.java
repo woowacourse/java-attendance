@@ -45,7 +45,7 @@ class AttendanceStatisticsTest {
 
         // when
         List<AttendanceCounts> attendanceStatisticsOrderByExpulsionRiskLevelAndNickname =
-                attendanceStatistics.orderByExpulsionRiskLevelAndNickname().getNicknameToAttendanceCounts();
+                attendanceStatistics.orderByExpulsionRiskLevelAndNickname().getAttendanceStatistics();
 
         // then
         assertAll(

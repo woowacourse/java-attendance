@@ -7,10 +7,10 @@ import java.util.List;
 
 public class AttendanceStatistics{
 
-    private final List<AttendanceCounts> nicknameToAttendanceCounts;
+    private final List<AttendanceCounts> attendanceStatistics;
 
-    private AttendanceStatistics(List<AttendanceCounts> nicknameToAttendanceCounts) {
-        this.nicknameToAttendanceCounts = nicknameToAttendanceCounts;
+    private AttendanceStatistics(List<AttendanceCounts> attendanceStatistics) {
+        this.attendanceStatistics = attendanceStatistics;
     }
 
     public static AttendanceStatistics from(List<AttendanceCounts> attendanceStatistics) {
@@ -18,14 +18,14 @@ public class AttendanceStatistics{
     }
 
     public AttendanceStatistics orderByExpulsionRiskLevelAndNickname() {
-        List<AttendanceCounts> sortedList = new ArrayList<>(nicknameToAttendanceCounts);
+        List<AttendanceCounts> sortedList = new ArrayList<>(attendanceStatistics);
         sortedList.sort(Comparator.comparingInt(AttendanceCounts::getExpulsionRiskLevel).reversed()
                 .thenComparing(attendanceCounts -> attendanceCounts.getNickname().value()));
 
         return AttendanceStatistics.from(sortedList);
     }
 
-    public List<AttendanceCounts> getNicknameToAttendanceCounts() {
-        return Collections.unmodifiableList(nicknameToAttendanceCounts);
+    public List<AttendanceCounts> getAttendanceStatistics() {
+        return Collections.unmodifiableList(attendanceStatistics);
     }
 }
