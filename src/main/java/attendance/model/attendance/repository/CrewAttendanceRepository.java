@@ -23,9 +23,18 @@ public class CrewAttendanceRepository {
     }
 
     public void add(final Crew crew, final AttendanceLog attendanceLog) {
+        findByCrew(crew).addAttendanceLog(attendanceLog);
+    }
+
+    private CrewAttendanceLog findByCrew(final Crew crew) {
+        return crewAttendanceLogs.stream()
+                .filter(crewAttendanceLog -> crewAttendanceLog.isSameCrew(crew))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 크루가 존재하지 않습니다."));
     }
 
     public void update(final Crew crew, final AttendanceLog from, final AttendanceLog to) {
+        findByCrew(crew).updateAttendanceLog(from, to);
     }
 
     public List<AttendanceLog> findAllByCrew(
@@ -34,7 +43,7 @@ public class CrewAttendanceRepository {
             final LocalDate to,
             final CampusOperationPolicy campusOperationPolicy) {
 
-        return null;
+        return findByCrew(crew).getAllAttendanceLogs(from, to, campusOperationPolicy);
     }
 
     public List<CrewAttendanceLog> getCrewAttendanceLogs() {
