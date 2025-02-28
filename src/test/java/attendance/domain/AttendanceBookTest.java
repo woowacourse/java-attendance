@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -80,13 +79,13 @@ public class AttendanceBookTest {
     }
 
     static Stream<LocalTime> provideClosedCampusTimes() {
-        return List.of(
+        return Stream.of(
                 LocalTime.of(0, 0),
                 LocalTime.of(7, 0),
                 LocalTime.of(7, 59),
                 LocalTime.of(23, 1),
                 LocalTime.of(23, 59)
-        ).stream();
+        );
     }
 
     @ParameterizedTest
@@ -148,8 +147,8 @@ public class AttendanceBookTest {
 
         Map<AttendanceStatus, Integer> count = attendanceBook.getTotalStatusCount(today);
 
-        assertThat(count.get(AttendanceStatus.LATENESS)).isEqualTo(5);
-        assertThat(count.get(AttendanceStatus.ABSENCE)).isEqualTo(3);
+        assertThat(count).containsEntry(AttendanceStatus.LATENESS, 5);
+        assertThat(count).containsEntry(AttendanceStatus.ABSENCE, 3);
     }
 
     @Test
@@ -159,16 +158,18 @@ public class AttendanceBookTest {
 
         Map<AttendanceStatus, Integer> result = attendanceBook.getTotalStatusCount(5);
 
-        int count = countOnCampusDay(5);
-
-        assertThat(result.get(AttendanceStatus.ABSENCE)).isEqualTo(countOnCampusDay(5));
+        assertThat(result).containsEntry(AttendanceStatus.ABSENCE, 5);
     }
 
-    private int countOnCampusDay(int today) {
-        LocalDate now = LocalDate.now();
-        return (int) IntStream.range(1, today - 1)
-                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
-                .filter(date -> AttendanceChecker.isCampusOpenDate(date))
-                .count();
+    @Test
+    void 제적_위험_레벨을_반환한다() {
+        int endDate = 28;
+        String crewName = "빙티";
+        AttendanceBook attendanceBook = AttendanceBookTestFixture.createAttendanceBook(crewName, 3, 5, endDate);
+        WarningLevel warningLevel = attendanceBook.calculateWarningLevel(endDate);
+
+        assertThat(warningLevel).isEqualTo(WarningLevel.REMOVE);
     }
+
+
 }

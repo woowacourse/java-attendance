@@ -50,6 +50,12 @@ public class AttendanceBook {
         return statusCount;
     }
 
+    public WarningLevel calculateWarningLevel(int today){
+        Map<AttendanceStatus, Integer> statusCount = getTotalStatusCount(today);
+
+        return WarningLevel.of(statusCount);
+    }
+
     private int getTotalStatusCount(AttendanceStatus status) {
         return (int) timestamps.values().stream()
                 .filter(attendance -> attendance.status() == status)
