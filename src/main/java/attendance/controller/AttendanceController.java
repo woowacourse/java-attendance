@@ -7,7 +7,10 @@ import attendance.util.AttendanceReader;
 import attendance.util.Parser;
 import attendance.view.InputView;
 import attendance.view.OutputView;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public class AttendanceController {
@@ -40,7 +43,11 @@ public class AttendanceController {
             return;
         }
 
-        doFunction(function, attendanceBook);
+        try {
+            doFunction(function, attendanceBook);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
+        }
         runSystem(attendanceBook);
     }
 
@@ -59,18 +66,45 @@ public class AttendanceController {
         }
     }
 
+    private boolean isWeekend(final LocalDate date) {
+
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
     private Function inputFunction() {
 
         return retryInput(() -> Function.getFunction(inputView.inputFunction()));
     }
 
     private void addAttendance(final AttendanceBook attendanceBook) {
+
+        validateAttendDate();
+
         final String crewName = inputCrewName(attendanceBook);
+        validateAlreadyAttended(crewName, attendanceBook);
         final AttendanceTime attendanceTime = inputAttendanceTime();
 
         attendanceBook.add(crewName, attendanceTime);
 
         outputView.printAttendance(attendanceTime);
+    }
+
+    private void validateAlreadyAttended(final String crewName, final AttendanceBook attendanceBook) {
+
+        if (attendanceBook.isAlreadyExists(crewName, LocalDate.now())) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석 기록이 존재합니다. 출석 수정 기능을 이용해 주세요.");
+        }
+    }
+
+    private void validateAttendDate() {
+
+        if (isWeekend(LocalDate.now())) {
+            final int month = LocalDate.now().getMonthValue();
+            final int date = LocalDate.now().getDayOfMonth();
+            final String day = LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] %02d월 %02d일 %s는 등교일이 아닙니다.", month, date, day));
+        }
     }
 
     private String inputCrewName(final AttendanceBook attendanceBook) {
