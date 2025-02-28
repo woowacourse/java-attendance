@@ -19,7 +19,6 @@ public class Attendances {
     }
 
     public void initAttendances(final String name, final List<List<String>> csvData) {
-        Crew crew = new Crew(name);
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m");
         csvData.stream()
                 .filter(row -> row.getFirst().equals(name))
@@ -41,13 +40,17 @@ public class Attendances {
     private void fillEmptyAttendance() {
         LocalDate firstDate = LocalDate.of(2025, 2, 1);
         LocalDate today = LocalDate.now();
-        for (LocalDate i = firstDate; i.isBefore(today); i = i.plusDays(1)) {
-            if (isWorkday(i) && !isAttend(i)) {
-                attendances.add(new Attendance(
-                        LocalDateTime.of(i, LocalTime.of(0, 0)),
-                        AttendanceType.ABSENT
-                ));
-            }
+        for (LocalDate date = firstDate; date.isBefore(today); date = date.plusDays(1)) {
+            checkNotAttendWorkday(date);
+        }
+    }
+
+    private void checkNotAttendWorkday(LocalDate i) {
+        if (isWorkday(i) && !isAttend(i)) {
+            attendances.add(new Attendance(
+                    LocalDateTime.of(i, LocalTime.of(0, 0)),
+                    AttendanceType.ABSENT
+            ));
         }
     }
 
