@@ -1,5 +1,6 @@
 package attendance.domain.fixture;
 
+import attendance.domain.Holiday;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,7 +22,7 @@ public class LocalDateTestFixture {
         LocalDate now = LocalDate.now();
         return IntStream.range(1, endDate - 1)
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
-                .filter(date -> !isMonday(date))
+                .filter(date -> !Holiday.isHoliday(date))
                 .filter(date -> !isWeekend(date))
                 .collect(Collectors.toList());
     }

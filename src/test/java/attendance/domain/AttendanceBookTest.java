@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -142,13 +143,33 @@ public class AttendanceBookTest {
 
     @Test
     void 전날까지의_출석_지각_결석_횟수를_반환한다() {
+        int today = 28;
         String crewName = "빙티";
-        AttendanceBook attendanceBook = AttendanceBookTestFixture.createAttendanceBook(crewName, 5, 3, 28);
+        AttendanceBook attendanceBook = AttendanceBookTestFixture.createAttendanceBook(crewName, 5, 3, today);
 
-        Map<AttendanceStatus, Integer> count = attendanceBook.getTotalStatusCount();
+        Map<AttendanceStatus, Integer> count = attendanceBook.getTotalStatusCount(today);
 
         assertThat(count.get(AttendanceStatus.LATENESS)).isEqualTo(5);
         assertThat(count.get(AttendanceStatus.ABSENCE)).isEqualTo(3);
+    }
 
+    @Test
+    void 등교하지_않은_날은_결석으로_간주한다() {
+        String crewName = "빙티";
+        AttendanceBook attendanceBook = new AttendanceBook(crewName);
+
+        Map<AttendanceStatus, Integer> result = attendanceBook.getTotalStatusCount(5);
+
+        int count = countOnCampusDay(5);
+
+        assertThat(result.get(AttendanceStatus.ABSENCE)).isEqualTo(countOnCampusDay(5));
+    }
+
+    private int countOnCampusDay(int today) {
+        LocalDate now = LocalDate.now();
+        return (int) IntStream.range(1, today - 1)
+                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
+                .filter(date -> AttendanceChecker.isCampusOpenDate(date))
+                .count();
     }
 }

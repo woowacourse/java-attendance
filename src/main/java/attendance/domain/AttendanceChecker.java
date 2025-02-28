@@ -18,8 +18,12 @@ public class AttendanceChecker {
         checkTime(time);
     }
 
+    public static boolean isCampusOpenDate(LocalDate date) {
+        return !isWeekend(date) && !Holiday.isHoliday(date);
+    }
+
     private static void checkDate(LocalDate date) {
-        if (isWeekend(date) || Holiday.isHoliday(date)) {
+        if (!isCampusOpenDate(date)) {
             throw new IllegalArgumentException(String.format(
                     CAMPUS_CLOSED_ERROR_FORMAT,
                     date.getMonthValue(),

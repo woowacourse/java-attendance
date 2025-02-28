@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -7,6 +9,7 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class AttendanceBook {
     private final String crewName;
@@ -36,11 +39,13 @@ public class AttendanceBook {
         return prevAttendance;
     }
 
-    public Map<AttendanceStatus, Integer> getTotalStatusCount() {
+    public Map<AttendanceStatus, Integer> getTotalStatusCount(int today) {
         Map<AttendanceStatus, Integer> statusCount = new EnumMap<>(AttendanceStatus.class);
 
         Arrays.stream(AttendanceStatus.values())
                 .forEach(status -> statusCount.put(status, getTotalStatusCount(status)));
+
+        statusCount.put(ABSENCE, statusCount.get(ABSENCE) + countBlankAttendanceAbsence(today));
 
         return statusCount;
     }
@@ -48,6 +53,15 @@ public class AttendanceBook {
     private int getTotalStatusCount(AttendanceStatus status) {
         return (int) timestamps.values().stream()
                 .filter(attendance -> attendance.status() == status)
+                .count();
+    }
+
+    private int countBlankAttendanceAbsence(int today) {
+        LocalDate now = LocalDate.now();
+        return (int) IntStream.range(1, today - 1)
+                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
+                .filter(date -> !timestamps.containsKey(date))
+                .filter(date -> AttendanceChecker.isCampusOpenDate(date))
                 .count();
     }
 
