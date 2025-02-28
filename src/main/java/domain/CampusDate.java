@@ -17,8 +17,12 @@ public class CampusDate {
         return new CampusDate(date);
     }
 
-    public static CampusDate ofDateAndDay(final LocalDate date, final int day) {
+    public static CampusDate ofDateWithDay(final LocalDate date, final int day) {
         validateDayRangeOfMonth(date, day);
+        return new CampusDate(date.withDayOfMonth(day));
+    }
+
+    public CampusDate withDay(final int day) {
         return new CampusDate(date.withDayOfMonth(day));
     }
 
@@ -34,6 +38,10 @@ public class CampusDate {
         if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
             throw new IllegalArgumentException("[ERROR] 주말에는 캠퍼스에 출석할 수 없습니다.");
         }
+    }
+
+    public int getYear() {
+        return date.getYear();
     }
 
     public int getMonth() {

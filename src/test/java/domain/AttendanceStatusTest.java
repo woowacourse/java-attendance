@@ -21,7 +21,7 @@ class AttendanceStatusTest {
     void 날짜와_시간이_주어지면_출석상태를_계산한다(int day, String time, AttendanceStatus status) {
         // given
         LocalDate now = LocalDate.of(2025, 2, 27);
-        CampusDate campusDate = CampusDate.ofDateAndDay(now, day);
+        CampusDate campusDate = CampusDate.ofDateWithDay(now, day);
         CampusTime campusTime = CampusTime.from(time);
 
         // when
