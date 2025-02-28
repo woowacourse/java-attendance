@@ -10,15 +10,20 @@ public enum RiskRank {
     EXPELLED("제적", (count) -> count > 5),
     ;
 
-    private final String name;
+    private final String description;
     private Function<Integer, Boolean> condition;
 
-    RiskRank(String name, Function<Integer, Boolean> condition) {
-        this.name = name;
+    RiskRank(String description, Function<Integer, Boolean> condition) {
+        this.description = description;
         this.condition = condition;
     }
 
-    public static RiskRank from(int riskCount) {
+    public static int calculateRiskCount(int lateCount, int absentCount) {
+        return lateCount / 3 + absentCount;
+    }
+
+    public static RiskRank of(int lateCount, int absentCount) {
+        int riskCount = calculateRiskCount(lateCount, absentCount);
         if (riskCount < 0) {
             throw new IllegalArgumentException(riskCount + ": 결석 횟수는 음수일 수 없습니다.");
         }
@@ -27,5 +32,9 @@ public enum RiskRank {
                 .filter(riskRank -> riskRank.condition.apply(riskCount))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("논리적으로 도달할 수 없는 예외입니다."));
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

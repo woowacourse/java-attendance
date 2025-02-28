@@ -1,10 +1,13 @@
 package service;
 
+import controller.dto.MonthAttendanceStatisticsRequest;
 import controller.dto.SaveAttendanceRequest;
+import domain.AttendanceRecord;
 import domain.AttendanceRecords;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.Crews;
+import domain.RiskRank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,6 +16,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import service.dto.MonthAttendanceStatisticsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 
 class AttendanceServiceTest {
@@ -45,7 +49,39 @@ class AttendanceServiceTest {
             });
         }
 
+        @Test
+        @DisplayName("특정 크루의 월단위 출석 통계를 조회한다")
+        void bringMonthAttendanceStatistics_test() {
+            // given
+            String nickname = "시소";
+            Crew crew = new Crew(nickname);
+            LocalDate today = LocalDate.of(2025, 2, 11);
+            Crews crews = new Crews(List.of(crew));
+            AttendanceRecords attendanceRecords = new AttendanceRecords();
+            // 지각
+            attendanceRecords.add(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 3), LocalTime.of(13, 6)));
+            // 출석
+            attendanceRecords.add(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 4), LocalTime.of(10, 5)));
+            // 결석
+            attendanceRecords.add(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 5), LocalTime.of(10, 31)));
+            // 지각
+            attendanceRecords.add(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 6), LocalTime.of(10, 30)));
+            // 2/7, 2/10: 출석 기록 없는 결석
+            // 총 출석 1, 지각 2, 결석 3
 
+            AttendanceService attendanceService = new AttendanceService(crews, attendanceRecords);
+            MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(nickname, today);
+            MonthAttendanceStatisticsResponse response = attendanceService.bringMonthAttendanceStatistics(request);
+
+            // when
+            SoftAssertions.assertSoftly(softAssertions -> {
+                softAssertions.assertThat(response.attendanceStatusCount().attendanceCount())
+                        .isEqualTo(1);
+                softAssertions.assertThat(response.attendanceStatusCount().lateCount()).isEqualTo(2);
+                softAssertions.assertThat(response.attendanceStatusCount().absentCount()).isEqualTo(3);
+                softAssertions.assertThat(response.riskRank()).isEqualTo(RiskRank.INTERVIEW);
+            });
+        }
     }
 
     @Nested

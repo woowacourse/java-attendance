@@ -46,4 +46,10 @@ public class AttendanceRecords {
         attendanceRecords.removeIf(record -> record.equals(attendanceRecord));
         attendanceRecords.add(attendanceRecord);
     }
+
+    public List<AttendanceRecord> getAttendanceRecordsByCrew(Crew crew) {
+        return attendanceRecords.stream()
+                .filter(record -> crew.equals(record.getCrew()))
+                .toList();
+    }
 }
