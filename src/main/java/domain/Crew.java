@@ -1,5 +1,7 @@
 package domain;
 
+import domain.attendance.Attendances;
+
 public class Crew {
     private final String nickname;
     private final Attendances attendances;

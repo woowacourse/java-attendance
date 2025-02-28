@@ -28,8 +28,8 @@ class AttendanceTest {
 
         private static Stream<Arguments> holidayOrWeekend() {
             return Stream.of(
-                    Arguments.arguments(12, 25),
-                    Arguments.arguments(12, 29)
+                    Arguments.arguments(12, 25),    // 공휴일
+                    Arguments.arguments(12, 29)     // 주말
             );
         }
 

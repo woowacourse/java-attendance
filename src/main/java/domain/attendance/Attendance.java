@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Attendance {
+    public static final int WEEKDAY = 1;
     private final LocalDate date;
     private final LocalTime time;
     private final AttendanceStatus status;
@@ -24,7 +25,7 @@ public class Attendance {
 
     private void validate(LocalDateTime dateTime) {
         if (Holiday.isHoliday(dateTime.toLocalDate()) ||
-                dateTime.getDayOfWeek().compareTo(DayOfWeek.FRIDAY) >= 1) {
+                dateTime.getDayOfWeek().compareTo(DayOfWeek.FRIDAY) > WEEKDAY) {
             throw new IllegalArgumentException("주말 또는 공휴일에는 출석할 수 없습니다");
         }
         if (!AttendanceTime.isOperatingTime(dateTime)) {

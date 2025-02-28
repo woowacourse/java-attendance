@@ -19,4 +19,16 @@ public class Attendances {
         return attendances.stream()
                 .anyMatch(attendance -> attendance.has(day));
     }
+
+    public int countAttendance(LocalDate startDate, LocalDate endDate) {
+        return 0;
+    }
+
+    public int countTardy(LocalDate startDate, LocalDate endDate) {
+        return 0;
+    }
+
+    public int countAbsence(LocalDate startDate, LocalDate endDate) {
+        return 0;
+    }
 }
