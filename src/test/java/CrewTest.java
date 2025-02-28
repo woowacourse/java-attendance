@@ -20,12 +20,15 @@ public class CrewTest {
         crew.attend(localDateTime);
         assertThat(crew.getAttendTimes().getAttendTimes().size()).isEqualTo(1);
     }
+
     @DisplayName("크루는 주말이나 휴일에 출석을 할 수 없다")
     @Test
     void 크루는_주말이나_휴일에_출석을_할_수_없다() {
         Crew crew = new Crew("슬링키");
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 15, 10, 8);
-        assertThatThrownBy(()->crew.attend(localDateTime)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> crew.attend(localDateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주말은 출석 할 수 없습니다.");
     }
 
     @DisplayName("크루는 날짜를 통해 자신의 출석 정보를 찾을 수 있다")
@@ -34,9 +37,9 @@ public class CrewTest {
         Crew crew = new Crew("슬링키");
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 16, 10, 8);
         crew.attend(localDateTime);
-        assertThat(crew.findAttendanceByDate(localDateTime.getDayOfMonth())).isInstanceOf(AttendTime.class);
+        assertThat(crew.findAttendanceByDate(localDateTime.getDayOfMonth()))
+                .isInstanceOf(AttendTime.class);
     }
-
 
     @DisplayName("크루는 자신의 출석 기록을 변경 할 수 있다")
     @Test
@@ -44,10 +47,9 @@ public class CrewTest {
         Crew crew = new Crew("슬링키");
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 16, 13, 8);
         crew.attend(localDateTime);
-        int date = 16;
-        LocalTime localTime = LocalTime.of(13, 6);
-        crew.changeAttendanceTime(date, localTime);
-        assertThat(crew.findAttendanceByDate(16).checkAttendanceStatus()).isEqualTo(AttendanceStatus.LATE);
+        crew.changeAttendanceTime(16, LocalTime.of(13, 6));
+        assertThat(crew.findAttendanceByDate(16).checkAttendanceStatus())
+                .isEqualTo(AttendanceStatus.LATE);
     }
 
     @DisplayName("크루는 자신의 출석 기록을 수정할 수 있다")
@@ -57,7 +59,8 @@ public class CrewTest {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 16, 13, 8);
         crew.attend(localDateTime);
         crew.changeAttendanceTime(16, LocalTime.of(14, 6));
-        assertThat(crew.findAttendanceByDate(16).getLocalTime()).isEqualTo(LocalTime.of(14, 6));
+        assertThat(crew.findAttendanceByDate(16).getLocalTime())
+                .isEqualTo(LocalTime.of(14, 6));
     }
 
     @DisplayName("크루는 자신이 제적 대상자인지 확인 할 수 있다")
@@ -95,6 +98,4 @@ public class CrewTest {
         crew.attend(localDateTime);
         assertThat(crew.getCrewAbsentCount()).isEqualTo(11);
     }
-
-
 }
