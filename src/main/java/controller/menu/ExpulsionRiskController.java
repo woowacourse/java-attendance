@@ -1,7 +1,16 @@
 package controller.menu;
 
 import domain.attendance.AttendanceBook;
+import domain.attendance.AttendanceResult;
+import domain.crew.Crew;
+import dto.AttendanceResultDto;
+import dto.CrewDto;
 import java.time.LocalDate;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import view.OutputView;
 
 public class ExpulsionRiskController implements AttendanceMenuController {
 
@@ -13,6 +22,13 @@ public class ExpulsionRiskController implements AttendanceMenuController {
 
     @Override
     public void run(LocalDate runDate) {
-
+        List<Map.Entry<Crew, AttendanceResult>> expulsionRiskCrews = attendanceBook.findExpulsionRiskCrews(runDate);
+        List<Map.Entry<CrewDto, AttendanceResultDto>> expulsionRiskCrewsDtos = new ArrayList<>();
+        for (Map.Entry<Crew, AttendanceResult> entry : expulsionRiskCrews) {
+            CrewDto crewDto = entry.getKey().toDto();
+            AttendanceResultDto attendanceResultDto = entry.getValue().toDto();
+            expulsionRiskCrewsDtos.add(new AbstractMap.SimpleEntry<>(crewDto, attendanceResultDto));
+        }
+        OutputView.printExpulsionRiskCrews(expulsionRiskCrewsDtos);
     }
 }

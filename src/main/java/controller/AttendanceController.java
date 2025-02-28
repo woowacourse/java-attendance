@@ -6,6 +6,7 @@ import controller.menu.AttendanceRegisterController;
 import controller.menu.CrewAttendanceController;
 import controller.menu.ExpulsionRiskController;
 import controller.store.AttendanceCsvController;
+import controller.store.AttendanceStoreController;
 import domain.attendance.AttendanceBook;
 import domain.menu.Menu;
 import exception.ExceptionHandler;
@@ -33,8 +34,8 @@ public class AttendanceController {
     }
 
     private AttendanceBook initailizeAttendanceBook() throws IOException {
-        AttendanceCsvController attendanceCsvController = new AttendanceCsvController();
-        return attendanceCsvController.store();
+        AttendanceStoreController attendanceStoreController = new AttendanceCsvController();
+        return attendanceStoreController.store();
     }
 
     private Map<Menu, AttendanceMenuController> initializeMenuControllerRegistry() {

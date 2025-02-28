@@ -1,5 +1,7 @@
 package domain.crew;
 
+import dto.CrewDto;
+
 public class Crew {
 
     private final String name;
@@ -14,5 +16,9 @@ public class Crew {
 
     public String getName() {
         return name;
+    }
+
+    public CrewDto toDto() {
+        return new CrewDto(name);
     }
 }

@@ -3,11 +3,13 @@ package view;
 import domain.attendance.AttendanceStatus;
 import dto.AttendanceLogDto;
 import dto.AttendanceResultDto;
+import dto.CrewDto;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import util.Convertor;
 
 public class OutputView {
@@ -46,6 +48,15 @@ public class OutputView {
                 .append(formatCrewAttendanceResult(attendanceResultDto))
                 .append(System.lineSeparator())
                 .append(formatCrewStatus(attendanceResultDto));
+        System.out.println(stringBuilder);
+    }
+
+    public static void printExpulsionRiskCrews(List<Map.Entry<CrewDto, AttendanceResultDto>> expulsionRiskCrewsDtos) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<CrewDto, AttendanceResultDto> entry : expulsionRiskCrewsDtos) {
+            stringBuilder.append(formatExpulsionRiskCrew(entry.getKey(), entry.getValue()))
+                    .append(System.lineSeparator());
+        }
         System.out.println(stringBuilder);
     }
 
@@ -158,5 +169,9 @@ public class OutputView {
         stringBuilder.append(String.format("%s 대상자입니다.", attendanceResultDto.crewStatus()))
                 .append(System.lineSeparator());
         return stringBuilder.toString();
+    }
+
+    private static String formatExpulsionRiskCrew(CrewDto crewDto, AttendanceResultDto attendanceResultDto) {
+        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)", crewDto.name(), attendanceResultDto.lateCount(), attendanceResultDto.absentCount(), attendanceResultDto.crewStatus());
     }
 }
