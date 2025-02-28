@@ -19,11 +19,11 @@ public class InputView {
 
     public static String askNickname(boolean isForEdit) {
         if (isForEdit) {
-            System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+            System.out.println("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
             return scanner.next();
         }
 
-        System.out.println("닉네임을 입력해 주세요.");
+        System.out.println("\n닉네임을 입력해 주세요.");
         return scanner.next();
     }
 

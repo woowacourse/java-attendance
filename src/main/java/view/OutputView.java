@@ -26,7 +26,7 @@ public class OutputView {
 
     public static void printAttendanceStatus(AttendanceStatusDto dto) {
         if (Objects.equals(dto.hour(), "--") || Objects.equals(dto.minute(), "--")) {
-            System.out.printf("%02d월 %02d일 %s %s:%s (%s)%n",
+            System.out.printf("%n%02d월 %02d일 %s %s:%s (%s)%n%n",
                     dto.month(),
                     dto.day(),
                     dto.dayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
@@ -36,7 +36,7 @@ public class OutputView {
             return;
         }
 
-        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)%n",
+        System.out.printf("%n%02d월 %02d일 %s %02d:%02d (%s)%n%n",
                 dto.month(),
                 dto.day(),
                 dto.dayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
@@ -45,12 +45,15 @@ public class OutputView {
                 dto.attendanceType().getName());
     }
 
-    public static void printAttendanceStatus(AttendanceStatusesOfCrewDto dto) {
+    public static void printAttendanceStatus(AttendanceStatusesOfCrewDto dto, String nickname) {
         List<AttendanceStatusDto> statusDtos = dto.attendanceStatusDtos();
+
+        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", nickname);
         for (AttendanceStatusDto statusDto : statusDtos) {
             printAttendanceStatus(statusDto);
         }
 
+        System.out.println();
         for (Entry<AttendanceType, Integer> entry : dto.attendanceTypeCount().entrySet()) {
             String typeName = entry.getKey().getName();
             int count = entry.getValue();
@@ -126,5 +129,6 @@ public class OutputView {
                     PenaltyType.getFrom(attendanceTypeCount).getName()
             );
         }
+        System.out.println();
     }
 }

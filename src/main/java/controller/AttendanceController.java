@@ -1,5 +1,6 @@
 package controller;
 
+import domain.AttendanceDateTime;
 import domain.AttendanceType;
 import domain.Crew;
 import dto.AttendanceStatusDto;
@@ -8,7 +9,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import service.AttendanceService;
 import view.FeatureType;
@@ -34,6 +38,7 @@ public class AttendanceController {
 
     private void runFeature(FeatureType featureType) {
         if (featureType == FeatureType.CHECK_ATTENDANCE) {
+            validateIsSchoolDay();
             String nickname = InputView.askNickname(false);
             validateNicknameRegistered(nickname);
 
@@ -72,7 +77,7 @@ public class AttendanceController {
             String nickname = InputView.askNickname(false);
             validateNicknameRegistered(nickname);
             AttendanceStatusesOfCrewDto statusesDto = attendanceService.getHistoriesDtoFrom(Crew.from(nickname), currentDay);
-            OutputView.printAttendanceStatus(statusesDto);
+            OutputView.printAttendanceStatus(statusesDto, nickname);
             return;
         }
 
@@ -80,6 +85,18 @@ public class AttendanceController {
             int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
             Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = attendanceService.getAllAttendanceTypeCountOfCrew(currentDay);
             OutputView.printCrewOfBanRisk(attendanceTypeCountOfCrew);
+        }
+    }
+
+    private void validateIsSchoolDay() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        if (AttendanceDateTime.from(now).isRestDay()) {
+            OutputView.printErrorMessage(String.format("%d월 %d일 %s은 등교일이 아닙니다.",
+                    now.getMonthValue(),
+                    now.getDayOfMonth(),
+                    now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+
+            throw new IllegalArgumentException("");
         }
     }
 
