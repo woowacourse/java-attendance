@@ -202,6 +202,60 @@ public class AttendanceSystemManagerTest {
                             AttendanceType.LATE)
             );
         }
+
+        @Test
+        @DisplayName("존재하지 않는 날짜의 기록에 대해 결석으로 간주한다.")
+        void test3() {
+            // given
+            String nickname = "히로";
+            Crew crew = new Crew(nickname);
+            Crews crews = new Crews(List.of(crew));
+
+            LocalDateTime firstAttendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+            LocalDateTime thirdAttendAt = LocalDateTime.of(2024, 12, 4, 10, 6);
+
+            AttendanceHistories attendanceHistories = new AttendanceHistories(List.of(
+                    new AttendanceHistory(crew, firstAttendAt),
+                    new AttendanceHistory(crew, thirdAttendAt)));
+
+            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories, crews);
+
+            // when
+            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(nickname,
+                    thirdAttendAt.plusDays(1));
+
+            // then
+            assertThat(result.keySet()).contains(LocalDateTime.of(2024, 12, 3, 0, 0));
+        }
+
+        @Test
+        @DisplayName("조회를 요청한 날짜의 이전 데이터까지만 포함한다.")
+        void test4() {
+            // given
+            String nickname = "히로";
+            Crew crew = new Crew(nickname);
+            Crews crews = new Crews(List.of(crew));
+
+            LocalDateTime firstAttendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+            LocalDateTime thirdAttendAt = LocalDateTime.of(2024, 12, 4, 10, 6);
+
+            AttendanceHistories attendanceHistories = new AttendanceHistories(List.of(
+                    new AttendanceHistory(crew, firstAttendAt),
+                    new AttendanceHistory(crew, thirdAttendAt)));
+
+            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories, crews);
+
+            // when
+            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(nickname,
+                    thirdAttendAt.plusDays(1));
+
+            // then
+            assertThat(result.keySet())
+                    .allMatch(date -> date.isBefore(thirdAttendAt.plusDays(1)));
+
+        }
+
+
     }
 
 }
