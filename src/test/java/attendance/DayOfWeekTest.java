@@ -56,14 +56,16 @@ public class DayOfWeekTest {
     @Test
     void given_attendance_time_07_then_throw_exception() {
         LocalTime attendanceTime = LocalTime.of(7, 0);
-        assertThatThrownBy(() -> MONDAY.decideAttendanceType(attendanceTime));
+        assertThatThrownBy(() -> MONDAY.decideAttendanceType(attendanceTime))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("캠퍼스 운영시간이 아닌 23:01에 출석 할 경우, 예외가 발생해야 한다.")
     @Test
     void given_attendance_time_23_01_then_throw_exception() {
         LocalTime attendanceTime = LocalTime.of(23, 1);
-        assertThatThrownBy(() -> MONDAY.decideAttendanceType(attendanceTime));
+        assertThatThrownBy(() -> MONDAY.decideAttendanceType(attendanceTime))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("캠퍼스 운영시간인 08:00에 출석할 경우, 예외가 발생해서는 안 된다.")
@@ -78,6 +80,20 @@ public class DayOfWeekTest {
     void given_attendance_time_23_then_throw_exception() {
         LocalTime attendanceTime = LocalTime.of(23, 0);
         assertThatCode(() -> MONDAY.decideAttendanceType(attendanceTime)).doesNotThrowAnyException();
+    }
+
+    @DisplayName("토요일에 출석 하려고 하는 경우, 예외가 발생해야 한다.")
+    @Test
+    void given_saturday_attendance_then_throw_exception() {
+        assertThatThrownBy(() -> SATURDAY.decideAttendanceType(LocalTime.of(9, 0)))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("일요일에 출석 하려고 하는 경우, 예외가 발생해야 한다.")
+    @Test
+    void given_sunday_attendance_then_throw_exception() {
+        assertThatThrownBy(() -> SUNDAY.decideAttendanceType(LocalTime.of(9, 0)))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     private void assertAttendanceType(DayOfWeek dayOfWeek, LocalTime attendanceTime, String expectedResult) {

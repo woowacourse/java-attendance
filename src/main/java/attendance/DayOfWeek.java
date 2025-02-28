@@ -1,20 +1,21 @@
 package attendance;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Arrays;
 import java.util.Locale;
 
-public enum DayOfWeek {
+public enum DayOfWeek  {
 
     MONDAY("월요일", LocalTime.of(13, 0)),
     TUESDAY("화요일", LocalTime.of(10, 0)),
     WEDNESDAY("수요일", LocalTime.of(10, 0)),
     THURSDAY("목요일", LocalTime.of(10, 0)),
     FRIDAY("금요일", LocalTime.of(10, 0)),
-    SATURDAY("토요일", null),
-    SUNDAY("일요일", null);
+    SATURDAY("토요일", LocalTime.of(0, 0)),
+    SUNDAY("일요일", LocalTime.of(0, 0));
 
     private static final int LATE_STANDARD = 5;
     private static final int ABSENCE_STANDARD = 30;
@@ -28,6 +29,10 @@ public enum DayOfWeek {
     }
 
     public String decideAttendanceType(LocalTime attendanceTime) {
+        if (dayOfWeekName.equals("토요일") || dayOfWeekName.equals("일요일")) {
+            throw new IllegalArgumentException();
+        }
+
         if (attendanceTime.isBefore(LocalTime.of(8, 0)) || attendanceTime.isAfter(
             LocalTime.of(23, 0))) {
             throw new IllegalArgumentException();
