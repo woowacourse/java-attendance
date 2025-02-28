@@ -14,6 +14,9 @@ public class AttendanceCalculator {
     }
 
     public static String decideAttendanceType(String dayOfWeek, LocalTime attendanceTime) {
+        if (dayOfWeek.equals("월요일")) {
+            return "출석";
+        }
         if (attendanceTime.isAfter(LocalTime.of(10, 29))) {
             return "결석";
         }
