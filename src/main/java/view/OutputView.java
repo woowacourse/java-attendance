@@ -59,7 +59,7 @@ public class OutputView {
                         riskCrew.nickname(),
                         riskCrew.absentCount(),
                         riskCrew.lateCount(),
-                        riskCrew.riskRank()
+                        riskCrew.riskRank().getDescription()
                 )
         );
         System.out.println();
