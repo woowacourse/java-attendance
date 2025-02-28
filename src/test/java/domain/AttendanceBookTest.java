@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
-import attendance.domain.CrewAttendances;
+import attendance.domain.CrewAttendance;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -92,11 +92,11 @@ public class AttendanceBookTest {
         );
 
         //when
-        CrewAttendances attendances = attendanceBook.findAttendancesByNickname("pobi");
+        CrewAttendance attendances = attendanceBook.findAttendancesByNickname("pobi");
 
         //then
         assertThat(attendances)
-                .isEqualTo(new CrewAttendances(
+                .isEqualTo(new CrewAttendance(
                         "pobi",
                         List.of(
                                 new Attendance("pobi", LocalDateTime.of(2024, 11, 25, 10, 1)),

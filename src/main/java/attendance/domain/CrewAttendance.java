@@ -3,12 +3,12 @@ package attendance.domain;
 import java.util.List;
 import java.util.Objects;
 
-public class CrewAttendances {
+public class CrewAttendance {
 
     private final String nickname;
     private final List<Attendance> attendances;
 
-    public CrewAttendances(String nickname, List<Attendance> attendances) {
+    public CrewAttendance(String nickname, List<Attendance> attendances) {
         validateAttendances(nickname, attendances);
         this.nickname = nickname;
         this.attendances = attendances;
@@ -38,7 +38,7 @@ public class CrewAttendances {
             return false;
         }
 
-        CrewAttendances that = (CrewAttendances) object;
+        CrewAttendance that = (CrewAttendance) object;
         return Objects.equals(nickname, that.nickname) && Objects.equals(attendances, that.attendances);
     }
 
