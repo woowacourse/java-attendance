@@ -20,7 +20,10 @@ public enum Feature {
     }
 
     public static Feature of(String input) {
-
+        return Arrays.stream(values())
+            .filter(feature -> feature.functionNumber.equals(input))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException(NOT_PROVIDED_ERROR_MESSAGE));
     }
 
     public static void validateProvided(String input) {
