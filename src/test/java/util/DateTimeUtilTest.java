@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class DateTimeUtilTest {
     @Test
     @DisplayName("해당 날짜가 주말이면 true를 반환한다.")
-    void isWeekendTest_true() {
+    void isWeekend_test_true() {
         // when & then
         Assertions.assertThat(DateTimeUtil.isWeekend(LocalDateFixture.SATURDAY)).isTrue();
         Assertions.assertThat(DateTimeUtil.isWeekend(LocalDateFixture.SUNDAY)).isTrue();
@@ -18,7 +18,7 @@ class DateTimeUtilTest {
 
     @Test
     @DisplayName("해당 날짜가 주말이 아니면 false를 반환한다.")
-    void isWeekendTest_false() {
+    void isWeekend_test_false() {
         // when & then
         Assertions.assertThat(DateTimeUtil.isWeekend(LocalDateFixture.MONDAY)).isFalse();
         Assertions.assertThat(DateTimeUtil.isWeekend(LocalDateFixture.TUESDAY)).isFalse();
@@ -29,7 +29,7 @@ class DateTimeUtilTest {
 
     @Test
     @DisplayName("시간(시분)과 시간 사이를 구분할 수 있다")
-    void IsInRangeTest() {
+    void isInRange_test() {
         // given
         LocalTime startTime = LocalTime.of(1, 0);
         LocalTime endTime = LocalTime.of(2, 31);
@@ -48,7 +48,7 @@ class DateTimeUtilTest {
 
     @Test
     @DisplayName("시작 시간이 종료 시간보다 뒤인 경우 예외가 발생한다")
-    void IsInRangeTest_Exception() {
+    void isInRange_test_exception() {
         // given
         LocalTime startTime = LocalTime.of(3, 0);
         LocalTime endTime = LocalTime.of(2, 31);

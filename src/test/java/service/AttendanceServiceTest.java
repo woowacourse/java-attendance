@@ -30,7 +30,7 @@ class AttendanceServiceTest {
 
         @Test
         @DisplayName("닉네임과 등교시간을 받아 출석 기록을 저장한다")
-        void saveAttendanceRecordTest() {
+        void saveAttendanceRecord_test() {
             // given
             String nickname = "시소";
             Crew crew = new Crew(nickname);

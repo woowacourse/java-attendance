@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceRecordTest {
-    
+
     @Nested
     @DisplayName("예외가 발생하지 않는 테스트")
     class Success {
@@ -35,7 +35,7 @@ public class AttendanceRecordTest {
 
         @Test
         @DisplayName("출석 기록 날짜가 주말 혹은 공휴일이면 예외가 발생한다")
-        void validateOffDateExceptionTest() {
+        void validateOffDate_test_exception() {
             // given
             String nickname = "우가";
             Crew crew = new Crew(nickname);
@@ -50,7 +50,7 @@ public class AttendanceRecordTest {
 
         @Test
         @DisplayName("출석 기록 시간이 캠퍼스 운영 시간이 아니면 예외가 발생한다")
-        void validateCampusTimeExceptionTest() {
+        void validateCampusTime_test_exception() {
             // given
             String nickname = "우가";
             Crew crew = new Crew(nickname);

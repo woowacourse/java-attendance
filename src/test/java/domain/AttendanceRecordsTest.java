@@ -117,7 +117,7 @@ public class AttendanceRecordsTest {
     class Fail {
         @Test
         @DisplayName("닉네임과 날짜가 같은 출석 기록이 존재하는데 추가하려고 하는 경우 예외가 발생한다")
-        void add_exception() {
+        void add_test_exception() {
             // given
             String nickname = "name";
             Crew crew = new Crew(nickname);
