@@ -1,4 +1,4 @@
-package model;
+package model.file;
 
 import common.Common;
 import java.time.LocalDateTime;
@@ -8,21 +8,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ExistingAttendances {
-    //TODO : 혹시 만드는게 별로라면 이유는?
+public class PastAttendances {
     private final Map<String, List<LocalDateTime>> attendances;
 
-    public static ExistingAttendances from(List<String> crewAttendanceData) {
+    public static PastAttendances from(List<String> crewAttendanceData) {
         Map<String, List<LocalDateTime>> uniqueCrewNames = extractUniqueCrewData(crewAttendanceData);
         for (String data : crewAttendanceData) {
             String crewName = data.split(",")[0];
             LocalDateTime dateTime = parseAttendanceData(data);
             uniqueCrewNames.get(crewName).add(dateTime);
         }
-        return new ExistingAttendances(uniqueCrewNames);
+        return new PastAttendances(uniqueCrewNames);
     }
 
-    public ExistingAttendances(Map<String, List<LocalDateTime>> attendances) {
+    public PastAttendances(Map<String, List<LocalDateTime>> attendances) {
         this.attendances = attendances;
     }
 
@@ -37,8 +36,7 @@ public class ExistingAttendances {
         return crewData;
     }
 
-    //TODO : private
-    public static LocalDateTime parseAttendanceData(String crewAttendanceData) {
+    private static LocalDateTime parseAttendanceData(String crewAttendanceData) {
         String dateAndTime = crewAttendanceData.split(",")[1];
         return LocalDateTime.parse(dateAndTime, Common.yearMonthDateTimeFormatter);
     }

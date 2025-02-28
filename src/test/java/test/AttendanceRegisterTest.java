@@ -11,14 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import model.Attendance;
-import model.AttendanceBook;
-import model.AttendanceStatus;
-import model.AttendanceHistory;
-import model.Crew;
-import model.ExistingAttendances;
-import model.Crews;
-import model.December;
+import model.attendance.Attendance;
+import model.admininstration.AttendanceBook;
+import model.attendance.AttendanceStatus;
+import model.attendance.AttendanceHistory;
+import model.attendance.Crew;
+import model.admininstration.Crews;
+import model.date.December;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -97,13 +96,7 @@ public class AttendanceRegisterTest {
         //given
 //        List<String> crewNames = List.of("쿠키", "빙봉", "빙티", "이든");
         List<String> combinedData = List.of(
-                "쿠키,2024-12-13 10:08",
-                "빙봉,2024-12-13 10:07",
-                "이든,2024-12-13 10:07",
-                "빙봉,2024-12-12 11:11",
-                "빙티,2024-12-12 10:07",
-                "이든,2024-12-12 10:06",
-                "이든,2024-12-11 10:10"
+                "쿠키", "빙봉", "이든", "빙봉", "빙티", "이든", "이든"
         );
 
         //when
@@ -165,17 +158,20 @@ public class AttendanceRegisterTest {
         ))));
     }
 
-    @DisplayName("크루 이름과 날짜 객체를 입력하면 날짜와 시간을 읽어서 Attendance 객체를 반환한다.")
-    @Test
-    void test5_1() {
-        String combinedData = "쿠키,2024-12-13 10:08";
-
-        LocalDateTime dateTime = ExistingAttendances.parseAttendanceData(combinedData);
-
-        assertThat(dateTime).isEqualTo(
-                LocalDateTime.of(2024, 12, 13, 10, 8)
-        );
-    }
+    /**
+     * private으로 전환
+     */
+//    @DisplayName("크루 이름과 날짜 객체를 입력하면 날짜와 시간을 읽어서 Attendance 객체를 반환한다.")
+//    @Test
+//    void test5_1() {
+//        String combinedData = "쿠키,2024-12-13 10:08";
+//
+//        LocalDateTime dateTime = ExistingAttendances.parseAttendanceData(combinedData);
+//
+//        assertThat(dateTime).isEqualTo(
+//                LocalDateTime.of(2024, 12, 13, 10, 8)
+//        );
+//    }
 
     @DisplayName("새로운 출석 객체를 입력하면 크루에 맞는 출석 객체를 갱신한다.")
     @Test
@@ -204,11 +200,15 @@ public class AttendanceRegisterTest {
                 "이든,2024-12-12 11:11"
         );
         Crews crews = new Crews(List.of(crew1, crew2));
-        ExistingAttendances fileAttendances = ExistingAttendances.from(combinedData);
         AttendanceBook attendanceBook = AttendanceBook.from(crews);
 
+        Map<Crew, List<LocalDateTime>> updatingData = new HashMap<>(Map.of(
+                crew1, List.of(LocalDateTime.of(2024, 12, 13, 10, 8)),
+                crew2, List.of(LocalDateTime.of(2024, 12, 12, 11, 11))
+        ));
+
         //when
-        attendanceBook.update(fileAttendances.getAttendances(), crews);
+        attendanceBook.update(updatingData);
 
         //then
         AttendanceHistory attendanceHistory1 = attendanceBook.findByCrew(crew1);

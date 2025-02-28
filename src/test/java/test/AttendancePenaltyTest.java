@@ -7,14 +7,13 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import model.Attendance;
-import model.AttendanceBook;
-import model.AttendanceStatistic;
-import model.AttendanceStatistics;
-import model.AttendanceStatus;
-import model.Crew;
-import model.Crews;
-import model.PenaltyStatus;
+import model.attendance.Attendance;
+import model.attendance.AttendanceStatistic;
+import model.admininstration.AttendanceStatistics;
+import model.attendance.AttendanceStatus;
+import model.attendance.Crew;
+import model.admininstration.Crews;
+import model.attendance.PenaltyStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -73,7 +72,6 @@ public class AttendancePenaltyTest {
         )));
 
         //when
-
         Map<Crew, AttendanceStatistic> penaltyTargets = attendanceStatistics.findPenaltyTargets();
 
         //then

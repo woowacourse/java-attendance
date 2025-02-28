@@ -1,12 +1,10 @@
-package model;
+package model.attendance;
 
 import common.Common;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 import model.exception.CampusUnavailableException;
-import model.exception.FutureAttendanceException;
-import model.exception.HolidayAttendanceException;
 
 public class Attendance {
     private final LocalDate date;

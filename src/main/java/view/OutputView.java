@@ -5,11 +5,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import model.Attendance;
-import model.AttendanceStatistic;
-import model.AttendanceStatus;
-import model.Crew;
-import model.PenaltyStatus;
+import model.attendance.Attendance;
+import model.attendance.AttendanceStatistic;
+import model.attendance.AttendanceStatus;
+import model.attendance.Crew;
+import model.attendance.PenaltyStatus;
 
 public class OutputView {
     public void printAttendanceRegisterResult(Attendance newAttendance) {

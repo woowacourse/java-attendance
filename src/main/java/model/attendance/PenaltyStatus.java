@@ -1,4 +1,4 @@
-package model;
+package model.attendance;
 
 public enum PenaltyStatus {
     NONE("없음"),

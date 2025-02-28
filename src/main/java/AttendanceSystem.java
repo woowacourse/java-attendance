@@ -1,5 +1,5 @@
 import controller.AttendanceController;
-import model.December;
+import model.date.December;
 import view.InputView;
 import view.OutputView;
 

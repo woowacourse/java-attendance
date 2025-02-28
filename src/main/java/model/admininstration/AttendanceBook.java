@@ -1,5 +1,8 @@
-package model;
+package model.admininstration;
 
+import model.attendance.Attendance;
+import model.attendance.AttendanceHistory;
+import model.attendance.Crew;
 import model.exception.CrewNotExistException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

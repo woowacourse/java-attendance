@@ -1,8 +1,12 @@
-package model;
+package model.admininstration;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import model.attendance.PenaltyStatus;
+import model.attendance.Attendance;
+import model.attendance.AttendanceStatistic;
+import model.attendance.Crew;
 
 public class AttendanceStatistics {
     private final Map<Crew, AttendanceStatistic> statistics;
