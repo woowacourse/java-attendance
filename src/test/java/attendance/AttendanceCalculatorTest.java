@@ -67,4 +67,12 @@ public class AttendanceCalculatorTest {
         assertThat(attendanceType).isEqualTo("출석");
     }
 
+    @DisplayName("월요일 13:05에 출석했을 경우, 지각을 반환해야 한다")
+    @Test
+    void given_monday_13_05_then_return_attendance() {
+        LocalTime attendanceTime = LocalTime.of(13, 5);
+        String attendanceType = AttendanceCalculator.decideAttendanceType("월요일", attendanceTime);
+        assertThat(attendanceType).isEqualTo("지각");
+    }
+
 }
