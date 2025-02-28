@@ -22,4 +22,8 @@ public enum MenuOption {
                 .findFirst()
                 .orElseThrow(IllegalStateException::new);
     }
+
+    public static boolean isRunningOption(MenuOption menuOption) {
+        return menuOption != MenuOption.QUIT;
+    }
 }

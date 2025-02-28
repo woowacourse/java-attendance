@@ -27,20 +27,23 @@ public class AttendanceController {
     }
 
     public void run() {
-        while(true) {
-            Map<MenuOption, Runnable> menuActions = Map.of(
-                    MenuOption.ADDING_ATTENDANCE, this::addAttendance,
-                    MenuOption.UPDATING_ATTENDANCE, this::modifyAttendance,
-                    MenuOption.SHOWING_CREW_ATTENDANCE_HISTORY, this::showAttendanceHistory,
-                    MenuOption.SHOWING_PENALTY_CREWS, this::showPenaltyCrews
-            );
+        Map<MenuOption, Runnable> menuActions = getMenuActions();
+        boolean onRunning = true;
+        while (onRunning) {
             String selectedMenu = inputView.readSelectedMenu();
             MenuOption menuOption = MenuOption.from(selectedMenu);
-            if(menuOption == MenuOption.QUIT) {
-                return;
-            }
             menuActions.getOrDefault(menuOption, () -> {}).run();
+            onRunning = MenuOption.isRunningOption(menuOption);
         }
+    }
+
+    private Map<MenuOption, Runnable> getMenuActions() {
+        return Map.of(
+                MenuOption.ADDING_ATTENDANCE, this::addAttendance,
+                MenuOption.UPDATING_ATTENDANCE, this::modifyAttendance,
+                MenuOption.SHOWING_CREW_ATTENDANCE_HISTORY, this::showAttendanceHistory,
+                MenuOption.SHOWING_PENALTY_CREWS, this::showPenaltyCrews
+        );
     }
 
     private void addAttendance() {
@@ -56,11 +59,9 @@ public class AttendanceController {
         String crewName = handleWithRetry(inputView::readModifyName);
         String day = handleWithRetry(inputView::readModifyDay);
         String time = handleWithRetry(inputView::readModifyTime);
+        LocalDate date = LocalDate.of(TODAY.getYear(), TODAY.getMonth(), Integer.parseInt(day));
         ModifyingResult modifyingResult = attendanceBook.modify(
-                new CrewName(crewName),
-                new Attendance(
-                        LocalDate.of(TODAY.getYear(), TODAY.getMonth(), Integer.parseInt(day)),
-                        LocalTime.parse(time)));
+                new CrewName(crewName), new Attendance(date, LocalTime.parse(time)));
         outputView.showModifyingResult(modifyingResult);
     }
 
@@ -77,20 +78,19 @@ public class AttendanceController {
     }
 
     private <T> T handleWithRetry(Supplier<T> task) {
-        while (true) {
-            try {
-                return task.get();
-            } catch (IllegalArgumentException e) {
-                outputView.showErrorMessage(e.getMessage());
-            }
-        }
+        T result;
+        do {
+            result = handleWithErrorMessage(task);
+        } while (result == null);
+        return result;
     }
 
-    private void handleWithErrorMessage(Runnable task) {
+    private <T> T handleWithErrorMessage(Supplier<T> task) {
         try {
-            task.run();
+            return task.get();
         } catch (IllegalArgumentException e) {
             outputView.showErrorMessage(e.getMessage());
+            return null;
         }
     }
 }
