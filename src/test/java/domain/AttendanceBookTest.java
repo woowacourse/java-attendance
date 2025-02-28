@@ -69,7 +69,9 @@ public class AttendanceBookTest {
             String name = "사나";
             LocalDateTime dateTime = parseStringToDateTime("2024-12-09 10:02");
 
-            assertThatThrownBy(() -> attendanceBook.saveAttendanceRecord(name, dateTime));
+            assertThatThrownBy(() -> attendanceBook.saveAttendanceRecord(name, dateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등록되지 않은 크루입니다.");
         }
     }
 }

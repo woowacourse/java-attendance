@@ -21,14 +21,14 @@ public class AttendanceController {
     public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
-
         this.attendanceBook = new AttendanceBook();
-        handleException(()
-            -> attendanceBook.initializeCrewRecords(loadCSV("src/main/resources/attendances.csv")));
     }
 
     public void start() {
-        handleException(() -> executeFeature());
+        handleException(() -> {
+            executeFeature();
+            attendanceBook.initializeCrewRecords(loadCSV("src/main/resources/attendances.csv"));
+        });
     }
 
     protected void attendanceCheck() {

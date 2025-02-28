@@ -14,9 +14,7 @@ public class FileLoader {
     public static Scanner loadCSV(String filePath) {
         try {
             File file = new File(filePath);
-            Scanner scanner = new Scanner(file);
-            scanner.nextLine(); // attribute 행 제거
-            return scanner;
+            return new Scanner(file);
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(FILE_LOAD_ERROR_MESSAGE);
         }

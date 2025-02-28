@@ -51,7 +51,7 @@ public class CoachTest {
 
             Coach coach = new Coach(attendanceBook);
             String name = "빙봉";
-            LocalDateTime dateTime = parseStringToDateTime("2024-12-9 23:13");
+            LocalDateTime dateTime = parseStringToDateTime("2024-12-09 23:13");
 
             assertThatThrownBy(() -> coach.attendCrew(name, dateTime));
         }

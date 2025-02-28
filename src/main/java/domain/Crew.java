@@ -19,13 +19,21 @@ public class Crew {
         return dailyRecords.size();
     }
 
+    public boolean hasDate(LocalDate date) {
+        return dailyRecords.containsKey(date);
+    }
+
     public DailyRecord findRecordByDate(LocalDate date) {
         return dailyRecords.get(date);
     }
 
     public DailyRecord addDailyRecord(LocalDateTime dateTime) {
-        // TODO: 하루 데이터 저장
-        return null;
+        LocalDate date = dateTime.toLocalDate();
+        LocalTime time = dateTime.toLocalTime();
+
+        DailyRecord newRecord = new DailyRecord(date.getDayOfWeek(), time);
+        dailyRecords.put(date, newRecord);
+        return newRecord;
     }
 
     public void initializeDailyRecords(List<LocalDateTime> crewRecords) {

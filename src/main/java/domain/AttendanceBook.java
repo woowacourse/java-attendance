@@ -2,7 +2,6 @@ package domain;
 
 import static util.parser.DateTimeParser.parseStringToDateTime;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +10,9 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class AttendanceBook {
+
+    private static final String NOT_REGISTERED_CREW_ERROR_MESSAGE = "등록되지 않은 크루입니다.";
+    private static final String ALREADY_ATTENDED_ERROR_MESSAGE = "이미 출석 기록이 있으므로 수정만 가능합니다.";
 
     private final Map<String, Crew> crewRecords;
 
@@ -27,8 +29,11 @@ public class AttendanceBook {
     }
 
     public DailyRecord saveAttendanceRecord(String name, LocalDateTime dateTime) {
-        // TODO: 맵에 저장
-        return null;
+        validateRegisteredCrew(name);
+        validateAlreadyAttended(name, dateTime);
+
+        Crew crew = crewRecords.get(name);
+        return crew.addDailyRecord(dateTime);
     }
 
     public void initializeCrewRecords(Scanner scanner) {
@@ -49,6 +54,19 @@ public class AttendanceBook {
             List<LocalDateTime> dailyRecords = result.get(name);
             crewRecords.put(name, new Crew());
             crewRecords.get(name).initializeDailyRecords(dailyRecords);
+        }
+    }
+
+    private void validateRegisteredCrew(String name) {
+        if (!crewRecords.containsKey(name)) {
+            throw new IllegalArgumentException(NOT_REGISTERED_CREW_ERROR_MESSAGE);
+        }
+    }
+
+    private void validateAlreadyAttended(String name, LocalDateTime dateTime) {
+        Crew crew = crewRecords.get(name);
+        if (crew.hasDate(dateTime.toLocalDate())) {
+            throw new IllegalArgumentException(ALREADY_ATTENDED_ERROR_MESSAGE);
         }
     }
 }
