@@ -1,26 +1,19 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.*;
 
-import attendance.domain.dto.AttendanceResult;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-public class CrewAttendanceRecordTest {
+public class AttendanceBookTest {
 
     private Crew crew = new Crew("Lemon");
     private AttendanceLog attendanceLog;
-    private CrewAttendanceRecord crewAttendanceRecord;
+    private AttendanceBook attendanceBook;
     private Map<Crew, AttendanceLog> attendanceRecord = new HashMap<>();
 
     @BeforeEach
@@ -38,7 +31,7 @@ public class CrewAttendanceRecordTest {
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 13, 9, 30)));
         attendanceLog = new AttendanceLog(sampleAttendances);
         attendanceRecord.put(crew, attendanceLog);
-        crewAttendanceRecord = new CrewAttendanceRecord(attendanceRecord);
+        attendanceBook = new AttendanceBook(attendanceRecord);
     }
 
 }
