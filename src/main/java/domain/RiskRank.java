@@ -10,6 +10,8 @@ public enum RiskRank {
     EXPELLED("제적", (count) -> count > 5),
     ;
 
+    private static final int ABSENT_PER_LATE = 3;
+    
     private final String description;
     private final Function<Integer, Boolean> condition;
 
@@ -19,7 +21,7 @@ public enum RiskRank {
     }
 
     public static int calculateRiskCount(int lateCount, int absentCount) {
-        return lateCount / 3 + absentCount;
+        return lateCount / ABSENT_PER_LATE + absentCount;
     }
 
     public static RiskRank of(int lateCount, int absentCount) {
