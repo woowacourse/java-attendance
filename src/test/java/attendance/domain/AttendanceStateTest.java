@@ -5,6 +5,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,24 +17,26 @@ class AttendanceStateTest {
 
     @ParameterizedTest
     @MethodSource
-    @DisplayName("등교 시간과 시작 시간의 차이로 출결 상황을 반환한다")
-    void shouldReturnStateBasedOnTimeDifference(int overTime, AttendanceState excepted) {
+    @DisplayName("등교 시간으로 출결 상황을 반환한다")
+    void shouldReturnAttendanceStatusBasedOnArrivalTime(LocalDateTime dateTime, AttendanceState excepted) {
         // when
-        AttendanceState result = AttendanceState.evaluate(overTime);
+        AttendanceState result = AttendanceState.evaluate(dateTime);
 
         // then
         assertThat(result).isEqualTo(excepted);
     }
 
-    private static Stream<Arguments> shouldReturnStateBasedOnTimeDifference() {
+    private static Stream<Arguments> shouldReturnAttendanceStatusBasedOnArrivalTime() {
+        LocalDate nowDate = LocalDate.now();
+
         return Stream.of(
-                Arguments.of(-1, AttendanceState.ATTENDANCE),
-                Arguments.of(0, AttendanceState.ATTENDANCE),
-                Arguments.of(5, AttendanceState.ATTENDANCE),
-                Arguments.of(6, AttendanceState.TARDY),
-                Arguments.of(30, AttendanceState.TARDY),
-                Arguments.of(31, AttendanceState.ABSENCE),
-                Arguments.of(Integer.MAX_VALUE, AttendanceState.ABSENCE)
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(9, 59)), AttendanceState.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(10, 0)), AttendanceState.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(10, 5)), AttendanceState.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(10, 6)), AttendanceState.TARDY),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(10, 30)), AttendanceState.TARDY),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(10, 31)), AttendanceState.ABSENCE),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.MAX), AttendanceState.ABSENCE)
         );
     }
 }
