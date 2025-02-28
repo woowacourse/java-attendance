@@ -15,9 +15,13 @@ public class Holidays {
         holidays.add(date);
     }
 
+    public boolean isHoliday(final LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || holidays.contains(date);
+    }
+
     public void validateAttendanceDate(final LocalDate attendanceDate) {
-        DayOfWeek dayOfWeek = attendanceDate.getDayOfWeek();
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || holidays.contains(attendanceDate)) {
+        if (isHoliday(attendanceDate)) {
             throw new IllegalArgumentException(formatErrorMessage(attendanceDate));
         }
     }
