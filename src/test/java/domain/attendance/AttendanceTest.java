@@ -193,9 +193,17 @@ class AttendanceTest {
             assertAll(
                     () -> assertThat(attendance.getAttendanceCount()).isEqualTo(5),
                     () -> assertThat(attendance.getTardyCount()).isEqualTo(2),
-                    () -> assertThat(attendance.getAbsenceCount()).isEqualTo(6),
-                    () -> assertThat(attendance.getAbsenceIncludingTardyCount()).isEqualTo(6)
+                    () -> assertThat(attendance.getAbsenceCount()).isEqualTo(12),
+                    () -> assertThat(attendance.getAbsenceIncludingTardyCount()).isEqualTo(12)
             );
+        }
+
+        @DisplayName("테이블에 아무것도 존재하지 않을 때 결석 수 계산")
+        @Test
+        void calcAbsenceCount(){
+            Attendance attend = new Attendance();
+
+            assertThat(attend.getAbsenceCount()).isEqualTo(19);
         }
     }
 }

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import static domain.attendance.TimeTable.*;
 
@@ -66,8 +67,19 @@ public class Attendance {
     }
 
     public int getAbsenceCount(){
+        return getExistAbsenceCount() + getMissingAttendanceCount();
+    }
+
+    private int getExistAbsenceCount(){
         return Math.toIntExact(attendanceDates.entrySet().stream()
                 .filter(localDateAttendanceDateEntry -> localDateAttendanceDateEntry.getValue().isAbsence())
+                .count());
+    }
+
+    private int getMissingAttendanceCount(){
+        return Math.toIntExact(IntStream.range(1,LocalDate.now().getDayOfMonth())
+                .mapToObj(day -> LocalDate.of(2025,2,day))
+                .filter(date -> !has(date) && isAttendanceDay(date))
                 .count());
     }
 
