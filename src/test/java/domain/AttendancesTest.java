@@ -1,11 +1,11 @@
 package domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -113,6 +113,18 @@ class AttendancesTest {
 
         Attendance log = attendances.findLogWithNameAndDate(nickname, attendanceDate);
 
-        Assertions.assertThat(log.getLocalDateTime()).isEqualTo(LocalDateTime.of(2025, 2, 5, 13, 0));
+        assertThat(log.getLocalDateTime()).isEqualTo(LocalDateTime.of(2025, 2, 5, 13, 0));
+    }
+
+    @Test
+    void 닉네임과_수정일자를_통해_출석기록을_수정한다() {
+        String nickname = "빙봉";
+        LocalDateTime updateDateTime = LocalDateTime.of(2025, 2, 7, 10, 0);
+
+        attendances.updateAttendance(nickname, updateDateTime);
+
+        Attendance log = attendances.findLogWithNameAndDate(nickname, updateDateTime.toLocalDate());
+
+        assertThat(log.getLocalDateTime().toLocalTime()).isEqualTo(LocalTime.of(10, 0));
     }
 }
