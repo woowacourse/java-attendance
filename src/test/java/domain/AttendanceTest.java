@@ -46,7 +46,7 @@ class AttendanceTest {
     private static Stream<Arguments> invalidAttendanceTime() {
         return Stream.of(
                 Arguments.arguments(7, 59),
-                Arguments.arguments(11, 1)
+                Arguments.arguments(23, 1)
         );
     }
 }
