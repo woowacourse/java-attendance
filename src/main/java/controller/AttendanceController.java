@@ -9,11 +9,14 @@ import controller.store.AttendanceCsvController;
 import controller.store.AttendanceStoreController;
 import domain.attendance.AttendanceBook;
 import domain.menu.Menu;
+import exception.ErrorException;
 import exception.ExceptionHandler;
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.EnumMap;
 import java.util.Map;
+import util.Convertor;
 import view.InputView;
 
 public class AttendanceController {
@@ -51,6 +54,7 @@ public class AttendanceController {
         return ExceptionHandler.repeatUntilSuccess(() -> {
             LocalDate runDate = generateRunDate();
             Menu menu = InputView.readAttendanceMenu(runDate);
+            validateMenuOption(menu, runDate);
             if (menu == Menu.QUIT) {
                 return false;
             }
@@ -66,5 +70,32 @@ public class AttendanceController {
             return endDate;
         }
         return todayDate;
+    }
+
+    private void validateMenuOption(Menu menu, LocalDate attendDate) {
+        if (menu.equals(Menu.ATTENDANCE_REGISTER)) {
+            validateOpenDate(attendDate);
+        }
+    }
+
+    private void validateOpenDate(LocalDate attendDate) {
+        if (isWeekend(attendDate.getDayOfWeek()) || isHoliday(attendDate)) {
+            throw new ErrorException(String.format("%d월 %d일 %s요일은 등교일이 아닙니다.", attendDate.getMonthValue(), attendDate.getDayOfMonth(),
+                    Convertor.convertDayOfWeekToKorean(attendDate.getDayOfWeek())));
+        }
+    }
+
+    private boolean isWeekend(DayOfWeek dayOfWeek) {
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isHoliday(LocalDate date) {
+        if (date.equals(LocalDate.of(2024, 12, 25))) {
+            return true;
+        }
+        return false;
     }
 }
