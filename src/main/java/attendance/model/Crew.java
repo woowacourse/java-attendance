@@ -22,7 +22,7 @@ public class Crew {
         statistic.updateStatistic(attendances);
     }
 
-    public boolean isName(final String name) {
+    public boolean isSameName(final String name) {
         return this.name.equals(name);
     }
 

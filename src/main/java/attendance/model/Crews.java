@@ -32,7 +32,7 @@ public class Crews {
 
     public Crew findCrew(final String name) {
         return crews.stream()
-                .filter(crew -> crew.isName(name))
+                .filter(crew -> crew.isSameName(name))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("입력하신 크루가 존재하지 않습니다."));
     }
