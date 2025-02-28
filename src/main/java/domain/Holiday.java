@@ -36,19 +36,7 @@ public enum Holiday {
         }
         
         final var lunarDate = convertSolarDateToLunarDate(date);
-        return hasLunarHolidayMatch(date, lunarDate);
-    }
-    
-    private static boolean hasSolarHolidayMatch(final LocalDate date) {
-        return Arrays.stream(Holiday.values())
-                .filter(holiday -> !holiday.isLunarDate)
-                .anyMatch(holiday -> LocalDate.of(date.getYear(), holiday.month, holiday.dayOfMonth).equals(date));
-    }
-    
-    private static boolean hasLunarHolidayMatch(final LocalDate date, final LocalDate lunarDate) {
-        return Arrays.stream(Holiday.values())
-                .filter(holiday -> holiday.isLunarDate)
-                .anyMatch(holiday -> LocalDate.of(date.getYear(), holiday.month, holiday.dayOfMonth).equals(lunarDate));
+        return hasLunarHolidayMatch(lunarDate);
     }
     
     private static LocalDate convertSolarDateToLunarDate(LocalDate date) {
@@ -56,5 +44,21 @@ public enum Holiday {
         calendar.setSolarDate(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
         
         return LocalDate.of(calendar.getLunarYear(), calendar.getLunarMonth(), calendar.getLunarDay());
+    }
+    
+    private static boolean hasSolarHolidayMatch(final LocalDate date) {
+        return Arrays.stream(Holiday.values())
+                .filter(holiday -> !holiday.isLunarDate)
+                .anyMatch(holiday -> isSameDay(date, holiday));
+    }
+    
+    private static boolean hasLunarHolidayMatch(final LocalDate lunarDate) {
+        return Arrays.stream(Holiday.values())
+                .filter(holiday -> holiday.isLunarDate)
+                .anyMatch(holiday -> isSameDay(lunarDate, holiday));
+    }
+    
+    private static boolean isSameDay(final LocalDate date, final Holiday holiday) {
+        return LocalDate.of(date.getYear(), holiday.month, holiday.dayOfMonth).equals(date);
     }
 }
