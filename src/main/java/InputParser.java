@@ -32,6 +32,9 @@ public class InputParser {
     }
 
     private static String parseTimeToKorean(LocalTime time) {
+        if (time.getHour() == 0 && time.getMinute() == 0) {
+            return "--:--";
+        }
         return time.format(DateTimeFormatter.ofPattern("HH:mm", Locale.KOREAN));
     }
 }
