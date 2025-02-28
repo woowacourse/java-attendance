@@ -2,6 +2,7 @@ import exception.InvalidDateException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Objects;
 
 public class AttendanceDate {
@@ -16,10 +17,12 @@ public class AttendanceDate {
         return date;
     }
 
-    // TODO: 크리스마스 예외처리
     private void validateDate(LocalDate date) {
         DayOfWeek attendanceDay = date.getDayOfWeek();
         if (!EducationTime.isOperatingOn(attendanceDay)) {
+            throw new InvalidDateException();
+        }
+        if (date.getDayOfMonth() == 25 && date.getMonth() == Month.DECEMBER) {
             throw new InvalidDateException();
         }
     }
