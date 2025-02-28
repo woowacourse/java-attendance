@@ -27,14 +27,20 @@ public class AttendanceController {
     }
 
     public void run() {
-        Map<MenuOption, Runnable> menuActions = Map.of(
-                MenuOption.ADDING_ATTENDANCE, this::addAttendance,
-                MenuOption.UPDATING_ATTENDANCE, this::modifyAttendance,
-                MenuOption.SHOWING_CREW_ATTENDANCE_HISTORY, this::showAttendanceHistory,
-                MenuOption.SHOWING_PENALTY_CREWS, this::showPenaltyCrews
-        );
-        String selectedMenu = inputView.readSelectedMenu();
-        menuActions.getOrDefault(MenuOption.from(selectedMenu), () -> {}).run();
+        while(true) {
+            Map<MenuOption, Runnable> menuActions = Map.of(
+                    MenuOption.ADDING_ATTENDANCE, this::addAttendance,
+                    MenuOption.UPDATING_ATTENDANCE, this::modifyAttendance,
+                    MenuOption.SHOWING_CREW_ATTENDANCE_HISTORY, this::showAttendanceHistory,
+                    MenuOption.SHOWING_PENALTY_CREWS, this::showPenaltyCrews
+            );
+            String selectedMenu = inputView.readSelectedMenu();
+            MenuOption menuOption = MenuOption.from(selectedMenu);
+            if(menuOption == MenuOption.QUIT) {
+                return;
+            }
+            menuActions.getOrDefault(menuOption, () -> {}).run();
+        }
     }
 
     private void addAttendance() {
