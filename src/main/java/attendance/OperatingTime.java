@@ -15,6 +15,10 @@ public enum OperatingTime {
     }
 
     public static boolean isOperating(LocalTime validateTime) {
+        if (validateTime.isBefore(OperatingTime.OPERATING_TIME.operatingStartTime) ||
+            validateTime.isAfter(OperatingTime.OPERATING_TIME.operatingEndTime)) {
+            return false;
+        }
         return true;
     }
 
