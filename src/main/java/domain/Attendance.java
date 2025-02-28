@@ -1,12 +1,13 @@
 package domain;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class Attendance {
 
     private final Crew crew;
-    private final AttendanceTime attendanceTime;
+    private AttendanceTime attendanceTime;
 
     public Attendance(Crew crew, AttendanceTime attendanceTime) {
         this.crew = crew;
@@ -19,6 +20,10 @@ public class Attendance {
 
     public boolean compareByCrewAndTime(Crew otherCrew, LocalDate day) {
         return crew.equals(otherCrew) && attendanceTime.isIn(day);
+    }
+
+    public void changeAttendanceTime(LocalTime newTime) {
+        this.attendanceTime = attendanceTime.changeTime(newTime);
     }
 
     @Override
