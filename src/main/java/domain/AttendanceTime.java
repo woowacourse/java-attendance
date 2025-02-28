@@ -39,6 +39,10 @@ public class AttendanceTime {
         }
     }
 
+    public long calculateDifferenceFromAttendanceStandard() {
+        return OperationSchedule.calculateDifferenceFromStartTime(time);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
