@@ -21,6 +21,10 @@ public class Crew implements Comparable<Crew> {
         return attendance;
     }
 
+    public void fillAbsentAttendances(LocalDate today) {
+        attendances.fillAbsentAttendances(today);
+    }
+
     public boolean isEqualCrew(final String nickname) {
         return this.nickname.equals(nickname);
     }
@@ -42,18 +46,12 @@ public class Crew implements Comparable<Crew> {
     }
 
     public long countAttendanceStatus(final AttendanceStatus status) {
-        return attendances.getAttendances().stream()
-                .filter(attendance -> attendance.isEqualStatus(status))
-                .count();
+        return attendances.countAttendanceStatus(status);
     }
 
     public AbsenceRule checkAbsenceRule() {
         long totalExpulsionCount = countAttendanceStatus(AttendanceStatus.ABSENCE) + countAttendanceStatus(AttendanceStatus.LATE) / 3;
         return AbsenceRule.of(totalExpulsionCount);
-    }
-
-    public List<Attendance> getAttendances() {
-        return attendances.getAttendances();
     }
 
     @Override
@@ -66,5 +64,13 @@ public class Crew implements Comparable<Crew> {
         if(thisTotalAbsence != otherTotalAbsence) return Long.compare(otherTotalAbsence, thisTotalAbsence);
         if(thisLate % 3 != otherLate % 3) return Long.compare(otherLate % 3, thisLate % 3);
         return this.nickname.compareTo(crew.nickname);
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public List<Attendance> getAttendances() {
+        return attendances.getAttendances();
     }
 }
