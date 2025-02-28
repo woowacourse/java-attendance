@@ -24,7 +24,4 @@ public enum MainOption {
                 .orElseThrow(() -> new IllegalArgumentException(NO_MAIN_OPTION));
     }
 
-    public boolean continueMain() {
-        return this != QUIT;
-    }
 }
