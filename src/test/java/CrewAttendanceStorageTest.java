@@ -62,12 +62,13 @@ public class CrewAttendanceStorageTest {
                 Map.of(crew, new AttendanceStorage())
         );
 
-        // when & then
-        assertDoesNotThrow(() -> {
-            crewAttendanceStorage.register(
-                    crew, LocalDate.of(2025, 2, 28), LocalTime.of(10, 0)
-            );
-        });
+        // when
+        final boolean result = crewAttendanceStorage.register(
+                crew, LocalDate.of(2025, 2, 28), LocalTime.of(10, 0)
+        );
+
+        // then
+        assertThat(result).isTrue();
     }
 
     @DisplayName("새롭게 등록된 출석 기록을 조회할 수 있다.")
@@ -80,9 +81,9 @@ public class CrewAttendanceStorageTest {
         );
         LocalDate date = LocalDate.of(2025, 2, 28);
         LocalTime time = LocalTime.of(10, 0);
-        crewAttendanceStorage.register(crew, date, time);
 
         // when
+        crewAttendanceStorage.register(crew, date, time);
         Attendance attendance = crewAttendanceStorage.findAttendance(crew, date).get();
 
         // then
