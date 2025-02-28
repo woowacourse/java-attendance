@@ -77,11 +77,7 @@ public class Application {
             return;
         }
         Nickname crewNickname = new Nickname(readCrewNickname());
-        boolean isCrewExists = attendanceManager.isCrewExists(crewNickname);
-        if (!isCrewExists) {
-            OutputView.printNotRegisteredCrew();
-            return;
-        }
+        attendanceManager.validateExistingCrew(crewNickname);
         Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crewNickname, today);
         if (existingAttendance.isPresent()) {
             OutputView.printDuplicatedAttendance();
@@ -100,11 +96,7 @@ public class Application {
     private static void modifyAttendance() {
         LocalDate today = now();
         Nickname crewNickname = new Nickname(readCrewNicknameToModify());
-        boolean isCrewExists = attendanceManager.isCrewExists(crewNickname);
-        if (!isCrewExists) {
-            OutputView.printNotRegisteredCrew();
-            return;
-        }
+        attendanceManager.validateExistingCrew(crewNickname);
         LocalDate dateToModify = readAttendanceDateToModify(today);
         boolean isOperationDate = CampusManager.isOperationDate(dateToModify);
         if (!isOperationDate) {
@@ -129,11 +121,7 @@ public class Application {
     private static void checkAttendanceHistory() {
         LocalDate today = now();
         Nickname crewNickname = new Nickname(readCrewNickname());
-        boolean isCrewExists = attendanceManager.isCrewExists(crewNickname);
-        if (!isCrewExists) {
-            OutputView.printNotRegisteredCrew();
-            return;
-        }
+        attendanceManager.validateExistingCrew(crewNickname);
         List<Attendance> monthlyAttendances = attendanceManager.getMonthlyAttendances(today, crewNickname);
         OutputView.printMonthlyAttendances(today, crewNickname, monthlyAttendances);
         AttendanceStatistics attendanceStatistics = attendanceManager.getAttendanceStatistics(today, crewNickname);

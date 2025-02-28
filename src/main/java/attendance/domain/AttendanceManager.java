@@ -13,12 +13,19 @@ import java.util.Optional;
 public class AttendanceManager {
     private final Map<Nickname, AttendanceHistory> attendanceBook = new HashMap<>();
 
-    public boolean isCrewExists(final Nickname crewNickname) {
-        return attendanceBook.containsKey(crewNickname);
+    public void validateExistingCrew(final Nickname crewNickname) {
+        boolean isCrewExists = attendanceBook.containsKey(crewNickname);
+        if (!isCrewExists) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
 
-    public void addCrew(final Nickname crewNickname) {
-        attendanceBook.put(crewNickname, new AttendanceHistory());
+    public Nickname addCrew(final Nickname crewNickname) {
+        boolean isCrewExists = attendanceBook.containsKey(crewNickname);
+        if (!isCrewExists) {
+            attendanceBook.put(crewNickname, new AttendanceHistory());
+        }
+        return crewNickname;
     }
 
     public Attendance addAttendance(final Nickname crewNickname,

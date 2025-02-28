@@ -3,6 +3,7 @@ package attendance.domain;
 import static attendance.domain.AttendanceStatus.ATTENDANCE;
 import static attendance.domain.AttendanceStatus.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
@@ -10,23 +11,20 @@ import java.time.LocalTime;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceManagerTest {
-    @DisplayName("주어진_닉네임의_크루가_존재하는지_여부를_반환할_수_있다")
-    @CsvSource(value = {"레오:True", "오레오:False"}, delimiterString = ":")
-    @ParameterizedTest
-    void should_ReturnTrue_WhenCrewExists(String nickname, boolean expected) {
+    @DisplayName("주어진_닉네임의_크루가_존재하지_않으면_예외를_던진다")
+    @Test
+    void should_ThrowException_WhenCrewNotExists() {
         //given
         AttendanceManager attendanceManager = new AttendanceManager();
-        attendanceManager.addCrew(new Nickname("레오"));
+        Nickname nickname = new Nickname("레오");
 
         //when
-        boolean result = attendanceManager.isCrewExists(new Nickname(nickname));
-
         //then
-        assertThat(result).isEqualTo(expected);
+        assertThatThrownBy(() -> attendanceManager.validateExistingCrew(nickname))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
     @DisplayName("주어진_날짜에_크루의_출석을_반환할_수_있다")
