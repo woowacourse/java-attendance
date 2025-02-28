@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class AttendanceDateTime {
     private final LocalDateTime attendanceDateTime;
@@ -36,4 +37,18 @@ public class AttendanceDateTime {
     public boolean isNotOpeningTime() {
         return attendanceDateTime.toLocalTime().isBefore(LocalTime.of(8, 0)) || attendanceDateTime.toLocalTime().isAfter(LocalTime.of(23, 0));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AttendanceDateTime that = (AttendanceDateTime) o;
+        return Objects.equals(attendanceDateTime, that.attendanceDateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendanceDateTime);
+    }
+
 }
