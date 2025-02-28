@@ -28,11 +28,10 @@ public class AttendanceHistory {
 
     public void modifyRecord(WoowaDate targetDate, LocalTime modifyTime) {
         Optional<AttendanceRecord> findRecord = findRecordByDate(targetDate);
-        AttendanceRecord record = findRecord.orElseGet(() ->
-                new AttendanceRecord(targetDate, modifyTime)
+        findRecord.ifPresentOrElse(
+                record -> record.modify(modifyTime),
+                () -> records.add(new AttendanceRecord(targetDate, modifyTime))
         );
-        records.add(record);
-        record.modify(modifyTime);
     }
 
     public Optional<AttendanceRecord> findRecordByDate(WoowaDate targetDate) {
