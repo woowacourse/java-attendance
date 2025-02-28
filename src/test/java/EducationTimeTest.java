@@ -66,4 +66,21 @@ class EducationTimeTest {
             assertThat(isOperating).isFalse();
         }
     }
+
+    @DisplayName("캠퍼스 운영 요일인 경우를 확인할 수 있다.")
+    @Test
+    void test5() {
+        // given
+        List<DayOfWeek> days = List.of(
+                DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY
+        );
+
+        for (DayOfWeek day : days) {
+            // when
+            final boolean isOperating = EducationTime.isOperatingOn(day);
+
+            // then
+            assertThat(isOperating).isTrue();
+        }
+    }
 }

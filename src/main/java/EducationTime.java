@@ -29,4 +29,8 @@ public enum EducationTime {
                 .orElseThrow(InvalidDateException::new);
         return educationTime.startTime;
     }
+
+    public static boolean isOperatingOn(DayOfWeek day) {
+        return Arrays.stream(values()).anyMatch(value -> value.dayOfWeek == day);
+    }
 }
