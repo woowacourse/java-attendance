@@ -1,4 +1,4 @@
-package attendance;
+package attendance.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;

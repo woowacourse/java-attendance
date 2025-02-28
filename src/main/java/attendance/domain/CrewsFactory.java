@@ -1,4 +1,7 @@
-package attendance;
+package attendance.domain;
+
+import attendance.controller.AttendanceFileParser;
+import attendance.controller.CsvFileReader;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

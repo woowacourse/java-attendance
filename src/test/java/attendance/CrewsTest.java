@@ -1,5 +1,6 @@
 package attendance;
 
+import attendance.domain.*;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

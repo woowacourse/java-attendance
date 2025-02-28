@@ -1,5 +1,7 @@
 package attendance;
 
+import attendance.domain.Attendance;
+import attendance.domain.Attendances;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

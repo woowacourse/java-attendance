@@ -1,5 +1,9 @@
 package attendance;
 
+import attendance.domain.AbsenceRule;
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.Crew;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
