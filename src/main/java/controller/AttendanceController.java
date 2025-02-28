@@ -11,6 +11,7 @@ import dto.ModifyingResult;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
+import java.util.function.Supplier;
 import view.InputView;
 import view.OutputView;
 
@@ -37,54 +38,29 @@ public class AttendanceController {
     }
 
     private void addAttendance() {
-        CrewName crewName = new CrewName(inputView.readName());
-        LocalTime time = LocalTime.parse(inputView.readAttendanceTime());
-        Attendance attendance = new Attendance(TODAY, time);
-        attendanceBook.addAttendance(crewName, attendance);
+        String name = handleWithRetry(inputView::readName);
+        String time = handleWithRetry(inputView::readAttendanceTime);
+        CrewName crewName = new CrewName(name);
+        Attendance attendance = new Attendance(TODAY, LocalTime.parse(time));
+        handleWithErrorMessage(() -> attendanceBook.addAttendance(crewName, attendance));
         outputView.showAttendanceResult(attendance);
     }
 
     private void modifyAttendance() {
-        CrewName crewName = getValidModifyName();
-        int day = getValidDay();
-        LocalTime time = getValidModifyTime();
-        Attendance attendance = new Attendance(LocalDate.of(TODAY.getYear(), TODAY.getMonth(), day), time);
-        ModifyingResult modifyingResult = attendanceBook.modify(crewName, attendance);
+        String crewName = handleWithRetry(inputView::readModifyName);
+        String day = handleWithRetry(inputView::readModifyDay);
+        String time = handleWithRetry(inputView::readModifyTime);
+        ModifyingResult modifyingResult = attendanceBook.modify(
+                new CrewName(crewName),
+                new Attendance(
+                        LocalDate.of(TODAY.getYear(), TODAY.getMonth(), Integer.parseInt(day)),
+                        LocalTime.parse(time)));
         outputView.showModifyingResult(modifyingResult);
     }
 
-    private CrewName getValidModifyName() {
-        while(true) {
-            try {
-                return new CrewName(inputView.readModifyName());
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-
-    private int getValidDay() {
-        while(true) {
-            try {
-                return Integer.parseInt(inputView.readModifyDay());
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-
-    private LocalTime getValidModifyTime() {
-        while(true) {
-            try {
-                return LocalTime.parse(inputView.readModifyTime());
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-
     private void showAttendanceHistory() {
-        CrewName crewName = new CrewName(inputView.readName());
+        String name = handleWithRetry(inputView::readName);
+        CrewName crewName = new CrewName(name);
         AttendanceLog attendanceLog = attendanceBook.findAttendanceLogUntil(crewName, YESTERDAY);
         AttendanceCount attendanceCount = attendanceBook.findCountUntil(crewName, YESTERDAY);
         outputView.showAttendanceHistory(attendanceLog, attendanceCount);
@@ -92,5 +68,23 @@ public class AttendanceController {
 
     private void showPenaltyCrews() {
         outputView.showPenaltyCrews(attendanceBook.findPenaltyCrewsSortedUntil(YESTERDAY));
+    }
+
+    private <T> T handleWithRetry(Supplier<T> task) {
+        while (true) {
+            try {
+                return task.get();
+            } catch (IllegalArgumentException e) {
+                outputView.showErrorMessage(e.getMessage());
+            }
+        }
+    }
+
+    private void handleWithErrorMessage(Runnable task) {
+        try {
+            task.run();
+        } catch (IllegalArgumentException e) {
+            outputView.showErrorMessage(e.getMessage());
+        }
     }
 }

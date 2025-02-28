@@ -10,8 +10,6 @@ import java.util.Objects;
 import util.Constants;
 
 public class Attendance {
-
-
     private final LocalDateTime value;
 
     public Attendance(LocalDateTime value) {

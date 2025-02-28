@@ -74,4 +74,8 @@ public class OutputView {
     private String formatStatus(Attendance attendance) {
         return "(" + AttendanceStatus.from(attendance).getExpression() + ")";
     }
+
+    public void showErrorMessage(String message) {
+        System.out.println(message);
+    }
 }

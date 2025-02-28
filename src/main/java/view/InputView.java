@@ -28,7 +28,6 @@ public class InputView {
                 + "3. 크루별 출석 기록 확인\n"
                 + "4. 제적 위험자 확인\n"
                 + "Q. 종료";
-
         return readInput(message, InputValidator::validateSelectedMenu);
     }
 
