@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.CrewAttendance;
+import attendance.domain.CrewAttendances;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -102,6 +103,26 @@ public class AttendanceBookTest {
                                 new Attendance("pobi", LocalDateTime.of(2024, 11, 25, 10, 1)),
                                 new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 13, 1))
                         )
+                ));
+    }
+
+    @Test
+    void 크루원_마다의_출석_기록을_모두_생성할_수_있다() {
+        //given
+        Attendance pobiAttendance = new Attendance("pobi", LocalDateTime.of(2024, 11, 25, 10, 1));
+        Attendance neoAttendance = new Attendance("neo", LocalDateTime.of(2024, 12, 2, 13, 1));
+        Attendance surfAttendance = new Attendance("surf", LocalDateTime.of(2024, 12, 3, 10, 1));
+        AttendanceBook attendanceBook = new AttendanceBook(pobiAttendance, neoAttendance, surfAttendance);
+
+        //when
+        CrewAttendances crewAttendances = attendanceBook.createCrewAttendances();
+
+        //then
+        assertThat(crewAttendances)
+                .isEqualTo(List.of(
+                        new CrewAttendance("pobi", pobiAttendance),
+                        new CrewAttendance("neo", neoAttendance),
+                        new CrewAttendance("surf", surfAttendance)
                 ));
     }
 }

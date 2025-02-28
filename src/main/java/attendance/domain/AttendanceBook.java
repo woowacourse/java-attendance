@@ -48,6 +48,10 @@ public class AttendanceBook {
         return new CrewAttendance(nickname, attendances);
     }
 
+    public CrewAttendances createCrewAttendances() {
+        return null;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
