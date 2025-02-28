@@ -13,7 +13,8 @@ public class OperationTimeTest {
     @ParameterizedTest
     @CsvSource(value = {"2024-12-01", "2024-12-07", "2024-12-25"})
     @DisplayName("주어진 날짜를 기반으로 운영일이 아니면 예외를 발생하는 기능")
-    void checkDateIsWeekend(LocalDate targetDate) {//when & then
+    void checkDateIsWeekend(LocalDate targetDate) {
+        //when & then
         assertThatThrownBy(() -> OperationTime.checkIsOperationDate(targetDate));
     }
 
@@ -25,6 +26,16 @@ public class OperationTimeTest {
         boolean actual = OperationTime.isContainsOperationTime(targetTime);
 
         //then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"2024-12-02,true", "2024-12-01,false", "2024-12-25,false"})
+    @DisplayName("주어진 날짜를 기반으로 운영일인지 판정하는 기능")
+    void checkDateIsOperationDate(LocalDate targetDate, boolean expected) {
+        //when
+        boolean actual = OperationTime.isOperationDate(targetDate);
+        // then
         assertThat(actual).isEqualTo(expected);
     }
 }

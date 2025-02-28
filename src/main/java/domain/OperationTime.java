@@ -11,9 +11,13 @@ public class OperationTime {
     }
 
     public static void checkIsOperationDate(final LocalDate targetDate) {
-        if (isWeekend(targetDate) || isHoliday(targetDate)) {
+        if (!isOperationDate(targetDate)) {
             throw new IllegalArgumentException("운영일이 아닙니다.");
         }
+    }
+
+    public static boolean isOperationDate(final LocalDate targetDate) {
+        return !(isWeekend(targetDate) || isHoliday(targetDate));
     }
 
     private static boolean isWeekend(final LocalDate targetDate) {
