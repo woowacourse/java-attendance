@@ -57,10 +57,8 @@ public class OutputView {
         System.out.println("[ERROR] 수정할 출석 기록이 없습니다.");
     }
 
-    public static void printAttendanceModificationResult(
-            final Attendance beforeAttendance,
-            final Attendance afterAttendance
-    ) {
+    public static void printAttendanceModificationResult(final Attendance beforeAttendance,
+                                                         final Attendance afterAttendance) {
         LocalDate attendanceDate = beforeAttendance.getDate();
         DayOfWeek attendanceDay = attendanceDate.getDayOfWeek();
         LocalTime beforeAttendanceTime = beforeAttendance.getTime();
@@ -78,7 +76,9 @@ public class OutputView {
         );
     }
 
-    public static void printMonthlyAttendances(final LocalDate today, final Crew crew, final List<Attendance> attendances) {
+    public static void printMonthlyAttendances(final LocalDate today,
+                                               final Crew crew,
+                                               final List<Attendance> attendances) {
         System.out.printf("\n이번 달 %s의 출석 기록입니다.\n", crew.getNickname());
         System.out.println();
         for (int i = today.getDayOfMonth() - 1; i > 0; i--) {
