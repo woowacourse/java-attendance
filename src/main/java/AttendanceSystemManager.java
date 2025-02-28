@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,4 +45,28 @@ public class AttendanceSystemManager {
         return AttendanceTypeCounter.count(requestedAt.toLocalDate(), historiesOfCrew);
     }
 
+
+    public Map<Crew, AttendanceTypeCount> findExpulsionCandidates(LocalDateTime requestedAt) {
+        List<Crew> registeredCrews = crews.getAll();
+
+        Map<Crew, AttendanceTypeCount> attendanceTypeCountOfExpulsionCandidates = new HashMap<>();
+
+        for (Crew crew : registeredCrews) {
+            List<AttendanceHistory> historiesOfCrew = attendanceHistories.findAllHistoriesOfCrewDateBefore(
+                    crew, requestedAt);
+
+            Map<LocalDateTime, AttendanceType> attendanceTypeCountOfDates = AttendanceTypeCounter.count(
+                    requestedAt.toLocalDate(),
+                    historiesOfCrew);
+
+            AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.createFrom(attendanceTypeCountOfDates);
+            int adjustedAbsenceCount = attendanceTypeCount.getAdjustedAbsenceCount();
+
+            if (PenaltyType.findByAbsenceCount(adjustedAbsenceCount).isAtExpulsionCandidateState()) {
+                attendanceTypeCountOfExpulsionCandidates.put(crew, attendanceTypeCount);
+            }
+        }
+
+        return attendanceTypeCountOfExpulsionCandidates;
+    }
 }

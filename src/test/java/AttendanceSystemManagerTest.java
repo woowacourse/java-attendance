@@ -255,7 +255,35 @@ public class AttendanceSystemManagerTest {
 
         }
 
+    }
 
+    @Nested
+    class TestForGetExpulsionCandidates {
+        @Test
+        @DisplayName("패널티 타입이 면담, 경고, 제적인 경우만 반환한다.")
+        void test1() {
+            // given
+            LocalDateTime requestedAt = LocalDateTime.of(2024, 12, 6, 10, 0);
+            Crew hero = new Crew("히로");
+            Crew hippo = new Crew("히포");
+            Crew moru = new Crew("모루");
+
+            AttendanceHistories attendanceHistories = new AttendanceHistories(
+                    List.of(
+                            new AttendanceHistory(hero, LocalDateTime.of(2024, 12, 3, 10, 0)),
+                            new AttendanceHistory(hippo, LocalDateTime.of(2024, 12, 4, 10, 0)),
+                            new AttendanceHistory(moru, LocalDateTime.of(2024, 12, 5, 10, 0))
+                    ));
+
+            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories,
+                    new Crews(List.of()));
+
+            // when
+            Map<Crew, AttendanceTypeCount> actual = attendanceSystemManager.findExpulsionCandidates(requestedAt);
+
+            // then
+            assertThat(actual.keySet()).doesNotContain(moru);
+        }
     }
 
 }
