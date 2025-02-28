@@ -31,7 +31,7 @@ public class AttendanceHistory {
         AttendanceRecord record = findRecord.orElseGet(() ->
                 new AttendanceRecord(targetDate, modifyTime)
         );
-        addRecord(record);
+        records.add(record);
         record.modify(modifyTime);
     }
 
