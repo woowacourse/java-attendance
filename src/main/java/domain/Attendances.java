@@ -23,6 +23,13 @@ public class Attendances {
     }
 
     public Attendance add(Attendance attendance) {
+        validateExistForAdd(attendance.getAttendanceDate());
+        dateToTime.put(attendance.getAttendanceDate(), attendance.getAttendanceTime());
+        return attendance;
+    }
+
+    public Attendance update(Attendance attendance) {
+        validateExistForUpdate(attendance.getAttendanceDate());
         dateToTime.put(attendance.getAttendanceDate(), attendance.getAttendanceTime());
         return attendance;
     }
@@ -59,5 +66,17 @@ public class Attendances {
             return findByDate(attendanceDate).decideAttendanceState(attendancePolicy);
         }
         return AttendanceStateRule.ABSENT;
+    }
+
+    private void validateExistForAdd(AttendanceDate attendanceDate) {
+        if (existsByDate(attendanceDate)) {
+            throw new IllegalArgumentException("이미 출석한 경우, 수정 기능을 이용해주세요.");
+        }
+    }
+
+    private void validateExistForUpdate(AttendanceDate attendanceDate) {
+        if (!existsByDate(attendanceDate)) {
+            throw new IllegalArgumentException("출석하지 않은 경우, 수정 기능을 이용할 수 없습니다.");
+        }
     }
 }
