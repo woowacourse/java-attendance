@@ -15,32 +15,32 @@ public class InputView {
     private final Scanner scanner = new Scanner(System.in);
 
     public String askNameToCheckAttendance() {
-        System.out.println(GUIDE_INPUT_NAME_TO_CHECK_ATTENDANCE);
+        System.out.println(GUIDE_INPUT_NAME_TO_CHECK_ATTENDANCE.getFormat());
         return getUserInput();
     }
 
     public String askTimeToCheckAttendance() {
-        System.out.println(GUIDE_INPUT_TIME_TO_CHECK_ATTENDANCE);
+        System.out.println(GUIDE_INPUT_TIME_TO_CHECK_ATTENDANCE.getFormat());
         return getUserInput();
     }
 
     public String askNameToModifyAttendance() {
-        System.out.println(GUIDE_INPUT_NAME_TO_MODIFY_ATTENDANCE);
+        System.out.println(GUIDE_INPUT_NAME_TO_MODIFY_ATTENDANCE.getFormat());
         return getUserInput();
     }
 
     public String askDateToModifyAttendance() {
-        System.out.println(GUIDE_INPUT_DATE_TO_MODIFY_ATTENDANCE);
+        System.out.println(GUIDE_INPUT_DATE_TO_MODIFY_ATTENDANCE.getFormat());
         return getUserInput();
     }
 
     public String askTimeToModifyAttendance() {
-        System.out.println(GUIDE_INPUT_TIME_TO_MODIFY_ATTENDANCE);
+        System.out.println(GUIDE_INPUT_TIME_TO_MODIFY_ATTENDANCE.getFormat());
         return getUserInput();
     }
 
     public String askNameToCheckAttendanceRecord() {
-        System.out.println(GUIDE_INPUT_NAME_TO_CHECK_ATTENDANCE_RECORD);
+        System.out.println(GUIDE_INPUT_NAME_TO_CHECK_ATTENDANCE_RECORD.getFormat());
         return getUserInput();
     }
 

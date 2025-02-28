@@ -27,7 +27,7 @@ public class AttendanceController {
     }
 
     public void start() {
-        String filePath = "src/main/java/resources/attendances.csv";
+        String filePath = "src/main/resources/attendances.csv";
         AttendanceBook attendanceBook = registration.registerCrews(filePath); // 초기화
 
         outputView.displayFunctionPrompt();
