@@ -1,7 +1,7 @@
 package domain;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +31,6 @@ class TimeTest {
         String rawTime = "11:00";
         Time time = new Time(rawTime);
 
-        Assertions.assertEquals(time.combineTimeWithDate(today), LocalDateTime.of(2024, 12, 2, 11, 0));
+        Assertions.assertEquals(time.convertTime(), LocalTime.of(11, 0));
     }
 }

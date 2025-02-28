@@ -1,7 +1,6 @@
 package domain;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.regex.Pattern;
 
 public class Time {
@@ -41,10 +40,10 @@ public class Time {
         validateMinute(rawTime);
     }
 
-    public LocalDateTime combineTimeWithDate(LocalDate today) {
+    public LocalTime convertTime() {
         String[] splittedTime = rawTime.split(":");
         int hour = Integer.parseInt(splittedTime[0]);
         int minute = Integer.parseInt(splittedTime[1]);
-        return LocalDateTime.of(today.getYear(), today.getMonth().getValue(), today.getDayOfMonth(), hour, minute);
+        return LocalTime.of(hour, minute);
     }
 }
