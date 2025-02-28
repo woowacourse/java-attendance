@@ -1,6 +1,7 @@
 package view;
 
-import common.Common;
+import common.Campus;
+import common.DateTimeFormat;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +16,8 @@ public class OutputView {
     public void printAttendanceRegisterResult(Attendance newAttendance) {
         System.out.println();
         System.out.printf("%s %s (%s)%n",
-                newAttendance.getDate().format(Common.monthDateDayFormatter),
-                newAttendance.getTime().format(Common.hourMinuteFormatter),
+                newAttendance.getDate().format(DateTimeFormat.MONTH_DATE_DAY_FORMATTER),
+                newAttendance.getTime().format(DateTimeFormat.HOUR_MINUTE_FORMATTER),
                 newAttendance.findStatus().getMeaning()
         );
     }
@@ -28,7 +29,7 @@ public class OutputView {
     public void printAttendanceModifyResult(Attendance oldAttendance, Attendance newAttendance) {
         System.out.println();
         System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n",
-                oldAttendance.getDate().format(Common.monthDateDayFormatter),
+                oldAttendance.getDate().format(DateTimeFormat.MONTH_DATE_DAY_FORMATTER),
                 getAttendanceTimeExpression(oldAttendance),
                 oldAttendance.findStatus().getMeaning(),
                 getAttendanceTimeExpression(newAttendance),
@@ -42,7 +43,7 @@ public class OutputView {
 
         for (Attendance attendance : attendanceHistories) {
             System.out.printf("%s %s (%s)%n",
-                    attendance.getDate().format(Common.monthDateDayFormatter),
+                    attendance.getDate().format(DateTimeFormat.MONTH_DATE_DAY_FORMATTER),
                     getAttendanceTimeExpression(attendance),
                     attendance.findStatus().getMeaning()
             );
@@ -66,10 +67,10 @@ public class OutputView {
     }
 
     private String getAttendanceTimeExpression(Attendance attendance) {
-        if (attendance.getTime().equals(Common.noneAttendanceTime)) {
+        if (attendance.getTime().equals(Campus.NONE_ATTENDANCE_TIME)) {
             return "--:--";
         }
-        return attendance.getTime().format(Common.hourMinuteFormatter);
+        return attendance.getTime().format(DateTimeFormat.HOUR_MINUTE_FORMATTER);
     }
 
     public void printPenaltyResult(Map<Crew, AttendanceStatistic> penaltyTargets) {

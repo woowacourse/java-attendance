@@ -1,6 +1,6 @@
 package view;
 
-import common.Common;
+import common.DateTimeFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
@@ -10,7 +10,7 @@ public class InputView {
 
     public String readFunctionChoice(LocalDate now) {
         System.out.printf("\n오늘은 %s입니다. 가능을 선택해주세요.\n",
-                now.format(Common.monthDateDayFormatter)
+                now.format(DateTimeFormat.MONTH_DATE_DAY_FORMATTER)
         );
         System.out.print("""
                 1. 출석 확인
@@ -39,6 +39,6 @@ public class InputView {
 
     public LocalTime readModifyTime() {
         System.out.println("언제로 변경하겠습니까?");
-        return LocalTime.parse(sc.nextLine(), Common.hourMinuteFormatter);
+        return LocalTime.parse(sc.nextLine(), DateTimeFormat.HOUR_MINUTE_FORMATTER);
     }
 }

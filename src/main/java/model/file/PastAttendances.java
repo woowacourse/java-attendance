@@ -1,6 +1,6 @@
 package model.file;
 
-import common.Common;
+import common.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +38,7 @@ public class PastAttendances {
 
     private static LocalDateTime parseAttendanceData(String crewAttendanceData) {
         String dateAndTime = crewAttendanceData.split(",")[1];
-        return LocalDateTime.parse(dateAndTime, Common.yearMonthDateTimeFormatter);
+        return LocalDateTime.parse(dateAndTime, DateTimeFormat.YEAR_MONTH_DATE_TIME_FORMATTER);
     }
 
     public Map<String, List<LocalDateTime>> getAttendances() {

@@ -3,6 +3,7 @@ package model.admininstration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import model.attendance.PenaltyStatus;
 import model.attendance.Attendance;
 import model.attendance.AttendanceStatistic;
@@ -24,12 +25,8 @@ public class AttendanceStatistics {
     }
 
     public Map<Crew, AttendanceStatistic> findPenaltyTargets() {
-        Map<Crew, AttendanceStatistic> penaltyTargets = new HashMap<>();
-        statistics.keySet().stream()
-                .filter(crew -> statistics.get(crew).getPenaltyStatus() != PenaltyStatus.NONE)
-                .forEach(crew -> {
-                    penaltyTargets.put(crew, statistics.get(crew));
-                });//TODO : 스트림 통합 가능? 아니면 entryset으로?
-        return penaltyTargets;
+        return statistics.entrySet().stream()
+                .filter(entrySet -> entrySet.getValue().getPenaltyStatus() != PenaltyStatus.NONE)
+                .collect(Collectors.toMap(entrySet -> entrySet.getKey(), entrySet -> entrySet.getValue()));
     }
 }
