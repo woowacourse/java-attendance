@@ -29,13 +29,6 @@ public class CrewAttendanceStorage {
         storages.put(crew, attendanceStorage);
     }
 
-    public AttendanceStorage findAttendanceStorageByCrew(String crew) {
-        if (!storages.containsKey(crew)) {
-            throw new CrewNotExistException();
-        }
-        return storages.get(crew);
-    }
-
     public void register(String crew, LocalDate date, LocalTime time) {
         AttendanceStorage storage = findAttendanceStorageByCrew(crew);
         storage.register(date, time);
@@ -44,5 +37,12 @@ public class CrewAttendanceStorage {
     public Optional<Attendance> findAttendance(String crew, LocalDate date) {
         AttendanceStorage storage = findAttendanceStorageByCrew(crew);
         return storage.findByDate(date);
+    }
+
+    private AttendanceStorage findAttendanceStorageByCrew(String crew) {
+        if (!storages.containsKey(crew)) {
+            throw new CrewNotExistException();
+        }
+        return storages.get(crew);
     }
 }

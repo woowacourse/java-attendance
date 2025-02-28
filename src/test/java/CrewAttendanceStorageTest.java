@@ -13,19 +13,16 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class CrewAttendanceStorageTest {
-    @DisplayName("새로운 크루의 출석 저장소를 생성/반환할 수 있다.")
+    @DisplayName("새로운 크루의 출석 저장소를 생성할 수 있다.")
     @Test
     void test1() {
         // given
         String crew = "밍곰";
         CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.init();
 
-        // when
-        crewAttendanceStorage.create(crew);
-
-        // then
+        // when & then
         assertDoesNotThrow(() -> {
-            crewAttendanceStorage.findAttendanceStorageByCrew(crew);
+            crewAttendanceStorage.create(crew);
         });
     }
 
@@ -51,7 +48,7 @@ public class CrewAttendanceStorageTest {
 
         // when & then
         assertThatThrownBy(() -> {
-            crewAttendanceStorage.findAttendanceStorageByCrew("누구");
+            crewAttendanceStorage.findAttendance("누구", LocalDate.of(2025, 2, 28));
         }).isInstanceOf(CrewNotExistException.class);
     }
 
