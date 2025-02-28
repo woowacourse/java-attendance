@@ -61,4 +61,25 @@ public class AttendanceStatusCheckerTest {
         assertThat(attendanceStatuses)
                 .isEqualTo(Map.of(AttendanceStatus.ATTENDANCE, 2L, AttendanceStatus.LATE, 3L, AttendanceStatus.ABSENT, 2L));
     }
+
+    @Test
+    void 지각_3회를_결석_1회로_치환하여_총_결석_횟수를_알려준다() {
+        // Given
+        List<AttendanceDateTime> attendanceDateTimes = List.of(
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(18).atTime(10, 0)), // 출석
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(19).atTime(10, 0)), // 출석
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(20).atTime(10, 6)), // 지각
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(21).atTime(10, 6)), // 지각
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(24).atTime(13, 6)), // 지각
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(25).atTime(10, 35)), // 결석
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(26).atTime(19, 35)) // 결석
+        );
+        AttendanceStatusChecker attendanceStatusChecker = new AttendanceStatusChecker();
+
+        // When
+        long absentCount = AttendanceStatusChecker.calculateAllAbsent(attendanceDateTimes);
+
+        // Then
+        assertThat(absentCount).isEqualTo(3);
+    }
 }
