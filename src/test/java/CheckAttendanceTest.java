@@ -1,7 +1,7 @@
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -39,17 +39,12 @@ public class CheckAttendanceTest {
     @DisplayName("운영 시간 예외 처리 테스트")
     public void isOperatingTimeTest() {
         //given
-        LocalTime inOperatingTime = LocalTime.of(10, 0);
-        LocalTime beforeOperatingTime = LocalTime.of(7, 0);
-        LocalTime afterOperatingTime = LocalTime.of(23, 44);
+        LocalDateTime beforeOperatingTime = LocalDateTime.of(2024, 12, 17, 7, 0);
+        LocalDateTime afterOperatingTime = LocalDateTime.of(2024, 12, 17, 23, 40);
         //when
-        Boolean isOperating = Attendance.isOperatingTime(inOperatingTime);
-        Boolean notOperating = Attendance.isOperatingTime(beforeOperatingTime);
-        Boolean notOperating2 = Attendance.isOperatingTime(afterOperatingTime);
 
-        assertThat(isOperating).isTrue();
-        assertThat(notOperating).isFalse();
-        assertThat(notOperating2).isFalse();
+        assertThatThrownBy(() -> new Attendance(beforeOperatingTime))
+                .hasMessage("운영일시간이 아닙니다.");
 
     }
 

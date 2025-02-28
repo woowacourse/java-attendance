@@ -25,7 +25,7 @@ public class Attendance {
     }
 
 
-    private AttendanceStatus checkAttendanceStatus(LocalDateTime attendanceTime) {
+    public AttendanceStatus checkAttendanceStatus(LocalDateTime attendanceTime) {
         LocalTime startTime = DEFAULT_START_TIME; // 기본 시작 시간
         if (attendanceTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             startTime = MONDAY_START_TIME; // 월요일 시작 시간 적용
