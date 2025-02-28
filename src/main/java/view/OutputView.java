@@ -29,10 +29,18 @@ public class OutputView {
         for (Attendance attendance : attendanceLog.sortedValues()) {
             System.out.println(formatAttendance(attendance));
         }
+        showCount(attendanceCount);
+        showPenalty(attendanceCount);
+    }
+
+    public void showCount(AttendanceCount attendanceCount) {
         System.out.println("\n" +
                 "출석: " + attendanceCount.attendCount() + "회\n" +
                 "지각: " + attendanceCount.lateCount() + "회\n" +
                 "결석: " + attendanceCount.absentCount() + "회\n");
+    }
+
+    public void showPenalty(AttendanceCount attendanceCount) {
         Penalty penalty = Penalty.from(attendanceCount);
         if (penalty != Penalty.NONE) {
             System.out.println(penalty.getExpression() + " 대상자입니다.\n");

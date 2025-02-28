@@ -21,7 +21,6 @@ public enum AttendanceStatus {
     public static AttendanceStatus from(Attendance attendance) {
         int endHourOfAttendance = calculateEndHourOfAttendance(attendance.getDayOfWeek());
         LocalTime checkTime = attendance.getTime();
-
         if(checkTime.isAfter(LocalTime.of(endHourOfAttendance, END_MINUTE_OF_LATE))) {
             return AttendanceStatus.ABSENT;
         }
