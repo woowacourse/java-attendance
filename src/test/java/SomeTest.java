@@ -124,7 +124,7 @@ public class SomeTest {
     @DisplayName("크루 패널티 상태 체크 테스트")
     class CrewPenaltyTest {
 
-        @DisplayName("경고 상태")
+        @DisplayName("패널티 X 상태")
         @Test
         void test1() {
             // given
@@ -133,9 +133,25 @@ public class SomeTest {
             // when
             crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 2, 8, 25)); // 출석
             crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 3, 8, 25)); // 출석
+            crew.fillEmptyDateWithAbsent(LocalDate.of(2024,12,3));
+
+            // then
+            assertThat(crew.getPenalty()).isEqualTo(Penalty.NONE);
+        }
+
+
+        @DisplayName("경고 상태")
+        @Test
+        void test2() {
+            // given
+            Crew crew = new Crew("띠용");
+
+            // when
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 2, 8, 25)); // 출석
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 3, 8, 25)); // 출석
             // 4일 결석
-            // 6일 결석
-            crew.fillEmptyDateWithAbsent(LocalDate.of(2024,12,8));
+            // 5일 결석
+            crew.fillEmptyDateWithAbsent(LocalDate.of(2024,12,5));
             // 2 결석 -> 경고
 
             // then
@@ -144,7 +160,7 @@ public class SomeTest {
 
         @DisplayName("면담 상태")
         @Test
-        void test2() {
+        void test3() {
             // given
             Crew crew = new Crew("띠용");
 
@@ -162,7 +178,7 @@ public class SomeTest {
 
         @DisplayName("제적 상태")
         @Test
-        void test3() {
+        void test4() {
             // given
             Crew crew = new Crew("띠용");
 
@@ -179,6 +195,25 @@ public class SomeTest {
             // then
             assertThat(crew.getPenalty()).isEqualTo(Penalty.EXPEL);
         }
+
+        @DisplayName("지각 3회는 결석 1회로 간주")
+        @Test
+        void test5() {
+            // given
+            Crew crew = new Crew("띠용");
+
+            // when
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 2, 13, 6)); // 지각
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 3, 10, 6)); // 지각
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 4, 10, 6)); // 지각
+            // 5일 결석
+            crew.fillEmptyDateWithAbsent(LocalDate.of(2024,12,5));
+
+            // then
+            assertThat(crew.getPenalty()).isEqualTo(Penalty.WARNING);
+            // 3 지각 1 결석 -> 경고
+        }
+
 
     }
 
