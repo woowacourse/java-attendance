@@ -48,7 +48,7 @@ public class AttendanceController {
 
     private boolean selectAttendanceMenu() {
         return ExceptionHandler.repeatUntilSuccess(() -> {
-            LocalDate runDate = LocalDate.now();
+            LocalDate runDate = generateRunDate();
             Menu menu = InputView.readAttendanceMenu(runDate);
             if (menu == Menu.QUIT) {
                 return false;
@@ -56,5 +56,14 @@ public class AttendanceController {
             menuControllerRegistry.get(menu).run(runDate);
             return true;
         });
+    }
+
+    private LocalDate generateRunDate() {
+        LocalDate todayDate = LocalDate.now();
+        LocalDate endDate = LocalDate.of(2024, 12, 31);
+        if (todayDate.isAfter(endDate)) {
+            return endDate;
+        }
+        return todayDate;
     }
 }

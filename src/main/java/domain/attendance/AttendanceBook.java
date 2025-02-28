@@ -42,10 +42,16 @@ public class AttendanceBook {
         return crewAttendanceLogs.editLog(editDate, editTime);
     }
 
-    public List<Map.Entry<Crew, AttendanceResult>> findExpulsionRiskCrews() {
+    public List<AttendanceLog> findCrewAttendanceLogHistory(String crewName) {
+        Crew crew = findCrew(crewName);
+        AttendanceLogs attendanceLogs = attendanceBook.get(crew);
+        return attendanceLogs.getAttendanceHistory();
+    }
+
+    public List<Map.Entry<Crew, AttendanceResult>> findExpulsionRiskCrews(LocalDate todayDate) {
         Map<Crew, AttendanceResult> attendanceResults = new HashMap<>();
         for (Crew crew : attendanceBook.keySet()) {
-            AttendanceResult crewAttendanceResult = calculateCrewAttendanceResult(crew.getName());
+            AttendanceResult crewAttendanceResult = calculateCrewAttendanceResult(crew.getName(), todayDate);
             addCrewAttendanceResult(attendanceResults, crew, crewAttendanceResult);
         }
         return sortAttendanceResults(attendanceResults);
@@ -64,10 +70,10 @@ public class AttendanceBook {
                 .orElseThrow(() -> new ErrorException("등록되지 않은 닉네임입니다."));
     }
 
-    private AttendanceResult calculateCrewAttendanceResult(String crewName) {
+    public AttendanceResult calculateCrewAttendanceResult(String crewName, LocalDate todayDate) {
         Crew crew = findCrew(crewName);
         AttendanceLogs crewAttendanceLogs = attendanceBook.get(crew);
-        Map<AttendanceStatus, Integer> crewAttendanceStatuses = crewAttendanceLogs.calculateLogsStatus();
+        Map<AttendanceStatus, Integer> crewAttendanceStatuses = crewAttendanceLogs.calculateLogsStatus(todayDate);
         return new AttendanceResult(crewAttendanceStatuses);
     }
 

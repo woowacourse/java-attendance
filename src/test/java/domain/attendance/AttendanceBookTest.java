@@ -41,12 +41,12 @@ public class AttendanceBookTest {
 
     private List<List<LocalDateTime>> getLogDates() {
         List<List<Integer>> crewDays = Arrays.asList(
-                List.of(4, 5), List.of(4), List.of(4, 5, 6), List.of(4, 5, 6, 7, 11, 12)
+                List.of(2), List.of(2, 3, 4, 5), List.of(2, 3, 4, 5, 6), List.of(2, 3, 4, 5, 6, 9, 10)
         );
 
         return crewDays.stream()
                 .map(days -> days.stream()
-                        .map(day -> LocalDateTime.of(2025, 2, day, 11, 0))
+                        .map(day -> LocalDateTime.of(2024, 12, day, 10, 0))
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
     }
@@ -94,7 +94,7 @@ public class AttendanceBookTest {
     void 출석_확인_기능_테스트() {
         // given
         String crewName = crews.getFirst().getName();
-        LocalDateTime attendDateTime = LocalDateTime.of(2025, 2, 13, 10, 0);
+        LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 3, 11, 0);
         // when & then
         assertTrue(attendanceBook.registerCrewAttendanceLog(crewName, attendDateTime)
                 .isAttendDate(attendDateTime.toLocalDate()));
@@ -105,7 +105,7 @@ public class AttendanceBookTest {
     void 출석_확인_예외_테스트() {
         // given
         String crewName = crews.getFirst().getName();
-        LocalDateTime attendDateTime = LocalDateTime.of(2025, 2, 4, 11, 0);
+        LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 2, 11, 0);
         // when & then
         assertThatThrownBy(() -> attendanceBook.registerCrewAttendanceLog(crewName, attendDateTime))
                 .isInstanceOf(ErrorException.class)
@@ -117,8 +117,8 @@ public class AttendanceBookTest {
     void 출석_수정_기능_테스트() {
         // given
         String crewName = crews.getFirst().getName();
-        LocalDate editDate = LocalDate.of(2025, 2, 4);
-        LocalTime editTime = LocalTime.of(10, 0);
+        LocalDate editDate = LocalDate.of(2024, 12, 2);
+        LocalTime editTime = LocalTime.of(11, 0);
         // when & then
         assertEquals(attendanceBook.editCrewAttendanceLog(crewName, editDate, editTime).getAttendanceTime(), editTime);
     }
@@ -128,8 +128,8 @@ public class AttendanceBookTest {
     void 출석_수정_예외_테스트() {
         // given
         String crewName = crews.getFirst().getName();
-        LocalDate editDate = LocalDate.of(2025, 2, 12);
-        LocalTime editTime = LocalTime.of(10, 0);
+        LocalDate editDate = LocalDate.of(2024, 12, 3);
+        LocalTime editTime = LocalTime.of(11, 0);
         // when & then
         assertThatThrownBy(() -> attendanceBook.editCrewAttendanceLog(crewName, editDate, editTime))
                 .isInstanceOf(ErrorException.class)
@@ -150,9 +150,11 @@ public class AttendanceBookTest {
     @Test
     @DisplayName("제적 위험자 확인 기능 테스트")
     void 제적_위험자_확인_기능_테스트() {
-        // given & when
-        List<String> crewNames = List.of("크루1", "크루3", "크루4");
-        List<Map.Entry<Crew, AttendanceResult>> expulsionRiskCrews = attendanceBook.findExpulsionRiskCrews();
+        // given
+        LocalDate todayDate = LocalDate.of(2024, 12, 11);
+        List<String> crewNames = List.of("크루1", "크루2", "크루3");
+        // when
+        List<Map.Entry<Crew, AttendanceResult>> expulsionRiskCrews = attendanceBook.findExpulsionRiskCrews(todayDate);
         List<String> expulsionRiskCrewNames = expulsionRiskCrews.stream()
                 .map(entry -> entry.getKey().getName())
                 .toList();
@@ -161,11 +163,13 @@ public class AttendanceBookTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"크루1,WARNING", "크루3,CONSULT", "크루4,EXPEL"})
+    @CsvSource({"크루1,EXPEL", "크루2,CONSULT", "크루3,WARNING"})
     @DisplayName("제적 위험자 상태 확인 기능 테스트")
     void 제적_위험자_상태_확인_기능_테스트(String crewName, String crewStatus) {
-        // given & when
-        List<Map.Entry<Crew, AttendanceResult>> expulsionRiskCrews = attendanceBook.findExpulsionRiskCrews();
+        // given
+        LocalDate todayDate = LocalDate.of(2024, 12, 11);
+        // when
+        List<Map.Entry<Crew, AttendanceResult>> expulsionRiskCrews = attendanceBook.findExpulsionRiskCrews(todayDate);
         AttendanceResult attendanceResult = expulsionRiskCrews.stream()
                 .filter(entry -> entry.getKey().isCrew(crewName))
                 .map(Map.Entry::getValue)  // Extract the AttendanceResult from the Map.Entry

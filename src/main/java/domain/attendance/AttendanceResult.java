@@ -1,6 +1,7 @@
 package domain.attendance;
 
 import domain.crew.CrewStatus;
+import dto.AttendanceResultDto;
 import java.util.Map;
 
 public class AttendanceResult {
@@ -19,5 +20,14 @@ public class AttendanceResult {
 
     public CrewStatus getCrewStatus() {
         return crewStatus;
+    }
+
+    public AttendanceResultDto toDto() {
+        return new AttendanceResultDto(
+                attendanceStatus.get(AttendanceStatus.ATTEND),
+                attendanceStatus.get(AttendanceStatus.LATE),
+                attendanceStatus.get(AttendanceStatus.ABSENT),
+                crewStatus.getDescription()
+        );
     }
 }
