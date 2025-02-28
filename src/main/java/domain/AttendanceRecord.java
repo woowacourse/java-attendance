@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import util.DateTimeUtil;
 
 public class AttendanceRecord extends AbstractAttendanceRecord {
+
     private static final LocalTime CAMPUS_OPEN_TIME = LocalTime.of(8, 0);
     private static final LocalTime CAMPUS_CLOSE_TIME = LocalTime.of(23, 0);
 

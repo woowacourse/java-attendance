@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 public enum RiskRank {
+
     NOT_MANAGED("", (count) -> count < 2),
     WARNING("경고", (count) -> count == 2),
     INTERVIEW("면담", (count) -> count >= 3 && count <= 5),
@@ -11,7 +12,7 @@ public enum RiskRank {
     ;
 
     private static final int ABSENT_PER_LATE = 3;
-    
+
     private final String description;
     private final Function<Integer, Boolean> condition;
 

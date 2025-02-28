@@ -5,6 +5,7 @@ import util.DateTimeUtil;
 import util.Validator;
 
 public abstract class AbstractAttendanceRecord {
+    
     private final Crew crew;
     private final LocalDate date;
     private final AttendanceStatus status;

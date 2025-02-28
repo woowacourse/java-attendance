@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import util.ExceptionHandler;
 
 public enum Command {
+    
     SAVE_ATTENDANCE_RECORD("1", AttendanceController::saveAttendanceRecord),
     MODIFY_ATTENDANCE_RECORD("2", AttendanceController::modifyAttendanceRecord),
     PRINT_MONTH_ATTENDANCE_STATISTICS("3", AttendanceController::printMonthAttendanceStatistics),

@@ -15,6 +15,7 @@ import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
+
     private final AttendanceService attendanceService;
     private boolean isRunning;
 

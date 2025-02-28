@@ -29,6 +29,7 @@ import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 
 public class AttendanceService {
+    
     private final Crews crews;
     private final AttendanceRecords attendanceRecords;
 

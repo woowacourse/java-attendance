@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceRecords {
+
     private final List<AttendanceRecord> attendanceRecords = new ArrayList<>();
 
     public AttendanceRecords() {

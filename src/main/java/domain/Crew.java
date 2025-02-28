@@ -3,6 +3,7 @@ package domain;
 import java.util.Objects;
 
 public class Crew {
+
     private final String nickname;
 
     public Crew(String nickname) {

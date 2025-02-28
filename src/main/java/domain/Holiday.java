@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public enum Holiday {
+
     CHRISTMAS("크리스마스", 12, 25),
     ;
 

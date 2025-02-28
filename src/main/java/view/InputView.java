@@ -7,6 +7,7 @@ import util.DateTimeUtil;
 import util.ExceptionHandler;
 
 public class InputView {
+
     private static final Scanner SCANNER = new Scanner(System.in);
     private static final DateTimeFormatter MENU_DATE_TIME_FORMAT
             = DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREAN);

@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 
 public class ExceptionHandler {
+    
     public static <T> T retryUntilSuccessWithReturn(Supplier<T> supplier) {
         ExecuteResult executeResult;
         do {
