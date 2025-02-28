@@ -5,7 +5,7 @@ import domain.AttendanceStatus;
 import domain.Penalty;
 import dto.AttendanceCount;
 import dto.AttendanceLog;
-import dto.ModifyResult;
+import dto.ModifyingResult;
 import dto.PenaltyInformation;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,10 +18,10 @@ public class OutputView {
         System.out.println(formatAttendance(attendance));
     }
 
-    public void showModifyingResult(ModifyResult modifyResult) {
-        System.out.println(formatAttendance(modifyResult.originalAttendance()) + " -> " +
-                formatTime(modifyResult.modifiedAttendance().getTime()) + " " +
-                formatStatus(modifyResult.modifiedAttendance()) + " 수정 완료!"
+    public void showModifyingResult(ModifyingResult modifyingResult) {
+        System.out.println(formatAttendance(modifyingResult.originalAttendance()) + " -> " +
+                formatTime(modifyingResult.modifiedAttendance().getTime()) + " " +
+                formatStatus(modifyingResult.modifiedAttendance()) + " 수정 완료!"
         );
     }
 
@@ -40,13 +40,14 @@ public class OutputView {
         }
     }
 
-    public void showPenaltyCrew(PenaltyInformation penaltyInformation) {
+    public void showPenaltyCrews(PenaltyInformation penaltyInformation) {
         System.out.println("제적 위험자 조회 결과");
         for (AttendanceCount attendanceCount : penaltyInformation.sortedValue()) {
+            if(Penalty.from(attendanceCount) == Penalty.NONE) continue;
             System.out.println("- " + attendanceCount.crewName().value() + ": " +
-                            "결석: " + attendanceCount.absentCount() + "회, " +
-                            "지각: " + attendanceCount.lateCount() + "회 " +
-                            "(" + Penalty.from(attendanceCount) + ")"
+                            "결석 " + attendanceCount.absentCount() + "회, " +
+                            "지각 " + attendanceCount.lateCount() + "회 " +
+                            "(" + Penalty.from(attendanceCount).getExpression() + ")"
             );
         }
     }
@@ -71,6 +72,6 @@ public class OutputView {
     }
 
     private String formatStatus(Attendance attendance) {
-        return "(" + AttendanceStatus.from(attendance) + ")";
+        return "(" + AttendanceStatus.from(attendance).getExpression() + ")";
     }
 }

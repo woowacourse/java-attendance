@@ -3,7 +3,7 @@ package domain;
 import static util.Constants.*;
 
 import dto.AttendanceLog;
-import dto.ModifyResult;
+import dto.ModifyingResult;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -47,11 +47,11 @@ public class AttendanceRecord {
         value.add(attendance);
     }
 
-    public ModifyResult modify(Attendance newAttendance) {
+    public ModifyingResult modify(Attendance newAttendance) {
         Attendance originalAttendance = findSameDateAttendanceBy(newAttendance);
         value.remove(originalAttendance);
         value.add(newAttendance);
-        return new ModifyResult(originalAttendance, newAttendance);
+        return new ModifyingResult(originalAttendance, newAttendance);
     }
 
     @Override

@@ -5,7 +5,7 @@ import static util.Constants.ERROR_HEADER;
 import dto.AttendanceCount;
 import dto.AttendanceLog;
 import dto.InitialInformation;
-import dto.ModifyResult;
+import dto.ModifyingResult;
 import dto.PenaltyInformation;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -34,11 +34,11 @@ public class AttendanceBook {
         return attendanceRecord;
     }
 
-    public ModifyResult modify(CrewName crewName, Attendance newAttendance) {
+    public ModifyingResult modify(CrewName crewName, Attendance newAttendance) {
         return findAttendanceRecordBy(crewName).modify(newAttendance);
     }
 
-    public AttendanceLog findAttendanceHistoryUntil(CrewName crewName, LocalDate yesterday) {
+    public AttendanceLog findAttendanceLogUntil(CrewName crewName, LocalDate yesterday) {
         return findAttendanceRecordBy(crewName).findAllSortedUntil(yesterday);
     }
 
@@ -53,7 +53,7 @@ public class AttendanceBook {
         );
     }
 
-    public PenaltyInformation findPenaltyCrewSorted(LocalDate yesterday) {
+    public PenaltyInformation findPenaltyCrewsSortedUntil(LocalDate yesterday) {
         List<AttendanceCount> penaltyInformation = new ArrayList<>();
         for (CrewName crewName : value.keySet()) {
             penaltyInformation.add(findCountUntil(crewName, yesterday));
