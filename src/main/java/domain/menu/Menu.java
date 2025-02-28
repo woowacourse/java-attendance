@@ -6,7 +6,7 @@ import java.util.Arrays;
 public enum Menu {
 
     ATTENDANCE_REGISTER("1", "출석 확인"),
-    ATTENDANCE_EDIT("2", "출석 확인"),
+    ATTENDANCE_EDIT("2", "출석 수정"),
     CREW_ATTENDANCE("3", "크루별 출석 기록 확인"),
     EXPULSION_RISK("4", "제적 위험자 확인"),
     QUIT("Q", "종료");

@@ -42,22 +42,32 @@ public class AttendanceLogs {
         return registerLog(LocalDateTime.of(editDate, editTime));
     }
 
-    public Map<AttendanceStatus, Integer> calculateLogsStatus(LocalDate todayDate) {
-        Map<AttendanceStatus, Integer> attendanceLogsStatus = new HashMap<>();
-        initializeAttendanceLogsStatus(attendanceLogsStatus);
-        calculateAttendanceLogsStatus(attendanceLogsStatus);
-        calculateUnattendCount(attendanceLogsStatus, todayDate);
-        return attendanceLogsStatus;
+    public Map<AttendanceStatus, Integer> calculateCrewAttendanceStatus(LocalDate todayDate) {
+        Map<AttendanceStatus, Integer> attendanceHistoryStatus = new HashMap<>();
+        initializeAttendanceHistoryStatus(attendanceHistoryStatus);
+        calculateAttendanceHistoryStatus(attendanceHistoryStatus, todayDate);
+        calculateUnattendCount(attendanceHistoryStatus, todayDate);
+        return attendanceHistoryStatus;
     }
 
     public CrewStatus calculateCrewStatus(LocalDate todayDate) {
-        Map<AttendanceStatus, Integer> attendanceLogsStatus = calculateLogsStatus(todayDate);
+        Map<AttendanceStatus, Integer> attendanceLogsStatus = calculateCrewAttendanceStatus(todayDate);
         return CrewStatus.findStatus(attendanceLogsStatus.get(AttendanceStatus.LATE),
                 attendanceLogsStatus.get(AttendanceStatus.ABSENT));
     }
 
-    public List<AttendanceLog> getAttendanceHistory() {
-        return attendanceLogs;
+    public List<AttendanceLog> getAttendanceHistory(LocalDate todayDate) {
+        List<AttendanceLog> attendanceHistory = new ArrayList<>();
+        for (AttendanceLog attendanceLog : attendanceLogs) {
+            addAttendanceHistory(attendanceHistory, attendanceLog, todayDate);
+        }
+        return attendanceHistory;
+    }
+
+    private void addAttendanceHistory(List<AttendanceLog> attendanceHistory, AttendanceLog attendanceLog, LocalDate todayDate) {
+        if (attendanceLog.getAttendanceDate().isBefore(todayDate)) {
+            attendanceHistory.add(attendanceLog);
+        }
     }
 
     private boolean isAttendanceLog(LocalDate attendDate) {
@@ -65,26 +75,27 @@ public class AttendanceLogs {
                 .anyMatch(attendanceLog -> attendanceLog.isAttendDate(attendDate));
     }
 
-    private void initializeAttendanceLogsStatus(Map<AttendanceStatus, Integer> attendanceLogsStatus) {
+    private void initializeAttendanceHistoryStatus(Map<AttendanceStatus, Integer> attendanceHistoryStatus) {
         for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
-            attendanceLogsStatus.put(attendanceStatus, 0);
+            attendanceHistoryStatus.put(attendanceStatus, 0);
         }
     }
 
-    private void calculateAttendanceLogsStatus(Map<AttendanceStatus, Integer> attendanceLogsStatus) {
-        for (AttendanceLog attendanceLog : attendanceLogs) {
+    private void calculateAttendanceHistoryStatus(Map<AttendanceStatus, Integer> attendanceHistoryStatus, LocalDate todayDate) {
+        List<AttendanceLog> crewAttendanceLogs = getAttendanceHistory(todayDate);
+        for (AttendanceLog attendanceLog : crewAttendanceLogs) {
             AttendanceStatus attendanceStatus = attendanceLog.getAttendanceStatus();
-            attendanceLogsStatus.put(attendanceStatus, attendanceLogsStatus.get(attendanceStatus) + 1);
+            attendanceHistoryStatus.put(attendanceStatus, attendanceHistoryStatus.get(attendanceStatus) + 1);
         }
     }
 
-    private void calculateUnattendCount(Map<AttendanceStatus, Integer> attendanceLogsStatus, LocalDate todayDate) {
+    private void calculateUnattendCount(Map<AttendanceStatus, Integer> attendanceHistoryStatus, LocalDate todayDate) {
         LocalDate startDate = LocalDate.of(2024, 12, 1);
         int unattendCount = 0;
         for (LocalDate logDate = startDate; logDate.isBefore(todayDate); logDate = logDate.plusDays(1)) {
             unattendCount = countUnattendDate(logDate, unattendCount);
         }
-        attendanceLogsStatus.put(AttendanceStatus.ABSENT, attendanceLogsStatus.get(AttendanceStatus.ABSENT) + unattendCount);
+        attendanceHistoryStatus.put(AttendanceStatus.ABSENT, attendanceHistoryStatus.get(AttendanceStatus.ABSENT) + unattendCount);
     }
 
     private int countUnattendDate(LocalDate logDate, int unattendCount) {

@@ -42,10 +42,10 @@ public class AttendanceBook {
         return crewAttendanceLogs.editLog(editDate, editTime);
     }
 
-    public List<AttendanceLog> findCrewAttendanceLogHistory(String crewName) {
+    public List<AttendanceLog> findCrewAttendanceLogHistory(String crewName, LocalDate todayDate) {
         Crew crew = findCrew(crewName);
         AttendanceLogs attendanceLogs = attendanceBook.get(crew);
-        return attendanceLogs.getAttendanceHistory();
+        return attendanceLogs.getAttendanceHistory(todayDate);
     }
 
     public List<Map.Entry<Crew, AttendanceResult>> findExpulsionRiskCrews(LocalDate todayDate) {
@@ -73,7 +73,7 @@ public class AttendanceBook {
     public AttendanceResult calculateCrewAttendanceResult(String crewName, LocalDate todayDate) {
         Crew crew = findCrew(crewName);
         AttendanceLogs crewAttendanceLogs = attendanceBook.get(crew);
-        Map<AttendanceStatus, Integer> crewAttendanceStatuses = crewAttendanceLogs.calculateLogsStatus(todayDate);
+        Map<AttendanceStatus, Integer> crewAttendanceStatuses = crewAttendanceLogs.calculateCrewAttendanceStatus(todayDate);
         return new AttendanceResult(crewAttendanceStatuses);
     }
 

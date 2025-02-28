@@ -23,7 +23,7 @@ public class CrewAttendanceController implements AttendanceMenuController {
         String crewName = InputView.readCrewAttendanceCrewName();
         attendanceBook.findCrew(crewName);
 
-        List<AttendanceLog> attendanceLogHistory = attendanceBook.findCrewAttendanceLogHistory(crewName);
+        List<AttendanceLog> attendanceLogHistory = attendanceBook.findCrewAttendanceLogHistory(crewName, runDate);
         List<AttendanceLogDto> attendanceLogDtos = attendanceLogHistory.stream()
                 .map(AttendanceLog::toDto)
                 .toList();

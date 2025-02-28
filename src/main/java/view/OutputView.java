@@ -15,7 +15,7 @@ import util.Convertor;
 public class OutputView {
 
     public static void printErrorMessage(String message) {
-        System.out.println(message);
+        System.out.println("\n" + message + "\n");
     }
 
     public static void printAttendanceRegisterLog(AttendanceLogDto attendanceLogDto) {
@@ -63,8 +63,7 @@ public class OutputView {
     private static String formatCrewAttendanceHeader(String crewName) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(System.lineSeparator())
-                .append(String.format("이번 달 %s의 출석 기록입니다.", crewName))
-                .append(System.lineSeparator());
+                .append(String.format("이번 달 %s의 출석 기록입니다.", crewName));
         return stringBuilder.toString();
     }
 
