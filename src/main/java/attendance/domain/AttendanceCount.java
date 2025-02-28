@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class AttendanceCount {
+public class AttendanceCount implements Comparable<AttendanceCount> {
 
     private static final AttendanceDate ATTENDANCE_START_DATE = new AttendanceDate(LocalDate.of(2024, 12, 2));
 
@@ -52,6 +52,11 @@ public class AttendanceCount {
                 attendances.getOrDefault(AttendanceStatus.LATE, 0),
                 attendances.getOrDefault(AttendanceStatus.ABSENT, 0)
         );
+    }
+
+    @Override
+    public int compareTo(AttendanceCount o) {
+        return 0;
     }
 
     @Override

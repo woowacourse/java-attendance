@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -10,7 +10,7 @@ public class CrewAttendances {
     private final List<CrewAttendance> crewAttendances;
 
     public CrewAttendances(CrewAttendance... crewAttendances) {
-        this.crewAttendances = Arrays.stream(crewAttendances).toList();
+        this.crewAttendances = new ArrayList<>(List.of(crewAttendances));
     }
 
     public CrewAttendances(List<CrewAttendance> crewAttendances) {

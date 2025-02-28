@@ -48,4 +48,23 @@ public class AttendanceCountTest {
         //then
         Assertions.assertThat(warningLevel).isEqualTo(WarningLevel.WEEDING);
     }
+
+    @Test
+    void 출결_상태에_따라_비교를_할_수_있다() {
+        //given
+        AttendanceCount attendanceCount1 = new AttendanceCount(Map.of(
+                AttendanceStatus.ABSENT, 4,
+                AttendanceStatus.LATE, 6
+        ));
+        AttendanceCount attendanceCount2 = new AttendanceCount(Map.of(
+                AttendanceStatus.ABSENT, 3,
+                AttendanceStatus.LATE, 6
+        ));
+
+        //when
+        int result = attendanceCount1.compareTo(attendanceCount2);
+
+        //then
+        assertThat(result).isEqualTo(-1);
+    }
 }

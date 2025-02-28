@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class AttendanceDate {
+
     private final LocalDate attendanceDate;
 
     public AttendanceDate(LocalDate attendanceDate) {
