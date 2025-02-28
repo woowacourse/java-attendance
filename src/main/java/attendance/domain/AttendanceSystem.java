@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.List;
+import java.util.Set;
 
 public class AttendanceSystem {
 
@@ -66,7 +67,7 @@ public class AttendanceSystem {
     }
 
     public List<AttendanceState> findRiskCrew(LocalDate today) {
-        List<String> allNicknames = crewStorage.findAllNicknames();
+        Set<String> allNicknames = crewStorage.findAllNicknames();
         return allNicknames.stream()
                 .map(nickname -> calculateAttendanceStateInMonth(nickname, today))
                 .filter(state -> state.getRiskTyp() != RiskType.NONE)

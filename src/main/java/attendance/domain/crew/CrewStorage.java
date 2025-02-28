@@ -2,22 +2,22 @@ package attendance.domain.crew;
 
 import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
-import java.util.HashSet;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class CrewStorage {
 
-    private final Set<Crew> crews = new HashSet<>();
-    
+    private final Map<String, Crew> crews = new HashMap<>();
+
     public void add(String nickname) {
         if (checkIsNotContained(nickname)) {
-            crews.add(new Crew(nickname));
+            crews.put(nickname, new Crew(nickname));
         }
     }
 
-    public List<String> findAllNicknames() {
-        return crews.stream().map(Crew::getNickname).toList();
+    public Set<String> findAllNicknames() {
+        return crews.keySet();
     }
 
     public void validateIsNotContained(String nickname) {
@@ -27,6 +27,6 @@ public class CrewStorage {
     }
 
     public boolean checkIsNotContained(String nickname) {
-        return crews.stream().noneMatch(crew -> crew.isSameNickname(nickname));
+        return !crews.containsKey(nickname);
     }
 }

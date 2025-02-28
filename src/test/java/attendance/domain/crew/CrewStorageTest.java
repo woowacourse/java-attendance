@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ class CrewStorageTest {
         List<String> nicknames = List.of("쿠키", "빙봉", "이든", "인트");
         nicknames.forEach(nickname -> crewStorage.add(nickname));
 
-        List<String> savedCrewNicknames = crewStorage.findAllNicknames();
+        Set<String> savedCrewNicknames = crewStorage.findAllNicknames();
         assertThat(savedCrewNicknames).containsExactlyInAnyOrderElementsOf(nicknames);
     }
 
