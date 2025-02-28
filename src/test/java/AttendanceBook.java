@@ -28,6 +28,6 @@ public class AttendanceBook {
         return crewsAttendanceRecords.stream()
                 .filter(attendance -> attendance.equals(new Attendance(nickname, date, time)))
                 .findAny()
-                .get();
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
