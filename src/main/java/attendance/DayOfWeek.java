@@ -28,6 +28,9 @@ public enum DayOfWeek {
     }
 
     public String decideAttendanceType(LocalTime attendanceTime) {
+        if (attendanceTime.isBefore(LocalTime.of(8, 0))) {
+            throw new IllegalArgumentException();
+        }
         if (attendanceTime.getHour() - attendanceStartingTime.getHour() > 0) {
             return "결석";
         }

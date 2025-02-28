@@ -2,6 +2,8 @@ package attendance;
 
 import static attendance.DayOfWeek.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -82,5 +84,12 @@ public class DayOfWeekTest {
         LocalTime attendanceTime = LocalTime.of(13, 30);
         String attendanceType = MONDAY.decideAttendanceType(attendanceTime);
         assertThat(attendanceType).isEqualTo("결석");
+    }
+
+    @DisplayName("캠퍼스 운영시간이 아닌 07:00에 출석 할 경우, 예외가 발생해야 한다.")
+    @Test
+    void given_attendance_time_07_then_throw_exception() {
+        LocalTime attendanceTime = LocalTime.of(7, 0);
+        assertThatThrownBy(() -> MONDAY.decideAttendanceType(attendanceTime));
     }
 }
