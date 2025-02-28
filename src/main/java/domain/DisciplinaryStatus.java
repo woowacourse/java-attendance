@@ -42,4 +42,8 @@ public enum DisciplinaryStatus {
     private static int calculateAdjustedAbsenceCount(final int inputAbsenceCount, final int latenessCount) {
         return (latenessCount / LATENESS_TO_ABSENCE_RATIO) + inputAbsenceCount;
     }
+
+    public int getAbsenceCount() {
+        return absenceCount;
+    }
 }
