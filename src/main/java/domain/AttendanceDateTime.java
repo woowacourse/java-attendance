@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class AttendanceDateTime {
 
@@ -53,5 +54,21 @@ public class AttendanceDateTime {
 
     public static AttendanceDateTime parse(String attendedTime) {
         return new AttendanceDateTime(LocalDateTime.parse(attendedTime));
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof AttendanceDateTime that)) {
+            return false;
+        }
+
+        return Objects.equals(date, that.date) && Objects.equals(time, that.time);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(date);
+        result = 31 * result + Objects.hashCode(time);
+        return result;
     }
 }

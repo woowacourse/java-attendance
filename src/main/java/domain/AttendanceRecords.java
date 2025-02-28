@@ -3,6 +3,9 @@ package domain;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import util.DateUtils;
 
 public class AttendanceRecords {
 
@@ -27,5 +30,29 @@ public class AttendanceRecords {
 
     public List<AttendanceDateTime> getRecords() {
         return new ArrayList<>(records);
+    }
+
+    public List<AttendanceDateTime> getAbsenceDatesBetween(LocalDate fromInclusive, LocalDate toInclusive) {
+        int countToConsider = toInclusive.getDayOfMonth() - fromInclusive.getDayOfMonth() + 1;
+        List<AttendanceDateTime> missingDates = collectMissingDates(fromInclusive, countToConsider);
+
+        return concat(records, missingDates);
+    }
+
+    private List<AttendanceDateTime> collectMissingDates(LocalDate fromInclusive, int count) {
+        List<LocalDate> presentDates = records.stream()
+            .map(AttendanceDateTime::getDate)
+            .toList();
+        return Stream.iterate(fromInclusive, date -> date.plusDays(1))
+            .limit(count)
+            .filter(DateUtils::isWorkingDay)
+            .filter(date -> !presentDates.contains(date))
+            .map(AttendanceDateTime::ofAbsence)
+            .toList();
+    }
+
+    private List<AttendanceDateTime> concat(List<AttendanceDateTime> l1, List<AttendanceDateTime> l2) {
+        return Stream.concat(l1.stream(), l2.stream())
+            .collect(Collectors.toList());
     }
 }
