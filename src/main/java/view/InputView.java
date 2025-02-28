@@ -11,6 +11,16 @@ public class InputView {
         this.scanner = scanner;
     }
 
+    public String readMenuSelection() {
+        System.out.println("오늘은 12월 13일 금요일입니다. 기능을 선택해 주세요." + System.lineSeparator() +
+                "1. 출석 확인" + System.lineSeparator() +
+                "2. 출석 수정" + System.lineSeparator() +
+                "3. 크루별 출석 기록 확인" + System.lineSeparator() +
+                "4. 제적 위험자 확인" + System.lineSeparator() +
+                "Q. 종료");
+        return scanner.nextLine();
+    }
+
     public String readCheckInNickname() {
         System.out.println("닉네임을 입력해 주세요." + System.lineSeparator());
         return scanner.nextLine();

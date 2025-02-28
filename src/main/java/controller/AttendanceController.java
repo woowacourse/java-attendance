@@ -8,4 +8,8 @@ public class AttendanceController {
     public AttendanceController(InputView inputView) {
         this.inputView = inputView;
     }
+
+    public void run() {
+        String menuSelection = inputView.readMenuSelection();
+    }
 }
