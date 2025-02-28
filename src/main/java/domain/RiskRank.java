@@ -11,7 +11,7 @@ public enum RiskRank {
     ;
 
     private final String description;
-    private Function<Integer, Boolean> condition;
+    private final Function<Integer, Boolean> condition;
 
     RiskRank(String description, Function<Integer, Boolean> condition) {
         this.description = description;

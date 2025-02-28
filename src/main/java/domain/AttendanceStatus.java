@@ -11,8 +11,8 @@ public enum AttendanceStatus {
     ABSENT("결석", (elapsedMinutes) -> elapsedMinutes > 30),
     ;
 
-    private String description;
-    private Function<Integer, Boolean> condition;
+    private final String description;
+    private final Function<Integer, Boolean> condition;
 
     AttendanceStatus(String description, Function<Integer, Boolean> condition) {
         this.description = description;
