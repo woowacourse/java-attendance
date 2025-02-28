@@ -143,4 +143,22 @@ public class AttendanceBookTest {
             )
         );
     }
+
+    @Test
+    void 날짜범위_내_크루의_출석상태_별_개수를_헤아릴_수_있다() {
+        book.attend(crew, AttendanceDateTime.of(2025, 2, 17, 13, 0));
+        book.attend(crew, AttendanceDateTime.of(2025, 2, 18, 10, 10));
+        book.attend(crew, AttendanceDateTime.of(2025, 2, 19, 10, 31));
+
+        var fromMonday = LocalDate.of(2025, 2, 17);
+        var toFriday = LocalDate.of(2025, 2, 21);
+
+        var map = book.countAttendanceStatuses(crew, fromMonday, toFriday);
+
+        assertAll(
+            () -> assertThat(map.get(AttendanceStatus.ON_TIME)).isEqualTo(1),
+            () -> assertThat(map.get(AttendanceStatus.LATE)).isEqualTo(1),
+            () -> assertThat(map.get(AttendanceStatus.ABSENCE)).isEqualTo(3)
+        );
+    }
 }

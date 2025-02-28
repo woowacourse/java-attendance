@@ -1,10 +1,15 @@
 package domain;
 
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class AttendanceBook {
 
@@ -27,7 +32,8 @@ public class AttendanceBook {
         return crewRecords.getOrDefault(crew, new AttendanceRecords());
     }
 
-    public List<AttendanceDateTime> listAttendancesOfCrew(Crew crew, LocalDate fromInclusive, LocalDate endInclusive) {
+    public List<AttendanceDateTime> listAttendancesOfCrew(Crew crew, LocalDate fromInclusive,
+        LocalDate endInclusive) {
         AttendanceRecords records = crewRecords.getOrDefault(crew, new AttendanceRecords());
         return records.getRecordsWithMissingDates(fromInclusive, endInclusive);
     }
@@ -43,5 +49,14 @@ public class AttendanceBook {
         AttendanceRecords records = getRecordsOfCrew(crew);
         records.removeIfAttendedOnDate(dateToModify);
         records.add(newRecord);
+    }
+
+    public Map<AttendanceStatus, Integer> countAttendanceStatuses(
+        Crew crew, LocalDate fromInclusive, LocalDate endInclusive) {
+        return listAttendancesOfCrew(crew, fromInclusive, endInclusive)
+            .stream()
+            .map(AttendanceDateTime::getAttendanceStatus)
+            .collect(groupingBy(Function.identity(),
+                collectingAndThen(counting(), Long::intValue)));
     }
 }
