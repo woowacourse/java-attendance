@@ -1,13 +1,17 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import attendance.model.AttendanceBook;
+import attendance.model.AttendanceStatus;
 import attendance.model.AttendanceTime;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceBookTest {
 
@@ -93,8 +97,38 @@ public class AttendanceBookTest {
                 .isEqualTo(LocalDate.now().getDayOfMonth() - getWeekendCount());
     }
 
+    @ParameterizedTest
+    @MethodSource("nameAndAttendanceStatus")
+    void 입력_받은_크루의_출석_상태에_대한_횟수를_계산한다(final String name, final AttendanceStatus attendanceStatus,
+                                      final int expectedResult) {
+
+        // given
+        final AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 5));
+        attendanceBook.add("이름2", new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 6));
+        attendanceBook.add("이름2", new AttendanceTime(LocalDate.of(2025, 2, 26), 10, 30));
+        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 31));
+        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 26), 10, 31));
+        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 31));
+
+        // when
+        final int result = attendanceBook.getAttendanceStatusCount(name, attendanceStatus);
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
+    public static Stream<Arguments> nameAndAttendanceStatus() {
+
+        return Stream.of(
+                Arguments.of("이름1", AttendanceStatus.ATTEND, 1),
+                Arguments.of("이름2", AttendanceStatus.LATE, 2),
+                Arguments.of("이름3", AttendanceStatus.ABSENT, 3)
+        );
+    }
+
     private int getWeekendCount() {
-        
+
         int count = 0;
         LocalDate now = LocalDate.now();
         for (int day = 1; day <= now.getDayOfMonth(); day++) {
