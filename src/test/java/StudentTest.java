@@ -17,7 +17,7 @@ public class StudentTest {
         LocalTime expect = LocalTime.of(10,59);
 
         student.registerAttendanceRecord(todayDate, attendanceTime);
-        LocalTime result = student.attendanceTimeRecords.get(todayDate);
+        LocalTime result = student.attendanceTimeRecord.attendanceTimeRecords.get(todayDate);
         Assertions.assertEquals(expect, result);
     }
 
@@ -29,7 +29,7 @@ public class StudentTest {
         AttendanceStatus expect = AttendanceStatus.ABSENT;
 
         student.registerAttendanceRecord(todayDate, attendanceTime);
-        AttendanceStatus result = student.attendanceStatusRecords.get(todayDate);
+        AttendanceStatus result = student.attendanceStatusRecord.attendanceStatusRecords.get(todayDate);
         Assertions.assertEquals(expect, result);
     }
 
@@ -46,7 +46,7 @@ public class StudentTest {
         //when
         student.modifyAttendanceRecord(modifyDate, modifyTime);
         //then
-        LocalTime result = student.attendanceTimeRecords.get(recordData);
+        LocalTime result = student.attendanceTimeRecord.attendanceTimeRecords.get(recordData);
         Assertions.assertEquals(expect, result);
     }
 
@@ -63,7 +63,7 @@ public class StudentTest {
         //when
         student.modifyAttendanceRecord(modifyDate, modifyTime);
         //then
-        AttendanceStatus result = student.attendanceStatusRecords.get(recordData);
+        AttendanceStatus result = student.attendanceStatusRecord.attendanceStatusRecords.get(recordData);
         Assertions.assertEquals(expect, result);
     }
 
@@ -78,7 +78,7 @@ public class StudentTest {
         student.registerAttendanceRecord(todayDate1, attendanceTime);
         student.registerAttendanceRecord(todayDate2, attendanceTime);
         student.updateAttendanceCount();
-        long result = student.attendanceStatusCount.get(AttendanceStatus.ATTENDANCE);
+        long result = student.attendanceStatusCount.attendanceStatusCount.get(AttendanceStatus.ATTENDANCE);
 
         Assertions.assertEquals(expect, result);
     }
@@ -95,7 +95,7 @@ public class StudentTest {
         student.registerAttendanceRecord(todayDate1, attendanceTime1);
         student.registerAttendanceRecord(todayDate2, attendanceTime2);
         student.updateAttendanceCount();
-        long result = student.attendanceStatusCount.get(AttendanceStatus.LATE);
+        long result = student.attendanceStatusCount.attendanceStatusCount.get(AttendanceStatus.LATE);
 
         Assertions.assertEquals(expect, result);
     }
@@ -145,7 +145,7 @@ public class StudentTest {
         LocalDate today = LocalDate.of(2024, 12, 13);
         AttendanceStatus expect = AttendanceStatus.ABSENT;
         student.nonAttendanceRecordStatusIsAbsent(today);
-        AttendanceStatus result = student.attendanceStatusRecords.get(today);
+        AttendanceStatus result = student.attendanceStatusRecord.attendanceStatusRecords.get(today);
         Assertions.assertEquals(expect, result);
     }
 
