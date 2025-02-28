@@ -37,4 +37,11 @@ public class CrewAttendanceManager {
         List<Attendance> excludingToday = attendances.getAttendancesBefore(LocalDate.now());
         return AttendanceRecord.fromNicknameAndAttendances(nickname, excludingToday);
     }
+
+    public AttendanceRecords getAttendanceRecords() {
+        List<AttendanceRecord> records = crewAttendance.keySet().stream()
+                .map(this::getAttendanceRecord)
+                .toList();
+        return new AttendanceRecords(records);
+    }
 }
