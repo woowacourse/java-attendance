@@ -23,10 +23,9 @@ public class AttendanceRecordTest {
     public void 패널티_없는_상태_반환_결석_1회() {
         //given
         LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
-
+        List<AttendanceTime> attendanceTimes = List.of(new AttendanceTime(attendanceTimeOne));
         //when
-        AttendanceRecord attendanceRecord = new AttendanceRecord();
-        attendanceRecord.addAttendanceTime(attendanceTimeOne);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceTimes);
 
         //then
         Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.NONE);
@@ -36,10 +35,9 @@ public class AttendanceRecordTest {
     public void 패널티_없는_상태_반환_결석_0회() {
         //given
         LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 12, 31);
-
+        List<AttendanceTime> attendanceTimes = List.of(new AttendanceTime(attendanceTimeOne));
         //when
-        AttendanceRecord attendanceRecord = new AttendanceRecord();
-        attendanceRecord.addAttendanceTime(attendanceTimeOne);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceTimes);
 
         //then
         Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.NONE);
@@ -50,11 +48,10 @@ public class AttendanceRecordTest {
         //given
         LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
         LocalDateTime attendanceTimeTwo = LocalDateTime.of(2025, 2, 25, 10, 31);
-
+        List<AttendanceTime> attendanceTimes = List.of(new AttendanceTime(attendanceTimeOne),
+                new AttendanceTime(attendanceTimeTwo));
         //when
-        AttendanceRecord attendanceRecord = new AttendanceRecord();
-        attendanceRecord.addAttendanceTime(attendanceTimeOne);
-        attendanceRecord.addAttendanceTime(attendanceTimeTwo);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceTimes);
 
         //then
         Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.WARNING);
@@ -66,11 +63,14 @@ public class AttendanceRecordTest {
         LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
         LocalDateTime attendanceTimeTwo = LocalDateTime.of(2025, 2, 25, 10, 31);
         LocalDateTime attendanceTimeThree = LocalDateTime.of(2025, 2, 26, 10, 31);
+
+        List<AttendanceTime> attendanceTimes = List.of(
+                new AttendanceTime(attendanceTimeOne),
+                new AttendanceTime(attendanceTimeTwo),
+                new AttendanceTime(attendanceTimeThree)
+        );
         //when
-        AttendanceRecord attendanceRecord = new AttendanceRecord();
-        attendanceRecord.addAttendanceTime(attendanceTimeOne);
-        attendanceRecord.addAttendanceTime(attendanceTimeTwo);
-        attendanceRecord.addAttendanceTime(attendanceTimeThree);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceTimes);
 
         //then
         Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.COUNSELING);
@@ -86,14 +86,17 @@ public class AttendanceRecordTest {
         LocalDateTime attendanceTimeFive = LocalDateTime.of(2025, 2, 28, 13, 31);
         LocalDateTime attendanceTimeSix = LocalDateTime.of(2025, 3, 1, 13, 31);
 
+        List<AttendanceTime> attendanceTimes = List.of(
+                new AttendanceTime(attendanceTimeOne),
+                new AttendanceTime(attendanceTimeTwo),
+                new AttendanceTime(attendanceTimeThree),
+                new AttendanceTime(attendanceTimeFour),
+                new AttendanceTime(attendanceTimeFive),
+                new AttendanceTime(attendanceTimeSix)
+        );
+
         //when
-        AttendanceRecord attendanceRecord = new AttendanceRecord();
-        attendanceRecord.addAttendanceTime(attendanceTimeOne);
-        attendanceRecord.addAttendanceTime(attendanceTimeTwo);
-        attendanceRecord.addAttendanceTime(attendanceTimeThree);
-        attendanceRecord.addAttendanceTime(attendanceTimeFour);
-        attendanceRecord.addAttendanceTime(attendanceTimeFive);
-        attendanceRecord.addAttendanceTime(attendanceTimeSix);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceTimes);
 
         //then
         Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.EXPULSION);
