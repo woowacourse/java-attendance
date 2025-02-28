@@ -27,9 +27,9 @@ public class AttendanceStorage {
                 .findFirst();
     }
 
-    public void modify(LocalDate date, LocalTime modifyTime) {
+    public boolean modify(LocalDate date, LocalTime modifyTime) {
         Optional<Attendance> attendance = findByDate(date);
         attendance.ifPresent(attendances::remove);
-        attendances.add(new Attendance(date, modifyTime));
+        return attendances.add(new Attendance(date, modifyTime));
     }
 }

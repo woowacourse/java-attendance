@@ -109,7 +109,7 @@ public class CrewAttendanceStorageTest {
         crewAttendanceStorage.register(crew, date, time);
 
         // when
-        crewAttendanceStorage.modify(crew, date, time);
+        crewAttendanceStorage.modify(crew, date, modifiedTime);
         Optional<Attendance> attendance = crewAttendanceStorage.findAttendance(crew, date);
 
         // then

@@ -29,6 +29,11 @@ public class CrewAttendanceStorage {
         storages.put(crew, attendanceStorage);
     }
 
+    public boolean modify(String crew, LocalDate date, LocalTime time) {
+        AttendanceStorage storage = findAttendanceStorageByCrew(crew);
+        return storage.modify(date, time);
+    }
+
     public boolean register(String crew, LocalDate date, LocalTime time) {
         AttendanceStorage storage = findAttendanceStorageByCrew(crew);
         return storage.register(date, time);
