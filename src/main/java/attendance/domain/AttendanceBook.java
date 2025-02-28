@@ -26,6 +26,9 @@ public class AttendanceBook {
     }
 
     //3. 출석 확인
+    public List<Attendance> checkAttendancesRecord(Crew inputCrew) {
+        return null;
+    }
 
     //4. 제적 위험자 확인
 

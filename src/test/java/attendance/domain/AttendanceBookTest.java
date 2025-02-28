@@ -98,4 +98,11 @@ public class AttendanceBookTest {
             assertThat(newAttendance.getAttendanceStatus()).isEqualTo("결석");
         });
     }
+
+    @Test
+    @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 기록을 확인할 수 있다")
+    void checkAttendancesRecord() {
+        Crew inputCrew = new Crew("Lemon");
+        List<Attendance> attendances = attendanceBook.checkAttendancesRecord(inputCrew);
+    }
 }
