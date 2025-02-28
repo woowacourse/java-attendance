@@ -75,7 +75,7 @@ public class CrewAttendanceStorageTest {
 
     @DisplayName("새롭게 등록된 출석 기록을 조회할 수 있다.")
     @Test
-    void test4() {
+    void test5() {
         // given
         String crew = "밍곰";
         CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.of(
@@ -86,7 +86,7 @@ public class CrewAttendanceStorageTest {
         crewAttendanceStorage.register(crew, date, time);
 
         // when
-        Attendance attendance = crewAttendanceStorage.findAttendance(crew, date);
+        Attendance attendance = crewAttendanceStorage.findAttendance(crew, date).get();
 
         // then
         assertAll(

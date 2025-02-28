@@ -1,7 +1,10 @@
 import exception.CrewNotExistException;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class CrewAttendanceStorage {
     private final Map<String, AttendanceStorage> storages;
@@ -31,5 +34,15 @@ public class CrewAttendanceStorage {
             throw new CrewNotExistException();
         }
         return storages.get(crew);
+    }
+
+    public void register(String crew, LocalDate date, LocalTime time) {
+        AttendanceStorage storage = findAttendanceStorageByCrew(crew);
+        storage.register(date, time);
+    }
+
+    public Optional<Attendance> findAttendance(String crew, LocalDate date) {
+        AttendanceStorage storage = findAttendanceStorageByCrew(crew);
+        return storage.findByDate(date);
     }
 }
