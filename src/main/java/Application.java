@@ -5,9 +5,11 @@ import view.output.OutputView;
 
 public class Application {
     public static void main(String[] args) {
-        // TODO : 작성할 것
+        InputView inputView = new InputView();
+        OutputView outputView = new OutputView();
+
         AttendanceController attendanceController =
-                new AttendanceController(new InputView(), new OutputView(), new CrewRegistrationService());
+                new AttendanceController(inputView, outputView, new CrewRegistrationService());
         attendanceController.start();
     }
 }

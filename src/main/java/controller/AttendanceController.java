@@ -1,16 +1,10 @@
 package controller;
 
+import static utils.RetryUtils.retryUntilValid;
+
 import domain.AttendanceBook;
-import domain.PenaltyStatus;
-import dto.CheckAttendanceRecordResponse;
-import dto.CheckAttendanceResponse;
-import dto.ModifyAttendanceResponse;
-import dto.PenaltyCrewResponse;
-import dto.PenaltyResponse;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
 import service.CrewRegistrationService;
+import service.FunctionService;
 import view.input.Function;
 import view.input.InputView;
 import view.output.OutputView;
@@ -19,54 +13,41 @@ public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
     private final CrewRegistrationService registration;
+    private final FunctionService functionService;
 
     public AttendanceController(InputView inputView, OutputView outputView, CrewRegistrationService registration) {
         this.outputView = outputView;
         this.inputView = inputView;
         this.registration = registration;
+        this.functionService = new FunctionService(outputView, inputView);
+    }
+
+    public AttendanceBook init() {
+        String filePath = "src/main/resources/attendances.csv";
+        return registration.registerCrews(filePath); // 초기화
     }
 
     public void start() {
-        String filePath = "src/main/resources/attendances.csv";
-        AttendanceBook attendanceBook = registration.registerCrews(filePath); // 초기화
+        AttendanceBook attendanceBook = init();
 
-        outputView.displayFunctionPrompt();
-        Function function = Function.checkFunctionNumber(inputView.askFunctionSelection());
-
-        if (function.equals(Function.CHECK_ATTENDANCE)) {
-            String name = inputView.askNameToCheckAttendance();
-            LocalTime time = LocalTime.parse(inputView.askTimeToCheckAttendance());
-            CheckAttendanceResponse response = attendanceBook.checkAttendance(name, LocalDate.now(), time);
-            outputView.displayCheckAttendanceResult(response);
+        while (true) {
+            outputView.displayFunctionPrompt();
+            Function function = retryUntilValid(this::selectFunctionByUser);
+            try {
+                functionService.checkAttendance(function, attendanceBook);
+                functionService.modifyAttendance(function, attendanceBook);
+                functionService.checkAttendanceRecord(function, attendanceBook);
+                functionService.checkPenaltyCrews(function, attendanceBook);
+                if (function == Function.QUIT) {
+                    System.exit(1);
+                }
+            } catch (IllegalArgumentException e) {
+                OutputView.displayErrorMessage(e.getMessage());
+            }
         }
+    }
 
-        if (function.equals(Function.MODIFY_ATTENDANCE)) {
-            String name = inputView.askNameToModifyAttendance();
-            LocalDate date = LocalDate.parse(inputView.askDateToModifyAttendance());
-            LocalTime time = LocalTime.parse(inputView.askTimeToModifyAttendance());
-
-            ModifyAttendanceResponse response = attendanceBook.modifyAttendance(name, date, time);
-            outputView.displayModifyAttendanceResult(response);
-        }
-
-        if (function.equals(Function.CHECK_ATTENDANCE_RECORD_BY_CREW_NAME)) {
-            String name = inputView.askNameToCheckAttendanceRecord();
-
-            List<CheckAttendanceRecordResponse> responses = attendanceBook.checkAttendanceRecord(name);
-            PenaltyResponse response = PenaltyStatus.judgeCrewAttendanceRecord(responses);
-
-            outputView.displayCheckAttendanceRecord(name, responses);
-            outputView.displayCheckAttendanceRecordResult(response);
-        }
-
-        if (function.equals(Function.CHECK_PENALTY_CREWS)) {
-            List<PenaltyCrewResponse> responses = attendanceBook.checkPenaltyCrew();
-
-            outputView.displayCheckPenaltyCrewResult(responses);
-        }
-
-        if (function.equals(Function.QUIT)) {
-            System.exit(1);
-        }
+    private Function selectFunctionByUser() {
+        return Function.checkFunctionNumber(inputView.askFunctionSelection());
     }
 }

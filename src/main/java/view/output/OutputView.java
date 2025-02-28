@@ -83,4 +83,9 @@ public class OutputView {
     public static void displaySpacing() {
         System.out.println();
     }
+
+    public static void displayErrorMessage(String errorMessage) {
+        System.out.println(errorMessage);
+        displaySpacing();
+    }
 }
