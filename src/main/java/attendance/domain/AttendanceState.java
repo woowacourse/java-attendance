@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public enum AttendanceState {
@@ -13,7 +14,8 @@ public enum AttendanceState {
         this.threshold = threshold;
     }
 
-    public static AttendanceState evaluate(final int overTime) {
+    public static AttendanceState evaluate(LocalDateTime dateTime) {
+        int overTime = ClassTime.calculateAttendanceDifference(dateTime);
         return Arrays.stream(values())
                 .filter(state -> state.threshold >= overTime)
                 .findFirst()
