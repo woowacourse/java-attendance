@@ -29,6 +29,9 @@ public class AttendanceController {
         if (menuSelection.equals("1")) {
             checkIn();
         }
+        if (menuSelection.equals("2")) {
+            editRecord();
+        }
     }
 
     private void checkIn() {
@@ -41,6 +44,14 @@ public class AttendanceController {
         AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDateTime.of(currentDate, LocalTime.parse(time)));
         crewRecords.addRecord(crew, attendanceRecord);
         outputView.printCheckInResult(attendanceRecord);
+    }
+
+    private void editRecord() {
+        String nickname = inputView.readEditNickname();
+
+        Crew crew = new Crew(nickname);
+        CrewRecords crewRecords = new CrewRecords();
+        crewRecords.validateCrew(crew);
     }
 
     private void validateMenu(String input) {
