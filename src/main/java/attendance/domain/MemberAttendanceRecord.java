@@ -1,24 +1,18 @@
 package attendance.domain;
 
-public class MemberAttendance {
-    private final Crew crew;
-    private final AttendanceLog attendanceLog;
+import java.util.Map;
 
+public class MemberAttendanceRecord {
+    private final Map<Crew, AttendanceLog> attendanceRecord;
 
-    public MemberAttendance(Crew crew, AttendanceLog attendances) {
-        this.crew = crew;
-        this.attendanceLog = attendances;
+    public MemberAttendanceRecord(Map<Crew, AttendanceLog> attendanceRecord) {
+        this.attendanceRecord = attendanceRecord;
     }
 
-    public Crew getCrew() {
-        return crew;
+    public AttendanceLog findAttendanceLogByCrew(Crew crew){
+        return attendanceRecord.get(crew);
     }
-
-    public AttendanceLog getAttendances() {
-        return attendanceLog;
-    }
-
-
+    
     public String checkSubjectStatus(int attendanceCount, int lateCount, int absentCount) {
         absentCount += lateCount / 3;
         if (absentCount > 5) {
