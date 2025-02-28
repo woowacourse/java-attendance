@@ -55,13 +55,24 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
 
     @Override
     public int compareTo(AttendanceResult o) {
+        if (this.calculateTotalAbsent() == o.calculateTotalAbsent()) {
+            return o.getLateCount() - this.getLateCount();
+        }
         return o.calculateTotalAbsent() - this.calculateTotalAbsent();
     }
 
     private int calculateTotalAbsent() {
-        int lateCount = attendances.getOrDefault(AttendanceStatus.LATE, 0);
-        int absentCount = attendances.getOrDefault(AttendanceStatus.ABSENT, 0);
+        int lateCount = getLateCount();
+        int absentCount = getAbsentCount();
         return lateCount / 3 + absentCount;
+    }
+
+    private int getLateCount() {
+        return attendances.getOrDefault(AttendanceStatus.LATE, 0);
+    }
+
+    private int getAbsentCount() {
+        return attendances.getOrDefault(AttendanceStatus.ABSENT, 0);
     }
 
     @Override
