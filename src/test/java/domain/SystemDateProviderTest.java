@@ -12,9 +12,10 @@ class SystemDateProviderTest {
     @DisplayName("현재 날짜를 정상적으로 반환")
     void SystemDateProvideTest() {
         //given
+        SystemDateProvider systemDateProvider = new SystemDateProvider();
         LocalDate now = LocalDate.now();
         //when
-        LocalDate providedDate = SystemDateProvider.now();
+        LocalDate providedDate = systemDateProvider.now();
         //then
         assertThat(providedDate).isEqualTo(now);
     }
