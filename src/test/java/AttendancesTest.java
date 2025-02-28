@@ -45,7 +45,7 @@ class AttendancesTest {
         assertThat(attendance).isEqualTo(attendances1);
     }
 
-    @DisplayName("닉네임과 등교시간을 받아 출석을 할 수 있다.")
+    @DisplayName("닉네임과 등교시간을 받아 출석을 한다.")
     @Test
     void attendanceCheckBy() {
         //given
@@ -59,10 +59,7 @@ class AttendancesTest {
         String name = "도기";
         LocalDateTime time = LocalDateTime.of(2024, 12, 12, 10, 10);
 
-        //when
-        attendances.checkAttendance(name, time);
-
-        //then
+        //when //then
         assertThatCode(() -> attendances.checkAttendance(name, time))
                 .doesNotThrowAnyException();
     }
