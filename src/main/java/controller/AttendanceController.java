@@ -4,6 +4,7 @@ import controller.dto.ModifyAttendanceRequest;
 import controller.dto.MonthAttendanceStatisticsRequest;
 import controller.dto.RiskCrewsRequest;
 import controller.dto.SaveAttendanceRequest;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import service.AttendanceService;
@@ -47,8 +48,10 @@ public class AttendanceController {
 
     private void saveAttendanceRecord() {
         ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
-            SaveAttendanceRequest request = SaveAttendanceRequest.of(
-                    InputView.scanNickname(), DateTimeUtil.nowDate(), InputView.scanAttendanceTime());
+            String nickname = InputView.scanNickname();
+            LocalDate today = DateTimeUtil.nowDate();
+            String time = InputView.scanAttendanceTime();
+            SaveAttendanceRequest request = SaveAttendanceRequest.of(nickname, today, time);
             SaveAttendanceRecordResponse response = attendanceService.saveAttendanceRecord(request);
 
             OutputView.printSavedAttendanceRecord(response);
@@ -57,9 +60,11 @@ public class AttendanceController {
 
     private void modifyAttendanceRecord() {
         ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
-            ModifyAttendanceRequest request = ModifyAttendanceRequest.of(
-                    InputView.scanNicknameToModify(), DateTimeUtil.nowDate(),
-                    InputView.scanDayToModify(), InputView.scanTimeToModify());
+            String nickname = InputView.scanNicknameToModify();
+            LocalDate today = DateTimeUtil.nowDate();
+            int dayToModify = InputView.scanDayToModify();
+            String timeToModify = InputView.scanTimeToModify();
+            ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, today, dayToModify, timeToModify);
             ModifyAttendanceRecordResponse response = attendanceService.modifyAttendanceRecord(request);
 
             OutputView.printModifiedAttendanceRecord(response);
@@ -68,8 +73,10 @@ public class AttendanceController {
 
     private void printMonthAttendanceStatistics() {
         ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
+            String nickname = InputView.scanNickname();
+            LocalDate today = DateTimeUtil.nowDate();
             MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(
-                    InputView.scanNickname(), DateTimeUtil.nowDate());
+                    nickname, today);
             MonthAttendanceStatisticsResponse response = attendanceService.bringMonthAttendanceStatistics(request);
 
             OutputView.printMonthAttendanceRecords(response.attendanceRecords());
@@ -80,7 +87,8 @@ public class AttendanceController {
 
     private void printRiskCrews() {
         ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
-            RiskCrewsRequest request = new RiskCrewsRequest(DateTimeUtil.nowDate());
+            LocalDate today = DateTimeUtil.nowDate();
+            RiskCrewsRequest request = new RiskCrewsRequest(today);
             RiskCrewsResponse response = attendanceService.bringRiskCrews(request);
 
             OutputView.printRiskCrews(response);
