@@ -46,7 +46,7 @@ public class AttendanceRecord {
     }
 
     public void add(Attendance attendance) {
-        if(contains(attendance)) {
+        if (contains(attendance)) {
             throw new IllegalArgumentException(ERROR_HEADER + ATTENDANCE_ALREADY_EXISTED_ERROR);
         }
         value.add(attendance);
@@ -61,8 +61,12 @@ public class AttendanceRecord {
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
         AttendanceRecord other = (AttendanceRecord) object;
         return Objects.equals(value, other.value);
     }
@@ -91,7 +95,9 @@ public class AttendanceRecord {
 
     private void addWhenNotExistedTo(LocalDate targetDate) {
         Attendance attendanceCandidate = new Attendance(targetDate, ABSENT_CONSIDERING_TIME);
-        if (contains(attendanceCandidate) || Attendance.isHoliday(targetDate)) return;
+        if (contains(attendanceCandidate) || Attendance.isHoliday(targetDate)) {
+            return;
+        }
         add(attendanceCandidate);
     }
 }

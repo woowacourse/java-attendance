@@ -56,7 +56,9 @@ public class OutputView {
     }
 
     private void showPenaltyCrew(AttendanceCount attendanceCount) {
-        if(Penalty.from(attendanceCount) == Penalty.NONE) return;
+        if (Penalty.from(attendanceCount) == Penalty.NONE) {
+            return;
+        }
         System.out.println("- " + attendanceCount.crewName().value() + ": " +
                 "결석 " + attendanceCount.absentCount() + "회, " +
                 "지각 " + attendanceCount.lateCount() + "회 " +
@@ -80,7 +82,9 @@ public class OutputView {
     }
 
     private String formatTime(Attendance attendance) {
-        if(AttendanceStatus.isAbsentStatus(AttendanceStatus.from(attendance))) return "--:--";
+        if (AttendanceStatus.isAbsentStatus(AttendanceStatus.from(attendance))) {
+            return "--:--";
+        }
         return attendance.getTime().format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 

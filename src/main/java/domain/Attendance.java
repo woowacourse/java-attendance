@@ -44,8 +44,12 @@ public class Attendance {
 
     @Override
     public boolean equals(Object object) {
-        if(this == object) return true;
-        if(object == null || getClass() != object.getClass()) return false;
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
         Attendance other = (Attendance) object;
         return Objects.equals(value, other.value);
     }

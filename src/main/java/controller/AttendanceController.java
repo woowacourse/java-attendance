@@ -32,7 +32,8 @@ public class AttendanceController {
         while (onRunning) {
             String selectedMenu = inputView.readSelectedMenu();
             MenuOption menuOption = MenuOption.from(selectedMenu);
-            menuActions.getOrDefault(menuOption, () -> {}).run();
+            menuActions.getOrDefault(menuOption, () -> {
+            }).run();
             onRunning = MenuOption.isRunningOption(menuOption);
         }
     }

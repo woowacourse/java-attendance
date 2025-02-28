@@ -37,7 +37,7 @@ public class InputValidator {
     }
 
     private static void checkRunningTime(LocalTime time) {
-        if(Attendance.isInvalidTime(time)) {
+        if (Attendance.isInvalidTime(time)) {
             throw new IllegalArgumentException(ERROR_HEADER + NOT_RUNNING_TIME_ERROR);
         }
     }
@@ -62,7 +62,7 @@ public class InputValidator {
     }
 
     private static void checkRunningDay(LocalDate date) {
-        if(date.isAfter(TODAY)) {
+        if (date.isAfter(TODAY)) {
             throw new IllegalArgumentException(ERROR_HEADER + INVALID_DATE_ERROR);
         }
         if (Attendance.isHoliday(date)) {
@@ -71,7 +71,7 @@ public class InputValidator {
     }
 
     public static void validateSelectedMenu(String selectedMenu) {
-        if(!selectedMenu.matches(MENU_PATTERN)) {
+        if (!selectedMenu.matches(MENU_PATTERN)) {
             throw new IllegalArgumentException(ERROR_HEADER + INVALID_MENU_ERROR);
         }
     }

@@ -21,17 +21,17 @@ public enum AttendanceStatus {
     public static AttendanceStatus from(Attendance attendance) {
         int endHourOfAttendance = calculateEndHourOfAttendance(attendance.getDayOfWeek());
         LocalTime checkTime = attendance.getTime();
-        if(checkTime.isAfter(LocalTime.of(endHourOfAttendance, END_MINUTE_OF_LATE))) {
+        if (checkTime.isAfter(LocalTime.of(endHourOfAttendance, END_MINUTE_OF_LATE))) {
             return AttendanceStatus.ABSENT;
         }
-        if(checkTime.isAfter(LocalTime.of(endHourOfAttendance, END_MINUTE_OF_ATTENDANCE))) {
+        if (checkTime.isAfter(LocalTime.of(endHourOfAttendance, END_MINUTE_OF_ATTENDANCE))) {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTEND;
     }
 
     private static int calculateEndHourOfAttendance(DayOfWeek dayOfWeek) {
-        if(dayOfWeek == DayOfWeek.MONDAY) {
+        if (dayOfWeek == DayOfWeek.MONDAY) {
             return ATTENDANCE_HOUR_OF_MONDAY;
         }
         return ATTENDANCE_HOUR_OF_TUESDAY_TO_FRIDAY;

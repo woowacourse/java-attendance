@@ -1,7 +1,5 @@
 package domain;
 
-import static util.Constants.*;
-
 import dto.AttendanceCount;
 
 public enum Penalty {
@@ -20,10 +18,15 @@ public enum Penalty {
     }
 
     public static Penalty from(AttendanceCount attendanceCount) {
-        int consideredAbsentCount = attendanceCount.consideredAbsentCount();
-        if(consideredAbsentCount >= EXPULSION_CONDITION) return EXPULSION;
-        if (consideredAbsentCount >= COUNSELING_CONDITION) return COUNSELING;
-        if (consideredAbsentCount == WARNING_CONDITION) return WARNING;
+        if (attendanceCount.consideredAbsentCount() >= EXPULSION_CONDITION) {
+            return EXPULSION;
+        }
+        if (attendanceCount.consideredAbsentCount() >= COUNSELING_CONDITION) {
+            return COUNSELING;
+        }
+        if (attendanceCount.consideredAbsentCount() == WARNING_CONDITION) {
+            return WARNING;
+        }
         return NONE;
     }
 

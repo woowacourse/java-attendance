@@ -34,7 +34,7 @@ public class FileReader {
         Scanner scanner = initializeReader();
         while (scanner.hasNextLine()) {
             String[] nameAndDateAndTime = scanner.nextLine().split(PARSE_UNIT);
-            CrewName crewName  = new CrewName(nameAndDateAndTime[NAME_INDEX]);
+            CrewName crewName = new CrewName(nameAndDateAndTime[NAME_INDEX]);
             LocalDate date = LocalDate.parse(nameAndDateAndTime[DATE_INDEX], DateTimeFormatter.ofPattern(DATE_FORMAT));
             LocalTime time = LocalTime.parse(nameAndDateAndTime[TIME_INDEX], DateTimeFormatter.ofPattern(TIME_FORMAT));
             enterAttendance(crewName, date, time);
@@ -55,7 +55,7 @@ public class FileReader {
     private void enterAttendance(CrewName crewName, LocalDate date, LocalTime time) {
         Attendance attendance = new Attendance(date, time);
         AttendanceRecord existedAttendanceRecord = initialInformation.get(crewName);
-        if(existedAttendanceRecord == null) {
+        if (existedAttendanceRecord == null) {
             initialInformation.put(crewName, initializeAttendanceRecord(attendance));
             return;
         }

@@ -32,23 +32,28 @@ public class InputView {
     }
 
     public String readName() {
-        return readInput("\n닉네임을 입력해 주세요.", InputValidator::validateName, attendanceBook);
+        return readInput("\n닉네임을 입력해 주세요.",
+                InputValidator::validateName, attendanceBook);
     }
 
     public String readAttendanceTime() {
-        return readInput("등교 시간을 입력해 주세요.", InputValidator::validateTime);
+        return readInput("등교 시간을 입력해 주세요.",
+                InputValidator::validateTime);
     }
 
     public String readModifyDay() {
-        return readInput("수정하려는 날짜(일)를 입력해 주세요.", InputValidator::validateDay);
+        return readInput("수정하려는 날짜(일)를 입력해 주세요.",
+                InputValidator::validateDay);
     }
 
     public String readModifyName() {
-        return readInput("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.", InputValidator::validateName, attendanceBook);
+        return readInput("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.",
+                InputValidator::validateName, attendanceBook);
     }
 
     public String readModifyTime() {
-        return readInput("언제로 변경하겠습니까?", InputValidator::validateTime);
+        return readInput("언제로 변경하겠습니까?",
+                InputValidator::validateTime);
     }
 
     private String readInput(String message, Consumer<String> validator) {
@@ -58,7 +63,9 @@ public class InputView {
         return input;
     }
 
-    private String readInput(String message, BiConsumer<String, AttendanceBook> validator, AttendanceBook param) {
+    private String readInput(String message,
+                             BiConsumer<String, AttendanceBook> validator,
+                             AttendanceBook param) {
         System.out.println(message);
         String input = scanner.nextLine();
         validator.accept(input, param);

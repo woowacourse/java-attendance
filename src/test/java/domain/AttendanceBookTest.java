@@ -225,7 +225,7 @@ public class AttendanceBookTest {
                 LocalDateTime.of(2024, 12, 2, 13, 0),
                 LocalDateTime.of(2024, 12, 3, 10, 0),
                 LocalDateTime.of(2024, 12, 4, 10, 0),
-                LocalDateTime.of(2024, 12 ,10, 10, 0)
+                LocalDateTime.of(2024, 12, 10, 10, 0)
         );
     }
 
