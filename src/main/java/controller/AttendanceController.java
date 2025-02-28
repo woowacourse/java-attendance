@@ -5,20 +5,16 @@ import controller.dto.MonthAttendanceStatisticsRequest;
 import controller.dto.RiskCrewsRequest;
 import controller.dto.SaveAttendanceRequest;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 import service.AttendanceService;
 import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.MonthAttendanceStatisticsResponse;
 import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 import util.DateTimeUtil;
-import util.ExceptionHandler;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-    private static final Map<MenuCommand, Runnable> COMMAND_HANDLER = new HashMap<>();
     private final AttendanceService attendanceService;
     private boolean isRunning;
 
@@ -26,80 +22,61 @@ public class AttendanceController {
         this.attendanceService = attendanceService;
 
         isRunning = true;
-        initCommandHandler();
-    }
-
-    private void initCommandHandler() {
-        COMMAND_HANDLER.put(MenuCommand.SAVE_ATTENDANCE_RECORD, this::saveAttendanceRecord);
-        COMMAND_HANDLER.put(MenuCommand.MODIFY_ATTENDANCE_RECORD, this::modifyAttendanceRecord);
-        COMMAND_HANDLER.put(MenuCommand.PRINT_MONTH_ATTENDANCE_STATISTICS, this::printMonthAttendanceStatistics);
-        COMMAND_HANDLER.put(MenuCommand.PRINT_RISK_CREWS, this::printRiskCrews);
-        COMMAND_HANDLER.put(MenuCommand.QUIT, this::exitController);
-        COMMAND_HANDLER.put(MenuCommand.QUIT_SMALL_CASE, this::exitController);
-        COMMAND_HANDLER.put(MenuCommand.NONE, this::printRetryMessage);
     }
 
     public void run() {
         while (isRunning) {
-            MenuCommand command = MenuCommand.from(InputView.scanMenuCommand());
-            COMMAND_HANDLER.get(command).run();
+            Command command = Command.from(InputView.scanMenuCommand());
+            command.run(this);
         }
     }
 
-    private void saveAttendanceRecord() {
-        ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
-            String nickname = InputView.scanNickname();
-            LocalDate today = DateTimeUtil.nowDate();
-            String time = InputView.scanAttendanceTime();
-            SaveAttendanceRequest request = SaveAttendanceRequest.of(nickname, today, time);
-            SaveAttendanceRecordResponse response = attendanceService.saveAttendanceRecord(request);
+    public void saveAttendanceRecord() {
+        String nickname = InputView.scanNickname();
+        LocalDate today = DateTimeUtil.nowDate();
+        String time = InputView.scanAttendanceTime();
+        SaveAttendanceRequest request = SaveAttendanceRequest.of(nickname, today, time);
+        SaveAttendanceRecordResponse response = attendanceService.saveAttendanceRecord(request);
 
-            OutputView.printSavedAttendanceRecord(response);
-        });
+        OutputView.printSavedAttendanceRecord(response);
     }
 
-    private void modifyAttendanceRecord() {
-        ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
-            String nickname = InputView.scanNicknameToModify();
-            LocalDate today = DateTimeUtil.nowDate();
-            int dayToModify = InputView.scanDayToModify();
-            String timeToModify = InputView.scanTimeToModify();
-            ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, today, dayToModify, timeToModify);
-            ModifyAttendanceRecordResponse response = attendanceService.modifyAttendanceRecord(request);
+    public void modifyAttendanceRecord() {
+        String nickname = InputView.scanNicknameToModify();
+        LocalDate today = DateTimeUtil.nowDate();
+        int dayToModify = InputView.scanDayToModify();
+        String timeToModify = InputView.scanTimeToModify();
+        ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, today, dayToModify, timeToModify);
+        ModifyAttendanceRecordResponse response = attendanceService.modifyAttendanceRecord(request);
 
-            OutputView.printModifiedAttendanceRecord(response);
-        });
+        OutputView.printModifiedAttendanceRecord(response);
     }
 
-    private void printMonthAttendanceStatistics() {
-        ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
-            String nickname = InputView.scanNickname();
-            LocalDate today = DateTimeUtil.nowDate();
-            MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(
-                    nickname, today);
-            MonthAttendanceStatisticsResponse response = attendanceService.bringMonthAttendanceStatistics(request);
+    public void printMonthAttendanceStatistics() {
+        String nickname = InputView.scanNickname();
+        LocalDate today = DateTimeUtil.nowDate();
+        MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(
+                nickname, today);
+        MonthAttendanceStatisticsResponse response = attendanceService.bringMonthAttendanceStatistics(request);
 
-            OutputView.printMonthAttendanceRecords(response.attendanceRecords());
-            OutputView.printMonthAttendanceStatusCount(response.attendanceStatusCount());
-            OutputView.printRiskRank(response.riskRank());
-        });
+        OutputView.printMonthAttendanceRecords(response.attendanceRecords());
+        OutputView.printMonthAttendanceStatusCount(response.attendanceStatusCount());
+        OutputView.printRiskRank(response.riskRank());
     }
 
-    private void printRiskCrews() {
-        ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
-            LocalDate today = DateTimeUtil.nowDate();
-            RiskCrewsRequest request = new RiskCrewsRequest(today);
-            RiskCrewsResponse response = attendanceService.bringRiskCrews(request);
+    public void printRiskCrews() {
+        LocalDate today = DateTimeUtil.nowDate();
+        RiskCrewsRequest request = new RiskCrewsRequest(today);
+        RiskCrewsResponse response = attendanceService.bringRiskCrews(request);
 
-            OutputView.printRiskCrews(response);
-        });
+        OutputView.printRiskCrews(response);
     }
 
-    private void exitController() {
+    public void quit() {
         isRunning = false;
     }
 
-    private void printRetryMessage() {
+    public void printRetryMessage() {
         System.out.println("존재하지 않는 커맨드입니다. 다시 입력해주세요.");
     }
 }
