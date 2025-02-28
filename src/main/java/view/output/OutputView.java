@@ -52,13 +52,15 @@ public class OutputView {
     public void displayCheckAttendanceRecord(String name, List<CheckAttendanceRecordResponse> responses) {
         System.out.println(DISPLAY_ATTENDANCE_RECORD_PROMPT.format(name));
         for (CheckAttendanceRecordResponse response : responses) {
+            String timeFormat = "--:--";
+            if (response.time() != null) {
+                timeFormat = response.time().format(formatter);
+            }
             System.out.println(DISPLAY_ATTENDANCE_RECORD_BY_CREW.format(
                     response.date().getMonthValue(), response.date().getDayOfMonth(),
                     response.date().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                    response.time().format(formatter), response.attendanceStatus()
+                    timeFormat, response.attendanceStatus()
             ));
-
-
         }
     }
 
