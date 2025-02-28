@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Arrays;
+
 public enum Command {
 
     ATTENDANCE_CHECK("1", "출석 확인"),
@@ -14,6 +16,13 @@ public enum Command {
     Command(final String symbol, final String displayName) {
         this.symbol = symbol;
         this.displayName = displayName;
+    }
+
+    public static Command findBySymbol(final String symbolInput) {
+        return Arrays.stream(Command.values())
+                .filter(o -> o.symbol.equals(symbolInput))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 명령어 입니다."));
     }
 
     public String getSymbol() {
