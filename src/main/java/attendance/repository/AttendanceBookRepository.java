@@ -27,6 +27,11 @@ public class AttendanceBookRepository {
         }
     }
 
+    public static AttendanceBookRepository from(final AttendanceBookLoader attendanceBookLoader) {
+        return new AttendanceBookRepository(
+            attendanceBookLoader.loadAttendanceBooks());
+    }
+
     public Optional<AttendanceBook> findByCrewNickname(String crewNickname) {
         return Optional.ofNullable(attendanceBooks.get(crewNickname));
     }

@@ -2,14 +2,15 @@ package attendance.domain;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class AttendanceRecord {
 
-    private final Map<AttendanceDate, AttendanceTime> attendanceRecord;
+    private final Map<AttendanceDate, AttendanceTime> attendanceDateTimes;
 
-    public AttendanceRecord(final Map<AttendanceDate, AttendanceTime> attendanceRecord) {
-        validateNotNull(attendanceRecord);
-        this.attendanceRecord = new HashMap<>(attendanceRecord);
+    public AttendanceRecord(final Map<AttendanceDate, AttendanceTime> attendanceDateTimes) {
+        validateNotNull(attendanceDateTimes);
+        this.attendanceDateTimes = new HashMap<>(attendanceDateTimes);
     }
 
     private static void validateNotNull(final Map<AttendanceDate, AttendanceTime> attendanceRecord) {
@@ -24,5 +25,21 @@ public class AttendanceRecord {
                     "출석 기록은 출석 날짜와 출석 시간을 가지고 있어야 합니다.");
             }
         }
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final AttendanceRecord that = (AttendanceRecord) o;
+        
+        return Objects.equals(attendanceDateTimes, that.attendanceDateTimes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(attendanceDateTimes);
     }
 }

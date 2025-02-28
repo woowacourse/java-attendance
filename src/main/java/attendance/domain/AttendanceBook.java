@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import java.util.Objects;
+
 public class AttendanceBook {
 
     private final Crew crew;
@@ -25,5 +27,22 @@ public class AttendanceBook {
 
     public Crew getCrew() {
         return crew;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final AttendanceBook that = (AttendanceBook) o;
+        
+        return Objects.equals(crew, that.crew)
+            && Objects.equals(attendanceRecord, that.attendanceRecord);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(crew, attendanceRecord);
     }
 }
