@@ -2,7 +2,9 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +16,10 @@ import org.junit.jupiter.api.Test;
 
 public class AttendanceBookTest {
 
-    private Crew crew = new Crew("Lemon");
-    private AttendanceLog attendanceLog;
-    private AttendanceBook attendanceBook;
-    private Map<Crew, AttendanceLog> attendanceRecord = new HashMap<>();
+    private static Crew crew = new Crew("Lemon");;
+    private static AttendanceLog attendanceLog;
+    private static AttendanceBook attendanceBook;
+    private static Map<Crew, AttendanceLog> attendanceRecord;
 
     @BeforeEach
     void setup() {
@@ -33,6 +35,7 @@ public class AttendanceBookTest {
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 12, 10, 10)));
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 13, 9, 30)));
         attendanceLog = new AttendanceLog(sampleAttendances);
+        attendanceRecord = new HashMap<>();
         attendanceRecord.put(crew, attendanceLog);
         attendanceBook = new AttendanceBook(attendanceRecord);
     }
@@ -41,14 +44,28 @@ public class AttendanceBookTest {
     @DisplayName("닉네임과 날짜를 입력하면 출석이 등록된다.")
     void registerAttendanceTest() {
         //given
-        Crew newCrew = new Crew("Meringue");
+        Crew newCrew = new Crew("Lemon");
         LocalDateTime newAttendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 30);
 
         //when
-        attendanceBook.registerAttendance(newCrew,newAttendanceDateTime);
-        List<Attendance> attendanceLogs = attendanceBook.findAttendanceLogByCrew(newCrew).getAttendanceLog();
+        Attendance attendance = attendanceBook.registerAttendance(newCrew, newAttendanceDateTime);
 
         //then
-        Assertions.assertThat(attendanceLogs.getFirst().getAttendanceStatus()).isEqualTo("지각");
+        Assertions.assertThat(attendance.getAttendanceStatus()).isEqualTo("지각");
+        Assertions.assertThat(attendance.getAttendanceDate()).isEqualTo(LocalDate.of(2024,12,2));
+        Assertions.assertThat(attendance.getAttendanceTime()).isEqualTo(LocalTime.of(13,30));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 닉네임을 입력하면 예외가 발생한다")
+    void registerNonExistNameAttendanceTest() {
+        //given
+        Crew newCrew = new Crew("Murang");
+        LocalDateTime newAttendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 30);
+
+        //expected
+        Assertions.assertThatThrownBy(() -> attendanceBook.registerAttendance(newCrew, newAttendanceDateTime))
+            .isExactlyInstanceOf(IllegalArgumentException.class)
+            .hasMessage("등록되지 않는 크루입니다");
     }
 }
