@@ -1,6 +1,5 @@
 package domain;
 
-import java.sql.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,7 @@ public class Attendances {
     }
 
     public boolean has(LocalDate day) {
-        return false;
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.has(day));
     }
 }
