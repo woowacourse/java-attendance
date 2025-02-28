@@ -4,6 +4,7 @@ import domain.AttendanceRecord;
 import domain.Crew;
 import domain.CrewRecords;
 import view.InputView;
+import view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,9 +15,11 @@ public class AttendanceController {
     private final Pattern MENU_CHOICES = Pattern.compile("[1234Q]");
     private final LocalDate currentDate = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
     private final InputView inputView;
+    private final OutputView outputView;
 
-    public AttendanceController(InputView inputView) {
+    public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
+        this.outputView = outputView;
     }
 
     public void run() {
@@ -37,6 +40,7 @@ public class AttendanceController {
         crewRecords.validateCrew(crew);
         AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDateTime.of(currentDate, LocalTime.parse(time)));
         crewRecords.addRecord(crew, attendanceRecord);
+        outputView.printCheckInResult(attendanceRecord);
     }
 
     private void validateMenu(String input) {

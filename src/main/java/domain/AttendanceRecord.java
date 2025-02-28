@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AttendanceRecord implements Comparable<AttendanceRecord> {
     private final LocalDateTime dateTime;
@@ -21,6 +22,10 @@ public class AttendanceRecord implements Comparable<AttendanceRecord> {
 
     public LocalDate getDate() {
         return dateTime.toLocalDate();
+    }
+
+    public LocalTime getTime() {
+        return dateTime.toLocalTime();
     }
 
     public AttendanceStatus getAttendanceStatus() {

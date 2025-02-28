@@ -26,4 +26,8 @@ public enum AttendanceStatus {
                 .reduce((first, second) -> second)
                 .orElse(PRESENT);
     }
+
+    public String getName() {
+        return name;
+    }
 }
