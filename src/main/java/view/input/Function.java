@@ -1,4 +1,4 @@
-package view;
+package view.input;
 
 import static view.ErrorMessage.NOTICE_FUNCTION_NUMBER_IS_NOT_EXISTED;
 
