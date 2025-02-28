@@ -48,6 +48,7 @@ public class AttendanceController {
 
     private void editRecord() {
         String nickname = inputView.readEditNickname();
+        String date = inputView.readEditDate();
 
         Crew crew = new Crew(nickname);
         CrewRecords crewRecords = new CrewRecords();

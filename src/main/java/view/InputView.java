@@ -39,7 +39,7 @@ public class InputView {
     }
 
     public String readEditDate() {
-        System.out.println("수정하려는 날짜(일)를 입력해 주세요." + System.lineSeparator());
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         return scanner.nextLine();
     }
 
