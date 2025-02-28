@@ -37,6 +37,11 @@ public class AttendanceRecord {
             attendanceDateTime.getAttendanceTime());
     }
 
+    public void modifyAttendanceDateTime(final AttendanceDateTime attendanceDateTime) {
+        attendanceDateTimes.put(attendanceDateTime.getAttendanceDate(),
+            attendanceDateTime.getAttendanceTime());
+    }
+
     public Map<AttendanceDate, AttendanceTime> getAttendanceDateTimes() {
         return Map.copyOf(attendanceDateTimes);
     }
