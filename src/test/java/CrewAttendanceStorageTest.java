@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -90,6 +91,32 @@ public class CrewAttendanceStorageTest {
         assertAll(
                 () -> assertThat(attendance.isAttendedOn(date)).isTrue(),
                 () -> assertThat(attendance.getDateTime()).isEqualTo(LocalDateTime.of(date, time))
+        );
+    }
+
+    @DisplayName("출석 기록을 수정한 후 이를 조회할 수 있다.")
+    @Test
+    void test6() {
+        // given
+        String crew = "밍곰";
+        CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.of(
+                Map.of(crew, new AttendanceStorage())
+        );
+        LocalDate date = LocalDate.of(2025, 2, 28);
+        LocalTime time = LocalTime.of(10, 0);
+        LocalTime modifiedTime = LocalTime.of(10, 30);
+
+        crewAttendanceStorage.register(crew, date, time);
+
+        // when
+        crewAttendanceStorage.modify(crew, date, time);
+        Optional<Attendance> attendance = crewAttendanceStorage.findAttendance(crew, date);
+
+        // then
+        assertAll(
+                () -> assertThat(attendance.isPresent()).isTrue(),
+                () -> assertThat(attendance.get().getDateTime()).isEqualTo(LocalDateTime.of(date, modifiedTime)),
+                () -> assertThat(attendance.get().getStatus()).isSameAs(AttendanceStatus.LATE)
         );
     }
 }
