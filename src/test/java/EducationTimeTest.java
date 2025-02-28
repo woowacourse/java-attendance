@@ -51,4 +51,19 @@ class EducationTimeTest {
             }).isInstanceOf(InvalidDateException.class);
         }
     }
+
+    @DisplayName("캠퍼스 운영 요일이 아닌 경우를 확인할 수 있다.")
+    @Test
+    void test4() {
+        // given
+        List<DayOfWeek> days = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+
+        for (DayOfWeek day : days) {
+            // when
+            final boolean isOperating = EducationTime.isOperatingOn(day);
+
+            // then
+            assertThat(isOperating).isFalse();
+        }
+    }
 }
