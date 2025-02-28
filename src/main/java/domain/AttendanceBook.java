@@ -75,6 +75,7 @@ public class AttendanceBook {
         int attendance = countState(AttendanceState.ATTENDANCE);
         int lateness = countState(AttendanceState.LATENESS);
         int absence = countState(AttendanceState.ABSENCE);
+
         return new AttendanceStateCount(attendance, lateness, absence);
     }
 
@@ -83,5 +84,13 @@ public class AttendanceBook {
                 .filter(a -> AttendanceState.findStateBy(a.getLocalDate(), a.getLocalTime())
                         .equals(attendanceState))
                 .count();
+    }
+
+    public PenaltyType calculatePenaltyType(AttendanceStateCount attendanceStateCount) {
+        int lateness = attendanceStateCount.lateness();
+        int absence = attendanceStateCount.absence();
+
+        int count = absence + (lateness / 3);
+        return PenaltyType.getPenaltyType(count);
     }
 }

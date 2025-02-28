@@ -5,7 +5,11 @@ import java.time.LocalTime;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceBookTest {
     AttendanceBook attendanceBook;
@@ -78,5 +82,69 @@ class AttendanceBookTest {
         Assertions.assertThat(attendanceStateCount.attendance()).isEqualTo(2);
         Assertions.assertThat(attendanceStateCount.lateness()).isEqualTo(1);
         Assertions.assertThat(attendanceStateCount.absence()).isEqualTo(1);
+    }
+
+    @Nested
+    @DisplayName("한_크루가_제적_면담_경고_대상자인지_확인할_수_있다")
+    class dismissedTest {
+        @ParameterizedTest
+        @CsvSource({
+                "5, 6, 0,WARNING",
+                "5,5,1,WARNING",
+                "5,3,1,WARNING",
+                "5,0,2,WARNING"
+        })
+        void 경고_대상자인지_확인할_수_있다(int attendance, int lateness, int absence, PenaltyType expectedPenaltyType) {
+            // given
+            AttendanceStateCount attendanceStateCount = new AttendanceStateCount(attendance, lateness, absence);
+
+            // when
+            PenaltyType penaltyType = attendanceBook.calculatePenaltyType(attendanceStateCount);
+
+            // then
+            Assertions.assertThat(penaltyType).isEqualTo(expectedPenaltyType);
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+                "5, 9, 0,INTERVIEW",
+                "5,6,1,INTERVIEW",
+                "5,6,2,INTERVIEW",
+                "5,3,2,INTERVIEW",
+                "5,3,3,INTERVIEW",
+                "5,6,3,INTERVIEW",
+                "5,13,1,INTERVIEW"
+        })
+        void 면담_대상자인지_확인할_수_있다(int attendance, int lateness, int absence, PenaltyType expectedPenaltyType) {
+            // given
+            AttendanceStateCount attendanceStateCount = new AttendanceStateCount(attendance, lateness, absence);
+
+            // when
+            PenaltyType penaltyType = attendanceBook.calculatePenaltyType(attendanceStateCount);
+
+            // then
+            Assertions.assertThat(penaltyType).isEqualTo(expectedPenaltyType);
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+                "5, 18, 0,EXPULSION",
+                "5,15,1,EXPULSION",
+                "5,12,2,EXPULSION",
+                "5,9,3,EXPULSION",
+                "5,6,4,EXPULSION",
+                "5,3,5,EXPULSION",
+                "5,0,6,EXPULSION"
+        })
+        void 제적_대상자인지_확인할_수_있다(int attendance, int lateness, int absence, PenaltyType expectedPenaltyType) {
+            // given
+            AttendanceStateCount attendanceStateCount = new AttendanceStateCount(attendance, lateness, absence);
+
+            // when
+            PenaltyType penaltyType = attendanceBook.calculatePenaltyType(attendanceStateCount);
+
+            // then
+            Assertions.assertThat(penaltyType).isEqualTo(expectedPenaltyType);
+        }
     }
 }
