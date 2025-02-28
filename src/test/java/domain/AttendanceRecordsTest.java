@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.*;
 
 class AttendanceRecordsTest {
     @DisplayName("새 출석 기록을 저장할 수 있다.")
@@ -83,5 +82,21 @@ class AttendanceRecordsTest {
 
         // then
         assertThat(attendanceRecords.getAttendanceCount(targetStatus)).isEqualTo(1);
+    }
+
+    @DisplayName("새 출석 기록 추가 시 해당 날짜에 이미 기록이 존재하면 예외를 발생시킨다.")
+    @Test
+    void addExceptionTest() {
+        // given
+        AttendanceRecords attendanceRecords = new AttendanceRecords();
+        AttendanceRecord record = new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:10"));
+
+        // when
+        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:00")));
+        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-03T10:00")));
+        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-04T10:40")));
+
+        // then
+        assertThatThrownBy(() -> attendanceRecords.add(record)).isInstanceOf(IllegalArgumentException.class);
     }
 }
