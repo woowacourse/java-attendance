@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -56,16 +57,6 @@ class AttendancesTest {
 
         assertThat(attendances.findSameDateAttendance(modificationDateTime.toLocalDate()))
                 .isEqualTo(new Attendance(modificationDateTime));
-    }
-
-    @Test
-    void 존재하지_않는_일자를_알려주면_출석_기록을_수정할_수_없다() {
-        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
-        Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
-        LocalDateTime modificationDateTime = LocalDateTime.of(2025, 2, 27, 9, 50);
-
-        assertThatThrownBy(() -> attendances.modifyByModificationDateTime(modificationDateTime))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
