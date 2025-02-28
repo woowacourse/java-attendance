@@ -23,4 +23,5 @@ class TimeMachineTest {
                 .isEqualTo(LocalDate.of(2024, 12, 29))
                 .isNotEqualTo(timeBeforeTimeTravel);
     }
+
 }
