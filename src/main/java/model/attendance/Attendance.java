@@ -1,7 +1,6 @@
 package model.attendance;
 
 import common.Campus;
-import common.Common;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -17,7 +16,7 @@ public class Attendance {
     public Attendance(LocalDate date) {
         validateHolidayDate(date);
         this.date = date;
-        this.time = Campus.noneAttendanceTime;
+        this.time = Campus.NONE_ATTENDANCE_TIME;
     }
 
     public Attendance(LocalDate date, LocalTime time) {
@@ -57,10 +56,10 @@ public class Attendance {
     }
 
     private void validateTime(LocalTime time) {
-        if (time.equals(Campus.noneAttendanceTime)) {
+        if (time.equals(Campus.NONE_ATTENDANCE_TIME)) {
             return;
         }
-        if (time.isBefore(Campus.campusOpenTime) || time.isAfter(Campus.campusCloseTime)) {
+        if (time.isBefore(Campus.CAMPUS_OPEN_TIME) || time.isAfter(Campus.CAMPUS_CLOSE_TIME)) {
             throw new CampusUnavailableException();
         }
     }

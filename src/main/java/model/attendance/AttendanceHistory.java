@@ -1,7 +1,6 @@
 package model.attendance;
 
-import common.Common;
-import model.date.December;
+import common.Campus;
 import model.exception.DuplicatedAttendanceRegistrationException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -54,28 +53,18 @@ public class AttendanceHistory {
     }
 
     public Attendance findByDate(LocalDate date) {
-        December.validateHoliday(date);
         return this.attendances.stream()
                 .filter(attendance -> attendance.isSameDateWith(date))
                 .findAny()
-                .orElseThrow(SystemException::new);
+                .orElseThrow(() -> new HolidayAttendanceException(date));
     }
 
     private void validateFirstRegistration(Attendance oldAttendance) {
-        if (oldAttendance.getTime().equals(Common.noneAttendanceTime)) {
+        if (oldAttendance.getTime().equals(Campus.NONE_ATTENDANCE_TIME)) {
             return;
         }
         throw new DuplicatedAttendanceRegistrationException();
     }
-
-//    private void validateModification(LocalDate date) { //TODO : 날짜 자체의 객체에 들어가는게 더 어울리는데 아쉬움
-//        if (date.isAfter(December.now())) {
-//            throw new FutureAttendanceException();
-//        }
-//        if (December.isHolidayAt(date)) {
-//            throw new HolidayAttendanceException(date);
-//        }
-//    }
 
     @Override
     public boolean equals(Object object) {

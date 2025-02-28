@@ -80,7 +80,6 @@ public class AttendanceController {
         }
     }
 
-    //TODO : 도메인 없는 순수 리더
     private List<String> readAttendanceFile() {
         try {
             String path = "./src/main/resources/attendances.csv";

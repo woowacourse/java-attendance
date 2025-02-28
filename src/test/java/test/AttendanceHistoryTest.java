@@ -3,7 +3,6 @@ package test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import common.Campus;
-import common.Common;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -57,7 +56,7 @@ public class AttendanceHistoryTest {
         //then
         assertThat(attendanceHistories.size()).isEqualTo(9);
         assertThat(attendanceHistories.get(5)).isEqualTo(
-                new Attendance(LocalDate.of(2024, 12, 9), Campus.noneAttendanceTime));
+                new Attendance(LocalDate.of(2024, 12, 9), Campus.NONE_ATTENDANCE_TIME));
         assertThat(attendanceHistories.get(6)).isEqualTo(
                 new Attendance(LocalDate.of(2024, 12, 10), LocalTime.of(10, 0)));
         assertThat(attendanceHistories.get(7)).isEqualTo(
