@@ -13,6 +13,13 @@ public class Time {
         this.rawTime = rawTime;
     }
 
+    public LocalTime convertTime() {
+        String[] splittedTime = rawTime.split(":");
+        int hour = Integer.parseInt(splittedTime[0]);
+        int minute = Integer.parseInt(splittedTime[1]);
+        return LocalTime.of(hour, minute);
+    }
+
     private void validateTimeFormat(String rawTime) {
         if (!TIME_PATTERN.matcher(rawTime).matches()) {
             throw new IllegalArgumentException("잘못된 시간 포맷입니다.");
@@ -38,12 +45,5 @@ public class Time {
     private void validateTime(String rawTime) {
         validateHour(rawTime);
         validateMinute(rawTime);
-    }
-
-    public LocalTime convertTime() {
-        String[] splittedTime = rawTime.split(":");
-        int hour = Integer.parseInt(splittedTime[0]);
-        int minute = Integer.parseInt(splittedTime[1]);
-        return LocalTime.of(hour, minute);
     }
 }
