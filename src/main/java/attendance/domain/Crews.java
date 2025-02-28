@@ -11,7 +11,15 @@ public class Crews {
         this.crews = new ArrayList<>(crews);
     }
 
+    public Crew findCrew(String inputCrewName) {
+        return crews.stream()
+                .filter(crew -> crew.getName().equals(inputCrewName))
+                .findFirst()
+                .orElseThrow();
+    }
+
     public List<Crew> getCrews() {
         return Collections.unmodifiableList(crews);
     }
+
 }
