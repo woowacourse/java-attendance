@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -14,9 +15,15 @@ public class AttendanceBook {
     }
 
     //1. 출석등록
+    public void registerAttendance(Crew newCrew, LocalDateTime newAttendanceDateTime) {
+
+    }
+
 
     //2. 출석수정
 
-    //3.
+    //3. 출석 확인
+
+    //4. 제적 위험자 확인
 
 }

@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class AttendanceBookTest {
 
@@ -34,4 +37,18 @@ public class AttendanceBookTest {
         attendanceBook = new AttendanceBook(attendanceRecord);
     }
 
+    @Test
+    @DisplayName("닉네임과 날짜를 입력하면 출석이 등록된다.")
+    void registerAttendanceTest() {
+        //given
+        Crew newCrew = new Crew("Meringue");
+        LocalDateTime newAttendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 30);
+
+        //when
+        attendanceBook.registerAttendance(newCrew,newAttendanceDateTime);
+        List<Attendance> attendanceLogs = attendanceBook.findAttendanceLogByCrew(newCrew).getAttendanceLog();
+
+        //then
+        Assertions.assertThat(attendanceLogs.getFirst().getAttendanceStatus()).isEqualTo("지각");
+    }
 }
