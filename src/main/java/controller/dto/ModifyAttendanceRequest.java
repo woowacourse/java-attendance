@@ -1,9 +1,10 @@
 package controller.dto;
 
+import static util.DateTimeUtil.TIME_FORMAT;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public record ModifyAttendanceRequest(
@@ -11,8 +12,6 @@ public record ModifyAttendanceRequest(
         LocalDate date,
         LocalTime timeToModify
 ) {
-
-    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     public static ModifyAttendanceRequest of(String nickname, LocalDate today, int day, String time) {
         validateDay(today, day);

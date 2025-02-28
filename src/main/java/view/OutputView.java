@@ -1,23 +1,20 @@
 package view;
 
+import static util.DateTimeUtil.DATE_FORMAT;
+import static util.DateTimeUtil.DATE_TIME_FORMAT;
+import static util.DateTimeUtil.TIME_FORMAT;
+
 import domain.AbstractAttendanceRecord;
 import domain.AttendanceRecord;
 import domain.EmptyAttendanceRecord;
 import domain.RiskRank;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import service.dto.AttendanceStatusCount;
 import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 
 public class OutputView {
-    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm",
-            Locale.KOREAN);
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM월 dd일 E요일",
-            Locale.KOREAN);
-    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     public static void printSavedAttendanceRecord(SaveAttendanceRecordResponse saved) {
         System.out.printf("%s (%s)%n",
