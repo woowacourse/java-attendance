@@ -31,9 +31,8 @@ public final class AttendanceReader {
         return attendances;
     }
 
-    public static Set<String> getCrewNamesOnFile(String filePath) {
+    public static Set<String> getCrewNamesOnFile(List<String> attendanceContents) {
 
-        List<String> attendanceContents = FileReader.parseToFile(filePath);
         attendanceContents.removeFirst();
 
         Set<String> crewNames = new HashSet<>();

@@ -27,5 +27,22 @@ class AttendanceReaderTest {
         assertThat(attendances.size()).isEqualTo(1);
     }
 
+    @DisplayName("크루 이름을 파싱한다.")
+    @Test
+    void 크루_이름을_파싱한다() {
+
+        // given
+        List<String> contents = new ArrayList<>();
+        contents.add("name,time");
+        contents.add("이든,2025-02-03 10:06");
+
+        // when
+        Set<String> crewNames = AttendanceReader.getCrewNamesOnFile(contents);
+
+        // then
+        assertThat(crewNames.size()).isEqualTo(1);
+        assertThat(crewNames.contains("이든")).isTrue();
+    }
+
 
 }
