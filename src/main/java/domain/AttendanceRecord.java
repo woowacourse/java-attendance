@@ -25,19 +25,19 @@ public class AttendanceRecord {
                         attendance.isSameDateWith(targetAttendance));
     }
 
-    public AttendanceLog findAllSortedUntil(LocalDate yesterday) {
-        return new AttendanceLog(getSortedAllValueUntil(yesterday));
+    public AttendanceLog findAllSortedUntilYesterday() {
+        return new AttendanceLog(getSortedAllValueUntilYesterday());
     }
 
-    public int calculateCountOf(AttendanceStatus attendanceStatus, LocalDate yesterday) {
-        return (int) getSortedAllValueUntil(yesterday).stream()
+    public int calculateCountOf(AttendanceStatus attendanceStatus) {
+        return (int) getSortedAllValueUntilYesterday().stream()
                 .filter(attendance -> AttendanceStatus.from(attendance) == attendanceStatus)
                 .count();
     }
 
-    public int calculateConsideredAbsentCount(LocalDate yesterday) {
-        return calculateCountOf(AttendanceStatus.ABSENT, yesterday)
-                + (calculateCountOf(AttendanceStatus.LATE, yesterday) / ABSENT_CONSIDERING_UNIT);
+    public int calculateConsideredAbsentCount() {
+        return calculateCountOf(AttendanceStatus.ABSENT)
+                + (calculateCountOf(AttendanceStatus.LATE) / ABSENT_CONSIDERING_UNIT);
     }
 
     public void add(Attendance attendance) {
@@ -70,15 +70,15 @@ public class AttendanceRecord {
                 .orElseThrow(IllegalStateException::new);
     }
 
-    private List<Attendance> getSortedAllValueUntil(LocalDate yesterday) {
-        updateUntil(yesterday);
+    private List<Attendance> getSortedAllValueUntilYesterday() {
+        updateUntilYesterday();
         return value.stream()
                 .sorted(Comparator.comparing(Attendance::getDate))
                 .toList();
     }
 
-    private void updateUntil(LocalDate yesterday) {
-        for (int i = 1; i <= yesterday.getDayOfMonth(); i++) {
+    private void updateUntilYesterday() {
+        for (int i = 1; i <= YESTERDAY.getDayOfMonth(); i++) {
             LocalDate targetDate = LocalDate.of(START_YEAR, START_MONTH, i);
             addWhenNotExistedTo(targetDate);
         }

@@ -43,7 +43,7 @@ public class PenaltyTest {
         // 11, 12 => 결석
         LocalDate yesterday = LocalDate.of(2024, 12, 12);
 
-        AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
+        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(mimi);
         assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.EXPULSION);
     }
 
@@ -61,7 +61,7 @@ public class PenaltyTest {
         // 11, 12 => 결석
         LocalDate yesterday = LocalDate.of(2024, 12, 12);
 
-        AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
+        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(mimi);
         assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.COUNSELING);
     }
 
@@ -79,7 +79,7 @@ public class PenaltyTest {
         // 11, 12 => 결석
         LocalDate yesterday = LocalDate.of(2024, 12, 12);
 
-        AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
+        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(mimi);
         assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.WARNING);
     }
 
@@ -98,7 +98,7 @@ public class PenaltyTest {
         // 지각 3회 => 결석 1회 간주, 총 결석 3회
         LocalDate yesterday = LocalDate.of(2024, 12, 12);
 
-        AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
+        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(mimi);
         assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.COUNSELING);
     }
 }

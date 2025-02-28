@@ -52,7 +52,7 @@ class AttendanceControllerTest {
         attendanceController.run();
 
         String output = outputStream.toString();
-        assertThat(output).contains("12월 03일 화요일 10:00 (출석) -> 15:00 (결석) 수정 완료!");
+        assertThat(output).contains("12월 03일 화요일 10:00 (출석) -> --:-- (결석) 수정 완료!");
         assertThat(output).contains(ERROR_HEADER);
     }
 

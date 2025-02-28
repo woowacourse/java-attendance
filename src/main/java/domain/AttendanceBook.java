@@ -5,7 +5,6 @@ import dto.AttendanceLog;
 import dto.InitialInformation;
 import dto.ModifyingResult;
 import dto.PenaltyInformation;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -36,25 +35,25 @@ public class AttendanceBook {
         return findAttendanceRecordBy(crewName).modify(newAttendance);
     }
 
-    public AttendanceLog findAttendanceLogUntil(CrewName crewName, LocalDate yesterday) {
-        return findAttendanceRecordBy(crewName).findAllSortedUntil(yesterday);
+    public AttendanceLog findAttendanceLogUntilYesterday(CrewName crewName) {
+        return findAttendanceRecordBy(crewName).findAllSortedUntilYesterday();
     }
 
-    public AttendanceCount findCountUntil(CrewName crewName, LocalDate yesterday) {
+    public AttendanceCount findCountUntilYesterday(CrewName crewName) {
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
         return new AttendanceCount(
                 crewName,
-                attendanceRecord.calculateCountOf(AttendanceStatus.ATTEND, yesterday),
-                attendanceRecord.calculateCountOf(AttendanceStatus.LATE, yesterday),
-                attendanceRecord.calculateCountOf(AttendanceStatus.ABSENT, yesterday),
-                attendanceRecord.calculateConsideredAbsentCount(yesterday)
+                attendanceRecord.calculateCountOf(AttendanceStatus.ATTEND),
+                attendanceRecord.calculateCountOf(AttendanceStatus.LATE),
+                attendanceRecord.calculateCountOf(AttendanceStatus.ABSENT),
+                attendanceRecord.calculateConsideredAbsentCount()
         );
     }
 
-    public PenaltyInformation findPenaltyCrewsSortedUntil(LocalDate yesterday) {
+    public PenaltyInformation findPenaltyCrewsSortedUntilYesterday() {
         List<AttendanceCount> penaltyInformation = new ArrayList<>();
         for (CrewName crewName : value.keySet()) {
-            penaltyInformation.add(findCountUntil(crewName, yesterday));
+            penaltyInformation.add(findCountUntilYesterday(crewName));
         }
         penaltyInformation.sort(
                 Comparator.comparingInt(AttendanceCount::consideredAbsentCount)
