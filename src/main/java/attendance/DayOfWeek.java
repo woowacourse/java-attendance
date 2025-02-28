@@ -1,6 +1,5 @@
 package attendance;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
@@ -28,27 +27,6 @@ public enum DayOfWeek  {
         this.attendanceStartingTime = attendanceStartingTime;
     }
 
-    public String decideAttendanceType(LocalTime attendanceTime) {
-        if (dayOfWeekName.equals("토요일") || dayOfWeekName.equals("일요일")) {
-            throw new IllegalArgumentException();
-        }
-
-        if (attendanceTime.isBefore(LocalTime.of(8, 0)) || attendanceTime.isAfter(
-            LocalTime.of(23, 0))) {
-            throw new IllegalArgumentException();
-        }
-        if (attendanceTime.getHour() - attendanceStartingTime.getHour() > 0) {
-            return "결석";
-        }
-        if (attendanceTime.getMinute() - attendanceStartingTime.getMinute() >= ABSENCE_STANDARD) {
-            return "결석";
-        }
-        if (attendanceTime.getMinute() - attendanceStartingTime.getMinute() >= LATE_STANDARD) {
-            return "지각";
-        }
-        return "출석";
-    }
-
     public static DayOfWeek findDayOfWeek(LocalDate currentDate) {
         String findDayOfWeek = currentDate.getDayOfWeek()
             .getDisplayName(TextStyle.FULL, Locale.KOREA);
@@ -56,5 +34,9 @@ public enum DayOfWeek  {
             .filter(result -> findDayOfWeek.equals(result.dayOfWeekName))
             .findAny()
             .get();
+    }
+
+    public LocalTime getAttendanceStartingTime() {
+        return attendanceStartingTime;
     }
 }
