@@ -33,11 +33,11 @@ public class AttendanceController {
     private final EducationDayPolicy policy;
 
     public AttendanceController(InputView inputView, OutputView outputView, AttendanceBook attendanceBook,
-                                CustomClock clock, EducationDayPolicy policy) {
+                                Crews crews, CustomClock clock, EducationDayPolicy policy) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.attendanceBook = attendanceBook;
-        this.crews = attendanceBook.getCrews();
+        this.crews = crews;
         this.clock = clock;
         this.policy = policy;
     }

@@ -1,8 +1,11 @@
 package attendance.loader;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.Crew;
+import attendance.domain.Crews;
 import attendance.domain.EducationDayPolicy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -25,11 +27,13 @@ class AttendanceAssemblerTest {
         AttendanceAssembler assembler = new AttendanceAssembler(new AttendancesLoader(), policy);
 
         // when
-        AttendanceBook attendanceBook = assembler.assembleDatas();
+        AttendanceBook attendanceBook = assembler.getAttendanceBook();
+        Crews crews = assembler.getCrews();
 
         // then
         AttendanceHistory history = attendanceBook.getHistoryByCrew(new Crew("빙티"));
-        Assertions.assertThat(history.getRecords()).hasSize(7);
+        assertThat(history.getRecords()).hasSize(7);
+        assertThat(crews.getAllCrews()).hasSize(5);
     }
 
     @DisplayName("여러 크루의 데이터가 올바르게 변환된다.")
@@ -54,9 +58,9 @@ class AttendanceAssemblerTest {
                 rawDatas);
 
         // then
-        Assertions.assertThat(attendanceBook.getHistoryByCrew(new Crew("쿠키")).getRecords()).hasSize(2);
-        Assertions.assertThat(attendanceBook.getHistoryByCrew(new Crew("빙봉")).getRecords()).hasSize(3);
-        Assertions.assertThat(attendanceBook.getHistoryByCrew(new Crew("빙티")).getRecords()).hasSize(1);
+        assertThat(attendanceBook.getHistoryByCrew(new Crew("쿠키")).getRecords()).hasSize(2);
+        assertThat(attendanceBook.getHistoryByCrew(new Crew("빙봉")).getRecords()).hasSize(3);
+        assertThat(attendanceBook.getHistoryByCrew(new Crew("빙티")).getRecords()).hasSize(1);
     }
 
     private AttendanceBook getCrewAttendanceHistoryMap(Map<String, List<LocalDateTime>> rawDatas) {
@@ -75,8 +79,7 @@ class AttendanceAssemblerTest {
         EducationDayPolicy policy = new EducationDayPolicy(Set.of(LocalDate.of(2024, 12, 25)));
         AttendanceAssembler assembler = new AttendanceAssembler(fakeLoader, policy);
 
-        // when
-        return assembler.assembleDatas();
+        return assembler.getAttendanceBook();
     }
 
 }

@@ -36,10 +36,4 @@ public class AttendanceBook {
         return history;
     }
 
-    public Crews getCrews() {
-        Crews crews = new Crews();
-        crewHistories.keySet().forEach(crews::addCrew);
-        return crews;
-    }
-
 }

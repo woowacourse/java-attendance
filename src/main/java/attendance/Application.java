@@ -2,6 +2,7 @@ package attendance;
 
 import attendance.controller.AttendanceController;
 import attendance.domain.AttendanceBook;
+import attendance.domain.Crews;
 import attendance.domain.CustomClock;
 import attendance.domain.EducationDayPolicy;
 import attendance.loader.AttendanceAssembler;
@@ -19,9 +20,12 @@ public class Application {
 
         InputView inputView = new InputView(clock);
         OutputView outputView = new OutputView();
+
         AttendanceAssembler assembler = new AttendanceAssembler(new AttendancesLoader(), policy);
-        AttendanceBook attendanceBook = assembler.assembleDatas();
-        AttendanceController controller = new AttendanceController(inputView, outputView, attendanceBook, clock,
+        AttendanceBook attendanceBook = assembler.getAttendanceBook();
+        Crews crews = assembler.getCrews();
+
+        AttendanceController controller = new AttendanceController(inputView, outputView, attendanceBook, crews, clock,
                 policy);
 
         controller.run();
