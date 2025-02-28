@@ -2,7 +2,7 @@ package domain;
 
 import static util.Constants.*;
 
-import dto.AttendanceHistory;
+import dto.AttendanceLog;
 import dto.ModifyResult;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -25,8 +25,8 @@ public class AttendanceRecord {
                         attendance.isSameDateWith(targetAttendance));
     }
 
-    public AttendanceHistory findAllSortedUntil(LocalDate yesterday) {
-        return new AttendanceHistory(getSortedAllValueUntil(yesterday));
+    public AttendanceLog findAllSortedUntil(LocalDate yesterday) {
+        return new AttendanceLog(getSortedAllValueUntil(yesterday));
     }
 
     public int calculateCountOf(AttendanceStatus attendanceStatus, LocalDate yesterday) {

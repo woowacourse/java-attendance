@@ -3,7 +3,7 @@ package domain;
 import static util.Constants.ERROR_HEADER;
 
 import dto.AttendanceCount;
-import dto.AttendanceHistory;
+import dto.AttendanceLog;
 import dto.InitialInformation;
 import dto.ModifyResult;
 import dto.PenaltyInformation;
@@ -38,7 +38,7 @@ public class AttendanceBook {
         return findAttendanceRecordBy(crewName).modify(newAttendance);
     }
 
-    public AttendanceHistory findAttendanceHistoryUntil(CrewName crewName, LocalDate yesterday) {
+    public AttendanceLog findAttendanceHistoryUntil(CrewName crewName, LocalDate yesterday) {
         return findAttendanceRecordBy(crewName).findAllSortedUntil(yesterday);
     }
 

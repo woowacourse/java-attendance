@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static util.Constants.ERROR_HEADER;
 
 import dto.AttendanceCount;
-import dto.AttendanceHistory;
+import dto.AttendanceLog;
 import dto.InitialInformation;
 import dto.ModifyResult;
 import dto.PenaltyInformation;
@@ -143,8 +143,8 @@ public class AttendanceBookTest {
         Attendance expectedLastAttendance = new Attendance(
                 LocalDateTime.of(2024, 12, 12, 15, 0));
 
-        AttendanceHistory attendanceHistory = attendanceBook.findAttendanceHistoryUntil(mimi, yesterday);
-        List<Attendance> sortedAttendance = attendanceHistory.sortedValue();
+        AttendanceLog attendanceLog = attendanceBook.findAttendanceHistoryUntil(mimi, yesterday);
+        List<Attendance> sortedAttendance = attendanceLog.sortedValues();
 
         assertThat(sortedAttendance.getFirst()).isEqualTo(firstAttendance);
         assertThat(sortedAttendance.getLast()).isEqualTo(expectedLastAttendance);

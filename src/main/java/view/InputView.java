@@ -12,7 +12,7 @@ public class InputView {
     private final Scanner scanner = new Scanner(System.in);
 
     public String readSelectedMenu() {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREAN);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN);
         String formattedDate = TODAY.format(dateFormatter);
         String formattedDayOfWeek = TODAY.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         String message = "오늘은 " + formattedDate + " " + formattedDayOfWeek + "입니다. 기능을 선택해 주세요.\n"
