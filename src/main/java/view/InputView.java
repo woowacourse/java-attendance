@@ -8,10 +8,10 @@ import util.ExceptionHandler;
 
 public class InputView {
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static final DateTimeFormatter MAIN_MENU_FORMAT
+    private static final DateTimeFormatter MENU_DATE_TIME_FORMAT
             = DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREAN);
 
-    public static String scanMainMenuCommand() {
+    public static String scanMenuCommand() {
         System.out.printf("""
                 오늘은 %s입니다. 기능을 선택해 주세요.
                 1. 출석 확인
@@ -19,7 +19,7 @@ public class InputView {
                 3. 크루별 출석 기록 확인
                 4. 제적 위험자 확인
                 Q. 종료       
-                """, DateTimeUtil.nowDate().format(MAIN_MENU_FORMAT));
+                """, DateTimeUtil.nowDate().format(MENU_DATE_TIME_FORMAT));
         return SCANNER.nextLine();
     }
 

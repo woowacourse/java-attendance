@@ -2,7 +2,7 @@ package controller;
 
 import java.util.Arrays;
 
-public enum MainMenuCommand {
+public enum MenuCommand {
     SAVE_ATTENDANCE_RECORD("1"),
     MODIFY_ATTENDANCE_RECORD("2"),
     PRINT_MONTH_ATTENDANCE_STATISTICS("3"),
@@ -14,13 +14,13 @@ public enum MainMenuCommand {
 
     private final String command;
 
-    MainMenuCommand(String command) {
+    MenuCommand(String command) {
         this.command = command;
     }
 
-    public static MainMenuCommand from(String option) {
+    public static MenuCommand from(String option) {
         return Arrays.stream(values())
-                .filter(mainMenuCommand -> option.equals(mainMenuCommand.command))
+                .filter(menuCommand -> option.equals(menuCommand.command))
                 .findAny()
                 .orElse(NONE);
     }

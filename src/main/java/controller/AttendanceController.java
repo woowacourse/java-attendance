@@ -5,6 +5,8 @@ import controller.dto.MonthAttendanceStatisticsRequest;
 import controller.dto.RiskCrewsRequest;
 import controller.dto.SaveAttendanceRequest;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import service.AttendanceRecordLoader;
 import service.AttendanceService;
 import service.dto.ModifyAttendanceRecordResponse;
@@ -17,36 +19,33 @@ import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
+    private static final Map<MenuCommand, Runnable> COMMAND_HANDLER = new HashMap<>();
     private final AttendanceService attendanceService;
+    private boolean isRunning;
 
     public AttendanceController(AttendanceService attendanceService) {
-        init();
         this.attendanceService = attendanceService;
+
+        isRunning = true;
+        AttendanceRecordLoader.loadAttendanceRecordsFromFile();
+        initCommandHandler();
     }
 
-    private void init() {
-        AttendanceRecordLoader.loadAttendanceRecordsFromFile();
+    private void initCommandHandler() {
+        COMMAND_HANDLER.put(MenuCommand.SAVE_ATTENDANCE_RECORD, this::saveAttendanceRecord);
+        COMMAND_HANDLER.put(MenuCommand.MODIFY_ATTENDANCE_RECORD, this::modifyAttendanceRecord);
+        COMMAND_HANDLER.put(MenuCommand.PRINT_MONTH_ATTENDANCE_STATISTICS, this::printMonthAttendanceStatistics);
+        COMMAND_HANDLER.put(MenuCommand.PRINT_RISK_CREWS, this::printRiskCrews);
+        COMMAND_HANDLER.put(MenuCommand.QUIT, this::exitController);
+        COMMAND_HANDLER.put(MenuCommand.QUIT_SMALL_CASE, this::exitController);
+        COMMAND_HANDLER.put(MenuCommand.NONE, this::printRetryMessage);
     }
 
     public void run() {
-        boolean isRunning = true;
         while (isRunning) {
-            String command = InputView.scanMainMenuCommand();
-            isRunning = executeCommand(command);
+            MenuCommand command = MenuCommand.from(InputView.scanMenuCommand());
+            COMMAND_HANDLER.get(command).run();
         }
-    }
-
-    private boolean executeCommand(String command) {
-        boolean isRunning = true;
-        switch (MainMenuCommand.from(command)) {
-            case SAVE_ATTENDANCE_RECORD -> saveAttendanceRecord();
-            case MODIFY_ATTENDANCE_RECORD -> modifyAttendanceRecord();
-            case PRINT_MONTH_ATTENDANCE_STATISTICS -> printMonthAttendanceStatistics();
-            case PRINT_RISK_CREWS -> printRiskCrews();
-            case QUIT, QUIT_SMALL_CASE -> isRunning = false;
-            default -> System.out.println("존재하지 않는 커맨드입니다.");
-        }
-        return isRunning;
     }
 
     private void saveAttendanceRecord() {
@@ -94,5 +93,13 @@ public class AttendanceController {
 
             OutputView.printRiskCrews(response);
         });
+    }
+
+    private void exitController() {
+        isRunning = false;
+    }
+
+    private void printRetryMessage() {
+        System.out.println("존재하지 않는 커맨드입니다. 다시 입력해주세요.");
     }
 }
