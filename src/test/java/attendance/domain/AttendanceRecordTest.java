@@ -26,6 +26,7 @@ class AttendanceRecordTest {
                 13, 0);
             AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
                 attendanceDate, attendanceTime);
+
             // when
             attendanceRecord.addAttendanceDateTime(attendanceDateTime);
 
@@ -50,7 +51,7 @@ class AttendanceRecordTest {
                 14, 0);
             AttendanceDateTime modifiedAttendanceDateTime = new AttendanceDateTime(
                 attendanceDate, modifiedAttendanceTime);
-            
+
             // when
             attendanceRecord.modifyAttendanceDateTime(
                 modifiedAttendanceDateTime);
@@ -106,6 +107,28 @@ class AttendanceRecordTest {
                     attendanceDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 해당 날짜의 출석 시간이 기록되어 있습니다.");
+        }
+
+        @Test
+        void 해당_날짜의_출석시간이_기록되어있지않다면_수정하지않는다() {
+            // given
+            Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
+            AttendanceRecord attendanceRecord = new AttendanceRecord(
+                attendanceDateTimes);
+
+            AttendanceDate attendanceDate = new AttendanceDate(
+                2024, 12, 2);
+            AttendanceTime attendanceTime = new AttendanceTime(
+                13, 0);
+            AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
+                attendanceDate, attendanceTime);
+
+            // when & then
+            assertThatThrownBy(
+                () -> attendanceRecord.modifyAttendanceDateTime(
+                    attendanceDateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 날짜의 출석 시간이 기록되어 있지 않습니다.");
         }
     }
 }
