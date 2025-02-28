@@ -3,6 +3,7 @@ package attendance.domain;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -12,12 +13,10 @@ public class AttendanceRecordTest {
     public void 출석_기록_추가() {
         //given
         LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 27, 9, 59);
+        List<AttendanceTime> attendanceTimes = List.of(new AttendanceTime(localDateTime));
 
-        //when
-        AttendanceRecord attendanceRecord = new AttendanceRecord();
-        attendanceRecord.addAttendanceTime(localDateTime);
-
-        assertDoesNotThrow(() -> attendanceRecord.addAttendanceTime(localDateTime));
+        //when & then
+        assertDoesNotThrow(() -> new AttendanceRecord(attendanceTimes));
     }
 
     @Test
