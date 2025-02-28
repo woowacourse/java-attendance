@@ -9,6 +9,7 @@ public class Student {
     Map<AttendanceStatus, Long> attendanceStatusCount = new HashMap<>();
 
     public void registerAttendanceRecord(LocalDate todayDate, String attendanceTime) {
+        validateDuplicateAttendance(todayDate);
         attendanceTimeRecords.put(todayDate, LocalTime.parse(attendanceTime));
         AttendanceStatus attendanceStatus = AttendanceStatus.attendanceStatusCalculate(todayDate, attendanceTime);
         attendanceStatusRecords.put(todayDate, attendanceStatus);
@@ -30,20 +31,27 @@ public class Student {
         attendanceStatusCount.put(AttendanceStatus.LATE, lateCount);
         attendanceStatusCount.put(AttendanceStatus.ABSENT, absentCount);
     }
+
+    public long convertTardiesToAbsence() {
+        return findAttendanceStatusCount(AttendanceStatus.LATE)/3;
+    }
+
     private long findAttendanceStatusCount(AttendanceStatus attendanceStatus){
         return attendanceStatusRecords.entrySet().stream()
                 .filter(record -> record.getValue().equals(attendanceStatus))
                 .count();
     }
 
-    public long convertTardiesToAbsence() {
-        return findAttendanceStatusCount(AttendanceStatus.LATE)/3;
-    }
-
     public void nonAttendanceRecordStatusIsAbsent(LocalDate today) {
         if (attendanceTimeRecords.get(today) == null){
             attendanceTimeRecords.put(today, null);
             attendanceStatusRecords.put(today, AttendanceStatus.ABSENT);
+        }
+    }
+
+    private void validateDuplicateAttendance(LocalDate today){
+        if (attendanceTimeRecords.get(today) != null){
+            throw new IllegalArgumentException("[ERROR] 출석기록이 존재합니다.");
         }
     }
 }
