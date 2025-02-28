@@ -19,7 +19,7 @@ public class AttendanceBookTest {
         AttendanceRecord attendanceRecord = new AttendanceRecord(List.of(attendanceTime));
 
         Map<Crew, AttendanceRecord> originalAttendanceBook = new HashMap<>();
-        originalAttendanceBook.put(crew, attendanceRecord);
+        originalAttendanceBook.put(crews.findCrew("우가"), attendanceRecord);
 
         assertDoesNotThrow(() -> new AttendanceBook(originalAttendanceBook));
     }
