@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -67,5 +68,30 @@ class AttendancesTest {
                 () -> assertThat(result.getDateTime()).isEqualTo(updateDateTime),
                 () -> assertThat(result.getState()).isEqualTo(AttendanceState.ATTENDANCE)
         );
+    }
+
+    @Test
+    @DisplayName("특정 이전 날짜의 출석 날짜, 시간과 출결 상황을 반환한다")
+    void 특정_이전_날짜의_출석_날짜_시간과_출결_상황을_반환한다() {
+        // given
+        LocalDate nowDate = LocalDate.now();
+
+        Attendances attendances = new Attendances(List.of(
+                Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(13, 0))),
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
+        ));
+
+        List<Attendance> exceptedRecord = List.of(
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
+        );
+
+        // when
+        List<Attendance> result = attendances.getAttendancesBefore(LocalDate.now());
+
+        // then
+        Assertions.assertThat(result)
+                .containsExactlyElementsOf(exceptedRecord);
     }
 }
