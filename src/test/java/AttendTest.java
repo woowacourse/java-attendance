@@ -3,9 +3,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import domain.AttendStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendTest {
 
@@ -38,6 +41,36 @@ public class AttendTest {
         //when
         AttendStatus actual = attend.checkStatus();
 
+        //then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> provideAttendsAndExpect() {
+        return Stream.of(
+                Arguments.of(
+                        new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                        new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(11, 0)),
+                        true
+                ),
+                Arguments.of(
+                        new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                        new Attend(LocalDate.of(2024, 12, 2)),
+                        true
+                ),
+                Arguments.of(
+                        new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                        new Attend(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                        false
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideAttendsAndExpect")
+    @DisplayName("날짜를 기반으로 Attend가 같은지 판정하는 기능")
+    void equalsUsingOnlyDateNotUseTime(Attend attend, Attend anotherAttend, boolean expected) {
+        //when
+        boolean actual = attend.equalsDate(anotherAttend);
         //then
         assertThat(actual).isEqualTo(expected);
     }

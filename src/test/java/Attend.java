@@ -17,8 +17,12 @@ public class Attend {
         this(date, null);
     }
 
-    public boolean equalsDay(int day) {
+    public boolean equalsDay(final int day) {
         return date.getDayOfMonth() == day;
+    }
+
+    public boolean equalsDate(final Attend attend) {
+        return this.date.equals(attend.date);
     }
 
     public AttendStatus checkStatus() {
