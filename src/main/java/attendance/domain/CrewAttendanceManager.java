@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +34,7 @@ public class CrewAttendanceManager {
 
     public AttendanceRecord getAttendanceRecord(String nickname) {
         Attendances attendances = crewAttendance.get(nickname);
-        List<Attendance> excludingToday = attendances.getAttendanceRecord().getRecordExcludingToday();
-
-        return new AttendanceRecord(excludingToday);
+        List<Attendance> excludingToday = attendances.getAttendancesBefore(LocalDate.now());
+        return new AttendanceRecord(nickname, excludingToday);
     }
 }
