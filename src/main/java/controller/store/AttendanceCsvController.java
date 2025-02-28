@@ -28,7 +28,7 @@ public class AttendanceCsvController implements AttendanceStoreController {
         String crewName = storeLine[0];
         AttendanceLogs crewAttendanceLogs = findCrewAttendanceLogs(crewsAttendanceLogs, crewName);
         String dateTime = storeLine[1];
-        crewAttendanceLogs.registerLog(Convertor.convertStringToLocalDateTime(dateTime));
+        crewAttendanceLogs.registerLog(Convertor.convertStringToDateTime(dateTime));
     }
 
     private static AttendanceLogs findCrewAttendanceLogs(Map<Crew, AttendanceLogs> crewsAttendanceLogs, String crewName) {
