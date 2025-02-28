@@ -1,9 +1,11 @@
 package util;
 
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 public class DateTimeUtil {
@@ -22,6 +24,22 @@ public class DateTimeUtil {
     public static LocalDate nowDate() {
         return LocalDate.of(2025, 2, 28);
 //        return LocalDate.now();
+    }
+
+    public static LocalTime convertToLocalTime(String time) {
+        try {
+            return LocalTime.parse(time, TIME_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException(time + ": 올바르지 않은 시간 형식입니다.");
+        }
+    }
+
+    public static LocalDate convertToLocalDate(LocalDate date, int day) {
+        try {
+            return date.withDayOfMonth(day);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException(day + ": 이 달에 존재하지 않는 날짜(일)입니다.");
+        }
     }
 
     public static boolean isInRange(LocalTime startTime, LocalTime endTime, LocalTime targetTime) {
