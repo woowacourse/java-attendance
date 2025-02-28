@@ -16,21 +16,21 @@ import java.util.Optional;
 public class AttendanceManager {
 
     private final AttendanceReader reader;
-    private Attendances attendances;
+    private final Attendances attendances;
 
     public AttendanceManager(AttendanceReader reader) {
         this.reader = reader;
-        readAttendance();
+        this.attendances = readAttendance();
     }
 
-    private void readAttendance() {
+    private Attendances readAttendance() {
         List<AttendanceFileDto> read = reader.read();
         Attendances newAttendances = new Attendances();
         for (AttendanceFileDto attendanceFileDto : read) {
             newAttendances.addAttendance(attendanceFileDto.name(),
                 new Attendance(attendanceFileDto.attendanceDate(), attendanceFileDto.attendanceTime()));
         }
-        this.attendances = newAttendances;
+        return newAttendances;
     }
 
     public void validateNameExists(String name) {
