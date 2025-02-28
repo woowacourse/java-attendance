@@ -13,4 +13,11 @@ public class AttendanceManager {
     public Map<Crew, AttendanceBook> getAttendanceBooks() {
         return attendanceBooks;
     }
+
+    public Crew findByNickname(final Nickname nickname) {
+        return attendanceBooks.keySet().stream()
+                .filter(crew -> crew.getNickname().equals(nickname))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 닉네임입니다."));
+    }
 }

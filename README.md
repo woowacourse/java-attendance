@@ -1,3 +1,4 @@
+
 #출석
 [[출석 미션 copy]]
 # java-attendance
@@ -25,8 +26,8 @@
 #### 닉네임
 - [x] format: 한글만 가능
 - [x] length: 2 -  4
-- [ ] exception
-  - [ ] 등록되지 않은 닉네임의 입력
+- [x] exception
+  - [x] 등록되지 않은 닉네임의 입력
 
 #### LocalDate
 - [x] format: HH:mm
