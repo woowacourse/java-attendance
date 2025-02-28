@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.*;
@@ -12,6 +13,8 @@ import static org.assertj.core.api.Assertions.*;
 class CheckInHistoryTest {
 
     CheckInHistory history;
+    FixedDateProvider fixedDateProvider = FixedDateProvider.of(LocalDate.of(2024, 12, 13));
+    LocalDate now = fixedDateProvider.now();
 
     @BeforeEach
     void setUp() {
@@ -69,5 +72,41 @@ class CheckInHistoryTest {
         assertThatThrownBy(() -> history.modifyCheckInTime(modifyDate, modifyTime))
                 .isInstanceOf(AppException.class)
                 .hasMessageContaining(AppException.PREFIX);
+    }
+
+    @Test
+    @DisplayName("출석 횟수를 정상적으로 카운트")
+    void countPresenceTest() {
+        //given
+        //when
+        int absenceCount = history.countPresence(now);
+        //then
+        assertThat(absenceCount).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("지각 횟수를 정상적으로 카운트")
+    void countLateTest() {
+        //given
+        CheckInDate checkInDate = CheckInDate.of(2024, 12, 4);
+        CheckInTime checkInTime = CheckInTime.of(10, 6);
+        history.checkIn(checkInDate, checkInTime);
+        //when
+        int lateCount = history.getLateCount(now);
+        //then
+        assertThat(lateCount).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("결석 횟수를 정상적으로 카운트")
+    void countAbsenceTest() {
+        //given
+        CheckInDate checkInDate = CheckInDate.of(2024, 12, 2);
+        CheckInTime checkInTime = CheckInTime.of(13, 31);
+        history.checkIn(checkInDate, checkInTime);
+        //when
+        int absenceCount = history.getAbsenceCount(now);
+        //then
+        assertThat(absenceCount).isEqualTo(8);
     }
 }
