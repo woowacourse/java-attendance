@@ -36,4 +36,30 @@ class AttendancePenaltyTest {
             // then
             assertThat(penalty).isEqualTo(AttendancePenalty.WEEDING);
         }
+
+        @ParameterizedTest
+        @CsvSource(
+            {
+                "3, 2",
+                "6, 2"
+            }
+        )
+        void 지각3회를_결석1회로_간주하여_3회이상일시_면담으로_간주한다(
+            int lateCount,
+            int absenceCount
+        ) {
+            // given
+            Map<AttendanceStatus, Integer> attendanceStatusCount = Map.of(
+                AttendanceStatus.LATE, lateCount,
+                AttendanceStatus.ABSENCE, absenceCount
+            );
+
+            // when
+            AttendancePenalty penalty = AttendancePenalty.from(
+                attendanceStatusCount);
+
+            // then
+            assertThat(penalty).isEqualTo(AttendancePenalty.INTERVIEW);
+        }
+    }
 }

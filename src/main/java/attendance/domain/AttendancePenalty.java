@@ -41,6 +41,10 @@ public enum AttendancePenalty {
             return WEEDING;
         }
 
+        if (absenceCount >= INTERVIEW.threshold) {
+            return INTERVIEW;
+        }
+
         return NONE;
     }
 }
