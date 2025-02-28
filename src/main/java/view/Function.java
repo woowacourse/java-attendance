@@ -1,5 +1,7 @@
 package view;
 
+import static view.ErrorMessage.NOTICE_FUNCTION_NUMBER_IS_NOT_EXISTED;
+
 import java.util.Arrays;
 
 public enum Function {
@@ -19,6 +21,6 @@ public enum Function {
         return Arrays.stream(Function.values())
                 .filter(selection -> selection.selection.equals(functionSelection))
                 .findAny()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException(NOTICE_FUNCTION_NUMBER_IS_NOT_EXISTED.getFormat()));
     }
 }
