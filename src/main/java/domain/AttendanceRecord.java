@@ -5,6 +5,7 @@ import static util.Constants.*;
 import dto.AttendanceLog;
 import dto.ModifyingResult;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +14,10 @@ import java.util.Set;
 
 public class AttendanceRecord {
     private static final String ATTENDANCE_ALREADY_EXISTED_ERROR = "이미 출석 기록이 존재합니다. 수정 메뉴를 이용해주세요.";
+    private static final LocalDate YESTERDAY = TODAY.minusDays(1);
+    private static final int ABSENT_CONSIDERING_UNIT = 3;
+    public static final LocalTime ABSENT_CONSIDERING_TIME = LocalTime.of(15, 0);
+
     private final Set<Attendance> value;
 
     public AttendanceRecord() {
@@ -79,7 +84,7 @@ public class AttendanceRecord {
 
     private void updateUntilYesterday() {
         for (int i = 1; i <= YESTERDAY.getDayOfMonth(); i++) {
-            LocalDate targetDate = LocalDate.of(START_YEAR, START_MONTH, i);
+            LocalDate targetDate = LocalDate.of(TODAY.getYear(), TODAY.getMonth(), i);
             addWhenNotExistedTo(targetDate);
         }
     }

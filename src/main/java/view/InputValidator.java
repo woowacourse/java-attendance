@@ -1,6 +1,7 @@
 package view;
 
 import static util.Constants.ERROR_HEADER;
+import static util.Constants.TIME_FORMAT;
 import static util.Constants.TODAY;
 
 import domain.Attendance;
@@ -21,13 +22,12 @@ public class InputValidator {
     private static final String NOT_RUNNING_TIME_ERROR = "캠퍼스 운영시간이 아닙니다.";
     private static final String NAME_NOT_EXISTED_ERROR = "존재하지 않는 닉네임입니다.";
 
-    private static final String VALID_TIME_FORMAT = "HH:mm";
     private static final String MENU_PATTERN = "[1234Qq]";
     private static final int MIN_NAME_LENGTH = 2;
     private static final int MAX_NAME_LENGTH = 4;
 
     public static void validateTime(String time) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(VALID_TIME_FORMAT);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
         try {
             LocalTime localTime = LocalTime.parse(time, dateTimeFormatter);
             if(Attendance.isInvalidTime(localTime)) {

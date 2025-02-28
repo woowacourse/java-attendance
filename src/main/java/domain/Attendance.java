@@ -1,15 +1,18 @@
 package domain;
 
-import static util.Constants.*;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 import util.Constants;
 
 public class Attendance {
+    private static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
+    private static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
+    private static final List<Integer> HOLIDAY = List.of(25);
+
     private final LocalDateTime value;
 
     public Attendance(LocalDateTime value) {
@@ -52,6 +55,6 @@ public class Attendance {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY
                 || dayOfWeek == DayOfWeek.SUNDAY
-                || Constants.HOLIDAY.contains(date.getDayOfMonth());
+                || HOLIDAY.contains(date.getDayOfMonth());
     }
 }

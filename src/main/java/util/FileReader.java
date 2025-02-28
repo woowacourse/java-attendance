@@ -23,6 +23,7 @@ public class FileReader {
     private static final int DATE_INDEX = 1;
     private static final int TIME_INDEX = 2;
 
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
     private final Map<CrewName, AttendanceRecord> initialInformation;
 
     public FileReader() {
