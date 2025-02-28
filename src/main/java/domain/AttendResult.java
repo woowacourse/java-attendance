@@ -35,6 +35,33 @@ public class AttendResult {
         }
     }
 
+    private boolean contains(Attend targetAttend) {
+        return attendResult.stream()
+                .anyMatch(attend -> attend.equalsDate(targetAttend));
+    }
+
+    public Attend edit(final Attend targetAttend) {
+        Attend before = findAttendByDay(targetAttend.getDate());
+        if (before != null) {
+            attendResult.remove(before);
+            attendResult.add(targetAttend);
+            return before;
+        }
+        attendResult.add(targetAttend);
+        return new Attend(targetAttend.getDate());
+    }
+
+    public List<Attend> getAttendResult() {
+        return attendResult;
+    }
+
+    public Attend findAttendByDay(LocalDate date) {
+        return attendResult.stream()
+                .filter(attend -> attend.getDate().equals(date))
+                .findAny()
+                .orElse(null);
+    }
+
     @Override
     public boolean equals(final Object object) {
         if (object == null || getClass() != object.getClass()) {

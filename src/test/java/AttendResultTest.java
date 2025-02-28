@@ -1,4 +1,5 @@
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import domain.Attend;
 import domain.AttendResult;
@@ -76,5 +77,61 @@ public class AttendResultTest {
 
         //then
         assertThat(attendResult).isEqualTo(new AttendResult(actualAttend));
+    }
+
+    @Test
+    @DisplayName("대상 일자의 출석을 변경하는 기능")
+    void changeAttend() {
+        //given
+        List<Attend> attend = List.of(
+                new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(13, 0)),
+                new Attend(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                new Attend(LocalDate.of(2024, 12, 4), LocalTime.of(10, 0))
+        );
+        AttendResult attendResult = new AttendResult(attend);
+        Attend beforeAttend = attend.getFirst();
+        Attend targetAttend = new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0));
+
+        //when
+        Attend actual = attendResult.edit(targetAttend);
+        List<Attend> actualAttend = new ArrayList<>(attend);
+        actualAttend.removeFirst();
+        actualAttend.add(targetAttend);
+        AttendResult expectedResult = new AttendResult(actualAttend);
+
+        //then
+        assertAll(
+                () -> assertThat(actual).isEqualTo(beforeAttend),
+                () -> assertThat(attendResult).isEqualTo(expectedResult)
+        );
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 대상 일자의 출석은 추가 후, LocalDate 만 가지는 Attend 를 리턴한다.")
+    void addAttendWhenIsNotExist() {
+        //given
+        List<Attend> attend = List.of(
+                new Attend(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                new Attend(LocalDate.of(2024, 12, 4), LocalTime.of(10, 0))
+        );
+        LocalDate targetDate = LocalDate.of(2024, 12, 2);
+        AttendResult attendResult = new AttendResult(attend);
+        Attend beforeAttend = new Attend(targetDate);
+        Attend targetAttend = new Attend(targetDate, LocalTime.of(10, 0));
+
+        //when
+        Attend actual = attendResult.edit(targetAttend);
+        List<Attend> actualAttend = new ArrayList<>(attend);
+        actualAttend.add(targetAttend);
+        AttendResult expectedResult = new AttendResult(actualAttend);
+
+        System.out.println(attendResult.getAttendResult());
+        System.out.println(actualAttend);
+
+        //then
+        assertAll(
+                () -> assertThat(actual).isEqualTo(beforeAttend),
+                () -> assertThat(attendResult).isEqualTo(expectedResult)
+        );
     }
 }
