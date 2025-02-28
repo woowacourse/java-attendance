@@ -1,6 +1,7 @@
 package function;
 
 import static constants.AttendanceCriteria.OPERATING_START;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.AttendanceBook;
 import domain.DecemberCalendar;
@@ -44,5 +45,9 @@ public class CheckPenaltyCrewTest {
     @DisplayName("전날까지의 크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
     void Using_Crew_Attendance_Records_To_Checking_Penalty_Crews() {
         List<PenaltyCrewResponse> responses = attendanceBook.checkPenaltyCrew();
+
+        assertThat(responses.getFirst().penalty()).isEqualTo("제적");
+        assertThat(responses.get(1).penalty()).isEqualTo("면담");
+        assertThat(responses.getLast().penalty()).isEqualTo("경고");
     }
 }
