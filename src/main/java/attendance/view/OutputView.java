@@ -77,4 +77,12 @@ public class OutputView {
         }
         System.out.printf("%n%s 대상자입니다.%n", attendanceWarningLevel.getKoreanLabel());
     }
+
+    public void printError(String errorMessage) {
+        System.out.printf("%n[ERROR] %s%n", errorMessage);
+    }
+
+    public void printTimeFormatError() {
+        System.out.println("\n[ERROR] 시간은 24시 형식을 사용해야 합니다. (HH:mm)");
+    }
 }

@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -33,6 +34,18 @@ public class AttendanceController {
     public void start(LocalDate baseDate) {
         AttendanceLogs attendanceLogs = loadAttendanceLogs();
         NicknameRoster nicknameRoster = new NicknameRoster(attendanceLogs.getAllNicknames());
+        try {
+            startAttendanceInteraction(baseDate, attendanceLogs, nicknameRoster);
+        } catch (IllegalArgumentException e) {
+            outputView.printError(e.getMessage());
+        } catch (DateTimeParseException e) {
+            outputView.printTimeFormatError();
+        }
+    }
+
+    private void startAttendanceInteraction(LocalDate baseDate,
+                                            AttendanceLogs attendanceLogs,
+                                            NicknameRoster nicknameRoster) {
         boolean shouldContinue;
         do {
             outputView.printDate(baseDate);
@@ -128,7 +141,8 @@ public class AttendanceController {
         return LocalDate.of(baseDate.getYear(), baseDate.getMonth(), targetDate);
     }
 
-    private void displayAttendanceLogs(LocalDate baseDate, AttendanceLogs attendanceLogs, NicknameRoster nicknameRoster) {
+    private void displayAttendanceLogs(LocalDate baseDate, AttendanceLogs attendanceLogs,
+                                       NicknameRoster nicknameRoster) {
         Nickname nickname = new Nickname(inputView.readNickname());
         if (nicknameRoster.isMissing(nickname)) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
