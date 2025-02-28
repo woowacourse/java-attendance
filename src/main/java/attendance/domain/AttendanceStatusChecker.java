@@ -2,6 +2,10 @@ package attendance.domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceStatusChecker {
 
@@ -33,5 +37,12 @@ public class AttendanceStatusChecker {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTENDANCE;
+    }
+
+    public static Map<AttendanceStatus, Long> checkStatuses(List<AttendanceDateTime> attendanceDateTimes) {
+        Map<AttendanceStatus, Long> attendanceStatuses = attendanceDateTimes.stream()
+                .map(AttendanceStatusChecker::checkStatus)
+                .collect(Collectors.groupingBy(attendanceStatus -> attendanceStatus, Collectors.counting()));
+        return attendanceStatuses;
     }
 }

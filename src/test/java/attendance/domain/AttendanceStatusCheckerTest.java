@@ -55,10 +55,10 @@ public class AttendanceStatusCheckerTest {
         AttendanceStatusChecker attendanceStatusChecker = new AttendanceStatusChecker();
 
         // When
-        Map<AttendanceStatus, Integer> attendanceStatuses = attendanceStatusChecker.checkStatuses(attendanceDateTimes);
+        Map<AttendanceStatus, Long> attendanceStatuses = attendanceStatusChecker.checkStatuses(attendanceDateTimes);
 
         // Then
         assertThat(attendanceStatuses)
-                .isEqualTo(Map.of(AttendanceStatus.ATTENDANCE, 2, AttendanceStatus.LATE, 3, AttendanceStatus.ABSENT, 2));
+                .isEqualTo(Map.of(AttendanceStatus.ATTENDANCE, 2L, AttendanceStatus.LATE, 3L, AttendanceStatus.ABSENT, 2L));
     }
 }
