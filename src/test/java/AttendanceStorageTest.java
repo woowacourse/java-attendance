@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public class AttendanceTest {
+public class AttendanceStorageTest {
     @DisplayName("출석 기록이 존재하지 않는 경우 새로운 출석을 등록할 수 있다.")
     @Test
     void test1() {
