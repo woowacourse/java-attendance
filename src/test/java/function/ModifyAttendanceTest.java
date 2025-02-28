@@ -41,8 +41,10 @@ public class ModifyAttendanceTest {
 
         // then
         assertThat(response.date()).isEqualTo(MONDAY_DATE);
-        assertThat(response.time()).isEqualTo(LATE_MONDAY);
-        assertThat(response.attendanceStatus()).isEqualTo("지각");
+        assertThat(response.previousTime()).isEqualTo(ATTEND_MONDAY);
+        assertThat(response.modifiedTime()).isEqualTo(LATE_MONDAY);
+        assertThat(response.previousStatus()).isEqualTo("출석");
+        assertThat(response.modifiedStatus()).isEqualTo("지각");
     }
 
     @Test

@@ -78,12 +78,19 @@ public class AttendanceBook {
         }
     }
 
-    public ModifyAttendanceResponse modifyAttendance(String name, LocalDate date, LocalTime time) {
-        validateTimeIsInTheRangeOfOperation(time);
+    public ModifyAttendanceResponse modifyAttendance(String name, LocalDate date, LocalTime modifiedTime) {
+        validateTimeIsInTheRangeOfOperation(modifiedTime);
         validateIsDateFuture(date);
-        findCrewByName(name).addNewTimeLog(date, time);
-        String attendanceStatus = validateTrainingDay(date, time);
-        return new ModifyAttendanceResponse(date, time, attendanceStatus);
+
+        Crew foundCrew = findCrewByName(name);
+        foundCrew.gratifyTimeLogs(); // 수정하려는 날짜가 기록이 없는 경우 time 값에 null 추가
+
+        LocalTime previousTime = foundCrew.findTimeByDate(date);// 이전 시간 가져오기
+        String previousStatus = validateTrainingDay(date, previousTime); // 변경 전 출결 현황
+
+        foundCrew.addNewTimeLog(date, modifiedTime); // 시간 변경하기
+        String modifiedStatus = validateTrainingDay(date, modifiedTime); // 변경 후 출결 현황
+        return new ModifyAttendanceResponse(date, previousTime, modifiedTime, previousStatus, modifiedStatus);
     }
 
     public void validateIsDateFuture(LocalDate date) {

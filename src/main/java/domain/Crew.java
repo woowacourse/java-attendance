@@ -49,4 +49,8 @@ public class Crew {
             }
         }
     }
+
+    public LocalTime findTimeByDate(LocalDate date) {
+        return timeLogs.get(date);
+    }
 }

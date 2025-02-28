@@ -5,7 +5,9 @@ import java.time.LocalTime;
 
 public record ModifyAttendanceResponse(
         LocalDate date,
-        LocalTime time,
-        String attendanceStatus
+        LocalTime previousTime,
+        LocalTime modifiedTime,
+        String previousStatus,
+        String modifiedStatus
 ) {
 }
