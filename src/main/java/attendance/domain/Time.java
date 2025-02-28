@@ -4,6 +4,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class Time {
 
@@ -45,12 +47,16 @@ public class Time {
                 .withMinute(modifyTime.getMinute());
     }
 
-    public AttendanceStatus getStatus(int year, int month, int day) {
-        return AttendanceStatus.getStatusByTime(attendanceTime.toLocalTime(), LocalDate.of(year, month, day));
+    public AttendanceStatus getStatus() {
+        return AttendanceStatus.getStatusByTime(attendanceTime);
     }
 
     public LocalDate getLocalDate() {
         return attendanceTime.toLocalDate();
+    }
+
+    public LocalDateTime getAttendanceTime() {
+        return attendanceTime;
     }
 
     public int getMonth() {
@@ -61,8 +67,8 @@ public class Time {
         return attendanceTime.getDayOfMonth();
     }
 
-    public DayOfWeek getDayOfWeek() {
-        return attendanceTime.getDayOfWeek();
+    public String getDayOfWeek() {
+        return attendanceTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 
     public int getHour() {

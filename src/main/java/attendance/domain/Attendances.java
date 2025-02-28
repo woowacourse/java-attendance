@@ -33,9 +33,9 @@ public class Attendances {
                 .toList();
     }
 
-    public long getStatusCount(AttendanceStatus status, String crewName, int year, int month, int day) {
-        return findAttendancesByCrewName(crewName, year, month).stream()
-                .filter(attendance -> attendance.checkStatus(year, month, day).equals(status))
+    public long getStatusCount(AttendanceStatus status, String crewName, LocalDate localDate) {
+        return findAttendancesByCrewName(crewName, localDate.getYear(), localDate.getMonthValue()).stream()
+                .filter(attendance -> attendance.checkStatus().equals(status))
                 .count();
     }
 }

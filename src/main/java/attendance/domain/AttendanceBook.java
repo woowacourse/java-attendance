@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 public class AttendanceBook {
@@ -18,20 +19,23 @@ public class AttendanceBook {
         }
     }
 
-    public long getCountAcademicStatus(AttendanceStatus attendanceStatus, String crewName, int year, int month,
-                                       int day) {
-        return attendances.getStatusCount(attendanceStatus, crewName, year, month, day);
+    public long getCountAcademicStatus(AttendanceStatus attendanceStatus, String crewName, LocalDate localDate) {
+        return attendances.getStatusCount(attendanceStatus, crewName, localDate);
     }
 
-    public AcademicStatus getAcademicStatusByCrewName(String crewName, int year, int month, int day) {
+    public AcademicStatus getAcademicStatusByCrewName(String crewName, LocalDate localDate) {
 
-        long late = getCountAcademicStatus(AttendanceStatus.LATE, crewName, year, month, day);
-        long absent = getCountAcademicStatus(AttendanceStatus.ABSENT, crewName, year, month, day);
+        long late = getCountAcademicStatus(AttendanceStatus.LATE, crewName, localDate);
+        long absent = getCountAcademicStatus(AttendanceStatus.ABSENT, crewName, localDate);
 
         return AcademicStatus.getStatus(late, absent);
     }
 
     public void addAttendance(Attendance attendance) {
         attendances.add(attendance);
+    }
+
+    public AttendanceStatus getAttendanceStatus(Attendance attendance) {
+        return null;
     }
 }

@@ -31,8 +31,8 @@ public class Attendance {
         return attendanceTime.isSameYearAndMonth(year, month);
     }
 
-    public AttendanceStatus checkStatus(int year, int month, int day) {
-        return attendanceTime.getStatus(year, month, day);
+    public AttendanceStatus checkStatus() {
+        return attendanceTime.getStatus();
     }
 
     @Override

@@ -70,7 +70,7 @@ class TimeTest {
         time.modify(modifyTime);
 
         // then
-        assertThat(time.getStatus(2025, 2, 28)).isEqualTo(AttendanceStatus.LATE);
+        assertThat(time.getStatus()).isEqualTo(AttendanceStatus.LATE);
 
     }
 

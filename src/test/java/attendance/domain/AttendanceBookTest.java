@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +25,7 @@ class AttendanceBookTest {
         name = "체체";
         names.add(name);
 
-        Attendance attendance1 = new Attendance("체체", new Time(LocalDateTime.of(2025, 2, 24, 10, 6)));
+        Attendance attendance1 = new Attendance("체체", new Time(LocalDateTime.of(2025, 2, 21, 10, 6)));
         Attendance attendance2 = new Attendance("체체", new Time(LocalDateTime.of(2025, 2, 25, 10, 6)));
         Attendance attendance3 = new Attendance("체체", new Time(LocalDateTime.of(2025, 2, 26, 10, 6)));
         Attendance attendance4 = new Attendance("체체", new Time(LocalDateTime.of(2025, 2, 27, 10, 6)));
@@ -70,7 +71,7 @@ class AttendanceBookTest {
         // given
 
         // when
-        long totalCount = attendanceBook.getCountAcademicStatus(AttendanceStatus.LATE, "체체", 2025, 2, 25);
+        long totalCount = attendanceBook.getCountAcademicStatus(AttendanceStatus.LATE, "체체", LocalDate.of(2025, 2, 28));
 
         // then
         assertThat(totalCount).isEqualTo(5);
@@ -83,7 +84,7 @@ class AttendanceBookTest {
         // given
 
         // when
-        AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCrewName("체체", 2025, 2, 28);
+        AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCrewName("체체", LocalDate.of(2025, 2, 28));
 
         // then
         assertThat(academicStatus).isEqualTo(AcademicStatus.INTERVIEW);
