@@ -1,4 +1,5 @@
-import domain.OperationTime;
+package domain;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.IntStream;
