@@ -4,6 +4,7 @@ import domain.AttendanceBook;
 import domain.AttendanceSystem;
 import dto.AttendanceRecordDto;
 import dto.AttendanceResultDto;
+import dto.RiskCrewDto;
 import util.Parser;
 import view.FileInput;
 import view.Input;
@@ -46,10 +47,26 @@ public class AttendanceController {
         if (menuSelection.equals("2")) {
             editAttendance();
         }
-        if(menuSelection.equals("3")) {
+        if (menuSelection.equals("3")) {
             checkAttendanceRecord();
         }
-        return true;
+        if (menuSelection.equals("4")) {
+            checkRiskCrews();
+        }
+        return !menuSelection.equals("Q");
+    }
+
+    private void checkRiskCrews() {
+        List<RiskCrewDto> riskCrews = attendanceSystem.getRiskCrews().entrySet().stream()
+                .map(entry -> new RiskCrewDto(
+                        entry.getKey(),
+                        entry.getValue().getAbsenceCount(attendanceSystem.TODAY),
+                        entry.getValue().getTardyCount(attendanceSystem.TODAY),
+                        entry.getValue().getRiskStatus(attendanceSystem.TODAY)
+                ))
+                .toList();
+        output.printRiskCrews(riskCrews);
+
     }
 
     private void checkAttendanceRecord() {

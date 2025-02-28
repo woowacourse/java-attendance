@@ -11,6 +11,8 @@ public enum AttendanceStatus {
 
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     private static final LocalTime START_TIME = LocalTime.of(10, 0);
+    public static LocalTime DEFAULT_TIME = LocalTime.of(0, 0);
+
 
     private static LocalTime startTime(LocalDate date) {
         if (date.getDayOfWeek().equals(DayOfWeek.MONDAY)) {

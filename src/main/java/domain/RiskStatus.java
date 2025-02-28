@@ -15,7 +15,7 @@ public enum RiskStatus {
     }
 
     public static RiskStatus getRiskStatus(int absenceCount, int tardyCount) {
-        int riskValue = absenceCount + tardyCount / TARDY_TO_ABSENCE_RATIO;
+        int riskValue = calculateRiskValue(absenceCount, tardyCount);
         return Arrays.stream(RiskStatus.values())
                 .sorted(Comparator
                         .comparingInt(RiskStatus::getRiskValue)
@@ -26,7 +26,11 @@ public enum RiskStatus {
 
     }
 
-    private int getRiskValue() {
+    public static int calculateRiskValue(int absenceCount, int tardyCount) {
+        return absenceCount + tardyCount / TARDY_TO_ABSENCE_RATIO;
+    }
+
+    public int getRiskValue() {
         return riskValue;
     }
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceSystem {
     public LocalDate TODAY = LocalDate.of(2024, 12, 17);
@@ -29,10 +30,6 @@ public class AttendanceSystem {
         return attendanceBooks.get(name).getAttendanceTimeByDate(date);
     }
 
-    public LocalTime getAttendanceRecordToday(String name) {
-        return attendanceBooks.get(name).getAttendanceTimeByDate(TODAY);
-    }
-
     public void editAttendance(String name, LocalDate date, LocalTime time) {
         if (hasNoName(name)) {
             attendanceBooks.put(name, new AttendanceBook());
@@ -50,11 +47,19 @@ public class AttendanceSystem {
 
     public int getAttendCount(String name) {
         return attendanceBooks.get(name).getAttendCount(TODAY);
-
     }
 
     public RiskStatus getRisk(String name) {
         return attendanceBooks.get(name).getRiskStatus(TODAY);
+    }
+
+    public Map<String, AttendanceBook> getRiskCrews() {
+        return attendanceBooks.entrySet().stream()
+                .filter(entry -> !entry.getValue().getRiskStatus(TODAY).equals(RiskStatus.NONE))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
     }
 
     public AttendanceBook findByName(String name) {
