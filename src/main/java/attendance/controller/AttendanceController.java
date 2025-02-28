@@ -4,10 +4,13 @@ import attendance.domain.*;
 import attendance.domain.AttendanceStatusChecker.AttendanceStatus;
 import attendance.view.AttendanceConfirmView;
 import attendance.view.AttendanceModifyView;
+import attendance.view.CrewAttendanceCheckView;
 import attendance.view.FileLineReader;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,16 +20,19 @@ public class AttendanceController {
     public static final String ATTENDANCE_FILE_NAME = "attendances.csv";
     private final AttendanceConfirmView attendanceConfirmView;
     private final AttendanceModifyView attendanceModifyView;
+    private final CrewAttendanceCheckView crewAttendanceCheckView;
 
     public AttendanceController(final AttendanceConfirmView attendanceConfirmView,
-                                final AttendanceModifyView attendanceModifyView) {
+                                final AttendanceModifyView attendanceModifyView,
+                                final CrewAttendanceCheckView crewAttendanceCheckView) {
         this.attendanceConfirmView = attendanceConfirmView;
         this.attendanceModifyView = attendanceModifyView;
+        this.crewAttendanceCheckView = crewAttendanceCheckView;
     }
 
     public void run() {
         AttendanceBook attendanceBook = initializeAttendanceBook();
-        modifyAttendance(attendanceBook);
+        checkCrewAttendance(attendanceBook);
     }
 
     private AttendanceBook initializeAttendanceBook() {
@@ -63,5 +69,31 @@ public class AttendanceController {
         AttendanceStatus originalAttendanceStatus = AttendanceStatusChecker.checkStatus(originalDateTime);
         AttendanceStatus newAttendanceStatus = AttendanceStatusChecker.checkStatus(newDateTime);
         attendanceModifyView.printAttendanceModifyResult(originalDateTime, originalAttendanceStatus, newDateTime, newAttendanceStatus);
+    }
+
+    private void checkCrewAttendance(AttendanceBook attendanceBook) {
+        String nickname = crewAttendanceCheckView.readCrewNickname();
+        Crew crew = new Crew(nickname);
+        attendanceBook.validateRegisteredCrew(crew);
+        List<AttendanceDateTime> crewAttendanceDateTimes = findCrewAttendancesThisMonth(attendanceBook, crew);
+        crewAttendanceCheckView.printCrewAttendances(crew, crewAttendanceDateTimes);
+    }
+
+    private static List<AttendanceDateTime> findCrewAttendancesThisMonth(AttendanceBook attendanceBook, Crew crew) {
+        LocalDate today = LocalDate.now();
+        List<AttendanceDateTime> crewAttendanceDateTimes = new ArrayList<>();
+        for (int day=1; day<=today.lengthOfMonth(); day++) {
+            try {
+                crewAttendanceDateTimes.add(attendanceBook.findAttendanceDateTimeByCrewAndDay(crew, day));
+            } catch (IllegalArgumentException exception) {
+                AttendanceDateTime absentDateTime = AttendanceDateTime.createAbsentDateTime(today.withDayOfMonth(day));
+                LocalDateTime absendLocalDateTime = absentDateTime.getLocalDateTime();
+                if (AttendanceDateTime.isWeekend(absendLocalDateTime) || Holiday.isHoliday(absendLocalDateTime)) {
+                    continue;
+                }
+                crewAttendanceDateTimes.add(absentDateTime);
+            }
+        }
+        return crewAttendanceDateTimes;
     }
 }
