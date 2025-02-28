@@ -13,7 +13,7 @@ public class AttendanceBook {
     }
 
     public boolean has(String findNickname) {
-        return false;
+        return crews.stream().anyMatch(crew -> crew.equals(findNickname));
     }
 
     private void validate(List<String> crewNames) {

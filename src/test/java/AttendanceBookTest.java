@@ -17,11 +17,11 @@ public class AttendanceBookTest {
     @Test
     void test2() {
         // given
-        AttendanceBook attendanceBook = new AttendanceBook(List.of("수양", "빙봉", "쿠키"));
-        String findNickname = "수양";
+        String nickname = "수양";
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(nickname, "빙봉", "쿠키"));
 
         // when
-        boolean isContain = attendanceBook.has(findNickname);
+        boolean isContain = attendanceBook.has(nickname);
 
         // then
         Assertions.assertThat(isContain).isTrue();
