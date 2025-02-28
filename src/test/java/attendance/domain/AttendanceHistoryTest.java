@@ -10,50 +10,43 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class AttendanceHistoryTest {
-    @Nested
-    class findAttendance {
-        @DisplayName("주어진_날짜의_출석을_찾아_반환한다")
-        @Test
-        void should_ReturnAttendance_WhenSameDateExists() {
-            //given
-            AttendanceHistory attendanceHistory = new AttendanceHistory();
-            LocalDate date = LocalDate.of(2024, 12, 26);
-            LocalTime time = LocalTime.of(10, 0);
-            attendanceHistory.addAttendance(new Attendance(date, time, LATE));
+    @DisplayName("주어진_날짜의_출석을_찾아_반환할_수_있다")
+    @Test
+    void findAttendance() {
+        //given
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        LocalDate date = LocalDate.of(2024, 12, 26);
+        LocalTime time = LocalTime.of(10, 0);
+        Attendance attendance = new Attendance(date, time, LATE);
+        attendanceHistory.addAttendance(attendance);
 
-            //when
-            Optional<Attendance> result = attendanceHistory.findAttendance(date);
+        //when
+        Optional<Attendance> result = attendanceHistory.findAttendance(date);
 
-            //then
-            assertAll(
-                    () -> assertThat(result).isNotEmpty(),
-                    () -> assertThat(result.get().isDateEquals(date)).isTrue(),
-                    () -> assertThat(result.get().getStatus()).isEqualTo(LATE)
-            );
-        }
+        //then
+        assertThat(result.get()).isEqualTo(attendance);
+    }
 
-        @DisplayName("주어진_날짜의_출석이_없으면_null_을_반환한다")
-        @Test
-        void should_ReturnEmpty_WhenSameDateNotExists() {
-            //given
-            AttendanceHistory attendanceHistory = new AttendanceHistory();
-            LocalDate date = LocalDate.of(2024, 12, 26);
+    @DisplayName("주어진_날짜의_출석이_없으면_Empty_를_반환할_수_있다")
+    @Test
+    void should_ReturnEmpty_WhenSameDateNotExists() {
+        //given
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        LocalDate date = LocalDate.of(2024, 12, 26);
 
-            //when
-            Optional<Attendance> result = attendanceHistory.findAttendance(date);
+        //when
+        Optional<Attendance> result = attendanceHistory.findAttendance(date);
 
-            //then
-            assertThat(result).isEmpty();
-        }
+        //then
+        assertThat(result).isEmpty();
     }
 
     @DisplayName("출석을_수정하고_수정된_출석을_반환할_수_있다")
     @Test
-    void should_ReturnModifiedAttendance_WhenModifyAttendance() {
+    void modifyAttendance() {
         //given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
         LocalDate date = LocalDate.of(2024, 12, 26);
@@ -81,7 +74,7 @@ class AttendanceHistoryTest {
 
     @DisplayName("오늘_이전까지의_출석_통계를_반환할_수_있다")
     @Test
-    void should_ReturnAttendanceStatistics() {
+    void getAttendanceStatistics() {
         //given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
         attendanceHistory.addAttendance(new Attendance(
