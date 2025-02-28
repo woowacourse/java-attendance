@@ -2,6 +2,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class PenaltyTypeTest {
     @Test
@@ -32,5 +34,16 @@ public class PenaltyTypeTest {
 
         // when & then
         assertThat(PenaltyType.findByAbsenceCount(absenceCount)).isEqualTo(PenaltyType.BAN);
+    }
+
+    @DisplayName("패널티 타입이 DEFAULT 가 아닌 경우를 판단한다")
+    @ParameterizedTest
+    @EnumSource(PenaltyType.class)
+    void test4(PenaltyType penaltyType) {
+        if (penaltyType == PenaltyType.DEFAULT) {
+            assertThat(penaltyType.isAtExpulsionCandidateState()).isFalse();
+            return;
+        }
+        assertThat(penaltyType.isAtExpulsionCandidateState()).isTrue();
     }
 }

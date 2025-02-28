@@ -22,4 +22,8 @@ enum PenaltyType {
                 .findAny()
                 .orElse(PenaltyType.DEFAULT);
     }
+
+    public boolean isAtExpulsionCandidateState() {
+        return this != DEFAULT;
+    }
 }

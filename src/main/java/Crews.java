@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.List;
 
 public class Crews {
@@ -12,6 +13,10 @@ public class Crews {
                 .filter(crew -> crew.hasSameName(name))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
+    }
+
+    public List<Crew> getAll() {
+        return Collections.unmodifiableList(crews);
     }
 }
 
