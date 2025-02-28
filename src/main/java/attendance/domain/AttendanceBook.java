@@ -41,10 +41,11 @@ public class AttendanceBook {
                 .findFirst();
     }
 
-    public List<Attendance> findAttendancesByNickname(String nickname) {
-        return attendances.stream()
+    public CrewAttendances findAttendancesByNickname(String nickname) {
+        List<Attendance> attendances = this.attendances.stream()
                 .filter(attendance -> attendance.isEqualNickname(nickname))
                 .toList();
+        return new CrewAttendances(nickname, attendances);
     }
 
     @Override

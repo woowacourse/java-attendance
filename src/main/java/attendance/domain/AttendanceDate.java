@@ -51,6 +51,11 @@ public class AttendanceDate {
         return attendanceDate.getDayOfWeek();
     }
 
+    public boolean isBeforeAndEqual(AttendanceDate attendanceDate) {
+        return this.attendanceDate.isBefore(attendanceDate.attendanceDate) ||
+                this.attendanceDate.isEqual(attendanceDate.attendanceDate);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
@@ -67,11 +72,6 @@ public class AttendanceDate {
     @Override
     public int hashCode() {
         return Objects.hashCode(attendanceDate);
-    }
-
-    public boolean isBeforeAndEqual(AttendanceDate attendanceDate) {
-        return this.attendanceDate.isBefore(attendanceDate.attendanceDate) ||
-                this.attendanceDate.isEqual(attendanceDate.attendanceDate);
     }
 
     private enum Holiday {

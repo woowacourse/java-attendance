@@ -1,7 +1,7 @@
-package domain;
+package attendance.domain;
 
-import attendance.domain.Attendance;
 import java.util.List;
+import java.util.Objects;
 
 public class CrewAttendances {
 
@@ -23,5 +23,25 @@ public class CrewAttendances {
     private boolean isAllAttendancesMatchNickname(String nickname, List<Attendance> attendances) {
         return attendances.stream()
                 .allMatch(attendance -> attendance.isEqualNickname(nickname));
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+
+        CrewAttendances that = (CrewAttendances) object;
+        return Objects.equals(nickname, that.nickname) && Objects.equals(attendances, that.attendances);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(nickname);
+        result = 31 * result + Objects.hashCode(attendances);
+        return result;
     }
 }

@@ -3,6 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.domain.Attendance;
+import attendance.domain.CrewAttendances;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
