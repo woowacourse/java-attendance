@@ -1,6 +1,7 @@
 package attendance.loader;
 
 import attendance.domain.AttendanceHistory;
+import attendance.domain.Crew;
 import attendance.domain.EducationDayPolicy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,10 +24,10 @@ class AttendanceAssemblerTest {
         AttendanceAssembler assembler = new AttendanceAssembler(new AttendancesLoader(), policy);
 
         // when
-        Map<String, AttendanceHistory> assembleDatas = assembler.assembleDatas();
+        Map<Crew, AttendanceHistory> assembleDatas = assembler.assembleDatas();
 
         // then
-        AttendanceHistory history = assembleDatas.get("빙티");
+        AttendanceHistory history = assembleDatas.get(new Crew("빙티"));
         Assertions.assertThat(history.getRecords()).hasSize(7);
     }
 
@@ -48,6 +49,16 @@ class AttendanceAssemblerTest {
                 LocalDateTime.of(2024, 12, 13, 10, 7)
         ));
 
+        Map<Crew, AttendanceHistory> assembleDatas = getCrewAttendanceHistoryMap(
+                rawDatas);
+
+        // then
+        Assertions.assertThat(assembleDatas.get(new Crew("쿠키")).getRecords()).hasSize(2);
+        Assertions.assertThat(assembleDatas.get(new Crew("빙봉")).getRecords()).hasSize(3);
+        Assertions.assertThat(assembleDatas.get(new Crew("빙티")).getRecords()).hasSize(1);
+    }
+
+    private Map<Crew, AttendanceHistory> getCrewAttendanceHistoryMap(Map<String, List<LocalDateTime>> rawDatas) {
         AttendancesLoader fakeLoader = new AttendancesLoader() {
             @Override
             public void load() {
@@ -64,12 +75,7 @@ class AttendanceAssemblerTest {
         AttendanceAssembler assembler = new AttendanceAssembler(fakeLoader, policy);
 
         // when
-        Map<String, AttendanceHistory> assembleDatas = assembler.assembleDatas();
-
-        // then
-        Assertions.assertThat(assembleDatas.get("쿠키").getRecords()).hasSize(2);
-        Assertions.assertThat(assembleDatas.get("빙봉").getRecords()).hasSize(3);
-        Assertions.assertThat(assembleDatas.get("빙티").getRecords()).hasSize(1);
+        return assembler.assembleDatas();
     }
 
 }

@@ -17,17 +17,17 @@ class AttendanceBookTest {
     @Test
     void test_addCrewRecord() {
         // given
-        Map<String, AttendanceHistory> map = new HashMap<>();
-        String crewName = "빙티";
-        map.put(crewName, new AttendanceHistory());
+        Map<Crew, AttendanceHistory> map = new HashMap<>();
+        Crew crew = new Crew("빙티");
+        map.put(crew, new AttendanceHistory());
         AttendanceBook attendanceBook = new AttendanceBook(map);
         AttendanceRecord record = TestUtil.createRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
 
         // when
-        attendanceBook.add(crewName, record);
+        attendanceBook.add(crew, record);
 
         // then
-        AttendanceHistory history = attendanceBook.getHistoryByName(crewName);
+        AttendanceHistory history = attendanceBook.getHistoryByCrew(crew);
         assertThat(history.getRecords()).hasSize(1);
         assertThat(history.getRecords().contains(record)).isTrue();
     }
@@ -36,21 +36,21 @@ class AttendanceBookTest {
     @Test
     void test_modifyCrewRecord() {
         // given
-        Map<String, AttendanceHistory> map = new HashMap<>();
-        String crewName = "빙티";
+        Map<Crew, AttendanceHistory> map = new HashMap<>();
+        Crew crew = new Crew("빙티");
         AttendanceHistory history = new AttendanceHistory();
-        map.put(crewName, history);
+        map.put(crew, history);
         AttendanceBook attendanceBook = new AttendanceBook(map);
         AttendanceRecord record = TestUtil.createRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceBook.add(crewName, record);
+        attendanceBook.add(crew, record);
 
         // when
         LocalDate targetDate = LocalDate.of(2024, 12, 2);
         LocalTime modifyTime = LocalTime.of(13, 6);
-        attendanceBook.modify(crewName, TestUtil.WoowaDatefrom(targetDate), modifyTime);
+        attendanceBook.modify(crew, TestUtil.WoowaDatefrom(targetDate), modifyTime);
 
         // then
-        AttendanceHistory updatedHistory = attendanceBook.getHistoryByName(crewName);
+        AttendanceHistory updatedHistory = attendanceBook.getHistoryByCrew(crew);
         assertThat(updatedHistory.findRecordByDate(TestUtil.WoowaDatefrom(targetDate)).get().getAttendanceStatus())
                 .isEqualTo(AttendanceStatus.LATE);
     }
@@ -59,15 +59,15 @@ class AttendanceBookTest {
     @Test
     void test_findCrewHistory() {
         // given
-        Map<String, AttendanceHistory> map = new HashMap<>();
-        String crewName = "빙티";
-        map.put(crewName, new AttendanceHistory()); // 미리 해당 크루의 기록을 등록
+        Map<Crew, AttendanceHistory> map = new HashMap<>();
+        Crew crew = new Crew("빙티");
+        map.put(crew, new AttendanceHistory()); // 미리 해당 크루의 기록을 등록
         AttendanceBook attendanceBook = new AttendanceBook(map);
         AttendanceRecord record = TestUtil.createRecord(LocalDateTime.of(2024, 12, 3, 11, 0));
-        attendanceBook.add(crewName, record);
+        attendanceBook.add(crew, record);
 
         // when
-        AttendanceHistory history = attendanceBook.getHistoryByName(crewName);
+        AttendanceHistory history = attendanceBook.getHistoryByCrew(crew);
 
         // then
         assertThat(history.getRecords()).hasSize(1);

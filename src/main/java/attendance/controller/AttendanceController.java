@@ -33,11 +33,11 @@ public class AttendanceController {
     private final EducationDayPolicy policy;
 
     public AttendanceController(InputView inputView, OutputView outputView, AttendanceBook attendanceBook,
-                                Crews crews, CustomClock clock, EducationDayPolicy policy) {
+                                CustomClock clock, EducationDayPolicy policy) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.attendanceBook = attendanceBook;
-        this.crews = crews;
+        this.crews = attendanceBook.getCrews();
         this.clock = clock;
         this.policy = policy;
     }
@@ -75,7 +75,7 @@ public class AttendanceController {
             LocalTime entryTime = inputView.readEntryTime();
 
             AttendanceRecord record = new AttendanceRecord(woowaDate, entryTime);
-            attendanceBook.add(crew.getName(), record);
+            attendanceBook.add(crew, record);
 
             outputView.displayAttendanceResult(record);
         });
@@ -86,12 +86,12 @@ public class AttendanceController {
             Crew crew = crews.findByName(inputView.readModifyName());
             WoowaDate targetDate = createTargetDate();
 
-            Optional<AttendanceRecord> findOldRecord = attendanceBook.findRecordBy(crew.getName(), targetDate);
+            Optional<AttendanceRecord> findOldRecord = attendanceBook.findRecordBy(crew, targetDate);
             AttendanceRecord oldRecord = findOldRecord.map(AttendanceRecord::copy).orElse(null);
 
             LocalTime modifyTime = inputView.readModifyTime();
-            attendanceBook.modify(crew.getName(), targetDate, modifyTime);
-            AttendanceRecord newRecord = attendanceBook.findRecordBy(crew.getName(), targetDate).get();
+            attendanceBook.modify(crew, targetDate, modifyTime);
+            AttendanceRecord newRecord = attendanceBook.findRecordBy(crew, targetDate).get();
 
             outputView.displayModifyResult(oldRecord, newRecord);
         });
@@ -106,7 +106,7 @@ public class AttendanceController {
         process(() -> {
             Crew crew = crews.findByName(inputView.readName());
 
-            AttendanceHistory history = attendanceBook.getHistoryByName(crew.getName());
+            AttendanceHistory history = attendanceBook.getHistoryByCrew(crew);
 
             AttendanceReport report = history.toReport(clock.getMonthStartDay(), clock.nowDate(), policy);
             outputView.displayCrewHistory(CrewHistoryDto.of(crew, report));
@@ -116,7 +116,7 @@ public class AttendanceController {
     private void processCheckWarning() {
         List<WarningResultDto> warningDtos = crews.getAllCrews().values().stream()
                 .map(crew -> {
-                    AttendanceHistory history = attendanceBook.getHistoryByName(crew.getName());
+                    AttendanceHistory history = attendanceBook.getHistoryByCrew(crew);
                     AttendanceReport report = history.toReport(clock.getMonthStartDay(), clock.nowDate(), policy);
                     return WarningResultDto.of(crew, report);
                 })
