@@ -18,7 +18,7 @@ class PenaltyTest {
 
         assertThat(Penalty.findPenaltyMessageByAttendanceStatusCount(0, Penalty.PENALTY_THRESHOLD_INTERVIEW))
                 .isEqualTo(Penalty.INTERVIEW.getMessage());
-        
+
         assertThat(Penalty.findPenaltyMessageByAttendanceStatusCount(0, Penalty.PENALTY_THRESHOLD_EXPULSION))
                 .isEqualTo(Penalty.EXPULSION.getMessage());
     }

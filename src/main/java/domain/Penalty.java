@@ -1,10 +1,14 @@
 package domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum Penalty {
-    WARNING("경고"),
-    INTERVIEW("면담"),
     EXPULSION("제적"),
-    NONE("해당 없음");
+    INTERVIEW("면담"),
+    WARNING("경고"),
+    NONE("해당 없음"),
+    ;
 
     public static final int PENALTY_THRESHOLD_EXPULSION = 6;
     public static final int PENALTY_THRESHOLD_INTERVIEW = 3;
@@ -18,8 +22,12 @@ public enum Penalty {
     }
 
     public static String findPenaltyMessageByAttendanceStatusCount(int lateCount, int absentCount) {
+        return findPenaltyByAttendanceStatusCount(lateCount, absentCount).message;
+    }
+
+    public static Penalty findPenaltyByAttendanceStatusCount(int lateCount, int absentCount) {
         int penaltyPoint = calculatePenaltyPoint(lateCount, absentCount);
-        return findPenaltyByPenaltyPoint(penaltyPoint).message;
+        return findPenaltyByPenaltyPoint(penaltyPoint);
     }
 
     private static int calculatePenaltyPoint(int lateCount, int absentCount) {
@@ -38,6 +46,13 @@ public enum Penalty {
         }
         return NONE;
     }
+
+    public static List<Penalty> valuesWithoutNone() {
+        List<Penalty> values = new ArrayList<>(List.of(Penalty.values()));
+        values.remove(Penalty.NONE);
+        return values;
+    }
+
 
     public String getMessage() {
         return message;

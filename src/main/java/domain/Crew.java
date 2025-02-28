@@ -56,6 +56,16 @@ public class Crew {
         return AttendanceStatus.ABSENT;
     }
 
+    public Penalty getPenalty() {
+        int lateCount = countAttendanceStatusInDecember(AttendanceStatus.LATE);
+        int absentCount = countAttendanceStatusInDecember(AttendanceStatus.ABSENT);
+        return Penalty.findPenaltyByAttendanceStatusCount(lateCount, absentCount);
+    }
+
+    public boolean hasPenalty(Penalty penalty) {
+        return getPenalty() == penalty;
+    }
+
     public boolean hasName(String input) {
         return name.equals(input);
     }
@@ -66,5 +76,9 @@ public class Crew {
 
     public boolean hasAttendanceRecordWithDate(LocalDate date) {
         return attendanceRecords.containsKey(date);
+    }
+
+    public String getName() {
+        return name;
     }
 }

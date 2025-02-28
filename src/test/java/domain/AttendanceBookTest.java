@@ -3,11 +3,10 @@ package domain;
 import static domain.AttendanceStatus.ABSENT_THRESHOLD_MINUTES;
 import static domain.AttendanceStatus.EXCEPT_MONDAY_ATTEND_TIME;
 import static domain.AttendanceStatus.LATE_THRESHOLD_MINUTES;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,11 +47,11 @@ class AttendanceBookTest {
         attendanceBook.putAttendanceRecordByName(testCrewName, LocalDate.of(2024, 12, 5),
                 EXCEPT_MONDAY_ATTEND_TIME.plusMinutes(ABSENT_THRESHOLD_MINUTES + 1));
 
-        Assertions.assertThat(attendanceBook.getAttendanceStatusCountByName(testCrewName, AttendanceStatus.ATTEND))
+        assertThat(attendanceBook.getAttendanceStatusCountByName(testCrewName, AttendanceStatus.ATTEND))
                 .isEqualTo(1);
-        Assertions.assertThat(attendanceBook.getAttendanceStatusCountByName(testCrewName, AttendanceStatus.LATE))
+        assertThat(attendanceBook.getAttendanceStatusCountByName(testCrewName, AttendanceStatus.LATE))
                 .isEqualTo(1);
-        Assertions.assertThat(attendanceBook.getAttendanceStatusCountByName(testCrewName, AttendanceStatus.ABSENT))
+        assertThat(attendanceBook.getAttendanceStatusCountByName(testCrewName, AttendanceStatus.ABSENT))
                 .isEqualTo(29);
     }
 }

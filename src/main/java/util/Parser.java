@@ -25,4 +25,3 @@ public class Parser {
         return time.format(DateTimeFormatter.ofPattern("hh:mm"));
     }
 }
-

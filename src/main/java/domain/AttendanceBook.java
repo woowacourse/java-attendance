@@ -23,10 +23,7 @@ public class AttendanceBook {
     }
 
     public String getPenaltyMessageByName(String name) {
-        Crew crew = findCrewByName(name);
-        int lateCount = crew.countAttendanceStatusInDecember(AttendanceStatus.LATE);
-        int absentCount = crew.countAttendanceStatusInDecember(AttendanceStatus.ABSENT);
-        return Penalty.findPenaltyMessageByAttendanceStatusCount(lateCount, absentCount);
+        return getPenaltyByName(name).getMessage();
     }
 
     private Crew findCrewByName(String name) {
@@ -56,5 +53,16 @@ public class AttendanceBook {
         Crew crew = findCrewByName(name);
 
         return crew.findTimeByDate(date);
+    }
+
+    public Penalty getPenaltyByName(String name) {
+        Crew crew = findCrewByName(name);
+        return crew.getPenalty();
+    }
+
+    public List<Crew> findCrewsByPenalty(Penalty penalty) {
+        return crews.stream()
+                .filter(crew -> crew.hasPenalty(penalty))
+                .toList();
     }
 }

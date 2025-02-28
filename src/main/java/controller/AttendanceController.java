@@ -7,13 +7,17 @@ import static domain.Crew.SYSTEM_YEAR;
 
 import domain.AttendanceBook;
 import domain.AttendanceStatus;
+import domain.Crew;
+import domain.Penalty;
+import dto.AttendanceRecordResponse;
 import dto.AttendanceStatusCountResponse;
 import dto.CheckAttendanceResponse;
-import dto.GetAttendanceRecordsResponse;
-import dto.GetAttendanceRecordsResponse.AttendanceRecordDTO;
+import dto.CrewsWithPenaltyResponse;
 import dto.ModifyAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import util.Parser;
@@ -51,24 +55,22 @@ public class AttendanceController {
         );
     }
 
-    public GetAttendanceRecordsResponse getAttendanceRecords(String name) {
-        return new GetAttendanceRecordsResponse(
-                IntStream.rangeClosed(DECEMBER_DAYS_START, DECEMBER_DAYS_END)
-                        .mapToObj(day -> createAttendanceRecordDTOByName(name, day))
-                        .collect(Collectors.toList()));
+    public List<AttendanceRecordResponse> getAttendanceRecordResponses(String name) {
+        return IntStream.rangeClosed(DECEMBER_DAYS_START, DECEMBER_DAYS_END)
+                .mapToObj(day -> createAttendanceRecordResponseByName(name, day))
+                .collect(Collectors.toList());
     }
 
-    private AttendanceRecordDTO createAttendanceRecordDTOByName(String name, int day) {
+    private AttendanceRecordResponse createAttendanceRecordResponseByName(String name, int day) {
         LocalDate date = LocalDate.of(SYSTEM_YEAR, SYSTEM_MONTH, day);
         LocalTime time = attendanceBook.findTimeByNameAndDate(name, date);
 
-        return new AttendanceRecordDTO(
+        return new AttendanceRecordResponse(
                 Parser.parseDateInKorean(date),
                 Parser.parseTimeToString(time),
                 AttendanceStatus.findByAttendDateAndTime(date, time).getMessage()
         );
     }
-
 
     public AttendanceStatusCountResponse getAttendanceStatusCountResponseByName(String name) {
         return new AttendanceStatusCountResponse(
@@ -76,5 +78,30 @@ public class AttendanceController {
                 attendanceBook.getAttendanceStatusCountByName(name, AttendanceStatus.LATE),
                 attendanceBook.getAttendanceStatusCountByName(name, AttendanceStatus.ABSENT)
         );
+    }
+
+    public String getPenaltyResponseByName(String name) {
+        int lateCount = attendanceBook.getAttendanceStatusCountByName(name, AttendanceStatus.LATE);
+        int absentCount = attendanceBook.getAttendanceStatusCountByName(name, AttendanceStatus.ABSENT);
+
+        return Penalty.findPenaltyMessageByAttendanceStatusCount(lateCount, absentCount);
+    }
+
+    public List<CrewsWithPenaltyResponse> getCrewsWithPenaltyResponse() {
+        List<CrewsWithPenaltyResponse> mergedResponses = new ArrayList<>();
+
+        Penalty.valuesWithoutNone().stream()
+                .map(this::createCrewsWithPenaltyResponseByPenalty)
+                .forEach(mergedResponses::addAll);
+
+        return mergedResponses;
+    }
+
+    private List<CrewsWithPenaltyResponse> createCrewsWithPenaltyResponseByPenalty(Penalty penalty) {
+        List<Crew> penaltyCrews = attendanceBook.findCrewsByPenalty(penalty);
+
+        return penaltyCrews.stream()
+                .map(CrewsWithPenaltyResponse::fromCrew)
+                .toList();
     }
 }
