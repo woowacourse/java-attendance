@@ -28,7 +28,8 @@ public enum DayOfWeek {
     }
 
     public String decideAttendanceType(LocalTime attendanceTime) {
-        if (attendanceTime.isBefore(LocalTime.of(8, 0))) {
+        if (attendanceTime.isBefore(LocalTime.of(8, 0)) || attendanceTime.isAfter(
+            LocalTime.of(23, 0))) {
             throw new IllegalArgumentException();
         }
         if (attendanceTime.getHour() - attendanceStartingTime.getHour() > 0) {
@@ -44,7 +45,8 @@ public enum DayOfWeek {
     }
 
     public static DayOfWeek findDayOfWeek(LocalDate currentDate) {
-        String findDayOfWeek = currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA);
+        String findDayOfWeek = currentDate.getDayOfWeek()
+            .getDisplayName(TextStyle.FULL, Locale.KOREA);
         return Arrays.stream(DayOfWeek.values())
             .filter(result -> findDayOfWeek.equals(result.dayOfWeekName))
             .findAny()

@@ -92,4 +92,11 @@ public class DayOfWeekTest {
         LocalTime attendanceTime = LocalTime.of(7, 0);
         assertThatThrownBy(() -> MONDAY.decideAttendanceType(attendanceTime));
     }
+
+    @DisplayName("캠퍼스 운영시간이 아닌 23:01에 출석 할 경우, 예외가 발생해야 한다.")
+    @Test
+    void given_attendance_time_23_01_then_throw_exception() {
+        LocalTime attendanceTime = LocalTime.of(23, 1);
+        assertThatThrownBy(() -> MONDAY.decideAttendanceType(attendanceTime));
+    }
 }
