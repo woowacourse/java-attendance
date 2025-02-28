@@ -120,7 +120,7 @@ class AttendancesTest {
         String crewName = "체체";
         Attendance attendance2 = new Attendance(crewName, new Time(LocalDateTime.of(2025, 2, 26, 10, 31)));
         Attendance attendance3 = new Attendance(crewName, new Time(LocalDateTime.of(2025, 2, 25, 10, 31)));
-        Attendance attendance4 = new Attendance(crewName, new Time(LocalDateTime.of(2025, 2, 24, 10, 31)));
+        Attendance attendance4 = new Attendance(crewName, new Time(LocalDateTime.of(2025, 2, 20, 10, 31)));
         Attendance attendance5 = new Attendance(crewName, new Time(LocalDateTime.of(2025, 2, 21, 10, 31)));
         attendances.add(attendance2);
         attendances.add(attendance3);
