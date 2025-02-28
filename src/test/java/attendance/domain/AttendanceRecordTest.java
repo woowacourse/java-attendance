@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,6 +37,23 @@ public class AttendanceRecordTest {
 
         //then
         Assertions.assertThat(attendanceRecord.getAttendanceRecord().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void 내부_리스트_수정_불가능_확인() {
+        //given
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 27, 9, 59);
+        LocalDateTime localDateTime2 = LocalDateTime.of(2025, 2, 28, 10, 31);
+        List<AttendanceTime> originalList = new ArrayList<>();
+        originalList.add(new AttendanceTime(localDateTime));
+        originalList.add(new AttendanceTime(localDateTime2));
+
+        AttendanceRecord attendanceRecord = new AttendanceRecord(originalList);
+
+        //when & then
+        assertThrows(UnsupportedOperationException.class, () -> {
+            attendanceRecord.getAttendanceRecord().add(new AttendanceTime(LocalDateTime.of(2025, 3, 1, 10, 31)));
+        });
     }
 
     @Test
