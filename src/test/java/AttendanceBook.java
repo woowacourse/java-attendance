@@ -12,7 +12,15 @@ public class AttendanceBook {
 
     public Attendance check(String nickname, LocalDate date, LocalTime time) {
         Attendance attendance = new Attendance(nickname, date, time);
+        if (isAlreadyAttend(nickname, attendance)) {
+            throw new IllegalArgumentException();
+        }
 
         return attendance;
+    }
+
+    private boolean isAlreadyAttend(String nickname, Attendance attendance) {
+        return crewsAttendanceRecords.stream()
+                .anyMatch(crew -> crew.equals(attendance));
     }
 }
