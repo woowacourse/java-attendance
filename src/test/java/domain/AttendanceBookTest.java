@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -119,5 +120,27 @@ public class AttendanceBookTest {
 
         var findRecord = book.findRecordByCrewAndDate(crew, dateToModify).orElseThrow();
         assertThat(findRecord).isEqualTo(newRecord);
+    }
+
+    @Test
+    void 출석을_하지_않은_날을_결석으로_간주하여_대상_크루의_출석을_불러온다() {
+        book.attend(crew, AttendanceDateTime.of(2025, 2, 17, 13, 0));
+        book.attend(crew, AttendanceDateTime.of(2025, 2, 18, 10, 10));
+        book.attend(crew, AttendanceDateTime.of(2025, 2, 19, 10, 31));
+
+        var fromMonday = LocalDate.of(2025, 2, 17);
+        var toFriday = LocalDate.of(2025, 2, 21);
+        var attendances = book.listAttendancesOfCrew(crew, fromMonday, toFriday);
+
+        assertAll(
+            () -> assertThat(attendances).hasSize(5),
+            () -> assertThat(attendances).containsExactly(
+                AttendanceDateTime.of(2025, 2, 17, 13, 0),
+                AttendanceDateTime.of(2025, 2, 18, 10, 10),
+                AttendanceDateTime.of(2025, 2, 19, 10, 31),
+                AttendanceDateTime.ofAbsence(LocalDate.of(2025, 2, 20)),
+                AttendanceDateTime.ofAbsence(LocalDate.of(2025, 2, 21))
+            )
+        );
     }
 }

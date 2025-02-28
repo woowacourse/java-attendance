@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,6 +25,11 @@ public class AttendanceBook {
 
     public AttendanceRecords getRecordsOfCrew(Crew crew) {
         return crewRecords.getOrDefault(crew, new AttendanceRecords());
+    }
+
+    public List<AttendanceDateTime> listAttendancesOfCrew(Crew crew, LocalDate fromInclusive, LocalDate endInclusive) {
+        AttendanceRecords records = crewRecords.getOrDefault(crew, new AttendanceRecords());
+        return records.getRecordsWithMissingDates(fromInclusive, endInclusive);
     }
 
     public Optional<AttendanceDateTime> findRecordByCrewAndDate(Crew crew, LocalDate date) {

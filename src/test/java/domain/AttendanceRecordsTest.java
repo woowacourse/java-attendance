@@ -76,13 +76,13 @@ public class AttendanceRecordsTest {
 
     @Test
     void 두_날짜_사이_등교날짜들을_기록이_없는_날짜를_결석으로_간주하여_조회할_수_있다() {
-        var fromMonday = LocalDate.of(2025, 2, 17);
-        var toSunday = LocalDate.of(2025, 2, 23);
         records.add(AttendanceDateTime.of(2025, 2, 17, 13, 0));
         records.add(AttendanceDateTime.of(2025, 2, 18, 10, 10));
         records.add(AttendanceDateTime.of(2025, 2, 19, 10, 31));
         // [월] 출석, [화] 지각, [수] 늦어서 결석, [목,금] 출석하지 않음, [토,일] 등교일 아님
 
+        var fromMonday = LocalDate.of(2025, 2, 17);
+        var toSunday = LocalDate.of(2025, 2, 23);
         List<AttendanceDateTime> dates = records.getRecordsWithMissingDates(fromMonday, toSunday);
 
         assertAll(
