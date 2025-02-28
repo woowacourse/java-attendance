@@ -8,9 +8,13 @@ import java.util.Objects;
 public class Attendance {
 
     private final LocalDateTime dateTime;
+    private final AttendanceState state;
 
     public Attendance(final LocalDateTime dateTime) {
         this.dateTime = dateTime;
+
+        int overTime = ClassTime.calculateAttendanceDifference(dateTime);
+        this.state = AttendanceState.evaluate(overTime);
     }
 
     public boolean isSameDate(final LocalDate date) {
@@ -23,6 +27,10 @@ public class Attendance {
 
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    public AttendanceState getState() {
+        return state;
     }
 
     @Override
