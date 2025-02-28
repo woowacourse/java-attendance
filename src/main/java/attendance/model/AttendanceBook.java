@@ -36,4 +36,9 @@ public class AttendanceBook {
         List<AttendanceTime> crewAttendances = attendances.get(name);
         return crewAttendances.stream().anyMatch(attendanceTime -> attendanceTime.isSameDay(localDate));
     }
+
+    public List<AttendanceTime> getAttendancesByName(final String name) {
+
+        return attendances.get(name);
+    }
 }
