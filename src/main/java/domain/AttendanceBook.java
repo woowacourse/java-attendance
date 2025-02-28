@@ -44,18 +44,7 @@ public class AttendanceBook {
                 .anyMatch(crew -> crew.isMyName(name));
     }
 
-    public CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
-        validateTimeIsInTheRangeOfOperation(time);
-        String attendanceStatus = validateTrainingDay(date, time);
-
-        Crew foundCrew = findCrewByName(name);
-        validateAlreadyAttendance(foundCrew, date);
-
-        foundCrew.addNewTimeLog(date, time);
-        return new CheckAttendanceResponse(time, attendanceStatus);
-    }
-
-    private static void validateTimeIsInTheRangeOfOperation(LocalTime time) {
+    public static void validateTimeIsInTheRangeOfOperation(LocalTime time) {
         if (time.isBefore(OPERATING_START.getTime()) || time.isAfter(OPERATING_END.getTime())) {
             throw new IllegalArgumentException(ErrorMessage.NOTICE_TIME_IS_NOT_A_CAMPUS_OPERATING_TIME.getFormat());
         }
@@ -72,10 +61,27 @@ public class AttendanceBook {
         return attendanceStatus;
     }
 
+    public void validateIsDateFuture(LocalDate date) {
+        if (date.isAfter(LocalDate.now())) { // 현재보다 미래 시점인 경우
+            throw new IllegalArgumentException(ErrorMessage.NOTICE_FUTURE_CAN_NOT_BE_MODIFIED.getFormat());
+        }
+    }
+
     public static void validateAlreadyAttendance(Crew foundCrew, LocalDate date) {
         if (foundCrew.isDateExisted(date)) { // 날짜가 존재한다면
             throw new IllegalArgumentException(ErrorMessage.NOTICE_ATTENDANCE_ALREADY_EXISTED.getFormat());
         }
+    }
+
+    public CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
+        validateTimeIsInTheRangeOfOperation(time);
+        String attendanceStatus = validateTrainingDay(date, time);
+
+        Crew foundCrew = findCrewByName(name);
+        validateAlreadyAttendance(foundCrew, date);
+
+        foundCrew.addNewTimeLog(date, time);
+        return new CheckAttendanceResponse(time, attendanceStatus);
     }
 
     public ModifyAttendanceResponse modifyAttendance(String name, LocalDate date, LocalTime modifiedTime) {
@@ -91,12 +97,6 @@ public class AttendanceBook {
         foundCrew.addNewTimeLog(date, modifiedTime); // 시간 변경하기
         String modifiedStatus = validateTrainingDay(date, modifiedTime); // 변경 후 출결 현황
         return new ModifyAttendanceResponse(date, previousTime, modifiedTime, previousStatus, modifiedStatus);
-    }
-
-    public void validateIsDateFuture(LocalDate date) {
-        if (date.isAfter(LocalDate.now())) { // 현재보다 미래 시점인 경우
-            throw new IllegalArgumentException(ErrorMessage.NOTICE_FUTURE_CAN_NOT_BE_MODIFIED.getFormat());
-        }
     }
 
     public List<CheckAttendanceRecordResponse> checkAttendanceRecord(String name) {
