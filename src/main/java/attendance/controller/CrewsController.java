@@ -20,12 +20,13 @@ public class CrewsController {
     }
 
     public void run(LocalDate today) {
-        Crews crews = CrewsFactory.initFromCsv(ATTENDANCES_CSV);
+        Crews crews = CrewsFactory.initFromCsv(ATTENDANCES_CSV, today);
 
         String selectedCommand = inputView.selectCommand(today);
 
         if(selectedCommand.equals("1")) confirmAttendance(today, crews);
         if(selectedCommand.equals("2")) updateAttendance(today, crews);
+        if(selectedCommand.equals("3")) printCrewAttendances(today, crews);
     }
 
     private void confirmAttendance(final LocalDate today, final Crews crews) {
@@ -52,5 +53,13 @@ public class CrewsController {
         Attendance afterUpdateAttendance = crew.updateAttendance(updateDate, updateTime);
 
         outputView.printUpdateResult(beforeUpdateAttendance, afterUpdateAttendance);
+    }
+
+    private void printCrewAttendances(final LocalDate today, final Crews crews) {
+        String nickname = inputView.inputNickname();
+        Crew crew = crews.findCrewByNickname(nickname);
+
+        outputView.printCrewAttendances(crew);
+        outputView.printCrewAttendanceStatusCount(crew);
     }
 }

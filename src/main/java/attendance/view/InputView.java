@@ -14,8 +14,13 @@ public class InputView {
 
     public String selectCommand(LocalDate today) {
         System.out.printf("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.\n",
-                today.getYear(), today.getMonthValue(), today.getDayOfMonth(), today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
+                today.getMonthValue(), today.getDayOfMonth(), today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
 
+        System.out.println("1. 출석 확인\n" +
+                "2. 출석 수정\n" +
+                "3. 크루별 출석 기록 확인\n" +
+                "4. 제적 위험자 확인\n" +
+                "Q. 종료");
         return scanner.nextLine();
     }
 
@@ -28,8 +33,7 @@ public class InputView {
         System.out.println("등교 시간을 입력해 주세요.");
         String attendanceTimeInput = scanner.nextLine();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
-        return LocalTime.parse(attendanceTimeInput, formatter);
+        return formatTime(attendanceTimeInput);
     }
 
     public String inputUpdateCrew() {
@@ -46,6 +50,13 @@ public class InputView {
 
     public LocalTime inputUpdateAttendanceTime() {
         System.out.println("언제로 변경하겠습니까?");
+        String updateTimeInput = scanner.nextLine();
 
+        return formatTime(updateTimeInput);
+    }
+
+    private LocalTime formatTime(final String timeInput) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
+        return LocalTime.parse(timeInput, formatter);
     }
 }

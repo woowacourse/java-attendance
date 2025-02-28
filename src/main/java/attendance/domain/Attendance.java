@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class Attendance {
+public class Attendance implements Comparable<Attendance> {
 
     private static final LocalTime OPEN_HOUR = LocalTime.of(8, 0);
     private static final LocalTime CLOSE_HOUR = LocalTime.of(23, 0);
@@ -78,5 +78,10 @@ public class Attendance {
 
     public AttendanceStatus getStatus() {
         return status;
+    }
+
+    @Override
+    public int compareTo(final Attendance o) {
+        return this.dateTime.compareTo(o.dateTime);
     }
 }
