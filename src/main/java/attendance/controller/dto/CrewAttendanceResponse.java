@@ -33,7 +33,7 @@ public record CrewAttendanceResponse(
                 crew.getNickName(),
                 attendanceResponses,
                 simplifiedStatistics,
-                CrewStatus.froAttendanceStatuses(attendanceLogs.getValues().stream()
+                CrewStatus.fromAttendanceStatuses(attendanceLogs.getValues().stream()
                         .map(AttendanceLog::getAttendanceStatus)
                         .toList()
                 ).getName()

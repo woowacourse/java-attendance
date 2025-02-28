@@ -16,7 +16,7 @@ public enum CrewStatus {
         this.name = name;
     }
 
-    public static CrewStatus froAttendanceStatuses(final List<AttendanceStatus> attendanceStatuses) {
+    public static CrewStatus fromAttendanceStatuses(final List<AttendanceStatus> attendanceStatuses) {
         final int absenceCount = calculatePolicyAppliedAbsenceCount(attendanceStatuses);
 
         if (absenceCount > 5) {

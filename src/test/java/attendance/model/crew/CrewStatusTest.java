@@ -92,7 +92,7 @@ class CrewStatusTest {
     void fromAttendanceStatuses(final List<AttendanceStatus> attendanceStatuses, final CrewStatus expected) {
 
         // When
-        final CrewStatus actual = CrewStatus.froAttendanceStatuses(attendanceStatuses);
+        final CrewStatus actual = CrewStatus.fromAttendanceStatuses(attendanceStatuses);
 
         // Then
         assertThat(actual).isEqualTo(expected);

@@ -147,11 +147,11 @@ public class AttendanceLogs {
         final List<AttendanceStatus> attendanceStatuses = values.stream()
                 .map(AttendanceLog::getAttendanceStatus)
                 .toList();
-        return CrewStatus.froAttendanceStatuses(attendanceStatuses);
+        return CrewStatus.fromAttendanceStatuses(attendanceStatuses);
     }
 
     public boolean isWarning() {
-        CrewStatus status = CrewStatus.froAttendanceStatuses(values.stream()
+        CrewStatus status = CrewStatus.fromAttendanceStatuses(values.stream()
                 .map(AttendanceLog::getAttendanceStatus)
                 .toList());
 
