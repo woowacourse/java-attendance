@@ -64,4 +64,33 @@ class CrewAttendanceManagerTest {
                         .isEqualTo(updateDateTime)
         );
     }
+
+    @Test
+    @DisplayName("닉네임의 전날 출석 날짜, 시간과 출결 상황을 반환한다")
+    void 닉네임의_전날_출석_날짜_시간과_출결_상황을_반환한다() {
+        // given
+        LocalDate nowDate = LocalDate.now();
+
+        Attendances baseRecord = new Attendances(List.of(
+                new Attendance(LocalDateTime.of(nowDate, LocalTime.of(13, 0))),
+                new Attendance(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
+                new Attendance(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
+                ));
+
+        List<Attendance> exceptedRecord = List.of(
+                new Attendance(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
+                new Attendance(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
+        ));
+
+        String nickname = "비타";
+
+        attendanceManager.addNewCrew(nickname, baseRecord);
+
+        // when
+        AttendanceRecord result = attendanceManager.getAttendanceRecord();
+
+        // then
+        assertThat(result.getRecord)
+                .isEqualTo(exceptedRecord);
+    }
 }
