@@ -1,5 +1,9 @@
 package domain;
 
+import static domain.testdata.AttendanceTestData.AttendanceTimesData.createCounselingAttendanceTimes;
+import static domain.testdata.AttendanceTestData.AttendanceTimesData.createDismissAttendanceTimes;
+import static domain.testdata.AttendanceTestData.AttendanceTimesData.createNormalAttendanceTimes;
+import static domain.testdata.AttendanceTestData.AttendanceTimesData.createWarnedAttendanceTimes;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
@@ -178,7 +182,7 @@ class CrewAttendanceTest {
         // given
         LocalDate today = LocalDate.of(2024, 12, 10);
         Crew crew = Crew.of("차니");
-        AttendanceTimes attendanceTimes = AttendanceBookTest.createAttendanceTimes();
+        AttendanceTimes attendanceTimes = createNormalAttendanceTimes();
         CrewAttendance crewAttendance = CrewAttendance.of(crew, attendanceTimes);
 
         // when
@@ -194,7 +198,7 @@ class CrewAttendanceTest {
         // given
         LocalDate today = LocalDate.of(2024, 12, 10);
         Crew crew = Crew.of("차니");
-        AttendanceTimes attendanceTimes = AttendanceBookTest.createWarnedAttendanceTimes();
+        AttendanceTimes attendanceTimes = createWarnedAttendanceTimes();
         CrewAttendance crewAttendance = CrewAttendance.of(crew, attendanceTimes);
 
         // when
@@ -210,7 +214,7 @@ class CrewAttendanceTest {
         // given
         LocalDate today = LocalDate.of(2024, 12, 10);
         Crew crew = Crew.of("차니");
-        AttendanceTimes attendanceTimes = AttendanceBookTest.createCounselingAttendanceTimes();
+        AttendanceTimes attendanceTimes = createCounselingAttendanceTimes();
         CrewAttendance crewAttendance = CrewAttendance.of(crew, attendanceTimes);
 
         // when
@@ -226,7 +230,7 @@ class CrewAttendanceTest {
         // given
         LocalDate today = LocalDate.of(2024, 12, 10);
         Crew crew = Crew.of("차니");
-        AttendanceTimes attendanceTimes = AttendanceBookTest.createDismissAttendanceTimes();
+        AttendanceTimes attendanceTimes = createDismissAttendanceTimes();
         CrewAttendance crewAttendance = CrewAttendance.of(crew, attendanceTimes);
 
         // when
