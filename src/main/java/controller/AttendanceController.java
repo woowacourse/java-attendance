@@ -35,7 +35,7 @@ public class AttendanceController {
         String nickname = InputView.scanNickname();
         LocalDate today = DateTimeUtil.nowDate();
         String time = InputView.scanAttendanceTime();
-        
+
         SaveAttendanceRequest request = SaveAttendanceRequest.of(nickname, today, time);
         SaveAttendanceRecordResponse response = attendanceService.saveAttendanceRecord(request);
 
@@ -59,7 +59,7 @@ public class AttendanceController {
         LocalDate today = DateTimeUtil.nowDate();
 
         MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(nickname, today);
-        MonthAttendanceStatisticsResponse response = attendanceService.bringMonthAttendanceStatistics(request);
+        MonthAttendanceStatisticsResponse response = attendanceService.getMonthAttendanceStatistics(request);
 
         OutputView.printMonthAttendanceRecords(response.attendanceRecords());
         OutputView.printMonthAttendanceStatusCount(response.attendanceStatusCount());
@@ -70,7 +70,7 @@ public class AttendanceController {
         LocalDate today = DateTimeUtil.nowDate();
 
         RiskCrewsRequest request = new RiskCrewsRequest(today);
-        RiskCrewsResponse response = attendanceService.bringRiskCrews(request);
+        RiskCrewsResponse response = attendanceService.getRiskCrews(request);
 
         OutputView.printRiskCrews(response);
     }

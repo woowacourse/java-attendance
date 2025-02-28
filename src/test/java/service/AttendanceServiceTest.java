@@ -108,7 +108,7 @@ class AttendanceServiceTest {
 
             AttendanceService attendanceService = new AttendanceService(crews, attendanceRecords);
             MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(nickname, today);
-            MonthAttendanceStatisticsResponse response = attendanceService.bringMonthAttendanceStatistics(request);
+            MonthAttendanceStatisticsResponse response = attendanceService.getMonthAttendanceStatistics(request);
 
             // when
             SoftAssertions.assertSoftly(softAssertions -> {
@@ -151,7 +151,7 @@ class AttendanceServiceTest {
 
             // 제적 위험자 순서: 부기, 미소, 우가, 포스티
             // when & then
-            RiskCrewsResponse response = attendanceService.bringRiskCrews(request);
+            RiskCrewsResponse response = attendanceService.getRiskCrews(request);
             SoftAssertions.assertSoftly(softAssertions -> {
                 softAssertions.assertThat(response.riskCrews().get(0).nickname())
                         .isEqualTo("부기");

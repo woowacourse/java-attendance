@@ -10,7 +10,7 @@ import java.time.format.DateTimeParseException;
 public record ModifyAttendanceRequest(
         String nickname,
         LocalDate date,
-        LocalTime timeToModify
+        LocalTime time
 ) {
 
     public static ModifyAttendanceRequest of(String nickname, LocalDate today, int day, String time) {
