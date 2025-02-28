@@ -41,7 +41,11 @@ public class CrewAttendanceStorage {
 
     public Optional<Attendance> findAttendance(String crew, LocalDate date) {
         AttendanceStorage storage = findAttendanceStorageByCrew(crew);
-        return storage.findByDate(date);
+        Optional<Attendance> found = storage.findByDate(date);
+        if (found.isPresent()) {
+            return found;
+        }
+        return Optional.of(new Attendance(date, LocalTime.of(18, 0)));
     }
 
     private AttendanceStorage findAttendanceStorageByCrew(String crew) {
