@@ -1,17 +1,21 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.domain.fixture.LocalDateTestFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.assertj.core.api.Assertions;
+import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 @DisplayName("출석 목록")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -46,7 +50,7 @@ public class AttendanceBookTest {
     }
 
     @Test
-    void 출석_저장_시_출석_시각을_반환한다(){
+    void 출석_저장_시_출석_시각을_반환한다() {
         String crewName = "빙티";
         AttendanceBook attendanceBook = new AttendanceBook(crewName);
         LocalDate attendDate = LocalDateTestFixture.createRegularDate();
@@ -60,21 +64,32 @@ public class AttendanceBookTest {
     }
 
     @Test
-    void 출석_기록이_있는_경우_예외가_발생한다(){
+    void 출석_기록이_있는_경우_예외가_발생한다() {
         String crewName = "빙티";
         AttendanceBook attendanceBook = new AttendanceBook(crewName);
         LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(10, 0);
         attendanceBook.attend(attendDate, attendTime);
 
-        LocalTime newAttendTime = LocalTime.of(10,4);
+        LocalTime newAttendTime = LocalTime.of(10, 4);
         assertThatThrownBy(() -> attendanceBook.attend(attendDate, newAttendTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 날짜에 출석 기록이 있습니다. 출석 수정 기능을 이용해주세요.");
     }
 
-    @Test
-    void 캠퍼스_운영시간이_아니면_예외가_발생한다(){
+    static Stream<LocalTime> provideClosedCampusTimes() {
+        return List.of(
+                LocalTime.of(0, 0),
+                LocalTime.of(7, 0),
+                LocalTime.of(7, 59),
+                LocalTime.of(23, 1),
+                LocalTime.of(23, 59)
+        ).stream();
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClosedCampusTimes")
+    void 캠퍼스_운영시간이_아니면_예외가_발생한다() {
         String crewName = "빙티";
         AttendanceBook attendanceBook = new AttendanceBook(crewName);
         LocalDate attendDate = LocalDateTestFixture.createRegularDate();
@@ -86,7 +101,7 @@ public class AttendanceBookTest {
     }
 
     @Test
-    void 캠퍼스_등교일이_아니면_예외가_발생한다(){
+    void 캠퍼스_등교일이_아니면_예외가_발생한다() {
         String crewName = "빙티";
         AttendanceBook attendanceBook = new AttendanceBook(crewName);
         LocalDate attendDate = LocalDateTestFixture.createWeekendDate();
@@ -95,5 +110,31 @@ public class AttendanceBookTest {
         assertThatThrownBy(() -> attendanceBook.attend(attendDate, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등교일이 아닙니다.");
+    }
+
+    @Test
+    void 등교_날짜와_시간으로_출석_기록을_수정한다() {
+        LocalDate date = LocalDateTestFixture.createRegularDate();
+        LocalTime time = LocalTime.of(9, 0);
+        String crewName = "빙티";
+        AttendanceBook attendanceBook = new AttendanceBook(crewName);
+
+        assertThatCode(() -> attendanceBook.modify(date, time))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 출석_수정에_성공하면_기존_출석_기록을_반환한다() {
+        LocalDate date = LocalDateTestFixture.createRegularDate();
+        LocalTime time = LocalTime.of(9, 0);
+        String crewName = "빙티";
+        AttendanceBook attendanceBook = new AttendanceBook(crewName);
+        attendanceBook.attend(date, time);
+
+        LocalTime modifyTime = LocalTime.of(10, 6);
+        Attendance attendance = attendanceBook.modify(date, modifyTime);
+
+        assertThat(attendance.time()).isEqualTo(time);
+        assertThat(attendance.status()).isEqualTo(AttendanceStatus.PRESENT);
     }
 }
