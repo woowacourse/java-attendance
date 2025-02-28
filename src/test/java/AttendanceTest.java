@@ -43,4 +43,19 @@ public class AttendanceTest {
         Assertions.assertThatThrownBy(() -> attendanceBook.check(nickname, date, time))
                         .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("출석하면 출석 기록을 찾을 수 있다.")
+    @Test
+    void find_attendance() {
+        // given
+        Attendance attendance = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendance));
+
+        // when
+        Attendance find = attendanceBook.findAttendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
+
+        // then
+        Assertions.assertThat(find)
+                .isEqualTo(attendance);
+    }
 }

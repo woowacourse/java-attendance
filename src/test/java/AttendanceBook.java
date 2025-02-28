@@ -23,4 +23,8 @@ public class AttendanceBook {
         return crewsAttendanceRecords.stream()
                 .anyMatch(crew -> crew.equals(attendance));
     }
+
+    public Attendance findAttendance(String nickname, LocalDate date, LocalTime time) {
+        return null;
+    }
 }
