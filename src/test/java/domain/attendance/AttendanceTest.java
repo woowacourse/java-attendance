@@ -8,11 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static domain.attendance.TimeTable.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -59,6 +56,16 @@ class AttendanceTest {
                     .filter(day -> !isAttendanceDay(LocalDate.of(2025,2,day)))
                     .forEach(day -> assertThatThrownBy(
                             () -> attendance.findByLocalDate(LocalDate.of(2025,2,day))).isInstanceOf(IllegalArgumentException.class));
+        }
+
+        @DisplayName("미래의 경우 입력되지 않음")
+        @Test
+        void isNotValidAttendanceDate(){
+            IntStream.range(1,30)
+                    .forEach(day ->
+                            assertThatThrownBy(() -> attendance.addAttendance(LocalDateTime.of(
+                                    2025, 12, day,10,10)))
+                                    .isInstanceOf(IllegalArgumentException.class));
         }
     }
 
