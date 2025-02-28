@@ -1,3 +1,6 @@
+import domain.AttendTime;
+import domain.AttendanceStatus;
+import domain.Crew;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -1,3 +1,6 @@
+package domain;
+
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -15,18 +18,11 @@ public enum AttendTimeOfWeekDay {
     }
 
     public static int getTimeByDayOfWeekDay(int dayOfWeek) {
-        for (AttendTimeOfWeekDay attendTimeOfWeekDay : AttendTimeOfWeekDay.values()) {
-            if (attendTimeOfWeekDay.days.contains(dayOfWeek))
-                return attendTimeOfWeekDay.hour;
-        }
-        throw new IllegalArgumentException("");
+        return Arrays.stream(AttendTimeOfWeekDay.values())
+                .filter(attendTimeOfWeekDay -> attendTimeOfWeekDay.days.contains(dayOfWeek))
+                .map(attendTimeOfWeekDay -> attendTimeOfWeekDay.hour)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(""));
     }
 
-    public int getHour() {
-        return hour;
-    }
-
-    public List<Integer> getDays() {
-        return days;
-    }
 }

@@ -1,3 +1,5 @@
+package domain;
+
 import java.util.List;
 
 public enum December {
@@ -17,10 +19,6 @@ public enum December {
 
     public static boolean checkWeekDay(int dayOfMonth){
         return WEEKDAY.days.contains(dayOfMonth);
-    }
-
-    public List<Integer> getDays() {
-        return days;
     }
 
 }

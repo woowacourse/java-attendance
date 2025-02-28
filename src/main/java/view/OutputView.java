@@ -1,3 +1,8 @@
+package view;
+
+import domain.AttendTime;
+import domain.Crew;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
@@ -17,7 +22,7 @@ public class OutputView {
         System.out.println();
         System.out.println("이번 달 " + crew.getNickname() + "의 출석 기록입니다.");
 
-        for (AttendTime attendTime : crew.getAttendTimes().getAttendTimeline()) {
+        for (AttendTime attendTime : crew.getAttendTimeLine()) {
             LocalDate localDate = attendTime.getLocalDate();
             LocalTime localTime = attendTime.getLocalTime();
             System.out.printf("%02d월 %02d일 %s ", localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));

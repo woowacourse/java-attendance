@@ -1,3 +1,5 @@
+package domain;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -5,6 +7,7 @@ public class AttendanceController {
 
     public static final String TODAY_LOCAL_DATE = "2024-12-16";
     public static final DateTimeFormatter TODAY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final String ERROR_MESSAGE = "[ERROR]";
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -15,7 +18,6 @@ public class AttendanceController {
     }
 
     public void run() {
-
 
         Crews crews = new Crews(CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv"));
         while (true) {
@@ -37,13 +39,16 @@ public class AttendanceController {
                 return;
             }
         } catch (Exception e) {
-            System.out.println("[ERROR]" + e.getMessage());
+            System.out.println(ERROR_MESSAGE + e.getMessage());
         }
         }
     }
 
-    private void showDismissalCrew(Crews crews) {
-        outputView.printDismissalCrews(crews.findDismissalCrewsByImportance());
+    private void attendToday(Crews crews) {
+        String nickname = inputView.getNickname();
+        String localDateTimeToday = inputView.getTodayLocalDateTime();
+        AttendTime attendTime = crews.addCrewAttendance(nickname, localDateTimeToday);
+        outputView.printAttendanceResult(attendTime);
     }
 
     private void changeAttendance(Crews crews) {
@@ -57,15 +62,12 @@ public class AttendanceController {
     }
 
     private void showCrewAttendances(Crews crews) {
-        String nickname=inputView.getNickname();
-        Crew crew= crews.findCrewByNickname(nickname).orElseThrow(()->new IllegalArgumentException("없는 사용자입니다."));
+        String nickname = inputView.getNickname();
+        Crew crew = crews.findCrewByNickname(nickname).orElseThrow(() -> new IllegalArgumentException("없는 사용자입니다."));
         outputView.printAttendanceTimeLine(crew);
     }
 
-    private void attendToday(Crews crews) {
-        String nickname = inputView.getNickname();
-        String localDateTimeToday = inputView.getTodayLocalDateTime();
-        AttendTime attendTime = crews.addCrewAttendance(nickname, localDateTimeToday);
-        outputView.printAttendanceResult(attendTime);
+    private void showDismissalCrew(Crews crews) {
+        outputView.printDismissalCrews(crews.findDismissalCrewsByImportance());
     }
 }

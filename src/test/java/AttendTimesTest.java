@@ -1,3 +1,5 @@
+import domain.AttendTime;
+import domain.AttendTimes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

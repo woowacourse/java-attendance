@@ -1,5 +1,8 @@
+package domain;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public class Crew {
     private final String nickname;
@@ -34,7 +37,7 @@ public class Crew {
     }
 
     public boolean isDismissalCrew() {
-        return DangerousTarget.getWarningStatus(attendTimes.calculateLateCount(),attendTimes.calculateAbsentCount())!=DangerousTarget.SAFE;
+        return DangerousTarget.getWarningStatus(attendTimes.calculateLateCount(),attendTimes.calculateAbsentCount())!= DangerousTarget.SAFE;
     }
 
     public DangerousTarget getDismissalStatus() {
@@ -52,6 +55,11 @@ public class Crew {
     public int getCrewAbsentCount() {
         return attendTimes.calculateAbsentCount();
     }
+
+    public List<AttendTime> getAttendTimeLine() {
+        return attendTimes.getAttendTimeline();
+    }
+
     public String getNickname() {
         return nickname;
     }
@@ -59,4 +67,5 @@ public class Crew {
     public AttendTimes getAttendTimes() {
         return attendTimes;
     }
+
 }

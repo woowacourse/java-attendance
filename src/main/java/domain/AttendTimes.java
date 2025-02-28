@@ -1,7 +1,10 @@
+package domain;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class AttendTimes {
     private final List<AttendTime> attendTimes;
@@ -59,11 +62,9 @@ public class AttendTimes {
         int total = 0;
         LocalDate todayLocalDate = LocalDate.parse(AttendanceController.TODAY_LOCAL_DATE, AttendanceController.TODAY_FORMATTER);
         int todayDayOfMonth = todayLocalDate.getDayOfMonth();
-        for (int i = 1; i < todayDayOfMonth; i++) {
-            AttendTime attendTime = findAttendanceByDate(i).orElse(null);
-            if (attendTime == null && December.checkWeekDay(i))
-                total += 1;
-        }
+
+        total += (int) IntStream.range(1, todayDayOfMonth).filter(i -> findAttendanceByDate(i).isEmpty() && December.checkWeekDay(i)).count();
+
         return total + (int) attendTimes.stream().filter(attendTime -> attendTime.checkAttendanceStatus().equals(AttendanceStatus.ABSENT)).count();
     }
 

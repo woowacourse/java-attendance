@@ -1,3 +1,7 @@
+import domain.AttendanceController;
+import view.InputView;
+import view.OutputView;
+
 import java.util.Scanner;
 
 public class Application {

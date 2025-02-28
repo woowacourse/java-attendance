@@ -1,3 +1,5 @@
+package domain;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -9,7 +11,6 @@ public class AttendTime {
         validate(localDate);
       this.localDate=localDate;
       this.localTime=localTime;
-
     }
 
     public void validate(LocalDate localDate) {
