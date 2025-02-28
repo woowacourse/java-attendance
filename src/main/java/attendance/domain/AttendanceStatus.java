@@ -8,16 +8,16 @@ public enum AttendanceStatus {
     ABSENT("결석", Integer.MAX_VALUE);
 
     private final String title;
-    private final long limitTime;
+    private final long limitMinutes;
 
-    AttendanceStatus(String title, long limitTime) {
+    AttendanceStatus(String title, long limitMinutes) {
         this.title = title;
-        this.limitTime = limitTime;
+        this.limitMinutes = limitMinutes;
     }
 
-    public static AttendanceStatus from(long lateTime) {
+    public static AttendanceStatus from(long lateMinutes) {
         return Arrays.stream(AttendanceStatus.values())
-                .filter(status -> lateTime <= status.limitTime)
+                .filter(status -> lateMinutes <= status.limitMinutes)
                 .findFirst()
                 .orElse(ABSENT);
     }
