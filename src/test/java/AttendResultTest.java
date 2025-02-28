@@ -1,3 +1,5 @@
+import domain.Attend;
+import domain.AttendResult;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;

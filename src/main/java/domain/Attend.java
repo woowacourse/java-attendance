@@ -1,5 +1,5 @@
-import domain.AttendStatus;
-import domain.OperationTime;
+package domain;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -28,7 +28,15 @@ public class Attend {
     }
 
     public AttendStatus checkStatus() {
-        return AttendStatus.checkAttendStatus(this.date, this.time);
+        return AttendStatus.checkAttendStatus(this);
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
     }
 
     @Override

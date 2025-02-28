@@ -1,5 +1,6 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
+import domain.Attend;
 import domain.AttendStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
