@@ -3,6 +3,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -53,6 +54,29 @@ public class AttendanceTimeCheckerTest {
         // when & then
         assertThatThrownBy(() -> AttendanceTimeChecker.checkDate(requestedDate))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private static Stream<Arguments> testCasesForTestIsAttendanceRequiredDate() {
+        return Stream.of(
+                Arguments.of(2, true),
+                Arguments.of(25, false),
+                Arguments.of(8, false),
+                Arguments.of(27, true)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCasesForTestIsAttendanceRequiredDate")
+    @DisplayName("출석이 필요한 날짜를 확인한다.")
+    void test(int day, boolean expected) {
+        // given
+        LocalDate requestedDate = LocalDate.of(2024, 12, day);
+
+        // when
+        boolean actual = AttendanceTimeChecker.isAttendanceRequiredDate(requestedDate);
+
+        // then
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 }
 

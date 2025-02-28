@@ -14,13 +14,21 @@ public class AttendanceTimeChecker {
     }
 
     public static void checkDate(LocalDate requestedDate) {
-        if (requestedDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || requestedDate.getDayOfWeek()
-                .equals(DayOfWeek.SUNDAY)) {
+        if (isWeekend(requestedDate) || isHoliday(requestedDate)) {
             throw new IllegalArgumentException("평일이거나 공휴일이 아닌 경우에만 출석할 수 있습니다.");
         }
+    }
 
-        if (requestedDate.getMonth() == Month.DECEMBER && requestedDate.getDayOfMonth() == 25) {
-            throw new IllegalArgumentException("평일이거나 공휴일이 아닌 경우에만 출석할 수 있습니다.");
-        }
+    public static boolean isAttendanceRequiredDate(LocalDate date) {
+        return !isWeekend(date) && !isHoliday(date);
+    }
+
+    private static boolean isWeekend(LocalDate date) {
+        return date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || date.getDayOfWeek()
+                .equals(DayOfWeek.SUNDAY);
+    }
+
+    private static boolean isHoliday(LocalDate date) {
+        return date.getMonth() == Month.DECEMBER && date.getDayOfMonth() == 25;
     }
 }

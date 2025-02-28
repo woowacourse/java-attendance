@@ -130,7 +130,7 @@ public class AttendanceSystemManagerTest {
             // when
             assertThatThrownBy(() -> attendanceSystemManager.update("히로", attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("존재하지 않는 출석 기록입니다. 먼저 등록 기능을 이용해주세요.");
+                    .hasMessage("조건에 해당하는 기록이 존재하지 않습니다.");
         }
 
         @Test
