@@ -1,14 +1,47 @@
 package attendance.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceDate;
+import attendance.domain.AttendanceRecord;
+import attendance.domain.AttendanceTime;
+import attendance.domain.Crew;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class AttendanceBookRepositoryTest {
+
+    @Nested
+    class ValidCases {
+
+        @Test
+        void 크루의이름으로_출석부를_반환한다() {
+            // given
+            Crew crew = new Crew("크루원");
+            AttendanceRecord attendanceRecord = new AttendanceRecord(
+                Map.of(new AttendanceDate(2024, 12, 2),
+                    new AttendanceTime(13, 0)));
+            AttendanceBook attendanceBook = new AttendanceBook(crew,
+                attendanceRecord);
+            Map<String, AttendanceBook> attendanceBooks = Map.of(
+                crew.getNickname(), attendanceBook);
+
+            AttendanceBookRepository attendanceBookRepository = new AttendanceBookRepository(
+                attendanceBooks);
+            
+            // when
+            AttendanceBook targetAttendanceBook = attendanceBookRepository
+                .findByCrewNickname(crew.getNickname())
+                .get();
+
+            // then
+            assertThat(targetAttendanceBook).isEqualTo(attendanceBook);
+        }
+    }
 
     @Nested
     class InvalidCases {

@@ -3,6 +3,7 @@ package attendance.repository;
 import attendance.domain.AttendanceBook;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class AttendanceBookRepository {
 
@@ -24,5 +25,9 @@ public class AttendanceBookRepository {
                     "출석부 목록은 크루의 닉네임과 출석부를 가지고 있어야 합니다.");
             }
         }
+    }
+
+    public Optional<AttendanceBook> findByCrewNickname(String crewNickname) {
+        return Optional.ofNullable(attendanceBooks.get(crewNickname));
     }
 }
