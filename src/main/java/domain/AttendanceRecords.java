@@ -7,6 +7,9 @@ public class AttendanceRecords {
     private final TreeSet<AttendanceRecord> records = new TreeSet<>();
 
     public void add(AttendanceRecord record) {
+        if (records.contains(record)) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석하였습니다." + System.lineSeparator());
+        }
         records.add(record);
     }
 
