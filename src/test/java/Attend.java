@@ -21,6 +21,9 @@ public class Attend {
         return date.getDayOfMonth() == day;
     }
 
+    public AttendStatus checkStatus() {
+        return AttendStatus.checkAttendStatus(this.date, this.time);
+    }
 
     @Override
     public boolean equals(final Object object) {
