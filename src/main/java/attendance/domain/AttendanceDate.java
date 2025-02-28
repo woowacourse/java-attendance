@@ -14,22 +14,12 @@ public class AttendanceDate {
         final int month,
         final int day
     ) {
-        validate2024December(year, month, day);
         validateDate(month, day);
+        validate2024December(year, month, day);
         validateHoliday(year, month, day);
         this.year = year;
         this.month = month;
         this.day = day;
-    }
-
-    private void validate2024December(
-        final int year,
-        final int month,
-        final int day
-    ) {
-        if (year != 2024 || month != 12 || day > 31) {
-            throw new IllegalArgumentException("출석 날짜는 2024년 12월만 지원합니다.");
-        }
     }
 
     private void validateDate(
@@ -42,6 +32,16 @@ public class AttendanceDate {
 
         if (day < 1 || day > 31) {
             throw new IllegalArgumentException("일은 1 이상 31 이하여야 합니다.");
+        }
+    }
+
+    private void validate2024December(
+        final int year,
+        final int month,
+        final int day
+    ) {
+        if (year != 2024 || month != 12 || day > 31) {
+            throw new IllegalArgumentException("출석 날짜는 2024년 12월만 지원합니다.");
         }
     }
 
