@@ -29,8 +29,8 @@ public class FileReader {
         this.initialInformation = new HashMap<>();
     }
 
-    public InitialInformation readAttendanceInfo() {
-        Scanner scanner = initializeFileReader();
+    public InitialInformation readAttendanceData() {
+        Scanner scanner = initializeReader();
         while (scanner.hasNextLine()) {
             String[] nameAndDateAndTime = scanner.nextLine().split(PARSE_UNIT);
             CrewName crewName  = new CrewName(nameAndDateAndTime[NAME_INDEX]);
@@ -41,7 +41,7 @@ public class FileReader {
         return new InitialInformation(initialInformation);
     }
 
-    private Scanner initializeFileReader() {
+    private Scanner initializeReader() {
         Scanner scanner;
         try {
             scanner = new Scanner(new File(FILE_PATH));
@@ -55,13 +55,13 @@ public class FileReader {
         Attendance attendance = new Attendance(date, time);
         AttendanceRecord existedAttendanceRecord = initialInformation.get(crewName);
         if(existedAttendanceRecord == null) {
-            initialInformation.put(crewName, initialAttendanceRecord(attendance));
+            initialInformation.put(crewName, initializeAttendanceRecord(attendance));
             return;
         }
         existedAttendanceRecord.add(attendance);
     }
 
-    private AttendanceRecord initialAttendanceRecord(Attendance attendance) {
+    private AttendanceRecord initializeAttendanceRecord(Attendance attendance) {
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(attendance);
         return attendanceRecord;
