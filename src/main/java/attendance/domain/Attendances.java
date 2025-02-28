@@ -15,7 +15,7 @@ public class Attendances {
     public Attendance add(final Attendance attendanceInput) {
         for (Attendance attendance : attendances) {
             if(attendance.isEqualAttendanceDate(attendanceInput)) {
-                throw new IllegalArgumentException("해당 날짜에 이미 출석이 존재합니다.");
+                throw new IllegalArgumentException("해당 날짜에 이미 출석이 존재합니다. 출석 수정 기능을 이용해주세요.");
             }
         }
         attendances.add(attendanceInput);

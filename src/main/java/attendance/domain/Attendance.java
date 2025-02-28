@@ -71,4 +71,12 @@ public class Attendance {
     public int hashCode() {
         return Objects.hash(dateTime, status);
     }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public AttendanceStatus getStatus() {
+        return status;
+    }
 }

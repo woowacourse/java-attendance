@@ -31,4 +31,21 @@ public class InputView {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
         return LocalTime.parse(attendanceTimeInput, formatter);
     }
+
+    public String inputUpdateCrew() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
+
+    public int inputUpdateDate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        String updateDate = scanner.nextLine();
+
+        return Integer.parseInt(updateDate);
+    }
+
+    public LocalTime inputUpdateAttendanceTime() {
+        System.out.println("언제로 변경하겠습니까?");
+
+    }
 }
