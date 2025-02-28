@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.domain.fixture.AttendanceBookTestFixture;
+import attendance.domain.fixture.AttendanceRecordTestFixture;
 import attendance.domain.fixture.LocalDateTestFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,22 +20,22 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 @DisplayName("출석 목록")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class AttendanceBookTest {
+public class AttendanceRecordTest {
 
     @Test
     void 크루원의_이름으로_객체를_생성한다() {
         String crewName = "빙티";
-        AttendanceBook attendanceBook = new AttendanceBook(crewName);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
 
-        assertThat(attendanceBook)
-                .isInstanceOf(AttendanceBook.class);
+        assertThat(attendanceRecord)
+                .isInstanceOf(AttendanceRecord.class);
     }
 
     @Test
     void 크루원의_이름에_해당하면_true를_반환한다() {
         String crewName = "빙티";
-        AttendanceBook attendanceBook = new AttendanceBook(crewName);
-        boolean result = attendanceBook.isNameMatched(crewName);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
+        boolean result = attendanceRecord.isNameMatched(crewName);
 
         assertThat(result).isTrue();
     }
@@ -43,9 +43,9 @@ public class AttendanceBookTest {
     @Test
     void 크루원의_이름예_해당하지_않으면_false를_반환한다() {
         String crewName = "빙티";
-        AttendanceBook attendanceBook = new AttendanceBook(crewName);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
         String findName = "루키";
-        boolean result = attendanceBook.isNameMatched(findName);
+        boolean result = attendanceRecord.isNameMatched(findName);
 
         assertThat(result).isFalse();
     }
@@ -53,11 +53,11 @@ public class AttendanceBookTest {
     @Test
     void 출석_저장_시_출석_시각을_반환한다() {
         String crewName = "빙티";
-        AttendanceBook attendanceBook = new AttendanceBook(crewName);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
         LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(10, 0);
 
-        LocalDateTime result = attendanceBook.attend(attendDate, attendTime);
+        LocalDateTime result = attendanceRecord.attend(attendDate, attendTime);
 
         assertThat(result.getHour()).isEqualTo(10);
         assertThat(result.getMinute()).isEqualTo(0);
@@ -67,13 +67,13 @@ public class AttendanceBookTest {
     @Test
     void 출석_기록이_있는_경우_예외가_발생한다() {
         String crewName = "빙티";
-        AttendanceBook attendanceBook = new AttendanceBook(crewName);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
         LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(10, 0);
-        attendanceBook.attend(attendDate, attendTime);
+        attendanceRecord.attend(attendDate, attendTime);
 
         LocalTime newAttendTime = LocalTime.of(10, 4);
-        assertThatThrownBy(() -> attendanceBook.attend(attendDate, newAttendTime))
+        assertThatThrownBy(() -> attendanceRecord.attend(attendDate, newAttendTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 날짜에 출석 기록이 있습니다. 출석 수정 기능을 이용해주세요.");
     }
@@ -92,11 +92,11 @@ public class AttendanceBookTest {
     @MethodSource("provideClosedCampusTimes")
     void 캠퍼스_운영시간이_아니면_예외가_발생한다() {
         String crewName = "빙티";
-        AttendanceBook attendanceBook = new AttendanceBook(crewName);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
         LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(23, 59);
 
-        assertThatThrownBy(() -> attendanceBook.attend(attendDate, attendTime))
+        assertThatThrownBy(() -> attendanceRecord.attend(attendDate, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("현재 캠퍼스 운영시간이 아닙니다.");
     }
@@ -104,11 +104,11 @@ public class AttendanceBookTest {
     @Test
     void 캠퍼스_등교일이_아니면_예외가_발생한다() {
         String crewName = "빙티";
-        AttendanceBook attendanceBook = new AttendanceBook(crewName);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
         LocalDate attendDate = LocalDateTestFixture.createWeekendDate();
         LocalTime attendTime = LocalTime.of(10, 0);
 
-        assertThatThrownBy(() -> attendanceBook.attend(attendDate, attendTime))
+        assertThatThrownBy(() -> attendanceRecord.attend(attendDate, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등교일이 아닙니다.");
     }
@@ -118,9 +118,9 @@ public class AttendanceBookTest {
         LocalDate date = LocalDateTestFixture.createRegularDate();
         LocalTime time = LocalTime.of(9, 0);
         String crewName = "빙티";
-        AttendanceBook attendanceBook = new AttendanceBook(crewName);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
 
-        assertThatCode(() -> attendanceBook.modify(date, time))
+        assertThatCode(() -> attendanceRecord.modify(date, time))
                 .doesNotThrowAnyException();
     }
 
@@ -129,11 +129,11 @@ public class AttendanceBookTest {
         LocalDate date = LocalDateTestFixture.createRegularDate();
         LocalTime time = LocalTime.of(9, 0);
         String crewName = "빙티";
-        AttendanceBook attendanceBook = new AttendanceBook(crewName);
-        attendanceBook.attend(date, time);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
+        attendanceRecord.attend(date, time);
 
         LocalTime modifyTime = LocalTime.of(10, 6);
-        Attendance attendance = attendanceBook.modify(date, modifyTime);
+        Attendance attendance = attendanceRecord.modify(date, modifyTime);
 
         assertThat(attendance.time()).isEqualTo(time);
         assertThat(attendance.status()).isEqualTo(AttendanceStatus.PRESENT);
@@ -143,9 +143,9 @@ public class AttendanceBookTest {
     void 전날까지의_출석_지각_결석_횟수를_반환한다() {
         int today = 28;
         String crewName = "빙티";
-        AttendanceBook attendanceBook = AttendanceBookTestFixture.createAttendanceBook(crewName, 5, 3, today);
+        AttendanceRecord attendanceRecord = AttendanceRecordTestFixture.createAttendanceRecord(crewName, 5, 3, today);
 
-        Map<AttendanceStatus, Integer> count = attendanceBook.getTotalStatusCount(today);
+        Map<AttendanceStatus, Integer> count = attendanceRecord.getTotalStatusCount(today);
 
         assertThat(count).containsEntry(AttendanceStatus.LATENESS, 5);
         assertThat(count).containsEntry(AttendanceStatus.ABSENCE, 3);
@@ -154,9 +154,9 @@ public class AttendanceBookTest {
     @Test
     void 등교하지_않은_날은_결석으로_간주한다() {
         String crewName = "빙티";
-        AttendanceBook attendanceBook = new AttendanceBook(crewName);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
 
-        Map<AttendanceStatus, Integer> result = attendanceBook.getTotalStatusCount(5);
+        Map<AttendanceStatus, Integer> result = attendanceRecord.getTotalStatusCount(5);
 
         assertThat(result).containsEntry(AttendanceStatus.ABSENCE, 5);
     }
@@ -165,8 +165,8 @@ public class AttendanceBookTest {
     void 제적_위험_레벨을_반환한다() {
         int endDate = 28;
         String crewName = "빙티";
-        AttendanceBook attendanceBook = AttendanceBookTestFixture.createAttendanceBook(crewName, 3, 5, endDate);
-        WarningLevel warningLevel = attendanceBook.calculateWarningLevel(endDate);
+        AttendanceRecord attendanceRecord = AttendanceRecordTestFixture.createAttendanceRecord(crewName, 3, 5, endDate);
+        WarningLevel warningLevel = attendanceRecord.calculateWarningLevel(endDate);
 
         assertThat(warningLevel).isEqualTo(WarningLevel.REMOVE);
     }

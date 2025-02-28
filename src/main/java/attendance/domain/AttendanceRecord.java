@@ -11,11 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class AttendanceBook {
+public class AttendanceRecord {
     private final String crewName;
     private final Map<LocalDate, Attendance> timestamps;
 
-    public AttendanceBook(String crewName) {
+    public AttendanceRecord(String crewName) {
         this.crewName = crewName;
         this.timestamps = new HashMap<>();
     }
@@ -67,7 +67,7 @@ public class AttendanceBook {
         return (int) IntStream.range(1, today - 1)
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
                 .filter(date -> !timestamps.containsKey(date))
-                .filter(date -> AttendanceChecker.isCampusOpenDate(date))
+                .filter(AttendanceChecker::isCampusOpenDate)
                 .count();
     }
 

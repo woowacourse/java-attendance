@@ -2,13 +2,13 @@ package attendance.domain.fixture;
 
 import static java.time.DayOfWeek.MONDAY;
 
-import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceRecord;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class AttendanceBookTestFixture {
+public class AttendanceRecordTestFixture {
     private static final int REGULAR_PRESENT_HOUR = 9;
     private static final int REGULAR_PRESENT_MINUTE = 50;
     private static final int MONDAY_PRESENT_HOUR = 12;
@@ -23,26 +23,26 @@ public class AttendanceBookTestFixture {
     private static final int MONDAY_ABSENCE_MINUTE = 50;
 
 
-    public static AttendanceBook createAttendanceBook(String name, int latenessCount, int absenceCount, int endDate) {
+    public static AttendanceRecord createAttendanceRecord(String name, int latenessCount, int absenceCount, int endDate) {
         validateCount(endDate, latenessCount, absenceCount);
-        AttendanceBook attendanceBook = new AttendanceBook(name);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(name);
         List<LocalDate> regularDates = LocalDateTestFixture.createRegularDates(endDate);
 
         IntStream.range(0, regularDates.size())
                 .forEach(index -> {
                     LocalDate date = regularDates.get(index);
                     if (index < latenessCount) {
-                        attendanceBook.attend(date, createLatenessTime(isMonday(date)));
+                        attendanceRecord.attend(date, createLatenessTime(isMonday(date)));
                         return;
                     }
                     if (index < latenessCount + absenceCount) {
-                        attendanceBook.attend(date, createAbsenceTime(isMonday(date)));
+                        attendanceRecord.attend(date, createAbsenceTime(isMonday(date)));
                         return;
                     }
-                    attendanceBook.attend(date, createPresentTime(isMonday(date)));
+                    attendanceRecord.attend(date, createPresentTime(isMonday(date)));
                 });
 
-        return attendanceBook;
+        return attendanceRecord;
     }
 
     private static void validateCount(int endDate, int latenessCount, int absenceCount) {
