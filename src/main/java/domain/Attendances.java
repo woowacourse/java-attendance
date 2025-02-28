@@ -58,4 +58,13 @@ public class Attendances {
                 .filter(attendance -> AttendanceStatus.judge(attendance.getLocalDateTime()) == AttendanceStatus.ABSENCE)
                 .count();
     }
+
+    public void updateAttendance(String nickname, LocalDateTime updateDateTime) {
+
+        List<Attendance> attendancesWithCrew = attendances.get(nickname);
+        attendancesWithCrew.stream()
+                .filter(attendance -> attendance.isEqualTo(updateDateTime.toLocalDate()))
+                .findFirst()
+                .ifPresent(attendance -> attendance.updateAttendance(updateDateTime.toLocalTime()));
+    }
 }
