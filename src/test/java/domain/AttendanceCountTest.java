@@ -43,7 +43,7 @@ public class AttendanceCountTest {
     void 경고_레벨을_알_수_있다() {
         //given
         AttendanceCount attendanceCount = new AttendanceCount(Map.of(
-                AttendanceStatus.LATE, 3,
+                AttendanceStatus.LATE, 6,
                 AttendanceStatus.ABSENT, 4
         ));
 

@@ -14,7 +14,7 @@ public class WarningLevelTest {
         int absentCount = 2;
 
         //when
-        WarningLevel result = WarningLevel.from(lateCount, absentCount);
+        WarningLevel result = WarningLevel.of(lateCount, absentCount);
 
         //then
         assertThat(result).isEqualTo(WarningLevel.WARNING);
@@ -27,7 +27,7 @@ public class WarningLevelTest {
         int absentCount = 3;
 
         //when
-        WarningLevel result = WarningLevel.from(lateCount, absentCount);
+        WarningLevel result = WarningLevel.of(lateCount, absentCount);
 
         //then
         assertThat(result).isEqualTo(WarningLevel.INTERVIEW);
@@ -40,7 +40,7 @@ public class WarningLevelTest {
         int absentCount = 6;
 
         //when
-        WarningLevel result = WarningLevel.from(lateCount, absentCount);
+        WarningLevel result = WarningLevel.of(lateCount, absentCount);
 
         //then
         assertThat(result).isEqualTo(WarningLevel.WEEDING);
@@ -53,7 +53,7 @@ public class WarningLevelTest {
         int absentCount = 1;
 
         //when
-        WarningLevel result = WarningLevel.from(lateCount, absentCount);
+        WarningLevel result = WarningLevel.of(lateCount, absentCount);
 
         //then
         assertThat(result).isEqualTo(WarningLevel.NONE);

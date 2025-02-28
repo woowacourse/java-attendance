@@ -15,7 +15,7 @@ public enum WarningLevel {
         this.isMatch = isMatch;
     }
 
-    public static WarningLevel from(int lateCount, int absentCount) {
+    public static WarningLevel of(int lateCount, int absentCount) {
         int totalAbsent = lateCount / 3 + absentCount;
         return Arrays.stream(values())
                 .filter(warningLevel -> warningLevel.isMatch.apply(totalAbsent))

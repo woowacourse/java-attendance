@@ -48,7 +48,10 @@ public class AttendanceCount {
     }
 
     public WarningLevel getWarningLevel() {
-        return null;
+        return WarningLevel.of(
+                attendances.getOrDefault(AttendanceStatus.LATE, 0),
+                attendances.getOrDefault(AttendanceStatus.ABSENT, 0)
+        );
     }
 
     @Override
