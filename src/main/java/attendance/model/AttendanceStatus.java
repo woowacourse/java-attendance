@@ -20,14 +20,17 @@ public enum AttendanceStatus {
 
     public static AttendanceStatus getAttendanceStatus(AttendanceTime attendanceTime) {
 
-        if (attendanceTime.isMonday()) {
-            return getAttendanceStatus(attendanceTime, MONDAY_LATE, MONDAY_ABSENT);
+        if (attendanceTime.isDefaultAbsent()) {
+            return ABSENT;
         }
-        return getAttendanceStatus(attendanceTime, OTHER_DAY_LATE, OTHER_DAY_ABSENT);
+        if (attendanceTime.isMonday()) {
+            return calculateAttendanceStatus(attendanceTime, MONDAY_LATE, MONDAY_ABSENT);
+        }
+        return calculateAttendanceStatus(attendanceTime, OTHER_DAY_LATE, OTHER_DAY_ABSENT);
     }
 
-    private static AttendanceStatus getAttendanceStatus(AttendanceTime attendanceTime, LocalTime lateTime,
-                                                        LocalTime absentTime) {
+    private static AttendanceStatus calculateAttendanceStatus(AttendanceTime attendanceTime, LocalTime lateTime,
+                                                              LocalTime absentTime) {
 
         if (attendanceTime.isBefore(lateTime)) {
             return ATTEND;

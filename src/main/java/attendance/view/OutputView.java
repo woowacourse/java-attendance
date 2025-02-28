@@ -1,8 +1,11 @@
 package attendance.view;
 
+import attendance.dto.CrewAttendanceDTO;
+import attendance.model.AcademicStatus;
 import attendance.model.AttendanceStatus;
 import attendance.model.AttendanceTime;
 import java.time.format.TextStyle;
+import java.util.EnumMap;
 import java.util.Locale;
 
 public class OutputView {
@@ -12,14 +15,19 @@ public class OutputView {
     }
 
     public void printAttendance(final AttendanceTime attendanceTime) {
-        final int year = attendanceTime.getDate().getYear();
+        final int month = attendanceTime.getDate().getMonthValue();
         final int date = attendanceTime.getDate().getDayOfMonth();
         final String day = attendanceTime.getDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         final int hour = attendanceTime.getHour();
         final int minute = attendanceTime.getMinute();
+
+        String time = String.format("%02d:%02d", hour, minute);
+        if (hour == -1 && minute == -1) {
+            time = "--:--";
+        }
         final String status = AttendanceStatus.getAttendanceStatus(attendanceTime).getValue();
 
-        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)", year, date, day, hour, minute, status);
+        System.out.printf("%02d월 %02d일 %s %s (%s)", month, date, day, time, status);
     }
 
     public void printAfterAttendance(final AttendanceTime attendanceTime) {
@@ -28,6 +36,41 @@ public class OutputView {
         final int minute = attendanceTime.getMinute();
         final String status = AttendanceStatus.getAttendanceStatus(attendanceTime).getValue();
         System.out.printf(" -> %02d:%02d (%s) 수정 완료!\n", hour, minute, status);
+    }
+
+    public void printCrewAttendances(final CrewAttendanceDTO crewAttendanceDTO) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", crewAttendanceDTO.name());
+
+        printAttendances(crewAttendanceDTO);
+        printLine();
+
+        printCrewAttendanceStatus(crewAttendanceDTO);
+        printLine();
+
+        if (crewAttendanceDTO.academicStatus() == AcademicStatus.NOT) {
+            return;
+        }
+        System.out.printf("%s 대상자입니다.\n", crewAttendanceDTO.academicStatus().getValue());
+        printLine();
+    }
+
+    private void printAttendances(CrewAttendanceDTO crewAttendanceDTO) {
+        for (AttendanceTime attendanceTime : crewAttendanceDTO.attendances()) {
+            printAttendance(attendanceTime);
+            printLine();
+        }
+    }
+
+    private void printCrewAttendanceStatus(CrewAttendanceDTO crewAttendanceDTO) {
+        EnumMap<AttendanceStatus, Integer> statusCounts = crewAttendanceDTO.statusCount();
+        for (AttendanceStatus attendanceStatus : statusCounts.keySet()) {
+            printAttendanceStatus(attendanceStatus, statusCounts.get(attendanceStatus));
+        }
+    }
+
+    private void printAttendanceStatus(final AttendanceStatus attendanceStatus, final int count) {
+        System.out.printf("%s: %d회", attendanceStatus.getValue(), count);
+        printLine();
     }
 
     public void printLine() {

@@ -1,6 +1,9 @@
 package attendance.controller;
 
+import attendance.dto.CrewAttendanceDTO;
+import attendance.model.AcademicStatus;
 import attendance.model.AttendanceBook;
+import attendance.model.AttendanceStatus;
 import attendance.model.AttendanceTime;
 import attendance.model.Function;
 import attendance.util.AttendanceReader;
@@ -10,6 +13,9 @@ import attendance.view.OutputView;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
 
@@ -59,7 +65,7 @@ public class AttendanceController {
             modifyAttendance(attendanceBook);
         }
         if (function == Function.GET_CREW_ATTENDANCES) {
-
+            getCrewAttendances(attendanceBook);
         }
         if (function == Function.GET_EXPULSION_CANDIDATES) {
 
@@ -169,6 +175,35 @@ public class AttendanceController {
             return new AttendanceTime(LocalDate.of(now.getYear(), now.getMonthValue(), date),
                     Parser.parseInt(split[0]), Parser.parseInt(split[1]));
         });
+    }
+
+    private void getCrewAttendances(final AttendanceBook attendanceBook) {
+
+        final String crewName = inputCrewName(attendanceBook);
+        List<AttendanceTime> attendances = attendanceBook.getAttendancesByName(crewName)
+                .stream()
+                .sorted(Comparator.comparing(AttendanceTime::getDate))
+                .toList();
+
+        int attend = attendanceBook.getAttendanceStatusCount(crewName, AttendanceStatus.ATTEND);
+        int late = attendanceBook.getAttendanceStatusCount(crewName, AttendanceStatus.LATE);
+        int absent = attendanceBook.getAttendanceStatusCount(crewName, AttendanceStatus.ABSENT);
+
+        EnumMap<AttendanceStatus, Integer> attendanceStatusMap = getAttendanceStatusMap(
+                attend, late, absent);
+        AcademicStatus academicStatus = AcademicStatus.getAcademicStatus(late, absent);
+
+        outputView.printCrewAttendances(
+                new CrewAttendanceDTO(crewName, attendances, attendanceStatusMap, academicStatus));
+    }
+
+    private static EnumMap<AttendanceStatus, Integer> getAttendanceStatusMap(int attend, int late,
+                                                                             int absent) {
+        EnumMap<AttendanceStatus, Integer> attendanceStatusMap = new EnumMap<>(AttendanceStatus.class);
+        attendanceStatusMap.put(AttendanceStatus.ATTEND, attend);
+        attendanceStatusMap.put(AttendanceStatus.LATE, late);
+        attendanceStatusMap.put(AttendanceStatus.ABSENT, absent);
+        return attendanceStatusMap;
     }
 
     private <T> T retryInput(Supplier<T> supplier) {

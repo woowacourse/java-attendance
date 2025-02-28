@@ -110,6 +110,7 @@ public class AttendanceBookTest {
         attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 31));
         attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 26), 10, 31));
         attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 31));
+        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 28)));
 
         // when
         final int result = attendanceBook.getAttendanceStatusCount(name, attendanceStatus);
@@ -123,7 +124,7 @@ public class AttendanceBookTest {
         return Stream.of(
                 Arguments.of("이름1", AttendanceStatus.ATTEND, 1),
                 Arguments.of("이름2", AttendanceStatus.LATE, 2),
-                Arguments.of("이름3", AttendanceStatus.ABSENT, 3)
+                Arguments.of("이름3", AttendanceStatus.ABSENT, 4)
         );
     }
 

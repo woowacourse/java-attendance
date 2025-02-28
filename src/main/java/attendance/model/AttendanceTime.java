@@ -65,6 +65,10 @@ public class AttendanceTime {
         return date.isEqual(localDate);
     }
 
+    public boolean isDefaultAbsent() {
+        return hour == ABSENT_VALUE && minute == ABSENT_VALUE;
+    }
+
     public void modify(final int targetHour, final int targetMinute) {
         this.hour = targetHour;
         this.minute = targetMinute;

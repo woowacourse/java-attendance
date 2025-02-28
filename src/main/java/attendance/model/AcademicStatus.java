@@ -31,4 +31,8 @@ public enum AcademicStatus {
         }
         return NOT;
     }
+
+    public String getValue() {
+        return value;
+    }
 }
