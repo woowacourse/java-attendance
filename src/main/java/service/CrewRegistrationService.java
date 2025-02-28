@@ -7,7 +7,7 @@ import java.util.List;
 import utils.CsvReader;
 import utils.ParsingUtils;
 
-public class CrewRegistration {
+public class CrewRegistrationService {
     public AttendanceBook registerCrews(String filePath) {
         AttendanceBook attendanceBook = new AttendanceBook();
         List<String> existedRecords = CsvReader.readExistedRecords(filePath);

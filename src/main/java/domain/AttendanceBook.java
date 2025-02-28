@@ -83,7 +83,7 @@ public class AttendanceBook {
         validateIsDateFuture(date);
 
         Crew foundCrew = findCrewByName(name);
-        foundCrew.gratifyTimeLogs(); // 수정하려는 날짜가 기록이 없는 경우 time 값에 null 추가
+        foundCrew.gratifyTimeLogs(); // 수정하려는 날짜가 기록이 없는 경우를 대비하여 빈 타임 로그 구현
 
         LocalTime previousTime = foundCrew.findTimeByDate(date);// 이전 시간 가져오기
         String previousStatus = validateTrainingDay(date, previousTime); // 변경 전 출결 현황

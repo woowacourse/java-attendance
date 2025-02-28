@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.CrewRegistration;
+import service.CrewRegistrationService;
 import utils.CsvReader;
 import utils.ParsingUtils;
 
@@ -59,9 +59,9 @@ public class RegisterCrewTest {
     @Test
     @DisplayName("csv 파일을 읽어서 크루 등록을 진행한다.")
     void Register_Crews() {
-        CrewRegistration crewRegistration = new CrewRegistration();
+        CrewRegistrationService crewRegistrationService = new CrewRegistrationService();
 
-        AttendanceBook attendanceBook = crewRegistration.registerCrews("src/test/java/resources/test.csv");
+        AttendanceBook attendanceBook = crewRegistrationService.registerCrews("src/test/java/resources/test.csv");
 
         assertThat(attendanceBook.checkCrewExisted("쿠키")).isEqualTo(true);
     }
