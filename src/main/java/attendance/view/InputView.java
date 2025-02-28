@@ -22,18 +22,18 @@ public class InputView {
                 "3. 크루별 출석 기록 확인\n" +
                 "4. 제적 위험자 확인\n" +
                 "Q. 종료");
-        return scanner.nextLine();
+        return scanner.nextLine().trim();
     }
 
     public String inputNickname() {
         System.out.println("닉네임을 입력해 주세요.");
-        return scanner.nextLine();
+        return scanner.nextLine().toLowerCase();
     }
 
     public LocalTime inputAttendanceTime() {
         try {
             System.out.println("등교 시간을 입력해 주세요.");
-            String attendanceTimeInput = scanner.nextLine();
+            String attendanceTimeInput = scanner.nextLine().trim();
 
             return formatTime(attendanceTimeInput);
         } catch (DateTimeParseException e) {
@@ -43,13 +43,13 @@ public class InputView {
 
     public String inputUpdateCrew() {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        return scanner.nextLine();
+        return scanner.nextLine().trim();
     }
 
     public int inputUpdateDate() {
         try {
             System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-            String updateDate = scanner.nextLine();
+            String updateDate = scanner.nextLine().trim();
 
             return Integer.parseInt(updateDate);
         } catch (NumberFormatException e) {
@@ -60,7 +60,7 @@ public class InputView {
     public LocalTime inputUpdateAttendanceTime() {
         try{
             System.out.println("언제로 변경하겠습니까?");
-            String updateTimeInput = scanner.nextLine();
+            String updateTimeInput = scanner.nextLine().trim();
 
             return formatTime(updateTimeInput);
         } catch (DateTimeParseException e) {

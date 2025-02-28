@@ -33,15 +33,11 @@ public class CrewsController {
 
     public void run() {
         Crews crews = CrewsFactory.initFromCsv(ATTENDANCES_CSV, today);
-        while(true) {
+        while (true) {
             try {
                 String selectedCommand = inputView.selectCommand(today);
-                if(selectedCommand.equals("Q")) break;
-
-                if(selectedCommand.equals("1")) confirmAttendance(crews);
-                if(selectedCommand.equals("2")) updateAttendance(crews);
-                if(selectedCommand.equals("3")) printCrewAttendances(crews);
-                if(selectedCommand.equals("4")) printWarningCrews(crews);
+                if (selectedCommand.equals("Q")) break;
+                commandProcesses.get(Command.of(selectedCommand)).accept(crews);
             } catch (IllegalArgumentException e) {
                 outputView.printExceptionMessage(e);
             }
@@ -77,12 +73,15 @@ public class CrewsController {
     private void printCrewAttendances(final Crews crews) {
         String nickname = inputView.inputNickname();
         Crew crew = crews.findCrewByNickname(nickname);
-
-        outputView.printCrewAttendances(crew);
+        crew.countAttendanceStatus(today);
+        outputView.printCrewAttendances(today, crew);
         outputView.printCrewAttendanceStatusCount(crew);
     }
 
-    private void printWarningCrews(final Crews crews) {
+    private void printWarningExpulsionCrews(final Crews crews) {
+        for (Crew crew : crews.getCrews()) {
+            crew.countAttendanceStatus(today);
+        }
         outputView.printPenaltyCrews(crews.findWarningExpulsionCrews());
     }
 }

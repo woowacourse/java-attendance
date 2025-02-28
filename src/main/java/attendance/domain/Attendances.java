@@ -18,6 +18,10 @@ public class Attendances {
         this.attendances = new ArrayList<>();
     }
 
+    public Attendances(final List<Attendance> attendances) {
+        this.attendances = new ArrayList<>(attendances);
+    }
+
     public Attendance add(final Attendance attendanceInput) {
         for (Attendance attendance : attendances) {
             if(attendance.isEqualAttendanceDate(attendanceInput)) {
@@ -46,10 +50,6 @@ public class Attendances {
                 .count();
     }
 
-    public List<Attendance> getAttendances() {
-        return Collections.unmodifiableList(attendances);
-    }
-
     private boolean isExistAttendanceByDate(final LocalDate today) {
         for (Attendance attendance : attendances) {
             if(attendance.isEqualDate(today)){
@@ -57,5 +57,9 @@ public class Attendances {
             }
         }
         return false;
+    }
+
+    public List<Attendance> getAttendances() {
+        return Collections.unmodifiableList(attendances);
     }
 }

@@ -5,10 +5,14 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Crew;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class OutputView {
 
@@ -37,9 +41,9 @@ public class OutputView {
                 getStatusString(afterUpdateAttendance.getStatus()));
     }
 
-    public void printCrewAttendances(Crew crew) {
+    public void printCrewAttendances(LocalDate today, Crew crew) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", crew.getNickname());
-        List<Attendance> attendances = new ArrayList<>(crew.getAttendances());
+        List<Attendance> attendances = crew.getCrewAttendancesUtilYesterday(today);
         Collections.sort(attendances);
         for (Attendance attendance : attendances) {
             LocalDateTime dateTime = attendance.getDateTime();
@@ -52,9 +56,9 @@ public class OutputView {
     }
 
     public void printCrewAttendanceStatusCount(final Crew crew) {
-        System.out.printf("출석: %d회\n", crew.countAttendanceStatus(AttendanceStatus.ATTEND));
-        System.out.printf("지각: %d회\n", crew.countAttendanceStatus(AttendanceStatus.LATE));
-        System.out.printf("결석: %d회\n", crew.countAttendanceStatus(AttendanceStatus.ABSENCE));
+        System.out.printf("출석: %d회\n", crew.getAttendanceCount(AttendanceStatus.ATTEND));
+        System.out.printf("지각: %d회\n", crew.getAttendanceCount(AttendanceStatus.LATE));
+        System.out.printf("결석: %d회\n", crew.getAttendanceCount(AttendanceStatus.ABSENCE));
 
         AbsenceRule penalty = crew.checkAbsenceRule();
         if(!penalty.equals(AbsenceRule.NONE)) {
@@ -62,7 +66,7 @@ public class OutputView {
         }
     }
 
-    public void printPenaltyCrews(Map<AbsenceRule, List<Crew>> penaltiesCrews) {
+    public void printPenaltyCrews(final Map<AbsenceRule, List<Crew>> penaltiesCrews) {
         System.out.println("제적 위험자 조회 결과");
         for (AbsenceRule absenceRule : AbsenceRule.values()) {
             printCrewsPerPenalty(penaltiesCrews, absenceRule);
@@ -105,8 +109,8 @@ public class OutputView {
         for (Crew crew : crews) {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
                     crew.getNickname(),
-                    crew.countAttendanceStatus(AttendanceStatus.ABSENCE),
-                    crew.countAttendanceStatus(AttendanceStatus.LATE),
+                    crew.getAttendanceCount(AttendanceStatus.ABSENCE),
+                    crew.getAttendanceCount(AttendanceStatus.LATE),
                     getAbsenceRuleString(absenceRule));
         }
     }

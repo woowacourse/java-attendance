@@ -74,16 +74,16 @@ public class Attendance implements Comparable<Attendance> {
         return Objects.hash(dateTime, status);
     }
 
+    @Override
+    public int compareTo(final Attendance o) {
+        return this.dateTime.compareTo(o.dateTime);
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
 
     public AttendanceStatus getStatus() {
         return status;
-    }
-
-    @Override
-    public int compareTo(final Attendance o) {
-        return this.dateTime.compareTo(o.dateTime);
     }
 }
