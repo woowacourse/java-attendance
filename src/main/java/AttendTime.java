@@ -37,6 +37,10 @@ public class AttendTime {
         return localDate.getDayOfMonth()==date;
     }
 
+    public String getAttendanceStatus() {
+        return checkAttendanceStatus().getStatus();
+    }
+
     public LocalDate getLocalDate() {
         return localDate;
     }

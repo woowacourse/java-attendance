@@ -1,3 +1,4 @@
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class AttendanceController {
@@ -17,21 +18,42 @@ public class AttendanceController {
 
 
         Crews crews = new Crews(CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv"));
-
+        while (true) {
         Command command = inputView.getCommand();
         try {
             if (command.equals(Command.ATTEND_TODAY)) {
                 attendToday(crews);
             }
+            if (command.equals(Command.CHANGE_ATTENDANCE)) {
+                changeAttendance(crews);
+            }
             if(command.equals(Command.SHOW_CREW_ATTENDANCES)){
                 showCrewAttendances(crews);
             }
             if(command.equals(Command.SHOW_DISMISSAL_CREW)){
-                outputView.printDismissalCrews(crews.findDismissalCrewsByImportance());
+                showDismissalCrew(crews);
+            }
+            if (command.equals(Command.Quit)) {
+                return;
             }
         } catch (Exception e) {
             System.out.println("[ERROR]" + e.getMessage());
         }
+        }
+    }
+
+    private void showDismissalCrew(Crews crews) {
+        outputView.printDismissalCrews(crews.findDismissalCrewsByImportance());
+    }
+
+    private void changeAttendance(Crews crews) {
+        String nickname = inputView.getNickname();
+        int date = inputView.getChangeableDate();
+        LocalTime localTime = inputView.getChangeableTime();
+
+        Crew crew = crews.findCrewByNickname(nickname).orElseThrow(IllegalArgumentException::new);
+        outputView.printBeforeChangedAttendance(crew, date);
+        outputView.printAfterChangedAttendance(crew.changeAttendanceTime(date, localTime));
     }
 
     private void showCrewAttendances(Crews crews) {
@@ -44,6 +66,6 @@ public class AttendanceController {
         String nickname = inputView.getNickname();
         String localDateTimeToday = inputView.getTodayLocalDateTime();
         AttendTime attendTime = crews.addCrewAttendance(nickname, localDateTimeToday);
-        outputView.printAttendanceResult(localDateTimeToday,attendTime.checkAttendanceStatus());
+        outputView.printAttendanceResult(attendTime);
     }
 }
