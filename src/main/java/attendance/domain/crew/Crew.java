@@ -10,7 +10,7 @@ public final class Crew {
 
     public Crew(String nickname) {
         validateBlankNickname(nickname);
-        this.nickname = nickname;
+        this.nickname = removeSideSpace(nickname);
     }
 
     public boolean isSameNickname(String nickname) {
@@ -38,10 +38,13 @@ public final class Crew {
         return Objects.hash(nickname);
     }
 
+    private String removeSideSpace(String nickname) {
+        return nickname.strip();
+    }
+
     private void validateBlankNickname(String nickname) {
         if (nickname == null || nickname.isBlank()) {
             throw new AttendanceException(ExceptionMessage.BLANK_NICKNAME.getMessage());
         }
-
     }
 }
