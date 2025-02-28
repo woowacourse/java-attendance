@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class AttendanceStatistics{
+public class AttendanceStatistics {
 
     private final List<AttendanceCounts> attendanceStatistics;
 

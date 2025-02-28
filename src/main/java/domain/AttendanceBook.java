@@ -1,7 +1,6 @@
 package domain;
 
 import domain.policy.absent.AbsentRule;
-import domain.policy.attend.AttendancePolicy;
 import reader.AttendanceFileReader;
 import reader.FileReadException;
 
@@ -13,15 +12,13 @@ import java.util.Map;
 public class AttendanceBook {
 
     private final Map<Nickname, Attendances> nicknameToAttendances;
-    private final AttendancePolicy attendancePolicy;
 
-    private AttendanceBook(Map<Nickname, Attendances> nicknameToAttendances, AttendancePolicy attendancePolicy) {
+    private AttendanceBook(Map<Nickname, Attendances> nicknameToAttendances) {
         this.nicknameToAttendances = nicknameToAttendances;
-        this.attendancePolicy = attendancePolicy;
     }
 
-    public static AttendanceBook initialize(AttendancePolicy attendancePolicy) {
-        return new AttendanceBook(new HashMap<>(), attendancePolicy);
+    public static AttendanceBook initialize() {
+        return new AttendanceBook(new HashMap<>());
     }
 
     public void loadAttendance(AttendanceFileReader attendanceFileReader,
@@ -53,7 +50,7 @@ public class AttendanceBook {
     public AttendanceStatistics findExpulsionCandidates() {
         return AttendanceStatistics.from(nicknameToAttendances.entrySet().stream()
                 .map(attendancesByNickname ->
-                        attendancesByNickname.getValue().calculateAttendanceCounts(attendancesByNickname.getKey(), attendancePolicy))
+                        attendancesByNickname.getValue().calculateAttendanceCounts(attendancesByNickname.getKey()))
                 .filter(attendanceStatistics -> AbsentRule.calculateAbsentPolicy(attendanceStatistics).isRiskOfExpulsion())
                 .toList());
     }
@@ -78,8 +75,8 @@ public class AttendanceBook {
         dateTime.forEach((date, time) -> {
             Attendances attendances = nicknameToAttendances.get(Nickname.from(nickname));
             attendances.add(Attendance.of(
-                    AttendanceDate.of(date, attendancePolicy),
-                    AttendanceTime.of(time, attendancePolicy)));
+                    AttendanceDate.from(date),
+                    AttendanceTime.from(time)));
         });
     }
 

@@ -66,12 +66,12 @@ class AttendancePolicyTest {
     @DisplayName("일반적인 날의 출석 상태를 결정할 수 있다")
     void decideAttendanceStateReturnStateWhenNormalDay() {
         // given
-        AttendanceDate normalDay = AttendanceDate.of(LocalDate.of(2024, 12, 18), attendancePolicy);
-        AttendanceTime attendTime = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(false), attendancePolicy);
-        AttendanceTime attendTime_6MinutesLate = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(false)
-                .plusMinutes(6), attendancePolicy);
-        AttendanceTime attendTime_31MinutesLate = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(false)
-                .plusMinutes(31), attendancePolicy);
+        AttendanceDate normalDay = AttendanceDate.from(LocalDate.of(2024, 12, 18));
+        AttendanceTime attendTime = AttendanceTime.from(attendanceTimePolicy.getAttendStartTime(false));
+        AttendanceTime attendTime_6MinutesLate = AttendanceTime.from(attendanceTimePolicy.getAttendStartTime(false)
+                .plusMinutes(6));
+        AttendanceTime attendTime_31MinutesLate = AttendanceTime.from(attendanceTimePolicy.getAttendStartTime(false)
+                .plusMinutes(31));
 
         Attendance attendance = Attendance.of(normalDay, attendTime);
         Attendance attendance_6MinutesLate = Attendance.of(normalDay, attendTime_6MinutesLate);
@@ -94,12 +94,12 @@ class AttendancePolicyTest {
     @DisplayName("특별한 날의 출석 상태를 결정할 수 있다")
     void decideAttendanceStateReturnStateWhenSpecialDay() {
         // given
-        AttendanceDate normalDay = AttendanceDate.of(LocalDate.of(2024, 12, 16), attendancePolicy);
-        AttendanceTime attendTime = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(true), attendancePolicy);
-        AttendanceTime attendTime_6MinutesLate = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(true)
-                .plusMinutes(6), attendancePolicy);
-        AttendanceTime attendTime_31MinutesLate = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(true)
-                .plusMinutes(31), attendancePolicy);
+        AttendanceDate normalDay = AttendanceDate.from(LocalDate.of(2024, 12, 16));
+        AttendanceTime attendTime = AttendanceTime.from(attendanceTimePolicy.getAttendStartTime(true));
+        AttendanceTime attendTime_6MinutesLate = AttendanceTime.from(attendanceTimePolicy.getAttendStartTime(true)
+                .plusMinutes(6));
+        AttendanceTime attendTime_31MinutesLate = AttendanceTime.from(attendanceTimePolicy.getAttendStartTime(true)
+                .plusMinutes(31));
 
         Attendance attendance = Attendance.of(normalDay, attendTime);
         Attendance attendance_6MinutesLate = Attendance.of(normalDay, attendTime_6MinutesLate);

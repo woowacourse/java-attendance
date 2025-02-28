@@ -1,6 +1,6 @@
 package domain;
 
-import domain.policy.attend.AttendancePolicy;
+import config.AttendancePolicyConfig;
 import util.FormatUtil;
 
 import java.time.LocalTime;
@@ -10,20 +10,17 @@ public class AttendanceTime {
 
     private final LocalTime time;
 
-    private AttendanceTime(LocalTime time,
-                           AttendancePolicy attendancePolicy) {
-        validate(time, attendancePolicy);
+    private AttendanceTime(LocalTime time) {
+        validate(time);
         this.time = time;
     }
 
-    public static AttendanceTime of(LocalTime time,
-                                    AttendancePolicy attendancePolicy) {
-        return new AttendanceTime(time, attendancePolicy);
+    public static AttendanceTime from(LocalTime time) {
+        return new AttendanceTime(time);
     }
 
-    private void validate(LocalTime time,
-                          AttendancePolicy attendancePolicy) {
-        if (attendancePolicy.canAttendTime(time)) {
+    private void validate(LocalTime time) {
+        if (AttendancePolicyConfig.getInstance().canAttendTime(time)) {
             return;
         }
         throw new IllegalArgumentException(String.format("%s는 등교할 수 없는 시간입니다.",

@@ -49,8 +49,8 @@ class AttendanceBookTest {
     @DisplayName("존재하지 않는 닉네임을 통해서 출석 기록들을 저장하고 조회할 수 있다.")
     void canFindAttendancesByNickname() {
         // given
-        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
-        AttendanceTime attendanceTime = AttendanceTime.of(LocalTime.of(10, 10), attendancePolicy);
+        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(2024, 12, 12));
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.of(10, 10));
         Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
 
         AttendanceBook attendanceBook = AttendanceBook.initialize(attendancePolicy);
@@ -92,132 +92,132 @@ class AttendanceBookTest {
 
         // 강산 결석 6번
         attendanceBook.add(nickname1, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 2), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(13, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 2)),
+                AttendanceTime.from(LocalTime.of(13, 31))
         ));
         attendanceBook.add(nickname1, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 3), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 3)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname1, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 4), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 4)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname1, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 5), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 5)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname1, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 6), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 6)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname1, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 9), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(13, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 9)),
+                AttendanceTime.from(LocalTime.of(13, 31))
         ));
 
         // 띠용 결석 5번
         attendanceBook.add(nickname2, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 2), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(13, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 2)),
+                AttendanceTime.from(LocalTime.of(13, 31))
         ));
         attendanceBook.add(nickname2, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 3), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 3)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname2, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 4), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 4)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname2, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 5), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 5)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname2, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 6), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 6)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname2, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 9), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 9)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
 
         // 폰트 결석 3번
         attendanceBook.add(nickname3, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 2), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(13, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 2)),
+                AttendanceTime.from(LocalTime.of(13, 31))
         ));
         attendanceBook.add(nickname3, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 3), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 3)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname3, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 4), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 4)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname3, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 5), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 0), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 5)),
+                AttendanceTime.from(LocalTime.of(10, 0))
         ));
         attendanceBook.add(nickname3, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 6), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 0), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 6)),
+                AttendanceTime.from(LocalTime.of(10, 0))
         ));
         attendanceBook.add(nickname3, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 9), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 9)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
 
         // 칼리 결석 0번
         attendanceBook.add(nickname4, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 2), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(13, 0), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 2)),
+                AttendanceTime.from(LocalTime.of(13, 0))
         ));
         attendanceBook.add(nickname4, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 3), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 0), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 3)),
+                AttendanceTime.from(LocalTime.of(10, 0))
         ));
         attendanceBook.add(nickname4, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 4), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 0), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 4)),
+                AttendanceTime.from(LocalTime.of(10, 0))
         ));
         attendanceBook.add(nickname4, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 5), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 0), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 5)),
+                AttendanceTime.from(LocalTime.of(10, 0))
         ));
         attendanceBook.add(nickname4, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 6), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 0), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 6)),
+                AttendanceTime.from(LocalTime.of(10, 0))
         ));
         attendanceBook.add(nickname4, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 9), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 0), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 9)),
+                AttendanceTime.from(LocalTime.of(10, 0))
         ));
 
         // 엠제이 결석 6번
         attendanceBook.add(nickname5, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 2), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(13, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 2)),
+                AttendanceTime.from(LocalTime.of(13, 31))
         ));
         attendanceBook.add(nickname5, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 3), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 3)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname5, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 4), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 4)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname5, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 5), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 5)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname5, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 6), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 6)),
+                AttendanceTime.from(LocalTime.of(10, 31))
         ));
         attendanceBook.add(nickname5, Attendance.of(
-                AttendanceDate.of(LocalDate.of(2024, 12, 9), attendancePolicy),
-                AttendanceTime.of(LocalTime.of(13, 31), attendancePolicy)
+                AttendanceDate.from(LocalDate.of(2024, 12, 9)),
+                AttendanceTime.from(LocalTime.of(13, 31))
         ));
 
 

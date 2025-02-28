@@ -1,7 +1,7 @@
 package domain;
 
-import domain.policy.attend.AttendancePolicy;
 import domain.policy.AttendanceStateRule;
+import domain.policy.attend.AttendancePolicy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

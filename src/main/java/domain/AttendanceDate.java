@@ -1,6 +1,6 @@
 package domain;
 
-import domain.policy.attend.AttendancePolicy;
+import config.AttendancePolicyConfig;
 import util.FormatUtil;
 
 import java.time.LocalDate;
@@ -11,21 +11,17 @@ import java.util.Objects;
 public class AttendanceDate {
     private final LocalDate date;
 
-    private AttendanceDate(
-            LocalDate date,
-            AttendancePolicy attendancePolicy
-    ) {
-        validate(date, attendancePolicy);
+    private AttendanceDate(LocalDate date) {
+        validate(date);
         this.date = date;
     }
 
-    public static AttendanceDate of(LocalDate date,
-                                    AttendancePolicy attendancePolicy) {
-        return new AttendanceDate(date, attendancePolicy);
+    public static AttendanceDate from(LocalDate date) {
+        return new AttendanceDate(date);
     }
 
-    private void validate(LocalDate date, AttendancePolicy attendancePolicy) {
-        if (attendancePolicy.canAttendDate(date)) {
+    private void validate(LocalDate date) {
+        if (AttendancePolicyConfig.getInstance().canAttendDate(date)) {
             return;
         }
         throw new IllegalArgumentException(String.format("%s %s은 등교일이 아닙니다.",

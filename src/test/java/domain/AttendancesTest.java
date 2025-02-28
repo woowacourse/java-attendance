@@ -6,6 +6,7 @@ import domain.policy.attend.date.AttendanceDatePolicy;
 import domain.policy.attend.time.AttendanceTimePolicy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import util.TimeMachine;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,8 +26,8 @@ class AttendancesTest {
     void canAddAttendance() {
         // given
         Attendances attendances = Attendances.initialize();
-        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
-        AttendanceTime attendanceTime = AttendanceTime.of(LocalTime.of(10, 10), attendancePolicy);
+        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(2024, 12, 12));
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.of(10, 10));
         Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
 
         // when
@@ -42,8 +43,8 @@ class AttendancesTest {
     void whenAddAttendanceCanCheckExistByDate() {
         // given
         Attendances attendances = Attendances.initialize();
-        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
-        AttendanceTime attendanceTime = AttendanceTime.of(LocalTime.of(10, 10), attendancePolicy);
+        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(2024, 12, 12));
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.of(10, 10));
         Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
 
         attendances.add(attendance);
@@ -58,7 +59,7 @@ class AttendancesTest {
     void whenNotAddAttendanceCannotCheckExistByDate() {
         // given
         Attendances attendances = Attendances.initialize();
-        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
+        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(2024, 12, 12));
 
         // when
         // then
@@ -70,8 +71,8 @@ class AttendancesTest {
     void whenAddAttendanceCanCheckFindByDate() {
         // given
         Attendances attendances = Attendances.initialize();
-        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
-        AttendanceTime attendanceTime = AttendanceTime.of(LocalTime.of(10, 10), attendancePolicy);
+        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(2024, 12, 12));
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.of(10, 10));
         Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
 
         attendances.add(attendance);
@@ -86,7 +87,7 @@ class AttendancesTest {
     void whenNotAddAttendanceCannotFindByDate() {
         // given
         Attendances attendances = Attendances.initialize();
-        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
+        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(2024, 12, 12));
 
         // when
         // then
@@ -99,15 +100,17 @@ class AttendancesTest {
     @DisplayName("출석 카운트를 계산할 수 있다.")
     void canCalculateAttendanceCounts() {
         // given
+        TimeMachine.timeTravelAt(13);
+
         Attendances attendances = Attendances.initialize();
-        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
-        AttendanceTime attendanceTime = AttendanceTime.of(LocalTime.of(10, 0), attendancePolicy);
+        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(2024, 12, 12));
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.of(10, 0));
         Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
 
         attendances.add(attendance);
 
         // when
-        AttendanceCounts attendanceCounts = attendances.calculateAttendanceCounts(Nickname.from("강산"), attendancePolicy);
+        AttendanceCounts attendanceCounts = attendances.calculateAttendanceCounts(Nickname.from("강산"));
 
         // then
         assertThat(attendanceCounts.getCount(AttendanceStateRule.ATTEND)).isEqualTo(1);

@@ -31,15 +31,15 @@ class AttendanceDateTest {
         // when
         // then
         assertAll(
-                () -> assertThatThrownBy(() -> AttendanceDate.of(holiday, attendancePolicy))
+                () -> assertThatThrownBy(() -> AttendanceDate.from(holiday))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessageContaining("등교일이 아닙니다."),
 
-                () -> assertThatThrownBy(() -> AttendanceDate.of(weekend, attendancePolicy))
+                () -> assertThatThrownBy(() -> AttendanceDate.from(weekend))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessageContaining("등교일이 아닙니다."),
 
-                () -> assertThatCode(() -> AttendanceDate.of(weekday, attendancePolicy))
+                () -> assertThatCode(() -> AttendanceDate.from(weekday))
                         .doesNotThrowAnyException()
         );
     }
@@ -48,8 +48,8 @@ class AttendanceDateTest {
     @DisplayName("내부 값이 같다면, 같은 출석 날짜으로 취급한다.")
     void treatedAsTheSameObjectIfValuesAreTheSame() {
         // given
-        AttendanceDate attendanceDate1 = AttendanceDate.of(LocalDate.of(2024, 12, 13), attendancePolicy);
-        AttendanceDate attendanceDate2 = AttendanceDate.of(LocalDate.of(2024, 12, 13), attendancePolicy);
+        AttendanceDate attendanceDate1 = AttendanceDate.from(LocalDate.of(2024, 12, 13));
+        AttendanceDate attendanceDate2 = AttendanceDate.from(LocalDate.of(2024, 12, 13));
 
         // when
         // then

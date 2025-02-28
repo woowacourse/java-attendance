@@ -1,5 +1,6 @@
 package domain;
 
+import config.AttendancePolicyConfig;
 import domain.policy.AttendanceStateRule;
 import domain.policy.attend.AttendancePolicy;
 import util.TimeMachine;
@@ -38,14 +39,14 @@ public class Attendances {
         throw new IllegalArgumentException("해당 날짜에 출석 기록이 없습니다.");
     }
 
-    public AttendanceCounts calculateAttendanceCounts(Nickname nickname,
-                                                      AttendancePolicy attendancePolicy) {
+    public AttendanceCounts calculateAttendanceCounts(Nickname nickname) {
+        AttendancePolicy attendancePolicy = AttendancePolicyConfig.getInstance();
         AttendanceCounts attendanceCounts = AttendanceCounts.initialize(nickname);
 
         IntStream.range(1, TimeMachine.dateOfNow().getDayOfMonth())
                 .mapToObj(dayOfMonth -> LocalDate.of(TimeMachine.FIXED_YEAR, TimeMachine.FIXED_MONTH, dayOfMonth))
                 .filter(attendancePolicy::canAttendDate)
-                .map(date -> AttendanceDate.of(date, attendancePolicy))
+                .map(AttendanceDate::from)
                 .map(attendanceDate -> decisionAttendanceState(attendanceDate, attendancePolicy))
                 .forEach(attendanceCounts::increment);
 

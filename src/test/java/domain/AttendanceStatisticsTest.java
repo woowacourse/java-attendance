@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceStatisticsTest {
 
@@ -49,10 +49,10 @@ class AttendanceStatisticsTest {
 
         // then
         assertAll(
-                ()->assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(0).getNickname().value()).isEqualTo("김강산"),
-                ()->assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(1).getNickname().value()).isEqualTo("님띠용"),
-                ()->assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(2).getNickname().value()).isEqualTo("딤칼리"),
-                ()->assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(3).getNickname().value()).isEqualTo("림엠제이")
+                () -> assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(0).getNickname().value()).isEqualTo("김강산"),
+                () -> assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(1).getNickname().value()).isEqualTo("님띠용"),
+                () -> assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(2).getNickname().value()).isEqualTo("딤칼리"),
+                () -> assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(3).getNickname().value()).isEqualTo("림엠제이")
         );
     }
 
