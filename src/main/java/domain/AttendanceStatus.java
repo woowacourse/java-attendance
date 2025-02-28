@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 public enum AttendanceStatus {
@@ -15,6 +16,12 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus calculateStatus(LocalDateTime dateTime) {
-        return NONE;
+        if (AttendanceTime.isAttendance(dateTime)) {
+            return ATTENDANCE;
+        }
+        if (AttendanceTime.isTardy(dateTime)) {
+            return TARDY;
+        }
+        return ABSENCE;
     }
 }
