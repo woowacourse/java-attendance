@@ -1,13 +1,12 @@
 package attendance;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class AttendanceManager {
 
-    private final List<LocalDateTime> attendanceTimes;
+    private final List<AttendanceTime> attendanceTimes;
 
     private AttendanceManager() {
         this.attendanceTimes = new ArrayList<>();
@@ -17,11 +16,11 @@ public class AttendanceManager {
         return new AttendanceManager();
     }
 
-    public void add(LocalDateTime attendanceDateTime) {
+    public void add(AttendanceTime attendanceDateTime) {
         attendanceTimes.add(attendanceDateTime);
     }
 
-    public List<LocalDateTime> getAttendanceTimes() {
+    public List<AttendanceTime> getAttendanceTimes() {
         return Collections.unmodifiableList(attendanceTimes);
     }
 }

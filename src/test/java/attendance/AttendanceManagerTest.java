@@ -14,8 +14,8 @@ public class AttendanceManagerTest {
     void given_nickname_and_attendance_time_then_save() {
         AttendanceManager attendanceManager = AttendanceManager.create();
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 0);
-        attendanceManager.add(attendanceDateTime);
-        List<LocalDateTime> attendanceTimes = attendanceManager.getAttendanceTimes();
+        attendanceManager.add(AttendanceTime.from(attendanceDateTime));
+        List<AttendanceTime> attendanceTimes = attendanceManager.getAttendanceTimes();
         assertThat(attendanceTimes.size()).isEqualTo(1);
     }
 

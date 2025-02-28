@@ -34,11 +34,13 @@ public enum DayOfWeek  {
             .get();
     }
 
-    public int calculateTypeDecisionValueOnHour(LocalDateTime attendanceDateTime) {
+    public int calculateTypeDecisionValueOnHour(AttendanceTime attendanceTime) {
+        LocalDateTime attendanceDateTime = attendanceTime.getAttendanceDateTime();
         return attendanceDateTime.getHour() - attendanceStartingTime.getHour();
     }
 
-    public int calculateTypeDecisionValueOnMinute(LocalDateTime attendanceDateTime) {
+    public int calculateTypeDecisionValueOnMinute(AttendanceTime attendanceTime) {
+        LocalDateTime attendanceDateTime = attendanceTime.getAttendanceDateTime();
         return attendanceDateTime.getMinute() - attendanceStartingTime.getMinute();
     }
 }

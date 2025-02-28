@@ -2,8 +2,6 @@ package attendance;
 
 import static attendance.DayOfWeek.*;
 
-import java.time.LocalDateTime;
-
 public enum AttendanceType {
     ATTENDANCE(0), LATE(5), ABSENCE(30);
 
@@ -13,19 +11,12 @@ public enum AttendanceType {
         this.typeDecisionValue = typeDecisionValue;
     }
 
-    public static AttendanceType decideAttendanceType(LocalDateTime attendanceDateTime) {
-        DayOfWeek dayOfWeek = findDayOfWeek(attendanceDateTime.toLocalDate());
-        ifWeekendThrowException(dayOfWeek);
-        ifNotOperatingThrowException(attendanceDateTime);
-        return calculateAttendanceType(attendanceDateTime, dayOfWeek);
-    }
-
-    private static AttendanceType calculateAttendanceType(LocalDateTime attendanceDateTime,
-        DayOfWeek dayOfWeek) {
-        if (dayOfWeek.calculateTypeDecisionValueOnHour(attendanceDateTime) > 0) {
+    public static AttendanceType decideAttendanceType(AttendanceTime attendanceTime) {
+        DayOfWeek dayOfWeek = findDayOfWeek(attendanceTime.getDate());
+        if (dayOfWeek.calculateTypeDecisionValueOnHour(attendanceTime) > 0) {
             return ABSENCE;
         }
-        int decisionValue = dayOfWeek.calculateTypeDecisionValueOnMinute(attendanceDateTime);
+        int decisionValue = dayOfWeek.calculateTypeDecisionValueOnMinute(attendanceTime);
         if (decisionValue >= ABSENCE.typeDecisionValue) {
             return ABSENCE;
         }
@@ -33,17 +24,5 @@ public enum AttendanceType {
             return LATE;
         }
         return ATTENDANCE;
-    }
-
-    private static void ifNotOperatingThrowException(LocalDateTime attendanceDateTime) {
-        if (!OperatingTime.isOperating(attendanceDateTime.toLocalTime())) {
-            throw new IllegalArgumentException("운영시간이 아닙니다.");
-        }
-    }
-
-    private static void ifWeekendThrowException(DayOfWeek dayOfWeek) {
-        if (dayOfWeek == SATURDAY || dayOfWeek == SUNDAY) {
-            throw new IllegalArgumentException("주말에는 등교할 수 없습니다.");
-        }
     }
 }
