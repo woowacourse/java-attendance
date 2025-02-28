@@ -7,6 +7,13 @@ import java.util.Map;
 public class AttendanceBook {
     private final Map<String, Attendances> crewsAttendances = new HashMap<>();
 
+    private static void updatePenaltyHistory(String nickname, Attendances attendances,
+                                             Map<String, Attendances> penaltyHistory) {
+        if (attendances.getPenaltyStatus() != null) {
+            penaltyHistory.put(nickname, attendances);
+        }
+    }
+
     public void recordAttendance(String nickname, Attendance attendance) {
         if (crewsAttendances.containsKey(nickname)) {
             crewsAttendances.get(nickname).add(attendance);
@@ -27,11 +34,9 @@ public class AttendanceBook {
 
     public Map<String, Attendances> getPenaltyHistory() {
         Map<String, Attendances> penaltyHistory = new HashMap<>();
-        crewsAttendances.forEach((nickname, attendances) -> {
-            if (attendances.getPenaltyStatus() != null) {
-                penaltyHistory.put(nickname, attendances);
-            }
-        });
+        crewsAttendances.forEach((nickname, attendances) ->
+                updatePenaltyHistory(nickname, attendances, penaltyHistory)
+        );
         return penaltyHistory;
     }
 
