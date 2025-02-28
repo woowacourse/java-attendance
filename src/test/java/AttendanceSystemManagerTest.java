@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ public class AttendanceSystemManagerTest {
     // TODO: 기능 한 개 구현하고, 전체적으로 리팩토링 (테스트명, 클래스 구조 등)
 
     @Nested
-    class TestForCreate {
+    class TestForRegisterNewAttendance {
         @Test
         @DisplayName("이미 존재하는 출석기록을 등록하고자 하면 수정 기능을 사용하도록 안내하는 예외가 발생한다.")
         void test1() {
@@ -28,7 +29,7 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistories(List.of(attendanceHistory)), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.create(nickname, attendAt))
+            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(nickname, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("이미 존재하는 출석 기록입니다. 수정 기능을 이용해주세요.");
         }
@@ -45,7 +46,7 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.create(nickname, attendAt))
+            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(nickname, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("평일이거나 공휴일이 아닌 경우에만 출석할 수 있습니다.");
         }
@@ -62,7 +63,7 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.create(nickname, attendAt))
+            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(nickname, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
         }
@@ -79,7 +80,7 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.create("없음", attendAt))
+            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance("없음", attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("등록되지 않은 닉네임입니다.");
         }
@@ -97,7 +98,30 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            assertThatCode(() -> attendanceSystemManager.create(nickname, attendAt)).doesNotThrowAnyException();
+            assertThatCode(
+                    () -> attendanceSystemManager.registerNewAttendance(nickname, attendAt)).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("정상적으로 출석 기록이 저장된다.")
+        void test6() {
+            // given
+            String nickname = "히로";
+            Crew crew = new Crew(nickname);
+            Crews crews = new Crews(List.of(crew));
+            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+
+            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+                    new AttendanceHistories(new ArrayList<>()), crews);
+
+            // when
+            AttendanceHistory attendanceHistory = attendanceSystemManager.registerNewAttendance(nickname, attendAt);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(attendanceHistory.getAttendAt()).isEqualTo(attendAt),
+                    () -> assertThat(attendanceHistory.getCrew()).isEqualTo(crew)
+            );
         }
     }
 
@@ -115,7 +139,7 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.update("없음", attendAt))
+            assertThatThrownBy(() -> attendanceSystemManager.updateRegisteredAttendance("없음", attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("등록되지 않은 닉네임입니다.");
         }
@@ -130,7 +154,7 @@ public class AttendanceSystemManagerTest {
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.update("히로", attendAt))
+            assertThatThrownBy(() -> attendanceSystemManager.updateRegisteredAttendance("히로", attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("조건에 해당하는 기록이 존재하지 않습니다.");
         }
@@ -148,7 +172,7 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistories(List.of(new AttendanceHistory(crew, attendAt))), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.update(nickname, newAttendDate))
+            assertThatThrownBy(() -> attendanceSystemManager.updateRegisteredAttendance(nickname, newAttendDate))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
         }

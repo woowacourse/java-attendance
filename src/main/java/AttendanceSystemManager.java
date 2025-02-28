@@ -13,7 +13,7 @@ public class AttendanceSystemManager {
         this.crews = crews;
     }
 
-    public void create(String nickname, LocalDateTime requestedAt) {
+    public AttendanceHistory registerNewAttendance(String nickname, LocalDateTime requestedAt) {
         Crew crew = crews.findCrewByName(nickname);
 
         boolean existedHistory = attendanceHistories.checkExistenceByCrewAndDate(crew, requestedAt.toLocalDate());
@@ -24,10 +24,10 @@ public class AttendanceSystemManager {
         AttendanceHistory attendanceHistory = new AttendanceHistory(crew, requestedAt);
         attendanceHistories.addNewHistory(attendanceHistory);
 
-        AttendanceType attendanceType = AttendanceType.findAttendanceTypeByDateTime(requestedAt);
+        return attendanceHistory;
     }
 
-    public void update(String nickname, LocalDateTime requestedAt) {
+    public void updateRegisteredAttendance(String nickname, LocalDateTime requestedAt) {
         Crew crew = crews.findCrewByName(nickname);
 
         AttendanceHistory oldAttendanceHistory = attendanceHistories.findByCrewAndDate(crew, requestedAt.toLocalDate());

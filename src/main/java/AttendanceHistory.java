@@ -31,4 +31,8 @@ public class AttendanceHistory {
     public LocalDateTime getAttendAt() {
         return attendAt;
     }
+
+    public Crew getCrew() {
+        return crew;
+    }
 }
