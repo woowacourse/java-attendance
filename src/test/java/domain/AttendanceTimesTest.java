@@ -125,6 +125,20 @@ class AttendanceTimesTest {
     }
 
     @Test
+    @DisplayName("날짜를 입력 시 해당 날짜 이전의 AttendanceTime에 대한 리스트 반환")
+    void readListOfAttendanceTest() {
+        // given
+        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
+        LocalDate today = LocalDate.of(2024, 12, 13);
+
+        // when
+        List<AttendanceTime> log = attendanceTimes.readAttendanceV2(today);
+
+        // then
+        assertThat(log).hasSize(3);
+    }
+
+    @Test
     @DisplayName("출석 횟수 반환")
     void countAttendanceTest() {
         // given

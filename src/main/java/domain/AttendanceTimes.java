@@ -31,6 +31,7 @@ public class AttendanceTimes {
         attendanceLog.add(time);
     }
 
+    // TODO: delete
     public LocalDateTime readAttendance(LocalDate date) {
         AttendanceTime dateTime = AttendanceTime.of(date, null); // TODO: null 보다 나은 방법 고민
         return attendanceLog.stream()
@@ -38,6 +39,12 @@ public class AttendanceTimes {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석기록이 존재하지 않습니다."))
                 .toLocalDateTime();
+    }
+
+    public List<AttendanceTime> readAttendanceV2(LocalDate date) {
+        return attendanceLog.stream()
+                .filter(time -> time.isBefore(date))
+                .toList();
     }
 
     public Optional<AttendanceTime> modifyAttendance(AttendanceTime time) {
