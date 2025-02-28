@@ -23,10 +23,6 @@ public class OutputView {
     private OutputView() {
     }
 
-    public static void printDuplicatedAttendance() {
-        System.out.println("[ERROR] 이미 출석하셨습니다.");
-    }
-
     public static void printAttendance(final Attendance attendance) {
         LocalDate attendanceDate = attendance.getDate();
         int month = attendanceDate.getMonthValue();

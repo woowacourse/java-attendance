@@ -22,7 +22,7 @@ class CampusManagerTest {
         //when
         //then
         DayOfWeek day = date.getDayOfWeek();
-        String message = "[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.\n".formatted(date.getMonthValue(),
+        String message = "[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.".formatted(date.getMonthValue(),
                 date.getDayOfMonth(),
                 day.getDisplayName(TextStyle.FULL, Locale.KOREAN));
 

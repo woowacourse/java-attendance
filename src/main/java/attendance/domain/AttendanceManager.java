@@ -13,13 +13,6 @@ import java.util.Optional;
 public class AttendanceManager {
     private final Map<Nickname, AttendanceHistory> attendanceBook = new HashMap<>();
 
-    public void validateExistingCrew(final Nickname crewNickname) {
-        boolean isCrewExists = attendanceBook.containsKey(crewNickname);
-        if (!isCrewExists) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
-    }
-
     public Nickname addCrew(final Nickname crewNickname) {
         boolean isCrewExists = attendanceBook.containsKey(crewNickname);
         if (!isCrewExists) {
@@ -37,11 +30,6 @@ public class AttendanceManager {
         return attendanceHistory.addAttendance(attendance);
     }
 
-    public Optional<Attendance> findAttendance(final Nickname crewNickname, final LocalDate attendanceDate) {
-        AttendanceHistory attendanceHistory = attendanceBook.get(crewNickname);
-        return attendanceHistory.findAttendance(attendanceDate);
-    }
-
     public Attendance modifyAttendance(final Nickname crewNickname,
                                        final LocalDate dateToModify,
                                        final LocalTime modificationTime) {
@@ -49,6 +37,25 @@ public class AttendanceManager {
         AttendanceHistory attendanceHistory = attendanceBook.get(crewNickname);
         Attendance modifiedAttendance = new Attendance(dateToModify, modificationTime, modificationStatus);
         return attendanceHistory.modifyAttendance(modifiedAttendance);
+    }
+
+    public void validateDuplicatedAttendance(final Nickname crewNickname, final LocalDate attendanceDate) {
+        Optional<Attendance> attendance = findAttendance(crewNickname, attendanceDate);
+        if (attendance.isPresent()) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다.");
+        }
+    }
+
+    public Optional<Attendance> findAttendance(final Nickname crewNickname, final LocalDate attendanceDate) {
+        AttendanceHistory attendanceHistory = attendanceBook.get(crewNickname);
+        return attendanceHistory.findAttendance(attendanceDate);
+    }
+
+    public void validateExistingCrew(final Nickname crewNickname) {
+        boolean isCrewExists = attendanceBook.containsKey(crewNickname);
+        if (!isCrewExists) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
 
     public List<Attendance> getMonthlyAttendances(final LocalDate today, final Nickname crewNickname) {

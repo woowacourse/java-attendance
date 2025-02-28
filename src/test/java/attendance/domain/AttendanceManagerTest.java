@@ -117,4 +117,22 @@ class AttendanceManagerTest {
                 }
         );
     }
+
+    @DisplayName("중복_출석하면_예외를_던진다")
+    @Test
+    void should_ThrowException_WhenAttendanceIsDuplicated() {
+        //given
+        AttendanceManager attendanceManager = new AttendanceManager();
+        Nickname crewNickname = new Nickname("레오");
+        attendanceManager.addCrew(crewNickname);
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 26);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+        attendanceManager.addAttendance(crewNickname, attendanceDate, attendanceTime);
+
+        //when
+        //then
+        assertThatThrownBy(() -> attendanceManager.validateDuplicatedAttendance(crewNickname, attendanceDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 이미 출석하셨습니다.");
+    }
 }

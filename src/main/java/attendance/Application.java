@@ -74,11 +74,7 @@ public class Application {
         CampusManager.validateOperationDate(today);
         Nickname crewNickname = new Nickname(readCrewNickname());
         attendanceManager.validateExistingCrew(crewNickname);
-        Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crewNickname, today);
-        if (existingAttendance.isPresent()) {
-            OutputView.printDuplicatedAttendance();
-            return;
-        }
+        attendanceManager.validateDuplicatedAttendance(crewNickname, today);
         LocalTime attendanceTime = readAttendanceTime();
         CampusManager.validateOperationTime(attendanceTime);
         Attendance attendance = attendanceManager.addAttendance(crewNickname, today, attendanceTime);
