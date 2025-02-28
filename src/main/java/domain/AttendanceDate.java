@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class AttendanceDate {
+
     private final LocalDate date;
 
     private AttendanceDate(LocalDate date) {
