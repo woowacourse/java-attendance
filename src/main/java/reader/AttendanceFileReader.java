@@ -5,7 +5,6 @@ import java.io.FileReader;
 
 public class AttendanceFileReader {
 
-    public static final String DEFAULT_ATTENDANCE_DATA_PATH = "src/main/resources/attendances.csv"; // TODO 옮기기
     private static final int HEADER = 1;
 
     public RawAttendances read(String filePath) throws FileReadException {
