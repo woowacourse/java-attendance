@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class InputView {
     private final Scanner scanner = new Scanner(System.in);
 
-    public void readSelectedMenu() {
+    public String readSelectedMenu() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREAN);
         String formattedDate = TODAY.format(dateFormatter);
         String formattedDayOfWeek = TODAY.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
@@ -22,8 +22,42 @@ public class InputView {
                 + "Q. 종료");
 
         String input = scanner.nextLine();
-//        InputValidator.
+        InputValidator.validateSelectedMenu(input);
+        return input;
     }
 
+    public String readName() {
+        System.out.println("닉네임을 입력해 주세요.");
+        String input = scanner.nextLine();
+        InputValidator.validateName(input);
+        return input;
+    }
 
+    public String readAttendanceTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        String input = scanner.nextLine();
+        InputValidator.validateTime(input);
+        return input;
+    }
+
+    public String readModifyDay() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        String input = scanner.nextLine();
+        InputValidator.validateDay(input);
+        return input;
+    }
+
+    public String readModifyName() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        String input = scanner.nextLine();
+        InputValidator.validateName(input);
+        return input;
+    }
+
+    public String readModifyTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        String input = scanner.nextLine();
+        InputValidator.validateTime(input);
+        return input;
+    }
 }
