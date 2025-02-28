@@ -6,10 +6,12 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceCount;
 import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.WarningLevel;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceCountTest {
@@ -35,5 +37,20 @@ public class AttendanceCountTest {
                         AttendanceStatus.ABSENT, 4
                 )
         ));
+    }
+
+    @Test
+    void 경고_레벨을_알_수_있다() {
+        //given
+        AttendanceCount attendanceCount = new AttendanceCount(Map.of(
+                AttendanceStatus.LATE, 3,
+                AttendanceStatus.ABSENT, 4
+        ));
+
+        //when
+        WarningLevel warningLevel = attendanceCount.getWarningLevel();
+
+        //then
+        Assertions.assertThat(warningLevel).isEqualTo(WarningLevel.WEEDING);
     }
 }

@@ -47,6 +47,10 @@ public class AttendanceCount {
                 .findFirst();
     }
 
+    public WarningLevel getWarningLevel() {
+        return null;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
