@@ -1,4 +1,4 @@
-package service;
+package fixture;
 
 import domain.AttendanceRecord;
 import domain.Crew;

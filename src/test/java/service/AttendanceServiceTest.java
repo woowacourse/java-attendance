@@ -9,6 +9,7 @@ import domain.AttendanceStatus;
 import domain.Crew;
 import domain.Crews;
 import domain.RiskRank;
+import fixture.AttendanceRecordsGenerator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

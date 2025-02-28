@@ -2,7 +2,7 @@ package domain;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.time.LocalDate;
+import fixture.LocalDateFixture;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
@@ -66,16 +66,5 @@ class LectureTimeTest {
 
         // then
         Assertions.assertThat(diff).isEqualTo(32);
-    }
-
-    static class LocalDateFixture {
-        // DayOfWeek
-        public static LocalDate MONDAY = LocalDate.of(2025, 2, 3);
-        public static LocalDate TUESDAY = LocalDate.of(2025, 2, 4);
-        public static LocalDate WEDNESDAY = LocalDate.of(2025, 2, 5);
-        public static LocalDate THURSDAY = LocalDate.of(2025, 2, 6);
-        public static LocalDate FRIDAY = LocalDate.of(2025, 2, 7);
-        public static LocalDate SATURDAY = LocalDate.of(2025, 2, 8);
-        public static LocalDate SUNDAY = LocalDate.of(2025, 2, 9);
     }
 }
