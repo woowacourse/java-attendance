@@ -29,8 +29,4 @@ public enum CrewStatus {
     public String getDescription() {
         return description;
     }
-
-    public int getMinimumAbsence() {
-        return minimumAbsence;
-    }
 }

@@ -7,10 +7,7 @@ import java.time.LocalTime;
 public class Evaluator {
 
     public static boolean isOpenDate(LocalDate date) {
-        if (isWeekend(date.getDayOfWeek()) || isHoliday(date)) {
-            return false;
-        }
-        return true;
+        return !isWeekend(date.getDayOfWeek()) && !isHoliday(date);
     }
 
     public static boolean isOpenTime(LocalTime time) {
@@ -18,16 +15,10 @@ public class Evaluator {
     }
 
     private static boolean isWeekend(DayOfWeek dayOfWeek) {
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-            return true;
-        }
-        return false;
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
     private static boolean isHoliday(LocalDate date) {
-        if (date.equals(LocalDate.of(2024, 12, 25))) {
-            return true;
-        }
-        return false;
+        return date.equals(LocalDate.of(2024, 12, 25));
     }
 }

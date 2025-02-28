@@ -33,6 +33,7 @@ public class OutputView {
                 .append(formatAttendanceLog(oldAttendanceLogDto))
                 .append(" -> ")
                 .append(formatAttendanceLogTime(newAttendanceLogDto.attendanceTime()))
+                .append(formatAttendanceLogStatus(newAttendanceLogDto.attendanceStatus()))
                 .append(" 수정 완료!")
                 .append(System.lineSeparator());
         System.out.println(stringBuilder);
@@ -53,9 +54,12 @@ public class OutputView {
 
     public static void printExpulsionRiskCrews(List<Map.Entry<CrewDto, AttendanceResultDto>> expulsionRiskCrewsDtos) {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(System.lineSeparator())
+                .append(formatExpulsionRiskHeader())
+                .append(System.lineSeparator());
         for (Map.Entry<CrewDto, AttendanceResultDto> entry : expulsionRiskCrewsDtos) {
             stringBuilder.append(formatExpulsionRiskCrew(entry.getKey(), entry.getValue()))
-                    .append(System.lineSeparator());
+                        .append(System.lineSeparator());
         }
         System.out.println(stringBuilder);
     }
@@ -63,7 +67,8 @@ public class OutputView {
     private static String formatCrewAttendanceHeader(String crewName) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(System.lineSeparator())
-                .append(String.format("이번 달 %s의 출석 기록입니다.", crewName));
+                .append(String.format("이번 달 %s의 출석 기록입니다.", crewName))
+                .append(System.lineSeparator());
         return stringBuilder.toString();
     }
 
@@ -135,8 +140,7 @@ public class OutputView {
 
     private static String formatCrewAttendanceResult(AttendanceResultDto attendanceResultDto) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(
-                        formatCrewAttendanceResultStatus(AttendanceStatus.ATTEND, attendanceResultDto.attendCount()))
+        stringBuilder.append(formatCrewAttendanceResultStatus(AttendanceStatus.ATTEND, attendanceResultDto.attendCount()))
                 .append(formatCrewAttendanceResultStatus(AttendanceStatus.LATE, attendanceResultDto.lateCount()))
                 .append(formatCrewAttendanceResultStatus(AttendanceStatus.ABSENT, attendanceResultDto.absentCount()));
         return stringBuilder.toString();
@@ -154,6 +158,10 @@ public class OutputView {
         stringBuilder.append(String.format("%s 대상자입니다.", attendanceResultDto.crewStatus()))
                 .append(System.lineSeparator());
         return stringBuilder.toString();
+    }
+
+    private static String formatExpulsionRiskHeader() {
+        return "제적 위험자 조회 결과";
     }
 
     private static String formatExpulsionRiskCrew(CrewDto crewDto, AttendanceResultDto attendanceResultDto) {
