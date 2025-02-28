@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-public class AttendCheckerTest {
+public class OperationTimeCheckerTest {
 
     @ParameterizedTest
     @CsvSource(value = {"2024-12-01", "2024-12-07", "2024-12-25"})
