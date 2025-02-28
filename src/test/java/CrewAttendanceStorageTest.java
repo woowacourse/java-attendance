@@ -119,4 +119,24 @@ public class CrewAttendanceStorageTest {
                 () -> assertThat(attendance.get().getStatus()).isSameAs(AttendanceStatus.LATE)
         );
     }
+
+    @DisplayName("출석 기록이 존재하지 않는 경우 결석 상태의 출석을 반환할 수 있다.")
+    @Test
+    void test7() {
+        // given
+        String crew = "밍곰";
+        CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.of(
+                Map.of(crew, new AttendanceStorage())
+        );
+        LocalDate date = LocalDate.of(2025, 2, 28);
+
+        // when
+        Optional<Attendance> attendance = crewAttendanceStorage.findAttendance(crew, date);
+
+        // then
+        assertAll(
+                () -> assertThat(attendance.isPresent()).isTrue(),
+                () -> assertThat(attendance.get().getStatus()).isSameAs(AttendanceStatus.ABSENCE)
+        );
+    }
 }
