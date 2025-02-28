@@ -1,7 +1,5 @@
-package domain;
+package domain.attendance;
 
-import domain.attendance.Attendance;
-import domain.attendance.Attendances;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.assertj.core.api.Assertions;

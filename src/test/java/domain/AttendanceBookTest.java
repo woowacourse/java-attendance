@@ -1,4 +1,5 @@
-import domain.AttendanceBook;
+package domain;
+
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
