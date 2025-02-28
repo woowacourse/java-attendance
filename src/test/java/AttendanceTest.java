@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -85,7 +86,7 @@ public class AttendanceTest {
         }).isInstanceOf(InvalidDateException.class);
     }
 
-    @DisplayName("제시간에 출석을 기록한 경우, 기록된 출석 내역과 '출석' 상태를 반환할 수 있다.")
+    @DisplayName("제시간에 출석을 기록한 경우, 성공적으로 출석을 등록할 수 있다.")
     @ParameterizedTest
     @CsvSource(value = {"10, 0", "10, 1", "10, 5"})
     void test6(int hour, int minutes) {
@@ -95,14 +96,13 @@ public class AttendanceTest {
         LocalTime enterTime = LocalTime.of(hour, minutes);
 
         // when
-        Attendance attendance = attendanceStorage.register(date, enterTime);
+        final boolean result = attendanceStorage.register(date, enterTime);
 
         // then
-        assertThat(attendance.getDateTime()).isEqualTo(LocalDateTime.of(date, enterTime));
-        assertThat(attendance.getStatus()).isSameAs(AttendanceStatus.ATTENDANCE);
+        assertThat(result).isTrue();
     }
 
-    @DisplayName("지각 시간에 출석을 기록한 경우, 기록된 출석 내역과 '지각' 상태를 반환할 수 있다.")
+    @DisplayName("지각 시간에 출석을 기록한 경우, 성공적으로 출석을 등록할 수 있다.")
     @ParameterizedTest
     @CsvSource(value = {"10, 6", "10, 30"})
     void test7(int hour, int minutes) {
@@ -112,14 +112,13 @@ public class AttendanceTest {
         LocalTime enterTime = LocalTime.of(hour, minutes);
 
         // when
-        Attendance attendance = attendanceStorage.register(date, enterTime);
+        final boolean result = attendanceStorage.register(date, enterTime);
 
         // then
-        assertThat(attendance.getDateTime()).isEqualTo(LocalDateTime.of(date, enterTime));
-        assertThat(attendance.getStatus()).isSameAs(AttendanceStatus.LATE);
+        assertThat(result).isTrue();
     }
 
-    @DisplayName("결석 시간에 출석을 기록한 경우, 기록된 출석 내역과 '결석' 상태를 반환할 수 있다.")
+    @DisplayName("결석 시간에 출석을 기록한 경우, 성공적으로 출석을 등록할 수 있다.")
     @ParameterizedTest
     @CsvSource(value = {"10, 31", "22, 30"})
     void test8(int hour, int minutes) {
@@ -129,10 +128,26 @@ public class AttendanceTest {
         LocalTime enterTime = LocalTime.of(hour, minutes);
 
         // when
-        Attendance attendance = attendanceStorage.register(date, enterTime);
+        final boolean result = attendanceStorage.register(date, enterTime);
 
         // then
-        assertThat(attendance.getDateTime()).isEqualTo(LocalDateTime.of(date, enterTime));
-        assertThat(attendance.getStatus()).isSameAs(AttendanceStatus.ABSENCE);
+        assertThat(result).isTrue();
+    }
+
+    @DisplayName("새로운 출석을 기록한 후, 성공적으로 해당 기록을 조회할 수 있다.")
+    @Test
+    void test9() {
+        // given
+        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        LocalDate date = LocalDate.of(2025, 2, 28);
+        LocalTime enterTime = LocalTime.of(10, 5);
+
+        // when
+        attendanceStorage.register(date, enterTime);
+        Optional<Attendance> attendance = attendanceStorage.findByDate(date);
+
+        // then
+        assertThat(attendance.isPresent()).isTrue();
+        assertThat(attendance.get().getDateTime()).isEqualTo(LocalDateTime.of(date, enterTime));
     }
 }
