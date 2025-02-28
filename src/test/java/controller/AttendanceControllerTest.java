@@ -56,6 +56,16 @@ class AttendanceControllerTest {
         assertThat(output).contains(ERROR_HEADER);
     }
 
-//    @DisplayName("사용자가 프로그램을 종료하지 않는 경우 계속해서 실행된다.")
+    @DisplayName("사용자가 프로그램을 종료하지 않는 경우 계속해서 실행된다.")
+    @Test
+    void test3() {
+        String input = "3\n미미\n4\nQ";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
 
+        AttendanceController attendanceController = new AttendanceController(attendanceBook);
+        attendanceController.run();
+
+        String output = outputStream.toString();
+        assertThat(output).contains("이번 달 미미의 출석 기록입니다.", "제적 위험자 조회 결과");
+    }
 }
