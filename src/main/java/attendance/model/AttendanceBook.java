@@ -52,7 +52,7 @@ public class AttendanceBook {
     private void initAbsence(final String name) {
 
         LocalDate now = LocalDate.now();
-        for (int day = 1; day <= now.getDayOfMonth(); day++) {
+        for (int day = 1; day < now.getDayOfMonth(); day++) {
             LocalDate attendDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
             judgeAbsence(name, attendDate);
         }
