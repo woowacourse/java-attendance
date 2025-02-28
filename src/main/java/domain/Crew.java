@@ -2,7 +2,7 @@ package domain;
 
 import java.util.Objects;
 
-public class Crew {
+public class Crew implements Comparable<Crew> {
     private final String nickName;
 
     private Crew(String nickName) {
@@ -31,5 +31,10 @@ public class Crew {
     @Override
     public int hashCode() {
         return Objects.hashCode(nickName);
+    }
+
+    @Override
+    public int compareTo(Crew o) {
+        return this.nickName.compareTo(o.nickName);
     }
 }

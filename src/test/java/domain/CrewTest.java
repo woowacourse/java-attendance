@@ -58,4 +58,23 @@ class CrewTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("닉네임은 2글자 이상 4글자 이하여야 합니다.");
     }
+
+    @Test
+    @DisplayName("크루 정렬 기준 테스트")
+    void compareToCrewTest() {
+        // given
+        Crew bigger = Crew.of("bca");
+        Crew smaller = Crew.of("abc");
+        Crew sameSmaller = Crew.of("abc");
+
+        // when
+        int positive = bigger.compareTo(smaller);
+        int negative = smaller.compareTo(bigger);
+        int zero = smaller.compareTo(sameSmaller);
+
+        // then
+        assertThat(positive).isGreaterThan(0);
+        assertThat(negative).isLessThan(0);
+        assertThat(zero).isEqualTo(0);
+    }
 }
