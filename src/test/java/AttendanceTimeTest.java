@@ -84,4 +84,19 @@ public class AttendanceTimeTest {
         assertThat(newAttendanceTime).isEqualTo(expected);
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "10, 0, 0, 0, 0",
+            "10, 0, 0, 1, 1",
+            "9, 59, 59, 999999999, -1"
+    })
+    void 출석시간과_출석인정시간의_차이를_계산한다(int hour, int minute, int second, int nano, long expected) {
+        //given
+        LocalDateTime time = LocalDateTime.of(2024, 12, 3, hour, minute, second, nano);
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        //when
+        long differenceNanos = attendanceTime.calculateDifferenceFromAttendanceStandard();
+        //then
+        assertThat(differenceNanos).isEqualTo(expected);
+    }
 }
