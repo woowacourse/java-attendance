@@ -33,11 +33,11 @@ public class AllCrew {
             LocalDateTime dateTime = LocalDateTime.parse(rawDateTime, formatter);
             Attendance attendance = new Attendance(dateTime);
 
-            addCrewInfo(crewNameAndAttendanceTime.getFirst(), attendance);
+            addCrewInfoWithNameAndAttendance(crewNameAndAttendanceTime.getFirst(), attendance);
         }
     }
-
-    public void addCrewInfo(String crewName, Attendance attendance) {
+    // test
+    public void addCrewInfoWithNameAndAttendance(String crewName, Attendance attendance) {
         if (containsCrewName(crewName)) {
             findCrewByName(crewName).addAttendance(attendance);
             return;
@@ -65,4 +65,5 @@ public class AllCrew {
             crew.fillEmptyDateWithAbsent(date);
         }
     }
+
 }
