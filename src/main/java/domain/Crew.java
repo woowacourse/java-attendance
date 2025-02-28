@@ -1,12 +1,12 @@
 package domain;
 
-import java.util.Objects;
-
 public class Crew {
     private final String nickname;
+    private final Attendances attendances;
 
     public Crew(String nickname) {
         this.nickname = nickname;
+        this.attendances = new Attendances();
     }
 
     public boolean equals(String name) {
