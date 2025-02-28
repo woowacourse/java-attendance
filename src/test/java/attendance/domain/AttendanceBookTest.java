@@ -5,8 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,14 +13,14 @@ import org.junit.jupiter.api.Test;
 
 class AttendanceBookTest {
 
-    private List<String> names;
+    private Set<String> names;
     private String name;
     private Attendances attendances;
     private AttendanceBook attendanceBook;
 
     @BeforeEach
     void setUp() {
-        names = new ArrayList<>();
+        names = new HashSet<>();
         name = "체체";
         names.add(name);
 

@@ -1,13 +1,13 @@
 package attendance.domain;
 
-import java.util.List;
+import java.util.Set;
 
 public class AttendanceBook {
 
-    private final List<String> crewNames;
+    private final Set<String> crewNames;
     private final Attendances attendances;
 
-    public AttendanceBook(final List<String> crewNames, Attendances attendances) {
+    public AttendanceBook(final Set<String> crewNames, Attendances attendances) {
         this.crewNames = crewNames;
         this.attendances = attendances;
     }
@@ -17,7 +17,7 @@ public class AttendanceBook {
             throw new IllegalArgumentException("[ERROR] 출석부에 존재하지 않는 닉네임입니다.");
         }
     }
-    
+
     public long getCountAcademicStatus(AttendanceStatus attendanceStatus, String crewName, int year, int month,
                                        int startHour,
                                        int startMinute) {
