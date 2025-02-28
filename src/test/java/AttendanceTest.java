@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,12 +11,13 @@ public class AttendanceTest {
     @Test
     void attend() {
         // given
+        AttendanceBook attendanceBook = new AttendanceBook(new ArrayList<>());
         String nickname = "율무";
         LocalDate date = LocalDate.of(2024, 12, 3);
         LocalTime time = LocalTime.of(10, 0);
 
         // when
-        Attendance attendance = new Attendance(nickname, date, time);
+        Attendance attendance = attendanceBook.check(nickname, date, time);
 
         // then
         Assertions.assertThat(attendance)
