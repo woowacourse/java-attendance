@@ -40,6 +40,14 @@ public class DateTimeParser {
         }
     }
 
+    public static LocalDate parseIntegerToDate(int year, int month, int day) {
+        try {
+            return LocalDate.of(year, month, day);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException(PARSE_DATE_TIME_ERROR_MESSAGE);
+        }
+    }
+
     public static LocalTime parseIntegerToTime(int hour, int minute) {
         try {
             return LocalTime.of(hour, minute);

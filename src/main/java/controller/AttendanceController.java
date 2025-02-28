@@ -5,6 +5,7 @@ import static domain.Feature.ATTENDANCE_EDIT;
 import static domain.Feature.CREW_RECORDS_CHECK;
 import static domain.Feature.EXPELLED_WARNING_CHECK;
 import static util.loader.FileLoader.loadCSV;
+import static util.parser.DateTimeParser.parseIntegerToDate;
 import static util.parser.DateTimeParser.parseStringToDate;
 import static util.parser.DateTimeParser.parseStringToTime;
 
@@ -47,12 +48,17 @@ public class AttendanceController {
         LocalTime time = parseStringToTime(inputView.readAttendedTime());
 
         DailyRecord record = coach.attendCrew(name, LocalDateTime.of(localDate, time));
-        outputView.printDateTimeRecord(localDate, record.getAttendedTime(), record.getStatus().getName());
+        outputView.printDateTimeRecord(localDate, record);
     }
 
     protected void attendanceEdit() {
-        // TODO: 출석 수정 구현
-        System.out.println("출석 수정 기능");
+        String name = inputView.readEditedName();
+        LocalDate date = parseIntegerToDate(localDate.getYear(), localDate.getMonthValue(), Integer.parseInt(inputView.readEditedDay()));
+        LocalTime time = parseStringToTime(inputView.readEditedTime());
+
+        DailyRecord oldRecord = attendanceBook.findCrewByName(name).findRecordByDate(date);
+        DailyRecord newRecord = coach.editCrew(name, LocalDateTime.of(date, time));
+        outputView.printEditedResult(date, oldRecord, newRecord);
     }
 
     protected void crewRecordsCheck() {
