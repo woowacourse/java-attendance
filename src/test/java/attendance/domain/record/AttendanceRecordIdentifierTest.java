@@ -3,7 +3,6 @@ package attendance.domain.record;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.Month;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test;
 class AttendanceRecordIdentifierTest {
 
     LocalDate COMMON_DATE = LocalDate.of(2025, 2, 4);
-    LocalTime COMMON_TIME = LocalTime.of(8, 50);
 
     @DisplayName("출석 기록이 어떤 크루의 기록인지 체크한다")
     @Test

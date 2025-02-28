@@ -1,5 +1,9 @@
 package attendance.domain.checker;
 
+import static attendance.fixture.DateFixture.NOT_HOLIDAY;
+import static attendance.fixture.DateFixture.PUBLIC_HOLIDAY;
+import static attendance.fixture.DateFixture.SATURDAY;
+import static attendance.fixture.DateFixture.SUNDAY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -17,11 +21,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class HolidayCheckerTest {
-
-    static final LocalDate SATURDAY = LocalDate.of(2025, 2, 8);
-    static final LocalDate SUNDAY = LocalDate.of(2025, 2, 9);
-    static final LocalDate PUBLIC_HOLIDAY = LocalDate.of(2025, 2, 24);
-    static final LocalDate NOT_HOLIDAY = LocalDate.of(2025, 2, 4);
 
     HolidayChecker holidayChecker = new HolidayChecker();
 

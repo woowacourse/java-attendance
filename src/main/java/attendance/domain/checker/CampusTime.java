@@ -23,4 +23,8 @@ public enum CampusTime {
     public static boolean checkInCampusTime(LocalTime time) {
         return !time.isBefore(START_TIME.time) && !time.isAfter(END_TIME.time);
     }
+
+    public LocalTime getTime() {
+        return time;
+    }
 }

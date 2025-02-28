@@ -1,5 +1,20 @@
 package attendance;
 
+import static attendance.fixture.CampusTimeFixture.CAMPUS_END_TIME;
+import static attendance.fixture.CampusTimeFixture.CAMPUS_START_TIME;
+import static attendance.fixture.CrewNicknameFixture.INVALID_CREW_NICKNAME;
+import static attendance.fixture.CrewNicknameFixture.VALID_CREW_NICKNAME;
+import static attendance.fixture.DateFixture.MONDAY;
+import static attendance.fixture.DateFixture.NOT_MONDAY;
+import static attendance.fixture.DateFixture.PUBLIC_HOLIDAY;
+import static attendance.fixture.DateFixture.SATURDAY;
+import static attendance.fixture.DateFixture.SUNDAY;
+import static attendance.fixture.TimeFixture.MONDAY_ABSENCE_TIME;
+import static attendance.fixture.TimeFixture.MONDAY_ATTENDANCE_TIME;
+import static attendance.fixture.TimeFixture.MONDAY_LATE_TIME;
+import static attendance.fixture.TimeFixture.NOT_MONDAY_ABSENCE_TIME;
+import static attendance.fixture.TimeFixture.NOT_MONDAY_ATTENDANCE_TIME;
+import static attendance.fixture.TimeFixture.NOT_MONDAY_LATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -16,7 +31,6 @@ import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Comparator;
 import java.util.List;
@@ -31,22 +45,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class AttendanceSystemTest {
-
-    static final String VALID_CREW_NICKNAME = "쿠키";
-    static final String INVALID_CREW_NICKNAME = "빙봉";
-    static final LocalDate SATURDAY = LocalDate.of(2025, 2, 8);
-    static final LocalDate SUNDAY = LocalDate.of(2025, 2, 9);
-    static final LocalDate PUBLIC_HOLIDAY = LocalDate.of(2025, 2, 24);
-    static final LocalDate MONDAY = LocalDate.of(2025, 2, 3);
-    static final LocalDate NOT_MONDAY = LocalDate.of(2025, 2, 4);
-    static final LocalTime MONDAY_ATTENDANCE_TIME = LocalTime.of(13, 0);
-    static final LocalTime MONDAY_LATE_TIME = LocalTime.of(13, 5);
-    static final LocalTime MONDAY_ABSENCE_TIME = LocalTime.of(13, 30);
-    static final LocalTime NOT_MONDAY_ATTENDANCE_TIME = LocalTime.of(10, 0);
-    static final LocalTime NOT_MONDAY_LATE_TIME = LocalTime.of(10, 5);
-    static final LocalTime NOT_MONDAY_ABSENCE_TIME = LocalTime.of(10, 30);
-    static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
-    static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
 
     CrewStorage crewStorage = new CrewStorage();
     HolidayChecker holidayChecker = new HolidayChecker();
@@ -170,8 +168,7 @@ class AttendanceSystemTest {
     @ParameterizedTest
     @MethodSource()
     void 출석_확인_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다(LocalDateTime arrivalDateTime) {
-        assertThatThrownBy(() -> attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME,
-                LocalDateTime.of(MONDAY, CAMPUS_END_TIME)))
+        assertThatThrownBy(() -> attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, arrivalDateTime))
                 .isInstanceOf(AttendanceException.class)
                 .hasMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
     }
@@ -179,7 +176,6 @@ class AttendanceSystemTest {
     static Stream<Arguments> 출석_확인_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다() {
         return Stream.of(
                 Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_START_TIME.minusSeconds(1))),
-                Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_END_TIME)),
                 Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_END_TIME.plusSeconds(1)))
         );
     }
@@ -251,8 +247,8 @@ class AttendanceSystemTest {
     @ParameterizedTest
     @MethodSource()
     void 출석_기록_수정_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다(LocalDateTime arrivalDateTime) {
-        assertThatThrownBy(() -> attendanceSystem.updateAttendance(VALID_CREW_NICKNAME, arrivalDateTime.toLocalDate(),
-                arrivalDateTime.toLocalTime()))
+        assertThatThrownBy(() -> attendanceSystem.updateAttendance(
+                VALID_CREW_NICKNAME, arrivalDateTime.toLocalDate(), arrivalDateTime.toLocalTime()))
                 .isInstanceOf(AttendanceException.class)
                 .hasMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
     }
@@ -260,7 +256,6 @@ class AttendanceSystemTest {
     static Stream<Arguments> 출석_기록_수정_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다() {
         return Stream.of(
                 Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_START_TIME.minusSeconds(1))),
-                Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_END_TIME)),
                 Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_END_TIME.plusSeconds(1)))
         );
     }

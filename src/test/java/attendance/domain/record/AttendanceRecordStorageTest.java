@@ -19,14 +19,13 @@ class AttendanceRecordStorageTest {
     private final LocalDate ARRIVAL_DATE = LocalDate.of(2025, 2, 4);
     private final LocalTime ARRIVAL_TIME = LocalTime.of(8, 50);
     private final LocalDateTime ARRIVAL_DATE_TIME = LocalDateTime.of(ARRIVAL_DATE, ARRIVAL_TIME);
-    private final AttendanceType ATTENDANCE_TYPE = AttendanceType.ATTENDANCE;
-    private final AttendanceRecord RECORD = new AttendanceRecord(NICKNAME, ARRIVAL_DATE_TIME, ATTENDANCE_TYPE);
     AttendanceRecordStorage recordStorage = new AttendanceRecordStorage();
 
     @DisplayName("출석 기록 추가 - 출석 기록을 추가할 수 있다")
     @Test
     void 출석_기록_추가_출석_기록을_추가할_수_있다() {
-        recordStorage.add(RECORD);
+        AttendanceRecord newRecord = new AttendanceRecord(NICKNAME, ARRIVAL_DATE_TIME, AttendanceType.ATTENDANCE);
+        recordStorage.add(newRecord);
 
         Optional<AttendanceRecord> record = recordStorage.find(NICKNAME, ARRIVAL_DATE);
         assertThat(record).isPresent();
@@ -35,8 +34,10 @@ class AttendanceRecordStorageTest {
     @DisplayName("출석 기록 추가 - 출석 기록이 이미 존재하는 날에 예외를 발생시킨다")
     @Test
     void 출석_기록_추가_출석_기록이_이미_존재하는_날에_예외를_발생시킨다() {
-        recordStorage.add(RECORD);
-        assertThatThrownBy(() -> recordStorage.add(RECORD))
+        AttendanceRecord newRecord = new AttendanceRecord(NICKNAME, ARRIVAL_DATE_TIME, AttendanceType.ATTENDANCE);
+        recordStorage.add(newRecord);
+
+        assertThatThrownBy(() -> recordStorage.add(newRecord))
                 .isInstanceOf(AttendanceException.class)
                 .hasMessage(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
     }
@@ -51,10 +52,11 @@ class AttendanceRecordStorageTest {
         assertThat(record).isEmpty();
     }
 
-    @DisplayName("출석 기록 제거 - 결석 기록을 제거할 수 있다")
+    @DisplayName("출석 기록 제거 - 출석 기록을 제거할 수 있다")
     @Test
-    void 출석_기록_제거_결석_기록을_제거할_수_있다() {
-        recordStorage.add(RECORD);
+    void 출석_기록_제거_출석_기록을_제거할_수_있다() {
+        AttendanceRecord newRecord = new AttendanceRecord(NICKNAME, ARRIVAL_DATE_TIME, AttendanceType.ATTENDANCE);
+        recordStorage.add(newRecord);
         recordStorage.remove(NICKNAME, ARRIVAL_DATE);
 
         Optional<AttendanceRecord> record = recordStorage.find(NICKNAME, ARRIVAL_DATE);
@@ -64,7 +66,8 @@ class AttendanceRecordStorageTest {
     @DisplayName("출석 조회 - 출석 기록을 조회할 수 있다")
     @Test
     void 출석_조회_출석_기록을_조회할_수_있다() {
-        recordStorage.add(RECORD);
+        AttendanceRecord newRecord = new AttendanceRecord(NICKNAME, ARRIVAL_DATE_TIME, AttendanceType.ATTENDANCE);
+        recordStorage.add(newRecord);
         assertThat(recordStorage.find(NICKNAME, ARRIVAL_DATE)).isPresent();
 
         recordStorage.remove(NICKNAME, ARRIVAL_DATE);
@@ -74,9 +77,10 @@ class AttendanceRecordStorageTest {
     @DisplayName("결석 포함 출석 조회 - 결석을 포함해서 출석을 조회한다")
     @Test
     void 결석_포함_출석_조회_결석을_포함해서_출석을_조회한다() {
-        recordStorage.add(RECORD);
+        AttendanceRecord newRecord = new AttendanceRecord(NICKNAME, ARRIVAL_DATE_TIME, AttendanceType.ATTENDANCE);
+        recordStorage.add(newRecord);
         AttendanceRecord attendanceRecord = recordStorage.findWithAbsenceRecord(NICKNAME, ARRIVAL_DATE);
-        assertThat(attendanceRecord.getAttendanceType()).isEqualTo(ATTENDANCE_TYPE);
+        assertThat(attendanceRecord.getAttendanceType()).isEqualTo(AttendanceType.ATTENDANCE);
 
         recordStorage.remove(NICKNAME, ARRIVAL_DATE);
         AttendanceRecord absenceRecord = recordStorage.findWithAbsenceRecord(NICKNAME, ARRIVAL_DATE);

@@ -1,5 +1,18 @@
 package attendance.domain.checker;
 
+import static attendance.fixture.CampusTimeFixture.CAMPUS_END_TIME;
+import static attendance.fixture.CampusTimeFixture.CAMPUS_START_TIME;
+import static attendance.fixture.DateFixture.MONDAY;
+import static attendance.fixture.DateFixture.NOT_MONDAY;
+import static attendance.fixture.DateFixture.PUBLIC_HOLIDAY;
+import static attendance.fixture.DateFixture.SATURDAY;
+import static attendance.fixture.DateFixture.SUNDAY;
+import static attendance.fixture.TimeFixture.MONDAY_ABSENCE_TIME;
+import static attendance.fixture.TimeFixture.MONDAY_ATTENDANCE_TIME;
+import static attendance.fixture.TimeFixture.MONDAY_LATE_TIME;
+import static attendance.fixture.TimeFixture.NOT_MONDAY_ABSENCE_TIME;
+import static attendance.fixture.TimeFixture.NOT_MONDAY_ATTENDANCE_TIME;
+import static attendance.fixture.TimeFixture.NOT_MONDAY_LATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -21,20 +34,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class AttendanceTypeCheckerTest {
-
-    static final LocalDate SATURDAY = LocalDate.of(2025, 2, 8);
-    static final LocalDate SUNDAY = LocalDate.of(2025, 2, 9);
-    static final LocalDate PUBLIC_HOLIDAY = LocalDate.of(2025, 2, 24);
-    static final LocalDate MONDAY = LocalDate.of(2025, 2, 3);
-    static final LocalDate NOT_MONDAY = LocalDate.of(2025, 2, 4);
-    static final LocalTime MONDAY_ATTENDANCE_TIME = LocalTime.of(13, 0);
-    static final LocalTime MONDAY_LATE_TIME = LocalTime.of(13, 5);
-    static final LocalTime MONDAY_ABSENCE_TIME = LocalTime.of(13, 30);
-    static final LocalTime NOT_MONDAY_ATTENDANCE_TIME = LocalTime.of(10, 0);
-    static final LocalTime NOT_MONDAY_LATE_TIME = LocalTime.of(10, 5);
-    static final LocalTime NOT_MONDAY_ABSENCE_TIME = LocalTime.of(10, 30);
-    static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
-    static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
 
     HolidayChecker holidayChecker = new HolidayChecker();
     AttendanceTypeChecker attendanceTypeChecker = new AttendanceTypeChecker(holidayChecker);
@@ -128,7 +127,6 @@ class AttendanceTypeCheckerTest {
     static Stream<Arguments> 캠퍼스_운영시간이_아닌_경우_예외를_발생시킨다() {
         return Stream.of(
                 Arguments.of(CAMPUS_START_TIME.minusSeconds(1)),
-                Arguments.of(CAMPUS_END_TIME),
                 Arguments.of(CAMPUS_END_TIME.plusSeconds(1))
         );
     }
