@@ -1,8 +1,10 @@
 package domain;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -102,5 +104,15 @@ class AttendancesTest {
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
 
         assertThat(statusByNickname).isEqualTo(PenaltyStatus.NONE);
+    }
+
+    @Test
+    void 닉네임과_일자를_통해_출석기록을_가져온다() {
+        String nickname = "빙티";
+        LocalDate attendanceDate = LocalDate.of(2025, 2, 5);
+
+        Attendance log = attendances.findLogWithNameAndDate(nickname, attendanceDate);
+
+        Assertions.assertThat(log.getLocalDateTime()).isEqualTo(LocalDateTime.of(2025, 2, 5, 13, 0));
     }
 }
