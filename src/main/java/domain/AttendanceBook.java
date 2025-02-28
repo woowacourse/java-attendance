@@ -11,6 +11,7 @@ import dto.PenaltyResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -113,6 +114,12 @@ public class AttendanceBook {
                         response.penalty()));
             }
         }
+
+        // 정렬 기준 적용
+        responses.sort(Comparator
+                .comparing(PenaltyCrewResponse::penalty).reversed() // 1. penalty 한글 내림차순 (제적 -> 면담 -> 경고 순)
+                .thenComparing(p -> -(p.absentCount() + p.lateCount() / 3.0)) // 2. (absentCount + lateCount / 3.0) 내림차순
+                .thenComparing(PenaltyCrewResponse::name)); // 3. name 기준 오름차순
 
         return responses;
     }
