@@ -1,5 +1,6 @@
 package attendance.domain.fixture;
 
+import attendance.domain.AttendanceChecker;
 import attendance.domain.Holiday;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -31,7 +32,7 @@ public class LocalDateTestFixture {
         LocalDate now = LocalDate.now();
         return IntStream.range(1, now.getMonth().maxLength())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
-                .filter(date -> isMonday(date))
+                .filter(LocalDateTestFixture::isMonday)
                 .findFirst()
                 .orElseThrow();
     }
@@ -40,9 +41,17 @@ public class LocalDateTestFixture {
         LocalDate now = LocalDate.now();
         return IntStream.range(1, now.getMonth().maxLength())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
-                .filter(date -> isWeekend(date))
+                .filter(LocalDateTestFixture::isWeekend)
                 .findFirst()
                 .orElseThrow();
+    }
+
+    public static int countOnCampusDay(int today) {
+        LocalDate now = LocalDate.now();
+        return (int) IntStream.range(1, today - 1)
+                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
+                .filter(AttendanceChecker::isCampusOpenDate)
+                .count();
     }
 
     private static boolean isMonday(LocalDate date) {
