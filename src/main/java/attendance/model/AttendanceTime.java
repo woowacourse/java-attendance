@@ -77,4 +77,8 @@ public class AttendanceTime {
     public int getMinute() {
         return minute;
     }
+
+    public LocalDate getDate() {
+        return LocalDate.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+    }
 }

@@ -37,4 +37,8 @@ public enum AttendanceStatus {
         }
         return ABSENT;
     }
+
+    public String getValue() {
+        return value;
+    }
 }

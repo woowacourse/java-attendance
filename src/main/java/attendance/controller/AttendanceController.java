@@ -1,10 +1,13 @@
 package attendance.controller;
 
 import attendance.model.AttendanceBook;
+import attendance.model.AttendanceTime;
 import attendance.model.Function;
 import attendance.util.AttendanceReader;
+import attendance.util.Parser;
 import attendance.view.InputView;
 import attendance.view.OutputView;
+import java.time.LocalDate;
 import java.util.function.Supplier;
 
 public class AttendanceController {
@@ -43,7 +46,7 @@ public class AttendanceController {
 
     private void doFunction(final Function function, final AttendanceBook attendanceBook) {
         if (function == Function.ADD_ATTENDANCE) {
-
+            addAttendance(attendanceBook);
         }
         if (function == Function.MODIFY_ATTENDANCE) {
 
@@ -59,6 +62,38 @@ public class AttendanceController {
     private Function inputFunction() {
 
         return retryInput(() -> Function.getFunction(inputView.inputFunction()));
+    }
+
+    private void addAttendance(final AttendanceBook attendanceBook) {
+        final String crewName = inputCrewName(attendanceBook);
+        final AttendanceTime attendanceTime = inputAttendanceTime();
+
+        attendanceBook.add(crewName, attendanceTime);
+
+        outputView.printAttendance(attendanceTime);
+    }
+
+    private String inputCrewName(final AttendanceBook attendanceBook) {
+        return retryInput(() -> {
+            String name = inputView.inputCrewName();
+            validateCrewNickname(attendanceBook, name);
+            return name;
+        });
+    }
+
+    private AttendanceTime inputAttendanceTime() {
+        LocalDate now = LocalDate.now();
+        return retryInput(() -> {
+            String[] split = inputView.inputAttendTime().split(":");
+            return new AttendanceTime(LocalDate.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth()),
+                    Parser.parseInt(split[0]), Parser.parseInt(split[1]));
+        });
+    }
+
+    private static void validateCrewNickname(final AttendanceBook attendanceBook, final String name) {
+        if (!attendanceBook.isCrewExists(name)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
 
     private <T> T retryInput(Supplier<T> supplier) {
