@@ -72,7 +72,7 @@ public class AttendanceBookTest {
         attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 2, 26), 10, 30));
 
         // when
-        List<AttendanceTime> attendances = attendanceBook.getAttendancesByName("이름1");
+        final List<AttendanceTime> attendances = attendanceBook.getAttendancesByName("이름1");
 
         // then
         Assertions.assertThat(attendances.size()).isEqualTo(2);
