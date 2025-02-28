@@ -32,7 +32,7 @@ public class AttendanceRecords {
         return new ArrayList<>(records);
     }
 
-    public List<AttendanceDateTime> getAbsenceDatesBetween(LocalDate fromInclusive, LocalDate toInclusive) {
+    public List<AttendanceDateTime> getRecordsWithMissingDates(LocalDate fromInclusive, LocalDate toInclusive) {
         int countToConsider = toInclusive.getDayOfMonth() - fromInclusive.getDayOfMonth() + 1;
         List<AttendanceDateTime> missingDates = collectMissingDates(fromInclusive, countToConsider);
 
