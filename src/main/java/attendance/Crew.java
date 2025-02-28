@@ -3,17 +3,16 @@ package attendance;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Crew implements Comparable<Crew> {
 
     private final String nickname;
-    private final List<Attendance> attendances;
+    private final Attendances attendances;
 
     public Crew(final String nickname) {
         this.nickname = nickname;
-        this.attendances = new ArrayList<>();
+        this.attendances = new Attendances();
     }
 
     public Attendance addAttendance(final LocalDateTime attendanceDateTime) {
@@ -36,14 +35,14 @@ public class Crew implements Comparable<Crew> {
 
 
     public Attendance findAttendanceByDate(final LocalDate date) {
-        return attendances.stream()
+        return attendances.getAttendances().stream()
                 .filter(attendance -> attendance.isEqualDate(date))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 날짜의 출석이 없습니다."));
     }
 
     public long countAttendanceStatus(final AttendanceStatus status) {
-        return attendances.stream()
+        return attendances.getAttendances().stream()
                 .filter(attendance -> attendance.isEqualStatus(status))
                 .count();
     }
@@ -54,7 +53,7 @@ public class Crew implements Comparable<Crew> {
     }
 
     public List<Attendance> getAttendances() {
-        return attendances;
+        return attendances.getAttendances();
     }
 
     @Override

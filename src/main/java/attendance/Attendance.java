@@ -49,6 +49,10 @@ public class Attendance {
         return this.status.equals(value);
     }
 
+    public boolean isEqualAttendanceDate(final Attendance attendance) {
+        return attendance.dateTime.equals(this.dateTime);
+    }
+
     private void checkCampusOpen(final LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = LocalTime.from(attendanceDateTime);
         if(attendanceTime.isBefore(OPEN_HOUR) || attendanceTime.isAfter(CLOSE_HOUR)) {

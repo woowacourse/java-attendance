@@ -315,7 +315,7 @@ public class CrewsTest {
             crew1.addAttendance(LocalDateTime.of(2024, 12, 12, 11, 6));
             crew1.addAttendance(LocalDateTime.of(2024, 12, 13, 10, 6));
             crew1.addAttendance(LocalDateTime.of(2024, 12, 16, 13, 6));
-            crew1.addAttendance(LocalDateTime.of(2024, 12, 13, 10, 6));
+            crew1.addAttendance(LocalDateTime.of(2024, 12, 17, 10, 6));
 
             Crew crew2 = crews.create("이든"); //결석 2회, 지각 5회
             crew2.addAttendance(LocalDateTime.of(2024, 12, 9, 13, 6));
