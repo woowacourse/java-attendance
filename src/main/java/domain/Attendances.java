@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,24 +30,32 @@ public class Attendances {
         return attendances.get(nickname);
     }
 
+    public Attendance findLogWithNameAndDate(String nickname, LocalDate date) {
+        return getLogsWithName(nickname).stream()
+                .filter(attendance -> attendance.isEqualTo(date))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] " + nickname + " 크루의 해당 일자 출석 기록이 없습니다."));
+
+    }
+
     public int calculateAttendanceCount(String nickname) {
         List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
-                .filter(attendance -> attendance.judge() == AttendanceStatus.ATTENDANCE)
+                .filter(attendance -> AttendanceStatus.judge(attendance.getLocalDateTime()) == AttendanceStatus.ATTENDANCE)
                 .count();
     }
 
     public int calculateLateCount(String nickname) {
         List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
-                .filter(attendance -> attendance.judge() == AttendanceStatus.LATENESS)
+                .filter(attendance -> AttendanceStatus.judge(attendance.getLocalDateTime()) == AttendanceStatus.LATENESS)
                 .count();
     }
 
     public int calculateAbsentCount(String nickname) {
         List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
-                .filter(attendance -> attendance.judge() == AttendanceStatus.ABSENCE)
+                .filter(attendance -> AttendanceStatus.judge(attendance.getLocalDateTime()) == AttendanceStatus.ABSENCE)
                 .count();
     }
 }
