@@ -31,7 +31,7 @@ public class AttendanceCalculatorTest {
     @Test
     void given_10_then_return_attendance() {
         LocalTime attendanceTime = LocalTime.of(10, 0);
-        String attendanceType = AttendanceCalculator.decideAttendanceType(attendanceTime);
+        String attendanceType = AttendanceCalculator.decideAttendanceType("화요일", attendanceTime);
         assertThat(attendanceType).isEqualTo("출석");
     }
 
@@ -39,7 +39,7 @@ public class AttendanceCalculatorTest {
     @Test
     void given_10_5_then_return_attendance() {
         LocalTime attendanceTime = LocalTime.of(10, 5);
-        String attendanceType = AttendanceCalculator.decideAttendanceType(attendanceTime);
+        String attendanceType = AttendanceCalculator.decideAttendanceType("화요일", attendanceTime);
         assertThat(attendanceType).isEqualTo("지각");
     }
 
@@ -47,8 +47,16 @@ public class AttendanceCalculatorTest {
     @Test
     void given_10_30_then_return_attendance() {
         LocalTime attendanceTime = LocalTime.of(10, 30);
-        String attendanceType = AttendanceCalculator.decideAttendanceType(attendanceTime);
+        String attendanceType = AttendanceCalculator.decideAttendanceType("화요일", attendanceTime);
         assertThat(attendanceType).isEqualTo("결석");
+    }
+
+    @DisplayName("화요일 10:00에 출석했을 경우, 출석을 반환해야 한다")
+    @Test
+    void given_tuesday_10_then_return_attendance() {
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+        String attendanceType = AttendanceCalculator.decideAttendanceType("화요일", attendanceTime);
+        assertThat(attendanceType).isEqualTo("출석");
     }
 
 }

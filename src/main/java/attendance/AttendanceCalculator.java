@@ -13,7 +13,7 @@ public class AttendanceCalculator {
         return dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREA);
     }
 
-    public static String decideAttendanceType(LocalTime attendanceTime) {
+    public static String decideAttendanceType(String dayOfWeek, LocalTime attendanceTime) {
         if (attendanceTime.isAfter(LocalTime.of(10, 29))) {
             return "결석";
         }
