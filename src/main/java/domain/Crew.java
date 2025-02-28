@@ -1,8 +1,8 @@
 package domain;
 
 import domain.attendance.Attendance;
+import domain.attendance.StudentStatus;
 
-import java.util.Comparator;
 import java.util.Objects;
 
 public class Crew {
