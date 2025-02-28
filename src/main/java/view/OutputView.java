@@ -65,22 +65,15 @@ public class OutputView {
         System.out.println();
     }
 
+    private static String convertToDateTimeStatus(AbstractAttendanceRecord record) {
+        return String.format("%s %s (%s)",
+                record.getDate().format(DATE_FORMAT), convertToTime(record), record.getStatus().getDescription());
+    }
+
     private static String convertToTime(AbstractAttendanceRecord record) {
         if (record instanceof EmptyAttendanceRecord) {
             return "--:--";
         }
         return ((AttendanceRecord) record).getTime().format(TIME_FORMAT);
     }
-
-    private static String convertToDateTimeStatus(AbstractAttendanceRecord record) {
-        if (record instanceof EmptyAttendanceRecord) {
-            return String.format("%s --:-- (%s)",
-                    record.getDate().format(DATE_FORMAT), record.getStatus().getDescription());
-        }
-        AttendanceRecord attendanceRecord = (AttendanceRecord) record;
-        return String.format("%s %s (%s)",
-                attendanceRecord.getDate().format(DATE_FORMAT), attendanceRecord.getTime().format(TIME_FORMAT),
-                attendanceRecord.getStatus().getDescription());
-    }
-
 }
