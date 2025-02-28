@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashMap;
@@ -8,6 +9,31 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class AttendanceRecordTest {
+
+    @Nested
+    class ValidCases {
+
+        @Test
+        void 출석일시를_기록한다() {
+            // given
+            Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
+            AttendanceRecord attendanceRecord = new AttendanceRecord(
+                attendanceDateTimes);
+
+            AttendanceDate attendanceDate = new AttendanceDate(
+                2024, 12, 2);
+            AttendanceTime attendanceTime = new AttendanceTime(
+                13, 0);
+            AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
+                attendanceDate, attendanceTime);
+            // when
+            attendanceRecord.addAttendanceDateTime(attendanceDateTime);
+
+            // then
+            assertThat(attendanceRecord.getAttendanceDateTimes())
+                .containsEntry(attendanceDate, attendanceTime);
+        }
+    }
 
     @Nested
     class InvalidCases {

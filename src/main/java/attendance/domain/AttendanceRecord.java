@@ -27,6 +27,15 @@ public class AttendanceRecord {
         }
     }
 
+    public void addAttendanceDateTime(final AttendanceDateTime attendanceDateTime) {
+        attendanceDateTimes.put(attendanceDateTime.getAttendanceDate(),
+            attendanceDateTime.getAttendanceTime());
+    }
+
+    public Map<AttendanceDate, AttendanceTime> getAttendanceDateTimes() {
+        return Map.copyOf(attendanceDateTimes);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (o == null || getClass() != o.getClass()) {
@@ -34,7 +43,7 @@ public class AttendanceRecord {
         }
 
         final AttendanceRecord that = (AttendanceRecord) o;
-        
+
         return Objects.equals(attendanceDateTimes, that.attendanceDateTimes);
     }
 
