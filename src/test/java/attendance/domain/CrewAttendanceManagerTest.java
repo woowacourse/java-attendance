@@ -98,4 +98,63 @@ class CrewAttendanceManagerTest {
                 () -> assertThat(result.getNickname()).isEqualTo(nickname)
         );
     }
+
+    @Test
+    @DisplayName("정렬된 출결 상황 위험자를 반환한다")
+    void 정렬된_출결_상황_위험자를_반환한다() {
+        // given
+        LocalDate nowDate = LocalDate.now();
+
+        List<String> nicknames = List.of("비타", "레오", "듀이", "꾹이", "몽이");
+
+        List<Attendances> attendances = List.of(
+                new Attendances(List.of(
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
+                )),
+                new Attendances(List.of(
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
+                )),
+                new Attendances(List.of(
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(3), LocalTime.MIDNIGHT))
+                )),
+                new Attendances(List.of(
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(3), LocalTime.MAX))
+                )),
+                new Attendances(List.of(
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(3), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(4), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(7), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(8), LocalTime.MAX))
+                ))
+        );
+
+        for (int i = 0; i < nicknames.size(); i++) {
+            attendanceManager.addNewCrew(nicknames.get(i), attendances.get(i));
+        }
+
+        // when
+        AttendanceRecords records = attendanceManager.getAttendanceRecords();
+
+        // then
+        assertAll(
+                () -> assertThat(records.getRecords().get(0).getNickname()).isEqualTo("몽이"),
+                () -> assertThat(records.getRecords().get(1).getNickname()).isEqualTo("꾹이"),
+                () -> assertThat(records.getRecords().get(2).getNickname()).isEqualTo("듀이"),
+                () -> assertThat(records.getRecords().get(3).getNickname()).isEqualTo("레오"),
+                () -> assertThat(records.getRecords().get(4).getNickname()).isEqualTo("비타")
+        );
+    }
 }
