@@ -118,11 +118,13 @@ public class AttendanceBookTest {
         CrewAttendances crewAttendances = attendanceBook.createCrewAttendances();
 
         //then
-        assertThat(crewAttendances)
-                .isEqualTo(List.of(
-                        new CrewAttendance("pobi", pobiAttendance),
-                        new CrewAttendance("neo", neoAttendance),
-                        new CrewAttendance("surf", surfAttendance)
-                ));
+        assertThat(crewAttendances.getCrewAttendances())
+                .containsAll(
+                        List.of(
+                                new CrewAttendance("pobi", pobiAttendance),
+                                new CrewAttendance("neo", neoAttendance),
+                                new CrewAttendance("surf", surfAttendance)
+                        )
+                );
     }
 }

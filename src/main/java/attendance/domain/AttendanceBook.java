@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
 
@@ -49,7 +50,13 @@ public class AttendanceBook {
     }
 
     public CrewAttendances createCrewAttendances() {
-        return null;
+        List<CrewAttendance> crewAttendances = attendances.stream()
+                .collect(Collectors.groupingBy(Attendance::getNickname))
+                .entrySet()
+                .stream()
+                .map(entry -> new CrewAttendance(entry.getKey(), entry.getValue()))
+                .toList();
+        return new CrewAttendances(crewAttendances);
     }
 
     @Override

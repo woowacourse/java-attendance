@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -11,25 +10,23 @@ public class CrewAttendance {
     private final List<Attendance> attendances;
 
     public CrewAttendance(String nickname, Attendance... attendances) {
-        validateAttendances(nickname, attendances);
-        this.nickname = nickname;
-        this.attendances = new ArrayList<>(List.of(attendances));
+        this(nickname, Arrays.stream(attendances).toList());
     }
 
     public CrewAttendance(String nickname, List<Attendance> attendances) {
-        validateAttendances(nickname, attendances.toArray(Attendance[]::new));
+        validateAttendances(nickname, attendances);
         this.nickname = nickname;
         this.attendances = attendances;
     }
 
-    private void validateAttendances(String nickname, Attendance... attendances) {
+    private void validateAttendances(String nickname, List<Attendance> attendances) {
         if (!isAllAttendancesMatchNickname(nickname, attendances)) {
             throw new IllegalArgumentException(nickname + "의 출석만 이용하여 생성가능합니다.");
         }
     }
 
-    private boolean isAllAttendancesMatchNickname(String nickname, Attendance... attendances) {
-        return Arrays.stream(attendances)
+    private boolean isAllAttendancesMatchNickname(String nickname, List<Attendance> attendances) {
+        return attendances.stream()
                 .allMatch(attendance -> attendance.isEqualNickname(nickname));
     }
 
