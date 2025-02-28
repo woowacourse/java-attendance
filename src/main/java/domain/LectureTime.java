@@ -52,4 +52,8 @@ public enum LectureTime {
         }
         return Math.max(0, (int) ChronoUnit.MINUTES.between(from(date).startTime, time));
     }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
 }

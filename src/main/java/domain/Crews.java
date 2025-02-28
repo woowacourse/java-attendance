@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class Crews {
         }
         crews.add(crew);
     }
-    
+
     public boolean existsByNickname(String nickname) {
         return crews.stream()
                 .anyMatch(crew -> nickname.equals(crew.getNickname()));
@@ -33,6 +34,10 @@ public class Crews {
                 .filter(crew -> nickname.equals(crew.getNickname()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(nickname + ": 존재하지 않는 크루입니다."));
+    }
+
+    public List<Crew> findAllCrews() {
+        return Collections.unmodifiableList(crews);
     }
 
     private void validateNull(Crew crew) {

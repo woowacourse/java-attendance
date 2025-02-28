@@ -11,7 +11,7 @@ public class AttendanceRecords {
     }
 
     public AttendanceRecords(List<AttendanceRecord> attendanceRecords) {
-        this.attendanceRecords.addAll(new ArrayList<>(attendanceRecords));
+        this.attendanceRecords.addAll(attendanceRecords);
     }
 
     public boolean exists(Crew crew, LocalDate date) {

@@ -2,6 +2,7 @@ package service;
 
 import controller.dto.ModifyAttendanceRequest;
 import controller.dto.MonthAttendanceStatisticsRequest;
+import controller.dto.RiskCrewsRequest;
 import controller.dto.SaveAttendanceRequest;
 import domain.AbstractAttendanceRecord;
 import domain.AttendanceRecord;
@@ -15,12 +16,16 @@ import domain.RiskRank;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import service.dto.AttendanceStatusCount;
 import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.MonthAttendanceStatisticsResponse;
+import service.dto.RiskCrew;
+import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 
 public class AttendanceService {
@@ -67,6 +72,38 @@ public class AttendanceService {
         AttendanceStatusCount attendanceStatusCount = calculateAttendanceStatusCount(monthAttendanceRecords);
         RiskRank riskRank = RiskRank.of(attendanceStatusCount.lateCount(), attendanceStatusCount.absentCount());
         return new MonthAttendanceStatisticsResponse(monthAttendanceRecords, attendanceStatusCount, riskRank);
+    }
+
+    public RiskCrewsResponse bringRiskCrews(RiskCrewsRequest request) {
+        LocalDate today = request.today();
+        List<Crew> foundCrews = new ArrayList<>(crews.findAllCrews());
+        List<RiskCrew> riskCrews = new ArrayList<>();
+        for (Crew crew : foundCrews) {
+            extractRiskCrew(crew, today, riskCrews);
+        }
+        return new RiskCrewsResponse(sortedRiskCrews(riskCrews));
+    }
+
+    private void extractRiskCrew(Crew crew, LocalDate today, List<RiskCrew> riskCrews) {
+        List<AbstractAttendanceRecord> monthAttendanceRecords = getMonthAttendanceRecords(today, crew);
+        AttendanceStatusCount attendanceStatusCount = calculateAttendanceStatusCount(monthAttendanceRecords);
+        RiskRank riskRank = RiskRank.of(attendanceStatusCount.lateCount(), attendanceStatusCount.absentCount());
+        RiskCrew riskCrew = new RiskCrew(crew.getNickname(),
+                attendanceStatusCount.lateCount(), attendanceStatusCount.absentCount(), riskRank);
+        if (riskRank == RiskRank.NOT_MANAGED) {
+            return;
+        }
+        riskCrews.add(riskCrew);
+    }
+
+    private List<RiskCrew> sortedRiskCrews(List<RiskCrew> riskCrews) {
+        Function<RiskCrew, Integer> firstSort = riskCrew -> riskCrew.lateCount() +
+                riskCrew.absentCount() * 3;
+        Function<RiskCrew, String> secondSort = RiskCrew::nickname;
+        return riskCrews.stream().sorted(
+                        Comparator.comparing(firstSort, Comparator.reverseOrder())
+                                .thenComparing(secondSort))
+                .toList();
     }
 
     private List<AbstractAttendanceRecord> getMonthAttendanceRecords(LocalDate today, Crew crew) {

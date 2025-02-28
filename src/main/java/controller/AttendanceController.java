@@ -2,12 +2,14 @@ package controller;
 
 import controller.dto.ModifyAttendanceRequest;
 import controller.dto.MonthAttendanceStatisticsRequest;
+import controller.dto.RiskCrewsRequest;
 import controller.dto.SaveAttendanceRequest;
 import java.util.HashMap;
 import java.util.Map;
 import service.AttendanceService;
 import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.MonthAttendanceStatisticsResponse;
+import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 import util.DateTimeUtil;
 import util.ExceptionHandler;
@@ -30,7 +32,7 @@ public class AttendanceController {
         COMMAND_HANDLER.put(MenuCommand.SAVE_ATTENDANCE_RECORD, this::saveAttendanceRecord);
         COMMAND_HANDLER.put(MenuCommand.MODIFY_ATTENDANCE_RECORD, this::modifyAttendanceRecord);
         COMMAND_HANDLER.put(MenuCommand.PRINT_MONTH_ATTENDANCE_STATISTICS, this::printMonthAttendanceStatistics);
-//        COMMAND_HANDLER.put(MenuCommand.PRINT_RISK_CREWS, this::printRiskCrews);
+        COMMAND_HANDLER.put(MenuCommand.PRINT_RISK_CREWS, this::printRiskCrews);
         COMMAND_HANDLER.put(MenuCommand.QUIT, this::exitController);
         COMMAND_HANDLER.put(MenuCommand.QUIT_SMALL_CASE, this::exitController);
         COMMAND_HANDLER.put(MenuCommand.NONE, this::printRetryMessage);
@@ -75,15 +77,15 @@ public class AttendanceController {
             OutputView.printRiskRank(response.riskRank());
         });
     }
-//
-//    private void printRiskCrews() {
-//        ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
-//            RiskCrewsRequest request = new RiskCrewsRequest(DateTimeUtil.nowDate());
-//            RiskCrewsResponse response = attendanceService.getRiskCrews(request);
-//
-//            OutputView.printRiskCrews(response);
-//        });
-//    }
+
+    private void printRiskCrews() {
+        ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
+            RiskCrewsRequest request = new RiskCrewsRequest(DateTimeUtil.nowDate());
+            RiskCrewsResponse response = attendanceService.bringRiskCrews(request);
+
+            OutputView.printRiskCrews(response);
+        });
+    }
 
     private void exitController() {
         isRunning = false;

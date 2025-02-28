@@ -1,6 +1,7 @@
 package service;
 
 import controller.dto.MonthAttendanceStatisticsRequest;
+import controller.dto.RiskCrewsRequest;
 import controller.dto.SaveAttendanceRequest;
 import domain.AttendanceRecord;
 import domain.AttendanceRecords;
@@ -11,12 +12,14 @@ import domain.RiskRank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import service.dto.MonthAttendanceStatisticsResponse;
+import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 
 class AttendanceServiceTest {
@@ -80,6 +83,55 @@ class AttendanceServiceTest {
                 softAssertions.assertThat(response.attendanceStatusCount().lateCount()).isEqualTo(2);
                 softAssertions.assertThat(response.attendanceStatusCount().absentCount()).isEqualTo(3);
                 softAssertions.assertThat(response.riskRank()).isEqualTo(RiskRank.INTERVIEW);
+            });
+        }
+
+        @Test
+        @DisplayName("정렬된 제적 위험자 목록을 조회한다.")
+        void bringRiskCrews_test() {
+            // given
+            Crew miso = new Crew("미소");
+            Crew boogie = new Crew("부기");
+            Crew wooga = new Crew("우가");
+            Crew posty = new Crew("포스티");
+            Crews crews = new Crews(List.of(miso, boogie, wooga, posty));
+
+            LocalDate from = LocalDate.of(2025, 2, 3);
+            LocalDate to = LocalDate.of(2025, 2, 25);
+
+            List<AttendanceRecord> misoRecords
+                    = AttendanceRecordsGenerator.generate(from, to,
+                    miso, 6, 4);
+            List<AttendanceRecord> boogieRecords
+                    = AttendanceRecordsGenerator.generate(from, to,
+                    boogie, 7, 4);
+            List<AttendanceRecord> woogaRecords
+                    = AttendanceRecordsGenerator.generate(from, to,
+                    wooga, 1, 5);
+            List<AttendanceRecord> postyRecords
+                    = AttendanceRecordsGenerator.generate(from, to,
+                    posty, 1, 5);
+            List<AttendanceRecord> allRecords = new ArrayList<>();
+            allRecords.addAll(misoRecords);
+            allRecords.addAll(boogieRecords);
+            allRecords.addAll(woogaRecords);
+            allRecords.addAll(postyRecords);
+
+            AttendanceService attendanceService = new AttendanceService(crews, new AttendanceRecords(allRecords));
+            RiskCrewsRequest request = new RiskCrewsRequest(to.plusDays(1));
+
+            // 제적 위험자 순서: 부기, 미소, 우가, 포스티
+            // when & then
+            RiskCrewsResponse response = attendanceService.bringRiskCrews(request);
+            SoftAssertions.assertSoftly(softAssertions -> {
+                softAssertions.assertThat(response.riskCrews().get(0).nickname())
+                        .isEqualTo("부기");
+                softAssertions.assertThat(response.riskCrews().get(1).nickname())
+                        .isEqualTo("미소");
+                softAssertions.assertThat(response.riskCrews().get(2).nickname())
+                        .isEqualTo("우가");
+                softAssertions.assertThat(response.riskCrews().get(3).nickname())
+                        .isEqualTo("포스티");
             });
         }
     }

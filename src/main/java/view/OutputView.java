@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import service.dto.AttendanceStatusCount;
 import service.dto.ModifyAttendanceRecordResponse;
+import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 
 public class OutputView {
@@ -64,17 +65,17 @@ public class OutputView {
         System.out.printf("%s 대상자입니다.%n", riskRank.getDescription());
         System.out.println();
     }
-//
-//    public static void printRiskCrews(RiskCrewsResponse riskCrews) {
-//        System.out.println("제적 위험자 조회 결과");
-//        riskCrews.riskCrews().forEach(riskCrew ->
-//                System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
-//                        riskCrew.nickname(),
-//                        riskCrew.absentCount(),
-//                        riskCrew.lateCount(),
-//                        riskCrew.riskRank()
-//                )
-//        );
-//        System.out.println();
-//    }
+
+    public static void printRiskCrews(RiskCrewsResponse riskCrews) {
+        System.out.println("제적 위험자 조회 결과");
+        riskCrews.riskCrews().forEach(riskCrew ->
+                System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                        riskCrew.nickname(),
+                        riskCrew.absentCount(),
+                        riskCrew.lateCount(),
+                        riskCrew.riskRank()
+                )
+        );
+        System.out.println();
+    }
 }
