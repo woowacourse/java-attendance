@@ -243,4 +243,32 @@ class AttendanceTimeTest {
         assertThat(b2).isTrue();
         assertThat(b3).isFalse();
     }
+
+    @Test
+    @DisplayName("AttendanceTime 객체에 대한 대소 비교")
+    void compareAttendanceTimeTest() {
+        // given
+        AttendanceTime big = AttendanceTime.of(
+                LocalDate.of(2024, 12, 3),
+                LocalTime.of(10, 0)
+        );
+        AttendanceTime small = AttendanceTime.of(
+                LocalDate.of(2024, 12, 2),
+                LocalTime.of(9, 0)
+        );
+        AttendanceTime small2 = AttendanceTime.of(
+                LocalDate.of(2024, 12, 2),
+                LocalTime.of(9, 0)
+        );
+
+        // when
+        int positive = big.compareTo(small);
+        int negative = small.compareTo(big);
+        int zero = small.compareTo(small2);
+
+        // then
+        assertThat(positive).isGreaterThan(0);
+        assertThat(negative).isLessThan(0);
+        assertThat(zero).isEqualTo(0);
+    }
 }

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class AttendanceTime {
+public class AttendanceTime implements Comparable<AttendanceTime> {
     private final LocalDate date;
     private LocalTime time;
 
@@ -93,5 +93,13 @@ public class AttendanceTime {
     @Override
     public int hashCode() {
         return Objects.hash(date, time);
+    }
+
+    @Override
+    public int compareTo(AttendanceTime o) {
+        if (this.date.isEqual(o.date)) {
+            return this.time.compareTo(o.time);
+        }
+        return this.date.compareTo(o.date);
     }
 }
