@@ -39,6 +39,6 @@ public class AttendanceBook {
 
     public List<AttendanceTime> getAttendancesByName(final String name) {
 
-        return attendances.get(name);
+        return List.copyOf(attendances.get(name));
     }
 }
