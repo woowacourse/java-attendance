@@ -18,8 +18,10 @@ public enum Command {
     }
 
     public static Command findCommand(String input) {
-        System.out.println(input);
-        return Arrays.stream(Command.values()).filter(command -> command.commands.contains(input)).findAny().orElseThrow(()->new IllegalArgumentException("없는 커맨드입니다."));
+        return Arrays.stream(Command.values())
+                .filter(command -> command.commands.contains(input))
+                .findAny()
+                .orElseThrow(()->new IllegalArgumentException("없는 커맨드입니다."));
     }
 
     public List<String> getCommands() {
