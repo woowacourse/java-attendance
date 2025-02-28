@@ -30,28 +30,17 @@ public class OutputView {
     public static void printModifiedAttendanceRecord(ModifyAttendanceRecordResponse modified) {
         System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n",
                 modified.before().getDate().format(DATE_FORMAT),
-                modified.before().getTime().format(TIME_FORMAT), modified.before().getStatus().getDescription(),
-                modified.after().getTime(), modified.after().getStatus().getDescription()
+                convertToTime(modified.before()), modified.before().getStatus().getDescription(),
+                convertToTime(modified.after()), modified.after().getStatus().getDescription()
         );
         System.out.println();
     }
 
     public static void printMonthAttendanceRecords(List<AbstractAttendanceRecord> attendanceRecords) {
-        attendanceRecords.forEach(record -> {
-            System.out.println(convertToPrintFormat(record));
-        });
+        attendanceRecords.forEach(record ->
+                System.out.println(convertToDateTimeStatus(record))
+        );
         System.out.println();
-    }
-
-    private static String convertToPrintFormat(AbstractAttendanceRecord record) {
-        if (record instanceof EmptyAttendanceRecord) {
-            return String.format("%s --:-- (%s)",
-                    record.getDate().format(DATE_FORMAT), record.getStatus().getDescription());
-        }
-        AttendanceRecord attendanceRecord = (AttendanceRecord) record;
-        return String.format("%s %s (%s)",
-                attendanceRecord.getDate().format(DATE_FORMAT), attendanceRecord.getTime().format(TIME_FORMAT),
-                attendanceRecord.getStatus().getDescription());
     }
 
     public static void printMonthAttendanceStatusCount(AttendanceStatusCount statusCount) {
@@ -78,4 +67,23 @@ public class OutputView {
         );
         System.out.println();
     }
+
+    private static String convertToTime(AbstractAttendanceRecord record) {
+        if (record instanceof EmptyAttendanceRecord) {
+            return "--:--";
+        }
+        return ((AttendanceRecord) record).getTime().format(TIME_FORMAT);
+    }
+
+    private static String convertToDateTimeStatus(AbstractAttendanceRecord record) {
+        if (record instanceof EmptyAttendanceRecord) {
+            return String.format("%s --:-- (%s)",
+                    record.getDate().format(DATE_FORMAT), record.getStatus().getDescription());
+        }
+        AttendanceRecord attendanceRecord = (AttendanceRecord) record;
+        return String.format("%s %s (%s)",
+                attendanceRecord.getDate().format(DATE_FORMAT), attendanceRecord.getTime().format(TIME_FORMAT),
+                attendanceRecord.getStatus().getDescription());
+    }
+
 }

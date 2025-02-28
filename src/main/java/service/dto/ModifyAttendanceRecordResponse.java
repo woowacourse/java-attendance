@@ -1,10 +1,11 @@
 package service.dto;
 
+import domain.AbstractAttendanceRecord;
 import domain.AttendanceRecord;
 
 public record ModifyAttendanceRecordResponse(
-        AttendanceRecord before,
+        AbstractAttendanceRecord before,
         AttendanceRecord after
 ) {
-    
+
 }

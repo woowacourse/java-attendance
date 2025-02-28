@@ -1,5 +1,6 @@
 package service;
 
+import controller.dto.ModifyAttendanceRequest;
 import controller.dto.MonthAttendanceStatisticsRequest;
 import controller.dto.RiskCrewsRequest;
 import controller.dto.SaveAttendanceRequest;
@@ -19,6 +20,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.MonthAttendanceStatisticsResponse;
 import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
@@ -50,6 +52,37 @@ class AttendanceServiceTest {
                         .isEqualTo(LocalDateTime.of(monday, time));
                 softAssertions.assertThat(response.status())
                         .isEqualTo(AttendanceStatus.LATE);
+            });
+        }
+
+        @Test
+        @DisplayName("닉네임, 수정일, 수정 시간을 입력 받아 출석 기록을 수정한다")
+        void modifyAttendanceRecord_test() {
+            // given
+            String nickname = "수양";
+            Crew crew = new Crew(nickname);
+            Crews crews = new Crews(List.of(crew));
+
+            LocalDate monday = LocalDate.of(2025, 2, 3);
+            int dayToModify = 3;
+            LocalTime beforeTime = LocalTime.of(13, 5);
+            String timeToModify = "13:30";
+            LocalTime afterTime = LocalTime.of(13, 30);
+
+            AttendanceRecords attendanceRecords = new AttendanceRecords(
+                    List.of(AttendanceRecord.of(crew, monday, beforeTime)));
+            AttendanceService attendanceService = new AttendanceService(crews, attendanceRecords);
+            ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, monday, dayToModify, timeToModify);
+
+            // when
+            ModifyAttendanceRecordResponse response = attendanceService.modifyAttendanceRecord(request);
+
+            // then
+            SoftAssertions.assertSoftly(softAssertions -> {
+                softAssertions.assertThat(response.before() instanceof AttendanceRecord).isTrue();
+                AttendanceRecord beforeRecord = (AttendanceRecord) response.before();
+                softAssertions.assertThat(beforeRecord.getTime()).isEqualTo(beforeTime);
+                softAssertions.assertThat(response.after().getTime()).isEqualTo(afterTime);
             });
         }
 

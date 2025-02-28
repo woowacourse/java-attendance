@@ -58,10 +58,18 @@ public class AttendanceService {
 
     public ModifyAttendanceRecordResponse modifyAttendanceRecord(ModifyAttendanceRequest request) {
         Crew crew = crews.findByNickname(request.nickname());
-        AttendanceRecord before = attendanceRecords.find(crew, request.date());
+        LocalDate today = request.date();
+        AbstractAttendanceRecord before = findAttendanceRecord(crew, today);
         AttendanceRecord after = AttendanceRecord.of(crew, request.date(), request.timeToModify());
         attendanceRecords.overwriteAttendanceRecord(after);
         return new ModifyAttendanceRecordResponse(before, after);
+    }
+
+    private AbstractAttendanceRecord findAttendanceRecord(Crew crew, LocalDate today) {
+        if (attendanceRecords.exists(crew, today)) {
+            return attendanceRecords.find(crew, today);
+        }
+        return EmptyAttendanceRecord.of(crew, today);
     }
 
     public MonthAttendanceStatisticsResponse bringMonthAttendanceStatistics(MonthAttendanceStatisticsRequest request) {
