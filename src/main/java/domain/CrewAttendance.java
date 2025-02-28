@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,5 +50,13 @@ public class CrewAttendance {
 
     public boolean belongsTo(Crew crew) {
         return this.crew.equals(crew);
+    }
+
+    public int compareAttendanceTimes(CrewAttendance other, Comparator<AttendanceTimes> comparator) {
+        return comparator.compare(this.attendanceTimes, other.attendanceTimes);
+    }
+
+    public int compareCrew(CrewAttendance other) {
+        return this.crew.compareTo(other.crew);
     }
 }

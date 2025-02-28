@@ -17,7 +17,9 @@ class AttendanceTimesComparatorTest {
         AttendanceTimes normalAttendanceTimes = createNormalAttendanceTimes();
         AttendanceTimes warnedAttendanceTimes = createWarnedAttendanceTimes();
         AttendanceTimes sameWarnedAttendanceTimes = createWarnedAttendanceTimes();
-        AttendanceTimesComparator attendanceTimesComparator = new AttendanceTimesComparator(LocalDate.now());
+        AttendanceTimesComparator attendanceTimesComparator = new AttendanceTimesComparator(
+                LocalDate.of(2024, 12, 31)
+        );
 
         // when
         int negative = attendanceTimesComparator.compare(normalAttendanceTimes, warnedAttendanceTimes);

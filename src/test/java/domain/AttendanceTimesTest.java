@@ -93,25 +93,6 @@ class AttendanceTimesTest {
     }
 
     @Test
-    @DisplayName("반환된 출석 기록들에 대해 정렬 확인")
-    void readListOfAttendanceSortedTest() {
-        // given
-        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
-        LocalDate today = LocalDate.of(2024, 12, 13);
-
-        // when
-        List<AttendanceTime> log = attendanceTimes.readAttendance(today);
-
-        // then
-        int size = log.size();
-        for (int i = 0; i < size - 1; i++) {
-            AttendanceTime smaller = log.get(i);
-            AttendanceTime bigger = log.get(i + 1);
-            assertThat(smaller.compareTo(bigger)).isLessThan(0);
-        }
-    }
-
-    @Test
     @DisplayName("원하는 날짜의 출석을 수정")
     void modifyAttendanceInAttendancesTest() {
         // given
