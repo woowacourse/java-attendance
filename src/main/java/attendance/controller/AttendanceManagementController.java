@@ -42,21 +42,7 @@ public class AttendanceManagementController {
                 .toList());
         CrewAttendances crewAttendances = new CrewAttendances(changeKeyToCrew(nicknameAttendanceDateTimes));
 
-        try {
-            String operationCommand = inputView.readOperationCommand(today);
-            if (operationCommand.equals("1")) {
-                Crew crew = crews.findCrewByNickname(inputView.readAttendanceConfirmNickname());
-                LocalTime attendanceTime = LocalTime.parse(inputView.readAttendanceConfirmTime());
-                LocalDate todayDate = today.toLocalDate();
-                crewAttendances.addAttendance(crew, new Attendance(todayDate.atTime(attendanceTime)));
-                Attendance todayAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, todayDate);
-                resultView.printAttendanceConfirmResult(LocalDateTime.of(todayAttendance.getAttendanceLocalDate(),
-                        todayAttendance.getAttendanceLocalTime()), todayAttendance.calculateStatus().getText());
-            }
-        } catch (IllegalArgumentException e) {
-            resultView.printErrorMessage(e.getMessage());
-        }
-
+        startAttendanceManagementSystem(crews, crewAttendances);
     }
 
     private Map<String, List<LocalDateTime>> readNicknameAttendanceDateTimes() {
@@ -87,6 +73,27 @@ public class AttendanceManagementController {
                         nicknameAttendanceDateTimes::get,
                         (a, b) -> b
                 ));
+    }
+
+    private void startAttendanceManagementSystem(final Crews crews, final CrewAttendances crewAttendances) {
+        try {
+            String operationCommand = inputView.readOperationCommand(today);
+            if (operationCommand.equals("1")) {
+                runAttendanceConfirmOperation(crews, crewAttendances);
+            }
+        } catch (IllegalArgumentException e) {
+            resultView.printErrorMessage(e.getMessage());
+        }
+    }
+
+    private void runAttendanceConfirmOperation(final Crews crews, final CrewAttendances crewAttendances) {
+        Crew crew = crews.findCrewByNickname(inputView.readAttendanceConfirmNickname());
+        LocalTime attendanceTime = LocalTime.parse(inputView.readAttendanceConfirmTime());
+        LocalDate todayDate = today.toLocalDate();
+        crewAttendances.addAttendance(crew, new Attendance(todayDate.atTime(attendanceTime)));
+        Attendance todayAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, todayDate);
+        resultView.printAttendanceConfirmResult(LocalDateTime.of(todayAttendance.getAttendanceLocalDate(),
+                todayAttendance.getAttendanceLocalTime()), todayAttendance.calculateStatus().getText());
     }
 
 }
