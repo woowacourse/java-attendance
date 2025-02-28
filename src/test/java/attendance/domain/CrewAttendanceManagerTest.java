@@ -93,7 +93,9 @@ class CrewAttendanceManagerTest {
         AttendanceRecord result = attendanceManager.getAttendanceRecord(nickname);
 
         // then
-        assertThat(result.getRecord())
-                .containsExactlyElementsOf(exceptedRecord);
+        assertAll(
+                () -> assertThat(result.getRecord()).containsExactlyElementsOf(exceptedRecord),
+                () -> assertThat(result.getNickname()).isEqualsTo(nickname)
+        );
     }
 }
