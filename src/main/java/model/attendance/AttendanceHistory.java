@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import model.exception.FutureAttendanceException;
 import model.exception.HolidayAttendanceException;
 import model.exception.SystemException;
 
@@ -17,14 +16,12 @@ public class AttendanceHistory {
     private final List<Attendance> attendances;
 
     public AttendanceHistory() {
-        List<Attendance> defaultAttendances = new ArrayList<>(); //TODO : 스트림 불가?
+        List<Attendance> defaultAttendances = new ArrayList<>();
         for (int date = 1; date <= 31; date++) {
-            if (December.isHolidayAt(December.createDecemberDateWith(date))) {
-                continue;
+            try {
+                defaultAttendances.add(new Attendance(LocalDate.of(2024, 12, date)));
+            } catch (HolidayAttendanceException e) {
             }
-            defaultAttendances.add(new Attendance(
-                    LocalDate.of(2024, 12, date),
-                    Common.noneAttendanceTime));
         }
         this.attendances = defaultAttendances;
     }
@@ -41,7 +38,6 @@ public class AttendanceHistory {
     public Attendance modifyFrom(Attendance oldAttendance, LocalTime newTime) {
         if (attendances.contains(oldAttendance)) {
             LocalDate date = oldAttendance.getDate();
-            validateModification(date);
             Attendance newAttendance = new Attendance(date, newTime);
             this.attendances.remove(oldAttendance);
             this.attendances.add(newAttendance);
@@ -72,14 +68,14 @@ public class AttendanceHistory {
         throw new DuplicatedAttendanceRegistrationException();
     }
 
-    private void validateModification(LocalDate date) { //TODO : 날짜 자체의 객체에 들어가는게 더 어울리는데 아쉬움
-        if (date.isAfter(December.now())) {
-            throw new FutureAttendanceException();
-        }
-        if (December.isHolidayAt(date)) {
-            throw new HolidayAttendanceException(date);
-        }
-    }
+//    private void validateModification(LocalDate date) { //TODO : 날짜 자체의 객체에 들어가는게 더 어울리는데 아쉬움
+//        if (date.isAfter(December.now())) {
+//            throw new FutureAttendanceException();
+//        }
+//        if (December.isHolidayAt(date)) {
+//            throw new HolidayAttendanceException(date);
+//        }
+//    }
 
     @Override
     public boolean equals(Object object) {
