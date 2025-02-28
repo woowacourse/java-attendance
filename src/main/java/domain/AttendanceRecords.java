@@ -14,20 +14,25 @@ public class AttendanceRecords {
         this.attendanceRecords.addAll(attendanceRecords);
     }
 
-    public boolean exists(Crew crew, LocalDate date) {
-        return attendanceRecords.stream()
-                .anyMatch(record -> crew.equals(record.getCrew())
-                        && date.equals(record.getDate()));
-    }
-
     public void add(AttendanceRecord attendanceRecord) {
-        if (exists(attendanceRecord.getCrew(), attendanceRecord.getDate())) {
+        if (existsByCrewAndDate(attendanceRecord.getCrew(), attendanceRecord.getDate())) {
             throw new IllegalArgumentException("이미 출석 기록이 존재합니다. 출석 수정 기능을 이용해주세요.");
         }
         attendanceRecords.add(attendanceRecord);
     }
 
-    public AttendanceRecord find(Crew crew, LocalDate date) {
+    public void overwriteAttendanceRecord(AttendanceRecord attendanceRecord) {
+        attendanceRecords.removeIf(record -> record.equals(attendanceRecord));
+        attendanceRecords.add(attendanceRecord);
+    }
+
+    public boolean existsByCrewAndDate(Crew crew, LocalDate date) {
+        return attendanceRecords.stream()
+                .anyMatch(record -> crew.equals(record.getCrew())
+                        && date.equals(record.getDate()));
+    }
+
+    public AttendanceRecord findByCrewAndDate(Crew crew, LocalDate date) {
         return attendanceRecords.stream()
                 .filter(record -> crew.equals(record.getCrew())
                         && date.equals(record.getDate()))
@@ -40,10 +45,5 @@ public class AttendanceRecords {
                 .map(AttendanceRecord::getCrew)
                 .distinct()
                 .toList();
-    }
-
-    public void overwriteAttendanceRecord(AttendanceRecord attendanceRecord) {
-        attendanceRecords.removeIf(record -> record.equals(attendanceRecord));
-        attendanceRecords.add(attendanceRecord);
     }
 }

@@ -30,7 +30,7 @@ public class AttendanceRecordsTest {
             attendanceRecords.add(attendanceRecord);
 
             // when & then
-            Assertions.assertThat(attendanceRecords.exists(crew, checkedDate)).isTrue();
+            Assertions.assertThat(attendanceRecords.existsByCrewAndDate(crew, checkedDate)).isTrue();
         }
 
         @Test
@@ -49,7 +49,7 @@ public class AttendanceRecordsTest {
             LocalDate uncheckedDate = LocalDate.of(2025, 2, 4);
 
             // when & then
-            Assertions.assertThat(attendanceRecords.exists(crew, uncheckedDate)).isFalse();
+            Assertions.assertThat(attendanceRecords.existsByCrewAndDate(crew, uncheckedDate)).isFalse();
         }
 
         @Test
@@ -66,7 +66,7 @@ public class AttendanceRecordsTest {
             attendanceRecords.add(attendanceRecord);
 
             // when & then
-            Assertions.assertThat(attendanceRecords.exists(crew, checkedDate)).isTrue();
+            Assertions.assertThat(attendanceRecords.existsByCrewAndDate(crew, checkedDate)).isTrue();
         }
 
         @Test
@@ -83,7 +83,7 @@ public class AttendanceRecordsTest {
             attendanceRecords.add(attendanceRecord);
 
             // when & then
-            AttendanceRecord found = attendanceRecords.find(crew, checkedDate);
+            AttendanceRecord found = attendanceRecords.findByCrewAndDate(crew, checkedDate);
             Assertions.assertThat(attendanceRecord).isEqualTo(found);
         }
 
@@ -104,7 +104,7 @@ public class AttendanceRecordsTest {
 
             // when & then
             SoftAssertions.assertSoftly(softAssertions -> {
-                AttendanceRecord found = attendanceRecords.find(crew, date);
+                AttendanceRecord found = attendanceRecords.findByCrewAndDate(crew, date);
                 softAssertions.assertThat(found.getCrew()).isEqualTo(after.getCrew());
                 softAssertions.assertThat(found.getDateTime()).isEqualTo(after.getDateTime());
                 softAssertions.assertThat(found.getStatus()).isEqualTo(after.getStatus());
@@ -129,7 +129,7 @@ public class AttendanceRecordsTest {
             attendanceRecords.add(attendanceRecord);
 
             // when & then
-            Assertions.assertThat(attendanceRecords.exists(crew, checkedDate)).isTrue();
+            Assertions.assertThat(attendanceRecords.existsByCrewAndDate(crew, checkedDate)).isTrue();
         }
     }
 }

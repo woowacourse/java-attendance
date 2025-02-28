@@ -52,7 +52,7 @@ public class AttendanceService {
         Crew crew = crews.findByNickname(request.nickname());
         attendanceRecords.add(AttendanceRecord.of(crew, request.date(), request.time()));
 
-        AttendanceRecord found = attendanceRecords.find(crew, request.date());
+        AttendanceRecord found = attendanceRecords.findByCrewAndDate(crew, request.date());
         return SaveAttendanceRecordResponse.of(found);
     }
 
@@ -66,8 +66,8 @@ public class AttendanceService {
     }
 
     private AbstractAttendanceRecord findAttendanceRecord(Crew crew, LocalDate today) {
-        if (attendanceRecords.exists(crew, today)) {
-            return attendanceRecords.find(crew, today);
+        if (attendanceRecords.existsByCrewAndDate(crew, today)) {
+            return attendanceRecords.findByCrewAndDate(crew, today);
         }
         return EmptyAttendanceRecord.of(crew, today);
     }
@@ -121,11 +121,11 @@ public class AttendanceService {
             if (!LectureTime.isLectureDate(date)) {
                 continue;
             }
-            if (!attendanceRecords.exists(crew, date)) {
+            if (!attendanceRecords.existsByCrewAndDate(crew, date)) {
                 monthAttendanceRecords.add(EmptyAttendanceRecord.of(crew, date));
                 continue;
             }
-            monthAttendanceRecords.add(attendanceRecords.find(crew, date));
+            monthAttendanceRecords.add(attendanceRecords.findByCrewAndDate(crew, date));
         }
         return monthAttendanceRecords;
     }
