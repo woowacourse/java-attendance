@@ -1,9 +1,11 @@
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -171,8 +173,35 @@ public class AttendanceSystemManagerTest {
                     .hasMessage("등록되지 않은 닉네임입니다.");
         }
 
+        @Test
+        @DisplayName("크루의 출석 기록을 모두 확인한다.")
+        void test2() {
+            // given
+            String nickname = "히로";
+            Crew crew = new Crew(nickname);
+            Crews crews = new Crews(List.of(crew));
 
+            LocalDateTime firstAttendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+            LocalDateTime secondAttendAt = LocalDateTime.of(2024, 12, 3, 10, 31);
+            LocalDateTime thirdAttendAt = LocalDateTime.of(2024, 12, 4, 10, 6);
 
+            AttendanceHistories attendanceHistories = new AttendanceHistories(List.of(
+                    new AttendanceHistory(crew, firstAttendAt),
+                    new AttendanceHistory(crew, secondAttendAt),
+                    new AttendanceHistory(crew, thirdAttendAt)));
+
+            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories, crews);
+
+            // when
+            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(nickname,
+                    thirdAttendAt.plusDays(1));
+
+            // then
+            assertThat(result).isEqualTo(
+                    Map.of(firstAttendAt, AttendanceType.PRESENT, secondAttendAt, AttendanceType.ABSENCE, thirdAttendAt,
+                            AttendanceType.LATE)
+            );
+        }
     }
 
 }

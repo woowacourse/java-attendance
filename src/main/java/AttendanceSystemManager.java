@@ -36,19 +36,13 @@ public class AttendanceSystemManager {
         attendanceHistories.update(oldAttendanceHistory, newAttendanceHistory);
     }
 
-    public void findAllHistoriesOfCrew(String nickname, LocalDateTime requestedAt) {
+    public Map<LocalDateTime, AttendanceType> findAllHistoriesOfCrew(String nickname, LocalDateTime requestedAt) {
         Crew crew = crews.findCrewByName(nickname);
 
         List<AttendanceHistory> historiesOfCrew = attendanceHistories.findAllHistoriesOfCrewDateBefore(
                 crew, requestedAt);
 
-        Map<LocalDate, AttendanceType> attendanceTypeOfDates = AttendanceTypeCounter.count(
-                requestedAt.toLocalDate(),
-                historiesOfCrew);
-
-        AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.createFrom(attendanceTypeOfDates);
-
-        PenaltyType penaltyType = PenaltyType.findByAbsenceCount(
-                attendanceTypeCount.getAdjustedAbsenceCount());
+        return AttendanceTypeCounter.count(requestedAt.toLocalDate(), historiesOfCrew);
     }
+
 }

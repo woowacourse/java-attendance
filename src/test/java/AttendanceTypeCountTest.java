@@ -1,4 +1,4 @@
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -10,11 +10,11 @@ public class AttendanceTypeCountTest {
     @DisplayName("날짜에 따른 출석 타입을 이용해 각 출석 타입의 개수를 올바르게 센다")
     void test1() {
         // given
-        Map<LocalDate, AttendanceType> attendanceTypeOfDates = Map.of(
-                LocalDate.of(2024, 12, 23), AttendanceType.PRESENT,
-                LocalDate.of(2024, 12, 24), AttendanceType.ABSENCE,
-                LocalDate.of(2024, 12, 26), AttendanceType.LATE,
-                LocalDate.of(2024, 12, 27), AttendanceType.LATE
+        Map<LocalDateTime, AttendanceType> attendanceTypeOfDates = Map.of(
+                LocalDateTime.of(2024, 12, 23, 13, 0), AttendanceType.PRESENT,
+                LocalDateTime.of(2024, 12, 24, 10, 31), AttendanceType.ABSENCE,
+                LocalDateTime.of(2024, 12, 26, 10, 6), AttendanceType.LATE,
+                LocalDateTime.of(2024, 12, 27, 10, 6), AttendanceType.LATE
         );
 
         // when
