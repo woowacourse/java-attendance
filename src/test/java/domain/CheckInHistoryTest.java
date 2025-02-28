@@ -96,7 +96,7 @@ class CheckInHistoryTest {
         //then
         assertThat(lateCount).isEqualTo(1);
     }
-/*
+
     @Test
     @DisplayName("결석 횟수를 정상적으로 카운트")
     void countAbsenceTest() {
@@ -108,5 +108,5 @@ class CheckInHistoryTest {
         int absenceCount = history.countAbsence(now);
         //then
         assertThat(absenceCount).isEqualTo(8);
-    }*/
+    }
 }

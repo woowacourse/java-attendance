@@ -2,6 +2,7 @@ package domain;
 
 import exception.AppException;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.TreeMap;
 
@@ -50,6 +51,10 @@ public class CheckInHistory {
         return countSomeStatus(now, AttendanceStatus.LATE);
     }
 
+    public int countAbsence(LocalDate now) {
+        return countTotal(now) - (countPresence(now) + countLate(now));
+    }
+
     public int countSomeStatus(LocalDate now, AttendanceStatus status) {
         return (int) history.entrySet().stream()
                 .filter(entry -> entry.getKey().getCheckInDate().isBefore(now))
@@ -59,6 +64,18 @@ public class CheckInHistory {
                 ))
                 .filter(determinedStatus -> determinedStatus == status)
                 .count();
+    }
+
+    public int countTotal(LocalDate now) {
+        int totalCount = now.getDayOfMonth() - 1;
+        for (int i = 1; i < now.getDayOfMonth(); i++) {
+            LocalDate date = LocalDate.of(now.getYear(), now.getMonth(), i);
+            if (Holidays.isHoliday(date) || date.getDayOfWeek() == DayOfWeek.SATURDAY
+                    || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                totalCount--;
+            }
+        }
+        return totalCount;
     }
 
 }
