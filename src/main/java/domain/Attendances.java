@@ -67,4 +67,8 @@ public class Attendances {
                 .findFirst()
                 .ifPresent(attendance -> attendance.updateAttendance(updateDateTime.toLocalTime()));
     }
+
+    public List<String> getCrewNames() {
+        return attendances.keySet().stream().toList();
+    }
 }
