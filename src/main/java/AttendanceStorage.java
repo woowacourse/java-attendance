@@ -1,9 +1,11 @@
 import exception.DuplicateAttendanceException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AttendanceStorage {
     private final List<Attendance> attendances;
@@ -12,12 +14,20 @@ public class AttendanceStorage {
         this.attendances = new ArrayList<>();
     }
 
-    public Attendance register(LocalDate date, LocalTime time) {
+    public boolean register(LocalDate date, LocalTime time) {
         Attendance attendance = new Attendance(date, time);
         if (attendances.contains(attendance)) {
             throw new DuplicateAttendanceException();
         }
-        attendances.add(attendance);
-        return attendance;
+        return attendances.add(attendance);
+    }
+
+    public Optional<Attendance> findByDate(LocalDate date) {
+        return attendances.stream()
+                .filter(attendance -> {
+                    LocalDateTime attendanceDateTime = attendance.getDateTime();
+                    return attendanceDateTime.toLocalDate().isEqual(date);
+                })
+                .findFirst();
     }
 }
