@@ -22,7 +22,12 @@ public class AttendanceTimes {
                 .anyMatch(attendanceTime -> attendanceTime.isSameDate(date));
     }
 
-    public void addAttendance(AttendanceTime time) { // TODO: 파라미터 시그니처 통일하기
+    public void addAttendance(AttendanceTime time) {
+        boolean exist = attendanceLog.stream()
+                .anyMatch(attendanceTime -> attendanceTime.isSameDate(time));
+        if (exist) {
+            throw new IllegalArgumentException("이미 출석 기록이 존재해 수정만 가능합니다.");
+        }
         attendanceLog.add(time);
     }
 

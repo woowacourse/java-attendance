@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -56,6 +57,26 @@ class AttendanceTimesTest {
         // when, then
         assertThatCode(() -> attendanceTimes.addAttendance(attendanceTime))
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("이미 기록이 존재하는 상황에서 출석 기록 추가 시 예외 발생")
+    void addAttendanceTwiceThrowException() {
+        // given
+        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
+        AttendanceTime attendanceTime = AttendanceTime.of(
+                LocalDate.of(2024, 12, 20),
+                LocalTime.of(11, 20)
+        );
+        AttendanceTime sameDateTime = AttendanceTime.of(
+                LocalDate.of(2024, 12, 20),
+                LocalTime.of(11, 30)
+        );
+        attendanceTimes.addAttendance(attendanceTime);
+
+        // when, then
+        assertThatThrownBy(() -> attendanceTimes.addAttendance(sameDateTime))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
