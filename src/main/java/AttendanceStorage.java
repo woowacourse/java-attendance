@@ -2,15 +2,15 @@ import exception.DuplicateAttendanceException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class AttendanceStorage {
-    private final List<Attendance> attendances;
+    private final Set<Attendance> attendances;
 
     public AttendanceStorage() {
-        this.attendances = new ArrayList<>();
+        this.attendances = new HashSet<>();
     }
 
     public boolean register(LocalDate date, LocalTime time) {
@@ -28,6 +28,8 @@ public class AttendanceStorage {
     }
 
     public void modify(LocalDate date, LocalTime modifyTime) {
-
+        Optional<Attendance> attendance = findByDate(date);
+        attendance.ifPresent(attendances::remove);
+        attendances.add(new Attendance(date, modifyTime));
     }
 }
