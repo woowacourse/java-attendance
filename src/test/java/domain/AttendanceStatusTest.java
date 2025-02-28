@@ -1,5 +1,8 @@
 package domain;
 
+import static domain.AttendanceStatus.ABSENT;
+import static domain.AttendanceStatus.LATE;
+import static domain.AttendanceStatus.PRESENT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
@@ -16,7 +19,7 @@ public class AttendanceStatusTest {
 
     @Nested
     @DisplayName("시간별 상태 생성 테스트")
-    class createStatusTest {
+    class CreateStatusTest {
 
         @ParameterizedTest
         @MethodSource("providePresentTime")
@@ -26,7 +29,7 @@ public class AttendanceStatusTest {
             LocalTime time = dateTime.toLocalTime();
 
             AttendanceStatus status = AttendanceStatus.of(date.getDayOfWeek(), time);
-            assertThat(status).isEqualTo(AttendanceStatus.PRESENT);
+            assertThat(status).isEqualTo(PRESENT);
         }
 
         static Stream<LocalDateTime> providePresentTime() {
@@ -45,7 +48,7 @@ public class AttendanceStatusTest {
             LocalTime time = dateTime.toLocalTime();
 
             AttendanceStatus status = AttendanceStatus.of(date.getDayOfWeek(), time);
-            assertThat(status).isEqualTo(AttendanceStatus.LATE);
+            assertThat(status).isEqualTo(LATE);
         }
 
         static Stream<LocalDateTime> provideLateTime() {
@@ -63,7 +66,7 @@ public class AttendanceStatusTest {
             LocalTime time = dateTime.toLocalTime();
 
             AttendanceStatus status = AttendanceStatus.of(date.getDayOfWeek(), time);
-            assertThat(status).isEqualTo(AttendanceStatus.ABSENT);
+            assertThat(status).isEqualTo(ABSENT);
         }
 
         static Stream<LocalDateTime> provideAbsentTime() {

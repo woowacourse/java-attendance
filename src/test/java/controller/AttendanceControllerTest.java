@@ -18,7 +18,7 @@ public class AttendanceControllerTest {
 
     @Nested
     @DisplayName("기능 선택 테스트")
-    class selectFeatureTest {
+    class SelectFeatureTest {
 
         @Test
         @DisplayName("1번 기능을 선택할 수 있다.")

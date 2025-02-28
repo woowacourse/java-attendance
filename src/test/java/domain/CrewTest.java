@@ -1,5 +1,6 @@
 package domain;
 
+import static domain.AttendanceStatus.PRESENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static util.parser.DateTimeParser.parseStringToDate;
 import static util.parser.DateTimeParser.parseStringToDateTime;
@@ -18,7 +19,7 @@ public class CrewTest {
 
     @Nested
     @DisplayName("크루 출석 기록 생성 테스트")
-    class createCrewRecordTest {
+    class CreateCrewRecordTest {
 
         @Test
         @DisplayName("크루별 데이터를 날짜와 시간으로 구분할 수 있다.")
@@ -39,6 +40,18 @@ public class CrewTest {
                 new DailyRecord(date1.getDayOfWeek(), time1));
             assertThat(crew.findRecordByDate(date2)).isEqualTo(
                 new DailyRecord(date2.getDayOfWeek(), time2));
+        }
+
+        @Test
+        @DisplayName("출석 날짜와 시간에 대한 정보를 저장할 수 있다.")
+        void addRecord() {
+            Crew crew = new Crew();
+            LocalDateTime dateTime = parseStringToDateTime("2024-12-09 10:02");
+
+            DailyRecord record = crew.addDailyRecord(dateTime);
+
+            assertThat(record.getAttendedTime()).isEqualTo(dateTime.toLocalTime());
+            assertThat(record.getStatus()).isEqualTo(PRESENT);
         }
     }
 }

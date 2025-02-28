@@ -15,8 +15,17 @@ public class Crew {
         this.dailyRecords = new HashMap<>();
     }
 
+    public int countRecord() {
+        return dailyRecords.size();
+    }
+
     public DailyRecord findRecordByDate(LocalDate date) {
         return dailyRecords.get(date);
+    }
+
+    public DailyRecord addDailyRecord(LocalDateTime dateTime) {
+        // TODO: 하루 데이터 저장
+        return null;
     }
 
     public void initializeDailyRecords(List<LocalDateTime> crewRecords) {

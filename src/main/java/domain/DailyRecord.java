@@ -13,6 +13,14 @@ public class DailyRecord {
         this.status = AttendanceStatus.of(dayOfWeek, attendedTime);
     }
 
+    public LocalTime getAttendedTime() {
+        return attendedTime;
+    }
+
+    public AttendanceStatus getStatus() {
+        return status;
+    }
+
     @Override
     public boolean equals(Object obj) {
         DailyRecord other = (DailyRecord) obj;

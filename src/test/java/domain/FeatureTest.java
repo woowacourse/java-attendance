@@ -15,7 +15,7 @@ public class FeatureTest {
 
     @Nested
     @DisplayName("함수 정보 생성 테스트")
-    class createFeatureTest {
+    class CreateFeatureTest {
 
         @Test
         @DisplayName("출석 확인 기능을 확인한다.")
@@ -60,7 +60,7 @@ public class FeatureTest {
 
     @Nested
     @DisplayName("종료 확인 테스트")
-    class checkQuitTest {
+    class CheckQuitTest {
 
         @Test
         @DisplayName("종료 기능을 확인한다.")
@@ -79,7 +79,7 @@ public class FeatureTest {
 
     @Nested
     @DisplayName("제공되는 기능 확인 테스트")
-    class checkProvidedTest {
+    class CheckProvidedTest {
 
         @ParameterizedTest
         @ValueSource(strings = {"1", "2", "3", "4", "Q"})
