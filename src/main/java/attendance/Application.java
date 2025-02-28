@@ -17,7 +17,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +24,6 @@ import java.util.Optional;
 
 public class Application {
     private static final String QUIT_OPTION = "Q";
-    private static final int INDEX_AS_CREW_NICKNAME = 0;
-    private static final int INDEX_AS_ATTENDANCE_DATE_TIME = 1;
     private static final Map<String, Runnable> options;
     private static final AttendanceManager attendanceManager = new AttendanceManager();
 
@@ -40,7 +37,7 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        initializeAttendances();
+        initAttendances();
         while (true) {
             LocalDate today = now();
             String option = readOption(today);
@@ -55,23 +52,10 @@ public class Application {
         }
     }
 
-    private static void initializeAttendances() {
+    private static void initAttendances() {
         try {
             BufferedReader bufferedReader = AttendancesFileReader.readFile();
-            bufferedReader.readLine();
-            String line;
-            while((line = bufferedReader.readLine()) != null) {
-                String[] split = line.split(",");
-                Nickname crewNickname = new Nickname(split[INDEX_AS_CREW_NICKNAME]);
-                if (!attendanceManager.isCrewExists(crewNickname)) {
-                    attendanceManager.addCrew(crewNickname);
-                }
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                String attendanceDateTime = split[INDEX_AS_ATTENDANCE_DATE_TIME];
-                LocalDate attendanceDate = LocalDate.parse(attendanceDateTime, dateTimeFormatter);
-                LocalTime attendanceTime = LocalTime.parse(attendanceDateTime, dateTimeFormatter);
-                attendanceManager.addAttendance(crewNickname, attendanceDate, attendanceTime);
-            }
+            AttendanceFileParser.initAttendances(bufferedReader, attendanceManager);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
