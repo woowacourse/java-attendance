@@ -1,4 +1,5 @@
-import domain.OperationTime;
+package domain;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
