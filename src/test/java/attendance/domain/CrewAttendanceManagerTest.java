@@ -150,11 +150,11 @@ class CrewAttendanceManagerTest {
 
         // then
         assertAll(
-                () -> assertThat(records.getRecords().get(0).getNickname()).isEqualTo("몽이"),
-                () -> assertThat(records.getRecords().get(1).getNickname()).isEqualTo("꾹이"),
-                () -> assertThat(records.getRecords().get(2).getNickname()).isEqualTo("듀이"),
-                () -> assertThat(records.getRecords().get(3).getNickname()).isEqualTo("레오"),
-                () -> assertThat(records.getRecords().get(4).getNickname()).isEqualTo("비타")
+                () -> assertThat(records.records().get(0).getNickname()).isEqualTo("몽이"),
+                () -> assertThat(records.records().get(1).getNickname()).isEqualTo("꾹이"),
+                () -> assertThat(records.records().get(2).getNickname()).isEqualTo("듀이"),
+                () -> assertThat(records.records().get(3).getNickname()).isEqualTo("레오"),
+                () -> assertThat(records.records().get(4).getNickname()).isEqualTo("비타")
         );
     }
 }

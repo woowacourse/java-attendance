@@ -66,7 +66,7 @@ class AttendanceRecordsTest {
         AttendanceRecords records = new AttendanceRecords(attendanceRecords);
 
         // when
-        List<AttendanceRecord> result = records.getRecords();
+        List<AttendanceRecord> result = records.records();
 
         // then
         assertAll(
