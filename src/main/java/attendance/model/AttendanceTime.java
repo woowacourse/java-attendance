@@ -11,6 +11,7 @@ public class AttendanceTime {
 
     private static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
     private static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
+    private static final int ABSENT_VALUE = -1;
 
     public AttendanceTime(final LocalDate date, final int hour, final int minute) {
 
@@ -21,6 +22,13 @@ public class AttendanceTime {
         this.minute = minute;
     }
 
+    public AttendanceTime(final LocalDate date) {
+        validateAttendDate(date);
+        this.date = date;
+        this.hour = ABSENT_VALUE;
+        this.minute = ABSENT_VALUE;
+    }
+
     private void validateAttendDate(final LocalDate date) {
 
         if (isWeekend(date.getDayOfWeek())) {
@@ -28,7 +36,7 @@ public class AttendanceTime {
         }
     }
 
-    private boolean isWeekend(final DayOfWeek day) {
+    public static boolean isWeekend(final DayOfWeek day) {
 
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }

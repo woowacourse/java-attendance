@@ -41,4 +41,28 @@ public class AttendanceBook {
 
         return List.copyOf(attendances.get(name));
     }
+
+    public void initCrewsAbsence() {
+
+        for (String name : attendances.keySet()) {
+            initAbsence(name);
+        }
+    }
+
+    private void initAbsence(final String name) {
+
+        LocalDate now = LocalDate.now();
+        for (int day = 1; day <= now.getDayOfMonth(); day++) {
+            LocalDate attendDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
+            judgeAbsence(name, attendDate);
+        }
+    }
+
+    private void judgeAbsence(String name, LocalDate attendDate) {
+        
+        if (!AttendanceTime.isWeekend(attendDate.getDayOfWeek()) && !isAlreadyExists(name, attendDate)) {
+            attendances.get(name).add(new AttendanceTime(attendDate));
+        }
+    }
+
 }
