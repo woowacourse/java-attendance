@@ -21,8 +21,10 @@ public class Crew {
         attendanceHistory = new ArrayList<>();
     }
 
-    public void addAttendanceWithDateTime(LocalDateTime localDateTime) {
-        attendanceHistory.add(new Attendance(localDateTime));
+    public Attendance addAttendanceWithDateTime(LocalDateTime localDateTime) {
+        Attendance attendance = new Attendance(localDateTime);
+        attendanceHistory.add(attendance);
+        return attendance;
     }
 
     public List<Attendance> getAttendanceHistory() {
@@ -99,11 +101,12 @@ public class Crew {
         return NONE;
     }
 
-    public void modifyAttendedTime(int date, LocalTime localTime) {
+    public ModifyResult modifyAttendedTime(int date, LocalTime localTime) {
+        // 이전 시간 다음 시간 둘 다 뭉쳐서 리턴하기~
         if (isEmptyDay(date)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE.ALREADY_ATTENDED.getMessage());
+            throw new IllegalArgumentException(ERROR_MESSAGE.EMPTY_DATE.getMessage());
         }
-        attendanceHistory.stream().filter(attendance -> attendance.getDayOfMonth() == date)
-                .forEach(attendance -> attendance.changeTimeTo(localTime));
+        return attendanceHistory.stream().filter(attendance -> attendance.getDayOfMonth() == date).findFirst()
+                .map(attendance -> attendance.changeTimeTo(localTime)).orElse(null);
     }
 }

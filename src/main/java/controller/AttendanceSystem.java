@@ -1,9 +1,12 @@
 package controller;
 
+import static java.lang.Integer.parseInt;
 import static view.OutputView.getFormattedDayInfo;
 import static view.OutputView.printMenu;
+import static view.UserInputView.*;
 
 import domain.AllCrew;
+import domain.Crew;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
@@ -12,6 +15,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import view.OutputView;
 import view.UserInputView;
 
 public class AttendanceSystem {
@@ -33,7 +37,7 @@ public class AttendanceSystem {
                 checkAttendance();
             }
             if (option.equals("2")) {
-//                modifyAttendance();
+                modifyAttendance();
             }
             if (option.equals("3")) {
 //                checkCrewAttendanceHistory();
@@ -45,20 +49,23 @@ public class AttendanceSystem {
                 return;
             }
         }
+    }
 
-
-
+    private void modifyAttendance() {
+        String crewName = askCrewName();
+        Crew crew = allCrew.findCrewByName(crewName);
+        int date = parseInt(askAttendedDate());
+        List<String> hourAndMinute = List.of(askTimeForModify().split(":"));
+        LocalTime timeTo = LocalTime.of(parseInt(hourAndMinute.getFirst()), parseInt(hourAndMinute.getLast()));
+        OutputView.printModifyResult(crew.modifyAttendedTime(date, timeTo));
     }
 
     private void checkAttendance() {
-        String crewName = UserInputView.askCrewName();
-        if (allCrew.containsCrewName(crewName)) {
-            List<String> hourAndMinute = List.of(UserInputView.askAttendanceTime().split(":"));
-            LocalTime time = LocalTime.of(Integer.parseInt(hourAndMinute.getFirst()), Integer.parseInt(hourAndMinute.getLast()));
-            allCrew.findCrewByName(crewName).addAttendanceWithDateTime(LocalDateTime.of(today, time));
-            return;
-        }
-        throw new NoSuchElementException("[ERROR] 등록되지 않은 닉네임입니다.");
+        String crewName = askCrewName();
+        Crew crew = allCrew.findCrewByName(crewName);
+        List<String> hourAndMinute = List.of(askAttendanceTime().split(":"));
+        LocalTime time = LocalTime.of(parseInt(hourAndMinute.getFirst()), parseInt(hourAndMinute.getLast()));
+        OutputView.printCheckedAttendance(crew.addAttendanceWithDateTime(LocalDateTime.of(today, time)));
     }
 
 }

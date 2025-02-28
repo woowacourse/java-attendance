@@ -12,4 +12,13 @@ public class UserInputView {
         return new Scanner(System.in).nextLine();
     }
 
+    public static String askAttendedDate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return new Scanner(System.in).nextLine();
+    }
+
+    public static String askTimeForModify() {
+        System.out.println("언제로 변경하겠습니까?");
+        return new Scanner(System.in).nextLine();
+    }
 }
