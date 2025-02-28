@@ -13,6 +13,7 @@ public class AttendanceBook {
 
     private static final String NOT_REGISTERED_CREW_ERROR_MESSAGE = "등록되지 않은 크루입니다.";
     private static final String ALREADY_ATTENDED_ERROR_MESSAGE = "이미 출석 기록이 있으므로 수정만 가능합니다.";
+    private static final String NOT_ATTENDED_ERROR_MESSAGE = "수정전 먼저 출석을 확인을 해야합니다.";
 
     private final Map<String, Crew> crewRecords;
 
@@ -37,8 +38,11 @@ public class AttendanceBook {
     }
 
     public DailyRecord editAttendanceRecord(String name, LocalDateTime editedDateTime) {
-        // TODO: 출석부에서 수정한 데이터를 갈아 끼우기
-        return null;
+        validateRegisteredCrew(name);
+        validateAttendedDate(name, editedDateTime);
+
+        Crew crew = crewRecords.get(name);
+        return crew.updateDailyRecord(editedDateTime);
     }
 
     public void initializeCrewRecords(Scanner scanner) {
@@ -72,6 +76,13 @@ public class AttendanceBook {
         Crew crew = crewRecords.get(name);
         if (crew.hasDate(dateTime.toLocalDate())) {
             throw new IllegalArgumentException(ALREADY_ATTENDED_ERROR_MESSAGE);
+        }
+    }
+
+    private void validateAttendedDate(String name, LocalDateTime editedDateTime) {
+        Crew crew = crewRecords.get(name);
+        if (!crew.hasDate(editedDateTime.toLocalDate())) {
+            throw new IllegalArgumentException(NOT_ATTENDED_ERROR_MESSAGE);
         }
     }
 }

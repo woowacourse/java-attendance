@@ -29,8 +29,10 @@ public class Coach {
     }
 
     public DailyRecord editCrew(String name, LocalDateTime dateTime) {
-        // TODO: 출석부의 출석 기록을 수정하기
-        return null;
+        validateOperatingTime(dateTime);
+        validateHoliday(dateTime);
+
+        return attendanceBook.editAttendanceRecord(name, dateTime);
     }
 
     private void validateOperatingTime(LocalDateTime dateTime) {

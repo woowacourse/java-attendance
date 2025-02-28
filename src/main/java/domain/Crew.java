@@ -37,8 +37,12 @@ public class Crew {
     }
 
     public DailyRecord updateDailyRecord(LocalDateTime editedDateTime) {
-        // TODO: 날짜에 해당하는 Record 새로 만들어서 넣기
-        return null;
+        LocalDate date = editedDateTime.toLocalDate();
+        LocalTime time = editedDateTime.toLocalTime();
+
+        DailyRecord newRecord = new DailyRecord(date.getDayOfWeek(), time);
+        dailyRecords.put(date, newRecord);
+        return newRecord;
     }
 
     public void initializeDailyRecords(List<LocalDateTime> crewRecords) {
