@@ -6,15 +6,20 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Attendance {
-    private final LocalDateTime dateTime;
+    private static final LocalTime START_TIME = LocalTime.of(8, 0);
+    private static final LocalTime END_TIME = LocalTime.of(23, 0);
+
+    private final LocalDate date;
+    private final LocalTime time;
 
     public Attendance(LocalDateTime dateTime) {
         validate(dateTime);
-        this.dateTime = dateTime;
+        this.date = dateTime.toLocalDate();
+        this.time = dateTime.toLocalTime();
     }
 
     public boolean has(LocalDate day) {
-        return this.dateTime.toLocalDate().isEqual(day);
+        return this.date.isEqual(day);
     }
 
     private void validate(LocalDateTime dateTime) {
@@ -22,8 +27,8 @@ public class Attendance {
                 dateTime.getDayOfWeek().compareTo(DayOfWeek.FRIDAY) >= 1) {
             throw new IllegalArgumentException("주말 또는 공휴일에는 출석할 수 없습니다");
         }
-        if (CampusTime.isAfterStartTime(dateTime.toLocalTime()) ||
-                CampusTime.isBeforeEndTime(dateTime.toLocalTime())) {
+        if (START_TIME.isAfter(dateTime.toLocalTime()) ||
+                END_TIME.isBefore(dateTime.toLocalTime())) {
             throw new IllegalArgumentException("캠퍼스 운영 시간에만 출석할 수 있습니다");
         }
     }

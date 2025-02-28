@@ -33,7 +33,7 @@ class AttendanceTest {
             );
         }
 
-        @DisplayName("캠퍼스 운영 시간 외에 출석하면 예외를 뱉는다")
+        @DisplayName("캠퍼스 운영 시간 외에 출석할 수 없다")
         @ParameterizedTest
         @MethodSource("invalidAttendanceTime")
         void test2(int hour, int minute) {
