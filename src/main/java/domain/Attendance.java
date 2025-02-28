@@ -10,32 +10,20 @@ import java.util.Objects;
 import util.Constants;
 
 public class Attendance {
-    private static final String NOT_RUNNING_TIME_ERROR = "캠퍼스 운영시간이 아닙니다.";
-    private static final String HOLIDAY_ERROR = "주말 및 공휴일은 출석할 수 없습니다.";
+
+
     private final LocalDateTime value;
 
     public Attendance(LocalDateTime value) {
-        validateDate(value.toLocalDate());
-        validateTime(value.toLocalTime());
         this.value = value;
     }
 
     public Attendance(LocalDate date, LocalTime time) {
-        validateDate(date);
-        validateTime(time);
         this.value = LocalDateTime.of(date, time);
     }
 
-    private void validateDate(LocalDate date) {
-        if(isHoliday(date)) {
-            throw new IllegalArgumentException(ERROR_HEADER + HOLIDAY_ERROR);
-        }
-    }
-
-    private void validateTime(LocalTime time) {
-        if (time.isBefore(CAMPUS_START_TIME) || time.isAfter(CAMPUS_END_TIME)) {
-            throw new IllegalArgumentException(ERROR_HEADER + NOT_RUNNING_TIME_ERROR);
-        }
+    public static boolean isInvalidTime(LocalTime time) {
+        return time.isBefore(CAMPUS_START_TIME) || time.isAfter(CAMPUS_END_TIME);
     }
 
     public LocalDate getDate() {
@@ -62,7 +50,7 @@ public class Attendance {
         return Objects.equals(value, other.value);
     }
 
-    private boolean isHoliday(LocalDate date) {
+    public static boolean isHoliday(LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY
                 || dayOfWeek == DayOfWeek.SUNDAY

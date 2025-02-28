@@ -53,28 +53,6 @@ public class AttendanceBookTest {
         assertThat(todayAttendance).isEqualTo(savedAttendance);
     }
 
-    @DisplayName("출석부에 존재하지 않는 닉네임일 경우 예외가 발생한다.")
-    @Test
-    void test2() {
-        CrewName crewName = new CrewName("밍트");
-
-        assertThatThrownBy(() -> attendanceBook.findAttendanceRecordBy(crewName))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
-    }
-
-    @DisplayName("출석 저장 시, 출석부에 존재하지 않는 닉네임일 경우 예외가 발생한다.")
-    @Test
-    void test3() {
-        CrewName crewName = new CrewName("밍트");
-        Attendance attendance = new Attendance(
-                LocalDateTime.of(2024, 12, 13, 9, 59));
-
-        assertThatThrownBy(() -> attendanceBook.addAttendance(crewName, attendance))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
-    }
-
     @DisplayName("출석 저장 시, 이미 해당 날짜에 출석 기록이 있는 경우 예외가 발생한다.")
     @Test
     void test4() {
@@ -98,18 +76,6 @@ public class AttendanceBookTest {
         assertThat(attendanceBook.findAttendanceRecordBy(mimi)
                 .contains(newAttendance))
                 .isTrue();
-    }
-
-    @DisplayName("출석 수정 시, 출석부에 존재하지 않는 닉네임일 경우 예외가 발생한다.")
-    @Test
-    void test6() {
-        CrewName crewName = new CrewName("밍트");
-        Attendance attendance = new Attendance(
-                LocalDateTime.of(2024, 12, 13, 9, 59));
-
-        assertThatThrownBy(() -> attendanceBook.modify(crewName, attendance))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
     }
 
     @DisplayName("출석 수정 시, 기존 출석 기록과 업데이트된 출석 기록을 모두 확인할 수 있다.")

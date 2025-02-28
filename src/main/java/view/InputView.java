@@ -2,14 +2,21 @@ package view;
 
 import static util.Constants.*;
 
+import domain.AttendanceBook;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class InputView {
     private final Scanner scanner = new Scanner(System.in);
+    private final AttendanceBook attendanceBook;
+
+    public InputView(AttendanceBook attendanceBook) {
+        this.attendanceBook = attendanceBook;
+    }
 
     public String readSelectedMenu() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN);
@@ -26,7 +33,7 @@ public class InputView {
     }
 
     public String readName() {
-        return readInput("닉네임을 입력해 주세요.", InputValidator::validateName);
+        return readInput("닉네임을 입력해 주세요.", InputValidator::validateName, attendanceBook);
     }
 
     public String readAttendanceTime() {
@@ -38,7 +45,7 @@ public class InputView {
     }
 
     public String readModifyName() {
-        return readInput("출석을 수정하려는 크루의 닉네임을 입력해 주세요.", InputValidator::validateName);
+        return readInput("출석을 수정하려는 크루의 닉네임을 입력해 주세요.", InputValidator::validateName, attendanceBook);
     }
 
     public String readModifyTime() {
@@ -49,6 +56,13 @@ public class InputView {
         System.out.println(message);
         String input = scanner.nextLine();
         validator.accept(input);
+        return input;
+    }
+
+    private String readInput(String message, BiConsumer<String, AttendanceBook> validator, AttendanceBook param) {
+        System.out.println(message);
+        String input = scanner.nextLine();
+        validator.accept(input, param);
         return input;
     }
 }

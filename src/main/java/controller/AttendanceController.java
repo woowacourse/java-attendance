@@ -21,7 +21,7 @@ public class AttendanceController {
 
     public AttendanceController(AttendanceBook attendanceBook) {
         this.attendanceBook = attendanceBook;
-        this.inputView = new InputView();
+        this.inputView = new InputView(attendanceBook);
         this.outputView = new OutputView();
     }
 
@@ -45,12 +45,42 @@ public class AttendanceController {
     }
 
     private void modifyAttendance() {
-        CrewName crewName = new CrewName(inputView.readModifyName());
-        int day = Integer.parseInt(inputView.readModifyDay());
-        LocalTime time = LocalTime.parse(inputView.readModifyTime());
+        CrewName crewName = getValidModifyName();
+        int day = getValidDay();
+        LocalTime time = getValidModifyTime();
         Attendance attendance = new Attendance(LocalDate.of(TODAY.getYear(), TODAY.getMonth(), day), time);
         ModifyingResult modifyingResult = attendanceBook.modify(crewName, attendance);
         outputView.showModifyingResult(modifyingResult);
+    }
+
+    private CrewName getValidModifyName() {
+        while(true) {
+            try {
+                return new CrewName(inputView.readModifyName());
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private int getValidDay() {
+        while(true) {
+            try {
+                return Integer.parseInt(inputView.readModifyDay());
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private LocalTime getValidModifyTime() {
+        while(true) {
+            try {
+                return LocalTime.parse(inputView.readModifyTime());
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     private void showAttendanceHistory() {

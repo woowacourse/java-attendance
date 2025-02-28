@@ -23,45 +23,4 @@ public class AttendanceTest {
         assertDoesNotThrow(() -> new Attendance(LocalDateTime.of(validDate, startTime)));
         assertDoesNotThrow(() -> new Attendance(LocalDateTime.of(validDate, endTime)));
     }
-
-
-    @DisplayName("캠퍼스 운영시간 전에는 출석을 받지 않는다.")
-    @Test
-    void test2() {
-        LocalTime notValidTime = LocalTime.of(7, 59);
-
-        assertThatThrownBy(() -> new Attendance(LocalDateTime.of(validDate, notValidTime)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR]");
-    }
-
-    @DisplayName("캠퍼스 운영시간 후에는 출석을 받지 않는다.")
-    @Test
-    void test3() {
-        LocalTime notValidTime = LocalTime.of(23, 1);
-
-        assertThatThrownBy(() -> new Attendance(LocalDateTime.of(validDate, notValidTime)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR]");
-    }
-
-    @DisplayName("주말에는 출석을 받지 않는다.")
-    @Test
-    void test4() {
-        LocalDate notValidDate = LocalDate.of(2024, 12, 1);
-
-        assertThatThrownBy(() -> new Attendance(LocalDateTime.of(notValidDate, validTime)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
-    }
-
-    @DisplayName("공휴일에는 출석을 받지 않는다.")
-    @Test
-    void test5() {
-        LocalDate notValidDate = LocalDate.of(2024, 12, 25);
-
-        assertThatThrownBy(() -> new Attendance(LocalDateTime.of(notValidDate, validTime)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERROR_HEADER);
-    }
 }
