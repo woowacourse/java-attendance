@@ -52,29 +52,33 @@ public class AttendanceController {
         Integer datOfMonth = inputView.getDayOfMonth();
         Day day = Day.of(datOfMonth);
         Attendance attendance = attendances.findByDay(day);
-
         Attendance originAttendance = new Attendance(day, attendance.getTime());
 
         LocalTime attendanceTime = inputView.getModifiedAttendanceTime();
         attendance.modifyTimeTo(attendanceTime);
-
         outputView.printModifiedAttendanceDetail(originAttendance, attendance);
     }
 
     protected void attend() {
+        validateToday();
         LocalDate today = LocalDate.now();
-        if (!Holiday.isHoliday(today) && CustomDayOfWeek.isWeekDay(today)) {
-            String nickname = inputView.getNickname();
-            attendanceBook.isAlreadyAttended(nickname, today);
-            LocalTime attendanceTime = inputView.getAttendanceTime();
-            Attendance attendance = new Attendance(new Day(today), attendanceTime);
-            attendanceBook.recordAttendance(nickname, attendance);
-            outputView.printAttendanceDetail(attendance);
-            return;
+        String nickname = inputView.getNickname();
+        attendanceBook.isAlreadyAttended(nickname, today);
+
+        LocalTime attendanceTime = inputView.getAttendanceTime();
+        Attendance attendance = new Attendance(new Day(today), attendanceTime);
+        attendanceBook.recordAttendance(nickname, attendance);
+
+        outputView.printAttendanceDetail(attendance);
+    }
+
+    private void validateToday() {
+        LocalDate today = LocalDate.now();
+        if (Holiday.isHoliday(today) || !CustomDayOfWeek.isWeekDay(today)) {
+            throw new IllegalArgumentException(
+                    "[ERROR] " + today.getMonth().getValue() + "월 " + today.getDayOfMonth() + "일 "
+                            + CustomDayOfWeek.getInstance(today).getName() + "은 등교일이 아닙니다.");
         }
-        throw new IllegalArgumentException(
-                "[ERROR] " + today.getMonth().getValue() + "월 " + today.getDayOfMonth() + "일 "
-                        + CustomDayOfWeek.getInstance(today).getName() + "은 등교일이 아닙니다.");
     }
 
     protected void quit() {

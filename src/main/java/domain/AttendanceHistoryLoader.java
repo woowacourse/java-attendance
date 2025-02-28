@@ -10,7 +10,6 @@ public class AttendanceHistoryLoader {
 
     public AttendanceBook initializeAttendanceWith(FileReader fileReader) throws IOException {
         BufferedReader reader = new BufferedReader(fileReader);
-
         try {
             AttendanceBook attendanceBook = new AttendanceBook();
             skipHeader(reader);

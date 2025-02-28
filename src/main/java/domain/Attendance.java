@@ -27,20 +27,18 @@ public class Attendance {
     }
 
     private void updateStatus() {
-        if (time == null) {
-            isAbsent = true;
-            isLate = false;
-            return;
-        }
-
         LocalTime criteriaTime = day.getCriteriaTime();
-        if (criteriaTime.plusMinutes(ABSENT_CRITERIA_MINUTES).isBefore(time)) {
-            isLate = false;
-            isAbsent = true;
+        if (time == null || criteriaTime.plusMinutes(ABSENT_CRITERIA_MINUTES).isBefore(time)) {
+            markAsAbsent();
             return;
         }
         isAbsent = false;
         isLate = criteriaTime.plusMinutes(LATE_CRITERIA_MINUTES).isBefore(time);
+    }
+
+    private void markAsAbsent() {
+        isAbsent = true;
+        isLate = false;
     }
 
     public Boolean isLate() {
@@ -55,6 +53,10 @@ public class Attendance {
         return time;
     }
 
+    public Day getDay() {
+        return day;
+    }
+
     public Boolean has(Day day) {
         return this.day.equals(day);
     }
@@ -63,10 +65,6 @@ public class Attendance {
         validateTime(time);
         this.time = time;
         updateStatus();
-    }
-
-    public Day getDay() {
-        return day;
     }
 
     @Override

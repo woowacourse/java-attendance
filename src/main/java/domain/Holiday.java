@@ -17,6 +17,4 @@ public enum Holiday {
         return Arrays.stream(Holiday.values())
                 .anyMatch(holiday -> holiday.date.equals(date));
     }
-
-
 }
