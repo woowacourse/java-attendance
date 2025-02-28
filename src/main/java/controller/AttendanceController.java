@@ -78,14 +78,10 @@ public class AttendanceController {
     }
 
     private void handleDismissHistory() {
-        List<CrewDismissHistory> crewDismisses = orderedDismissHistory();
+        List<CrewDismissHistory> crewDismisses = crewAttendances.orderedDismissHistory();
         outputView.printCrewDismisses(crewDismisses.stream()
                 .map(CrewDismissHistoryDto::from)
                 .collect(Collectors.toList()));
-    }
-
-    private List<CrewDismissHistory> orderedDismissHistory() {
-        return crewAttendances.orderedDismissHistory();
     }
 
     private void handleAttendanceHistory() {
@@ -142,7 +138,7 @@ public class AttendanceController {
 
     private LocalDate handleAttendanceInputDate() {
         outputView.printInputDate();
-        return inputDate();
+        return inputDate();s
     }
 
     private LocalDate inputDate() {

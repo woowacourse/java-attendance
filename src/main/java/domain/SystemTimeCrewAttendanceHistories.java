@@ -14,17 +14,6 @@ public class SystemTimeCrewAttendanceHistories {
     private final Map<LocalDate, CrewAttendance> renewDateCrewAttendance = new TreeMap<>(LocalDate::compareTo);
     private final CrewDismiss renewCrewDismiss;
 
-    private Map<LocalDate, CrewAttendance> calculateDateCrewAttendance(
-            CrewAttendanceHistories crewAttendanceHistories) {
-        Map<LocalDate, CrewAttendance> dateCrewAttendance = new HashMap<>();
-        for (CrewAttendanceHistory crewAttendanceHistory : crewAttendanceHistories.crewAttendanceHistories()) {
-            CrewAttendance crewAttendance = crewAttendanceHistory.crewAttendance();
-            AttendanceDate attendanceDate = crewAttendanceHistory.attendanceDate();
-            dateCrewAttendance.put(attendanceDate.date(), crewAttendance);
-        }
-        return dateCrewAttendance;
-    }
-
     public SystemTimeCrewAttendanceHistories(CrewAttendanceHistories dateCrewAttendance,
                                              CurrentDateGenerateStrategy currentDateGenerateStrategy) {
         Map<LocalDate, CrewAttendance> previousDateCrewAttendance = calculateDateCrewAttendance(dateCrewAttendance);
@@ -37,6 +26,17 @@ public class SystemTimeCrewAttendanceHistories {
         this.renewDateCrewAttendance.putAll(
                 calculateNewAbsenceCount(previousDateCrewAttendance, systemStartDate, systemLastDate));
         this.renewCrewDismiss = renewCrewDismiss(renewDateCrewAttendance);
+    }
+
+    private Map<LocalDate, CrewAttendance> calculateDateCrewAttendance(
+            CrewAttendanceHistories crewAttendanceHistories) {
+        Map<LocalDate, CrewAttendance> dateCrewAttendance = new HashMap<>();
+        for (CrewAttendanceHistory crewAttendanceHistory : crewAttendanceHistories.crewAttendanceHistories()) {
+            CrewAttendance crewAttendance = crewAttendanceHistory.crewAttendance();
+            AttendanceDate attendanceDate = crewAttendanceHistory.attendanceDate();
+            dateCrewAttendance.put(attendanceDate.date(), crewAttendance);
+        }
+        return dateCrewAttendance;
     }
 
     private CrewDismiss renewCrewDismiss(Map<LocalDate, CrewAttendance> renewDateCrewAttendanceMap) {
