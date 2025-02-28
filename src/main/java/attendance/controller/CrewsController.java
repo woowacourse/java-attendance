@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class CrewsController {
-    public static final String ATTENDANCES_CSV = "src/main/resources/attendances.csv";
+    private static final String ATTENDANCES_CSV = "src/main/resources/attendances.csv";
+    private static final LocalDate today = LocalDate.of(2024, 12, 16);
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -19,17 +20,24 @@ public class CrewsController {
         this.outputView = new OutputView();
     }
 
-    public void run(LocalDate today) {
+    public void run() {
         Crews crews = CrewsFactory.initFromCsv(ATTENDANCES_CSV, today);
+        while(true) {
+            try {
+                String selectedCommand = inputView.selectCommand(today);
+                if(selectedCommand.equals("Q")) break;
 
-        String selectedCommand = inputView.selectCommand(today);
-
-        if(selectedCommand.equals("1")) confirmAttendance(today, crews);
-        if(selectedCommand.equals("2")) updateAttendance(today, crews);
-        if(selectedCommand.equals("3")) printCrewAttendances(today, crews);
+                if(selectedCommand.equals("1")) confirmAttendance(crews);
+                if(selectedCommand.equals("2")) updateAttendance(crews);
+                if(selectedCommand.equals("3")) printCrewAttendances(crews);
+                if(selectedCommand.equals("4")) printWarningCrews(crews);
+            } catch (IllegalArgumentException e) {
+                outputView.printExceptionMessage(e);
+            }
+        }
     }
 
-    private void confirmAttendance(final LocalDate today, final Crews crews) {
+    private void confirmAttendance(final Crews crews) {
         Holiday.isHoliday(today.atStartOfDay());
 
         String nickname = inputView.inputNickname();
@@ -41,7 +49,7 @@ public class CrewsController {
         outputView.printConfirmResult(attendance.getDateTime(), attendance.getStatus());
     }
 
-    private void updateAttendance(final LocalDate today, final Crews crews) {
+    private void updateAttendance(final Crews crews) {
         String nickname = inputView.inputUpdateCrew();
         Crew crew = crews.findCrewByNickname(nickname);
 
@@ -55,11 +63,15 @@ public class CrewsController {
         outputView.printUpdateResult(beforeUpdateAttendance, afterUpdateAttendance);
     }
 
-    private void printCrewAttendances(final LocalDate today, final Crews crews) {
+    private void printCrewAttendances(final Crews crews) {
         String nickname = inputView.inputNickname();
         Crew crew = crews.findCrewByNickname(nickname);
 
         outputView.printCrewAttendances(crew);
         outputView.printCrewAttendanceStatusCount(crew);
+    }
+
+    private void printWarningCrews(final Crews crews) {
+        outputView.printPenaltyCrews(crews.findWarningExpulsionCrews());
     }
 }

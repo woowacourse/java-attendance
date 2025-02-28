@@ -8,17 +8,14 @@ import attendance.domain.Crew;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class OutputView {
 
     public void printConfirmResult(final LocalDateTime dateTime, final AttendanceStatus status) {
         System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)\n",
                 dateTime.getMonthValue(),
-                dateTime.getMonthValue(),
+                dateTime.getDayOfMonth(),
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 dateTime.getHour(),
                 dateTime.getMinute(),
@@ -65,6 +62,13 @@ public class OutputView {
         }
     }
 
+    public void printPenaltyCrews(Map<AbsenceRule, List<Crew>> penaltiesCrews) {
+        System.out.println("제적 위험자 조회 결과");
+        for (AbsenceRule absenceRule : AbsenceRule.values()) {
+            printCrewsPerPenalty(penaltiesCrews, absenceRule);
+        }
+    }
+
     private static String getStatusString(final AttendanceStatus status) {
         if(status.equals(AttendanceStatus.ATTEND)) return "춣석";
         if(status.equals(AttendanceStatus.LATE)) return "지각";
@@ -94,5 +98,20 @@ public class OutputView {
         if(absenceRule.equals(AbsenceRule.COUNSELING)) return "면담";
         if(absenceRule.equals(AbsenceRule.WARNING)) return "경고";
         return "";
+    }
+
+    private static void printCrewsPerPenalty(final Map<AbsenceRule, List<Crew>> penaltiesCrews, final AbsenceRule absenceRule) {
+        List<Crew> crews = penaltiesCrews.get(absenceRule);
+        for (Crew crew : crews) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                    crew.getNickname(),
+                    crew.countAttendanceStatus(AttendanceStatus.ABSENCE),
+                    crew.countAttendanceStatus(AttendanceStatus.LATE),
+                    getAbsenceRuleString(absenceRule));
+        }
+    }
+
+    public void printExceptionMessage(final Exception e) {
+        System.out.println(e.getMessage());
     }
 }

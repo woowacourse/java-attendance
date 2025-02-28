@@ -3,6 +3,7 @@ package attendance.view;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
@@ -30,10 +31,14 @@ public class InputView {
     }
 
     public LocalTime inputAttendanceTime() {
-        System.out.println("등교 시간을 입력해 주세요.");
-        String attendanceTimeInput = scanner.nextLine();
+        try {
+            System.out.println("등교 시간을 입력해 주세요.");
+            String attendanceTimeInput = scanner.nextLine();
 
-        return formatTime(attendanceTimeInput);
+            return formatTime(attendanceTimeInput);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("시간 형식으로 입력해주세요.");
+        }
     }
 
     public String inputUpdateCrew() {
@@ -42,17 +47,25 @@ public class InputView {
     }
 
     public int inputUpdateDate() {
-        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        String updateDate = scanner.nextLine();
+        try {
+            System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+            String updateDate = scanner.nextLine();
 
-        return Integer.parseInt(updateDate);
+            return Integer.parseInt(updateDate);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("정수로 입력해주세요.");
+        }
     }
 
     public LocalTime inputUpdateAttendanceTime() {
-        System.out.println("언제로 변경하겠습니까?");
-        String updateTimeInput = scanner.nextLine();
+        try{
+            System.out.println("언제로 변경하겠습니까?");
+            String updateTimeInput = scanner.nextLine();
 
-        return formatTime(updateTimeInput);
+            return formatTime(updateTimeInput);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("시간 형식으로 입력해주세요.");
+        }
     }
 
     private LocalTime formatTime(final String timeInput) {
