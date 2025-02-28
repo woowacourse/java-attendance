@@ -1,5 +1,6 @@
 package model.attendance;
 
+import common.Campus;
 import common.Common;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,12 +15,14 @@ public class Attendance {
     private final LocalTime time;
 
     public Attendance(LocalDate date) {
+        validateHolidayDate(date);
         this.date = date;
-        this.time = Common.noneAttendanceTime;
+        this.time = Campus.noneAttendanceTime;
     }
 
     public Attendance(LocalDate date, LocalTime time) {
-        validateDate(date);
+        validateHolidayDate(date);
+        validateFutureDate(date);
         validateTime(time);
         this.date = date;
         this.time = time;
@@ -41,20 +44,23 @@ public class Attendance {
         return time;
     }
 
-    private void validateDate(LocalDate date) {
+    private void validateFutureDate(LocalDate date) {
         if (date.isAfter(December.now())) {
             throw new FutureAttendanceException();
         }
+    }
+
+    private void validateHolidayDate(LocalDate date) {
         if (December.isHolidayAt(date)) {
             throw new HolidayAttendanceException(date);
         }
     }
 
     private void validateTime(LocalTime time) {
-        if (time.equals(Common.noneAttendanceTime)) {
+        if (time.equals(Campus.noneAttendanceTime)) {
             return;
         }
-        if (time.isBefore(Common.campusOpenTime) || time.isAfter(Common.campusCloseTime)) {
+        if (time.isBefore(Campus.campusOpenTime) || time.isAfter(Campus.campusCloseTime)) {
             throw new CampusUnavailableException();
         }
     }
