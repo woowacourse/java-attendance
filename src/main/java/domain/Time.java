@@ -1,5 +1,7 @@
 package domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 public class Time {
@@ -19,16 +21,16 @@ public class Time {
     }
 
     private void validateHour(String rawTime) {
-        String[] rawHour = rawTime.split(":");
-        int hour = Integer.parseInt(rawHour[0]);
+        String[] splittedTime = rawTime.split(":");
+        int hour = Integer.parseInt(splittedTime[0]);
         if (hour >= 24 || hour < 0) {
             throw new IllegalArgumentException("시간은 00 ~ 23 사이여야합니다.");
         }
     }
 
     private void validateMinute(String rawTime) {
-        String[] rawMinute = rawTime.split(":");
-        int minute = Integer.parseInt(rawMinute[1]);
+        String[] splittedTime = rawTime.split(":");
+        int minute = Integer.parseInt(splittedTime[1]);
         if (minute >= 60 || minute < 0) {
             throw new IllegalArgumentException("분은 00 ~ 59 사이여야합니다.");
         }
@@ -37,5 +39,12 @@ public class Time {
     private void validateTime(String rawTime) {
         validateHour(rawTime);
         validateMinute(rawTime);
+    }
+
+    public LocalDateTime combineTimeWithDate(LocalDate today) {
+        String[] splittedTime = rawTime.split(":");
+        int hour = Integer.parseInt(splittedTime[0]);
+        int minute = Integer.parseInt(splittedTime[1]);
+        return LocalDateTime.of(today.getYear(), today.getMonth().getValue(), today.getDayOfMonth(), hour, minute);
     }
 }
