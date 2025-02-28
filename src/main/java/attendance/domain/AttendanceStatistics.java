@@ -8,6 +8,11 @@ import static attendance.domain.CrewStatus.NONE;
 import static attendance.domain.CrewStatus.WARNING;
 
 public class AttendanceStatistics implements Comparable {
+    private static final int FIRE_THRESHOLD = 5;
+    private static final int INTERVIEW_THRESHOLD = 2;
+    private static final int WARNING_THRESHOLD = 1;
+    private static final int LATE_COUNT_AS_ABSENCE = 3;
+
     private final int attendanceCount;
     private final int lateCount;
     private final int absenceCount;
@@ -20,13 +25,13 @@ public class AttendanceStatistics implements Comparable {
 
     public CrewStatus calculateCrewStatus() {
         int totalAbsence = calculateTotalAbsence();
-        if (totalAbsence > 5) {
+        if (totalAbsence > FIRE_THRESHOLD) {
             return FIRE;
         }
-        if (totalAbsence > 2) {
+        if (totalAbsence > INTERVIEW_THRESHOLD) {
             return INTERVIEW;
         }
-        if (totalAbsence > 1) {
+        if (totalAbsence > WARNING_THRESHOLD) {
             return WARNING;
         }
         return NONE;
@@ -34,7 +39,7 @@ public class AttendanceStatistics implements Comparable {
 
     private int calculateTotalAbsence() {
         int totalAbsence = absenceCount;
-        totalAbsence += (lateCount / 3);
+        totalAbsence += (lateCount / LATE_COUNT_AS_ABSENCE);
         return totalAbsence;
     }
 

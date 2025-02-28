@@ -18,8 +18,10 @@ import java.util.Map;
 import java.util.Optional;
 
 public class Application {
-    private static final Map<String, Runnable> options;
     private static final String QUIT_OPTION = "Q";
+    private static final int INDEX_AS_CREW_NICKNAME = 0;
+    private static final int INDEX_AS_ATTENDANCE_DATE_TIME = 1;
+    private static final Map<String, Runnable> options;
     private static final AttendanceManager attendanceManager = new AttendanceManager();
 
     static {
@@ -54,13 +56,14 @@ public class Application {
             String line;
             while((line = bufferedReader.readLine()) != null) {
                 String[] split = line.split(",");
-                Crew crew = new Crew(split[0]);
+                Crew crew = new Crew(split[INDEX_AS_CREW_NICKNAME]);
                 if (!attendanceManager.isCrewExists(crew)) {
                     attendanceManager.addCrew(crew);
                 }
                 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                LocalDate attendanceDate = LocalDate.parse(split[1], dateTimeFormatter);
-                LocalTime attendanceTime = LocalTime.parse(split[1], dateTimeFormatter);
+                String attendanceDateTime = split[INDEX_AS_ATTENDANCE_DATE_TIME];
+                LocalDate attendanceDate = LocalDate.parse(attendanceDateTime, dateTimeFormatter);
+                LocalTime attendanceTime = LocalTime.parse(attendanceDateTime, dateTimeFormatter);
                 attendanceManager.addAttendance(crew, attendanceDate, attendanceTime);
             }
         } catch (IOException e) {
