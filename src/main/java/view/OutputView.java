@@ -71,7 +71,8 @@ public class OutputView {
         StringBuilder stringBuilder = new StringBuilder();
         List<LocalDate> logDates = generateLogDates(runDate);
         for (LocalDate logDate : logDates) {
-            stringBuilder.append(formatCrewAttendanceLogStatus(attendanceLogDtos, logDate));
+            stringBuilder.append(formatCrewAttendanceLogStatus(attendanceLogDtos, logDate))
+                    .append(System.lineSeparator());
         }
         return stringBuilder.toString();
     }
@@ -117,8 +118,7 @@ public class OutputView {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(formatAttendanceLogDate(attendanceLogDto.attendanceDate()))
                 .append(formatAttendanceLogTime(attendanceLogDto.attendanceTime()))
-                .append(formatAttendanceLogStatus(attendanceLogDto.attendanceStatus()))
-                .append(System.lineSeparator());
+                .append(formatAttendanceLogStatus(attendanceLogDto.attendanceStatus()));
         return stringBuilder.toString();
     }
 
@@ -126,8 +126,7 @@ public class OutputView {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(formatAttendanceLogDate(logDate))
                 .append(" --:--")
-                .append(formatAttendanceLogStatus(AttendanceStatus.ABSENT))
-                .append(System.lineSeparator());
+                .append(formatAttendanceLogStatus(AttendanceStatus.ABSENT)) ;
         return stringBuilder.toString();
     }
 

@@ -2,6 +2,7 @@ package controller.menu;
 
 import domain.attendance.AttendanceBook;
 import domain.attendance.AttendanceLog;
+import exception.ExceptionHandler;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import view.InputView;
@@ -17,14 +18,28 @@ public class AttendanceEditController implements AttendanceMenuController {
 
     @Override
     public void run(LocalDate runDate) {
-        String crewName = InputView.readAttendanceEditCrewName();
-        attendanceBook.findCrew(crewName);
-
-        int editAttendDay = InputView.readAttendanceEditAttendDay();
-        LocalDate editDate = LocalDate.of(runDate.getYear(), runDate.getMonth(), editAttendDay);
-        LocalTime editTime = InputView.readAttendanceEditAttendTime();
+        String crewName = fetchAttendanceEditCrewName();
+        LocalDate editDate = fetchAttendanceEditAttendDate(runDate);
+        LocalTime editTime = fetchAttendanceEditAttendTime();
         AttendanceLog oldAttendanceLog = attendanceBook.findCrewAttendanceLog(crewName, editDate);
         AttendanceLog newAttendanceLog = attendanceBook.editCrewAttendanceLog(crewName, editDate, editTime);
         OutputView.printAttendanceEditLog(oldAttendanceLog.toDto(), newAttendanceLog.toDto());
+    }
+
+    private String fetchAttendanceEditCrewName() {
+        return ExceptionHandler.repeatUntilSuccess(() -> {
+            String crewName = InputView.readAttendanceEditCrewName();
+            attendanceBook.findCrew(crewName);
+            return crewName;
+        });
+    }
+
+    private LocalDate fetchAttendanceEditAttendDate(LocalDate runDate) {
+        int editAttendDay = ExceptionHandler.repeatUntilSuccess(InputView::readAttendanceEditAttendDay);
+        return LocalDate.of(runDate.getYear(), runDate.getMonth(), editAttendDay);
+    }
+
+    private LocalTime fetchAttendanceEditAttendTime() {
+        return ExceptionHandler.repeatUntilSuccess(InputView::readAttendanceEditAttendTime);
     }
 }

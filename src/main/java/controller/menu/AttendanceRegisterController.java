@@ -2,6 +2,7 @@ package controller.menu;
 
 import domain.attendance.AttendanceBook;
 import domain.attendance.AttendanceLog;
+import exception.ExceptionHandler;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -18,12 +19,22 @@ public class AttendanceRegisterController implements AttendanceMenuController {
 
     @Override
     public void run(LocalDate runDate) {
-        String crewName = InputView.readAttendanceRegisterCrewName();
-        attendanceBook.findCrew(crewName);
-
-        LocalTime attendTime = InputView.readAttendanceRegisterAttendTime();
+        String crewName = fetchAttendanceRegisterCrewName();
+        LocalTime attendTime = fetchAttendanceRegisterAttendTime();
         LocalDateTime attendDateTime = LocalDateTime.of(runDate, attendTime);
         AttendanceLog attendanceLog = attendanceBook.registerCrewAttendanceLog(crewName, attendDateTime);
         OutputView.printAttendanceRegisterLog(attendanceLog.toDto());
+    }
+
+    private String fetchAttendanceRegisterCrewName() {
+        return ExceptionHandler.repeatUntilSuccess(() -> {
+            String crewName = InputView.readAttendanceRegisterCrewName();
+            attendanceBook.findCrew(crewName);
+            return crewName;
+        });
+    }
+
+    private LocalTime fetchAttendanceRegisterAttendTime() {
+        return ExceptionHandler.repeatUntilSuccess(InputView::readAttendanceRegisterAttendTime);
     }
 }

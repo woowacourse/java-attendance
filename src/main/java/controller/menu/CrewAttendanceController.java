@@ -5,6 +5,7 @@ import domain.attendance.AttendanceLog;
 import domain.attendance.AttendanceResult;
 import dto.AttendanceLogDto;
 import dto.AttendanceResultDto;
+import exception.ExceptionHandler;
 import java.time.LocalDate;
 import java.util.List;
 import view.InputView;
@@ -20,9 +21,7 @@ public class CrewAttendanceController implements AttendanceMenuController {
 
     @Override
     public void run(LocalDate runDate) {
-        String crewName = InputView.readCrewAttendanceCrewName();
-        attendanceBook.findCrew(crewName);
-
+        String crewName = fetchCrewAttendanceCrewName();
         List<AttendanceLog> attendanceLogHistory = attendanceBook.findCrewAttendanceLogHistory(crewName, runDate);
         List<AttendanceLogDto> attendanceLogDtos = attendanceLogHistory.stream()
                 .map(AttendanceLog::toDto)
@@ -30,5 +29,13 @@ public class CrewAttendanceController implements AttendanceMenuController {
         AttendanceResult attendanceResult = attendanceBook.calculateCrewAttendanceResult(crewName, runDate);
         AttendanceResultDto attendanceResultDto = attendanceResult.toDto();
         OutputView.printCrewAttendance(crewName, attendanceLogDtos, attendanceResultDto, runDate);
+    }
+
+    private String fetchCrewAttendanceCrewName() {
+        return ExceptionHandler.repeatUntilSuccess(() -> {
+            String crewName = InputView.readCrewAttendanceCrewName();
+            attendanceBook.findCrew(crewName);
+            return crewName;
+        });
     }
 }
