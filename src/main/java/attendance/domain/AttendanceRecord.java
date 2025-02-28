@@ -1,23 +1,22 @@
 package attendance.domain;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class AttendanceRecord {
 
+    private final String nickname;
     private final List<Attendance> record;
 
-    public AttendanceRecord(final List<Attendance> record) {
+    public AttendanceRecord(final String nickname, final List<Attendance> record) {
+        this.nickname = nickname;
         this.record = record;
-    }
-
-    public List<Attendance> getRecordExcludingToday() {
-        return record.stream()
-                .filter(attendance -> !attendance.isSameDate(LocalDate.now()))
-                .toList();
     }
 
     public List<Attendance> getRecord() {
         return record;
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 }

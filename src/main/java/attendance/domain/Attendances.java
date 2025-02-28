@@ -39,13 +39,15 @@ public class Attendances {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
+    public List<Attendance> getAttendancesBefore(LocalDate today) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isBefore(today))
+                .toList();
+    }
+
     private void validateAlreadyAttendance(final Attendance before) {
         if (before.isNotDefaultTime()) {
             throw new IllegalArgumentException("[ERROR] 이미 출석이 등록되었습니다. 수정 기능을 이용 해주세요.");
         }
-    }
-
-    public AttendanceRecord getAttendanceRecord() {
-        return new AttendanceRecord(attendances);
     }
 }

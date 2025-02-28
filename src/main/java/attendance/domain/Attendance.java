@@ -28,6 +28,10 @@ public class Attendance {
         return !dateTime.toLocalTime().equals(LocalTime.MAX);
     }
 
+    public boolean isBefore(final LocalDate date) {
+        return dateTime.toLocalDate().isBefore(date);
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
