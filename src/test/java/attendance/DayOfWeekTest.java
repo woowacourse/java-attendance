@@ -99,4 +99,18 @@ public class DayOfWeekTest {
         LocalTime attendanceTime = LocalTime.of(23, 1);
         assertThatThrownBy(() -> MONDAY.decideAttendanceType(attendanceTime));
     }
+
+    @DisplayName("캠퍼스 운영시간인 08:00에 출석할 경우, 예외가 발생해서는 안 된다.")
+    @Test
+    void given_attendance_time_08_then_throw_exception() {
+        LocalTime attendanceTime = LocalTime.of(8, 0);
+        assertThatCode(() -> MONDAY.decideAttendanceType(attendanceTime)).doesNotThrowAnyException();
+    }
+
+    @DisplayName("캠퍼스 운영시간인 23:00에 출석할 경우, 예외가 발생해서는 안 된다.")
+    @Test
+    void given_attendance_time_23_then_throw_exception() {
+        LocalTime attendanceTime = LocalTime.of(23, 0);
+        assertThatCode(() -> MONDAY.decideAttendanceType(attendanceTime)).doesNotThrowAnyException();
+    }
 }
