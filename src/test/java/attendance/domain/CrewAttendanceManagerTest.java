@@ -34,8 +34,10 @@ class CrewAttendanceManagerTest {
         Attendance result = attendanceManager.processAttendanceCheck(nickname, checkDateTime);
 
         // then
-        assertThat(result.getDateTime())
-                .isEqualTo(checkDateTime);
+        assertAll(
+                () -> assertThat(result.getDateTime()).isEqualTo(checkDateTime),
+                () -> assertThat(result.getState()).isEqualTo(AttendanceState.ATTENDANCE)
+        );
     }
 
     @Test
@@ -43,7 +45,7 @@ class CrewAttendanceManagerTest {
     void 닉네임과_입력_일자와_시간으로_크루의_출석을_수정한다() {
         // given
         LocalDate nowDate = LocalDate.now();
-        LocalDateTime baseDateTime = LocalDateTime.of(nowDate, LocalTime.of(13, 0));
+        LocalDateTime baseDateTime = LocalDateTime.of(nowDate, LocalTime.of(18, 0));
 
         Attendance attendance = new Attendance(baseDateTime);
         Attendances attendances = new Attendances(List.of(attendance));
@@ -58,10 +60,11 @@ class CrewAttendanceManagerTest {
 
         // then
         assertAll(
-                () -> assertThat(result.beforeAttendance().getDateTime())
-                        .isEqualTo(baseDateTime),
-                () -> assertThat(result.afterAttendance().getDateTime())
-                        .isEqualTo(updateDateTime)
+                () -> assertThat(result.beforeAttendance().getDateTime()).isEqualTo(baseDateTime),
+                () -> assertThat(result.beforeAttendance().getState()).isEqualTo(AttendanceState.ABSENCE),
+
+                () -> assertThat(result.afterAttendance().getDateTime()).isEqualTo(updateDateTime),
+                () -> assertThat(result.afterAttendance().getState()).isEqualTo(AttendanceState.ATTENDANCE)
         );
     }
 
