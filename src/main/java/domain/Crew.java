@@ -28,6 +28,10 @@ public class Crew {
         return attendanceHistory;
     }
 
+    public boolean isSameName(String name) {
+        return this.name.equals(name);
+    }
+
     public void addAttendance(Attendance attendance) {
         if (isAlreadyAttendedDay(attendance)) {
             throw new IllegalArgumentException(ERROR_MESSAGE.ALREADY_ATTENDED.getMessage());
