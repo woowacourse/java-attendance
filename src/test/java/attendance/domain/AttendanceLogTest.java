@@ -38,13 +38,12 @@ public class AttendanceLogTest {
     @DisplayName(" 출석한다면 출석 기록에 더해진다")
     void testAttendanceWithNicknameAndTime() {
         //given && when
-        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 16, 13, 0));
-        attendanceLog.addAttendance(attendance);
+        Attendance attendance = attendanceLog.registerAttendance(LocalDateTime.of(2024, 12, 16, 13, 0));
         //then
         assertSoftly(softly -> {
-            softly.assertThat(attendanceLog.getAttendanceLog().getLast().getAttendanceDate()).isEqualTo(LocalDate.of(2024, 12, 16));
-            softly.assertThat(attendanceLog.getAttendanceLog().getLast().getAttendanceTime()).isEqualTo(LocalTime.of(13, 0));
-            softly.assertThat(attendanceLog.getAttendanceLog().getLast().getAttendanceStatus()).isEqualTo("출석");
+            softly.assertThat(attendance.getAttendanceDate()).isEqualTo(LocalDate.of(2024, 12, 16));
+            softly.assertThat(attendance.getAttendanceTime()).isEqualTo(LocalTime.of(13, 0));
+            softly.assertThat(attendance.getAttendanceStatus()).isEqualTo("출석");
         });
     }
 
