@@ -16,7 +16,6 @@ public enum MenuOption {
     EDIT_ATTENDANCE("2", new EditionOperator()),
     SHOW_CREW_ATTENDANCE("3", new CrewAttendanceOperator()),
     SHOW_EXPELLED_CREWS("4", new ExpelledCrewOperator()),
-//    QUIT("Q", null)
     QUIT("Q", new QuitOperator())
     ;
 
@@ -36,8 +35,6 @@ public enum MenuOption {
     }
 
     public void process(AttendanceBook attendanceBook, LocalDate attendanceDate) {
-        if (!this.equals(MenuOption.QUIT)) {
-            this.optionOperator.process(attendanceBook, attendanceDate);
-        }
+        this.optionOperator.process(attendanceBook, attendanceDate);
     }
 }

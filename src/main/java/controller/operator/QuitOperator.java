@@ -7,6 +7,6 @@ public class QuitOperator implements OptionOperator {
 
     @Override
     public void process(AttendanceBook attendanceBook, LocalDate attendanceDate) {
-
+        System.exit(0);
     }
 }
