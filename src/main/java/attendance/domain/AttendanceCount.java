@@ -48,15 +48,18 @@ public class AttendanceCount implements Comparable<AttendanceCount> {
     }
 
     public WarningLevel getWarningLevel() {
-        return WarningLevel.of(
-                attendances.getOrDefault(AttendanceStatus.LATE, 0),
-                attendances.getOrDefault(AttendanceStatus.ABSENT, 0)
-        );
+        return WarningLevel.from(calculateTotalAbsent());
     }
 
     @Override
     public int compareTo(AttendanceCount o) {
-        return 0;
+        return o.calculateTotalAbsent() - this.calculateTotalAbsent();
+    }
+
+    private int calculateTotalAbsent() {
+        int lateCount = attendances.getOrDefault(AttendanceStatus.LATE, 0);
+        int absentCount = attendances.getOrDefault(AttendanceStatus.ABSENT, 0);
+        return lateCount / 3 + absentCount;
     }
 
     @Override
