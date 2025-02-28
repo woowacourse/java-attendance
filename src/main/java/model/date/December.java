@@ -1,4 +1,4 @@
-package model;
+package model.date;
 
 import model.exception.HolidayAttendanceException;
 import java.time.DayOfWeek;

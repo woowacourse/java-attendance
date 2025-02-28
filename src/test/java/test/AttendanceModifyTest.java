@@ -3,12 +3,12 @@ package test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import model.December;
+import model.date.December;
 import model.exception.FutureAttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import model.Attendance;
-import model.AttendanceHistory;
+import model.attendance.Attendance;
+import model.attendance.AttendanceHistory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package model;
+package model.attendance;
 
 import java.util.Objects;
 

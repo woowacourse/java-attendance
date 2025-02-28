@@ -1,4 +1,4 @@
-package model;
+package model.admininstration;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import model.attendance.Crew;
 import model.exception.SystemException;
 
 public class Crews {

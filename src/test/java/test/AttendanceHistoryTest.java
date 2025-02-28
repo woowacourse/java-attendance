@@ -7,11 +7,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import model.Attendance;
-import model.AttendanceHistory;
-import model.AttendanceStatistic;
-import model.AttendanceStatus;
-import model.PenaltyStatus;
+import model.attendance.Attendance;
+import model.attendance.AttendanceHistory;
+import model.attendance.AttendanceStatistic;
+import model.attendance.AttendanceStatus;
+import model.attendance.PenaltyStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

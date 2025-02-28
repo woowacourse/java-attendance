@@ -1,4 +1,4 @@
-package model;
+package model.attendance;
 
 import common.Common;
 import java.time.DayOfWeek;

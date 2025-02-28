@@ -1,6 +1,7 @@
-package model;
+package model.attendance;
 
 import common.Common;
+import model.date.December;
 import model.exception.DuplicatedAttendanceRegistrationException;
 import java.time.LocalDate;
 import java.time.LocalTime;

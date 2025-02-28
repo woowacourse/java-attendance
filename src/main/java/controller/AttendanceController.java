@@ -10,17 +10,17 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import model.Attendance;
-import model.AttendanceBook;
-import model.AttendanceStatistic;
-import model.AttendanceStatistics;
-import model.AttendanceStatus;
-import model.ExistingAttendances;
-import model.AttendanceHistory;
-import model.Crew;
-import model.Crews;
-import model.December;
-import model.PenaltyStatus;
+import model.attendance.Attendance;
+import model.admininstration.AttendanceBook;
+import model.attendance.AttendanceStatistic;
+import model.admininstration.AttendanceStatistics;
+import model.attendance.AttendanceStatus;
+import model.file.PastAttendances;
+import model.attendance.AttendanceHistory;
+import model.attendance.Crew;
+import model.admininstration.Crews;
+import model.date.December;
+import model.attendance.PenaltyStatus;
 import model.exception.SystemException;
 import view.InputView;
 import view.OutputView;
@@ -39,10 +39,10 @@ public class AttendanceController {
     public void start() {
         try {
             List<String> rawCrewAttendanceData = readAttendanceFile();
-            ExistingAttendances existingAttendances = ExistingAttendances.from(rawCrewAttendanceData);
-            Crews crews = Crews.from(existingAttendances.findAllCrewNames());
+            PastAttendances pastAttendances = PastAttendances.from(rawCrewAttendanceData);
+            Crews crews = Crews.from(pastAttendances.findAllCrewNames());
             AttendanceBook attendanceBook = AttendanceBook.from(crews);
-            Map<Crew, List<LocalDateTime>> crewAttendanceData = crews.mapCrewWithNameIn(existingAttendances.getAttendances());
+            Map<Crew, List<LocalDateTime>> crewAttendanceData = crews.mapCrewWithNameIn(pastAttendances.getAttendances());
             attendanceBook.update(crewAttendanceData);
 
             boolean continueService = true;
@@ -56,20 +56,20 @@ public class AttendanceController {
 
     private boolean chooseAndDoService(AttendanceBook attendanceBook, Crews crews) {
         try {
-            Service serviceChoice = Service.findByValue(inputView.readFunctionChoice(now));
-            if (serviceChoice == Service.REGISTER) {
+            ServiceChoice serviceChoice = ServiceChoice.findByValue(inputView.readFunctionChoice(now));
+            if (serviceChoice == ServiceChoice.REGISTER) {
                 doRegisterService(attendanceBook, crews);
                 return true;
             }
-            if (serviceChoice == Service.MODIFY) {
+            if (serviceChoice == ServiceChoice.MODIFY) {
                 doModifyService(attendanceBook, crews);
                 return true;
             }
-            if (serviceChoice == Service.HISTORY) {
+            if (serviceChoice == ServiceChoice.HISTORY) {
                 doHistoryService(attendanceBook, crews);
                 return true;
             }
-            if (serviceChoice == Service.PENALTY) {
+            if (serviceChoice == ServiceChoice.PENALTY) {
                 doPenaltyService(attendanceBook);
                 return true;
             }
