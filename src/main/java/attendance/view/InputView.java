@@ -43,7 +43,7 @@ public class InputView {
         return Console.read();
     }
 
-    public int inputModifyDay() {
+    public int inputModifyDate() {
 
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         return Console.readInt();

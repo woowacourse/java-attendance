@@ -56,7 +56,7 @@ public class AttendanceController {
             addAttendance(attendanceBook);
         }
         if (function == Function.MODIFY_ATTENDANCE) {
-
+            modifyAttendance(attendanceBook);
         }
         if (function == Function.GET_CREW_ATTENDANCES) {
 
@@ -87,6 +87,7 @@ public class AttendanceController {
         attendanceBook.add(crewName, attendanceTime);
 
         outputView.printAttendance(attendanceTime);
+        outputView.printLine();
     }
 
     private void validateAlreadyAttended(final String crewName, final AttendanceBook attendanceBook) {
@@ -128,6 +129,46 @@ public class AttendanceController {
         if (!attendanceBook.isCrewExists(name)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
+    }
+
+    private void modifyAttendance(final AttendanceBook attendanceBook) {
+
+        final String crewName = inputModifyCrewName(attendanceBook);
+        final int modifyDate = inputModifyDate();
+        final AttendanceTime modifyTime = inputModifyTime(modifyDate);
+
+        AttendanceTime attendance = attendanceBook.getAttendance(crewName,
+                LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), modifyDate));
+
+        outputView.printAttendance(attendance);
+
+        attendance.modify(modifyTime.getHour(), modifyTime.getMinute());
+
+        outputView.printAfterAttendance(modifyTime);
+    }
+
+    private String inputModifyCrewName(final AttendanceBook attendanceBook) {
+
+        return retryInput(() -> {
+            String name = inputView.inputModifyCrewName();
+            validateCrewNickname(attendanceBook, name);
+            return name;
+        });
+    }
+
+    private int inputModifyDate() {
+
+        return retryInput(inputView::inputModifyDate);
+    }
+
+    private AttendanceTime inputModifyTime(final int date) {
+
+        return retryInput(() -> {
+            LocalDate now = LocalDate.now();
+            String[] split = inputView.inputModifyTime().split(":");
+            return new AttendanceTime(LocalDate.of(now.getYear(), now.getMonthValue(), date),
+                    Parser.parseInt(split[0]), Parser.parseInt(split[1]));
+        });
     }
 
     private <T> T retryInput(Supplier<T> supplier) {

@@ -19,6 +19,18 @@ public class OutputView {
         final int minute = attendanceTime.getMinute();
         final String status = AttendanceStatus.getAttendanceStatus(attendanceTime).getValue();
 
-        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)\n", year, date, day, hour, minute, status);
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)", year, date, day, hour, minute, status);
+    }
+
+    public void printAfterAttendance(final AttendanceTime attendanceTime) {
+
+        final int hour = attendanceTime.getHour();
+        final int minute = attendanceTime.getMinute();
+        final String status = AttendanceStatus.getAttendanceStatus(attendanceTime).getValue();
+        System.out.printf(" -> %02d:%02d (%s) 수정 완료!\n", hour, minute, status);
+    }
+
+    public void printLine() {
+        System.out.println();
     }
 }
