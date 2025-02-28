@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import service.AttendanceService;
@@ -38,7 +37,7 @@ public class AttendanceController {
             String nickname = InputView.askNickname(false);
             validateNicknameRegistered(nickname);
 
-            // LocalDateTime을 아예 View에서 파싱해서 넘겨주는 게 더 좋은 설계일까? 고민
+            // TODO: LocalDateTime을 아예 View에서 파싱해서 넘겨주는 게 더 좋은 설계일까? 고민
             LocalTime localTime = InputView.askAttendanceTime(false);
             LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(ZoneId.of("Asia/Seoul")), localTime);
 
@@ -69,7 +68,6 @@ public class AttendanceController {
         }
 
         if (featureType == FeatureType.CHECK_ATTENDANCE_OF_CREW) {
-            // 닉네임 입력 -> 등록 체크 -> 모든 출석 기록 출력 -> 출석/지각/결석 횟수 출력 -> 대상 패널티 출력
             int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
             String nickname = InputView.askNickname(false);
             validateNicknameRegistered(nickname);
@@ -79,9 +77,8 @@ public class AttendanceController {
         }
 
         if (featureType == FeatureType.CHECK_CREW_OF_BAN_RISK) {
-            // 등록된 모든 크루에 대해 기록 가져오기 -> 기록으로부터 AttendanceTypeCount 만들기 -> 대상 크루에 대해서 출석 횟수 및 패널티 정보 넘기기 및 정렬
             int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
-            Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = attendanceService.getAllAttendanceTypeCountOfCrew(13);
+            Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = attendanceService.getAllAttendanceTypeCountOfCrew(currentDay);
             OutputView.printCrewOfBanRisk(attendanceTypeCountOfCrew);
         }
     }

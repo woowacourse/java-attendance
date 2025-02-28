@@ -14,7 +14,6 @@ public class AttendanceFileReader {
         Scanner scanner = new Scanner(new File("src/main/resources/attendances.csv"));
         scanner.nextLine();
 
-        // 여기서부터 시작
         while (scanner.hasNext()) {
             String[] currentLines = scanner.nextLine().split(",");
             Crew crew = Crew.from(currentLines[0]);

@@ -40,6 +40,7 @@ public class AttendanceDateTime {
         if (Holiday.holidays.contains(dateTime.getDayOfMonth())) {
             return true;
         }
+
         return false;
     }
 
@@ -52,6 +53,7 @@ public class AttendanceDateTime {
         if (currentHour == 23 && currentMinute == 0) {
             return true;
         }
+
         return false;
     }
 
@@ -72,6 +74,7 @@ public class AttendanceDateTime {
         if (dateTime.getHour() == attendanceHourThreshold && dateTime.getMinute() <= 30) {
             return AttendanceType.LATE;
         }
+
         return AttendanceType.ABSENCE;
     }
 }

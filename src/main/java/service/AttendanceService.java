@@ -11,7 +11,6 @@ import dto.AttendanceStatusesOfCrewDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -106,7 +105,6 @@ public class AttendanceService {
     }
 
     public Map<Crew, Map<AttendanceType, Integer>> getAllAttendanceTypeCountOfCrew(int untilDay) {
-        // 모든 등록된 크루 리스트 가져오기 -> getHistoryEachDayOf()로 각 크루별로 히스토리 목록 가져오기 -> Map으로 AttendanceTypeCount 만들기
         Set<Crew> registeredCrews = attendanceStorage.getCrews();
         Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = new HashMap<>();
         for (Crew crew : registeredCrews) {
