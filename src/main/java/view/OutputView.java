@@ -92,9 +92,10 @@ public class OutputView {
         origin.entrySet().stream()
                 .sorted(Comparator.comparing((Map.Entry<Crew, AttendanceStatistic> entrySet) -> {
                             Map<AttendanceStatus, Integer> attendanceCount = entrySet.getValue().getAttendanceCount();
-                            int finalAbsenceCount = attendanceCount.get(AttendanceStatus.ABSENCE)
-                                    + (attendanceCount.get(AttendanceStatus.LATE) / 3); //TODO : 분리하기
-                            return finalAbsenceCount;
+                            return PenaltyStatus.calculateFinalAbsenceCount(
+                                    attendanceCount.get(AttendanceStatus.LATE),
+                                    attendanceCount.get(AttendanceStatus.ABSENCE)
+                            );
                         }).reversed()
                         .thenComparing((Map.Entry<Crew, AttendanceStatistic> entrySet) -> entrySet.getKey().getName())
                 )
