@@ -7,8 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AttendanceFileParser {
+import static attendance.controller.exception.FileException.CANT_READ_FILE_EXCEPTION;
 
+public class AttendanceFileParser {
 
     public static final String NEW_LINE = "\n";
     public static final String DELIMITER = ",";
@@ -19,7 +20,7 @@ public class AttendanceFileParser {
         Map<String, List<LocalDateTime>> crewAttendances = new HashMap<>();
         for (String line : splitByNewLine) {
             if(line.isBlank()) {
-                throw new IllegalArgumentException("파일이 정상적이지 않습니다.");
+                throw new IllegalArgumentException(CANT_READ_FILE_EXCEPTION);
             }
             String[] splitByDelimiter = line.split(DELIMITER);
             String nickname = splitByDelimiter[0];

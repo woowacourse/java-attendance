@@ -42,7 +42,6 @@ public class Crews {
 
     public Map<AbsenceRule, List<Crew>> findWarningExpulsionCrews() {
         Map<AbsenceRule, List<Crew>> warningExpulsionCrews = new EnumMap<>(AbsenceRule.class);
-
         initWarningExpulsionCrews(warningExpulsionCrews);
 
         for (Crew crew : crews) {
@@ -50,12 +49,11 @@ public class Crews {
                     .computeIfAbsent(crew.checkAbsenceRule(), k -> new ArrayList<>())
                     .add(crew);
         }
-
         warningExpulsionCrews.forEach((key, value) -> value.sort(Crew::compareTo));
         return warningExpulsionCrews;
     }
 
-    private static void initWarningExpulsionCrews(final Map<AbsenceRule, List<Crew>> warningExpulsionCrews) {
+    private void initWarningExpulsionCrews(final Map<AbsenceRule, List<Crew>> warningExpulsionCrews) {
         for (AbsenceRule absenceRule : AbsenceRule.values()) {
             warningExpulsionCrews.put(absenceRule, new ArrayList<>());
         }

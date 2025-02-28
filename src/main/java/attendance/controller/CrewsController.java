@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 public class CrewsController {
     private static final String ATTENDANCES_CSV = "src/main/resources/attendances.csv";
     private static final LocalDate today = LocalDate.of(2024, 12, 16);
+    public static final String QUIT = "Q";
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -36,7 +37,7 @@ public class CrewsController {
         while (true) {
             try {
                 String selectedCommand = inputView.selectCommand(today);
-                if (selectedCommand.equals("Q")) break;
+                if (selectedCommand.equals(QUIT)) break;
                 commandProcesses.get(Command.of(selectedCommand)).accept(crews);
             } catch (IllegalArgumentException e) {
                 outputView.printExceptionMessage(e);

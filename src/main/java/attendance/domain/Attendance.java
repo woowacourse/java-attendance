@@ -20,7 +20,7 @@ public class Attendance implements Comparable<Attendance> {
 
     public Attendance(final LocalDateTime dateTime) {
         Holiday.isHoliday(dateTime);
-        if(Objects.equals(LocalTime.from(dateTime), LocalTime.MIN)) {
+        if (Objects.equals(LocalTime.from(dateTime), LocalTime.MIN)) {
             this.dateTime = dateTime;
             this.status = AttendanceStatus.ABSENCE;
             return;
@@ -33,7 +33,7 @@ public class Attendance implements Comparable<Attendance> {
 
     public static int checkStartHour(final LocalDateTime attendanceDateTime) {
         int startHour = NOT_MONDAY_START_TIME;
-        if(attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
+        if (attendanceDateTime.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
             startHour = MONDAY_START_TIME;
         }
         return startHour;
@@ -57,7 +57,7 @@ public class Attendance implements Comparable<Attendance> {
 
     private void checkCampusOpen(final LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = LocalTime.from(attendanceDateTime);
-        if(attendanceTime.isBefore(OPEN_HOUR) || attendanceTime.isAfter(CLOSE_HOUR)) {
+        if (attendanceTime.isBefore(OPEN_HOUR) || attendanceTime.isAfter(CLOSE_HOUR)) {
             throw new IllegalArgumentException(NOT_OPEN_TIME_EXCEPTION);
         }
     }

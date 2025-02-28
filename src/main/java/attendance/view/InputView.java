@@ -8,63 +8,62 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
+import static attendance.view.InputMessage.*;
+
 public class InputView {
 
-    public static final String TIME_FORMAT = "[HH:mm][HH:m][H:mm][H:m]";
+    private static final String TIME_FORMAT = "[HH:mm][HH:m][H:mm][H:m]";
+
     Scanner scanner = new Scanner(System.in);
 
     public String selectCommand(LocalDate today) {
-        System.out.printf("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.\n",
+        System.out.printf(SELECT_COMMAND_TITLE,
                 today.getMonthValue(), today.getDayOfMonth(), today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
 
-        System.out.println("1. 출석 확인\n" +
-                "2. 출석 수정\n" +
-                "3. 크루별 출석 기록 확인\n" +
-                "4. 제적 위험자 확인\n" +
-                "Q. 종료");
+        System.out.println(SELECT_COMMAND_MENU);
         return scanner.nextLine().trim();
     }
 
     public String inputNickname() {
-        System.out.println("닉네임을 입력해 주세요.");
+        System.out.println(INPUT_NICKNAME);
         return scanner.nextLine().toLowerCase();
     }
 
     public LocalTime inputAttendanceTime() {
         try {
-            System.out.println("등교 시간을 입력해 주세요.");
+            System.out.println(INPUT_ATTENDANCE_TIME);
             String attendanceTimeInput = scanner.nextLine().trim();
 
             return formatTime(attendanceTimeInput);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("시간 형식으로 입력해주세요.");
+            throw new IllegalArgumentException(TIME_FORMAT_EXCEPTION);
         }
     }
 
     public String inputUpdateCrew() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        System.out.println(INPUT_UPDATE_NICKNAME);
         return scanner.nextLine().trim();
     }
 
     public int inputUpdateDate() {
         try {
-            System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+            System.out.println(INPUT_UPDATE_DATE);
             String updateDate = scanner.nextLine().trim();
 
             return Integer.parseInt(updateDate);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("정수로 입력해주세요.");
+            throw new IllegalArgumentException(INTEGER_EXCEPTION);
         }
     }
 
     public LocalTime inputUpdateAttendanceTime() {
         try{
-            System.out.println("언제로 변경하겠습니까?");
+            System.out.println(INPUT_UPDATE_ATTENDANCE_TIME);
             String updateTimeInput = scanner.nextLine().trim();
 
             return formatTime(updateTimeInput);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("시간 형식으로 입력해주세요.");
+            throw new IllegalArgumentException(TIME_FORMAT_EXCEPTION);
         }
     }
 

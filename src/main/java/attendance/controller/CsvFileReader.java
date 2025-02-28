@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import static attendance.controller.exception.FileException.CANT_READ_FILE_EXCEPTION;
+
 public class CsvFileReader {
     private static final String NEW_LINE = "\n";
 
@@ -21,7 +23,7 @@ public class CsvFileReader {
             }
             return sb.toString();
         } catch (IOException e) {
-            throw new IllegalArgumentException("파일을 읽을 수 없습니다.");
+            throw new IllegalArgumentException(CANT_READ_FILE_EXCEPTION);
         }
     }
 }
