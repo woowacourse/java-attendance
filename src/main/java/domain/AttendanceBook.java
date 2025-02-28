@@ -12,6 +12,10 @@ public class AttendanceBook {
         this.crews = convertNameToCrew(crews);
     }
 
+    public boolean has(String findNickname) {
+        return false;
+    }
+
     private void validate(List<String> crewNames) {
         List<String> distinctCrews = crewNames.stream().distinct().toList();
         if (distinctCrews.size() != crewNames.size()) {
@@ -24,4 +28,6 @@ public class AttendanceBook {
                 .map(crewName -> new Crew(crewName))
                 .collect(Collectors.toSet());
     }
+
+
 }

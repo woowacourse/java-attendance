@@ -12,4 +12,18 @@ public class AttendanceBookTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("중복된 닉네임의 크루는 존재할 수 없습니다");
     }
+
+    @DisplayName("해당 닉네임의 크루가 존재하는지 확인한다")
+    @Test
+    void test2() {
+        // given
+        AttendanceBook attendanceBook = new AttendanceBook(List.of("수양", "빙봉", "쿠키"));
+        String findNickname = "수양";
+
+        // when
+        boolean isContain = attendanceBook.has(findNickname);
+
+        // then
+        Assertions.assertThat(isContain).isTrue();
+    }
 }
