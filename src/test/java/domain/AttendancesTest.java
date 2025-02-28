@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AttendancesTest {
 
@@ -139,5 +140,18 @@ class AttendancesTest {
         Attendance log = attendances.findLogWithNameAndDate(nickname, updateDateTime.toLocalDate());
 
         assertThat(log.getLocalDateTime().toLocalTime()).isEqualTo(LocalTime.of(10, 0));
+    }
+
+    @Test
+    void 공휴일에_출석을_시도하면_예외를_발생시킨다() {
+        String nickname = "짱수";
+
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2025, 2, 11, 10, 0);
+        int month = attendanceDateTime.getMonthValue();
+        int dayOfMonth = attendanceDateTime.getDayOfMonth();
+
+        assertThatThrownBy(() -> attendances.addAttendanceLog(nickname, attendanceDateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] " + month + "월 " + dayOfMonth + "일은 공휴일입니다.");
     }
 }

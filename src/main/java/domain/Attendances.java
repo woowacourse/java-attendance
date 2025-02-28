@@ -15,6 +15,7 @@ public class Attendances {
     }
 
     public void addAttendanceLog(String nickname, LocalDateTime localDateTime) {
+        validateHoliday(localDateTime.toLocalDate());
         if (!attendances.containsKey(nickname)) {
             List<Attendance> logs = new ArrayList<>();
             logs.add(new Attendance(localDateTime));
@@ -70,5 +71,11 @@ public class Attendances {
 
     public List<String> getCrewNames() {
         return attendances.keySet().stream().toList();
+    }
+
+    private void validateHoliday(LocalDate date) {
+        if (Holiday.check(date)) {
+            throw new IllegalArgumentException("[ERROR] " + date.getMonthValue() + "월 " + date.getDayOfMonth() + "일은 공휴일입니다.");
+        }
     }
 }
