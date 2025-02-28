@@ -6,7 +6,6 @@ import controller.dto.RiskCrewsRequest;
 import controller.dto.SaveAttendanceRequest;
 import domain.AttendanceRecord;
 import domain.AttendanceStatus;
-import domain.CampusTime;
 import domain.Crew;
 import domain.LectureTime;
 import domain.RiskRank;
@@ -25,14 +24,11 @@ import service.dto.MonthAttendanceStatisticsResponse;
 import service.dto.RiskCrew;
 import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
-import util.DateTimeUtil;
 
 public class AttendanceService {
 
     public SaveAttendanceRecordResponse saveAttendanceRecord(SaveAttendanceRequest request) {
         validateCrew(request.nickname());
-        validateOffDay(request.date());
-        validateCampusTime(request.time());
 
         AttendanceRecordRepository.add(
                 new AttendanceRecord(request.nickname(), request.date(), request.time(),
@@ -44,8 +40,6 @@ public class AttendanceService {
 
     public ModifyAttendanceRecordResponse modifyAttendanceRecord(ModifyAttendanceRequest request) {
         validateCrew(request.nickname());
-        validateOffDay(request.date());
-        validateCampusTime(request.time());
         validateSameAttendanceRecordExists(request.nickname(), request.date(), request.time());
 
         TimeStatus before = getTimeStatus(request.nickname(), request.date());
@@ -151,18 +145,6 @@ public class AttendanceService {
         }
     }
 
-    private void validateOffDay(LocalDate date) {
-        if (DateTimeUtil.isWeekend(date)
-                || DateTimeUtil.isHoliday(date)) {
-            throw new IllegalArgumentException(date + ": 주말 및 공휴일에는 출석을 기록할 수 없습니다.");
-        }
-    }
-
-    private void validateCampusTime(LocalTime time) {
-        if (!DateTimeUtil.isInRange(CampusTime.OPEN_TIME, CampusTime.CLOSE_TIME, time)) {
-            throw new IllegalArgumentException(time + ": 캠퍼스 운영시간이 아닙니다.");
-        }
-    }
 
     private void validateSameAttendanceRecordExists(String nickname, LocalDate date, LocalTime time) {
         if (AttendanceRecordRepository.exists(nickname, date, time)) {
