@@ -25,9 +25,7 @@ public class AttendanceBook {
 
     private Set<Crew> convertNameToCrew(List<String> crewNames) {
         return crewNames.stream()
-                .map(crewName -> new Crew(crewName))
+                .map(Crew::new)
                 .collect(Collectors.toSet());
     }
-
-
 }
