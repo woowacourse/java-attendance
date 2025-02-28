@@ -2,11 +2,12 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
     private final Map<LocalDate, LocalTime> attendanceBook;
@@ -17,8 +18,8 @@ public class AttendanceBook {
         attendanceBook = new HashMap<>();
     }
 
-    public LocalDateTime getAttendanceDateTimeByDate(LocalDate date) {
-        return LocalDateTime.of(date, attendanceBook.get(date));
+    public LocalTime getAttendanceTimeByDate(LocalDate date) {
+        return attendanceBook.get(date);
     }
 
     public void attendance(LocalDate date, LocalTime time) {
@@ -98,5 +99,22 @@ public class AttendanceBook {
 
     private static boolean isWeekend(DayOfWeek day) {
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
+    }
+
+    public AttendanceStatus getAttendanceStatus(LocalDate today) {
+        LocalTime dateTime = getAttendanceTimeByDate(today);
+        return AttendanceStatus.getAttendanceStatus(today, dateTime);
+    }
+
+    public Map<LocalDate, LocalTime> getAttendanceBook() {
+        return Collections.unmodifiableMap(attendanceBook);
+    }
+
+    public Map<LocalDate, AttendanceStatus> getAttendanceStatuses() {
+        return attendanceBook.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> AttendanceStatus.getAttendanceStatus(entry.getKey(), entry.getValue())
+                ));
     }
 }

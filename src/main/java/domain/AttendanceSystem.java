@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,12 +25,12 @@ public class AttendanceSystem {
     }
 
 
-    public LocalDateTime getAttendanceRecord(String name, LocalDate date) {
-        return attendanceBooks.get(name).getAttendanceDateTimeByDate(date);
+    public LocalTime getAttendanceRecord(String name, LocalDate date) {
+        return attendanceBooks.get(name).getAttendanceTimeByDate(date);
     }
 
-    public LocalDateTime getAttendanceRecordToday(String name) {
-        return attendanceBooks.get(name).getAttendanceDateTimeByDate(TODAY);
+    public LocalTime getAttendanceRecordToday(String name) {
+        return attendanceBooks.get(name).getAttendanceTimeByDate(TODAY);
     }
 
     public void editAttendance(String name, LocalDate date, LocalTime time) {
