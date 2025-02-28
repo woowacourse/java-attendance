@@ -24,7 +24,7 @@ public class AttendanceControllerTest {
         @DisplayName("1번 기능을 선택할 수 있다.")
         void selectFunction1() {
             String input = "1";
-            Runnable action = controller.selectFunction(input);
+            Runnable action = controller.selectFeature(input);
 
             assertThat(action).isInstanceOf(Runnable.class);
         }
@@ -33,7 +33,7 @@ public class AttendanceControllerTest {
         @DisplayName("2번 기능을 선택할 수 있다.")
         void selectFunction2() {
             String input = "2";
-            Runnable action = controller.selectFunction(input);
+            Runnable action = controller.selectFeature(input);
 
             assertThat(action).isInstanceOf(Runnable.class);
         }
@@ -42,7 +42,7 @@ public class AttendanceControllerTest {
         @DisplayName("3번 기능을 선택할 수 있다.")
         void selectFunction3() {
             String input = "3";
-            Runnable action = controller.selectFunction(input);
+            Runnable action = controller.selectFeature(input);
 
             assertThat(action).isInstanceOf(Runnable.class);
         }
@@ -51,7 +51,7 @@ public class AttendanceControllerTest {
         @DisplayName("4번 기능을 선택할 수 있다.")
         void selectFunction4() {
             String input = "4";
-            Runnable action = controller.selectFunction(input);
+            Runnable action = controller.selectFeature(input);
 
             assertThat(action).isInstanceOf(Runnable.class);
         }
@@ -60,7 +60,7 @@ public class AttendanceControllerTest {
         @DisplayName("제공되지 않는 기능을 선택할 수 없다.")
         void selectNotFunction() {
             String input = "9";
-            assertThatThrownBy(() -> controller.selectFunction(input));
+            assertThatThrownBy(() -> controller.selectFeature(input));
         }
     }
 }

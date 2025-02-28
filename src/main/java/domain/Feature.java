@@ -11,24 +11,28 @@ public enum Feature {
 
     private static final String NOT_PROVIDED_ERROR_MESSAGE = "제공하지 않는 기능입니다.";
 
-    private final String functionNumber;
-    private final String functionName;
+    public final String number;
+    public final String name;
 
-    Feature(String functionNumber, String functionName) {
-        this.functionNumber = functionNumber;
-        this.functionName = functionName;
+    Feature(String number, String name) {
+        this.number = number;
+        this.name = name;
     }
 
     public static Feature of(String input) {
         return Arrays.stream(values())
-            .filter(feature -> feature.functionNumber.equals(input))
+            .filter(feature -> feature.number.equals(input))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException(NOT_PROVIDED_ERROR_MESSAGE));
     }
 
+    public static boolean isExit(String input) {
+        return input.equals(EXIT.number);
+    }
+
     public static void validateProvided(String input) {
         Arrays.stream(values())
-            .filter(feature -> feature.functionNumber.equals(input))
+            .filter(feature -> feature.number.equals(input))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException(NOT_PROVIDED_ERROR_MESSAGE));
     }

@@ -28,33 +28,48 @@ public class AttendanceController {
     }
 
     public void start() {
-
+        handleException(() -> executeFeature());
     }
 
     protected void attendanceCheck() {
         // TODO: 출석 확인 구현
+        System.out.println("출석 확인 기능");
     }
 
     protected void attendanceEdit() {
         // TODO: 출석 수정 구현
+        System.out.println("출석 수정 기능");
     }
 
     protected void crewRecordsCheck() {
         // TODO: 크루별 출석 기록 확인 구현
+        System.out.println("크루별 출석 기록 확인 기능");
     }
 
     protected void expelledWarningCheck() {
         // TODO: 제적 위험자 확인 구현
+        System.out.println("제적 위험자 확인 기능");
     }
 
-    protected Runnable selectFunction(String functionNumber) {
-        Map<Feature, Runnable> functions = Map.of(
+    protected Runnable selectFeature(String featureNumber) {
+        Map<Feature, Runnable> features = Map.of(
             ATTENDANCE_CHECK, this::attendanceCheck,
             ATTENDANCE_EDIT, this::attendanceEdit,
-            CREW_RECORDS_CHECK, this:: crewRecordsCheck,
+            CREW_RECORDS_CHECK, this::crewRecordsCheck,
             EXPELLED_WARNING_CHECK, this::expelledWarningCheck
         );
-        return null;
+
+        Feature.validateProvided(featureNumber);
+        return features.get(Feature.of(featureNumber));
+    }
+
+    private void executeFeature() {
+        String featureNumber = inputView.readFeature();
+        while (!Feature.isExit(featureNumber)) {
+            Runnable action = selectFeature(featureNumber);
+            action.run();
+            featureNumber = inputView.readFeature();
+        }
     }
 
     private void handleException(Runnable action) {
@@ -62,6 +77,7 @@ public class AttendanceController {
             action.run();
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e);
+            start();
         }
     }
 }
