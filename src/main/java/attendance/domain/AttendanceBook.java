@@ -20,7 +20,9 @@ public class AttendanceBook {
 
     //2. 출석수정
     public List<Attendance> modifyAttendance(Crew crew, LocalDateTime newALocalDateTime) {
-        return null;
+        validateCrewExistance(crew);
+        AttendanceLog attendanceLog = attendanceRecord.get(crew);
+        return attendanceLog.modifyAttendanceRecord(newALocalDateTime);
     }
 
     //3. 출석 확인
