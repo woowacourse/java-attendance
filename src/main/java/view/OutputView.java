@@ -65,7 +65,7 @@ public class OutputView {
     private String makeAttendanceLog(Attendance attendance) {
         LocalDateTime dateTime = attendance.getDateTime();
         AttendanceStatus attendanceStatus = attendance.calculateAttendanceStatus();
-        return String.format("12월 %02d일 %s %s (%s)\n", dateTime.getDayOfMonth(),
+        return String.format("12월 %02d일 %s %s (%s)", dateTime.getDayOfMonth(),
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
                 getTimePrintForm(dateTime),
                 attendanceStatus.getKorean());
@@ -111,7 +111,7 @@ public class OutputView {
                     if (absentCount == info.absentCount) {
                         return nickname.compareTo(info.nickname);
                     }
-                    return absentCount - info.absentCount;
+                    return info.absentCount - absentCount;
                 }
                 return (info.lateCount + info.absentCount) - (lateCount + absentCount);
             }
