@@ -41,7 +41,7 @@ public class AttendanceTest {
         // when
         // then
         Assertions.assertThatThrownBy(() -> attendanceBook.check(nickname, date, time))
-                        .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("출석하면 출석 기록을 찾을 수 있다.")
@@ -57,5 +57,19 @@ public class AttendanceTest {
         // then
         Assertions.assertThat(find)
                 .isEqualTo(attendance);
+    }
+
+    @DisplayName("없는 출석 기록을 찾을 수 없다.")
+    @Test
+    void find_attendance_exception() {
+        // given
+        Attendance attendance = new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 3));
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendance));
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(
+                        () -> attendanceBook.findAttendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
