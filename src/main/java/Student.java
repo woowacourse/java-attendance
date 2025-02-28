@@ -1,55 +1,52 @@
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public class Student {
-    String name;
-    AttendanceTimeRecord attendanceTimeRecord;
-    AttendanceStatusRecord attendanceStatusRecord;
-    AttendanceStatusCount attendanceStatusCount;
+    final String name;
+    final AttendanceTimeRecord attendanceTimeRecord;
+    final AttendanceStatusRecord attendanceStatusRecord;
+    final AttendanceStatusCount attendanceStatusCount;
 
-    public void registerAttendanceRecord(LocalDate todayDate, String attendanceTime) {
+    public Student(String name, List<LocalDateTime> localDateTime) {
+        this.attendanceStatusRecord = new AttendanceStatusRecord(localDateTime);
+        this.attendanceTimeRecord = new AttendanceTimeRecord(localDateTime);
+        this.attendanceStatusCount = new AttendanceStatusCount();
+        this.name = name;
+    }
+
+    public void registerAttendanceRecord(LocalDate todayDate, LocalTime attendanceTime) {
         validateDuplicateAttendance(todayDate);
-        attendanceTimeRecord.attendanceTimeRecords.put(todayDate, LocalTime.parse(attendanceTime));
+        attendanceTimeRecord.registerAttendanceTimeRecord(todayDate,attendanceTime);
         AttendanceStatus attendanceStatus = AttendanceStatus.attendanceStatusCalculate(todayDate, attendanceTime);
-        attendanceStatusRecord.attendanceStatusRecords.put(todayDate, attendanceStatus);
+        attendanceStatusRecord.registerAttendanceStatusRecord(todayDate, attendanceStatus);
     }
 
-    public void modifyAttendanceRecord(String modifyDate, String modifyTime) {
+    public void modifyAttendanceRecord(String modifyDate, LocalTime modifyTime) {
         LocalDate localDate = LocalDate.of(2024,12,Integer.parseInt(modifyDate));
-        attendanceTimeRecord.attendanceTimeRecords.put(localDate, LocalTime.parse(modifyTime));
+        attendanceTimeRecord.modifyAttendanceTimeRecord(localDate, modifyTime);
         AttendanceStatus attendanceStatus = AttendanceStatus.attendanceStatusCalculate(localDate, modifyTime);
-        attendanceStatusRecord.attendanceStatusRecords.put(localDate, attendanceStatus);
-    }
-
-    public void updateAttendanceCount() {
-        long attendanceCount = findAttendanceStatusCount(AttendanceStatus.ATTENDANCE);
-        long lateCount = findAttendanceStatusCount(AttendanceStatus.LATE);
-        long absentCount = findAttendanceStatusCount(AttendanceStatus.ABSENT);
-
-        attendanceStatusCount.attendanceStatusCount.put(AttendanceStatus.ATTENDANCE, attendanceCount);
-        attendanceStatusCount.attendanceStatusCount.put(AttendanceStatus.LATE, lateCount);
-        attendanceStatusCount.attendanceStatusCount.put(AttendanceStatus.ABSENT, absentCount);
+        attendanceStatusRecord.modifyAttendanceStatusRecord(localDate, attendanceStatus);
     }
 
     public long convertTardiesToAbsence() {
-        return findAttendanceStatusCount(AttendanceStatus.LATE)/3;
-    }
-
-    private long findAttendanceStatusCount(AttendanceStatus attendanceStatus){
-        return attendanceStatusRecord.attendanceStatusRecords.entrySet().stream()
-                .filter(record -> record.getValue().equals(attendanceStatus))
-                .count();
+        return attendanceStatusRecord.findAttendanceStatusCount(AttendanceStatus.LATE)/3;
     }
 
     public void nonAttendanceRecordStatusIsAbsent(LocalDate today) {
-        if (attendanceTimeRecord.attendanceTimeRecords.get(today) == null){
-            attendanceTimeRecord.attendanceTimeRecords.put(today, null);
-            attendanceStatusRecord.attendanceStatusRecords.put(today, AttendanceStatus.ABSENT);
+        if (attendanceTimeRecord.checkAttendanceRecordByLocalDate(today)){
+            attendanceTimeRecord.putNullLocalTime(today);
+            attendanceStatusRecord.putAttendanceStateToAbsent(today);
         }
     }
 
+    public void updateAttendanceCount() {
+        attendanceStatusCount.updateAttendanceCount(attendanceStatusRecord);
+    }
+
     private void validateDuplicateAttendance(LocalDate today){
-        if (attendanceTimeRecord.attendanceTimeRecords.get(today) != null){
+        if (attendanceTimeRecord.checkAttendanceRecordByLocalDate(today)){
             throw new IllegalArgumentException("[ERROR] 출석기록이 존재합니다.");
         }
     }
