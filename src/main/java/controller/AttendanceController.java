@@ -23,6 +23,7 @@ public class AttendanceController {
 
     private void checkIn() {
         String nickname = inputView.readCheckInNickname();
+        String time = inputView.readCheckInTime();
     }
 
     private void validateMenu(String input) {

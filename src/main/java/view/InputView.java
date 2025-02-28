@@ -27,7 +27,7 @@ public class InputView {
     }
 
     public String readCheckInTime() {
-        System.out.println("등교 시간을 입력해 주세요." + System.lineSeparator());
+        System.out.println("등교 시간을 입력해 주세요.");
         String input = scanner.nextLine();
         validateTime(input);
         return input;
