@@ -20,7 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class AttendanceCheckerTest {
+class AttendanceTypeCheckerTest {
 
     static final LocalDate SATURDAY = LocalDate.of(2025, 2, 8);
     static final LocalDate SUNDAY = LocalDate.of(2025, 2, 9);
@@ -37,7 +37,7 @@ class AttendanceCheckerTest {
     static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
 
     HolidayChecker holidayChecker = new HolidayChecker();
-    AttendanceChecker attendanceChecker = new AttendanceChecker(holidayChecker);
+    AttendanceTypeChecker attendanceTypeChecker = new AttendanceTypeChecker(holidayChecker);
 
     @BeforeEach
     void beforeEach() {
@@ -51,7 +51,7 @@ class AttendanceCheckerTest {
             LocalDateTime arrivalDateTime,
             AttendanceType expectedType
     ) {
-        AttendanceType actualType = attendanceChecker.checkAttendance(arrivalDateTime);
+        AttendanceType actualType = attendanceTypeChecker.check(arrivalDateTime);
         assertThat(actualType).isEqualTo(expectedType);
     }
 
@@ -74,7 +74,7 @@ class AttendanceCheckerTest {
             LocalDateTime arrivalDateTime,
             AttendanceType expectedType
     ) {
-        AttendanceType actualType = attendanceChecker.checkAttendance(arrivalDateTime);
+        AttendanceType actualType = attendanceTypeChecker.check(arrivalDateTime);
         assertThat(actualType).isEqualTo(expectedType);
     }
 
@@ -100,7 +100,7 @@ class AttendanceCheckerTest {
         LocalDateTime holidayDateTime = LocalDateTime.of(holiday, LocalTime.of(8, 50));
 
         String expectedMessage = makeHolidayAttendanceExceptionMessage(holiday);
-        assertThatThrownBy(() -> attendanceChecker.checkAttendance(holidayDateTime))
+        assertThatThrownBy(() -> attendanceTypeChecker.check(holidayDateTime))
                 .isInstanceOf(AttendanceException.class)
                 .hasMessage(expectedMessage);
     }
@@ -119,7 +119,7 @@ class AttendanceCheckerTest {
     void 캠퍼스_운영시간이_아닌_경우_예외를_발생시킨다(LocalTime time) {
         LocalDateTime dateTime = LocalDateTime.of(MONDAY, time);
 
-        assertThatThrownBy(() -> attendanceChecker.checkAttendance(dateTime))
+        assertThatThrownBy(() -> attendanceTypeChecker.check(dateTime))
                 .isInstanceOf(AttendanceException.class)
                 .hasMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
     }
@@ -136,7 +136,7 @@ class AttendanceCheckerTest {
     @DisplayName("해당 연도의 월 내에 등교일을 구할 수 있다")
     @Test
     void 해당_연도의_월_내에_등교일을_구할_수_있다() {
-        List<LocalDate> notHoliday = attendanceChecker.calculateNotHolidayInMonth(2025, Month.FEBRUARY);
+        List<LocalDate> notHoliday = attendanceTypeChecker.calculateNotHolidayInMonth(2025, Month.FEBRUARY);
         assertThat(notHoliday)
                 .extracting(LocalDate::getDayOfMonth)
                 .containsExactly(3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 17, 18, 19, 20, 21, 25, 26, 27, 28);

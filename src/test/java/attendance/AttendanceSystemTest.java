@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.domain.AttendanceSystem;
-import attendance.domain.checker.AttendanceChecker;
 import attendance.domain.checker.AttendanceType;
+import attendance.domain.checker.AttendanceTypeChecker;
 import attendance.domain.checker.HolidayChecker;
 import attendance.domain.crew.CrewStorage;
 import attendance.domain.record.AttendanceRecord;
@@ -50,9 +50,9 @@ class AttendanceSystemTest {
 
     CrewStorage crewStorage = new CrewStorage();
     HolidayChecker holidayChecker = new HolidayChecker();
-    AttendanceChecker attendanceChecker = new AttendanceChecker(holidayChecker);
+    AttendanceTypeChecker attendanceTypeChecker = new AttendanceTypeChecker(holidayChecker);
     AttendanceRecordStorage recordStorage = new AttendanceRecordStorage();
-    AttendanceSystem attendanceSystem = new AttendanceSystem(crewStorage, attendanceChecker, recordStorage);
+    AttendanceSystem attendanceSystem = new AttendanceSystem(crewStorage, attendanceTypeChecker, recordStorage);
 
     @BeforeEach
     void beforeEach() {

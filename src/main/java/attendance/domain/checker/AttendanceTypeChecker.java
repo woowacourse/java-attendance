@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class AttendanceChecker {
+public class AttendanceTypeChecker {
 
     private final static LocalTime MONDAY_EDUCATION_START_TIME = LocalTime.of(13, 0, 0);
     private final static LocalTime NOT_MONDAY_EDUCATION_START_TIME = LocalTime.of(10, 0, 0);
     private final HolidayChecker holidayChecker;
 
-    public AttendanceChecker(HolidayChecker holidayChecker) {
+    public AttendanceTypeChecker(HolidayChecker holidayChecker) {
         this.holidayChecker = holidayChecker;
     }
 
-    public AttendanceType checkAttendance(LocalDateTime arrivalDatetime) {
+    public AttendanceType check(LocalDateTime arrivalDatetime) {
         holidayChecker.validateNotHoliday(arrivalDatetime.toLocalDate());
         CampusTime.validateCampusTime(arrivalDatetime.toLocalTime());
         if (arrivalDatetime.getDayOfWeek() == DayOfWeek.MONDAY) {

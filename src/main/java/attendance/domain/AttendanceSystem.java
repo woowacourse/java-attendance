@@ -1,7 +1,7 @@
 package attendance.domain;
 
-import attendance.domain.checker.AttendanceChecker;
 import attendance.domain.checker.AttendanceType;
+import attendance.domain.checker.AttendanceTypeChecker;
 import attendance.domain.crew.CrewStorage;
 import attendance.domain.record.AttendanceRecord;
 import attendance.domain.record.AttendanceRecordStorage;
@@ -17,16 +17,16 @@ import java.util.List;
 public class AttendanceSystem {
 
     private final CrewStorage crewStorage;
-    private final AttendanceChecker attendanceChecker;
+    private final AttendanceTypeChecker attendanceTypeChecker;
     private final AttendanceRecordStorage recordStorage;
 
     public AttendanceSystem(
             CrewStorage crewStorage,
-            AttendanceChecker attendanceChecker,
+            AttendanceTypeChecker attendanceTypeChecker,
             AttendanceRecordStorage recordStorage
     ) {
         this.crewStorage = crewStorage;
-        this.attendanceChecker = attendanceChecker;
+        this.attendanceTypeChecker = attendanceTypeChecker;
         this.recordStorage = recordStorage;
     }
 
@@ -79,7 +79,7 @@ public class AttendanceSystem {
     }
 
     private AttendanceRecord makeNewAttendance(String nickname, LocalDateTime arrivalDateTime) {
-        AttendanceType attendanceType = attendanceChecker.checkAttendance(arrivalDateTime);
+        AttendanceType attendanceType = attendanceTypeChecker.check(arrivalDateTime);
         return new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
     }
 
@@ -89,6 +89,6 @@ public class AttendanceSystem {
     }
 
     private List<LocalDate> calculateNotHoliday(int year, Month month) {
-        return attendanceChecker.calculateNotHolidayInMonth(year, month);
+        return attendanceTypeChecker.calculateNotHolidayInMonth(year, month);
     }
 }
