@@ -1,5 +1,6 @@
 package domain;
 
+import domain.attendance.Attendance;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;

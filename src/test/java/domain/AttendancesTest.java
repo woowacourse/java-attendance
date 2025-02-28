@@ -1,5 +1,7 @@
 package domain;
 
+import domain.attendance.Attendance;
+import domain.attendance.Attendances;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.assertj.core.api.Assertions;
@@ -11,9 +13,9 @@ class AttendancesTest {
     @Test
     void test() {
         // given
-        LocalDateTime day = LocalDateTime.of(2025, 02, 27, 10, 0);
+        LocalDateTime day = LocalDateTime.of(2025, 2, 27, 10, 0);
         Attendance day1 = new Attendance(day);
-        Attendance day2 = new Attendance(day.minusDays(1));
+        Attendance day2 = new Attendance(day.plusDays(1));
         Attendances attendances = new Attendances(List.of(day1, day2));
 
         // when
