@@ -13,8 +13,8 @@ public enum Holidays {
         this.date = date;
     }
 
-    public static Boolean isHoliday(LocalDate date) {
+    public static Boolean isNotHoliday(LocalDate date) {
         return Arrays.stream(Holidays.values())
-                .anyMatch(holiday -> holiday.date.equals(date));
+                .noneMatch(holiday -> holiday.date.equals(date));
     }
 }

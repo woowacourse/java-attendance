@@ -10,22 +10,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HolidaysTest {
     @Test
-    @DisplayName("일치하는 공휴일이 있으면 true를 정상적으로 반환")
-    void isHolidayTrueTest() {
+    @DisplayName("일치하는 공휴일이 있으면 false를 정상적으로 반환")
+    void isNotHolidayTrueTest() {
         //given
         LocalDate date = LocalDate.of(2024, 12, 25);
         //when
         //then
-        assertTrue(Holidays.isHoliday(date));
+        assertFalse(Holidays.isNotHoliday(date));
     }
 
     @Test
-    @DisplayName("일치하는 공휴일이 없으면 false를 정상적으로 반환")
-    void isHolidayFalseTest() {
+    @DisplayName("일치하는 공휴일이 없으면 true를 정상적으로 반환")
+    void isNotHolidayFalseTest() {
         //given
         LocalDate date = LocalDate.of(2024, 12, 26);
         //when
         //then
-        assertFalse(Holidays.isHoliday(date));
+        assertTrue(Holidays.isNotHoliday(date));
     }
 }

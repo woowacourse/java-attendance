@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public class CheckInDate implements Comparable<CheckInDate> {
@@ -15,6 +16,10 @@ public class CheckInDate implements Comparable<CheckInDate> {
 
     public static CheckInDate of(int year, int month, int day) {
         return of(LocalDate.of(year, month, day));
+    }
+
+    public static boolean isNotWeekend(LocalDate date) {
+        return !(date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY);
     }
 
     @Override
