@@ -1,5 +1,6 @@
 package domain;
 
+import domain.policy.AttendanceStateRule;
 import domain.policy.attend.AttendancePolicy;
 import domain.policy.attend.date.AttendanceDatePolicy;
 import domain.policy.attend.time.AttendanceTimePolicy;
@@ -92,5 +93,25 @@ class AttendancesTest {
         assertThatThrownBy(() -> attendances.findByDate(attendanceDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("해당 날짜에 출석 기록이 없습니다.");
+    }
+
+    @Test
+    @DisplayName("출석 카운트를 계산할 수 있다.")
+    void canCalculateAttendanceCounts() {
+        // given
+        Attendances attendances = Attendances.initialize();
+        AttendanceDate attendanceDate = AttendanceDate.of(LocalDate.of(2024, 12, 12), attendancePolicy);
+        AttendanceTime attendanceTime = AttendanceTime.of(LocalTime.of(10, 0), attendancePolicy);
+        Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
+
+        attendances.add(attendance);
+
+        // when
+        AttendanceCounts attendanceCounts = attendances.calculateAttendanceCounts(Nickname.from("강산"), attendancePolicy);
+
+        // then
+        assertThat(attendanceCounts.getCount(AttendanceStateRule.ATTEND)).isEqualTo(1);
+        assertThat(attendanceCounts.getCount(AttendanceStateRule.LATE)).isEqualTo(0);
+        assertThat(attendanceCounts.getCount(AttendanceStateRule.ABSENT)).isEqualTo(8); // 12 - 1(출석) - 3(주말) = 8
     }
 }
