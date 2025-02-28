@@ -17,9 +17,13 @@ public enum Penalty {
 
     public static Penalty getPenaltyOf(Integer point) {
         return Arrays.stream(values())
-                .filter(penalty -> penalty.point < point)
+                .filter(penalty -> penalty.point <= point)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Integer getPoint() {
+        return point;
     }
 
     public String getName() {

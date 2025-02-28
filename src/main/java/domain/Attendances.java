@@ -62,4 +62,8 @@ public class Attendances {
         Integer penaltyPoint = getAbsentCount() + getLateCount() / LATE_COUNT_FOR_ABSENCE;
         return Penalty.getPenaltyOf(penaltyPoint);
     }
+
+    public List<Attendance> getAttendances() {
+        return attendances;
+    }
 }

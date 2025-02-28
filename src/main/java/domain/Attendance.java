@@ -65,6 +65,10 @@ public class Attendance {
         updateStatus();
     }
 
+    public Day getDay() {
+        return day;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

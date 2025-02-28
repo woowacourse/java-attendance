@@ -13,6 +13,14 @@ public class Day {
         this.date = date;
     }
 
+    public static Day of(Integer dayOfMonth) {
+        return new Day(LocalDate.of(2025, 2, dayOfMonth));
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
     private void validateDate(LocalDate date) {
         if (isWeekend(date) || isHoliday(date)) {
             throw new IllegalStateException("[ERROR] 등교일이 아닙니다.");
