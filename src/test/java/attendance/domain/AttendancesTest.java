@@ -88,7 +88,7 @@ class AttendancesTest {
         );
 
         // when
-        List<Attendance> result = attendances.getAttendancesBefore(LocalDate.now());
+        List<Attendance> result = attendances.getAttendancesBefore(nowDate);
 
         // then
         Assertions.assertThat(result)
