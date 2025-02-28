@@ -9,16 +9,16 @@ import java.util.function.BiPredicate;
 
 public enum AttendanceStatus {
     ATTEND("출석", (arrivalTime, startTime) -> {
-        Duration duration = Duration.between(arrivalTime, startTime);
-        return duration.isZero() || duration.isNegative() && duration.abs().toMinutes() <= 5;
+        Duration duration = Duration.between(startTime, arrivalTime);
+        return duration.isZero() || duration.isNegative() || duration.toMinutes() <= 5;
     }),
     LATE("지각", (arrivalTime, startTime) -> {
-        Duration duration = Duration.between(arrivalTime, startTime);
-        return duration.isNegative() && duration.abs().toMinutes() > 5 && duration.abs().toMinutes() <= 30;
+        Duration duration = Duration.between(startTime, arrivalTime);
+        return !duration.isNegative() && duration.toMinutes() > 5 && duration.toMinutes() <= 30;
     }),
     ABSENT("결석", (arrivalTime, startTime) -> {
-        Duration duration = Duration.between(arrivalTime, startTime);
-        return duration.isNegative() && duration.abs().toMinutes() > 30;
+        Duration duration = Duration.between(startTime, arrivalTime);
+        return !duration.isNegative() && duration.toMinutes() > 30;
     });
 
     private final String status;
