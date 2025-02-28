@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,13 +30,13 @@ class AttendanceTest {
             //then
             assertAll(
                     () -> assertThat(result.getAttendDate()).isEqualTo(LocalDate.of(2024, 12, 20)),
-                    () -> assertThat(result.getAttendTime().getAttendTime()).isEqualTo(LocalTime.of(10, 5)),
+                    () -> assertThat(result.getAttendTime().getAttendTime()).isEqualTo(Optional.of(LocalTime.of(10, 5))),
                     () -> assertThat(result.getStatus()).isEqualTo(AttendanceStatus.출석)
             );
         }
         
         @Test
-        void 노쇼한_경우_시간은_null이다() {
+        void 노쇼한_경우_시간은_비어있다() {
             //given
             var date = LocalDate.of(2024, 12, 20);
             
@@ -43,7 +44,7 @@ class AttendanceTest {
             var result = Attendance.noShow(date);
             
             //then
-            assertThat(result.getAttendTime().getAttendTime()).isNull();
+            assertThat(result.getAttendTime().getAttendTime()).isEmpty();
         }
         
         @Test

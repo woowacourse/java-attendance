@@ -1,5 +1,9 @@
 package domain;
 
+import domain.attendancetime.AttendanceTime;
+import domain.attendancetime.NoShowAttendanceTime;
+import domain.attendancetime.ShowAttendanceTime;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -40,7 +44,7 @@ public class Attendance {
     public static Attendance of(final LocalDate attendDate, final LocalTime attendTime) {
         return new Attendance(
                 attendDate,
-                AttendanceTime.from(attendTime),
+                new ShowAttendanceTime(attendTime),
                 AttendanceStatus.of(attendDate.getDayOfWeek(), attendTime)
         );
     }
@@ -48,7 +52,7 @@ public class Attendance {
     public static Attendance noShow(LocalDate noShowDate) {
         return new Attendance(
                 noShowDate,
-                AttendanceTime.noShow(),
+                new NoShowAttendanceTime(),
                 AttendanceStatus.결석
         );
     }

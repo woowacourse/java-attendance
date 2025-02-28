@@ -43,6 +43,18 @@ public class OutputView {
         writer.writeLine(output);
     }
     
+    public void outputAttendanceModifyResult(
+            final LocalDate date,
+            final LocalTime newTime,
+            final AttendanceStatus newStatus
+    ) {
+        String output = "\n%s --:-- (결석) -> %s 수정 완료\n".formatted(
+                parseDate(date),
+                parseTimeAndStatus(newTime, newStatus)
+        );
+        writer.writeLine(output);
+    }
+    
     public void outputAttendanceRecords(
             final String nickname,
             final Set<Attendance> attendanceResponses,
@@ -119,7 +131,7 @@ public class OutputView {
                 .sorted(Comparator.comparing(Attendance::getAttendDate))
                 .map(attendance -> parseDateTimeStatus(
                         attendance.getAttendDate(),
-                        attendance.getAttendTime().getAttendTime(),
+                        attendance.getAttendTime().getAttendTime().get(),
                         attendance.getStatus()))
                 .reduce((s1, s2) -> s1 + "\n" + s2)
                 .orElse("");

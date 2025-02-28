@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,7 @@ public class AttendanceBook {
         crewAttendances.get(nickname).attend(date, time);
     }
     
-    public AttendanceTime getAttendanceTimeOf(final String nickname, final LocalDate date) {
+    public Optional<LocalTime> getAttendanceTimeOf(final String nickname, final LocalDate date) {
         validateNicknameExist(nickname);
         
         return crewAttendances.get(nickname).getAttendanceTimeOf(date);

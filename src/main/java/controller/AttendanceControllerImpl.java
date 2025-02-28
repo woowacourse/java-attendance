@@ -71,7 +71,11 @@ public class AttendanceControllerImpl implements AttendanceController {
         attendanceBook.modify(nickname, targetDate, newTime);
         var newStatus = attendanceBook.getAttendanceStatusOf(nickname, targetDate);
         
-        outputView.outputAttendanceModifyResult(targetDate, oldTime.getAttendTime(), oldStatus, newTime, newStatus);
+        if (oldTime.isEmpty()) {
+            outputView.outputAttendanceModifyResult(targetDate, newTime, newStatus);
+            return;
+        }
+        outputView.outputAttendanceModifyResult(targetDate, oldTime.get(), oldStatus, newTime, newStatus);
     }
     
     private static void handleFindAttendanceRecord(

@@ -1,5 +1,6 @@
-package domain;
+package domain.attendancetime;
 
+import domain.Attendance;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -7,11 +8,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class AttendanceTimeTest {
+class ShowAttendanceTimeTest {
     
     @Nested
     class 생성_테스트 {
@@ -22,21 +24,10 @@ class AttendanceTimeTest {
             var time = LocalTime.of(10, 5);
             
             //when
-            var result = AttendanceTime.from(time);
+            var result = new ShowAttendanceTime(time);
             
             //then
-            assertThat(result.getAttendTime()).isEqualTo(LocalTime.of(10, 5));
-        }
-        
-        @Test
-        void 노쇼한_경우_시간은_null이다() {
-            //given
-            
-            //when
-            var result = AttendanceTime.noShow();
-            
-            //then
-            assertThat(result.getAttendTime()).isNull();
+            assertThat(result.getAttendTime()).isEqualTo(Optional.of(LocalTime.of(10, 5)));
         }
         
         @ParameterizedTest

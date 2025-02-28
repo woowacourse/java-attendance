@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -244,7 +245,8 @@ class CrewAttendanceTest {
             var attendance = getAttendanceOf(targetDate);
             assertAll(
                     () -> assertThat(attendance.getAttendDate()).isEqualTo(LocalDate.of(2024, 12, 5)),
-                    () -> assertThat(attendance.getAttendTime().getAttendTime()).isEqualTo(LocalTime.of(9, 45)),
+                    () -> assertThat(attendance.getAttendTime().getAttendTime())
+                            .isEqualTo(Optional.of(LocalTime.of(9, 45))),
                     () -> assertThat(attendance.getStatus()).isEqualTo(AttendanceStatus.출석)
             );
         }
@@ -262,7 +264,8 @@ class CrewAttendanceTest {
             var attendance = getAttendanceOf(targetDate);
             assertAll(
                     () -> assertThat(attendance.getAttendDate()).isEqualTo(LocalDate.of(2024, 12, 5)),
-                    () -> assertThat(attendance.getAttendTime().getAttendTime()).isEqualTo(LocalTime.of(9, 45)),
+                    () -> assertThat(attendance.getAttendTime().getAttendTime())
+                            .isEqualTo(Optional.of(LocalTime.of(9, 45))),
                     () -> assertThat(attendance.getStatus()).isEqualTo(AttendanceStatus.출석)
             );
         }

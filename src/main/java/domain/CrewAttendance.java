@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -56,11 +57,10 @@ public class CrewAttendance {
         return attendances.get(date).getStatus();
     }
     
-    
-    public AttendanceTime getAttendanceTimeOf(final LocalDate date) {
+    public Optional<LocalTime> getAttendanceTimeOf(final LocalDate date) {
         validateIsAttendedDay(date);
         
-        return attendances.get(date).getAttendTime();
+        return attendances.get(date).getAttendTime().getAttendTime();
     }
     
     private void validateIsAttendedDay(final LocalDate date) {

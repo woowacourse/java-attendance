@@ -1,15 +1,16 @@
-package domain;
+package domain.attendancetime;
 
 import java.time.LocalTime;
+import java.util.Optional;
 
-public class AttendanceTime {
+public class ShowAttendanceTime implements AttendanceTime {
     
     private static final LocalTime CAMPUS_OPEN_TIME = LocalTime.of(8, 0);
     private static final LocalTime CAMPUS_CLOSE_TIME = LocalTime.of(23, 0);
     
     private final LocalTime attendTime;
     
-    private AttendanceTime(final LocalTime attendTime) {
+    public ShowAttendanceTime(final LocalTime attendTime) {
         validateCampusOpen(attendTime);
         this.attendTime = attendTime;
     }
@@ -24,15 +25,8 @@ public class AttendanceTime {
         return !time.isBefore(CAMPUS_OPEN_TIME) && !time.isAfter(CAMPUS_CLOSE_TIME);
     }
     
-    public static AttendanceTime noShow() {
-        return new AttendanceTime(null);
-    }
-    
-    public static AttendanceTime from(LocalTime time) {
-        return new AttendanceTime(time);
-    }
-    
-    public LocalTime getAttendTime() {
-        return attendTime;
+    @Override
+    public Optional<LocalTime> getAttendTime() {
+        return Optional.of(attendTime);
     }
 }
