@@ -23,78 +23,10 @@ import org.junit.jupiter.api.Test;
 
 public class AttendanceRegisterTest {
 
-//    @DisplayName("파일에서 크루 이름과 출석 데이터를 읽어온다.")
-//    @Test
-//    void test0() {
-//        //given
-//        String crewInput = """
-//                쿠키,2024-12-13 10:08
-//                빙봉,2024-12-13 10:07
-//                이든,2024-12-13 10:07
-//                이든,2024-12-12 10:06
-//                """;
-//
-//        //when
-//        List<String> crewNames = AttendanceInitializer.readCrewAndAttendanceData(crewInput);
-//
-//        //then
-//        assertThat(crewNames).containsAll(Arrays.asList(
-//                "쿠키,2024-12-13 10:08",
-//                "빙봉,2024-12-13 10:07",
-//                "이든,2024-12-13 10:07",
-//                "이든,2024-12-12 10:06"
-//        ));
-//    }
-
-    /**
-     * attendance파일에서 중복없는 크루이름을 빼오는 걸 Crews가 담당해서 필요없어짐
-     */
-//    @DisplayName("중복 없이 크루 이름을 읽어온다.")
-//    @Test
-//    void test1() {
-//        //given
-//        List<String> combinedData = List.of(
-//                "쿠키,2024-12-13 10:08",
-//                "빙봉,2024-12-13 10:07",
-//                "이든,2024-12-13 10:07",
-//                "빙봉,2024-12-12 11:11",
-//                "빙티,2024-12-12 10:07",
-//                "이든,2024-12-12 10:06",
-//                "이든,2024-12-11 10:10"
-//        );
-//
-//        //when
-//        List<String> crewNames = ExistingAttendances.extractUniqueCrewData(combinedData);
-//
-//        //then
-//        assertThat(crewNames).containsExactly("쿠키", "빙봉", "이든", "빙티");
-//    }
-
-    /**
-     * test3과 통합된 기능
-     */
-//    @DisplayName("닉네임을 바탕으로 크루 객체를 생성한다.")
-//    @Test
-//    void test2() {
-//        //given
-//        List<String> crewNames = List.of("쿠키", "빙봉", "빙티", "이든");
-//
-//        //when
-//        List<Crew> crews = CrewGenerator.registerCrew(crewNames);
-//
-//        //then
-//        assertThat(crews).containsAll(Arrays.asList(
-//                new Crew("쿠키"),
-//                new Crew("빙봉"),
-//                new Crew("빙티"),
-//                new Crew("이든")
-//        ));
-//    }
     @DisplayName("크루 객체들을 포장한 객체를 생성한다.")
     @Test
     void test3() {
         //given
-//        List<String> crewNames = List.of("쿠키", "빙봉", "빙티", "이든");
         List<String> combinedData = List.of(
                 "쿠키", "빙봉", "이든", "빙봉", "빙티", "이든", "이든"
         );
@@ -108,7 +40,7 @@ public class AttendanceRegisterTest {
                 new Crew("빙봉"),
                 new Crew("빙티"),
                 new Crew("이든")
-        ))); //TODO : isSameAs로 하면 안됨
+        )));
     }
 
     @DisplayName("입력한 닉네임에 맞는 크루 정보를 가져온다.")
@@ -130,18 +62,6 @@ public class AttendanceRegisterTest {
         assertThat(crew.get()).isEqualTo(new Crew(name));
     }
 
-    /**
-     * test5_1과 통합된 기능
-     */
-//    @DisplayName("크루 이름과 날짜 객체를 입력하면 날짜와 시간을 읽어서 LocalTime 객체를 반환한다.")
-//    @Test
-//    void test5() {
-//        String combinedData = "쿠키,2024-12-13 10:08";
-//
-//        LocalDateTime attendanceTime = AttendanceInitializer.parseAttendanceFrom(combinedData);
-//
-//        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 8));
-//    }
     @DisplayName("크루 객체 별로 출석 객체를 빈 객체로 초기화한다.")
     @Test
     void test5_0() {
@@ -159,6 +79,7 @@ public class AttendanceRegisterTest {
     }
 
     /**
+     * Disabled
      * private으로 전환
      */
 //    @DisplayName("크루 이름과 날짜 객체를 입력하면 날짜와 시간을 읽어서 Attendance 객체를 반환한다.")
@@ -176,8 +97,6 @@ public class AttendanceRegisterTest {
     @DisplayName("새로운 출석 객체를 입력하면 크루에 맞는 출석 객체를 갱신한다.")
     @Test
     void test5_2() {
-        Crew crew = new Crew("빙티");
-
         //when
         AttendanceHistory attendanceHistoryOfCrew = new AttendanceHistory();
         Attendance attendance = attendanceHistoryOfCrew.register(LocalDate.of(2024, 12, 13),
@@ -185,7 +104,6 @@ public class AttendanceRegisterTest {
 
         assertThat(attendance).isEqualTo(new Attendance(LocalDate.of(2024, 12, 13),
                 LocalTime.of(10, 10)));
-        //findByDate도 하면 좋을듯
     }
 
     @DisplayName("출석 기록을 읽어서 Attendances 객체의 필드를 갱신한다.")
@@ -215,37 +133,10 @@ public class AttendanceRegisterTest {
         assertThat(attendanceHistory1.findByDate(LocalDate.of(2024, 12, 13)))
                 .isEqualTo(new Attendance(LocalDate.of(2024, 12, 13), LocalTime.of(10, 8)));
 
-        AttendanceHistory attendanceHistory2 = attendanceBook.findByCrew(crew2); //TODO: 테스트위해 만들어벌임.. 근데 무조건 만들어야하는 메서드임
+        AttendanceHistory attendanceHistory2 = attendanceBook.findByCrew(crew2);
         assertThat(attendanceHistory2.findByDate(LocalDate.of(2024, 12, 12)))
                 .isEqualTo(new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(11, 11)));
     }
-
-//    @DisplayName("입력한 날짜에 해당하는 출석 기록이 있는지 확인한다.")
-//    @Test
-//    void test5() {
-//        //given
-//        Crew crew = new Crew("빙티");
-//        LocalDate date = LocalDate.of(2024, 12, 13);
-//        LocalTime time = LocalTime.of(10, 0);
-//        AttendanceAdministrator.registerAttendance(crew, date, time); //관심사가 2개임
-//
-//        //when
-//        Optional<Attendance> attendance = AttendanceAdministrator.findAttendanceByCrewAndDate(crew, date);
-//
-//        //then
-//        assertThat()
-//
-//    }
-
-//    @DisplayName("오늘 날짜와 입력한 시간에 맞는 출석 객체를 등록한다.")
-//    @Test
-//    void test5() {
-//        //given
-//        Crew crew = new Crew("빙티");
-//
-//        Attendance attendance = new Attendance(); //이미 출석했는지 확인해야 함
-//
-//    }
 
     @DisplayName("날짜와 시간을 입력하면 이에 맞는 출석 상태를 반환한다.")
     @Test
