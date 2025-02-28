@@ -13,14 +13,18 @@ public class AttendanceStatusChecker {
     public static final LocalTime MONDAY_ACCEPTABLE_ATTENDANCE_TIME = LocalTime.of(13, 0);
     public static final int ATTENDANCE_DEADLINE_MINUTE = 5;
     public static final int LATE_DEADLINE_MINUTE = 30;
+    public static final int LATE_COUNT_PER_ABSENT = 3;
+
 
     public enum AttendanceStatus {
         ATTENDANCE,
         LATE,
-        ABSENT
+        ABSENT;
     }
-
     public static AttendanceStatus checkStatus(AttendanceDateTime attendanceDateTime) {
+        if (attendanceDateTime.getLocalDateTime().toLocalTime().equals(AttendanceDateTime.ABSENT_TIME)) {
+            return AttendanceStatus.ABSENT;
+        }
         if (attendanceDateTime.calculateDayOfWeek().equals(DayOfWeek.MONDAY)) {
             int minuteDifference = attendanceDateTime.calculateMinuteDifference(MONDAY_ACCEPTABLE_ATTENDANCE_TIME);
             return findAttendanceStatusByMinuteDifference(minuteDifference);
@@ -44,5 +48,12 @@ public class AttendanceStatusChecker {
                 .map(AttendanceStatusChecker::checkStatus)
                 .collect(Collectors.groupingBy(attendanceStatus -> attendanceStatus, Collectors.counting()));
         return attendanceStatuses;
+    }
+
+    public static long calculateAllAbsent(List<AttendanceDateTime> attendanceDateTimes) {
+        Map<AttendanceStatus, Long> attendanceStatuses = checkStatuses(attendanceDateTimes);
+        long absentCount = attendanceStatuses.get(AttendanceStatus.ABSENT);
+        absentCount += attendanceStatuses.get(AttendanceStatus.LATE) / LATE_COUNT_PER_ABSENT;
+        return absentCount;
     }
 }
