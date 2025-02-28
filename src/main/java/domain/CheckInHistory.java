@@ -3,7 +3,6 @@ package domain;
 import exception.AppException;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.TreeMap;
 
 public class CheckInHistory {
@@ -44,30 +43,22 @@ public class CheckInHistory {
     }
 
     public int countPresence(LocalDate now) {
-        int presenceCount = 0;
-        for (CheckInDate checkInDate : history.keySet()) {
-            if (checkInDate.getCheckInDate().isBefore(now)) {
-                LocalTime classStartTime = ClassTime.getClassStartTime(checkInDate.getCheckInDate());
-                CheckInTime checkInTime = history.get(checkInDate);
-                AttendanceStatus status = AttendanceStatus.determineAttendanceStatus(classStartTime, checkInTime.getCheckInTime());
-                if (status == AttendanceStatus.PRESENCE)
-                    presenceCount++;
-            }
-        }
-        return presenceCount;
+        return countSomeStatus(now, AttendanceStatus.PRESENCE);
     }
 
-    public int getLateCount(LocalDate now) {
-        int lateCount = 0;
-        for (CheckInDate checkInDate : history.keySet()) {
-            if (checkInDate.getCheckInDate().isBefore(now)) {
-                LocalTime classStartTime = ClassTime.getClassStartTime(checkInDate.getCheckInDate());
-                CheckInTime checkInTime = history.get(checkInDate);
-                AttendanceStatus status = AttendanceStatus.determineAttendanceStatus(classStartTime, checkInTime.getCheckInTime());
-                if (status == AttendanceStatus.LATE)
-                    lateCount++;
-            }
-        }
-        return lateCount;
+    public int countLate(LocalDate now) {
+        return countSomeStatus(now, AttendanceStatus.LATE);
     }
+
+    public int countSomeStatus(LocalDate now, AttendanceStatus status) {
+        return (int) history.entrySet().stream()
+                .filter(entry -> entry.getKey().getCheckInDate().isBefore(now))
+                .map(entry -> AttendanceStatus.determineAttendanceStatus(
+                        ClassTime.getClassStartTime(entry.getKey().getCheckInDate()),
+                        entry.getValue().getCheckInTime()
+                ))
+                .filter(determinedStatus -> determinedStatus == status)
+                .count();
+    }
+
 }
