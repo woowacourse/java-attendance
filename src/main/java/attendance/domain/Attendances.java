@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static attendance.domain.exception.AttendancesExceptionMessage.ALREADY_EXIST_ATTENDANCE;
+
 public class Attendances {
+    private static final int FIRST_DAY = 1;
 
     private final List<Attendance> attendances;
 
@@ -18,7 +21,7 @@ public class Attendances {
     public Attendance add(final Attendance attendanceInput) {
         for (Attendance attendance : attendances) {
             if(attendance.isEqualAttendanceDate(attendanceInput)) {
-                throw new IllegalArgumentException("해당 날짜에 이미 출석이 존재합니다. 출석 수정 기능을 이용해주세요.");
+                throw new IllegalArgumentException(ALREADY_EXIST_ATTENDANCE);
             }
         }
         attendances.add(attendanceInput);
@@ -30,7 +33,7 @@ public class Attendances {
     }
 
     public void fillAbsentAttendances(LocalDate today) {
-        for(LocalDate date = LocalDate.of(today.getYear(), today.getMonth(), 1); date.isBefore(today); date = date.plusDays(1)) {
+        for(LocalDate date = LocalDate.of(today.getYear(), today.getMonth(), FIRST_DAY); date.isBefore(today); date = date.plusDays(FIRST_DAY)) {
             if(!isExistAttendanceByDate(date) && !Holiday.checkHoliday(date.atStartOfDay())) {
                 add(new Attendance(LocalDateTime.of(date, LocalTime.MIN)));
             }

@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 public class Crew implements Comparable<Crew> {
+    private static final int LATE_TO_ABSENCE_UNIT = 3;
 
     private final String nickname;
     private final Attendances attendances;
@@ -37,12 +38,11 @@ public class Crew implements Comparable<Crew> {
         return updatedAttendance;
     }
 
-
     public Attendance findAttendanceByDate(final LocalDate date) {
         return attendances.getAttendances().stream()
                 .filter(attendance -> attendance.isEqualDate(date))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 날짜의 출석이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_UPDATE_ATTENDANCE));
     }
 
     public long countAttendanceStatus(final AttendanceStatus status) {

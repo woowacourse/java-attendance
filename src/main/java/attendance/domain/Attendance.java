@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
+import static attendance.domain.exception.AttendanceExceptionMessage.NOT_OPEN_TIME_EXCEPTION;
+
 public class Attendance implements Comparable<Attendance> {
 
     private static final LocalTime OPEN_HOUR = LocalTime.of(8, 0);
@@ -56,7 +58,7 @@ public class Attendance implements Comparable<Attendance> {
     private void checkCampusOpen(final LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = LocalTime.from(attendanceDateTime);
         if(attendanceTime.isBefore(OPEN_HOUR) || attendanceTime.isAfter(CLOSE_HOUR)) {
-            throw new IllegalArgumentException("캠퍼스 운영 시간은 8:00 ~ 23:00입니다.");
+            throw new IllegalArgumentException(NOT_OPEN_TIME_EXCEPTION);
         }
     }
 

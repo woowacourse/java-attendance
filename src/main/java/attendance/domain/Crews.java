@@ -1,9 +1,9 @@
 package attendance.domain;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
+
+import static attendance.domain.exception.CrewsExceptionMessage.ALREADY_EXIST_CREW;
+import static attendance.domain.exception.CrewsExceptionMessage.NOT_EXIST_NICKNAME;
 
 public class Crews {
 
@@ -21,7 +21,7 @@ public class Crews {
         crews.stream().filter(crew -> crew.isEqualCrew(nickname))
                 .findAny()
                 .ifPresent(crew -> {
-                    throw new IllegalArgumentException("이미 존재하는 크루입니다.");
+                    throw new IllegalArgumentException(ALREADY_EXIST_CREW);
                 });
 
         Crew crew = new Crew(nickname);
@@ -37,21 +37,7 @@ public class Crews {
         return crews.stream()
                 .filter(crew -> crew.isEqualCrew(nickname))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
-    }
-
-    public List<Attendance> getCrewAttendancesUtilYesterday(final LocalDate today, final String nickname) {
-        List<Attendance> crewAttendances = findCrewAttendanceByNickname(nickname);
-        List<Attendance> attendancesUtilYesterday = new ArrayList<>();
-
-        LocalDate date = today.withDayOfMonth(1);
-        while (date.isBefore(today)) {
-            if (!Holiday.checkHoliday(date.atStartOfDay())) {
-                attendancesUtilYesterday.add(findAttendanceForDate(crewAttendances, date));
-            }
-            date = date.plusDays(1);
-        }
-        return attendancesUtilYesterday;
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_NICKNAME));
     }
 
     public Map<AbsenceRule, List<Crew>> findWarningExpulsionCrews() {
@@ -67,13 +53,6 @@ public class Crews {
 
         warningExpulsionCrews.forEach((key, value) -> value.sort(Crew::compareTo));
         return warningExpulsionCrews;
-    }
-
-    private Attendance findAttendanceForDate(final List<Attendance> crewAttendances, final LocalDate date) {
-        return crewAttendances.stream()
-                .filter(crewAttendance -> crewAttendance.isEqualDate(date))
-                .findFirst()
-                .orElseGet(() -> new Attendance(LocalDateTime.of(date, LocalTime.MIN)));
     }
 
     private static void initWarningExpulsionCrews(final Map<AbsenceRule, List<Crew>> warningExpulsionCrews) {

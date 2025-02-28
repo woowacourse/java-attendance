@@ -4,13 +4,15 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static attendance.domain.exception.HolidayExceptionMessage.NOT_OPEN_DATE_EXCEPTION;
+
 public class Holiday {
     private static final List<DayOfWeek> WEEKEND = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
     private static final int CHRISTMAS = 25;
 
     public static void isHoliday(final LocalDateTime attendanceDateTime) {
         if (checkHoliday(attendanceDateTime)) {
-            throw new IllegalArgumentException("등교일이 아닙니다.");
+            throw new IllegalArgumentException(NOT_OPEN_DATE_EXCEPTION);
         }
     }
 
