@@ -35,7 +35,7 @@ public class AttendanceBook {
         attendances.add(attendance);
     }
 
-    public AttendanceStatus getAttendanceStatus(Attendance attendance) {
-        return null;
+    public Attendance findByCrewNameAndLocalDate(String crewName, LocalDate localDate) {
+        return attendances.findByCrewNameAndLocalDate(crewName, localDate);
     }
 }

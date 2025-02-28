@@ -52,4 +52,8 @@ public class Attendance {
     public int hashCode() {
         return Objects.hash(crewName, attendanceTime.getLocalDate());
     }
+
+    public Time getAttendTime() {
+        return attendanceTime;
+    }
 }
