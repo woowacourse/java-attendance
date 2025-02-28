@@ -21,5 +21,8 @@ public class Attendance {
                 dateTime.getDayOfWeek().compareTo(DayOfWeek.FRIDAY) >= 1) {
             throw new IllegalArgumentException("주말 또는 공휴일에는 출석할 수 없습니다");
         }
+//        if () {
+//            throw new IllegalArgumentException("캠퍼스 운영 시간에만 출석할 수 있습니다");
+//        }
     }
 }
