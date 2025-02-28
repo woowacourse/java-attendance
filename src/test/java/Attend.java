@@ -1,4 +1,5 @@
 import domain.AttendStatus;
+import domain.OperationTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -9,6 +10,7 @@ public class Attend {
     private final LocalTime time;
 
     public Attend(final LocalDate date, final LocalTime time) {
+        OperationTime.checkIsOperationDate(date);
         this.date = date;
         this.time = time;
     }

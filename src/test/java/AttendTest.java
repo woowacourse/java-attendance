@@ -4,6 +4,7 @@ import domain.AttendStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -73,5 +74,14 @@ public class AttendTest {
         boolean actual = attend.equalsDate(anotherAttend);
         //then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"2024-12-01", "2024-12-25"})
+    @DisplayName("운영일이 아닌 날짜의 attend를 생성 시도할 때 예외 처리")
+    void throwExceptionWhenDateIsNotOperationDate(LocalDate date) {
+        //when & then
+        Assertions.assertThatThrownBy(() -> new Attend(date))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
