@@ -1,12 +1,5 @@
-package attendance.service;
+package attendance.domain;
 
-import attendance.domain.Attendance;
-import attendance.domain.AttendancePenalty;
-import attendance.domain.AttendanceReader;
-import attendance.domain.AttendanceStatus;
-import attendance.domain.Attendances;
-import attendance.domain.PenaltyCount;
-import attendance.domain.PenaltyCrew;
 import attendance.dto.AttendanceCheckDto;
 import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceFileDto;
@@ -20,12 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class AttendanceService {
+public class AttendanceManager {
 
     private final AttendanceReader reader;
     private Attendances attendances;
 
-    public AttendanceService(AttendanceReader reader) {
+    public AttendanceManager(AttendanceReader reader) {
         this.reader = reader;
         readAttendance();
     }
