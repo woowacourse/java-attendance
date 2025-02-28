@@ -29,12 +29,12 @@ public class FileReader {
 
                 Attendance attendance = new Attendance(localDateTime);
                 AttendanceLog attendanceLog = crewAttendanceLogRecord.getOrDefault(crew, new AttendanceLog(new ArrayList<>()));
-                attendanceLog.addAttendance(attendance);
+                attendanceLog.registerAttendance(localDateTime);
 
                 crewAttendanceLogRecord.put(crew, attendanceLog);
             }
 
-            new MemberAttendanceRecord(crewAttendanceLogRecord);
+            new AttendanceBook(crewAttendanceLogRecord);
         } catch (Exception e) {
             e.printStackTrace();
         }
