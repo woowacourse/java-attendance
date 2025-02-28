@@ -11,7 +11,8 @@ public enum ExceptionMessage {
     TIME_FORMAT_ERROR("[ERROR] 지원하지 않는 시간형식이 입력되었습니다."),
     NOT_NUMERIC_INPUT("[ERROR] 숫자가 아닌 형식의 데이터가 입력되었습니다."),
     BLANK_INPUT("[ERROR] 비어있는 값이 입력되었습니다."),
-    INVALID_DAY_INPUT("[ERROR] 유효하지 않은 일자가 입력되었습니다.");
+    INVALID_DAY_INPUT("[ERROR] 유효하지 않은 일자가 입력되었습니다."),
+    BLANK_NICKNAME("[ERROR] 비어있는 닉네입이 입니다.");
 
     private final String message;
 
