@@ -5,23 +5,34 @@ import static domain.Feature.ATTENDANCE_EDIT;
 import static domain.Feature.CREW_RECORDS_CHECK;
 import static domain.Feature.EXPELLED_WARNING_CHECK;
 import static util.loader.FileLoader.loadCSV;
+import static util.parser.DateTimeParser.parseStringToDate;
+import static util.parser.DateTimeParser.parseStringToTime;
 
 import domain.AttendanceBook;
+import domain.Coach;
+import domain.DailyRecord;
 import domain.Feature;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
 
+    private static final LocalDate localDate = parseStringToDate("2024-12-13");
+
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceBook attendanceBook;
+    private final Coach coach;
 
     public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.attendanceBook = new AttendanceBook();
+        this.coach = new Coach(attendanceBook);
     }
 
     public void start() {
@@ -32,8 +43,11 @@ public class AttendanceController {
     }
 
     protected void attendanceCheck() {
-        // TODO: 출석 확인 구현
-        System.out.println("출석 확인 기능");
+        String name = inputView.readAttendedName();
+        LocalTime time = parseStringToTime(inputView.readAttendedTime());
+
+        DailyRecord record = coach.attendCrew(name, LocalDateTime.of(localDate, time));
+        outputView.printDateTimeRecord(localDate, record.getAttendedTime(), record.getStatus().getName());
     }
 
     protected void attendanceEdit() {
@@ -64,11 +78,11 @@ public class AttendanceController {
     }
 
     private void executeFeature() {
-        String featureNumber = inputView.readFeature();
+        String featureNumber = inputView.readFeature(localDate);
         while (!Feature.isExit(featureNumber)) {
             Runnable action = selectFeature(featureNumber);
             action.run();
-            featureNumber = inputView.readFeature();
+            featureNumber = inputView.readFeature(localDate);
         }
     }
 

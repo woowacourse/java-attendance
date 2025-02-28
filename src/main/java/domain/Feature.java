@@ -11,8 +11,8 @@ public enum Feature {
 
     private static final String NOT_PROVIDED_ERROR_MESSAGE = "제공하지 않는 기능입니다.";
 
-    public final String number;
-    public final String name;
+    private final String number;
+    private final String name;
 
     Feature(String number, String name) {
         this.number = number;
@@ -35,5 +35,13 @@ public enum Feature {
             .filter(feature -> feature.number.equals(input))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException(NOT_PROVIDED_ERROR_MESSAGE));
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public String getName() {
+        return name;
     }
 }
