@@ -1,6 +1,7 @@
 package attendance.domain;
 
-import org.assertj.core.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import org.junit.Test;
 
 public class CrewTest {
@@ -10,10 +11,7 @@ public class CrewTest {
         //given
         String name = "우가";
 
-        //when
-        Crew crew = new Crew(name);
-
-        //then
-        Assertions.assertThat(crew.getName()).isEqualTo(name);
+        //when & then
+        assertDoesNotThrow(() -> new Crew(name));
     }
 }

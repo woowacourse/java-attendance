@@ -11,15 +11,8 @@ public class AttendanceTime {
         this.attendanceStatus = AttendanceStatus.fetchUserAttendanceStatus(attendanceTime);
     }
 
-    public LocalDateTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
-    public AttendanceStatus getAttendanceStatus() {
-        return attendanceStatus;
-    }
-
     public boolean isAbsence() {
         return this.attendanceStatus.equals(AttendanceStatus.ABSENCE);
     }
+
 }

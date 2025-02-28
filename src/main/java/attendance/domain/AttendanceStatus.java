@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public enum AttendanceStatus {
     ATTENDANCE("출석"),
-    LATE("지각" ),
+    LATE("지각"),
     ABSENCE("결석");
 
     private final String name;
@@ -48,4 +48,5 @@ public enum AttendanceStatus {
         }
         return ATTENDANCE;
     }
+
 }

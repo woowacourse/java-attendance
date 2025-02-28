@@ -7,7 +7,4 @@ public class Crew {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
 }

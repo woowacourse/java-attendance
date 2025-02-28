@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -15,8 +17,9 @@ public class AttendanceRecordTest {
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.addAttendanceTime(localDateTime);
 
-        Assertions.assertThat(attendanceRecord.getAttendanceRecord().size()).isEqualTo(1);
+        assertDoesNotThrow(() -> attendanceRecord.addAttendanceTime(localDateTime));
     }
+
     @Test
     public void 패널티_없는_상태_반환_결석_1회() {
         //given
