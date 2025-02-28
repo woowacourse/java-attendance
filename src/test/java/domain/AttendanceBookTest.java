@@ -55,4 +55,28 @@ class AttendanceBookTest {
                 .hasMessage("수정할 수 없는 날짜입니다.");
     }
 
+    @Test
+    void 모든_출석_기록을_확인할_수_있다() {
+        // when
+        List<Attendance> foraAttendanceBook = attendanceBook.getHistory();
+
+        // then
+        Assertions.assertThat(foraAttendanceBook).containsOnly(
+                new Attendance(LocalDate.of(2024, 12, 2), LocalTime.of(9, 55)),
+                new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)),
+                new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 55))
+        );
+    }
+
+    @Test
+    void 한_크루의_출석_지각_결석_횟수를_확인할_수_있다() {
+        // when
+        AttendanceStateCount attendanceStateCount = attendanceBook.calculateState();
+
+        // then
+        Assertions.assertThat(attendanceStateCount.attendance()).isEqualTo(2);
+        Assertions.assertThat(attendanceStateCount.lateness()).isEqualTo(1);
+        Assertions.assertThat(attendanceStateCount.absence()).isEqualTo(1);
+    }
 }

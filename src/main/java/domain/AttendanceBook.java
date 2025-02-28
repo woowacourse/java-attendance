@@ -3,6 +3,7 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,13 +41,6 @@ public class AttendanceBook {
                 .collect(Collectors.toList());
     }
 
-    public Attendance getAttendance(LocalDate localDate) {
-        return attendanceBook.stream()
-                .filter(a -> a.getLocalDate().equals(localDate))
-                .findFirst()
-                .orElse(null);
-    }
-
     public void validateWeekDay(LocalDate localDate) {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || Holiday.isHoliday(localDate)) {
@@ -64,5 +58,30 @@ public class AttendanceBook {
         if (localDate.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("수정할 수 없는 날짜입니다.");
         }
+    }
+
+    public Attendance getAttendance(LocalDate localDate) {
+        return attendanceBook.stream()
+                .filter(a -> a.getLocalDate().equals(localDate))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<Attendance> getHistory() {
+        return Collections.unmodifiableList(attendanceBook);
+    }
+
+    public AttendanceStateCount calculateState() {
+        int attendance = countState(AttendanceState.ATTENDANCE);
+        int lateness = countState(AttendanceState.LATENESS);
+        int absence = countState(AttendanceState.ABSENCE);
+        return new AttendanceStateCount(attendance, lateness, absence);
+    }
+
+    private int countState(AttendanceState attendanceState) {
+        return (int) attendanceBook.stream()
+                .filter(a -> AttendanceState.findStateBy(a.getLocalDate(), a.getLocalTime())
+                        .equals(attendanceState))
+                .count();
     }
 }
