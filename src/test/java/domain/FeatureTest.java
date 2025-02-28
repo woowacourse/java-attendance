@@ -59,6 +59,25 @@ public class FeatureTest {
     }
 
     @Nested
+    @DisplayName("종료 확인 테스트")
+    class checkQuitTest {
+
+        @Test
+        @DisplayName("종료 기능을 확인한다.")
+        void checkQuit() {
+            String input = "Q";
+            assertThat(Feature.isExit(input)).isTrue();
+        }
+
+        @Test
+        @DisplayName("종료 기능이 아닌지 확인한다.")
+        void checkNotQuit() {
+            String input = "2";
+            assertThat(Feature.isExit(input)).isFalse();
+        }
+    }
+
+    @Nested
     @DisplayName("제공되는 기능 확인 테스트")
     class checkProvidedTest {
 
