@@ -1,6 +1,5 @@
-package attendance;
+package attendance.domain;
 
-import attendance.domain.*;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -219,7 +218,7 @@ public class CrewsTest {
             crew.addAttendance(LocalDateTime.of(2024, 12, 12, 10, 6));
 
             LocalDate today = LocalDate.of(2024, 12, 13);
-            assertThat(crews.getCrewAttendancesUtilYesterday(today, "모루").size()).isEqualTo(9);
+            assertThat(crew.getCrewAttendancesUtilYesterday(today).size()).isEqualTo(9);
         }
 
         @Test
@@ -233,12 +232,12 @@ public class CrewsTest {
 
             LocalDate today = LocalDate.of(2024, 12, 13);
             assertSoftly(softly -> {
-                assertThat(crews.getCrewAttendancesUtilYesterday(today, "모루")).contains(
+                assertThat(crew.getCrewAttendancesUtilYesterday(today)).contains(
                         new Attendance(LocalDateTime.of(2024, 12, 11, 10, 36)));
-                assertThat(crews.getCrewAttendancesUtilYesterday(today, "모루")).contains(
+                assertThat(crew.getCrewAttendancesUtilYesterday(today)).contains(
                         new Attendance(LocalDateTime.of(2024, 12, 12, 10, 6)));
 
-                assertThat(crews.getCrewAttendancesUtilYesterday(today, "모루")).doesNotContain(
+                assertThat(crew.getCrewAttendancesUtilYesterday(today)).doesNotContain(
                         new Attendance(LocalDateTime.of(2024, 12, 13, 10, 6)));
             });
         }
@@ -254,7 +253,7 @@ public class CrewsTest {
 
             LocalDate today = LocalDate.of(2024, 12, 13);
 
-            List<Attendance> result = crews.getCrewAttendancesUtilYesterday(today, "모루");
+            List<Attendance> result = crew.getCrewAttendancesUtilYesterday(today);
             assertSoftly(softly -> {
                 assertThat(result).contains(new Attendance(LocalDateTime.of(LocalDate.of(2024, 12, 2), LocalTime.MIN)));
                 assertThat(result).contains(new Attendance(LocalDateTime.of(2024, 12, 11, 10, 36)));
@@ -272,11 +271,13 @@ public class CrewsTest {
         void findWarningCrewsTest1() {
             Crews crews = new Crews();
             Crew crew = crews.create("모루");
-            crew.addAttendance(LocalDateTime.of(2024, 12, 11, 11, 6));
-            crew.addAttendance(LocalDateTime.of(2024, 12, 12, 11, 6));
-            crew.addAttendance(LocalDateTime.of(2024, 12, 13, 11, 6));
-            crew.addAttendance(LocalDateTime.of(2024, 12, 16, 14, 6));
-            crew.addAttendance(LocalDateTime.of(2024, 12, 17, 11, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 14, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 11, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 4, 11, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 5, 14, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 6, 11, 6));
+
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 7));
 
             assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP).containsEntry(AbsenceRule.EXPULSION, List.of(crew));
         }
@@ -286,9 +287,11 @@ public class CrewsTest {
         void findWarningCrewsTest2() {
             Crews crews = new Crews();
             Crew crew = crews.create("모루");
-            crew.addAttendance(LocalDateTime.of(2024, 12, 11, 11, 6));
-            crew.addAttendance(LocalDateTime.of(2024, 12, 12, 11, 6));
-            crew.addAttendance(LocalDateTime.of(2024, 12, 13, 11, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 14, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 11, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 4, 11, 6));
+
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 5));
 
             assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP).containsEntry(AbsenceRule.COUNSELING, List.of(crew));
         }
@@ -298,8 +301,10 @@ public class CrewsTest {
         void findWarningCrewsTest3() {
             Crews crews = new Crews();
             Crew crew = crews.create("모루");
-            crew.addAttendance(LocalDateTime.of(2024, 12, 11, 11, 6));
-            crew.addAttendance(LocalDateTime.of(2024, 12, 12, 11, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 14, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 11, 6));
+
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 4));
 
             assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP).containsEntry(AbsenceRule.WARNING, List.of(crew));
         }
@@ -310,38 +315,46 @@ public class CrewsTest {
             Crews crews = new Crews();
 
             Crew crew1 = crews.create("빙티"); //결석 3회, 지각 4회
+            crew1.addAttendance(LocalDateTime.of(2024, 12, 2, 13, 6));
+            crew1.addAttendance(LocalDateTime.of(2024, 12, 3, 11, 6));
+            crew1.addAttendance(LocalDateTime.of(2024, 12, 4, 11, 6));
+            crew1.addAttendance(LocalDateTime.of(2024, 12, 5, 11, 6));
+            crew1.addAttendance(LocalDateTime.of(2024, 12, 6, 10, 6));
             crew1.addAttendance(LocalDateTime.of(2024, 12, 9, 13, 6));
-            crew1.addAttendance(LocalDateTime.of(2024, 12, 10, 11, 6));
-            crew1.addAttendance(LocalDateTime.of(2024, 12, 11, 11, 6));
-            crew1.addAttendance(LocalDateTime.of(2024, 12, 12, 11, 6));
-            crew1.addAttendance(LocalDateTime.of(2024, 12, 13, 10, 6));
-            crew1.addAttendance(LocalDateTime.of(2024, 12, 16, 13, 6));
-            crew1.addAttendance(LocalDateTime.of(2024, 12, 17, 10, 6));
+            crew1.addAttendance(LocalDateTime.of(2024, 12, 10, 10, 6));
+
+            crew1.countAttendanceStatus(LocalDate.of(2024, 12, 11));
 
             Crew crew2 = crews.create("이든"); //결석 2회, 지각 5회
-            crew2.addAttendance(LocalDateTime.of(2024, 12, 9, 13, 6));
-            crew2.addAttendance(LocalDateTime.of(2024, 12, 10, 10, 6));
-            crew2.addAttendance(LocalDateTime.of(2024, 12, 11, 10, 6));
-            crew2.addAttendance(LocalDateTime.of(2024, 12, 12, 10, 6));
-            crew2.addAttendance(LocalDateTime.of(2024, 12, 13, 10, 6));
-            crew2.addAttendance(LocalDateTime.of(2024, 12, 16, 14, 6));
-            crew2.addAttendance(LocalDateTime.of(2024, 12, 13, 11, 6));
+            crew2.addAttendance(LocalDateTime.of(2024, 12, 2, 13, 6));
+            crew2.addAttendance(LocalDateTime.of(2024, 12, 3, 10, 6));
+            crew2.addAttendance(LocalDateTime.of(2024, 12, 4, 10, 6));
+            crew2.addAttendance(LocalDateTime.of(2024, 12, 5, 10, 6));
+            crew2.addAttendance(LocalDateTime.of(2024, 12, 6, 10, 6));
+            crew2.addAttendance(LocalDateTime.of(2024, 12, 9, 14, 6));
+            crew2.addAttendance(LocalDateTime.of(2024, 12, 10, 11, 6));
+
+            crew2.countAttendanceStatus(LocalDate.of(2024, 12, 11));
 
             Crew crew3 = crews.create("빙봉"); //결석 1회, 지각 6회
+            crew3.addAttendance(LocalDateTime.of(2024, 12, 2, 13, 6));
+            crew3.addAttendance(LocalDateTime.of(2024, 12, 3, 10, 6));
+            crew3.addAttendance(LocalDateTime.of(2024, 12, 4, 10, 6));
+            crew3.addAttendance(LocalDateTime.of(2024, 12, 5, 10, 6));
+            crew3.addAttendance(LocalDateTime.of(2024, 12, 6, 10, 6));
             crew3.addAttendance(LocalDateTime.of(2024, 12, 9, 13, 6));
-            crew3.addAttendance(LocalDateTime.of(2024, 12, 10, 10, 6));
-            crew3.addAttendance(LocalDateTime.of(2024, 12, 11, 10, 6));
-            crew3.addAttendance(LocalDateTime.of(2024, 12, 12, 10, 6));
-            crew3.addAttendance(LocalDateTime.of(2024, 12, 13, 10, 6));
-            crew3.addAttendance(LocalDateTime.of(2024, 12, 16, 13, 6));
-            crew3.addAttendance(LocalDateTime.of(2024, 12, 13, 11, 6));
+            crew3.addAttendance(LocalDateTime.of(2024, 12, 10, 11, 6));
+
+            crew3.countAttendanceStatus(LocalDate.of(2024, 12, 11));
 
             Crew crew4 = crews.create("쿠키"); //결석 2회, 지각 3회
-            crew4.addAttendance(LocalDateTime.of(2024, 12, 9, 13, 6));
-            crew4.addAttendance(LocalDateTime.of(2024, 12, 10, 10, 6));
-            crew4.addAttendance(LocalDateTime.of(2024, 12, 11, 10, 6));
-            crew4.addAttendance(LocalDateTime.of(2024, 12, 12, 11, 6));
-            crew4.addAttendance(LocalDateTime.of(2024, 12, 13, 11, 6));
+            crew4.addAttendance(LocalDateTime.of(2024, 12, 2, 13, 6));
+            crew4.addAttendance(LocalDateTime.of(2024, 12, 3, 10, 6));
+            crew4.addAttendance(LocalDateTime.of(2024, 12, 4, 10, 6));
+            crew4.addAttendance(LocalDateTime.of(2024, 12, 5, 11, 6));
+            crew4.addAttendance(LocalDateTime.of(2024, 12, 6, 11, 6));
+
+            crew4.countAttendanceStatus(LocalDate.of(2024, 12, 7));
 
             List<Crew> warningCrews = crews.findWarningExpulsionCrews().get(AbsenceRule.COUNSELING);
             assertThat(warningCrews).isSortedAccordingTo(Crew::compareTo);

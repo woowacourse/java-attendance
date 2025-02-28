@@ -1,6 +1,5 @@
-package attendance;
+package attendance.controller;
 
-import attendance.controller.AttendanceFileParser;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

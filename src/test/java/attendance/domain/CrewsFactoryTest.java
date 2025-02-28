@@ -1,7 +1,5 @@
-package attendance;
+package attendance.domain;
 
-import attendance.domain.Crews;
-import attendance.domain.CrewsFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
