@@ -1,6 +1,8 @@
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import domain.Attendance;
 import domain.AttendanceBook;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,7 +24,7 @@ public class AttendanceCheckTest {
 
     @DisplayName("등록된 닉네임을 입력한 경우 예외가 발생하지 않는다.")
     @Test
-    void should_ThrowException_When_ValidNameIsGiven() {
+    void should_NotThrowException_When_ValidNameIsGiven() {
         String name = "빙봉";
         LocalDate date = LocalDate.of(2024, 12, 16);
         LocalTime time = LocalTime.of(13, 0);
@@ -41,6 +43,17 @@ public class AttendanceCheckTest {
         assertThatThrownBy(() -> attendanceBook.attendCrew(name, date, time))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContainingAll("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
+
+    @DisplayName("출석 날짜와 시간을 기반으로 출석 기록을 저장한다.")
+    @Test
+    void should_StoreAttendance_When_GivenDateAndTime() {
+        String name = "빙봉";
+        LocalDate date = LocalDate.of(2024, 12, 16);
+        LocalTime time = LocalTime.of(13, 0);
+        Attendance attendance = new Attendance(date, time);
+
+        assertEquals(attendanceBook.attendCrew(name, date, time), attendance);
     }
 
     @DisplayName("이미 출석한 경우 수정 기능 안내 예외를 발생한다.")

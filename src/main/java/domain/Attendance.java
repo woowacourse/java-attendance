@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Attendance {
 
@@ -47,5 +48,22 @@ public class Attendance {
                     String.format("[ERROR] %d월 %02d일 %s은(는) 등교일이 아닙니다.", date.getMonthValue(), date.getDayOfMonth(),
                             dayOfWeek));
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attendance that = (Attendance) o;
+        return Objects.equals(date, that.date) && Objects.equals(time, that.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, time);
     }
 }
