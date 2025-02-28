@@ -26,8 +26,11 @@ public class CampusManager {
                 day.equals(DayOfWeek.SUNDAY);
     }
 
-    public static boolean isOperationTime(final LocalTime time) {
-        return time.isAfter(OPERATION_TIME_BEGIN_THRESHOLD) &&
+    public static void validateOperationTime(final LocalTime time) {
+        boolean isOperationTime = time.isAfter(OPERATION_TIME_BEGIN_THRESHOLD) &&
                 time.isBefore(OPERATION_TIME_END_THRESHOLD);
+        if (!isOperationTime) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간은 매일 08:00 ~ 23:00 입니다.");
+        }
     }
 }

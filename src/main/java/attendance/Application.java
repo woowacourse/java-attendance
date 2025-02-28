@@ -84,11 +84,7 @@ public class Application {
             return;
         }
         LocalTime attendanceTime = readAttendanceTime();
-        boolean isOperationTime = CampusManager.isOperationTime(attendanceTime);
-        if (!isOperationTime) {
-            OutputView.printNotOperationTime();
-            return;
-        }
+        CampusManager.validateOperationTime(attendanceTime);
         Attendance attendance = attendanceManager.addAttendance(crewNickname, today, attendanceTime);
         OutputView.printAttendance(attendance);
     }
@@ -109,11 +105,7 @@ public class Application {
             return;
         }
         LocalTime modificationTime = readAttendanceModificationTime();
-        boolean isOperationTime = CampusManager.isOperationTime(modificationTime);
-        if (!isOperationTime) {
-            OutputView.printNotOperationTime();
-            return;
-        }
+        CampusManager.validateOperationTime(modificationTime);
         Attendance modifiedAttendance = attendanceManager.modifyAttendance(crewNickname, dateToModify, modificationTime);
         OutputView.printAttendanceModificationResult(existingAttendance.get(), modifiedAttendance);
     }
