@@ -36,6 +36,11 @@ public class AttendanceBook {
         return crew.addDailyRecord(dateTime);
     }
 
+    public DailyRecord editAttendanceRecord(String name, LocalDateTime editedDateTime) {
+        // TODO: 출석부에서 수정한 데이터를 갈아 끼우기
+        return null;
+    }
+
     public void initializeCrewRecords(Scanner scanner) {
         Map<String, List<LocalDateTime>> result = new HashMap<>();
         while (scanner.hasNextLine()) {

@@ -54,4 +54,41 @@ public class CrewTest {
             assertThat(record.getStatus()).isEqualTo(PRESENT);
         }
     }
+
+    @Nested
+    @DisplayName("크루 출석 기록 수정 테스트")
+    class UpdateCrewRecordTest {
+
+        @Test
+        @DisplayName("지각을 출석으로 수정할 수 있다.")
+        void editLateRecord() {
+            Crew crew = new Crew();
+            List<LocalDateTime> crewRecords = List.of(
+                parseStringToDateTime("2024-12-04 10:08")
+            );
+            crew.initializeDailyRecords(crewRecords);
+            LocalDateTime editedDateTime = parseStringToDateTime("2024-12-04 10:02");
+
+            DailyRecord editedRecord = crew.updateDailyRecord(editedDateTime);
+
+            assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime());
+            assertThat(editedRecord.getStatus()).isEqualTo(PRESENT);
+        }
+
+        @Test
+        @DisplayName("결석을 출석으로 수정할 수 있다.")
+        void editAbsentRecord() {
+            Crew crew = new Crew();
+            List<LocalDateTime> crewRecords = List.of(
+                parseStringToDateTime("2024-12-04 10:40")
+            );
+            crew.initializeDailyRecords(crewRecords);
+            LocalDateTime editedDateTime = parseStringToDateTime("2024-12-04 10:02");
+
+            DailyRecord editedRecord = crew.updateDailyRecord(editedDateTime);
+
+            assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime());
+            assertThat(editedRecord.getStatus()).isEqualTo(PRESENT);
+        }
+    }
 }

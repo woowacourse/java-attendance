@@ -36,6 +36,11 @@ public class Crew {
         return newRecord;
     }
 
+    public DailyRecord updateDailyRecord(LocalDateTime editedDateTime) {
+        // TODO: 날짜에 해당하는 Record 새로 만들어서 넣기
+        return null;
+    }
+
     public void initializeDailyRecords(List<LocalDateTime> crewRecords) {
         for(LocalDateTime dateTime : crewRecords) {
             LocalDate date = dateTime.toLocalDate();

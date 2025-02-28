@@ -28,6 +28,11 @@ public class Coach {
         return attendanceBook.saveAttendanceRecord(name, dateTime);
     }
 
+    public DailyRecord editCrew(String name, LocalDateTime dateTime) {
+        // TODO: 출석부의 출석 기록을 수정하기
+        return null;
+    }
+
     private void validateOperatingTime(LocalDateTime dateTime) {
         LocalTime time = dateTime.toLocalTime();
         if(time.isBefore(operatingStart) || time.isAfter(operatingEnd)) {

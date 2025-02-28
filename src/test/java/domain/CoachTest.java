@@ -56,4 +56,48 @@ public class CoachTest {
             assertThatThrownBy(() -> coach.attendCrew(name, dateTime));
         }
     }
+
+    @Nested
+    @DisplayName("크루 수정 테스트")
+    class EditCrewTest {
+
+        @Test
+        @DisplayName("코치는 평일의 기록을 수정시킬 수 있다.")
+        void editCrew() {
+            AttendanceBook attendanceBook = new AttendanceBook();
+            attendanceBook.initializeCrewRecords(loadCSV("src/test/resources/attendances.csv"));
+
+            Coach coach = new Coach(attendanceBook);
+            String name = "빙봉";
+            LocalDateTime editedDateTime = parseStringToDateTime("2024-12-06 10:02");
+
+            assertThatNoException().isThrownBy(() -> coach.editCrew(name, editedDateTime));
+        }
+
+        @Test
+        @DisplayName("코치는 휴일의 기록을 수정시킬 수 없다.")
+        void notEditCrewInHoliday() {
+            AttendanceBook attendanceBook = new AttendanceBook();
+            attendanceBook.initializeCrewRecords(loadCSV("src/test/resources/attendances.csv"));
+
+            Coach coach = new Coach(attendanceBook);
+            String name = "빙봉";
+            LocalDateTime dateTime = parseStringToDateTime("2024-12-25 10:02");
+
+            assertThatThrownBy(() -> coach.editCrew(name, dateTime));
+        }
+
+        @Test
+        @DisplayName("코치는 운영시간 외의 시간으로 기록을 수정시킬 수 없다.")
+        void notEditCrewInOperatingTime() {
+            AttendanceBook attendanceBook = new AttendanceBook();
+            attendanceBook.initializeCrewRecords(loadCSV("src/test/resources/attendances.csv"));
+
+            Coach coach = new Coach(attendanceBook);
+            String name = "빙봉";
+            LocalDateTime dateTime = parseStringToDateTime("2024-12-06 23:13");
+
+            assertThatThrownBy(() -> coach.editCrew(name, dateTime));
+        }
+    }
 }
