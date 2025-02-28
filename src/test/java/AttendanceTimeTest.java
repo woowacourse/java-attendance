@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import domain.AttendanceTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -67,6 +69,19 @@ public class AttendanceTimeTest {
         boolean actual = attendanceTime.isIn(LocalDate.of(year, month, date));
         //then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 출석시간을_변경한다() {
+        //given
+        LocalDateTime time = LocalDateTime.of(2024, 12, 3, 9, 30);
+        LocalTime newTime = LocalTime.of(8, 30);
+        AttendanceTime expected = new AttendanceTime(LocalDateTime.of(time.toLocalDate(), newTime));
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        //when
+        AttendanceTime newAttendanceTime = attendanceTime.changeTime(newTime);
+        //then
+        assertThat(newAttendanceTime).isEqualTo(expected);
     }
 
 }
