@@ -45,6 +45,10 @@ public enum AttendancePenalty {
             return INTERVIEW;
         }
 
+        if (absenceCount >= WARNING.threshold) {
+            return WARNING;
+        }
+
         return NONE;
     }
 }
