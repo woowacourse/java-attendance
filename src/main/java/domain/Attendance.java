@@ -11,11 +11,14 @@ public class Attendance {
 
     private final LocalDate date;
     private final LocalTime time;
+    private final AttendanceStatus status;
 
     public Attendance(LocalDateTime dateTime) {
         validate(dateTime);
+
         this.date = dateTime.toLocalDate();
         this.time = dateTime.toLocalTime();
+        this.status = AttendanceStatus.calculateStatus(dateTime);
     }
 
     public boolean has(LocalDate day) {
