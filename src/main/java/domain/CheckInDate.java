@@ -34,4 +34,8 @@ public class CheckInDate implements Comparable<CheckInDate> {
     public int hashCode() {
         return checkInDate.hashCode();
     }
+
+    public LocalDate getCheckInDate() {
+        return checkInDate;
+    }
 }

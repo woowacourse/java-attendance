@@ -41,4 +41,8 @@ public class CheckInTime {
     public int hashCode() {
         return checkInTime.hashCode();
     }
+
+    public LocalTime getCheckInTime() {
+        return checkInTime;
+    }
 }
