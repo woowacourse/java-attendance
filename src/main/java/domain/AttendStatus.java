@@ -1,26 +1,30 @@
 package domain;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.function.BiFunction;
 
 public enum AttendStatus {
-    ATTEND,
-    LATE,
-    ABSENCE;
+    ATTEND((localTime, timeBoundary)
+            -> localTime != null && (localTime.equals(timeBoundary.lateTime()) || localTime.isBefore(
+            timeBoundary.lateTime()))),
+    LATE((localTime, timeBoundary)
+            -> localTime != null
+            && localTime.isAfter(timeBoundary.lateTime()) && !localTime.isAfter(timeBoundary.absenceTime())),
+    ABSENCE((localTime, timeBoundary)
+            -> localTime == null || localTime.isAfter(timeBoundary.absenceTime()));
 
-    private static final int LATE_TIME_BOUND = 5;
-    private static final int ABSENCE_TIME_BOUND = 30;
+    private final BiFunction<LocalTime, TimeBoundary, Boolean> condition;
 
-    public static AttendStatus checkAttendStatus(final LocalDate localDate, final LocalTime localTime) {
-        LocalTime educationTime = EducationTime.getEducationStartTime(localDate);
-        LocalTime lateTime = educationTime.plusMinutes(LATE_TIME_BOUND);
-        LocalTime absenceTime = educationTime.plusMinutes(ABSENCE_TIME_BOUND);
-        if (localTime == null || localTime.isAfter(absenceTime)) {
-            return AttendStatus.ABSENCE;
-        }
-        if (localTime.isAfter(lateTime) && !localTime.isAfter(absenceTime)) {
-            return AttendStatus.LATE;
-        }
-        return AttendStatus.ATTEND;
+    AttendStatus(final BiFunction<LocalTime, TimeBoundary, Boolean> condition) {
+        this.condition = condition;
+    }
+
+    public static AttendStatus checkAttendStatus(Attend attend) {
+        TimeBoundary timeBoundary = TimeBoundary.createTimeBoundary(attend.getDate());
+        return Arrays.stream(AttendStatus.values())
+                .filter(attendStatus -> attendStatus.condition.apply(attend.getTime(), timeBoundary))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("출석 상태 판정 실패"));
     }
 }
