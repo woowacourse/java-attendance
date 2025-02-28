@@ -43,7 +43,7 @@ public class AttendanceTest {
     void should_DetermineAttendanceStatus_When_GivenDateAndTime(LocalDate date, LocalTime time) {
         Attendance attendance = new Attendance(date, time);
 
-        assertThat(attendance.determineStatus()).isEqualTo("출석");
+        assertThat(attendance.determineStatus().getDescription()).isEqualTo("출석");
     }
 
     @DisplayName("출석 날짜와 시간을 기반으로 상태를 지각으로 판단한다.")
@@ -52,7 +52,7 @@ public class AttendanceTest {
     void should_DetermineLatenessStatus_When_GivenDateAndTime(LocalDate date, LocalTime time) {
         Attendance attendance = new Attendance(date, time);
 
-        assertThat(attendance.determineStatus()).isEqualTo("지각");
+        assertThat(attendance.determineStatus().getDescription()).isEqualTo("지각");
     }
 
     @DisplayName("출석 날짜와 시간을 기반으로 상태를 결석으로 판단한다.")
@@ -61,7 +61,7 @@ public class AttendanceTest {
     void should_DetermineAbsenceStatus_When_GivenDateAndTime(LocalDate date, LocalTime time) {
         Attendance attendance = new Attendance(date, time);
 
-        assertThat(attendance.determineStatus()).isEqualTo("결석");
+        assertThat(attendance.determineStatus().getDescription()).isEqualTo("결석");
     }
 
     private static Stream<Arguments> attendanceDateAndTimeArguments() {
