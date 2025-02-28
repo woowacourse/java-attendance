@@ -2,6 +2,7 @@ package attendance.model.attendance.log;
 
 import attendance.model.attendance.status.AttendanceStatus;
 import attendance.model.campus.CampusOperationPolicy;
+import attendance.model.crew.CrewStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,18 +32,18 @@ public class AttendanceLogs {
         return new AttendanceLogs(attendanceLogs);
     }
 
-    public List<AttendanceLog> getAllAttendanceLogs(
+    public AttendanceLogs getAllAttendanceLogs(
             final LocalDate from,
             final LocalDate to,
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
-        return Stream.concat(
+        return new AttendanceLogs(Stream.concat(
                         values.stream(),
                         getAbsenceAttendanceLogs(from, to, campusOperationPolicy).stream()
                 )
                 .sorted(Comparator.comparing(AttendanceLog::getDate))
-                .toList();
+                .toList());
     }
 
     private List<AttendanceLog> getAbsenceAttendanceLogs(
@@ -68,7 +69,7 @@ public class AttendanceLogs {
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
-        final List<AttendanceLog> allAttendanceLogs = getAllAttendanceLogs(from, to, campusOperationPolicy);
+        final List<AttendanceLog> allAttendanceLogs = getAllAttendanceLogs(from, to, campusOperationPolicy).values;
 
         final List<AttendanceStatus> attendanceStatuses = allAttendanceLogs.stream()
                 .map(AttendanceLog::getAttendanceStatus)
@@ -133,5 +134,27 @@ public class AttendanceLogs {
 
     public boolean contains(final AttendanceLog attendanceLog) {
         return values.contains(attendanceLog);
+    }
+
+    public AttendanceLog findAttendanceLogByDate(final LocalDate date) {
+        return values.stream()
+                .filter(attendanceLog -> attendanceLog.isSameDate(date))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석 기록이 존재하지 않습니다."));
+    }
+
+    public CrewStatus getCrewStatus() {
+        final List<AttendanceStatus> attendanceStatuses = values.stream()
+                .map(AttendanceLog::getAttendanceStatus)
+                .toList();
+        return CrewStatus.froAttendanceStatuses(attendanceStatuses);
+    }
+
+    public boolean isWarning() {
+        CrewStatus status = CrewStatus.froAttendanceStatuses(values.stream()
+                .map(AttendanceLog::getAttendanceStatus)
+                .toList());
+
+        return status == CrewStatus.WARNING || status == CrewStatus.CONSULTATION || status == CrewStatus.EXPULSION;
     }
 }

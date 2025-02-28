@@ -2,6 +2,7 @@ package attendance.model.attendance.log;
 
 import attendance.model.campus.CampusOperationPolicy;
 import attendance.model.crew.Crew;
+import attendance.model.crew.CrewStatus;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -55,11 +56,23 @@ public class CrewAttendanceLog {
         attendanceLogs.update(from, to);
     }
 
-    public List<AttendanceLog> getAllAttendanceLogs(
+    public AttendanceLog findAttendanceLogByDate(final LocalDate date) {
+        return attendanceLogs.findAttendanceLogByDate(date);
+    }
+
+    public AttendanceLogs getAllAttendanceLogs(
             final LocalDate from,
             final LocalDate to,
             final CampusOperationPolicy campusOperationPolicy) {
 
         return attendanceLogs.getAllAttendanceLogs(from, to, campusOperationPolicy);
+    }
+
+    public CrewStatus getCrewStatus() {
+        return attendanceLogs.getCrewStatus();
+    }
+
+    public boolean isWarning() {
+        return attendanceLogs.isWarning();
     }
 }

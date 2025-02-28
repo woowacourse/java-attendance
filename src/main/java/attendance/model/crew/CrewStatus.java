@@ -46,4 +46,8 @@ public enum CrewStatus {
                         .count()
         ) / 3;
     }
+
+    public String getName() {
+        return name;
+    }
 }

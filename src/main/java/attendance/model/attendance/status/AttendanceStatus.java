@@ -66,4 +66,8 @@ public enum AttendanceStatus {
                         .count()
         );
     }
+
+    public String getName() {
+        return name;
+    }
 }

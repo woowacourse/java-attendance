@@ -138,7 +138,7 @@ class CrewAttendanceRepositoryTest {
 
         // When
         final List<AttendanceLog> actual = crewAttendanceRepository.findAllByCrew(crew, from, to,
-                campusOperationPolicy);
+                campusOperationPolicy).getValues();
 
         // Then
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);

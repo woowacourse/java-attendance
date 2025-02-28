@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,8 +20,8 @@ class AttendanceLogsTest {
     private static final CampusOperationPolicy campusOperationPolicy = new CampusOperationPolicy();
     private static AttendanceLogs attendanceLogs;
 
-    @BeforeAll
-    static void setUp() {
+    @BeforeEach
+    void setUp() {
         List<AttendanceLog> values = new ArrayList<>();
         values.add(
                 AttendanceLog.fromDateTime(
@@ -77,7 +77,8 @@ class AttendanceLogsTest {
         );
 
         // When
-        final List<AttendanceLog> actual = attendanceLogs.getAllAttendanceLogs(from, to, campusOperationPolicy);
+        final List<AttendanceLog> actual = attendanceLogs.getAllAttendanceLogs(from, to, campusOperationPolicy)
+                .getValues();
 
         // Then
         assertThat(actual).containsExactlyElementsOf(expected);
