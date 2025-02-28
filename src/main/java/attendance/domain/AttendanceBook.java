@@ -22,4 +22,8 @@ public class AttendanceBook {
             throw new IllegalArgumentException("출석부는 크루와 출석 기록을 가지고 있어야 합니다.");
         }
     }
+
+    public Crew getCrew() {
+        return crew;
+    }
 }

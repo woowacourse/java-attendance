@@ -14,4 +14,8 @@ public class Crew {
             throw new IllegalArgumentException("크루는 닉네임을 가지고 있어야 합니다.");
         }
     }
+
+    public String getNickname() {
+        return nickname;
+    }
 }
