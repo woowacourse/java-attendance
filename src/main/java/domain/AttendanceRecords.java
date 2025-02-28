@@ -12,7 +12,7 @@ public class AttendanceRecords {
     }
 
     public AttendanceRecords(List<AttendanceRecord> attendanceRecords) {
-        attendanceRecords.addAll(attendanceRecords);
+        this.attendanceRecords.addAll(new ArrayList<>(attendanceRecords));
     }
 
     public void put(AttendanceRecord attendanceRecord) {

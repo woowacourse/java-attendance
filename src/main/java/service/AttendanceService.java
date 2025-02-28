@@ -31,8 +31,7 @@ public class AttendanceService {
     public AttendanceService(boolean loadFromFile) {
         if (loadFromFile) {
             attendanceRecords = new AttendanceRecords(
-                    new ArrayList<>(AttendanceRecordLoader.loadAttendanceRecordsFromFile())
-            );
+                    AttendanceRecordLoader.loadAttendanceRecordsFromFile());
             crews = new Crews(attendanceRecords.findNicknames());
             return;
         }
