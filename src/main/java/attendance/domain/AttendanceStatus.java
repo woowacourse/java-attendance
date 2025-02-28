@@ -38,8 +38,4 @@ public enum AttendanceStatus {
     private boolean matches(LocalTime arrivalTime, LocalTime startTime) {
         return timeCondition.test(arrivalTime, startTime);
     }
-
-    public String getStatus() {
-        return status;
-    }
 }
