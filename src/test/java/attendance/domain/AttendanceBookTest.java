@@ -29,7 +29,7 @@ class AttendanceBookTest {
         // then
         AttendanceHistory history = attendanceBook.getHistoryByCrew(crew);
         assertThat(history.getRecords()).hasSize(1);
-        assertThat(history.getRecords().contains(record)).isTrue();
+        assertThat(history.getRecords()).contains(record);
     }
 
     @DisplayName("해당 크루의 특정 날짜의 기록을 지각으로 수정할 수 있다.")

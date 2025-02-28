@@ -25,7 +25,7 @@ class AttendanceHistoryTest {
 
         // then
         assertThat(history.getRecords()).hasSize(1);
-        assertThat(history.getRecords().contains(record)).isTrue();
+        assertThat(history.getRecords()).contains(record);
     }
 
     @DisplayName("해당 날짜에 이미 출석한 경우 예외가 발생한다.")
