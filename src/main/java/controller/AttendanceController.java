@@ -26,8 +26,8 @@ public class AttendanceController {
 
     public void start() {
         handleException(() -> {
-            executeFeature();
             attendanceBook.initializeCrewRecords(loadCSV("src/main/resources/attendances.csv"));
+            executeFeature();
         });
     }
 
