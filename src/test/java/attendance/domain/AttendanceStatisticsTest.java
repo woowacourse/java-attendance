@@ -20,4 +20,18 @@ class AttendanceStatisticsTest {
         //then
         assertThat(result).isEqualTo(expected);
     }
+
+    @DisplayName("주어진_출석_상태의_횟수를_반환할_수_있다")
+    @CsvSource(value = {"ATTENDANCE:1", "LATE:2", "ABSENCE:3"}, delimiterString = ":")
+    @ParameterizedTest
+    void getStatusCount(AttendanceStatus status, int expected) {
+        //given
+        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(1, 2, 3);
+
+        //when
+        int result = attendanceStatistics.getStatusCount(status);
+
+        //then
+        assertThat(result).isEqualTo(expected);
+    }
 }
