@@ -2,6 +2,7 @@ package attendance;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
@@ -12,4 +13,7 @@ public class AttendanceCalculator {
         return dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREA);
     }
 
+    public static String decideAttendanceType(LocalTime attendanceTime) {
+        return "출석";
+    }
 }
