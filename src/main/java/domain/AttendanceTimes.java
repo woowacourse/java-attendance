@@ -33,6 +33,7 @@ public class AttendanceTimes {
     public List<AttendanceTime> readAttendance(LocalDate date) {
         return attendanceLog.stream()
                 .filter(time -> time.isBefore(date))
+                .sorted()
                 .toList();
     }
 

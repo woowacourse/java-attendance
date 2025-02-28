@@ -79,6 +79,39 @@ class AttendanceTimesTest {
     }
 
     @Test
+    @DisplayName("날짜를 입력 시 해당 날짜 이전의 AttendanceTime에 대한 리스트 반환")
+    void readListOfAttendanceTest() {
+        // given
+        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
+        LocalDate today = LocalDate.of(2024, 12, 13);
+
+        // when
+        List<AttendanceTime> log = attendanceTimes.readAttendance(today);
+
+        // then
+        assertThat(log).hasSize(3);
+    }
+
+    @Test
+    @DisplayName("반환된 출석 기록들에 대해 정렬 확인")
+    void readListOfAttendanceSortedTest() {
+        // given
+        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
+        LocalDate today = LocalDate.of(2024, 12, 13);
+
+        // when
+        List<AttendanceTime> log = attendanceTimes.readAttendance(today);
+
+        // then
+        int size = log.size();
+        for (int i = 0; i < size - 1; i++) {
+            AttendanceTime smaller = log.get(i);
+            AttendanceTime bigger = log.get(i + 1);
+            assertThat(smaller.compareTo(bigger)).isLessThan(0);
+        }
+    }
+
+    @Test
     @DisplayName("원하는 날짜의 출석을 수정")
     void modifyAttendanceInAttendancesTest() {
         // given
@@ -99,20 +132,6 @@ class AttendanceTimesTest {
         // then
         assert optionalAttendanceTime.isPresent();
         assertThat(optionalAttendanceTime.get()).isEqualTo(previous);
-    }
-
-    @Test
-    @DisplayName("날짜를 입력 시 해당 날짜 이전의 AttendanceTime에 대한 리스트 반환")
-    void readListOfAttendanceTest() {
-        // given
-        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
-        LocalDate today = LocalDate.of(2024, 12, 13);
-
-        // when
-        List<AttendanceTime> log = attendanceTimes.readAttendance(today);
-
-        // then
-        assertThat(log).hasSize(3);
     }
 
     @Test
@@ -145,20 +164,20 @@ class AttendanceTimesTest {
 
     private List<AttendanceTime> createAttendanceLog() {
         AttendanceTime attendanceTime1 = AttendanceTime.of(
-                LocalDate.of(2024, 12, 10),
-                LocalTime.of(10, 5)
-        );
-        AttendanceTime attendanceTime2 = AttendanceTime.of(
                 LocalDate.of(2024, 12, 11),
                 LocalTime.of(10, 6)
         );
-        AttendanceTime attendanceTime3 = AttendanceTime.of(
-                LocalDate.of(2024, 12, 12),
+        AttendanceTime attendanceTime2 = AttendanceTime.of(
+                LocalDate.of(2024, 12, 10),
                 LocalTime.of(10, 5)
         );
-        AttendanceTime attendanceTime4 = AttendanceTime.of(
+        AttendanceTime attendanceTime3 = AttendanceTime.of(
                 LocalDate.of(2024, 12, 13),
                 LocalTime.of(10, 6)
+        );
+        AttendanceTime attendanceTime4 = AttendanceTime.of(
+                LocalDate.of(2024, 12, 12),
+                LocalTime.of(10, 5)
         );
         return List.of(attendanceTime1,
                 attendanceTime2,
