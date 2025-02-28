@@ -22,7 +22,7 @@ public class InputView {
     }
 
     public String readCheckInNickname() {
-        System.out.println("닉네임을 입력해 주세요." + System.lineSeparator());
+        System.out.println("닉네임을 입력해 주세요.");
         return scanner.nextLine();
     }
 

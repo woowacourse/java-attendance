@@ -15,6 +15,14 @@ public class AttendanceController {
     public void run() {
         String menuSelection = inputView.readMenuSelection();
         validateMenu(menuSelection);
+
+        if (menuSelection.equals("1")) {
+            checkIn();
+        }
+    }
+
+    private void checkIn() {
+        String nickname = inputView.readCheckInNickname();
     }
 
     private void validateMenu(String input) {
