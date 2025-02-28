@@ -9,7 +9,7 @@ public enum Command {
     CHANGE_ATTENDANCE(List.of("2")),
     SHOW_CREW_ATTENDANCES(List.of("3")),
     SHOW_DISMISSAL_CREW(List.of("4")),
-    Quit(List.of("Q"));
+    QUIT(List.of("Q"));
 
     private final List<String> commands;
 

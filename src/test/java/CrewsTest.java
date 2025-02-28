@@ -1,5 +1,5 @@
 import domain.Crew;
-import domain.CrewAttendanceFileReader;
+import utils.CrewAttendanceFileReader;
 import domain.Crews;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

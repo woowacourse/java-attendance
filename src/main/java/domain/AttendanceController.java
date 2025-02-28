@@ -1,5 +1,6 @@
 package domain;
 
+import utils.CrewAttendanceFileReader;
 import view.InputView;
 import view.OutputView;
 
@@ -38,7 +39,7 @@ public class AttendanceController {
             if(command.equals(Command.SHOW_DISMISSAL_CREW)){
                 showDismissalCrew(crews);
             }
-            if (command.equals(Command.Quit)) {
+            if (command.equals(Command.QUIT)) {
                 return;
             }
         } catch (Exception e) {
