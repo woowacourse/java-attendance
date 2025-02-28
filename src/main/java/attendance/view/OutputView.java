@@ -2,6 +2,7 @@ package attendance.view;
 
 import static attendance.domain.AttendanceStatus.ABSENCE;
 import static attendance.domain.AttendanceStatus.LATE;
+import static attendance.exception.ErrorMessage.NO_ATTENDANCE_TO_MODIFY;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatistics;
@@ -37,7 +38,7 @@ public class OutputView {
     }
 
     public static void printNoAttendanceToModify() {
-        System.out.println("[ERROR] 수정할 출석 기록이 없습니다.");
+        System.out.println(NO_ATTENDANCE_TO_MODIFY);
     }
 
     public static void printAttendanceModificationResult(final Attendance beforeAttendance,

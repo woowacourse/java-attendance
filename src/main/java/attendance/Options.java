@@ -2,6 +2,7 @@ package attendance;
 
 import static attendance.domain.CampusManager.validateOperationDate;
 import static attendance.domain.CampusManager.validateOperationTime;
+import static attendance.exception.ErrorMessage.NOT_EXISTS_OPTION;
 import static attendance.view.InputView.readAttendanceDateToModify;
 import static attendance.view.InputView.readAttendanceModificationTime;
 import static attendance.view.InputView.readAttendanceTime;
@@ -55,7 +56,7 @@ public class Options {
     public void run(final String option) {
         Runnable function = options.getOrDefault(option, null);
         if (function == null) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 옵션입니다.");
+            throw new IllegalArgumentException(NOT_EXISTS_OPTION.getMessage());
         }
         function.run();
     }

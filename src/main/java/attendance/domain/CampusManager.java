@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.exception.ErrorMessage.NOT_OPERATION_TIME;
+
 import attendance.exception.NotOperationDateException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -37,7 +39,7 @@ public class CampusManager {
     public static void validateOperationTime(final LocalTime time) {
         boolean isOperationTime = isOperationTime(time);
         if (!isOperationTime) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간은 매일 08:00 ~ 23:00 입니다.");
+            throw new IllegalArgumentException(NOT_OPERATION_TIME.getMessage());
         }
     }
 

@@ -1,5 +1,8 @@
 package attendance.view;
 
+import static attendance.exception.ErrorMessage.INVALID_DATE;
+import static attendance.exception.ErrorMessage.INVALID_TIME;
+
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -13,6 +16,7 @@ import java.util.Scanner;
 
 public class InputView {
     private static final Scanner scanner = new Scanner(System.in);
+    private static final String TIME_PATTERN = "HH:mm";
 
     private InputView() {
     }
@@ -40,14 +44,14 @@ public class InputView {
         return input();
     }
 
-    public static LocalTime readAttendanceTime() {
+    public static LocalTime readAttendanceTime() throws IllegalArgumentException {
         System.out.println("등교 시간을 입력해 주세요.");
         String attendanceTime = input();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(TIME_PATTERN);
         try {
             return LocalTime.parse(attendanceTime, dateTimeFormatter);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("유효한 시간을 입력해주세요.");
+            throw new IllegalArgumentException(INVALID_TIME.getMessage());
         }
     }
 
@@ -65,20 +69,20 @@ public class InputView {
             scanner.nextLine();
             return LocalDate.of(year, month, date);
         } catch (InputMismatchException e) {
-            throw new IllegalArgumentException("유효한 날짜를 입력해주세요.");
+            throw new IllegalArgumentException(INVALID_TIME.getMessage());
         } catch (DateTimeException e) {
-            throw new IllegalArgumentException("유효한 날짜를 입력해주세요.");
+            throw new IllegalArgumentException(INVALID_DATE.getMessage());
         }
     }
 
     public static LocalTime readAttendanceModificationTime() {
         System.out.println("언제로 변경하겠습니까?");
         String attendanceTime = input();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(TIME_PATTERN);
         try {
             return LocalTime.parse(attendanceTime, dateTimeFormatter);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("유효한 시간을 입력해주세요.");
+            throw new IllegalArgumentException(INVALID_TIME.getMessage());
         }
     }
 

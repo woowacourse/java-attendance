@@ -1,6 +1,8 @@
 package attendance.domain;
 
 import static attendance.domain.AttendancePolicy.calculateAttendanceStatus;
+import static attendance.exception.ErrorMessage.DUPLICATED_ATTENDANCE;
+import static attendance.exception.ErrorMessage.NOT_EXISTS_CREW_NICKNAME;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -42,7 +44,7 @@ public class AttendanceManager {
     public void validateDuplicatedAttendance(final Nickname crewNickname, final LocalDate attendanceDate) {
         Optional<Attendance> attendance = findAttendance(crewNickname, attendanceDate);
         if (attendance.isPresent()) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다.");
+            throw new IllegalArgumentException(DUPLICATED_ATTENDANCE.getMessage());
         }
     }
 
@@ -54,7 +56,7 @@ public class AttendanceManager {
     public void validateExistingCrew(final Nickname crewNickname) {
         boolean isCrewExists = attendanceBook.containsKey(crewNickname);
         if (!isCrewExists) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+            throw new IllegalArgumentException(NOT_EXISTS_CREW_NICKNAME.getMessage());
         }
     }
 
