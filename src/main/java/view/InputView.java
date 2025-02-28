@@ -24,7 +24,7 @@ public class InputView {
 
     public static LocalTime readAttendanceRegisterAttendTime() {
         String response = prompt("등교 시간을 입력해 주세요.");
-        return LocalTime.parse(response);
+        return Convertor.convertStringToTime(response);
     }
 
     private static String generateAttendanceMenuHeader(LocalDate runDate) {
@@ -37,12 +37,12 @@ public class InputView {
 
     public static int readAttendanceEditAttendDay() {
         String response = prompt("수정하려는 날짜(일)를 입력해 주세요.");
-        return Integer.parseInt(response);
+        return Convertor.convertDayToNumber(response);
     }
 
     public static LocalTime readAttendanceEditAttendTime() {
         String response = prompt("언제로 변경하겠습니까?");
-        return LocalTime.parse(response);
+        return Convertor.convertStringToTime(response);
     }
 
     public static String readCrewAttendanceCrewName() {
