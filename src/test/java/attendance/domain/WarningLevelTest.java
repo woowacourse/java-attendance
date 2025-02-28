@@ -1,8 +1,7 @@
-package domain;
+package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.domain.WarningLevel;
 import org.junit.jupiter.api.Test;
 
 public class WarningLevelTest {

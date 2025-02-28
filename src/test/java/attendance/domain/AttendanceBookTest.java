@@ -1,12 +1,8 @@
-package domain;
+package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.domain.Attendance;
-import attendance.domain.AttendanceBook;
-import attendance.domain.CrewAttendance;
-import attendance.domain.CrewAttendances;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;

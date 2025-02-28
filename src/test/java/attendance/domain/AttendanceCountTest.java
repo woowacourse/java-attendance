@@ -1,12 +1,7 @@
-package domain;
+package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.domain.Attendance;
-import attendance.domain.AttendanceCount;
-import attendance.domain.AttendanceDate;
-import attendance.domain.AttendanceStatus;
-import attendance.domain.WarningLevel;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
