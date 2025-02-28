@@ -3,6 +3,7 @@ package attendance.domain;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -17,6 +18,24 @@ public class AttendanceRecordTest {
 
         //when & then
         assertDoesNotThrow(() -> new AttendanceRecord(attendanceTimes));
+    }
+
+    @Test
+    public void 원본_리스트_수정시_내부_리스트_영향_없음() {
+        //given
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 27, 9, 59);
+        LocalDateTime localDateTime2 = LocalDateTime.of(2025, 2, 28, 10, 31);
+        List<AttendanceTime> originalList = new ArrayList<>();
+        originalList.add(new AttendanceTime(localDateTime));
+        originalList.add(new AttendanceTime(localDateTime2));
+
+        AttendanceRecord attendanceRecord = new AttendanceRecord(originalList);
+
+        //when
+        originalList.add(new AttendanceTime(LocalDateTime.of(2025, 3, 1, 10, 31)));
+
+        //then
+        assertEquals(2, attendanceRecord.getAttendanceRecord().size());
     }
 
     @Test
