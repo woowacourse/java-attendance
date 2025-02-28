@@ -15,10 +15,17 @@ public class AttendanceBook {
     }
 
     //1. 출석등록
-    public void registerAttendance(Crew newCrew, LocalDateTime newAttendanceDateTime) {
-
+    public Attendance registerAttendance(Crew crew, LocalDateTime newAttendanceDateTime) {
+        validateCrewExistance(crew);
+        AttendanceLog attendanceLog = attendanceRecord.get(crew);
+        return attendanceLog.registerAttendance(newAttendanceDateTime);
     }
 
+    private void validateCrewExistance(Crew crew) {
+        if (attendanceRecord.get(crew) == null) {
+            throw new IllegalArgumentException("등록되지 않는 크루입니다");
+        }
+    }
 
     //2. 출석수정
 
