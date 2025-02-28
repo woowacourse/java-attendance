@@ -12,7 +12,9 @@ public class FileReaderTest {
     @DisplayName("닉네임과 출석 일시가 기록된 파일을 조회한다.")
     @Test
     void test1() {
-        InitialInformation initialInformation = FileReader.readAttendanceInfo();
+        FileReader fileReader = new FileReader();
+
+        InitialInformation initialInformation = fileReader.readAttendanceInfo();
         Set<CrewName> crewNames = initialInformation.value().keySet();
 
         assertThat(crewNames).hasSize(5);
