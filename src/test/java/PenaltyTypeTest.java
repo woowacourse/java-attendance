@@ -11,7 +11,7 @@ public class PenaltyTypeTest {
         int absenceCount = 2;
 
         // when & then
-        assertThat(PenaltyTypeFactory.create(0, absenceCount)).isEqualTo("경고");
+        assertThat(PenaltyType.findByAbsenceCount(absenceCount)).isEqualTo(PenaltyType.WARNING);
     }
 
     @Test
@@ -21,7 +21,7 @@ public class PenaltyTypeTest {
         int absenceCount = 3;
 
         // when & then
-        assertThat(PenaltyTypeFactory.create(0, absenceCount)).isEqualTo("면담");
+        assertThat(PenaltyType.findByAbsenceCount(absenceCount)).isEqualTo(PenaltyType.ONE_ON_ONE);
     }
 
     @Test
@@ -31,17 +31,6 @@ public class PenaltyTypeTest {
         int absenceCount = 6;
 
         // when & then
-        assertThat(PenaltyTypeFactory.create(0, absenceCount)).isEqualTo("제적");
-    }
-
-    @Test
-    @DisplayName("지각 3회는 결석 1회로 간주하여 패널티의 종류를 결정한다.")
-    void test4() {
-        // given
-        int absenceCount = 1;
-        int lateCount = 3;
-
-        // when & then
-        assertThat(PenaltyTypeFactory.create(lateCount, absenceCount)).isEqualTo("경고");
+        assertThat(PenaltyType.findByAbsenceCount(absenceCount)).isEqualTo(PenaltyType.BAN);
     }
 }

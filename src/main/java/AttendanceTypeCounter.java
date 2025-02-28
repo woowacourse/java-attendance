@@ -14,11 +14,9 @@ public class AttendanceTypeCounter {
 
         LocalDate firstDayOfMonth = YearMonth.from(requestedDate).atDay(1);
 
-        Map<LocalDate, AttendanceType> attendanceTypeCount = countOfAllDate(firstDayOfMonth, requestedDate,
-                sortedHistory);
-
-        return attendanceTypeCount;
+        return countOfAllDate(firstDayOfMonth, requestedDate, sortedHistory);
     }
+
 
     private static List<AttendanceHistory> sortAccordingToDate(List<AttendanceHistory> attendanceHistories) {
         return attendanceHistories.stream()

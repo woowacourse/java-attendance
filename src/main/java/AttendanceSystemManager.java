@@ -1,7 +1,7 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AttendanceSystemManager {
 
@@ -42,16 +42,13 @@ public class AttendanceSystemManager {
         List<AttendanceHistory> historiesOfCrew = attendanceHistories.findAllHistoriesOfCrewDateBefore(
                 crew, requestedAt);
 
-        Map<AttendanceType, Integer> countAttendanceTypes = historiesOfCrew.stream()
-                .collect(Collectors.toMap(
-                        attendanceHistory -> AttendanceType.findAttendanceTypeByDateTime(
-                                attendanceHistory.getAttendAt()),
-                        attendanceHistory -> 1,
-                        Integer::sum
-                ));
+        Map<LocalDate, AttendanceType> attendanceTypeOfDates = AttendanceTypeCounter.count(
+                requestedAt.toLocalDate(),
+                historiesOfCrew);
 
-        String penaltyType = PenaltyTypeFactory.create(countAttendanceTypes.getOrDefault(AttendanceType.LATE, 0),
-                countAttendanceTypes.getOrDefault(AttendanceType.ABSENCE, 0));
+        AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.createFrom(attendanceTypeOfDates);
 
+        PenaltyType penaltyType = PenaltyType.findByAbsenceCount(
+                attendanceTypeCount.getAdjustedAbsenceCount());
     }
 }

@@ -1,17 +1,25 @@
-public class PenaltyTypeFactory {
-    public static String create(int lateCount, int absenceCount) {
-        absenceCount += lateCount / 3;
+import java.util.Arrays;
+import java.util.function.Predicate;
 
-        if (absenceCount > 5) {
-            return "제적";
-        }
-        if (absenceCount >= 3) {
-            return "면담";
-        }
-        if (absenceCount >= 2) {
-            return "경고";
-        }
+enum PenaltyType {
 
-        return "";
+    ONE_ON_ONE((absenceCount) -> absenceCount >= 3 && absenceCount < 5),
+
+    BAN((absenceCount) -> absenceCount > 5),
+
+    WARNING((absenceCount) -> absenceCount == 2),
+    DEFAULT((absenceCount) -> true);
+
+    private final Predicate<Integer> condition;
+
+    PenaltyType(Predicate<Integer> condition) {
+        this.condition = condition;
+    }
+
+    public static PenaltyType findByAbsenceCount(int absenceCount) {
+        return Arrays.stream(PenaltyType.values())
+                .filter(penaltyType -> penaltyType.condition.test(absenceCount))
+                .findAny()
+                .orElse(PenaltyType.DEFAULT);
     }
 }

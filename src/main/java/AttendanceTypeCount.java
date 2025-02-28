@@ -1,0 +1,34 @@
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class AttendanceTypeCount {
+    private final Map<AttendanceType, Integer> attendanceTypeCount;
+
+    private AttendanceTypeCount(Map<AttendanceType, Integer> attendanceTypeCount) {
+        this.attendanceTypeCount = attendanceTypeCount;
+    }
+
+    public static AttendanceTypeCount createFrom(Map<LocalDate, AttendanceType> attendanceTypeOfDates) {
+        Map<AttendanceType, Integer> attendanceTypeCounts = attendanceTypeOfDates.values().stream()
+                .collect(Collectors.toMap(
+                        attendanceType -> attendanceType,
+                        attendanceType -> 1,
+                        Integer::sum
+                ));
+        return new AttendanceTypeCount(attendanceTypeCounts);
+    }
+
+    public int getAbsenceCount() {
+        return attendanceTypeCount.getOrDefault(AttendanceType.ABSENCE, 0);
+    }
+
+    public int getLateCount() {
+        return attendanceTypeCount.getOrDefault(AttendanceType.LATE, 0);
+    }
+
+    public int getAdjustedAbsenceCount() {
+        return getAbsenceCount() + getAbsenceCount() / 3;
+    }
+
+}

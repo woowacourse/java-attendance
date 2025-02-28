@@ -66,7 +66,7 @@ public class AttendanceSystemManagerTest {
         }
 
         @Test
-        @DisplayName("존재하지 않는 닉네임으로 출석을 시도하는 경우 예외가 발생한다.")
+        @DisplayName("존재하지 않는 닉네임으로 출석 수정을 시도하는 경우 예외가 발생한다.")
         void test4() {
             // given
             String nickname = "히로";
@@ -150,6 +150,29 @@ public class AttendanceSystemManagerTest {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
         }
+    }
+
+    @Nested
+    class TestForFindAllHistoriesOfCrew {
+        @Test
+        @DisplayName("존재하지 않는 닉네임으로 크루별 출석 조회를 시도하는 경우 예외가 발생한다.")
+        void test1() {
+            // given
+            String nickname = "히로";
+            Crew crew = new Crew(nickname);
+            Crews crews = new Crews(List.of(crew));
+            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+                    new AttendanceHistories(new ArrayList<>()), crews);
+
+            // when
+            assertThatThrownBy(() -> attendanceSystemManager.findAllHistoriesOfCrew("없음", attendAt))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("등록되지 않은 닉네임입니다.");
+        }
+
+
+
     }
 
 }
