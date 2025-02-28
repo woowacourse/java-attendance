@@ -12,7 +12,8 @@ public class DateTimeUtil {
     }
 
     public static LocalDate nowDate() {
-        return LocalDate.now();
+        return LocalDate.of(2025, 2, 28);
+//        return LocalDate.now();
     }
 
     public static boolean isInRange(LocalTime startTime, LocalTime endTime, LocalTime targetTime) {
