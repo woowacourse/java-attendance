@@ -1,6 +1,8 @@
 package attendance.model.attendance.log;
 
+import attendance.model.campus.CampusOperationPolicy;
 import attendance.model.crew.Crew;
+import java.time.LocalDate;
 import java.util.List;
 
 public class CrewAttendanceLog {
@@ -21,6 +23,10 @@ public class CrewAttendanceLog {
         return attendanceLogs.getValues();
     }
 
+    public boolean containsAttendanceLog(final AttendanceLog attendanceLog) {
+        return attendanceLogs.contains(attendanceLog);
+    }
+
     public int getAbsenceCount() {
         return attendanceLogs.getAbsenceCount();
     }
@@ -39,5 +45,21 @@ public class CrewAttendanceLog {
 
     public String getCrewNickname() {
         return crew.getNickName();
+    }
+
+    public boolean isSameCrew(final Crew crew) {
+        return this.crew.equals(crew);
+    }
+
+    public void updateAttendanceLog(final AttendanceLog from, final AttendanceLog to) {
+        attendanceLogs.update(from, to);
+    }
+
+    public List<AttendanceLog> getAllAttendanceLogs(
+            final LocalDate from,
+            final LocalDate to,
+            final CampusOperationPolicy campusOperationPolicy) {
+
+        return attendanceLogs.getAllAttendanceLogs(from, to, campusOperationPolicy);
     }
 }
