@@ -1,6 +1,6 @@
 package model;
 
-enum Command {
+public enum Command {
 
     ATTENDANCE_CHECK("1", "출석 확인"),
     ATTENDANCE_CORRECTION("2", "출석 수정"),
