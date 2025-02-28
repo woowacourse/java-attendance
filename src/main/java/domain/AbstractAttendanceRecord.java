@@ -6,10 +6,9 @@ import util.DateTimeUtil;
 import util.Validator;
 
 public abstract class AbstractAttendanceRecord {
-    protected final Crew crew;
-    protected final LocalDate date;
-    protected final AttendanceStatus status;
-
+    private final Crew crew;
+    private final LocalDate date;
+    private final AttendanceStatus status;
 
     public AbstractAttendanceRecord(Crew crew, LocalDate date, AttendanceStatus status) {
         validateCrew(crew);
@@ -59,5 +58,13 @@ public abstract class AbstractAttendanceRecord {
 
     public Crew getCrew() {
         return crew;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public AttendanceStatus getStatus() {
+        return status;
     }
 }

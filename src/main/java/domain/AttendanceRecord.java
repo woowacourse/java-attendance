@@ -33,22 +33,14 @@ public class AttendanceRecord extends AbstractAttendanceRecord {
     }
 
     public LocalDateTime getDateTime() {
-        return LocalDateTime.of(date, time);
-    }
-
-    public LocalDate getDate() {
-        return date;
+        return LocalDateTime.of(getDate(), time);
     }
 
     public LocalTime getTime() {
         return time;
     }
 
-    public AttendanceStatus getStatus() {
-        return status;
-    }
-
     public String getNickname() {
-        return crew.getNickname();
+        return getCrew().getNickname();
     }
 }

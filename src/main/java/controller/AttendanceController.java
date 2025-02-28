@@ -1,9 +1,11 @@
 package controller;
 
+import controller.dto.ModifyAttendanceRequest;
 import controller.dto.SaveAttendanceRequest;
 import java.util.HashMap;
 import java.util.Map;
 import service.AttendanceService;
+import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.SaveAttendanceRecordResponse;
 import util.DateTimeUtil;
 import util.ExceptionHandler;
@@ -24,7 +26,7 @@ public class AttendanceController {
 
     private void initCommandHandler() {
         COMMAND_HANDLER.put(MenuCommand.SAVE_ATTENDANCE_RECORD, this::saveAttendanceRecord);
-//        COMMAND_HANDLER.put(MenuCommand.MODIFY_ATTENDANCE_RECORD, this::modifyAttendanceRecord);
+        COMMAND_HANDLER.put(MenuCommand.MODIFY_ATTENDANCE_RECORD, this::modifyAttendanceRecord);
 //        COMMAND_HANDLER.put(MenuCommand.PRINT_MONTH_ATTENDANCE_STATISTICS, this::printMonthAttendanceStatistics);
 //        COMMAND_HANDLER.put(MenuCommand.PRINT_RISK_CREWS, this::printRiskCrews);
         COMMAND_HANDLER.put(MenuCommand.QUIT, this::exitController);
@@ -49,16 +51,16 @@ public class AttendanceController {
         });
     }
 
-//    private void modifyAttendanceRecord() {
-//        ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
-//            ModifyAttendanceRequest request = ModifyAttendanceRequest.of(
-//                    InputView.scanNicknameToModify(), DateTimeUtil.nowDate(),
-//                    InputView.scanDayToModify(), InputView.scanTimeToModify());
-//            ModifyAttendanceRecordResponse response = attendanceService.modifyAttendanceRecord(request);
-//
-//            OutputView.printModifiedAttendanceRecord(response);
-//        });
-//    }
+    private void modifyAttendanceRecord() {
+        ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {
+            ModifyAttendanceRequest request = ModifyAttendanceRequest.of(
+                    InputView.scanNicknameToModify(), DateTimeUtil.nowDate(),
+                    InputView.scanDayToModify(), InputView.scanTimeToModify());
+            ModifyAttendanceRecordResponse response = attendanceService.modifyAttendanceRecord(request);
+
+            OutputView.printModifiedAttendanceRecord(response);
+        });
+    }
 //
 //    private void printMonthAttendanceStatistics() {
 //        ExceptionHandler.printErrorMessageWithoutExitProgram(() -> {

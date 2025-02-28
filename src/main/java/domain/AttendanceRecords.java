@@ -43,4 +43,9 @@ public class AttendanceRecords {
                 .distinct()
                 .toList();
     }
+
+    public void overwriteAttendanceRecord(AttendanceRecord attendanceRecord) {
+        attendanceRecords.removeIf(record -> record.equals(attendanceRecord));
+        attendanceRecords.add(attendanceRecord);
+    }
 }

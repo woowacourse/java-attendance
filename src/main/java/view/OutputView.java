@@ -2,13 +2,14 @@ package view;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.SaveAttendanceRecordResponse;
 
 public class OutputView {
-    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm",
-            Locale.KOREAN);
 
     public static void printSavedAttendanceRecord(SaveAttendanceRecordResponse saved) {
+        final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm",
+                Locale.KOREAN);
         System.out.printf("%s (%s)%n",
                 saved.dateTime().format(DATE_TIME_FORMAT),
                 saved.status().getDescription()
@@ -16,19 +17,22 @@ public class OutputView {
         System.out.println();
     }
 
-//    public static void printModifiedAttendanceRecord(ModifyAttendanceRecordResponse modified) {
-//        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n",
-//                modified.date(),
-//                modified.before().time(), modified.before().status(),
-//                modified.after().time(), modified.after().status()
-//        );
-//        System.out.println();
-//    }
+    public static void printModifiedAttendanceRecord(ModifyAttendanceRecordResponse modified) {
+        final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM월 dd일 E요일",
+                Locale.KOREAN);
+        final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n",
+                modified.before().getDate().format(DATE_FORMAT),
+                modified.before().getTime().format(TIME_FORMAT), modified.before().getStatus().getDescription(),
+                modified.after().getTime(), modified.after().getStatus().getDescription()
+        );
+        System.out.println();
+    }
 //
 //    public static void printMonthAttendanceRecords(List<AttendanceRecordResponse> attendanceRecords) {
 //        attendanceRecords.forEach(record -> {
 //            System.out.printf("%s %s (%s)%n",
-//                    record.date(), record.time(), record.attendanceStatus());
+//                    record.date(), record.timeToModify(), record.attendanceStatus());
 //        });
 //        System.out.println();
 //    }

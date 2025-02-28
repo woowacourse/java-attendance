@@ -1,10 +1,12 @@
 package service;
 
+import controller.dto.ModifyAttendanceRequest;
 import controller.dto.SaveAttendanceRequest;
 import domain.AttendanceRecord;
 import domain.AttendanceRecords;
 import domain.Crew;
 import domain.Crews;
+import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.SaveAttendanceRecordResponse;
 
 public class AttendanceService {
@@ -33,5 +35,13 @@ public class AttendanceService {
 
         AttendanceRecord found = attendanceRecords.find(crew, request.date());
         return SaveAttendanceRecordResponse.of(found);
+    }
+
+    public ModifyAttendanceRecordResponse modifyAttendanceRecord(ModifyAttendanceRequest request) {
+        Crew crew = crews.findByNickname(request.nickname());
+        AttendanceRecord before = attendanceRecords.find(crew, request.date());
+        AttendanceRecord after = AttendanceRecord.of(crew, request.date(), request.timeToModify());
+        attendanceRecords.overwriteAttendanceRecord(after);
+        return new ModifyAttendanceRecordResponse(before, after);
     }
 }

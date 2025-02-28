@@ -9,7 +9,7 @@ import java.time.format.DateTimeParseException;
 public record ModifyAttendanceRequest(
         String nickname,
         LocalDate date,
-        LocalTime time
+        LocalTime timeToModify
 ) {
 
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
