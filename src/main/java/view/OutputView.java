@@ -1,14 +1,18 @@
 package view;
 
 import domain.AttendanceType;
+import domain.Crew;
+import domain.PenaltyType;
 import dto.AttendanceStatusDto;
 import dto.AttendanceStatusesOfCrewDto;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
@@ -54,7 +58,7 @@ public class OutputView {
             System.out.printf("%s: %d회%n", typeName, count);
         }
         String penaltyName = dto.penaltyType().getName();
-        System.out.printf("%s 대상자입니다.", penaltyName);
+        System.out.printf("%n%s 대상자입니다.%n%n", penaltyName);
     }
 
     public static void printErrorMessage(String message) {
@@ -79,5 +83,48 @@ public class OutputView {
                 Integer.parseInt(newStatusDto.hour()),
                 Integer.parseInt(newStatusDto.minute()),
                 newStatusDto.attendanceType().getName());
+    }
+
+    public static void printCrewOfBanRisk(Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew) {
+        Comparator<Map.Entry<Crew, Map<AttendanceType, Integer>>> penaltyTypeComparator = (p1, p2) -> {
+            List<PenaltyType> order = List.of(PenaltyType.BAN, PenaltyType.ONE_ON_ONE, PenaltyType.WARNING,
+                    PenaltyType.NONE);
+            int priorityP1 = order.indexOf(PenaltyType.getFrom(p1.getValue()));
+            int priorityP2 = order.indexOf(PenaltyType.getFrom(p2.getValue()));
+            return Integer.compare(priorityP1, priorityP2);
+        };
+
+        Comparator<Map.Entry<Crew, Map<AttendanceType, Integer>>> absenceComparator = (p1, p2) -> {
+            int absenceCountP1 = p1.getValue().getOrDefault(AttendanceType.ABSENCE, 0)
+                    + p1.getValue().getOrDefault(AttendanceType.LATE, 0) / 3;
+            int absenceCountP2 = p2.getValue().getOrDefault(AttendanceType.ABSENCE, 0)
+                    + p2.getValue().getOrDefault(AttendanceType.LATE, 0) / 3;
+
+            return Integer.compare(absenceCountP2, absenceCountP1);
+        };
+
+        List<Map.Entry<Crew, Map<AttendanceType, Integer>>> sortedAttendanceTypeCountOfCrew = attendanceTypeCountOfCrew.entrySet()
+                .stream()
+                .sorted(penaltyTypeComparator
+                        .thenComparing(absenceComparator)
+                        .thenComparing(entry -> entry.getKey().getNickname()))
+                .toList();
+
+        System.out.println("\n제적 위험자 조회 결과");
+        for (Entry<Crew, Map<AttendanceType, Integer>> entry : sortedAttendanceTypeCountOfCrew) {
+            String nickname = entry.getKey().getNickname();
+            Map<AttendanceType, Integer> attendanceTypeCount = entry.getValue();
+
+            if (PenaltyType.getFrom(attendanceTypeCount) == PenaltyType.NONE) {
+                continue;
+            }
+
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                    nickname,
+                    attendanceTypeCount.getOrDefault(AttendanceType.ABSENCE, 0),
+                    attendanceTypeCount.getOrDefault(AttendanceType.LATE, 0),
+                    PenaltyType.getFrom(attendanceTypeCount).getName()
+            );
+        }
     }
 }

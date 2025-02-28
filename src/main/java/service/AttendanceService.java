@@ -11,8 +11,10 @@ import dto.AttendanceStatusesOfCrewDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -54,7 +56,7 @@ public class AttendanceService {
 
     public AttendanceStatusesOfCrewDto getHistoriesDtoFrom(Crew crew, int untilDay) {
         List<AttendanceStatusDto> attendanceStatusDtos = new ArrayList<>();
-        Map<Integer, AttendanceHistory> historyOfDays = getAllHistoryOfDaysOf(crew, untilDay);
+        Map<Integer, AttendanceHistory> historyOfDays = getHistoryForEachDayOf(crew, untilDay);
         Map<AttendanceType, Integer> attendanceTypeCount = new HashMap<>();
 
         for (int currentDay = 1; currentDay < untilDay; currentDay++) {
@@ -80,9 +82,9 @@ public class AttendanceService {
         return new AttendanceStatusesOfCrewDto(attendanceStatusDtos, attendanceTypeCount, PenaltyType.getFrom(attendanceTypeCount));
     }
 
-    private Map<Integer, AttendanceHistory> getAllHistoryOfDaysOf(Crew crew, int untilDay) {
+    private Map<Integer, AttendanceHistory> getHistoryForEachDayOf(Crew crew, int untilDay) {
         List<AttendanceHistory> foundHistories = attendanceStorage.getAllHistoriesOf(crew, untilDay);
-        Map<Integer, AttendanceHistory> historyOfDays = foundHistories.stream()
+        Map<Integer, AttendanceHistory> historyForEachDay = foundHistories.stream()
                 .collect(
                         Collectors.toMap(
                                 history -> history.getAttendanceDateTime().getLocalDateTime().getDayOfMonth(),
@@ -92,14 +94,41 @@ public class AttendanceService {
 
         // 비어있는 값 (결석) 채우기
         for (int currentDay = 1; currentDay < untilDay; currentDay++) {
-            if (historyOfDays.containsKey(currentDay)) {
+            if (historyForEachDay.containsKey(currentDay)) {
                 continue;
             }
             AttendanceDateTime notRecordedAttendance = AttendanceDateTime.generateNotRecordedAttendanceOf(2024, 12, currentDay);
             AttendanceHistory absenceHistory = AttendanceHistory.of(crew, notRecordedAttendance);
-            historyOfDays.put(currentDay, absenceHistory);
+            historyForEachDay.put(currentDay, absenceHistory);
         }
 
-        return historyOfDays;
+        return historyForEachDay;
+    }
+
+    public Map<Crew, Map<AttendanceType, Integer>> getAllAttendanceTypeCountOfCrew(int untilDay) {
+        // 모든 등록된 크루 리스트 가져오기 -> getHistoryEachDayOf()로 각 크루별로 히스토리 목록 가져오기 -> Map으로 AttendanceTypeCount 만들기
+        Set<Crew> registeredCrews = attendanceStorage.getCrews();
+        Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = new HashMap<>();
+        for (Crew crew : registeredCrews) {
+            Map<Integer, AttendanceHistory> historyForEachDay = getHistoryForEachDayOf(crew, untilDay);
+            Map<AttendanceType, Integer> attendanceTypeCount = getAttendanceTypeCountFrom(historyForEachDay, untilDay);
+            attendanceTypeCountOfCrew.put(crew, attendanceTypeCount);
+        }
+
+        return attendanceTypeCountOfCrew;
+    }
+
+    private Map<AttendanceType, Integer> getAttendanceTypeCountFrom(Map<Integer, AttendanceHistory> historyForEachDay, int untilDay) {
+        Map<AttendanceType, Integer> attendanceTypeCount = new HashMap<>();
+
+        for (int currentDay = 1; currentDay < untilDay; currentDay++) {
+            AttendanceHistory currentDayHistory = historyForEachDay.get(currentDay);
+            if (currentDayHistory.getAttendanceDateTime().isRestDay()) {
+                continue;
+            }
+            attendanceTypeCount.merge(currentDayHistory.getAttendanceType(), 1, Integer::sum);
+        }
+
+        return attendanceTypeCount;
     }
 }

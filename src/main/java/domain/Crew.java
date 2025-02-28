@@ -9,6 +9,10 @@ public class Crew {
         this.nickname = nickname;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
     public static Crew from(String nickname) {
         return new Crew(nickname);
     }

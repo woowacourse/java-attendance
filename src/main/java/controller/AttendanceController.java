@@ -1,5 +1,6 @@
 package controller;
 
+import domain.AttendanceType;
 import domain.Crew;
 import dto.AttendanceStatusDto;
 import dto.AttendanceStatusesOfCrewDto;
@@ -7,7 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import service.AttendanceService;
 import view.FeatureType;
 import view.InputView;
@@ -76,8 +79,10 @@ public class AttendanceController {
         }
 
         if (featureType == FeatureType.CHECK_CREW_OF_BAN_RISK) {
-            // 제적 위험자를 모두 가져올 방법 생각 ...
-            return;
+            // 등록된 모든 크루에 대해 기록 가져오기 -> 기록으로부터 AttendanceTypeCount 만들기 -> 대상 크루에 대해서 출석 횟수 및 패널티 정보 넘기기 및 정렬
+            int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
+            Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = attendanceService.getAllAttendanceTypeCountOfCrew(13);
+            OutputView.printCrewOfBanRisk(attendanceTypeCountOfCrew);
         }
     }
 
