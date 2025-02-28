@@ -11,7 +11,7 @@ class AttendanceServiceTest {
     void checkNicknameRegistered1() throws FileNotFoundException {
         // given
         AttendanceStorage attendanceStorage = new AttendanceStorage();
-        AttendanceFileReader.readAttendanceFile(attendanceStorage);
+        AttendanceFileReader.applyAttendanceFileTo(attendanceStorage);
         AttendanceService attendanceService = new AttendanceService(attendanceStorage);
 
         // when
@@ -25,7 +25,7 @@ class AttendanceServiceTest {
     void checkNicknameRegistered2() throws FileNotFoundException {
         // given
         AttendanceStorage attendanceStorage = new AttendanceStorage();
-        AttendanceFileReader.readAttendanceFile(attendanceStorage);
+        AttendanceFileReader.applyAttendanceFileTo(attendanceStorage);
         AttendanceService attendanceService = new AttendanceService(attendanceStorage);
 
         // when

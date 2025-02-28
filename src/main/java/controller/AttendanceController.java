@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
@@ -27,65 +26,91 @@ public class AttendanceController {
     }
 
     public void run() {
-        while (true) {
-            FeatureType featureType = getFeature();
-            if (featureType == FeatureType.QUIT) {
-                break;
-            }
-            runFeature(featureType);
+        FeatureType selectedFeature;
+        while (shouldContinue(selectedFeature = getFeature())) {
+            runFeature(selectedFeature);
         }
+    }
+
+    private boolean shouldContinue(FeatureType featureType) {
+        return featureType != FeatureType.QUIT;
+    }
+
+    private static FeatureType getFeature() {
+        OutputView.printToday();
+        return InputView.askFeature();
     }
 
     private void runFeature(FeatureType featureType) {
         if (featureType == FeatureType.CHECK_ATTENDANCE) {
-            validateIsSchoolDay();
-            String nickname = InputView.askNickname(false);
-            validateNicknameRegistered(nickname);
-
-            // TODO: LocalDateTime을 아예 View에서 파싱해서 넘겨주는 게 더 좋은 설계일까? 고민
-            LocalTime localTime = InputView.askAttendanceTime(false);
-            LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(ZoneId.of("Asia/Seoul")), localTime);
-
-            Crew crew = Crew.from(nickname);
-            validateHistoryNotAlreadyExists(crew, dateTime);
-
-            AttendanceStatusDto dto = attendanceService.addAttendanceHistoryOf(crew, dateTime);
-            OutputView.printAttendanceStatus(dto);
+            runCheckAttendance();
             return;
         }
 
         if (featureType == FeatureType.EDIT_ATTENDANCE) {
-            String nickname = InputView.askNickname(true);
-            validateNicknameRegistered(nickname);
-            Crew crew = Crew.from(nickname);
-
-            LocalDate localDate = InputView.askDayForEdit();
-            LocalTime localTime = InputView.askAttendanceTime(true);
-            LocalDateTime newDateTime = LocalDateTime.of(localDate, localTime);
-            if (!attendanceService.checkHistoryAlreadyExists(crew, newDateTime)) {
-                OutputView.printErrorMessage("해당 날짜의 출석 기록이 존재하지 않습니다. 출석 확인 기능을 이용해주세요.");
-                return;
-            }
-
-            List<AttendanceStatusDto> statusDtos = attendanceService.replaceAttendanceHistoryOf(crew, newDateTime);
-            OutputView.printEditAttendanceStatus(statusDtos);
+            runEditAttendance();
             return;
         }
 
         if (featureType == FeatureType.CHECK_ATTENDANCE_OF_CREW) {
-            int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
-            String nickname = InputView.askNickname(false);
-            validateNicknameRegistered(nickname);
-            AttendanceStatusesOfCrewDto statusesDto = attendanceService.getHistoriesDtoFrom(Crew.from(nickname), currentDay);
-            OutputView.printAttendanceStatus(statusesDto, nickname);
+            runCheckAttendanceOfCrew();
             return;
         }
 
         if (featureType == FeatureType.CHECK_CREW_OF_BAN_RISK) {
-            int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
-            Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = attendanceService.getAllAttendanceTypeCountOfCrew(currentDay);
-            OutputView.printCrewOfBanRisk(attendanceTypeCountOfCrew);
+            runCheckCrewOfBanRisk();
+            return;
         }
+
+        if (featureType == FeatureType.QUIT) {
+            return;
+        }
+    }
+
+    private void runCheckAttendance() {
+        validateIsSchoolDay();
+        String nickname = InputView.askNickname(false);
+        validateNicknameRegistered(nickname);
+
+        LocalTime localTime = InputView.askAttendanceTime(false);
+        LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(ZoneId.of("Asia/Seoul")), localTime);
+
+        Crew crew = Crew.from(nickname);
+        validateHistoryNotAlreadyExists(crew, dateTime);
+
+        AttendanceStatusDto dto = attendanceService.addAttendanceHistoryOf(crew, dateTime);
+        OutputView.printAttendanceStatus(dto);
+    }
+
+    private void runEditAttendance() {
+        String nickname = InputView.askNickname(true);
+        validateNicknameRegistered(nickname);
+        Crew crew = Crew.from(nickname);
+
+        LocalDate localDate = InputView.askDayForEdit();
+        LocalTime localTime = InputView.askAttendanceTime(true);
+        LocalDateTime newDateTime = LocalDateTime.of(localDate, localTime);
+        if (!attendanceService.checkHistoryAlreadyExists(crew, newDateTime)) {
+            OutputView.printErrorMessage("해당 날짜의 출석 기록이 존재하지 않습니다. 출석 확인 기능을 이용해주세요.");
+            return;
+        }
+
+        List<AttendanceStatusDto> statusDtos = attendanceService.replaceAttendanceHistoryOf(crew, newDateTime);
+        OutputView.printEditAttendanceStatus(statusDtos);
+    }
+
+    private void runCheckAttendanceOfCrew() {
+        int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
+        String nickname = InputView.askNickname(false);
+        validateNicknameRegistered(nickname);
+        AttendanceStatusesOfCrewDto statusesDto = attendanceService.getHistoriesDtoFrom(Crew.from(nickname), currentDay);
+        OutputView.printAttendanceStatus(statusesDto, nickname);
+    }
+
+    private void runCheckCrewOfBanRisk() {
+        int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
+        Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = attendanceService.getAllAttendanceTypeCountOfCrew(currentDay);
+        OutputView.printCrewOfBanRisk(attendanceTypeCountOfCrew);
     }
 
     private void validateIsSchoolDay() {
@@ -112,10 +137,5 @@ public class AttendanceController {
             OutputView.printErrorMessage("등록되지 않은 닉네임입니다.");
             throw new IllegalArgumentException();
         }
-    }
-
-    private static FeatureType getFeature() {
-        OutputView.printToday();
-        return InputView.askFeature();
     }
 }
