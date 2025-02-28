@@ -26,12 +26,10 @@ public enum AttendanceStatus {
         if (attendedTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             startTime = 13;
         }
-        // 시작 시각으로부터 30분 초과는 결석으로 간주한다.
         if ((attendedTime.getHour() == startTime && attendedTime.getMinute() > 30) || (attendedTime.getHour()
                 > startTime)) {
             return ABSENT;
         }
-        // 시작 시각으로부터 5분 초과는 지각으로 간주한다.
         if (attendedTime.getHour() == startTime && attendedTime.getMinute() > 5) {
             return LATE;
         }

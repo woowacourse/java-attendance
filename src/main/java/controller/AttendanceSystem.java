@@ -2,7 +2,9 @@ package controller;
 
 import static java.lang.Integer.parseInt;
 import static view.OutputView.getFormattedDayInfo;
+import static view.OutputView.printCheckedAttendance;
 import static view.OutputView.printMenu;
+import static view.OutputView.printModifyResult;
 import static view.UserInputView.*;
 
 import domain.AllCrew;
@@ -13,10 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
-import view.OutputView;
-import view.UserInputView;
 
 public class AttendanceSystem {
     private final LocalDate today;
@@ -57,7 +56,7 @@ public class AttendanceSystem {
         int date = parseInt(askAttendedDate());
         List<String> hourAndMinute = List.of(askTimeForModify().split(":"));
         LocalTime timeTo = LocalTime.of(parseInt(hourAndMinute.getFirst()), parseInt(hourAndMinute.getLast()));
-        OutputView.printModifyResult(crew.modifyAttendedTime(date, timeTo));
+        printModifyResult(crew.modifyAttendedTime(date, timeTo));
     }
 
     private void checkAttendance() {
@@ -65,7 +64,7 @@ public class AttendanceSystem {
         Crew crew = allCrew.findCrewByName(crewName);
         List<String> hourAndMinute = List.of(askAttendanceTime().split(":"));
         LocalTime time = LocalTime.of(parseInt(hourAndMinute.getFirst()), parseInt(hourAndMinute.getLast()));
-        OutputView.printCheckedAttendance(crew.addAttendanceWithDateTime(LocalDateTime.of(today, time)));
+        printCheckedAttendance(crew.addAttendanceWithDateTime(LocalDateTime.of(today, time)));
     }
 
 }

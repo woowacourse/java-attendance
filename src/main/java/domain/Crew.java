@@ -83,10 +83,6 @@ public class Crew {
         attendanceHistory.add(new Attendance(LocalDateTime.of(2024, 12, day, 22, 59, 59)));
     }
 
-    // 경고 대상자: 결석 2회 이상
-    //  - 면담 대상자: 결석 3회 이상
-    //  - 제적 대상자: 결석 5회 초과
-
     public Penalty getPenalty() {
         int penaltyStandard = getAbsentCount() + (getLateCount() / 3);
         if (penaltyStandard > EXPEL.getCount()) {
@@ -102,7 +98,6 @@ public class Crew {
     }
 
     public ModifyResult modifyAttendedTime(int date, LocalTime localTime) {
-        // 이전 시간 다음 시간 둘 다 뭉쳐서 리턴하기~
         if (isEmptyDay(date)) {
             throw new IllegalArgumentException(ERROR_MESSAGE.EMPTY_DATE.getMessage());
         }
