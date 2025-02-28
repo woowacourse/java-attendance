@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class AttendanceDate {
 
@@ -81,6 +82,14 @@ public class AttendanceDate {
         return month == 12 && day == 25;
     }
 
+    public static AttendanceDate from(final LocalDate localDate) {
+        return new AttendanceDate(
+            localDate.getYear(),
+            localDate.getMonthValue(),
+            localDate.getDayOfMonth()
+        );
+    }
+
     public AttendanceDayOfWeek getAttendanceDayOfWeekDayOfWeek() {
         return AttendanceDayOfWeek.from(LocalDate.of(year, month, day));
     }
@@ -95,5 +104,21 @@ public class AttendanceDate {
 
     public int getDay() {
         return day;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final AttendanceDate that = (AttendanceDate) o;
+        
+        return year == that.year && month == that.month && day == that.day;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(year, month, day);
     }
 }

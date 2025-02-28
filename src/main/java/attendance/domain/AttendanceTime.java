@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import java.time.LocalTime;
+import java.util.Objects;
 import java.util.Optional;
 
 public class AttendanceTime {
@@ -43,11 +45,32 @@ public class AttendanceTime {
         }
     }
 
+    public static AttendanceTime from(final LocalTime localTime) {
+        return new AttendanceTime(localTime.getHour(), localTime.getMinute());
+    }
+
     public Optional<Integer> getHour() {
         return Optional.ofNullable(hour);
     }
 
     public Optional<Integer> getMinute() {
         return Optional.ofNullable(minute);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        
+        final AttendanceTime that = (AttendanceTime) o;
+
+        return Objects.equals(hour, that.hour)
+            && Objects.equals(minute, that.minute);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hour, minute);
     }
 }
