@@ -53,4 +53,8 @@ public class AttendanceDate {
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
+
+    public AttendanceStatus getStatus() {
+        return status;
+    }
 }
