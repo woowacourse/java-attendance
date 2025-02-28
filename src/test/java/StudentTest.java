@@ -1,3 +1,5 @@
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.Assertions;
@@ -145,5 +147,20 @@ public class StudentTest {
         student.nonAttendanceRecordStatusIsAbsent(today);
         AttendanceStatus result = student.attendanceStatusRecords.get(today);
         Assertions.assertEquals(expect, result);
+    }
+
+    @Test
+    @DisplayName("이미 출석 기록이 있을 경우 출석 시도 시 예외 테스트")
+    void 이미_출석_기록이_존재하는_경우(){
+        LocalDate todayDate = LocalDate.of(2024,12,13);
+        String attendanceTime = "10:59";
+        String duplicateAttendanceTime = "11:02";
+
+        student.registerAttendanceRecord(todayDate, attendanceTime);
+
+        assertThatThrownBy(() -> student.registerAttendanceRecord(todayDate, duplicateAttendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 출석기록이 존재합니다.");
+
     }
 }
