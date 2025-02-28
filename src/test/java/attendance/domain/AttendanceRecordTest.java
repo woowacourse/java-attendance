@@ -18,14 +18,14 @@ class AttendanceRecordTest {
         LocalDate nowDate = LocalDate.now();
 
         AttendanceRecord baseRecord = new AttendanceRecord(List.of(
-                new Attendance(LocalDateTime.of(nowDate, LocalTime.of(13, 0))),
-                new Attendance(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
-                new Attendance(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
+                Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(13, 0))),
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
         ));
 
         List<Attendance> exceptedRecord = List.of(
-                new Attendance(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
-                new Attendance(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
         );
 
         // when

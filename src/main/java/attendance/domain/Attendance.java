@@ -10,11 +10,14 @@ public class Attendance {
     private final LocalDateTime dateTime;
     private final AttendanceState state;
 
-    public Attendance(final LocalDateTime dateTime) {
+    private Attendance(final LocalDateTime dateTime, final AttendanceState state) {
         this.dateTime = dateTime;
+        this.state = state;
+    }
 
-        int overTime = ClassTime.calculateAttendanceDifference(dateTime);
-        this.state = AttendanceState.evaluate(overTime);
+    public static Attendance fromDateTime(final LocalDateTime dateTime) {
+        AttendanceState state = AttendanceState.evaluate(dateTime);
+        return new Attendance(dateTime, state);
     }
 
     public boolean isSameDate(final LocalDate date) {

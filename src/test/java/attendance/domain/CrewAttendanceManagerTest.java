@@ -22,7 +22,7 @@ class CrewAttendanceManagerTest {
         // given
         LocalDate nowDate = LocalDate.now();
 
-        Attendance attendance = new Attendance(LocalDateTime.of(nowDate, LocalTime.MAX));
+        Attendance attendance = Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX));
         Attendances attendances = new Attendances(List.of(attendance));
 
         String nickname = "비타";
@@ -47,7 +47,7 @@ class CrewAttendanceManagerTest {
         LocalDate nowDate = LocalDate.now();
         LocalDateTime baseDateTime = LocalDateTime.of(nowDate, LocalTime.of(18, 0));
 
-        Attendance attendance = new Attendance(baseDateTime);
+        Attendance attendance = Attendance.fromDateTime(baseDateTime);
         Attendances attendances = new Attendances(List.of(attendance));
 
         String nickname = "비타";
@@ -75,14 +75,14 @@ class CrewAttendanceManagerTest {
         LocalDate nowDate = LocalDate.now();
 
         Attendances baseRecord = new Attendances(List.of(
-                new Attendance(LocalDateTime.of(nowDate, LocalTime.of(13, 0))),
-                new Attendance(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
-                new Attendance(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
+                Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(13, 0))),
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
         ));
 
         List<Attendance> exceptedRecord = List.of(
-                new Attendance(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
-                new Attendance(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
+                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
         );
 
         String nickname = "비타";
