@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendancesTest {
 
@@ -27,8 +28,10 @@ class AttendancesTest {
         Attendance result = newAttendances.findAttendanceByDate(checkDateTime.toLocalDate());
 
         // then
-        assertThat(result.getDateTime())
-                .isEqualTo(checkDateTime);
+        assertAll(
+                () -> assertThat(result.getDateTime()).isEqualTo(checkDateTime),
+                () -> assertThat(result.getState()).isEqualTo(AttendanceState.ATTENDANCE)
+        );
     }
 
     @Test
@@ -53,14 +56,16 @@ class AttendancesTest {
         Attendance defaultAttendance = new Attendance(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0)));
         Attendances attendances = new Attendances(List.of(defaultAttendance));
 
-        LocalDateTime updateDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(11, 0));
+        LocalDateTime updateDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0));
 
         // when
         Attendances newAttendances = attendances.updateAttendance(updateDateTime);
         Attendance result = newAttendances.findAttendanceByDate(updateDateTime.toLocalDate());
 
         // then
-        assertThat(result.getDateTime())
-                .isEqualTo(updateDateTime);
+        assertAll(
+                () -> assertThat(result.getDateTime()).isEqualTo(updateDateTime),
+                () -> assertThat(result.getState()).isEqualTo(AttendanceState.ATTENDANCE)
+        );
     }
 }
