@@ -9,24 +9,26 @@ import java.time.LocalTime;
 
 public class AttendancePolicy {
     private static final LocalTime MONDAY_ABSENCE_THRESHOLD = LocalTime.of(13, 30);
-    private static final LocalTime MONDAY_LATE_THRESHOLD = LocalTime.of(13, 05);
-    private static final LocalTime NOT_MONDAY_ABSENCE_THRESHOLD = LocalTime.of(10, 30);
-    private static final LocalTime NOT_MONDAY_LATE_THRESHOLD = LocalTime.of(10, 05);
+    private static final LocalTime MONDAY_LATE_THRESHOLD = LocalTime.of(13, 5);
+    private static final LocalTime GENERAL_ABSENCE_THRESHOLD = LocalTime.of(10, 30);
+    private static final LocalTime GENERAL_LATE_THRESHOLD = LocalTime.of(10, 5);
 
-    public static AttendanceStatus calculateAttendanceStatus(DayOfWeek attendanceDay, LocalTime attendanceTime) {
-        if (attendanceDay == DayOfWeek.MONDAY) {
-            if (attendanceTime.isAfter(MONDAY_ABSENCE_THRESHOLD)) {
-                return ABSENCE;
-            }
-            if (attendanceTime.isAfter(MONDAY_LATE_THRESHOLD)) {
-                return LATE;
-            }
-            return ATTENDANCE;
+    public static AttendanceStatus calculateAttendanceStatus(final DayOfWeek attendanceDay,
+                                                             final LocalTime attendanceTime) {
+        boolean isMonday = attendanceDay == DayOfWeek.MONDAY;
+        if (isMonday) {
+            return calculateStatus(attendanceTime, MONDAY_ABSENCE_THRESHOLD, MONDAY_LATE_THRESHOLD);
         }
-        if (attendanceTime.isAfter(NOT_MONDAY_ABSENCE_THRESHOLD)) {
+        return calculateStatus(attendanceTime, GENERAL_ABSENCE_THRESHOLD, GENERAL_LATE_THRESHOLD);
+    }
+
+    private static AttendanceStatus calculateStatus(final LocalTime attendanceTime,
+                                                    final LocalTime absenceThreshold,
+                                                    final LocalTime lateThreshold) {
+        if (attendanceTime.isAfter(absenceThreshold)) {
             return ABSENCE;
         }
-        if (attendanceTime.isAfter(NOT_MONDAY_LATE_THRESHOLD)) {
+        if (attendanceTime.isAfter(lateThreshold)) {
             return LATE;
         }
         return ATTENDANCE;
