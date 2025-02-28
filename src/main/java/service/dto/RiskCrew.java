@@ -14,7 +14,7 @@ public record RiskCrew(
         if (riskCount == opponentRiskCount) {
             return nickname.compareTo(o.nickname);
         }
-        return o.riskCount() - riskCount();
+        return opponentRiskCount - riskCount;
     }
 
     public int riskCount() {
