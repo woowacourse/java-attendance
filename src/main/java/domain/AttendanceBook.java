@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +17,8 @@ public class AttendanceBook {
     }
 
     public Attendances getAttendances(String nickname) {
-        if (crewsAttendances.containsKey(nickname)) {
-            return crewsAttendances.get(nickname);
-        }
-        throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        validateNickname(nickname);
+        return crewsAttendances.get(nickname);
     }
 
     public void recordAllAbsences() {
@@ -34,5 +33,17 @@ public class AttendanceBook {
             }
         });
         return penaltyHistory;
+    }
+
+    public void isAlreadyAttended(String nickname, LocalDate date) {
+        if (crewsAttendances.get(nickname).isAlreadyAttended(date)) {
+            throw new IllegalStateException("[ERROR] 이미 출석이 완료되었습니다. 수정 기능을 이용하세요.");
+        }
+    }
+
+    private void validateNickname(String nickname) {
+        if (!crewsAttendances.containsKey(nickname)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
 }

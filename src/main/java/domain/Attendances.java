@@ -44,7 +44,7 @@ public class Attendances {
                 .orElseThrow(() -> new IllegalStateException("[ERROR] 해당일에 출석 기록이 없습니다."));
     }
 
-    private Boolean isAlreadyAttended(LocalDate date) {
+    protected Boolean isAlreadyAttended(LocalDate date) {
         return attendances.stream()
                 .anyMatch(attendance -> attendance.has(new Day(date)));
     }
