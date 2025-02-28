@@ -11,15 +11,15 @@ public enum AcademicStatus {
     NOT("없음", count -> count < 2);
 
     private final String status;
-    private final Predicate<Integer> determineStatusConditions;
+    private final Predicate<Long> determineStatusConditions;
 
-    AcademicStatus(String status, Predicate<Integer> determineStatusConditions) {
+    AcademicStatus(String status, Predicate<Long> determineStatusConditions) {
         this.status = status;
         this.determineStatusConditions = determineStatusConditions;
     }
 
-    public static AcademicStatus getStatus(int late, int absent) {
-        int totalCount = late / 3 + absent;
+    public static AcademicStatus getStatus(long late, long absent) {
+        long totalCount = late / 3 + absent;
 
         return Stream.of(values())
                 .filter(status -> status.determineStatusConditions.test(totalCount))

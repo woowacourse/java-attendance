@@ -28,7 +28,6 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus getStatusByTime(LocalTime arrivalTime, LocalTime startTime) {
-
         return Arrays.stream(AttendanceStatus.values())
                 .filter(attendanceStatus -> attendanceStatus.matches(arrivalTime, startTime))
                 .findFirst()

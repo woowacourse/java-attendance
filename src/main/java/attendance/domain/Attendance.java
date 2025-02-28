@@ -30,9 +30,9 @@ public class Attendance {
     public boolean isSameYearAndMonth(int year, int month) {
         return attendanceTime.isSameYearAndMonth(year, month);
     }
-    
-    public AttendanceStatus checkStatus(int hour, int minute) {
-        return attendanceTime.getStatus(hour, minute);
+
+    public AttendanceStatus checkStatus(int startHour, int startMinute) {
+        return attendanceTime.getStatus(startHour, startMinute);
     }
 
     @Override
