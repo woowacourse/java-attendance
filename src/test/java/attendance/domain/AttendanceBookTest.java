@@ -70,7 +70,7 @@ class AttendanceBookTest {
         // given
 
         // when
-        long totalCount = attendanceBook.getCountAcademicStatus(AttendanceStatus.LATE, "체체", 2025, 2, 10, 0);
+        long totalCount = attendanceBook.getCountAcademicStatus(AttendanceStatus.LATE, "체체", 2025, 2, 25);
 
         // then
         assertThat(totalCount).isEqualTo(5);
@@ -83,7 +83,7 @@ class AttendanceBookTest {
         // given
 
         // when
-        AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCrewName("체체", 2025, 2, 10, 0);
+        AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCrewName("체체", 2025, 2, 28);
 
         // then
         assertThat(academicStatus).isEqualTo(AcademicStatus.INTERVIEW);

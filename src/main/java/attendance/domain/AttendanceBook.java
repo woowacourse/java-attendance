@@ -19,19 +19,19 @@ public class AttendanceBook {
     }
 
     public long getCountAcademicStatus(AttendanceStatus attendanceStatus, String crewName, int year, int month,
-                                       int startHour,
-                                       int startMinute) {
-        return attendances.getStatusCount(attendanceStatus, crewName, year, month, startHour, startMinute);
+                                       int day) {
+        return attendances.getStatusCount(attendanceStatus, crewName, year, month, day);
     }
 
-    public AcademicStatus getAcademicStatusByCrewName(String crewName, int year, int month, int startHour,
-                                                      int startMinute) {
+    public AcademicStatus getAcademicStatusByCrewName(String crewName, int year, int month, int day) {
 
-        long late = getCountAcademicStatus(AttendanceStatus.LATE, crewName, year, month, startHour,
-                startMinute);
-        long absent = getCountAcademicStatus(AttendanceStatus.ABSENT, crewName, year, month, startHour,
-                startMinute);
+        long late = getCountAcademicStatus(AttendanceStatus.LATE, crewName, year, month, day);
+        long absent = getCountAcademicStatus(AttendanceStatus.ABSENT, crewName, year, month, day);
 
         return AcademicStatus.getStatus(late, absent);
+    }
+
+    public void addAttendance(Attendance attendance) {
+        attendances.add(attendance);
     }
 }

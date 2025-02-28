@@ -2,6 +2,7 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,11 +18,11 @@ class AttendanceStatusTest {
     void 교육시간_입실시간을_비교하여_출석_상태를_결정한다(int minute, AttendanceStatus attendanceStatus) {
 
         // given
-        LocalTime startTime = LocalTime.of(10, 0);
         LocalTime arrivalTime = LocalTime.of(10, minute);
 
         // when
-        AttendanceStatus currentAttendanceStatus = AttendanceStatus.getStatusByTime(arrivalTime, startTime);
+        AttendanceStatus currentAttendanceStatus = AttendanceStatus.getStatusByTime(arrivalTime,
+                LocalDate.of(2025, 2, 28));
 
         // then
         assertThat(currentAttendanceStatus).isEqualTo(attendanceStatus);

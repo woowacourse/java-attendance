@@ -1,6 +1,8 @@
 package attendance.domain;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.function.BiPredicate;
@@ -27,11 +29,19 @@ public enum AttendanceStatus {
         this.timeCondition = timeCondition;
     }
 
-    public static AttendanceStatus getStatusByTime(LocalTime arrivalTime, LocalTime startTime) {
+    public static AttendanceStatus getStatusByTime(LocalTime arrivalTime, LocalDate date) {
+        LocalTime startTime = getStartTimeByDayOfWeek(date.getDayOfWeek());
         return Arrays.stream(AttendanceStatus.values())
                 .filter(attendanceStatus -> attendanceStatus.matches(arrivalTime, startTime))
                 .findFirst()
                 .orElse(ABSENT);
+    }
+
+    private static LocalTime getStartTimeByDayOfWeek(DayOfWeek dayOfWeek) {
+        if (dayOfWeek == DayOfWeek.MONDAY) {
+            return LocalTime.of(13, 0);
+        }
+        return LocalTime.of(10, 0);
     }
 
     private boolean matches(LocalTime arrivalTime, LocalTime startTime) {

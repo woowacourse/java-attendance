@@ -106,7 +106,7 @@ class AttendancesTest {
         attendances.add(attendance3);
 
         // when
-        long statusCount = attendances.getStatusCount(status, crewName, 2025, 2, 10, 0);
+        long statusCount = attendances.getStatusCount(status, crewName, 2025, 2, 28);
 
         // then
         assertThat(statusCount).isEqualTo(result);
@@ -128,7 +128,7 @@ class AttendancesTest {
         attendances.add(attendance5);
 
         // when
-        long count = attendances.getStatusCount(AttendanceStatus.ABSENT, crewName, 2025, 2, 10, 0);
+        long count = attendances.getStatusCount(AttendanceStatus.ABSENT, crewName, 2025, 2, 25);
 
         // then
         assertThat(count).isEqualTo(4);

@@ -44,12 +44,32 @@ public class Time {
                 .withHour(modifyTime.getHour())
                 .withMinute(modifyTime.getMinute());
     }
-    
-    public AttendanceStatus getStatus(int hour, int minute) {
-        return AttendanceStatus.getStatusByTime(attendanceTime.toLocalTime(), LocalTime.of(hour, minute));
+
+    public AttendanceStatus getStatus(int year, int month, int day) {
+        return AttendanceStatus.getStatusByTime(attendanceTime.toLocalTime(), LocalDate.of(year, month, day));
     }
 
     public LocalDate getLocalDate() {
         return attendanceTime.toLocalDate();
+    }
+
+    public int getMonth() {
+        return attendanceTime.getMonthValue();
+    }
+
+    public int getDay() {
+        return attendanceTime.getDayOfMonth();
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return attendanceTime.getDayOfWeek();
+    }
+
+    public int getHour() {
+        return attendanceTime.getHour();
+    }
+
+    public int getMinute() {
+        return attendanceTime.getMinute();
     }
 }
