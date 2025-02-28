@@ -2,7 +2,6 @@ package service;
 
 import domain.AttendanceRecord;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -18,8 +17,7 @@ public class AttendanceRecordLoader {
     }
 
     public static List<AttendanceRecord> loadAttendanceRecordsFromFile() {
-        File file = new File(ATTENDANCE_RECORDS_FILE_PATH);
-        try (FileReader fr = new FileReader(file);
+        try (FileReader fr = new FileReader(ATTENDANCE_RECORDS_FILE_PATH);
              BufferedReader br = new BufferedReader(fr);
         ) {
             return br.lines().skip(1)
