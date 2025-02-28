@@ -7,6 +7,9 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class CrewsController {
     private static final String ATTENDANCES_CSV = "src/main/resources/attendances.csv";
@@ -14,6 +17,14 @@ public class CrewsController {
 
     private final InputView inputView;
     private final OutputView outputView;
+
+    private final Map<Command, Consumer<Crews>> commandProcesses =
+            new HashMap<>() {{
+                put(Command.CONFIRM_ATTENDANCE, crews -> confirmAttendance(crews));
+                put(Command.UPDATE_ATTENDANCE, crews -> updateAttendance(crews));
+                put(Command.PRINT_CREW_ATTENDANCES, crews -> printCrewAttendances(crews));
+                put(Command.PRINT_WARNING_EXPULSION_CREWS, crews -> printWarningExpulsionCrews(crews));
+            }};
 
     public CrewsController() {
         this.inputView = new InputView();
