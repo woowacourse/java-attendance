@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum Penalty {
-    EXPULSION("제적"),
-    INTERVIEW("면담"),
-    WARNING("경고"),
-    NONE("해당 없음"),
+    EXPULSION(0, "제적"),
+    INTERVIEW(1, "면담"),
+    WARNING(2, "경고"),
+    NONE(3, "해당 없음"),
     ;
 
     public static final int PENALTY_THRESHOLD_EXPULSION = 6;
@@ -15,10 +15,12 @@ public enum Penalty {
     public static final int PENALTY_THRESHOLD_WARNING = 2;
     public static final int LATE_TO_ABSENT_UNIT = 3;
 
+    private final int priority;
     private final String message;
 
-    Penalty(String message) {
+    Penalty(int priority, String message) {
         this.message = message;
+        this.priority = priority;
     }
 
     public static String findPenaltyMessageByAttendanceStatusCount(int lateCount, int absentCount) {
@@ -53,8 +55,11 @@ public enum Penalty {
         return values;
     }
 
-
     public String getMessage() {
         return message;
+    }
+
+    public int getPriority() {
+        return priority;
     }
 }

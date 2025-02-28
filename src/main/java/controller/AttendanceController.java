@@ -98,7 +98,7 @@ public class AttendanceController {
     }
 
     private List<CrewsWithPenaltyResponse> createCrewsWithPenaltyResponseByPenalty(Penalty penalty) {
-        List<Crew> penaltyCrews = attendanceBook.findCrewsByPenalty(penalty);
+        List<Crew> penaltyCrews = attendanceBook.findCrewsWithPenalty();
 
         return penaltyCrews.stream()
                 .map(CrewsWithPenaltyResponse::fromCrew)

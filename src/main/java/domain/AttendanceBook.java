@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class AttendanceBook {
@@ -60,9 +61,13 @@ public class AttendanceBook {
         return crew.getPenalty();
     }
 
-    public List<Crew> findCrewsByPenalty(Penalty penalty) {
+    public List<Crew> findCrewsWithPenalty() {
         return crews.stream()
-                .filter(crew -> crew.hasPenalty(penalty))
+                .filter(crew -> !crew.hasPenalty(Penalty.NONE))
+                .sorted(Comparator.comparing(Crew::getPenalty, Comparator.comparingInt(Penalty::getPriority))
+                        .thenComparing(crew -> crew.countAttendanceStatusInDecember(AttendanceStatus.ABSENT) +
+                                crew.countAttendanceStatusInDecember(AttendanceStatus.LATE), Comparator.reverseOrder())
+                        .thenComparing(Crew::getName))
                 .toList();
     }
 }
