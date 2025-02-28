@@ -1,5 +1,6 @@
 package attendance.loader;
 
+import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.Crew;
@@ -20,7 +21,7 @@ public class AttendanceAssembler {
         this.policy = policy;
     }
 
-    public Map<Crew, AttendanceHistory> assembleDatas() {
+    public AttendanceBook assembleDatas() {
         loader.load();
         Map<String, List<LocalDateTime>> rawDatas = loader.getRawDatas();
 
@@ -31,7 +32,7 @@ public class AttendanceAssembler {
                     new AttendanceRecord(new WoowaDate(dateTime.toLocalDate(), policy), dateTime.toLocalTime())));
             histories.put(new Crew(crewName), history);
         });
-        return histories;
+        return new AttendanceBook(histories);
     }
 
 }
