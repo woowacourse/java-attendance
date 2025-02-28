@@ -8,6 +8,7 @@ import attendance.model.AttendancesFile;
 import attendance.model.Command;
 import attendance.model.EducationSchedule;
 import attendance.model.Nickname;
+import attendance.model.NicknameRoster;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -31,19 +32,22 @@ public class AttendanceController {
 
     public void start(LocalDate baseDate) {
         AttendanceLogs attendanceLogs = loadAttendanceLogs();
+        NicknameRoster nicknameRoster = new NicknameRoster(attendanceLogs.getAllNicknames());
         boolean shouldContinue;
         do {
             outputView.printDate(baseDate);
-            shouldContinue = processInputCommand(baseDate, attendanceLogs);
+            shouldContinue = processInputCommand(baseDate, attendanceLogs, nicknameRoster);
         } while (shouldContinue);
     }
 
-    private boolean processInputCommand(LocalDate baseDate, AttendanceLogs attendanceLogs) {
+    private boolean processInputCommand(LocalDate baseDate,
+                                        AttendanceLogs attendanceLogs,
+                                        NicknameRoster nicknameRoster) {
         Command command = readCommand();
         if (command == Command.QUIT) {
             return false;
         }
-        executeCommand(command, baseDate, attendanceLogs);
+        executeCommand(command, baseDate, attendanceLogs, nicknameRoster);
         return true;
     }
 
@@ -56,33 +60,35 @@ public class AttendanceController {
         return new AttendancesFile().load("src/main/resources/attendances.csv");
     }
 
-    private void executeCommand(Command command, LocalDate baseDate, AttendanceLogs attendanceLogs) {
+    private void executeCommand(Command command,
+                                LocalDate baseDate,
+                                AttendanceLogs attendanceLogs,
+                                NicknameRoster nicknameRoster) {
         if (command == Command.ATTENDANCE) {
-            attend(baseDate, attendanceLogs);
+            attend(baseDate, attendanceLogs, nicknameRoster);
         }
         if (command == Command.EDIT_ATTENDANCE) {
-            editAttendanceLog(baseDate, attendanceLogs);
+            editAttendanceLog(baseDate, attendanceLogs, nicknameRoster);
         }
         if (command == Command.ATTENDANCE_LOGS) {
-            displayAttendanceLogs(baseDate, attendanceLogs);
+            displayAttendanceLogs(baseDate, attendanceLogs, nicknameRoster);
         }
         if (command == Command.WARNING_LIST) {
             displayWarningList(baseDate, attendanceLogs);
         }
     }
 
-    private void attend(LocalDate baseDate, AttendanceLogs attendanceLogs) {
-        AttendanceLog attendanceLog = createAttendanceLog(baseDate);
+    private void attend(LocalDate baseDate, AttendanceLogs attendanceLogs, NicknameRoster nicknameRoster) {
+        Nickname nickname = new Nickname(inputView.readNickname());
+        if (nicknameRoster.isMissing(nickname)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
+        LocalTime attendanceTime = parseTime(inputView.readAttendanceTime());
+        AttendanceLog attendanceLog = new AttendanceLog(nickname, baseDate, attendanceTime);
         attendanceLogs.add(attendanceLog);
         LocalDateTime attendanceDateTime = attendanceLog.getAttendanceDateTime();
         AttendanceType attendanceType = determineAttendanceType(baseDate, attendanceLog.getAttendanceTime());
         outputView.printAttend(attendanceDateTime, attendanceType);
-    }
-
-    private AttendanceLog createAttendanceLog(LocalDate baseDate) {
-        Nickname nickname = new Nickname(inputView.readNickname());
-        LocalTime attendanceTime = parseTime(inputView.readAttendanceTime());
-        return new AttendanceLog(nickname, baseDate, attendanceTime);
     }
 
     private AttendanceType determineAttendanceType(LocalDate baseDate, LocalTime attendanceTime) {
@@ -94,8 +100,11 @@ public class AttendanceController {
         return LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("HH:mm"));
     }
 
-    private void editAttendanceLog(LocalDate baseDate, AttendanceLogs attendanceLogs) {
+    private void editAttendanceLog(LocalDate baseDate, AttendanceLogs attendanceLogs, NicknameRoster nicknameRoster) {
         Nickname nickname = new Nickname(inputView.readNicknameForEditAttendance());
+        if (nicknameRoster.isMissing(nickname)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
         LocalDate targetDate = createTargetDate(baseDate);
         LocalTime updateTime = parseTime(inputView.readAttendanceTimeForEditAttendance());
         AttendanceLog beforeAttendanceLog = attendanceLogs.findByNicknameAndAttendanceDate(nickname, targetDate);
@@ -119,8 +128,11 @@ public class AttendanceController {
         return LocalDate.of(baseDate.getYear(), baseDate.getMonth(), targetDate);
     }
 
-    private void displayAttendanceLogs(LocalDate baseDate, AttendanceLogs attendanceLogs) {
+    private void displayAttendanceLogs(LocalDate baseDate, AttendanceLogs attendanceLogs, NicknameRoster nicknameRoster) {
         Nickname nickname = new Nickname(inputView.readNickname());
+        if (nicknameRoster.isMissing(nickname)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
         List<AttendanceLog> logs = attendanceLogs.findAllByNicknameInMonth(nickname, baseDate);
         outputView.printAttendanceLogs(nickname, logs);
         EnumMap<AttendanceType, Integer> counted = attendanceLogs.countAllAttendanceType(nickname, baseDate);
