@@ -26,4 +26,8 @@ public class AttendanceStorage {
                 .filter(attendance -> attendance.isAttendedOn(date))
                 .findFirst();
     }
+
+    public void modify(LocalDate date, LocalTime modifyTime) {
+
+    }
 }

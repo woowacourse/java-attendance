@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class AttendanceStorageTest {
@@ -149,5 +150,45 @@ public class AttendanceStorageTest {
         // then
         assertThat(attendance.isPresent()).isTrue();
         assertThat(attendance.get().getDateTime()).isEqualTo(LocalDateTime.of(date, enterTime));
+    }
+
+    @DisplayName("출석 기록이 존재하지 않는 날짜의 출석 기록을 수정하고, 이를 조회할 수 있다.")
+    @Test
+    void test10() {
+        // given
+        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        LocalDate date = LocalDate.of(2025, 2, 28);
+        LocalTime modifyTime = LocalTime.of(10, 5);
+
+        // when
+        attendanceStorage.modify(date, modifyTime);
+        Optional<Attendance> attendance = attendanceStorage.findByDate(date);
+
+        // then
+        assertAll(
+                () -> assertThat(attendance.isPresent()).isTrue(),
+                () -> assertThat(attendance.get().getDateTime()).isEqualTo(LocalDateTime.of(date, modifyTime))
+        );
+    }
+
+    @DisplayName("출석 기록이 존재하는 날짜의 출석 기록을 수정할 수 있다.")
+    @Test
+    void test11() {
+        // given
+        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        LocalDate date = LocalDate.of(2025, 2, 28);
+        LocalTime enterTime = LocalTime.of(10, 5);
+        LocalTime modifiedTime = LocalTime.of(10, 0);
+        attendanceStorage.register(date, enterTime);
+
+        // when
+        attendanceStorage.modify(date, modifiedTime);
+        Optional<Attendance> attendance = attendanceStorage.findByDate(date);
+
+        // then
+        assertAll(
+                () -> assertThat(attendance.isPresent()).isTrue(),
+                () -> assertThat(attendance.get().getDateTime()).isEqualTo(LocalDateTime.of(date, modifiedTime))
+        );
     }
 }
