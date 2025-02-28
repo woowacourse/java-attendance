@@ -5,6 +5,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class AttendanceDateTime {
 
@@ -35,5 +36,17 @@ public class AttendanceDateTime {
 
     public DayOfWeek getDayOfWeek() {
         return dateTime.getDayOfWeek();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        final AttendanceDateTime that = (AttendanceDateTime) o;
+        return Objects.equals(dateTime, that.dateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(dateTime);
     }
 }
