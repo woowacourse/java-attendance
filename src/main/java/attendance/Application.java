@@ -71,11 +71,7 @@ public class Application {
 
     private static void doAttendance() {
         LocalDate today = now();
-        boolean isOperationDate = CampusManager.isOperationDate(today);
-        if (!isOperationDate) {
-            OutputView.printNotOperationDate(today);
-            return;
-        }
+        CampusManager.validateOperationDate(today);
         Nickname crewNickname = new Nickname(readCrewNickname());
         attendanceManager.validateExistingCrew(crewNickname);
         Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crewNickname, today);
@@ -90,15 +86,10 @@ public class Application {
     }
 
     private static void modifyAttendance() {
-        LocalDate today = now();
         Nickname crewNickname = new Nickname(readCrewNicknameToModify());
         attendanceManager.validateExistingCrew(crewNickname);
-        LocalDate dateToModify = readAttendanceDateToModify(today);
-        boolean isOperationDate = CampusManager.isOperationDate(dateToModify);
-        if (!isOperationDate) {
-            OutputView.printNotOperationDate(dateToModify);
-            return;
-        }
+        LocalDate dateToModify = readAttendanceDateToModify(now());
+        CampusManager.validateOperationDate(dateToModify);
         Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crewNickname, dateToModify);
         if (existingAttendance.isEmpty()) {
             OutputView.printNoAttendanceToModify();
