@@ -1,10 +1,11 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Attendance {
-    private final LocalDateTime dateTime;
-    private final AttendanceStatus status;
+    private LocalDateTime dateTime;
+    private AttendanceStatus status;
 
     public Attendance(LocalDateTime dateTime) {
         this.dateTime = dateTime;
@@ -17,5 +18,10 @@ public class Attendance {
 
     public AttendanceStatus getAttendanceStatus() {
         return status;
+    }
+
+    public void changeTimeTo(LocalTime time) {
+        dateTime = LocalDateTime.of(dateTime.toLocalDate(), time);
+        status = AttendanceStatus.getStatusByAttendedTime(dateTime);
     }
 }

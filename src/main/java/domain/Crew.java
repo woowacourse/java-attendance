@@ -8,6 +8,7 @@ import static domain.Penalty.WARNING;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,5 +97,13 @@ public class Crew {
             return WARNING;
         }
         return NONE;
+    }
+
+    public void modifyAttendedTime(int date, LocalTime localTime) {
+        if (isEmptyDay(date)) {
+            throw new IllegalArgumentException(ERROR_MESSAGE.ALREADY_ATTENDED.getMessage());
+        }
+        attendanceHistory.stream().filter(attendance -> attendance.getDayOfMonth() == date)
+                .forEach(attendance -> attendance.changeTimeTo(localTime));
     }
 }
