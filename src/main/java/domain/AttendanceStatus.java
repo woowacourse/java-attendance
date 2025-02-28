@@ -39,4 +39,8 @@ public enum AttendanceStatus {
     public String getExpression() {
         return expression;
     }
+
+    public static boolean isAbsentStatus(AttendanceStatus attendanceStatus) {
+        return attendanceStatus == ABSENT;
+    }
 }

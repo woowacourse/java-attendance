@@ -68,13 +68,13 @@ public class AttendanceController {
     private void showAttendanceHistory() {
         String name = handleWithRetry(inputView::readName);
         CrewName crewName = new CrewName(name);
-        AttendanceLog attendanceLog = attendanceBook.findAttendanceLogUntil(crewName, YESTERDAY);
-        AttendanceCount attendanceCount = attendanceBook.findCountUntil(crewName, YESTERDAY);
+        AttendanceLog attendanceLog = attendanceBook.findAttendanceLogUntilYesterday(crewName);
+        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(crewName);
         outputView.showAttendanceHistory(attendanceLog, attendanceCount);
     }
 
     private void showPenaltyCrews() {
-        outputView.showPenaltyCrews(attendanceBook.findPenaltyCrewsSortedUntil(YESTERDAY));
+        outputView.showPenaltyCrews(attendanceBook.findPenaltyCrewsSortedUntilYesterday());
     }
 
     private <T> T handleWithRetry(Supplier<T> task) {

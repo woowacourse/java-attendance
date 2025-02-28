@@ -32,7 +32,7 @@ public class InputView {
     }
 
     public String readName() {
-        return readInput("닉네임을 입력해 주세요.", InputValidator::validateName, attendanceBook);
+        return readInput("\n닉네임을 입력해 주세요.", InputValidator::validateName, attendanceBook);
     }
 
     public String readAttendanceTime() {
@@ -44,7 +44,7 @@ public class InputView {
     }
 
     public String readModifyName() {
-        return readInput("출석을 수정하려는 크루의 닉네임을 입력해 주세요.", InputValidator::validateName, attendanceBook);
+        return readInput("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.", InputValidator::validateName, attendanceBook);
     }
 
     public String readModifyTime() {
