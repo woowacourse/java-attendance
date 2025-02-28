@@ -39,4 +39,11 @@ public class Student {
     public long convertTardiesToAbsence() {
         return findAttendanceStatusCount(AttendanceStatus.LATE)/3;
     }
+
+    public void nonAttendanceRecordStatusIsAbsent(LocalDate today) {
+        if (attendanceTimeRecords.get(today) == null){
+            attendanceTimeRecords.put(today, null);
+            attendanceStatusRecords.put(today, AttendanceStatus.ABSENT);
+        }
+    }
 }
