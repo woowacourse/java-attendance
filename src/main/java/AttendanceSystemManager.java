@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,8 @@ public class AttendanceSystemManager {
 
         AttendanceType attendanceType = AttendanceType.findAttendanceTypeByDateTime(requestedAt);
     }
+
+    //TODO: 요청 시점 LocalDate 로 바꾸기
 
     public void update(String nickname, LocalDateTime requestedAt) {
         Crew crew = crews.findCrewByName(nickname);

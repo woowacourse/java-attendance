@@ -1,4 +1,4 @@
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -9,7 +9,7 @@ public class AttendanceTypeCount {
         this.attendanceTypeCount = attendanceTypeCount;
     }
 
-    public static AttendanceTypeCount createFrom(Map<LocalDate, AttendanceType> attendanceTypeOfDates) {
+    public static AttendanceTypeCount createFrom(Map<LocalDateTime, AttendanceType> attendanceTypeOfDates) {
         Map<AttendanceType, Integer> attendanceTypeCounts = attendanceTypeOfDates.values().stream()
                 .collect(Collectors.toMap(
                         attendanceType -> attendanceType,
