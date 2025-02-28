@@ -126,7 +126,7 @@ public class OutputView {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(formatAttendanceLogDate(logDate))
                 .append(" --:--")
-                .append(formatAttendanceLogStatus(AttendanceStatus.ABSENT)) ;
+                .append(formatAttendanceLogStatus(AttendanceStatus.ABSENT));
         return stringBuilder.toString();
     }
 
@@ -149,7 +149,8 @@ public class OutputView {
 
     private static String formatCrewAttendanceResult(AttendanceResultDto attendanceResultDto) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(formatCrewAttendanceResultStatus(AttendanceStatus.ATTEND, attendanceResultDto.attendCount()))
+        stringBuilder.append(
+                        formatCrewAttendanceResultStatus(AttendanceStatus.ATTEND, attendanceResultDto.attendCount()))
                 .append(formatCrewAttendanceResultStatus(AttendanceStatus.LATE, attendanceResultDto.lateCount()))
                 .append(formatCrewAttendanceResultStatus(AttendanceStatus.ABSENT, attendanceResultDto.absentCount()));
         return stringBuilder.toString();
@@ -170,6 +171,7 @@ public class OutputView {
     }
 
     private static String formatExpulsionRiskCrew(CrewDto crewDto, AttendanceResultDto attendanceResultDto) {
-        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)", crewDto.name(), attendanceResultDto.lateCount(), attendanceResultDto.absentCount(), attendanceResultDto.crewStatus());
+        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)", crewDto.name(), attendanceResultDto.lateCount(),
+                attendanceResultDto.absentCount(), attendanceResultDto.crewStatus());
     }
 }

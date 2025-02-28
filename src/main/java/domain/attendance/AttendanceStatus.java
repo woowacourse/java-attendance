@@ -31,7 +31,7 @@ public enum AttendanceStatus {
         if (attendDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             return 13;
         }
-        return  10;
+        return 10;
     }
 
     public String getDescription() {

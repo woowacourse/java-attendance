@@ -57,7 +57,8 @@ public class AttendanceBook {
         return sortAttendanceResults(attendanceResults);
     }
 
-    private void addCrewAttendanceResult(Map<Crew, AttendanceResult> attendanceResults, Crew crew, AttendanceResult crewAttendanceResult) {
+    private void addCrewAttendanceResult(Map<Crew, AttendanceResult> attendanceResults, Crew crew,
+                                         AttendanceResult crewAttendanceResult) {
         if (crewAttendanceResult.getCrewStatus() != CrewStatus.PASS) {
             attendanceResults.put(crew, crewAttendanceResult);
         }
@@ -73,13 +74,15 @@ public class AttendanceBook {
     public AttendanceResult calculateCrewAttendanceResult(String crewName, LocalDate todayDate) {
         Crew crew = findCrew(crewName);
         AttendanceLogs crewAttendanceLogs = attendanceBook.get(crew);
-        Map<AttendanceStatus, Integer> crewAttendanceStatuses = crewAttendanceLogs.calculateCrewAttendanceStatus(todayDate);
+        Map<AttendanceStatus, Integer> crewAttendanceStatuses = crewAttendanceLogs.calculateCrewAttendanceStatus(
+                todayDate);
         return new AttendanceResult(crewAttendanceStatuses);
     }
 
     private List<Entry<Crew, AttendanceResult>> sortAttendanceResults(Map<Crew, AttendanceResult> attendanceResults) {
         return attendanceResults.entrySet().stream()
-                .sorted(Comparator.comparingInt((Map.Entry<Crew, AttendanceResult> entry) -> calculatePenaltyCount(entry.getValue()))
+                .sorted(Comparator.comparingInt(
+                                (Map.Entry<Crew, AttendanceResult> entry) -> calculatePenaltyCount(entry.getValue()))
                         .reversed()
                         .thenComparing(entry -> entry.getKey().getName()))
                 .collect(Collectors.toList());

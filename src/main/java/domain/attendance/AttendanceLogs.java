@@ -64,7 +64,8 @@ public class AttendanceLogs {
         return attendanceHistory;
     }
 
-    private void addAttendanceHistory(List<AttendanceLog> attendanceHistory, AttendanceLog attendanceLog, LocalDate todayDate) {
+    private void addAttendanceHistory(List<AttendanceLog> attendanceHistory, AttendanceLog attendanceLog,
+                                      LocalDate todayDate) {
         if (attendanceLog.getAttendanceDate().isBefore(todayDate)) {
             attendanceHistory.add(attendanceLog);
         }
@@ -81,7 +82,8 @@ public class AttendanceLogs {
         }
     }
 
-    private void calculateAttendanceHistoryStatus(Map<AttendanceStatus, Integer> attendanceHistoryStatus, LocalDate todayDate) {
+    private void calculateAttendanceHistoryStatus(Map<AttendanceStatus, Integer> attendanceHistoryStatus,
+                                                  LocalDate todayDate) {
         List<AttendanceLog> crewAttendanceLogs = getAttendanceHistory(todayDate);
         for (AttendanceLog attendanceLog : crewAttendanceLogs) {
             AttendanceStatus attendanceStatus = attendanceLog.getAttendanceStatus();
@@ -95,7 +97,8 @@ public class AttendanceLogs {
         for (LocalDate logDate = startDate; logDate.isBefore(todayDate); logDate = logDate.plusDays(1)) {
             unattendCount = countUnattendDate(logDate, unattendCount);
         }
-        attendanceHistoryStatus.put(AttendanceStatus.ABSENT, attendanceHistoryStatus.get(AttendanceStatus.ABSENT) + unattendCount);
+        attendanceHistoryStatus.put(AttendanceStatus.ABSENT,
+                attendanceHistoryStatus.get(AttendanceStatus.ABSENT) + unattendCount);
     }
 
     private int countUnattendDate(LocalDate logDate, int unattendCount) {

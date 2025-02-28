@@ -80,8 +80,9 @@ public class AttendanceController {
 
     private void validateOpenDate(LocalDate attendDate) {
         if (isWeekend(attendDate.getDayOfWeek()) || isHoliday(attendDate)) {
-            throw new ErrorException(String.format("%d월 %d일 %s요일은 등교일이 아닙니다.", attendDate.getMonthValue(), attendDate.getDayOfMonth(),
-                    Convertor.convertDayOfWeekToKorean(attendDate.getDayOfWeek())));
+            throw new ErrorException(
+                    String.format("%d월 %d일 %s요일은 등교일이 아닙니다.", attendDate.getMonthValue(), attendDate.getDayOfMonth(),
+                            Convertor.convertDayOfWeekToKorean(attendDate.getDayOfWeek())));
         }
     }
 

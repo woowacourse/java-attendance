@@ -28,7 +28,8 @@ public class InputView {
     }
 
     private static String generateAttendanceMenuHeader(LocalDate runDate) {
-        return String.format("오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.", runDate.getMonthValue(), runDate.getDayOfMonth(), Convertor.convertDayOfWeekToKorean(runDate.getDayOfWeek()));
+        return String.format("오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.", runDate.getMonthValue(), runDate.getDayOfMonth(),
+                Convertor.convertDayOfWeekToKorean(runDate.getDayOfWeek()));
     }
 
     public static String readAttendanceEditCrewName() {
@@ -52,7 +53,8 @@ public class InputView {
     private static String generateAttendanceMenuOptions() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Menu menu : Menu.values()) {
-            stringBuilder.append(System.lineSeparator()).append(String.format("%s. %s", menu.getCode(), menu.getDescription()));
+            stringBuilder.append(System.lineSeparator())
+                    .append(String.format("%s. %s", menu.getCode(), menu.getDescription()));
         }
         return stringBuilder.toString();
     }

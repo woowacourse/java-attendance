@@ -18,7 +18,7 @@ public class AttendanceCsvController implements AttendanceStoreController {
     public AttendanceBook store() throws IOException {
         List<String[]> storeLines = CsvReader.readCsvLines(ATTENDANCES_STORE_PATH);
         Map<Crew, AttendanceLogs> crewsAttendanceLogs = new HashMap<>();
-        for(String[] storeLine : storeLines.subList(1, storeLines.size())) {
+        for (String[] storeLine : storeLines.subList(1, storeLines.size())) {
             addAttendanceFromStoreLine(crewsAttendanceLogs, storeLine);
         }
         return new AttendanceBook(crewsAttendanceLogs);
@@ -31,7 +31,8 @@ public class AttendanceCsvController implements AttendanceStoreController {
         crewAttendanceLogs.registerLog(Convertor.convertStringToDateTime(dateTime));
     }
 
-    private static AttendanceLogs findCrewAttendanceLogs(Map<Crew, AttendanceLogs> crewsAttendanceLogs, String crewName) {
+    private static AttendanceLogs findCrewAttendanceLogs(Map<Crew, AttendanceLogs> crewsAttendanceLogs,
+                                                         String crewName) {
         Crew crew = crewsAttendanceLogs.keySet().stream()
                 .filter(c -> c.getName().equals(crewName))
                 .findFirst()

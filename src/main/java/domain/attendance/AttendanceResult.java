@@ -11,7 +11,8 @@ public class AttendanceResult {
 
     public AttendanceResult(Map<AttendanceStatus, Integer> attendanceStatus) {
         this.attendanceStatus = attendanceStatus;
-        this.crewStatus = CrewStatus.findStatus(attendanceStatus.get(AttendanceStatus.LATE), attendanceStatus.get(AttendanceStatus.ABSENT));
+        this.crewStatus = CrewStatus.findStatus(attendanceStatus.get(AttendanceStatus.LATE),
+                attendanceStatus.get(AttendanceStatus.ABSENT));
     }
 
     public Map<AttendanceStatus, Integer> getAttendanceStatus() {
