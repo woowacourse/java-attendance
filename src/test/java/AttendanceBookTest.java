@@ -3,6 +3,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import attendance.model.AttendanceBook;
 import attendance.model.AttendanceTime;
 import java.time.LocalDate;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -61,4 +62,19 @@ public class AttendanceBookTest {
         Assertions.assertThat(result).isEqualTo(expectedResult);
     }
 
+    @Test
+    void 입력_받은_이름에_대한_출석_기록을_모두_가져온다() {
+
+        // given
+        final AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 2, 24), 10, 10));
+        attendanceBook.add("이름2", new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 20));
+        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 2, 26), 10, 30));
+
+        // when
+        List<AttendanceTime> attendances = attendanceBook.getAttendancesByName("이름1");
+
+        // then
+        Assertions.assertThat(attendances.size()).isEqualTo(2);
+    }
 }
