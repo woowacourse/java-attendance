@@ -4,11 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.domain.fixture.AttendanceBookTestFixture;
 import attendance.domain.fixture.LocalDateTestFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -136,5 +138,17 @@ public class AttendanceBookTest {
 
         assertThat(attendance.time()).isEqualTo(time);
         assertThat(attendance.status()).isEqualTo(AttendanceStatus.PRESENT);
+    }
+
+    @Test
+    void 전날까지의_출석_지각_결석_횟수를_반환한다() {
+        String crewName = "빙티";
+        AttendanceBook attendanceBook = AttendanceBookTestFixture.createAttendanceBook(crewName, 5, 3, 28);
+
+        Map<AttendanceStatus, Integer> count = attendanceBook.getTotalStatusCount();
+
+        assertThat(count.get(AttendanceStatus.LATENESS)).isEqualTo(5);
+        assertThat(count.get(AttendanceStatus.ABSENCE)).isEqualTo(3);
+
     }
 }

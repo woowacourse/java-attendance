@@ -3,6 +3,8 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +36,21 @@ public class AttendanceBook {
         return prevAttendance;
     }
 
+    public Map<AttendanceStatus, Integer> getTotalStatusCount() {
+        Map<AttendanceStatus, Integer> statusCount = new EnumMap<>(AttendanceStatus.class);
+
+        Arrays.stream(AttendanceStatus.values())
+                .forEach(status -> statusCount.put(status, getTotalStatusCount(status)));
+
+        return statusCount;
+    }
+
+    private int getTotalStatusCount(AttendanceStatus status) {
+        return (int) timestamps.values().stream()
+                .filter(attendance -> attendance.status() == status)
+                .count();
+    }
+
     private void updateTimeStamp(LocalDate date, LocalTime time) {
         Attendance attendance = new Attendance(time, date);
 
@@ -47,5 +64,4 @@ public class AttendanceBook {
     private boolean isAttendedDate(LocalDate attendDate) {
         return timestamps.containsKey(attendDate);
     }
-
 }

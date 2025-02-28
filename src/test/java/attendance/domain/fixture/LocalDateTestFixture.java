@@ -2,6 +2,8 @@ package attendance.domain.fixture;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class LocalDateTestFixture {
@@ -13,6 +15,15 @@ public class LocalDateTestFixture {
                 .filter(date -> !isWeekend(date))
                 .findFirst()
                 .orElseThrow();
+    }
+
+    public static List<LocalDate> createRegularDates(int endDate) {
+        LocalDate now = LocalDate.now();
+        return IntStream.range(1, endDate - 1)
+                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
+                .filter(date -> !isMonday(date))
+                .filter(date -> !isWeekend(date))
+                .collect(Collectors.toList());
     }
 
     public static LocalDate createMondayDate() {
