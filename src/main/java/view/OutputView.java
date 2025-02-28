@@ -4,13 +4,13 @@ import domain.attendance.AttendanceStatus;
 import dto.AttendanceLogDto;
 import dto.AttendanceResultDto;
 import dto.CrewDto;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import util.Convertor;
+import util.Evaluator;
 
 public class OutputView {
 
@@ -87,23 +87,9 @@ public class OutputView {
     }
 
     private static void addLogDate(List<LocalDate> logDates, LocalDate logDate) {
-        if (!isWeekend(logDate.getDayOfWeek()) && !isHoliday(logDate)) {
+        if (Evaluator.isOpenDate(logDate)) {
             logDates.add(logDate);
         }
-    }
-
-    private static boolean isWeekend(DayOfWeek dayOfWeek) {
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-            return true;
-        }
-        return false;
-    }
-
-    private static boolean isHoliday(LocalDate date) {
-        if (date.equals(LocalDate.of(2024, 12, 25))) {
-            return true;
-        }
-        return false;
     }
 
     private static String formatCrewAttendanceLogStatus(List<AttendanceLogDto> attendanceLogDtos, LocalDate logDate) {

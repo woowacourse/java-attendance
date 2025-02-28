@@ -45,7 +45,7 @@ public class AttendanceBook {
     public List<AttendanceLog> findCrewAttendanceLogHistory(String crewName, LocalDate todayDate) {
         Crew crew = findCrew(crewName);
         AttendanceLogs attendanceLogs = attendanceBook.get(crew);
-        return attendanceLogs.getAttendanceHistory(todayDate);
+        return attendanceLogs.fetchAttendanceHistory(todayDate);
     }
 
     public List<Map.Entry<Crew, AttendanceResult>> findExpulsionRiskCrews(LocalDate todayDate) {

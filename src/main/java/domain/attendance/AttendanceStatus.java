@@ -10,7 +10,7 @@ public enum AttendanceStatus {
     LATE("지각"),
     ABSENT("결석");
 
-    private String description;
+    private final String description;
 
     AttendanceStatus(String description) {
         this.description = description;

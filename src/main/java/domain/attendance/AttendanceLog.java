@@ -2,11 +2,10 @@ package domain.attendance;
 
 import dto.AttendanceLogDto;
 import exception.ErrorException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
+import util.Evaluator;
 
 public class AttendanceLog {
 
@@ -47,27 +46,14 @@ public class AttendanceLog {
     }
 
     private void verifyAttendDate(LocalDate attendDate) {
-        if (isWeekend(attendDate) || isHoliday(attendDate)) {
+        if (!Evaluator.isOpenDate(attendDate)) {
             throw new ErrorException("주말 또는 공휴일은 출석을 받지 않습니다.");
         }
     }
 
-    private boolean isWeekend(LocalDate attendDate) {
-        DayOfWeek dayOfWeek = attendDate.getDayOfWeek();
-        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
-    }
-
-    private boolean isHoliday(LocalDate attendDate) {
-        return attendDate.getMonth() == Month.DECEMBER && attendDate.getDayOfMonth() == 25;
-    }
-
     private void verifyAttendTime(LocalTime attendTime) {
-        if (!isOpenHours(attendTime)) {
+        if (!Evaluator.isOpenTime(attendTime)) {
             throw new ErrorException("운영 시간에 출석해야 합니다.");
         }
-    }
-
-    private boolean isOpenHours(LocalTime attendTime) {
-        return attendTime.isAfter(LocalTime.of(8, 0, 0)) && attendTime.isBefore(LocalTime.of(23, 0));
     }
 }

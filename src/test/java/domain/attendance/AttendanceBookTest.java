@@ -41,7 +41,7 @@ public class AttendanceBookTest {
 
     private List<List<LocalDateTime>> getLogDates() {
         List<List<Integer>> crewDays = Arrays.asList(
-                List.of(2), List.of(2, 3, 4, 5), List.of(2, 3, 4, 5, 6), List.of(2, 3, 4, 5, 6, 9, 10)
+                List.of(2), List.of(2, 3), List.of(2, 3, 4, 5, 6), List.of(2, 3, 4, 5, 6, 9)
         );
 
         return crewDays.stream()
@@ -105,7 +105,7 @@ public class AttendanceBookTest {
     void 출석_확인_예외_테스트() {
         // given
         String crewName = crews.getFirst().getName();
-        LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 2, 11, 0);
+        LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
         // when & then
         assertThatThrownBy(() -> attendanceBook.registerCrewAttendanceLog(crewName, attendDateTime))
                 .isInstanceOf(ErrorException.class)
@@ -118,7 +118,7 @@ public class AttendanceBookTest {
         // given
         String crewName = crews.getFirst().getName();
         LocalDate editDate = LocalDate.of(2024, 12, 2);
-        LocalTime editTime = LocalTime.of(11, 0);
+        LocalTime editTime = LocalTime.of(10, 0);
         // when & then
         assertEquals(attendanceBook.editCrewAttendanceLog(crewName, editDate, editTime).getAttendanceTime(), editTime);
     }
@@ -129,7 +129,7 @@ public class AttendanceBookTest {
         // given
         String crewName = crews.getFirst().getName();
         LocalDate editDate = LocalDate.of(2024, 12, 3);
-        LocalTime editTime = LocalTime.of(11, 0);
+        LocalTime editTime = LocalTime.of(10, 0);
         // when & then
         assertThatThrownBy(() -> attendanceBook.editCrewAttendanceLog(crewName, editDate, editTime))
                 .isInstanceOf(ErrorException.class)

@@ -2,15 +2,14 @@ package domain.attendance;
 
 import domain.crew.CrewStatus;
 import exception.ErrorException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import util.Evaluator;
 
 public class AttendanceLogs {
 
@@ -56,7 +55,7 @@ public class AttendanceLogs {
                 attendanceLogsStatus.get(AttendanceStatus.ABSENT));
     }
 
-    public List<AttendanceLog> getAttendanceHistory(LocalDate todayDate) {
+    public List<AttendanceLog> fetchAttendanceHistory(LocalDate todayDate) {
         List<AttendanceLog> attendanceHistory = new ArrayList<>();
         for (AttendanceLog attendanceLog : attendanceLogs) {
             addAttendanceHistory(attendanceHistory, attendanceLog, todayDate);
@@ -84,7 +83,7 @@ public class AttendanceLogs {
 
     private void calculateAttendanceHistoryStatus(Map<AttendanceStatus, Integer> attendanceHistoryStatus,
                                                   LocalDate todayDate) {
-        List<AttendanceLog> crewAttendanceLogs = getAttendanceHistory(todayDate);
+        List<AttendanceLog> crewAttendanceLogs = fetchAttendanceHistory(todayDate);
         for (AttendanceLog attendanceLog : crewAttendanceLogs) {
             AttendanceStatus attendanceStatus = attendanceLog.getAttendanceStatus();
             attendanceHistoryStatus.put(attendanceStatus, attendanceHistoryStatus.get(attendanceStatus) + 1);
@@ -109,15 +108,6 @@ public class AttendanceLogs {
     }
 
     private boolean isUnattendDate(LocalDate logDate) {
-        return !(isAttendanceLog(logDate) || isWeekend(logDate) || isHoliday(logDate));
-    }
-
-    private boolean isWeekend(LocalDate attendDate) {
-        DayOfWeek dayOfWeek = attendDate.getDayOfWeek();
-        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
-    }
-
-    private boolean isHoliday(LocalDate attendDate) {
-        return attendDate.getMonth() == Month.DECEMBER && attendDate.getDayOfMonth() == 25;
+        return !isAttendanceLog(logDate) && Evaluator.isOpenDate(logDate);
     }
 }
