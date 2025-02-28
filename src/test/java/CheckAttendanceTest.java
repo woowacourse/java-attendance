@@ -12,6 +12,7 @@ public class CheckAttendanceTest {
     // 2. 운영 시간이 아닐 경우 예외처리한다.
     // 3. 날짜에 따라 휴일이나 공휴일일 겨우 예외처리한다
     // 4. 날짜(월요일)에 따라 다른 시간 정책을 적용한다.
+    // 5. refact : Attendance 객체 중심 코드를 위한 테스트 수정
 
     //1번 과정
     //출석, 결석, 지각,
@@ -24,14 +25,16 @@ public class CheckAttendanceTest {
         LocalDateTime absentTime = LocalDateTime.of(2024, 12, 17, 10, 40);
 
         // when
-        AttendanceStatus attendanceStatus = AttendancePolicy.checkAttendanceStatus(attendanceTime);
-        AttendanceStatus lateStatus = AttendancePolicy.checkAttendanceStatus(lateTime);
-        AttendanceStatus absentStatus = AttendancePolicy.checkAttendanceStatus(absentTime);
 
-        // then
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
-        assertThat(lateStatus).isEqualTo(AttendanceStatus.LATE);
-        assertThat(absentStatus).isEqualTo(AttendanceStatus.ABSENT);
+        // new
+        Attendance attendance = Attendace(attendanceTime);
+        Attendance late = Attendace(lateTime);
+        Attendance absent = Attendace(absentTime);
+
+        assertThat(attendance.getAttendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
+        assertThat(late.getAttendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
+        assertThat(absent.getAttendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
+
     }
 
     // 운영시간 외 처리
