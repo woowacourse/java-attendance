@@ -41,7 +41,7 @@ class AttendanceHistoryReadTest {
         Attendances attendances = attendanceBook.getAttendances(nickname);
 
         final var absentCount = attendances.getAbsentCount();
-        assertEquals(5, absentCount);
+        assertEquals(6, absentCount);
     }
 
     @Test
@@ -53,7 +53,7 @@ class AttendanceHistoryReadTest {
         Attendances attendances = attendanceBook.getAttendances(nickname);
 
         final var penaltyStatus = attendances.getPenaltyStatus();
-        final var expected = Penalty.INTERVIEW;
+        final var expected = Penalty.EXPULSION;
         assertEquals(expected, penaltyStatus);
 
     }
