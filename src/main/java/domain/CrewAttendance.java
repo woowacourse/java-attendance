@@ -1,6 +1,5 @@
 package domain;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -31,35 +30,21 @@ public class CrewAttendance {
     }
 
     public DisciplinaryStatus getDisciplinaryStatus(LocalDate date) {
-        int absenceCount = countAbsenceBeforeDate(date);
-        int lateCount = countLateBeforeDate(date);
+        int absenceCount = getAbsenceBeforeDate(date);
+        int lateCount = getLateBeforeDate(date);
         return DisciplinaryStatus.from(absenceCount, lateCount);
     }
 
-    public int countAttendanceBeforeDate(LocalDate date) {
+    public int getAttendanceBeforeDate(LocalDate date) {
         return attendanceTimes.countAttendanceBeforeDate(date);
     }
 
-    public int countLateBeforeDate(LocalDate date) {
+    public int getLateBeforeDate(LocalDate date) {
         return attendanceTimes.countLateBeforeDate(date);
     }
 
-    public int countAbsenceBeforeDate(LocalDate date) {
-        return countWorkday(date)
-                - (attendanceTimes.countAttendanceBeforeDate(date)
-                + attendanceTimes.countLateBeforeDate(date));
-    }
-
-    private int countWorkday(LocalDate date) {
-        int count = 0;
-        for (int i = 1; i < date.getDayOfMonth(); i++) {
-            LocalDate today = LocalDate.of(2024, 12, i);
-            if (today.getDayOfWeek() == DayOfWeek.SATURDAY || today.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                continue;
-            }
-            count++;
-        }
-        return count;
+    public int getAbsenceBeforeDate(LocalDate date) {
+        return attendanceTimes.countAbsenceBeforeDate(date);
     }
 
     public boolean belongsTo(Crew crew) {

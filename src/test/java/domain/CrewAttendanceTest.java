@@ -38,7 +38,7 @@ class CrewAttendanceTest {
         LocalDate today = LocalDate.of(2024, 12, 14);
 
         // when
-        int count = crewAttendance.countAttendanceBeforeDate(today);
+        int count = crewAttendance.getAttendanceBeforeDate(today);
 
         // then
         assertThat(count).isEqualTo(2);
@@ -54,7 +54,7 @@ class CrewAttendanceTest {
         LocalDate today = LocalDate.of(2024, 12, 14);
 
         // when
-        int count = crewAttendance.countLateBeforeDate(today);
+        int count = crewAttendance.getLateBeforeDate(today);
 
         // then
         assertThat(count).isEqualTo(1);
@@ -70,7 +70,7 @@ class CrewAttendanceTest {
         LocalDate today = LocalDate.of(2024, 12, 14);
 
         // when
-        int count = crewAttendance.countAbsenceBeforeDate(today);
+        int count = crewAttendance.getAbsenceBeforeDate(today);
 
         // then
         assertThat(count).isEqualTo(7);

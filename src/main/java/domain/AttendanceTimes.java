@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,22 @@ public class AttendanceTimes {
                     count++;
                 }
             }
+        }
+        return count;
+    }
+
+    public int countAbsenceBeforeDate(LocalDate date) {
+        return countWorkday(date) - (countAttendanceBeforeDate(date) + countLateBeforeDate(date));
+    }
+
+    private int countWorkday(LocalDate date) {
+        int count = 0;
+        for (int i = 1; i < date.getDayOfMonth(); i++) {
+            LocalDate today = LocalDate.of(2024, 12, i);
+            if (today.getDayOfWeek() == DayOfWeek.SATURDAY || today.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                continue;
+            }
+            count++;
         }
         return count;
     }
