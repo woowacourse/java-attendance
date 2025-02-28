@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class AttendanceTest {
+class AttendanceDateTimeTest {
 
     @Nested
     class InvalidCases {
