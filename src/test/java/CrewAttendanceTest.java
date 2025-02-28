@@ -17,7 +17,7 @@ public class CrewAttendanceTest {
 
         // then
         assertDoesNotThrow(() -> {
-            crewAttendance.findAttendanceStorageByCrew(name);
+            crewAttendance.findAttendanceStorageByCrew(crew);
         });
     }
 
