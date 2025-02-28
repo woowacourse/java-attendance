@@ -1,5 +1,6 @@
 package controller;
 
+import domain.Attendance;
 import domain.AttendanceBook;
 import domain.FileWithAttendanceData;
 import domain.Option;
@@ -8,6 +9,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import view.InputView;
+import view.OutputView;
 
 public class Controller {
 
@@ -17,10 +19,12 @@ public class Controller {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final InputView inputView;
+    private final OutputView outputView;
     private final AttendanceBook attendanceBook;
 
-    public Controller(InputView inputView, AttendanceBook attendanceBook) {
+    public Controller(InputView inputView, OutputView outputView, AttendanceBook attendanceBook) {
         this.inputView = inputView;
+        this.outputView = outputView;
         this.attendanceBook = attendanceBook;
     }
 
@@ -67,7 +71,9 @@ public class Controller {
             String name = inputView.readName();
             String attendTime = inputView.readAttendTime();
             LocalTime time = LocalTime.parse(attendTime, TIME_FORMATTER);
-            attendanceBook.attendCrew(name, nowDate, time);
+            Attendance attendance = attendanceBook.attendCrew(name, nowDate, time);
+            outputView.displayAttendanceCheck(nowDate, attendance.getTime(),
+                    attendance.determineStatus().getDescription());
         } catch (DateTimeParseException e) {
             System.out.println("[ERROR] 시간 형식이 일치하지 않습니다.");
         }

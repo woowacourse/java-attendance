@@ -16,9 +16,10 @@ public class Crew {
         attendances.add(new Attendance(date, time));
     }
 
-    public void addAttendance(LocalDate date, LocalTime time) {
+    public Attendance addAttendance(LocalDate date, LocalTime time) {
         Attendance attendance = new Attendance(date, time);
         attendances.add(attendance);
+        return attendance;
     }
 
     public boolean hasAlreadyAttended(LocalDate date) {

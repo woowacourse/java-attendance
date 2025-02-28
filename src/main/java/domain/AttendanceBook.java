@@ -16,7 +16,7 @@ public class AttendanceBook {
         crews.putIfAbsent(name, new Crew(name, date, time));
     }
 
-    public void attendCrew(String name, LocalDate date, LocalTime time) {
+    public Attendance attendCrew(String name, LocalDate date, LocalTime time) {
         Crew crew = crews.get(name);
         if (crew == null) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
@@ -24,7 +24,7 @@ public class AttendanceBook {
         if (crew.hasAlreadyAttended(date)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석한 경우 수정 기능을 사용하세요.");
         }
-        crew.addAttendance(date, time);
+        return crew.addAttendance(date, time);
     }
 
     public boolean containsCrew(String name) {

@@ -29,6 +29,10 @@ public class Attendance {
         return AttendanceStatus.from(date, time);
     }
 
+    public LocalTime getTime() {
+        return time;
+    }
+
     private void validateTime(LocalTime time) {
         if (time.isBefore(OPEN_TIME) || time.isAfter(CLOSE_TIME)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
