@@ -37,6 +37,10 @@ public class Crew {
         return DangerousTarget.getWarningStatus(attendTimes.calculateLateCount(),attendTimes.calculateAbsentCount())!=DangerousTarget.SAFE;
     }
 
+    public DangerousTarget getDismissalStatus() {
+        return DangerousTarget.getWarningStatus(attendTimes.calculateLateCount(), attendTimes.calculateAbsentCount());
+    }
+
     public int getCrewAttendedCount() {
             return attendTimes.calculateAttendedCount();
     }

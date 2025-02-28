@@ -46,8 +46,8 @@ public class Crews {
             @Override
             public int compare(Crew crew1, Crew crew2) {
 
-                int crew1Counts=-crew1.getCrewLateCount()/3+crew1.getCrewAbsentCount();
-                int crew2Counts=-crew2.getCrewLateCount()/3+crew2.getCrewAbsentCount();
+                int crew1Counts=crew1.getCrewLateCount()/3+crew1.getCrewAbsentCount();
+                int crew2Counts=crew2.getCrewLateCount()/3+crew2.getCrewAbsentCount();
 
                 if(crew1Counts==crew2Counts){
                     int crew1Late=crew1.getCrewLateCount()%3;
