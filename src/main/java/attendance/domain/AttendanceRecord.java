@@ -16,4 +16,8 @@ public class AttendanceRecord {
                 .filter(attendance -> !attendance.isSameDate(LocalDate.now()))
                 .toList();
     }
+
+    public List<Attendance> getRecord() {
+        return record;
+    }
 }
