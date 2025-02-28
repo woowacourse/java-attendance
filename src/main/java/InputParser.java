@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Map;
 
 public class InputParser {
     public static LocalDateTime parseTime(String input) {
@@ -15,6 +16,13 @@ public class InputParser {
 
     public static String parseDateTimeToString(LocalDateTime dateTime) {
         return parseTimeToKorean(dateTime.toLocalDate()) + " " + parseTimeToKorean(dateTime.toLocalTime());
+    }
+
+    public static String parseAttendanceType(AttendanceType attendanceType) {
+        Map<AttendanceType, String> valueOfAttendanceTypes = Map.of(AttendanceType.PRESENT, "출석",
+                AttendanceType.LATE, "지각",
+                AttendanceType.ABSENCE, "결석");
+        return valueOfAttendanceTypes.get(attendanceType);
     }
 
     private static String parseTimeToKorean(LocalDate date) {
