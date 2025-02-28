@@ -28,7 +28,7 @@ public enum AttendanceStatus {
         return Arrays.stream(values())
                 .filter(status -> status.condition.apply(elapsedMinutes))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("정의할 수 없는 출석 상태입니다."));
+                .orElseThrow(() -> new IllegalStateException("논리적으로 도달할 수 없는 예외입니다."));
     }
 
     public String getDescription() {
