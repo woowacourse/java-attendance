@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.LocalDate;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import attendance.fixture.DateTimeFixture;
+
 class LectureTimeTest {
 
     @Test
@@ -17,13 +20,13 @@ class LectureTimeTest {
     void fromTest() {
         // when then
         assertSoftly(softly -> {
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 2, 24))).isEqualTo(LectureTime.MONDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 2, 25))).isEqualTo(LectureTime.TUESDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 2, 26))).isEqualTo(LectureTime.WEDNESDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 2, 27))).isEqualTo(LectureTime.THURSDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 2, 28))).isEqualTo(LectureTime.FRIDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 3, 01))).isEqualTo(LectureTime.SATURDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 3, 02))).isEqualTo(LectureTime.SUNDAY);
+            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(0))).isEqualTo(LectureTime.MONDAY);
+            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(1))).isEqualTo(LectureTime.TUESDAY);
+            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(2))).isEqualTo(LectureTime.WEDNESDAY);
+            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(3))).isEqualTo(LectureTime.THURSDAY);
+            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(4))).isEqualTo(LectureTime.FRIDAY);
+            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(5))).isEqualTo(LectureTime.SATURDAY);
+            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(6))).isEqualTo(LectureTime.SUNDAY);
         });
     }
 
@@ -40,8 +43,6 @@ class LectureTimeTest {
         LocalDate date = LocalDate.of(year, month, day);
 
         // then
-        assertSoftly(softly -> {
-            softly.assertThat(LectureTime.from(date).getLateTimeOf(LocalTime.of(hour, minute))).isEqualTo(minute);
-        });
+        assertThat(LectureTime.from(date).getLateTimeOf(LocalTime.of(hour, minute))).isEqualTo(minute);
     }
 }

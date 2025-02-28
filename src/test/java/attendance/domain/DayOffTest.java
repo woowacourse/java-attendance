@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 
@@ -20,8 +20,6 @@ class DayOffTest {
     @DisplayName("주말 및 공휴일 여부를 판단한다")
     void isDayOffTest(int year, int month, int day, boolean expected) {
         // when then
-        assertSoftly(softly -> {
-            softly.assertThat(DayOff.isDayOff(LocalDate.of(year, month, day))).isEqualTo(expected);
-        });
+        assertThat(DayOff.isDayOff(LocalDate.of(year, month, day))).isEqualTo(expected);
     }
 }
