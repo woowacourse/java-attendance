@@ -5,6 +5,8 @@ import domain.AttendanceTime;
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -47,5 +49,24 @@ public class AttendanceTest {
         boolean actual = attendance.compareByCrewAndTime(crew2, day);
         //then
         assertThat(expected).isEqualTo(actual);
+    }
+
+    @Test
+    void 출석기록의_출석시간을_변경한다() {
+        //given
+        Crew crew = new Crew("쿠키");
+        LocalDateTime time = LocalDateTime.of(2024, 12, 2, 9, 30);
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        Attendance attendance = new Attendance(crew, attendanceTime);
+
+        LocalTime newTime = LocalTime.of(8, 30);
+        AttendanceTime newAttendanceTime = new AttendanceTime(LocalDateTime.of(time.toLocalDate(), newTime));
+        Attendance expected = new Attendance(crew, newAttendanceTime);
+
+        //when
+        attendance.changeAttendanceTime(newTime);
+
+        //then
+        assertThat(attendance).isEqualTo(expected);
     }
 }
