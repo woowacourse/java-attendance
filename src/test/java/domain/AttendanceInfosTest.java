@@ -60,8 +60,8 @@ class AttendanceInfosTest {
         CampusDate campusDate2 = CampusDate.ofDateAndDay(date, 28);
 
         // when
-        attendanceInfos.addInfoByDayAndTime(campusDate1, campusTime);
-        attendanceInfos.addInfoByDayAndTime(campusDate2, campusTime);
+        attendanceInfos.addInfoByDateAndTime(campusDate1, campusTime);
+        attendanceInfos.addInfoByDateAndTime(campusDate2, campusTime);
 
         // then
         assertThat(attendanceInfos.getAttendanceInfos()).hasSize(2);
@@ -99,6 +99,27 @@ class AttendanceInfosTest {
         // then
         assertThat(result1).isTrue();
         assertThat(result2).isFalse();
+    }
+
+    @Test
+    void 날짜와_시간으로_출석_정보를_수정하여_출석정보들을_반환한다() {
+        // given
+        AttendanceInfo attendanceInfo1 = createAttendanceInfo("10:31", 2025, 2, 27);
+        AttendanceInfo attendanceInfo2 = createAttendanceInfo("10:31", 2025, 2, 28);
+        AttendanceInfos attendanceInfos = AttendanceInfos.from(List.of(attendanceInfo1, attendanceInfo2));
+
+        CampusDate modifyDate = CampusDate.ofDateAndDay(LocalDate.of(2025, 2, 3), 27);
+        CampusDate unModifyDate = CampusDate.ofDateAndDay(LocalDate.of(2025, 2, 3), 28);
+
+        // when
+        AttendanceInfos modifiedInfos = attendanceInfos.modifyInfoByDateAndTime(modifyDate, CampusTime.from("10:29"));
+
+        // then
+        assertThat(modifiedInfos.getAttendanceInfos()).hasSize(2);
+        assertThat(modifiedInfos.findInfoByDate(modifyDate).getHour()).isEqualTo(10);
+        assertThat(modifiedInfos.findInfoByDate(modifyDate).getMinute()).isEqualTo(29);
+        assertThat(modifiedInfos.findInfoByDate(unModifyDate).getHour()).isEqualTo(10);
+        assertThat(modifiedInfos.findInfoByDate(unModifyDate).getMinute()).isEqualTo(31);
     }
 
     private static AttendanceInfo createAttendanceInfo(String inputTime, int year, int month, int day) {

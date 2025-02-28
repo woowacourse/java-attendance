@@ -14,11 +14,11 @@ public class AttendanceInfo {
         this.attendanceStatus = AttendanceStatus.calculateByDateAndTime(campusDate, campusTime);
     }
 
-    public static AttendanceInfo fromDateAndTime (final CampusDate campusDate, final CampusTime campusTime) {
+    public static AttendanceInfo fromDateAndTime(final CampusDate campusDate, final CampusTime campusTime) {
         return new AttendanceInfo(campusDate, campusTime);
     }
 
-    public AttendanceInfo modifyInfoByTime (final CampusTime campusTime) {
+    public AttendanceInfo modifyInfoByTime(final CampusTime campusTime) {
         return new AttendanceInfo(this.campusDate, campusTime);
     }
 
@@ -45,4 +45,5 @@ public class AttendanceInfo {
     public AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
     }
+
 }
