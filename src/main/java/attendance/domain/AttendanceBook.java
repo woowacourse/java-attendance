@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -10,10 +11,6 @@ public class AttendanceBook {
         this.attendanceRecord = attendanceRecord;
     }
 
-    public AttendanceLog findAttendanceLogByCrew(Crew crew){
-        return attendanceRecord.get(crew);
-    }
-
     //1. 출석등록
     public Attendance registerAttendance(Crew crew, LocalDateTime newAttendanceDateTime) {
         validateCrewExistance(crew);
@@ -21,16 +18,18 @@ public class AttendanceBook {
         return attendanceLog.registerAttendance(newAttendanceDateTime);
     }
 
-    private void validateCrewExistance(Crew crew) {
-        if (attendanceRecord.get(crew) == null) {
-            throw new IllegalArgumentException("등록되지 않는 크루입니다");
-        }
-    }
-
     //2. 출석수정
+    public List<Attendance> modifyAttendance(Crew crew, LocalDateTime newALocalDateTime) {
+        return null;
+    }
 
     //3. 출석 확인
 
     //4. 제적 위험자 확인
 
+    private void validateCrewExistance(Crew crew) {
+        if (attendanceRecord.get(crew) == null) {
+            throw new IllegalArgumentException("등록되지 않는 크루입니다");
+        }
+    }
 }
