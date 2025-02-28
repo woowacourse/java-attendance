@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class AttendancesLoader {
-    private final static String FILE_NAME = "attendances.csv";
+    private static final String FILE_NAME = "attendances.csv";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final Map<String, List<LocalDateTime>> rawDatas = new HashMap<>();

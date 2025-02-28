@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 public class TestUtil {
-    private final static EducationDayPolicy policy = new EducationDayPolicy(Set.of(LocalDate.of(2024, 12, 25)));
+    private static final EducationDayPolicy policy = new EducationDayPolicy(Set.of(LocalDate.of(2024, 12, 25)));
 
     public static AttendanceRecord createRecord(LocalDateTime dateTime) {
         WoowaDate woowaDate = new WoowaDate(dateTime.toLocalDate(), policy);

@@ -7,9 +7,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class DateFormatUtil {
-    public final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 EEEE");
-    public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm");
-    public final static DateTimeFormatter NO_ATTENDANCE_DATE_FORMATTER = DateTimeFormatter.ofPattern(
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 EEEE");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm");
+    public static final DateTimeFormatter NO_ATTENDANCE_DATE_FORMATTER = DateTimeFormatter.ofPattern(
             "MM월 dd일 EEEE --:--");
 
     public static LocalTime parseToTime(String str) {
