@@ -13,6 +13,9 @@ public class AttendancePolicy {
     private static final LocalTime GENERAL_ABSENCE_THRESHOLD = LocalTime.of(10, 30);
     private static final LocalTime GENERAL_LATE_THRESHOLD = LocalTime.of(10, 5);
 
+    private AttendancePolicy() {
+    }
+
     public static AttendanceStatus calculateAttendanceStatus(final DayOfWeek attendanceDay,
                                                              final LocalTime attendanceTime) {
         boolean isMonday = attendanceDay == DayOfWeek.MONDAY;

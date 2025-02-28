@@ -20,6 +20,9 @@ import java.util.Locale;
 import java.util.Map;
 
 public class OutputView {
+    private OutputView() {
+    }
+
     public static void printNotOperationDate(final LocalDate attendanceDate) {
         int month = attendanceDate.getMonthValue();
         int date = attendanceDate.getDayOfMonth();

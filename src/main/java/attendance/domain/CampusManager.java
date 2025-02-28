@@ -9,6 +9,9 @@ public class CampusManager {
     private static final LocalTime OPERATION_TIME_BEGIN_THRESHOLD = LocalTime.of(7, 59);
     private static final LocalTime OPERATION_TIME_END_THRESHOLD = LocalTime.of(23, 01);
 
+    private CampusManager() {
+    }
+
     public static boolean isOperationDate(final LocalDate date) {
         return !(isHoliday(date) || isWeekend(date));
     }
