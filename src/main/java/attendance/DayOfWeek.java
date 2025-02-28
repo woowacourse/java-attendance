@@ -1,6 +1,7 @@
 package attendance;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Arrays;
@@ -15,9 +16,6 @@ public enum DayOfWeek  {
     FRIDAY("금요일", LocalTime.of(10, 0)),
     SATURDAY("토요일", LocalTime.of(0, 0)),
     SUNDAY("일요일", LocalTime.of(0, 0));
-
-    private static final int LATE_STANDARD = 5;
-    private static final int ABSENCE_STANDARD = 30;
 
     private final String dayOfWeekName;
     private final LocalTime attendanceStartingTime;
@@ -36,7 +34,11 @@ public enum DayOfWeek  {
             .get();
     }
 
-    public LocalTime getAttendanceStartingTime() {
-        return attendanceStartingTime;
+    public int calculateTypeDecisionValueOnHour(LocalDateTime attendanceDateTime) {
+        return attendanceDateTime.getHour() - attendanceStartingTime.getHour();
+    }
+
+    public int calculateTypeDecisionValueOnMinute(LocalDateTime attendanceDateTime) {
+        return attendanceDateTime.getMinute() - attendanceStartingTime.getMinute();
     }
 }
