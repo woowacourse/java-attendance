@@ -5,9 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import domain.Attendance;
 import domain.Crew;
 import domain.ERROR_MESSAGE;
+import domain.Penalty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -71,7 +73,6 @@ public class SomeTest {
     @Nested
     @DisplayName("크루 출석 상태 갯수 테스트")
     class CountAttendanceStatusTest {
-
         @DisplayName("출석 상태별 개수 반환")
         @Test
         void test1() {
@@ -118,5 +119,68 @@ public class SomeTest {
             );
         }
     }
+
+    @Nested
+    @DisplayName("크루 패널티 상태 체크 테스트")
+    class CrewPenaltyTest {
+
+        @DisplayName("경고 상태")
+        @Test
+        void test1() {
+            // given
+            Crew crew = new Crew("띠용");
+
+            // when
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 2, 8, 25)); // 출석
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 3, 8, 25)); // 출석
+            // 4일 결석
+            // 6일 결석
+            crew.fillEmptyDateWithAbsent(LocalDate.of(2024,12,8));
+            // 2 결석 -> 경고
+
+            // then
+            assertThat(crew.getPenalty()).isEqualTo(Penalty.WARNING);
+        }
+
+        @DisplayName("면담 상태")
+        @Test
+        void test2() {
+            // given
+            Crew crew = new Crew("띠용");
+
+            // when
+            crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 2, 8, 25)); // 출석
+            // 5일 결석
+            // 4일 결석
+            // 6일 결석
+            crew.fillEmptyDateWithAbsent(LocalDate.of(2024,12,8));
+            // 3 결석 -> 면담
+
+            // then
+            assertThat(crew.getPenalty()).isEqualTo(Penalty.COUNSELLING);
+        }
+
+        @DisplayName("제적 상태")
+        @Test
+        void test3() {
+            // given
+            Crew crew = new Crew("띠용");
+
+            // when
+            // 2일 결석
+            // 3일 결석
+            // 4일 결석
+            // 6일 결석
+            // 9일 결석
+            // 10일 결석
+            crew.fillEmptyDateWithAbsent(LocalDate.of(2024,12,11));
+            // 6 결석 -> 제적
+
+            // then
+            assertThat(crew.getPenalty()).isEqualTo(Penalty.EXPEL);
+        }
+
+    }
+
 
 }
