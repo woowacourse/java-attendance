@@ -23,17 +23,14 @@ public class CheckAttendanceTest {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 17, 10, 0);
         LocalDateTime lateTime = LocalDateTime.of(2024, 12, 17, 10, 6);
         LocalDateTime absentTime = LocalDateTime.of(2024, 12, 17, 10, 40);
-
         // when
-
-        // new
-        Attendance attendance = Attendace(attendanceTime);
-        Attendance late = Attendace(lateTime);
-        Attendance absent = Attendace(absentTime);
-
-        assertThat(attendance.getAttendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
-        assertThat(late.getAttendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
-        assertThat(absent.getAttendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
+        Attendance attendance = new Attendance(attendanceTime);
+        Attendance late = new Attendance(lateTime);
+        Attendance absent = new Attendance(absentTime);
+        // then
+        assertThat(attendance.getAttendanceStatus()).isEqualTo(AttendanceStatus.ATTEND);
+        assertThat(late.getAttendanceStatus()).isEqualTo(AttendanceStatus.ATTEND);
+        assertThat(absent.getAttendanceStatus()).isEqualTo(AttendanceStatus.ATTEND);
 
     }
 
@@ -46,9 +43,9 @@ public class CheckAttendanceTest {
         LocalTime beforeOperatingTime = LocalTime.of(7, 0);
         LocalTime afterOperatingTime = LocalTime.of(23, 44);
         //when
-        Boolean isOperating = AttendancePolicy.isOperatingTime(inOperatingTime);
-        Boolean notOperating = AttendancePolicy.isOperatingTime(beforeOperatingTime);
-        Boolean notOperating2 = AttendancePolicy.isOperatingTime(afterOperatingTime);
+        Boolean isOperating = Attendance.isOperatingTime(inOperatingTime);
+        Boolean notOperating = Attendance.isOperatingTime(beforeOperatingTime);
+        Boolean notOperating2 = Attendance.isOperatingTime(afterOperatingTime);
 
         assertThat(isOperating).isTrue();
         assertThat(notOperating).isFalse();
@@ -63,16 +60,16 @@ public class CheckAttendanceTest {
         LocalDateTime weekend = LocalDateTime.of(2024, 12, 21, 10, 0);
         LocalDateTime christmas = LocalDateTime.of(2024, 12, 25, 10, 0);
 
-        assertThat(AttendancePolicy.isOperatingDay(notHoliday)).isFalse();
-        assertThat(AttendancePolicy.isOperatingDay(weekend)).isTrue();
-        assertThat(AttendancePolicy.isOperatingDay(christmas)).isTrue();
+        assertThat(Attendance.isOperatingDay(notHoliday)).isFalse();
+        assertThat(Attendance.isOperatingDay(weekend)).isTrue();
+        assertThat(Attendance.isOperatingDay(christmas)).isTrue();
     }
 
     @Test
     @DisplayName("월요일에 따라 다른 출석 확인 처리")
     public void checkMondayAttendanceStatus() {
         LocalDateTime monday = LocalDateTime.of(2024, 12, 16, 13, 0);
-        AttendanceStatus attendanceStatus = AttendancePolicy.checkAttendanceStatus(monday);
+        AttendanceStatus attendanceStatus = Attendance.checkAttendanceStatus(monday);
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
 
     }

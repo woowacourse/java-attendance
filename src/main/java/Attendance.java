@@ -4,7 +4,7 @@ import java.time.LocalTime;
 import java.time.MonthDay;
 import java.util.Set;
 
-public class AttendancePolicy {
+public class Attendance {
     private static final LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0);
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     private static final int LATE_STANDARD = 5;
@@ -16,8 +16,16 @@ public class AttendancePolicy {
     private static final Set<DayOfWeek> WEEKENDS = Set.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
     private static final Set<MonthDay> HOLIDAYS = Set.of(MonthDay.of(12, 25));
 
+    private final LocalDateTime attendanceTime;
+    private final AttendanceStatus attendanceStatus;
 
-    public static AttendanceStatus checkAttendanceStatus(LocalDateTime attendanceTime) {
+    public Attendance(LocalDateTime attendanceTime) {
+        this.attendanceTime = attendanceTime;
+        this.attendanceStatus = checkAttendanceStatus(attendanceTime);
+    }
+
+
+    private AttendanceStatus checkAttendanceStatus(LocalDateTime attendanceTime) {
         LocalTime startTime = DEFAULT_START_TIME; // 기본 시작 시간
         if (attendanceTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             startTime = MONDAY_START_TIME; // 월요일 시작 시간 적용
@@ -42,4 +50,12 @@ public class AttendancePolicy {
         return true;
     }
 
+
+    public LocalDateTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
+    public AttendanceStatus getAttendanceStatus() {
+        return attendanceStatus;
+    }
 }
