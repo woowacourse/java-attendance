@@ -16,15 +16,15 @@ public enum AttendanceStatus {
         this.threshold = threshold;
     }
 
-    public static AttendanceStatus from(final Attendance attendance) {
-        final Integer hour = attendance.getAttendanceTime()
+    public static AttendanceStatus from(final AttendanceDateTime attendanceDateTime) {
+        final Integer hour = attendanceDateTime.getAttendanceTime()
             .getHour()
             .orElse(null);
-        final Integer minute = attendance.getAttendanceTime()
+        final Integer minute = attendanceDateTime.getAttendanceTime()
             .getMinute()
             .orElse(null);
 
-        final int startHour = attendance.getAttendanceDate()
+        final int startHour = attendanceDateTime.getAttendanceDate()
             .getAttendanceDayOfWeekDayOfWeek()
             .getStartHour();
 

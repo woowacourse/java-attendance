@@ -1,11 +1,11 @@
 package attendance.domain;
 
-public class Attendance {
+public class AttendanceDateTime {
 
     private final AttendanceDate attendanceDate;
     private final AttendanceTime attendanceTime;
 
-    public Attendance(
+    public AttendanceDateTime(
         final AttendanceDate attendanceDate,
         final AttendanceTime attendanceTime
     ) {
@@ -20,7 +20,7 @@ public class Attendance {
     ) {
         if (attendanceDate == null || attendanceTime == null) {
             throw new IllegalArgumentException(
-                "출석은 출석 날짜와 출석 시간을 가지고 있어야 합니다.");
+                "출석 일시는 출석 날짜와 출석 시간을 가지고 있어야 합니다.");
         }
     }
 
