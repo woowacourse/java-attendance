@@ -30,8 +30,8 @@ public class CrewAttendance {
                 .allMatch(attendance -> attendance.isEqualNickname(nickname));
     }
 
-    public AttendanceCount getAttendanceCount(AttendanceDate endAttendanceDate) {
-        return AttendanceCount.create(nickname, attendances, endAttendanceDate);
+    public AttendanceResult getAttendanceCount(AttendanceDate endAttendanceDate) {
+        return AttendanceResult.create(nickname, attendances, endAttendanceDate);
     }
 
     @Override

@@ -36,11 +36,12 @@ public class CrewAttendanceTest {
         AttendanceDate attendanceEndDate = new AttendanceDate(LocalDate.of(2024, 12, 5));
 
         //when
-        AttendanceCount attendanceCount = crewAttendance.getAttendanceCount(attendanceEndDate);
+        AttendanceResult attendanceResult = crewAttendance.getAttendanceCount(attendanceEndDate);
 
         //then
-        assertThat(attendanceCount)
-                .isEqualTo(new AttendanceCount(
+        assertThat(attendanceResult)
+                .isEqualTo(new AttendanceResult(
+                        "pobi",
                         Map.of(
                                 AttendanceStatus.ATTENDANCE, 2,
                                 AttendanceStatus.ABSENT, 2

@@ -7,19 +7,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class AttendanceCount implements Comparable<AttendanceCount> {
+public class AttendanceResult implements Comparable<AttendanceResult> {
 
     private static final AttendanceDate ATTENDANCE_START_DATE = new AttendanceDate(LocalDate.of(2024, 12, 2));
 
+    private final String nickname;
     private final Map<AttendanceStatus, Integer> attendances;
 
-    public AttendanceCount(Map<AttendanceStatus, Integer> attendances) {
+    public AttendanceResult(String nickname, Map<AttendanceStatus, Integer> attendances) {
+        this.nickname = nickname;
         this.attendances = attendances;
     }
 
-    public static AttendanceCount create(String nickname,
-                                         List<Attendance> attendances,
-                                         AttendanceDate attendanceEndDate) {
+    public static AttendanceResult create(String nickname,
+                                          List<Attendance> attendances,
+                                          AttendanceDate attendanceEndDate) {
         Map<AttendanceStatus, Integer> attendanceMap = new HashMap<>();
         AttendanceDate currentDate = ATTENDANCE_START_DATE;
         while (currentDate.isBeforeAndEqual(attendanceEndDate)) {
@@ -36,7 +38,7 @@ public class AttendanceCount implements Comparable<AttendanceCount> {
                     );
             currentDate = currentDate.nextDate();
         }
-        return new AttendanceCount(attendanceMap);
+        return new AttendanceResult(nickname, attendanceMap);
     }
 
     private static Optional<Attendance> findAttendanceByDate(String nickname,
@@ -52,7 +54,7 @@ public class AttendanceCount implements Comparable<AttendanceCount> {
     }
 
     @Override
-    public int compareTo(AttendanceCount o) {
+    public int compareTo(AttendanceResult o) {
         return o.calculateTotalAbsent() - this.calculateTotalAbsent();
     }
 
@@ -71,7 +73,7 @@ public class AttendanceCount implements Comparable<AttendanceCount> {
             return false;
         }
 
-        AttendanceCount that = (AttendanceCount) object;
+        AttendanceResult that = (AttendanceResult) object;
         return Objects.equals(attendances, that.attendances);
     }
 
