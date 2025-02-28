@@ -6,10 +6,13 @@ import java.util.Objects;
 public class Attendance {
     private final AttendanceDate date;
     private final AttendanceTime time;
+    private final AttendanceStatus status;
 
     public Attendance(LocalDate date, LocalTime time) {
         this.date = new AttendanceDate(date);
         this.time = new AttendanceTime(time);
+        LocalTime startTime = EducationTime.startOf(date.getDayOfWeek());
+        this.status = AttendanceStatus.from(startTime, time);
     }
 
     public LocalDateTime getDateTime() {
@@ -17,13 +20,7 @@ public class Attendance {
     }
 
     public AttendanceStatus getStatus() {
-        if (time.getValue().isAfter(LocalTime.of(10, 30))) {
-            return AttendanceStatus.ABSENCE;
-        }
-        if (time.getValue().isAfter(LocalTime.of(10, 5))) {
-            return AttendanceStatus.LATE;
-        }
-        return AttendanceStatus.ATTENDANCE;
+        return status;
     }
 
     @Override
