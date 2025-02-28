@@ -21,9 +21,10 @@ public class AttendanceRecords {
         attendanceRecords.add(attendanceRecord);
     }
 
-    public void overwriteAttendanceRecord(AttendanceRecord attendanceRecord) {
-        attendanceRecords.removeIf(record -> record.equals(attendanceRecord));
-        attendanceRecords.add(attendanceRecord);
+    public void overwriteAttendanceRecord(AttendanceRecord after) {
+        attendanceRecords.removeIf(record ->
+                after.getCrew().equals(record.getCrew()) && after.getDate().equals(record.getDate()));
+        attendanceRecords.add(after);
     }
 
     public boolean existsByCrewAndDate(Crew crew, LocalDate date) {
