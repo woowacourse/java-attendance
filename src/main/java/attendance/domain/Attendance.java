@@ -7,12 +7,17 @@ import java.util.Objects;
 
 public class Attendance implements Comparable<Attendance> {
 
+    private static final LocalTime ABSENT_TIME = LocalTime.of(23, 0);
     private final AttendanceDate attendanceDate;
     private final AttendanceTime attendanceTime;
 
     public Attendance(final LocalDateTime attendanceDateTime) {
         this.attendanceDate = new AttendanceDate(attendanceDateTime.toLocalDate());
         this.attendanceTime = new AttendanceTime(attendanceDateTime.toLocalTime());
+    }
+
+    public static Attendance absent(final LocalDate absentDate) {
+        return new Attendance(LocalDateTime.of(absentDate, ABSENT_TIME));
     }
 
     public boolean isSameDate(final LocalDate localDate) {

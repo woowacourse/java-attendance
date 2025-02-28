@@ -65,12 +65,13 @@ class CrewAttendancesTest {
     }
 
     @Test
-    void 크루의_출석_기록이_존재하지_않는_날짜의_출석_기록을_조회할_수_없다() {
+    void 크루의_출석_기록이_존재하지_않는_날짜의_출석_기록은_결석이다() {
         CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
         Crew crew = new Crew("빙봉");
 
-        assertThatThrownBy(() -> crewAttendances.findCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 25)))
-                .isInstanceOf(IllegalArgumentException.class);
+        Attendance absentAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 25));
+
+        assertThat(absentAttendance.calculateStatus()).isEqualByComparingTo(AttendanceStatus.ABSENT);
     }
 
     @Test

@@ -43,6 +43,9 @@ public class CrewAttendances {
 
     public Attendance findCrewAttendanceByLocalDate(final Crew crew, final LocalDate findDate) {
         validateCrewExistence(crew);
+        if (!hasCrewAttendanceByLocalDate(crew, findDate)) {
+            return Attendance.absent(findDate);
+        }
         return crewAttendances.get(crew)
                 .findSameDateAttendance(findDate);
     }

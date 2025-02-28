@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -26,6 +27,15 @@ class AttendanceTest {
         Attendance attendance = new Attendance(localDateTime);
 
         assertThat(attendance).isEqualTo(new Attendance(localDateTime));
+    }
+
+    @Test
+    void 출석_일자를_알려주면_결석_처리된_출석을_생성한다() {
+        LocalDate absentDate = LocalDate.of(2025, 2, 28);
+
+        Attendance absentAttendance = Attendance.absent(absentDate);
+
+        assertThat(absentAttendance.calculateStatus()).isEqualByComparingTo(AttendanceStatus.ABSENT);
     }
 
     @CsvSource(value = {
