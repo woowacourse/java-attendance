@@ -15,15 +15,19 @@ public class Holidays {
         holidays.add(date);
     }
 
-    public boolean isHoliday(final LocalDate date) {
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || holidays.contains(date);
+    public boolean isNotHoliday(final LocalDate date) {
+        return !isHoliday(date);
     }
 
     public void validateAttendanceDate(final LocalDate attendanceDate) {
         if (isHoliday(attendanceDate)) {
             throw new IllegalArgumentException(formatErrorMessage(attendanceDate));
         }
+    }
+
+    private boolean isHoliday(final LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || holidays.contains(date);
     }
 
     private static String formatErrorMessage(final LocalDate date) {

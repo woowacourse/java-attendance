@@ -7,12 +7,14 @@ import attendance.util.FileUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class CrewAttendanceManager {
+
+    public static final String ATTENDANCES_CSV_FILE_NAME = "attendances.csv";
 
     private final Map<String, Attendances> crewAttendance = new HashMap<>();
     private final DateGenerator dateGenerator;
@@ -24,36 +26,11 @@ public class CrewAttendanceManager {
     }
 
     public void initAttendanceFromFile() {
-        List<String> readLines = FileUtil.readFile("attendances.csv");
-
-        for (String readLine : readLines) {
-            String[] split = readLine.split(",");
-
-            String nickname = split[0];
-            LocalDateTime dateTime = DateTimeParser.parseDateTime(split[1]);
-
-            if (!crewAttendance.containsKey(nickname)) {
-                LocalDate nowDate = dateGenerator.generate();
-                int lengthOfMonth = nowDate.lengthOfMonth();
-
-                List<Attendance> defaultAttendances = new ArrayList<>();
-                for (int day = 1; day < lengthOfMonth; day++) {
-                    LocalDate date = nowDate.withDayOfMonth(day);
-                    if (holidays.isHoliday(date)) {
-                        continue;
-                    }
-
-                    LocalDateTime defaultDateTime = LocalDateTime.of(date, LocalTime.MAX);
-                    defaultAttendances.add(Attendance.fromDateTime(defaultDateTime));
-                }
-                addNewCrew(nickname, new Attendances(defaultAttendances));
-            }
-
-            processAttendanceCheck(nickname, dateTime);
-        }
+        List<String> fileLines = FileUtil.readFile(ATTENDANCES_CSV_FILE_NAME);
+        fileLines.forEach(this::initAttendanceFromLine);
     }
 
-    public void addNewCrew(String nickname, Attendances attendances) {
+    public void addNewCrew(final String nickname, final Attendances attendances) {
         crewAttendance.put(nickname, attendances);
     }
 
@@ -86,5 +63,30 @@ public class CrewAttendanceManager {
                 .map(this::getAttendanceRecord)
                 .toList();
         return new AttendanceRecords(records);
+    }
+
+    private void initAttendanceFromLine(final String line) {
+        List<String> lineComponents = List.of(line.split(","));
+
+        String nickname = lineComponents.getFirst();
+        LocalDateTime dateTime = DateTimeParser.parseDateTime(lineComponents.getLast());
+
+        if (!crewAttendance.containsKey(nickname)) {
+            initDefaultAttendancesForCrew(nickname);
+        }
+        processAttendanceCheck(nickname, dateTime);
+    }
+
+    private void initDefaultAttendancesForCrew(final String nickname) {
+        LocalDate nowDate = dateGenerator.generate();
+        int lengthOfMonth = nowDate.lengthOfMonth();
+
+        List<Attendance> defaultAttendances = IntStream.range(1, lengthOfMonth + 1)
+                .mapToObj(nowDate::withDayOfMonth)
+                .filter(holidays::isNotHoliday)
+                .map(date -> LocalDateTime.of(date, LocalTime.MAX))
+                .map(Attendance::fromDateTime)
+                .toList();
+        addNewCrew(nickname, new Attendances(defaultAttendances));
     }
 }
