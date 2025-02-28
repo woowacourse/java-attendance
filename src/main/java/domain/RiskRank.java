@@ -1,21 +1,21 @@
 package domain;
 
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.function.Function;
 
 public enum RiskRank {
-    NOT_MANAGED("", 0),
-    WARNING("경고", 2),
-    INTERVIEW("면담", 3),
-    EXPELLED("제적", 6),
+    NOT_MANAGED("", (count) -> count < 2),
+    WARNING("경고", (count) -> count == 2),
+    INTERVIEW("면담", (count) -> count >= 3 && count <= 5),
+    EXPELLED("제적", (count) -> count > 5),
     ;
 
     private final String name;
-    private final int riskCountLimit;
+    private Function<Integer, Boolean> condition;
 
-    RiskRank(String name, int riskCountLimit) {
+    RiskRank(String name, Function<Integer, Boolean> condition) {
         this.name = name;
-        this.riskCountLimit = riskCountLimit;
+        this.condition = condition;
     }
 
     public static RiskRank from(int riskCount) {
@@ -24,16 +24,8 @@ public enum RiskRank {
         }
 
         return Arrays.stream(values())
-                .filter(riskRank -> riskRank.riskCountLimit <= riskCount)
-                .max(Comparator.comparing(RiskRank::getRiskCountLimit))
+                .filter(riskRank -> riskRank.condition.apply(riskCount))
+                .findAny()
                 .orElseThrow(() -> new IllegalStateException("논리적으로 도달할 수 없는 예외입니다."));
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getRiskCountLimit() {
-        return riskCountLimit;
     }
 }
