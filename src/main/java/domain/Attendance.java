@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -16,12 +17,9 @@ public class Attendance {
     }
 
     private void validate(LocalDateTime dateTime) {
-        if (isHolidayOrWeekend(dateTime.toLocalDate())) {
-            throw new IllegalArgumentException("주말 또는 공휴일에는 출석할 수 없습니다.");
+        if (Holiday.isHoliday(dateTime.toLocalDate()) ||
+                dateTime.getDayOfWeek().compareTo(DayOfWeek.FRIDAY) >= 1) {
+            throw new IllegalArgumentException("주말 또는 공휴일에는 출석할 수 없습니다");
         }
-    }
-
-    private boolean isHolidayOrWeekend(LocalDate localDate) {
-        return false;
     }
 }
