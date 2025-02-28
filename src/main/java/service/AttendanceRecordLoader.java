@@ -1,6 +1,7 @@
 package service;
 
 import domain.AttendanceRecord;
+import domain.Crew;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -34,6 +35,6 @@ public class AttendanceRecordLoader {
         String nickname = parsed[0];
         String dateTime = parsed[1];
         LocalDateTime d = LocalDateTime.parse(dateTime, DATETIME_FORMAT);
-        return new AttendanceRecord(nickname, d.toLocalDate(), d.toLocalTime());
+        return AttendanceRecord.of(new Crew(nickname), d.toLocalDate(), d.toLocalTime());
     }
 }

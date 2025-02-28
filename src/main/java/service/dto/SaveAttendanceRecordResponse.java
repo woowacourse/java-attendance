@@ -1,20 +1,15 @@
 package service.dto;
 
-import java.time.LocalDate;
+import domain.AttendanceRecord;
+import domain.AttendanceStatus;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 public record SaveAttendanceRecordResponse(
-        String dateTime,
-        String status
+        LocalDateTime dateTime,
+        AttendanceStatus status
 ) {
 
-    private static final DateTimeFormatter DATE_TIME_FORMAT
-            = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREAN);
-
-    public static SaveAttendanceRecordResponse of(LocalDate date, LocalTime time, String status) {
-        return new SaveAttendanceRecordResponse(LocalDateTime.of(date, time).format(DATE_TIME_FORMAT), status);
+    public static SaveAttendanceRecordResponse of(AttendanceRecord attendanceRecord) {
+        return new SaveAttendanceRecordResponse(attendanceRecord.getDateTime(), attendanceRecord.getStatus());
     }
 }

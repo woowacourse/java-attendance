@@ -1,49 +1,29 @@
 package domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Objects;
 import util.DateTimeUtil;
 
-public record AttendanceRecord(
-        String nickname,
-        LocalDate date,
-        LocalTime time,
-        AttendanceStatus status
-) {
+public class AttendanceRecord extends AbstractAttendanceRecord {
     private static final LocalTime CAMPUS_OPEN_TIME = LocalTime.of(8, 0);
     private static final LocalTime CAMPUS_CLOSE_TIME = LocalTime.of(23, 0);
 
-    public AttendanceRecord {
-        validateNickname(nickname);
-        validateDate(date);
+    private final LocalTime time;
+
+    private AttendanceRecord(Crew crew, LocalDate date, LocalTime time, AttendanceStatus status) {
+        super(crew, date, status);
+
         validateTime(time);
-        validateStatus(status);
+        this.time = time;
     }
 
-    public AttendanceRecord(String nickname, LocalDate date, LocalTime time) {
-        this(nickname, date, time, AttendanceStatus.of(date, time));
-    }
-
-    private void validateNickname(String nickname) {
-        if (nickname.isEmpty()) {
-            throw new IllegalArgumentException("닉네임은 빈 값일 수 없습니다.");
-        }
-    }
-
-    private void validateDate(LocalDate date) {
-        validateOffDate(date);
+    public static AttendanceRecord of(Crew crew, LocalDate date, LocalTime time) {
+        return new AttendanceRecord(crew, date, time, AttendanceStatus.of(date, time));
     }
 
     private void validateTime(LocalTime time) {
         validateCampusTime(time);
-    }
-
-    private void validateOffDate(LocalDate date) {
-        if (DateTimeUtil.isWeekend(date)
-                || Holiday.isHoliday(date)) {
-            throw new IllegalArgumentException(date + ": 주말 및 공휴일에는 출석을 기록할 수 없습니다.");
-        }
     }
 
     private void validateCampusTime(LocalTime time) {
@@ -52,9 +32,23 @@ public record AttendanceRecord(
         }
     }
 
-    private void validateStatus(AttendanceStatus status) {
-        if (Objects.isNull(status)) {
-            throw new IllegalArgumentException("출석 상태는 null일 수 없습니다.");
-        }
+    public LocalDateTime getDateTime() {
+        return LocalDateTime.of(date, time);
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public AttendanceStatus getStatus() {
+        return status;
+    }
+
+    public String getNickname() {
+        return crew.getNickname();
     }
 }

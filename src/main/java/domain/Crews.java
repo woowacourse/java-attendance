@@ -1,7 +1,6 @@
 package domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,10 +10,8 @@ public class Crews {
     public Crews() {
     }
 
-    public Crews(List<String> nicknames) {
-        nicknames.stream()
-                .map(Crew::new)
-                .forEach(crews::add);
+    public Crews(List<Crew> crews) {
+        this.crews.addAll(crews);
     }
 
     public void addCrewIfAbsent(Crew crew) {
@@ -25,25 +22,22 @@ public class Crews {
         }
         crews.add(crew);
     }
+    
+    public boolean existsByNickname(String nickname) {
+        return crews.stream()
+                .anyMatch(crew -> nickname.equals(crew.getNickname()));
+    }
+
+    public Crew findByNickname(String nickname) {
+        return crews.stream()
+                .filter(crew -> nickname.equals(crew.getNickname()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(nickname + ": 존재하지 않는 크루입니다."));
+    }
 
     private void validateNull(Crew crew) {
         if (Objects.isNull(crew)) {
             throw new IllegalArgumentException("null이면 안됩니다.");
         }
-    }
-
-    public boolean existsByNickname(String nickname) {
-        return crews.stream()
-                .anyMatch(crew -> nickname.equals(crew.nickname()));
-    }
-
-    public List<Crew> findAllCrews() {
-        return Collections.unmodifiableList(crews);
-    }
-
-    public List<String> findAllCrewNicknames() {
-        return findAllCrews().stream()
-                .map(Crew::nickname)
-                .toList();
     }
 }
