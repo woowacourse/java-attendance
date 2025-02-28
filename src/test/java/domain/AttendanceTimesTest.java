@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -80,25 +79,6 @@ class AttendanceTimesTest {
     }
 
     @Test
-    @DisplayName("원하는 날짜의 출석을 확인")
-    void readAttendanceInAttendancesTest() {
-        // given
-        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
-
-        // when
-        LocalDateTime attendanceTime = attendanceTimes.readAttendance(
-                LocalDate.of(2024, 12, 11)
-        );
-
-        // then
-        LocalDateTime expected = LocalDateTime.of(
-                LocalDate.of(2024, 12, 11),
-                LocalTime.of(10, 6)
-        );
-        assertThat(attendanceTime).isEqualTo(expected);
-    }
-
-    @Test
     @DisplayName("원하는 날짜의 출석을 수정")
     void modifyAttendanceInAttendancesTest() {
         // given
@@ -119,9 +99,6 @@ class AttendanceTimesTest {
         // then
         assert optionalAttendanceTime.isPresent();
         assertThat(optionalAttendanceTime.get()).isEqualTo(previous);
-
-        LocalDateTime modified = attendanceTimes.readAttendance(date);
-        assertThat(modified).isEqualTo(LocalDateTime.of(date, time));
     }
 
     @Test
@@ -132,7 +109,7 @@ class AttendanceTimesTest {
         LocalDate today = LocalDate.of(2024, 12, 13);
 
         // when
-        List<AttendanceTime> log = attendanceTimes.readAttendanceV2(today);
+        List<AttendanceTime> log = attendanceTimes.readAttendance(today);
 
         // then
         assertThat(log).hasSize(3);

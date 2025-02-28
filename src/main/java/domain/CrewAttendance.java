@@ -2,10 +2,8 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 public class CrewAttendance {
     private final Crew crew;
@@ -28,14 +26,8 @@ public class CrewAttendance {
         return attendanceTimes.modifyAttendance(attendanceTime);
     }
 
-    public List<LocalDateTime> readAttendanceTimesBefore(LocalDate date) {
-        int today = date.getDayOfMonth();
-        return IntStream.range(1, today)
-                .mapToObj(day -> LocalDate.of(2024, 12, day))
-                .filter(attendanceTimes::contains)
-                .map(attendanceTimes::readAttendance)
-                .sorted()
-                .toList();
+    public List<AttendanceTime> readAttendanceTimesBefore(LocalDate date) {
+        return attendanceTimes.readAttendance(date);
     }
 
     public DisciplinaryStatus getDisciplinaryStatus(LocalDate date) {

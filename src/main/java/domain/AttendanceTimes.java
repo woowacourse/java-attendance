@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,17 +30,7 @@ public class AttendanceTimes {
         attendanceLog.add(time);
     }
 
-    // TODO: delete
-    public LocalDateTime readAttendance(LocalDate date) {
-        AttendanceTime dateTime = AttendanceTime.of(date, null); // TODO: null 보다 나은 방법 고민
-        return attendanceLog.stream()
-                .filter(attendanceTime -> attendanceTime.isSameDate(dateTime))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석기록이 존재하지 않습니다."))
-                .toLocalDateTime();
-    }
-
-    public List<AttendanceTime> readAttendanceV2(LocalDate date) {
+    public List<AttendanceTime> readAttendance(LocalDate date) {
         return attendanceLog.stream()
                 .filter(time -> time.isBefore(date))
                 .toList();
