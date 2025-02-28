@@ -1,4 +1,4 @@
-package domain;
+package domain.attendance;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -26,9 +26,9 @@ public enum AttendanceTime {
         this.minute = minute;
     }
 
-    public static boolean isOverOperatingTime(LocalDateTime dateTime) {
-        return START_TIME.isBefore(dateTime.toLocalTime()) ||
-                END_TIME.isAfter(dateTime.toLocalTime());
+    public static boolean isOperatingTime(LocalDateTime dateTime) {
+        return (START_TIME.equals(dateTime.toLocalTime()) || START_TIME.isBefore(dateTime.toLocalTime())) &&
+                (END_TIME.equals(dateTime.toLocalTime()) || END_TIME.isAfter(dateTime.toLocalTime()));
     }
 
     public static boolean isAttendance(LocalDateTime dateTime) {

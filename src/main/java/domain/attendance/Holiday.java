@@ -1,4 +1,4 @@
-package domain;
+package domain.attendance;
 
 import java.time.LocalDate;
 import java.util.Arrays;
