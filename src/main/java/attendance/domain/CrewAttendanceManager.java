@@ -24,17 +24,17 @@ public class CrewAttendanceManager {
 
     public AttendanceUpdate processAttendanceUpdate(final String nickname, final LocalDateTime dateTime) {
         Attendances attendances = crewAttendance.get(nickname);
-        Attendance beforeAttendance = attendances.findAttendanceByDate(dateTime.toLocalDate());
-
         Attendances newAttendances = attendances.updateAttendance(dateTime);
-        Attendance afterAttendance = newAttendances.findAttendanceByDate(dateTime.toLocalDate());
+        crewAttendance.put(nickname, newAttendances);
 
+        Attendance beforeAttendance = attendances.findAttendanceByDate(dateTime.toLocalDate());
+        Attendance afterAttendance = newAttendances.findAttendanceByDate(dateTime.toLocalDate());
         return new AttendanceUpdate(beforeAttendance, afterAttendance);
     }
 
     public AttendanceRecord getAttendanceRecord(String nickname) {
         Attendances attendances = crewAttendance.get(nickname);
         List<Attendance> excludingToday = attendances.getAttendancesBefore(LocalDate.now());
-        return new AttendanceRecord(nickname, excludingToday);
+        return AttendanceRecord.fromNicknameAndAttendances(nickname, excludingToday);
     }
 }
