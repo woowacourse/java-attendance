@@ -90,11 +90,8 @@ public class AttendanceRecord {
     }
 
     private void addWhenNotExistedTo(LocalDate targetDate) {
-        try {
-            Attendance attendanceCandidate = new Attendance(targetDate, ABSENT_CONSIDERING_TIME);
-            if (contains(attendanceCandidate) || Attendance.isHoliday(targetDate)) return;
-            add(attendanceCandidate);
-        }
-        catch (IllegalArgumentException ignored) {}
+        Attendance attendanceCandidate = new Attendance(targetDate, ABSENT_CONSIDERING_TIME);
+        if (contains(attendanceCandidate) || Attendance.isHoliday(targetDate)) return;
+        add(attendanceCandidate);
     }
 }

@@ -29,12 +29,16 @@ public class InputValidator {
     public static void validateTime(String time) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
         try {
-            LocalTime localTime = LocalTime.parse(time, dateTimeFormatter);
-            if(Attendance.isInvalidTime(localTime)) {
-                throw new IllegalArgumentException(ERROR_HEADER + NOT_RUNNING_TIME_ERROR);
-            }
-        } catch (DateTimeParseException e) {
+            LocalTime parseTime = LocalTime.parse(time, dateTimeFormatter);
+            checkRunningTime(parseTime);
+        } catch (DateTimeParseException | IllegalArgumentException e) {
             throw new IllegalArgumentException(ERROR_HEADER + TIME_FORMAT_ERROR);
+        }
+    }
+
+    private static void checkRunningTime(LocalTime time) {
+        if(Attendance.isInvalidTime(time)) {
+            throw new IllegalArgumentException(ERROR_HEADER + NOT_RUNNING_TIME_ERROR);
         }
     }
 
@@ -51,14 +55,18 @@ public class InputValidator {
         try {
             int dayNumber = Integer.parseInt(day);
             LocalDate date = LocalDate.of(TODAY.getYear(), TODAY.getMonth(), dayNumber);
-            if(date.isAfter(TODAY)) {
-                throw new IllegalArgumentException(ERROR_HEADER + INVALID_DATE_ERROR);
-            }
-            if (Attendance.isHoliday(date)) {
-                throw new IllegalArgumentException(ERROR_HEADER + HOLIDAY_ERROR);
-            }
+            checkRunningDay(date);
         } catch (DateTimeException | IllegalArgumentException e) {
             throw new IllegalArgumentException(ERROR_HEADER + INVALID_DATE_ERROR);
+        }
+    }
+
+    private static void checkRunningDay(LocalDate date) {
+        if(date.isAfter(TODAY)) {
+            throw new IllegalArgumentException(ERROR_HEADER + INVALID_DATE_ERROR);
+        }
+        if (Attendance.isHoliday(date)) {
+            throw new IllegalArgumentException(ERROR_HEADER + HOLIDAY_ERROR);
         }
     }
 
