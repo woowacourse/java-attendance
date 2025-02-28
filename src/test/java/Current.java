@@ -14,6 +14,13 @@ public enum Current {
         this.date = LocalDate.of(2024, 12, this.day);
     }
 
+    public static List<LocalDate> getEducationDateUntilCurrent() {
+        return IntStream.range(1, TODAY.day)
+                .mapToObj(day -> LocalDate.of(TODAY.getYear(), TODAY.getMonth(), day))
+                .filter(OperationTime::isOperationDate)
+                .toList();
+    }
+
     public int getYear() {
         return this.date.getYear();
     }
