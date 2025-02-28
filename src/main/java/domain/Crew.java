@@ -1,5 +1,8 @@
 package domain;
 
+import static domain.AttendanceStatus.isWeekendOrChristmas;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,11 @@ public class Crew {
         attendanceHistory.add(attendance);
     }
 
+    private boolean isEmptyDay(int date) {
+        return attendanceHistory.stream()
+                .noneMatch(attendance -> attendance.getDayOfMonth() == date);
+    }
+
     private boolean isAlreadyAttendedDay(Attendance newAttendance) {
         return attendanceHistory.stream()
                 .anyMatch(attendance -> attendance.getDayOfMonth() == newAttendance.getDayOfMonth());
@@ -49,5 +57,18 @@ public class Crew {
         return (int) attendanceHistory.stream()
                 .filter(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.ABSENT)
                 .count();
+    }
+
+
+    public void fillEmptyDateWithAbsent(LocalDate localDate) {
+        for (int day = 1; day <= localDate.getDayOfMonth(); day++) {
+            if (isEmptyDay(day) && !isWeekendOrChristmas(LocalDate.of(2024,12,day))) {
+                addDummyAbsent(day);
+            }
+        }
+    }
+
+    private void addDummyAbsent(int day) {
+        attendanceHistory.add(new Attendance(LocalDateTime.of(2024, 12,day,22,59,59)));
     }
 }

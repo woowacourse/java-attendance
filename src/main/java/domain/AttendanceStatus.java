@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public enum AttendanceStatus {
@@ -15,7 +16,7 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus getStatusByAttendedTime(LocalDateTime attendedTime) {
-        if (isWeekendOrChristmas(attendedTime))
+        if (isWeekendOrChristmas(attendedTime.toLocalDate()))
             throw new IllegalArgumentException(ERROR_MESSAGE.CLOSED_DAY.getMessage());
 
         if (isNotOpenTime(attendedTime))
@@ -41,9 +42,9 @@ public enum AttendanceStatus {
         return attendedTime.getHour() < 8 || attendedTime.getHour() == 23;
     }
 
-    private static boolean isWeekendOrChristmas(LocalDateTime attendedTime) {
-        return (attendedTime.getDayOfWeek() == DayOfWeek.SATURDAY)
-                || (attendedTime.getDayOfWeek() == DayOfWeek.SUNDAY)
-                || attendedTime.getDayOfMonth() == 25;
+    static boolean isWeekendOrChristmas(LocalDate attendedDay) {
+        return (attendedDay.getDayOfWeek() == DayOfWeek.SATURDAY)
+                || (attendedDay.getDayOfWeek() == DayOfWeek.SUNDAY)
+                || attendedDay.getDayOfMonth() == 25;
     }
 }

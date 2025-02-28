@@ -112,13 +112,11 @@ public class SomeTest {
 
             // then
             assertAll(
-                    () -> assertThat(crew.getAttendCount()).isEqualTo(3),
+                    () -> assertThat(crew.getAttendCount()).isEqualTo(2),
                     () -> assertThat(crew.getLateCount()).isEqualTo(1),
-                    () -> assertThat(crew.getAbsentCount()).isEqualTo(2)
+                    () -> assertThat(crew.getAbsentCount()).isEqualTo(3)
             );
         }
     }
 
-
-    // 출석하지 않은 날을 결석으로 간주하기
 }
