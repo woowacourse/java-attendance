@@ -29,25 +29,36 @@ public class AttendancesFile {
     }
 
     public Map<String, Attendances> loadInitialAttendances(Path path, LocalDate today) {
-        Map<String, Attendances> crewAttendances = new HashMap<>();
-
-        for (String line : readLines(path)) {
-            String[] splitLines = line.split(DELIMITER);
-            String nickname = splitLines[0];
-            LocalDateTime dateTime = convertStringToDateTime(splitLines);
-            if (crewAttendances.containsKey(nickname)) {
-                crewAttendances.get(nickname).addAttendance(dateTime);
-                continue;
-            }
-            Attendances attendances = new Attendances();
-            attendances.addAttendance(dateTime);
-            crewAttendances.put(nickname, attendances);
-        }
+        Map<String, Attendances> crewAttendances = convertLinesToMap(path);
 
         for (Attendances attendances : crewAttendances.values()) {
             addAllAbsents(today.getDayOfMonth(), attendances.getRecords());
         }
         return crewAttendances;
+    }
+
+    private Map<String, Attendances> convertLinesToMap(Path path) {
+        Map<String, Attendances> crewAttendances = new HashMap<>();
+
+        for (String line : readLines(path)) {
+            addAttendanceToMap(crewAttendances, line);
+        }
+
+        return crewAttendances;
+    }
+
+    private void addAttendanceToMap(Map<String, Attendances> crewAttendances, String line) {
+        String[] splitLines = line.split(DELIMITER);
+        String nickname = splitLines[0];
+        LocalDateTime dateTime = convertStringToDateTime(splitLines);
+
+        if (crewAttendances.containsKey(nickname)) {
+            crewAttendances.get(nickname).addAttendance(dateTime);
+            return;
+        }
+        Attendances attendances = new Attendances();
+        attendances.addAttendance(dateTime);
+        crewAttendances.put(nickname, attendances);
     }
 
     private void addAllAbsents(int today, List<Attendance> records) {

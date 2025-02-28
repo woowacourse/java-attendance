@@ -25,26 +25,14 @@ public class Attendances {
                 .anyMatch(attendance1 -> attendance1.isSameDay(attendance));
     }
 
-    public Attendance updateAttendance(LocalDateTime dateTime, int day) {
-        if (dateTime.getDayOfMonth() > day) {
+    public Attendance updateAttendance(LocalDateTime dateTime, int today) {
+        if (dateTime.getDayOfMonth() > today) {
             throw new IllegalArgumentException("미래는 수정할 수 없습니다.");
         }
         Attendance attendance = new Attendance(dateTime);
-        removeAttendance(day);
+        records.removeIf(record -> record.isSameDay(dateTime.getDayOfMonth()));
         records.add(attendance);
         return attendance;
-    }
-
-    private void removeAttendance(int day) {
-        int removeIndex = 0;
-        for (int i = 0; i < records.size(); i++) {
-            if (records.get(i).isSameDay(day)) {
-                removeIndex = i;
-                break;
-            }
-        }
-
-        records.remove(removeIndex);
     }
 
     public CrewStatus calculateCrewStatus(LocalDate today) {
@@ -55,22 +43,21 @@ public class Attendances {
 
     public Map<AttendanceStatus, Integer> calculateAllAttendanceStatus(LocalDate today) {
         Map<AttendanceStatus, Integer> attendanceStatusCount = initMap();
-        for (Attendance attendance : records) {
-            if (attendance.isBefore(today)) {
-                AttendanceStatus attendanceStatus = attendance.calculateAttendanceStatus();
-                attendanceStatusCount.put(attendanceStatus, attendanceStatusCount.get(attendanceStatus) + 1);
-            }
-        }
+        records.stream()
+                .filter(attendance -> attendance.isBefore(today))
+                .map(Attendance::calculateAttendanceStatus)
+                .forEach(status ->
+                        attendanceStatusCount.compute(status, (key, value) -> value + 1));
 
         return attendanceStatusCount;
     }
 
     private Map<AttendanceStatus, Integer> initMap() {
-        EnumMap<AttendanceStatus, Integer> attedanceStatusCounts = new EnumMap<>(AttendanceStatus.class);
+        EnumMap<AttendanceStatus, Integer> attendanceStatusCounts = new EnumMap<>(AttendanceStatus.class);
         for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
-            attedanceStatusCounts.put(attendanceStatus, 0);
+            attendanceStatusCounts.put(attendanceStatus, 0);
         }
-        return attedanceStatusCounts;
+        return attendanceStatusCounts;
     }
 
     public Attendance getAttendanceByDay(int day) {

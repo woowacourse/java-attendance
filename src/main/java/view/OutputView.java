@@ -31,14 +31,6 @@ public class OutputView {
         System.out.print(makeChangeAttendanceLog(changeAttendance));
     }
 
-    private String makeChangeAttendanceLog(Attendance attendance) {
-        LocalDateTime dateTime = attendance.getDateTime();
-        AttendanceStatus attendanceStatus = attendance.calculateAttendanceStatus();
-        return String.format("-> %s (%s) 수정 완료!\n",
-                getTimePrintForm(dateTime),
-                attendanceStatus.getKorean());
-    }
-
     public void printCrewAttendances(String nickname, Attendances attendances, LocalDate today) {
         CrewStatus crewStatus = attendances.calculateCrewStatus(today);
         Map<AttendanceStatus, Integer> attendanceStatuses = attendances.calculateAllAttendanceStatus(today);
@@ -60,6 +52,14 @@ public class OutputView {
         if (crewStatus != CrewStatus.NORMAL) {
             System.out.printf("%s 대상자입니다.\n", crewStatus.getKorean());
         }
+    }
+
+    private String makeChangeAttendanceLog(Attendance attendance) {
+        LocalDateTime dateTime = attendance.getDateTime();
+        AttendanceStatus attendanceStatus = attendance.calculateAttendanceStatus();
+        return String.format("-> %s (%s) 수정 완료!\n",
+                getTimePrintForm(dateTime),
+                attendanceStatus.getKorean());
     }
 
     private String makeAttendanceLog(Attendance attendance) {

@@ -6,12 +6,13 @@ import java.time.format.DateTimeFormatter;
 public class Time {
     private static final LocalTime openTime = LocalTime.of(8, 0);
     private static final LocalTime closeTime = LocalTime.of(23, 0);
+
     LocalTime time;
 
     public Time(String rawTime) {
-        LocalTime time = LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("H:m"));
-        validateTime(time);
-        this.time = time;
+        LocalTime parsedTime = LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("H:m"));
+        validateTime(parsedTime);
+        this.time = parsedTime;
     }
 
     private void validateTime(LocalTime time) {
