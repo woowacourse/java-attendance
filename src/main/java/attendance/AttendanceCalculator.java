@@ -14,6 +14,9 @@ public class AttendanceCalculator {
     }
 
     public static String decideAttendanceType(LocalTime attendanceTime) {
+        if (attendanceTime.isAfter(LocalTime.of(10, 29))) {
+            return "결석";
+        }
         if (attendanceTime.isAfter(LocalTime.of(10, 4))) {
             return "지각";
         }
