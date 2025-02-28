@@ -2,6 +2,7 @@ package attendance.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,5 +72,30 @@ public class AttendanceBook {
                 .stream()
                 .filter(attendanceTime -> AttendanceStatus.getAttendanceStatus(attendanceTime) == attendanceStatus)
                 .count();
+    }
+
+    public List<ExpulsionCandidate> getExpulsionCandidates() {
+
+        List<ExpulsionCandidate> expulsionCandidates = new ArrayList<>();
+        expulsionCandidates.addAll(getCrewsByAcademicStatus(AcademicStatus.EXPELLED));
+        expulsionCandidates.addAll(getCrewsByAcademicStatus(AcademicStatus.INTERVIEW));
+        expulsionCandidates.addAll(getCrewsByAcademicStatus(AcademicStatus.WARN));
+        return expulsionCandidates;
+    }
+
+    private List<ExpulsionCandidate> getCrewsByAcademicStatus(final AcademicStatus academicStatus) {
+
+        return attendances.keySet()
+                .stream()
+                .map(name -> {
+                    int absent = getAttendanceStatusCount(name, AttendanceStatus.ABSENT);
+                    int late = getAttendanceStatusCount(name, AttendanceStatus.LATE);
+                    return new ExpulsionCandidate(name, absent, late,
+                            AcademicStatus.getAcademicStatus(late, absent));
+                })
+                .filter(crew -> crew.status() == academicStatus)
+                .sorted(Comparator.comparing(ExpulsionCandidate::absent))
+                .sorted(Comparator.comparing(ExpulsionCandidate::name))
+                .toList();
     }
 }

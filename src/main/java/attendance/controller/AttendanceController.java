@@ -5,6 +5,7 @@ import attendance.model.AcademicStatus;
 import attendance.model.AttendanceBook;
 import attendance.model.AttendanceStatus;
 import attendance.model.AttendanceTime;
+import attendance.model.ExpulsionCandidate;
 import attendance.model.Function;
 import attendance.util.AttendanceReader;
 import attendance.util.Parser;
@@ -68,7 +69,7 @@ public class AttendanceController {
             getCrewAttendances(attendanceBook);
         }
         if (function == Function.GET_EXPULSION_CANDIDATES) {
-
+            getExpulsionCandidates(attendanceBook);
         }
     }
 
@@ -204,6 +205,12 @@ public class AttendanceController {
         attendanceStatusMap.put(AttendanceStatus.LATE, late);
         attendanceStatusMap.put(AttendanceStatus.ABSENT, absent);
         return attendanceStatusMap;
+    }
+
+    private void getExpulsionCandidates(final AttendanceBook attendanceBook) {
+
+        List<ExpulsionCandidate> expulsionCandidates = attendanceBook.getExpulsionCandidates();
+        outputView.printExpulsionCandidates(expulsionCandidates);
     }
 
     private <T> T retryInput(Supplier<T> supplier) {

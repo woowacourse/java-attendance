@@ -4,8 +4,10 @@ import attendance.dto.CrewAttendanceDTO;
 import attendance.model.AcademicStatus;
 import attendance.model.AttendanceStatus;
 import attendance.model.AttendanceTime;
+import attendance.model.ExpulsionCandidate;
 import java.time.format.TextStyle;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
@@ -54,7 +56,18 @@ public class OutputView {
         printLine();
     }
 
+    public void printExpulsionCandidates(List<ExpulsionCandidate> expulsionCandidates) {
+
+        System.out.println("제적 위험자 조회 결과");
+        for (ExpulsionCandidate candidate : expulsionCandidates) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                    candidate.name(), candidate.absent(), candidate.late(), candidate.status().getValue());
+        }
+        printLine();
+    }
+
     private void printAttendances(CrewAttendanceDTO crewAttendanceDTO) {
+
         for (AttendanceTime attendanceTime : crewAttendanceDTO.attendances()) {
             printAttendance(attendanceTime);
             printLine();
