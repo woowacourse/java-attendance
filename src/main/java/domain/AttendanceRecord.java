@@ -21,6 +21,10 @@ public record AttendanceRecord(
         validateStatus(status);
     }
 
+    public AttendanceRecord(String nickname, LocalDate date, LocalTime time) {
+        this(nickname, date, time, AttendanceStatus.of(date, time));
+    }
+
     private void validateNickname(String nickname) {
         if (nickname.isEmpty()) {
             throw new IllegalArgumentException("닉네임은 빈 값일 수 없습니다.");

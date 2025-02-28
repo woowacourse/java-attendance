@@ -30,10 +30,7 @@ public class AttendanceService {
     public SaveAttendanceRecordResponse saveAttendanceRecord(SaveAttendanceRequest request) {
         validateCrew(request.nickname());
 
-        AttendanceRecordRepository.add(
-                new AttendanceRecord(request.nickname(), request.date(), request.time(),
-                        AttendanceStatus.of(request.date(), request.time()))
-        );
+        AttendanceRecordRepository.add(new AttendanceRecord(request.nickname(), request.date(), request.time()));
         AttendanceRecord found = AttendanceRecordRepository.find(request.nickname(), request.date());
         return SaveAttendanceRecordResponse.of(found.date(), found.time(), found.status().getDescription());
     }
@@ -43,9 +40,7 @@ public class AttendanceService {
         validateSameAttendanceRecordExists(request.nickname(), request.date(), request.time());
 
         TimeStatus before = getTimeStatus(request.nickname(), request.date());
-        AttendanceRecordRepository.put(new AttendanceRecord(request.nickname(), request.date(), request.time(),
-                AttendanceStatus.of(request.date(), request.time()))
-        );
+        AttendanceRecordRepository.put(new AttendanceRecord(request.nickname(), request.date(), request.time()));
         TimeStatus after = getTimeStatus(request.nickname(), request.date());
         return ModifyAttendanceRecordResponse.of(request.date(), before, after);
     }
@@ -144,7 +139,6 @@ public class AttendanceService {
             throw new IllegalArgumentException(nickname + ": 존재하지 않는 크루입니다.");
         }
     }
-
 
     private void validateSameAttendanceRecordExists(String nickname, LocalDate date, LocalTime time) {
         if (AttendanceRecordRepository.exists(nickname, date, time)) {
