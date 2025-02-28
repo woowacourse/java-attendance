@@ -36,7 +36,7 @@ public class AllCrew {
             addCrewInfoWithNameAndAttendance(crewNameAndAttendanceTime.getFirst(), attendance);
         }
     }
-    // test
+
     public void addCrewInfoWithNameAndAttendance(String crewName, Attendance attendance) {
         if (containsCrewName(crewName)) {
             findCrewByName(crewName).addAttendance(attendance);
@@ -47,11 +47,10 @@ public class AllCrew {
         allCrew.add(crew);
     }
 
-    // 테스트 어케하지
     public boolean containsCrewName(String crewName) {
         return allCrew.stream().anyMatch(crew -> crew.isSameName(crewName));
     }
-    // 테스트 어케하지
+
     public Crew findCrewByName(String crewName) {
         for (Crew crew : allCrew) {
             if (crew.isSameName(crewName))
@@ -64,6 +63,10 @@ public class AllCrew {
         for (Crew crew : allCrew) {
             crew.fillEmptyDateWithAbsent(date);
         }
+    }
+
+    public int getAbsentCountWithCrewName(String crewName) {
+        return findCrewByName(crewName).getAbsentCount();
     }
 
 }
