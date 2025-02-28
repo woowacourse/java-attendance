@@ -77,4 +77,32 @@ public class AttendanceBookTest {
         // then
         Assertions.assertThat(attendances.size()).isEqualTo(2);
     }
+
+    @Test
+    void 출결_기록이_없는_날짜에_대해_결석_기록을_추가한다() {
+
+        // given
+        final AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 2, 24), 10, 10));
+
+        // when
+        attendanceBook.initCrewsAbsence();
+
+        // then
+        Assertions.assertThat(attendanceBook.getAttendancesByName("이름1").size())
+                .isEqualTo(LocalDate.now().getDayOfMonth() - getWeekendCount());
+    }
+
+    private int getWeekendCount() {
+        
+        int count = 0;
+        LocalDate now = LocalDate.now();
+        for (int day = 1; day <= now.getDayOfMonth(); day++) {
+            LocalDate localDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
+            if (AttendanceTime.isWeekend(localDate.getDayOfWeek())) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
