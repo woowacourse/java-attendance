@@ -32,13 +32,9 @@ public class Attendance {
     }
     
     private void validateNotHoliday(final LocalDate date) {
-        if (isHoliday(date)) {
+        if (Holiday.isHoliday(date)) {
             throw new IllegalArgumentException("공휴일에는 출석할 수 없습니다.");
         }
-    }
-    
-    private static boolean isHoliday(final LocalDate date) {
-        return Holiday.isHoliday(date);
     }
     
     public static Attendance of(final LocalDate attendDate, final LocalTime attendTime) {
@@ -58,7 +54,7 @@ public class Attendance {
     }
     
     public static boolean isAttendableDate(LocalDate date) {
-        return !isWeekend(date) && !isHoliday(date);
+        return !isWeekend(date) && !Holiday.isHoliday(date);
     }
     
     public LocalDate getAttendDate() {
