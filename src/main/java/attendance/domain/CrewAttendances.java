@@ -25,6 +25,10 @@ public class CrewAttendances {
                 .allMatch(attendance -> attendance.isEqualNickname(nickname));
     }
 
+    public AttendanceCount getAttendanceCount(AttendanceDate endAttendanceDate) {
+        return null;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
