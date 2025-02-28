@@ -15,7 +15,7 @@ class AttendanceTest {
             // when & then
             assertThatThrownBy(() -> new AttendanceDateTime(null, null))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("출석은 출석 날짜와 출석 시간을 가지고 있어야 합니다.");
+                .hasMessage("출석 일시는 출석 날짜와 출석 시간을 가지고 있어야 합니다.");
         }
     }
 }

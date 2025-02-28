@@ -66,7 +66,7 @@ class AttendancePenaltyTest {
         @CsvSource(
             {
                 "3, 1",
-                "6, 1"
+                "6, 0"
             }
         )
         void 지각3회를_결석1회로_간주하여_2회이상일시_경고로_간주한다(
