@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceTest {
+public class AttendanceCheckTest {
 
     @DisplayName("닉네임, 출석 시간을 입력하면 출석할 수 있다.")
     @Test

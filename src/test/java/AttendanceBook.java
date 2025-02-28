@@ -4,7 +4,7 @@ import java.util.List;
 
 public class AttendanceBook {
 
-    private List<Attendance> crewsAttendanceRecords;
+    private final List<Attendance> crewsAttendanceRecords;
 
     public AttendanceBook(List<Attendance> crewsAttendanceRecords) {
         this.crewsAttendanceRecords = crewsAttendanceRecords;
@@ -12,14 +12,15 @@ public class AttendanceBook {
 
     public Attendance check(String nickname, LocalDate date, LocalTime time) {
         Attendance attendance = new Attendance(nickname, date, time);
-        if (isAlreadyAttend(nickname, attendance)) {
+        if (isAlreadyAttend(attendance)) {
             throw new IllegalArgumentException();
         }
 
+        crewsAttendanceRecords.add(attendance);
         return attendance;
     }
 
-    private boolean isAlreadyAttend(String nickname, Attendance attendance) {
+    private boolean isAlreadyAttend(Attendance attendance) {
         return crewsAttendanceRecords.stream()
                 .anyMatch(crew -> crew.equals(attendance));
     }
