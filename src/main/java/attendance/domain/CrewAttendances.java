@@ -26,7 +26,7 @@ public class CrewAttendances {
     }
 
     public AttendanceCount getAttendanceCount(AttendanceDate endAttendanceDate) {
-        return null;
+        return AttendanceCount.create(nickname, attendances, endAttendanceDate);
     }
 
     @Override
