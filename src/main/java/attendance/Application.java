@@ -1,11 +1,17 @@
 package attendance;
 
+import static attendance.view.InputView.readAttendanceDateToModify;
+import static attendance.view.InputView.readAttendanceModificationTime;
+import static attendance.view.InputView.readAttendanceTime;
+import static attendance.view.InputView.readCrewNickname;
+import static attendance.view.InputView.readCrewNicknameToModify;
+import static attendance.view.InputView.readOption;
+
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatistics;
 import attendance.domain.CampusManager;
-import attendance.domain.Crew;
-import attendance.view.InputView;
+import attendance.domain.Nickname;
 import attendance.view.OutputView;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,7 +43,7 @@ public class Application {
         initializeAttendances();
         while (true) {
             LocalDate today = now();
-            String option = InputView.readOption(today);
+            String option = readOption(today);
             if (option.equals(QUIT_OPTION)) {
                 break;
             }
@@ -56,15 +62,15 @@ public class Application {
             String line;
             while((line = bufferedReader.readLine()) != null) {
                 String[] split = line.split(",");
-                Crew crew = new Crew(split[INDEX_AS_CREW_NICKNAME]);
-                if (!attendanceManager.isCrewExists(crew)) {
-                    attendanceManager.addCrew(crew);
+                Nickname crewNickname = new Nickname(split[INDEX_AS_CREW_NICKNAME]);
+                if (!attendanceManager.isCrewExists(crewNickname)) {
+                    attendanceManager.addCrew(crewNickname);
                 }
                 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 String attendanceDateTime = split[INDEX_AS_ATTENDANCE_DATE_TIME];
                 LocalDate attendanceDate = LocalDate.parse(attendanceDateTime, dateTimeFormatter);
                 LocalTime attendanceTime = LocalTime.parse(attendanceDateTime, dateTimeFormatter);
-                attendanceManager.addAttendance(crew, attendanceDate, attendanceTime);
+                attendanceManager.addAttendance(crewNickname, attendanceDate, attendanceTime);
             }
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
@@ -86,77 +92,74 @@ public class Application {
             OutputView.printNotOperationDate(today);
             return;
         }
-        String crewNickname = InputView.readCrewNickname();
-        Crew crew = new Crew(crewNickname);
-        boolean isCrewExists = attendanceManager.isCrewExists(crew);
+        Nickname crewNickname = new Nickname(readCrewNickname());
+        boolean isCrewExists = attendanceManager.isCrewExists(crewNickname);
         if (!isCrewExists) {
-            OutputView.printNotRegisteredCrewNickname();
+            OutputView.printNotRegisteredCrew();
             return;
         }
-        Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crew, today);
+        Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crewNickname, today);
         if (existingAttendance.isPresent()) {
             OutputView.printDuplicatedAttendance();
             return;
         }
-        LocalTime attendanceTime = InputView.readAttendanceTime();
+        LocalTime attendanceTime = readAttendanceTime();
         boolean isOperationTime = CampusManager.isOperationTime(attendanceTime);
         if (!isOperationTime) {
             OutputView.printNotOperationTime();
             return;
         }
-        Attendance attendance = attendanceManager.addAttendance(crew, today, attendanceTime);
+        Attendance attendance = attendanceManager.addAttendance(crewNickname, today, attendanceTime);
         OutputView.printAttendance(attendance);
     }
 
     private static void modifyAttendance() {
         LocalDate today = now();
-        String crewNickname = InputView.readCrewNicknameToModify();
-        Crew crew = new Crew(crewNickname);
-        boolean isCrewExists = attendanceManager.isCrewExists(crew);
+        Nickname crewNickname = new Nickname(readCrewNicknameToModify());
+        boolean isCrewExists = attendanceManager.isCrewExists(crewNickname);
         if (!isCrewExists) {
-            OutputView.printNotRegisteredCrewNickname();
+            OutputView.printNotRegisteredCrew();
             return;
         }
-        LocalDate dateToModify = InputView.readAttendanceDateToModify(today);
+        LocalDate dateToModify = readAttendanceDateToModify(today);
         boolean isOperationDate = CampusManager.isOperationDate(dateToModify);
         if (!isOperationDate) {
             OutputView.printNotOperationDate(dateToModify);
             return;
         }
-        Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crew, dateToModify);
+        Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crewNickname, dateToModify);
         if (existingAttendance.isEmpty()) {
             OutputView.printNoAttendanceToModify();
             return;
         }
-        LocalTime modificationTime = InputView.readAttendanceModificationTime();
+        LocalTime modificationTime = readAttendanceModificationTime();
         boolean isOperationTime = CampusManager.isOperationTime(modificationTime);
         if (!isOperationTime) {
             OutputView.printNotOperationTime();
             return;
         }
-        Attendance modifiedAttendance = attendanceManager.modifyAttendance(crew, dateToModify, modificationTime);
+        Attendance modifiedAttendance = attendanceManager.modifyAttendance(crewNickname, dateToModify, modificationTime);
         OutputView.printAttendanceModificationResult(existingAttendance.get(), modifiedAttendance);
     }
 
     private static void checkAttendanceHistory() {
         LocalDate today = now();
-        String crewNickname = InputView.readCrewNickname();
-        Crew crew = new Crew(crewNickname);
-        boolean isCrewExists = attendanceManager.isCrewExists(crew);
+        Nickname crewNickname = new Nickname(readCrewNickname());
+        boolean isCrewExists = attendanceManager.isCrewExists(crewNickname);
         if (!isCrewExists) {
-            OutputView.printNotRegisteredCrewNickname();
+            OutputView.printNotRegisteredCrew();
             return;
         }
-        List<Attendance> monthlyAttendances = attendanceManager.getMonthlyAttendances(today, crew);
-        OutputView.printMonthlyAttendances(today, crew, monthlyAttendances);
-        AttendanceStatistics attendanceStatistics = attendanceManager.getAttendanceStatistics(today, crew);
+        List<Attendance> monthlyAttendances = attendanceManager.getMonthlyAttendances(today, crewNickname);
+        OutputView.printMonthlyAttendances(today, crewNickname, monthlyAttendances);
+        AttendanceStatistics attendanceStatistics = attendanceManager.getAttendanceStatistics(today, crewNickname);
         OutputView.printAttendanceStatistics(attendanceStatistics);
     }
 
     private static void checkDangerousCrews() {
         LocalDate today = now();
-        Map<Crew, AttendanceStatistics> dangerousCrews = attendanceManager.getDangerousCrews(today);
-        OutputView.printDangerousCrews(dangerousCrews);
+        Map<Nickname, AttendanceStatistics> dangerousCrewsInformation = attendanceManager.getDangerousCrewsInformation(today);
+        OutputView.printDangerousCrewsInformation(dangerousCrewsInformation);
     }
 
     private static LocalDate now() {

@@ -7,7 +7,7 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatistics;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.CampusManager;
-import attendance.domain.Crew;
+import attendance.domain.Nickname;
 import attendance.domain.CrewStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -31,7 +31,7 @@ public class OutputView {
         System.out.printf("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.\n", month, date, dayName);
     }
 
-    public static void printNotRegisteredCrewNickname() {
+    public static void printNotRegisteredCrew() {
         System.out.println("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
@@ -80,7 +80,7 @@ public class OutputView {
     }
 
     public static void printMonthlyAttendances(final LocalDate today,
-                                               final Crew crew,
+                                               final Nickname crew,
                                                final List<Attendance> attendances) {
         System.out.printf("\n이번 달 %s의 출석 기록입니다.\n", crew.getNickname());
         System.out.println();
@@ -118,10 +118,10 @@ public class OutputView {
         }
     }
 
-    public static void printDangerousCrews(final Map<Crew, AttendanceStatistics> dangerousCrews) {
+    public static void printDangerousCrewsInformation(final Map<Nickname, AttendanceStatistics> dangerousCrews) {
         System.out.println("\n제적 위험자 조회 결과");
-        List<Crew> crews = sortDangerousCrews(dangerousCrews);
-        for (Crew crew : crews) {
+        List<Nickname> crews = sortDangerousCrews(dangerousCrews);
+        for (Nickname crew : crews) {
             String nickname = crew.getNickname();
             AttendanceStatistics statistics = dangerousCrews.get(crew);
             int absenceCount = statistics.getStatusCount(ABSENCE);
@@ -131,11 +131,11 @@ public class OutputView {
         }
     }
 
-    private static List<Crew> sortDangerousCrews(final Map<Crew, AttendanceStatistics> dangerousCrews) {
-        List<Crew> crews = new ArrayList<>(dangerousCrews.keySet());
-        crews.sort(new Comparator<Crew>() {
+    private static List<Nickname> sortDangerousCrews(final Map<Nickname, AttendanceStatistics> dangerousCrews) {
+        List<Nickname> crews = new ArrayList<>(dangerousCrews.keySet());
+        crews.sort(new Comparator<Nickname>() {
             @Override
-            public int compare(Crew firstCrew, Crew secondCrew) {
+            public int compare(Nickname firstCrew, Nickname secondCrew) {
                 AttendanceStatistics firstCrewStatistics = dangerousCrews.get(firstCrew);
                 AttendanceStatistics secondCrewStatistics = dangerousCrews.get(secondCrew);
                 int compareResult = firstCrewStatistics.compareTo(secondCrewStatistics);

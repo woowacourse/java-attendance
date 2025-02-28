@@ -2,10 +2,10 @@ package attendance.domain;
 
 import java.util.Objects;
 
-public class Crew implements Comparable {
+public class Nickname implements Comparable {
     final String nickname;
 
-    public Crew(final String nickname) {
+    public Nickname(final String nickname) {
         this.nickname = nickname;
     }
 
@@ -21,7 +21,7 @@ public class Crew implements Comparable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Crew crew = (Crew) o;
+        Nickname crew = (Nickname) o;
         return Objects.equals(nickname, crew.nickname);
     }
 
@@ -35,7 +35,7 @@ public class Crew implements Comparable {
         if (o == null || getClass() != o.getClass()) {
             return 0;
         }
-        Crew that = (Crew) o;
+        Nickname that = (Nickname) o;
         return that.nickname.compareTo(this.nickname);
     }
 }

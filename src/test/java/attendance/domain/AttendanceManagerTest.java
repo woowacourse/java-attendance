@@ -20,10 +20,10 @@ class AttendanceManagerTest {
     void should_ReturnTrue_WhenCrewExists(String nickname, boolean expected) {
         //given
         AttendanceManager attendanceManager = new AttendanceManager();
-        attendanceManager.addCrew(new Crew("레오"));
+        attendanceManager.addCrew(new Nickname("레오"));
 
         //when
-        boolean result = attendanceManager.isCrewExists(new Crew(nickname));
+        boolean result = attendanceManager.isCrewExists(new Nickname(nickname));
 
         //then
         assertThat(result).isEqualTo(expected);
@@ -34,15 +34,14 @@ class AttendanceManagerTest {
     void findAttendance() {
         //given
         AttendanceManager attendanceManager = new AttendanceManager();
-        String crewNickname = "레오";
-        Crew crew = new Crew(crewNickname);
-        attendanceManager.addCrew(crew);
+        Nickname crewNickname = new Nickname("레오");
+        attendanceManager.addCrew(crewNickname);
         LocalDate attendanceDate = LocalDate.of(2024, 12, 26);
         LocalTime attendanceTime = LocalTime.of(10, 0);
-        attendanceManager.addAttendance(crew, attendanceDate, attendanceTime);
+        attendanceManager.addAttendance(crewNickname, attendanceDate, attendanceTime);
 
         //when
-        Optional<Attendance> attendance = attendanceManager.findAttendance(crew, attendanceDate);
+        Optional<Attendance> attendance = attendanceManager.findAttendance(crewNickname, attendanceDate);
 
         //then
         assertAll(
@@ -57,13 +56,12 @@ class AttendanceManagerTest {
     void should_ReturnEmpty_WhenAttendanceNotExists() {
         //given
         AttendanceManager attendanceManager = new AttendanceManager();
-        String crewNickname = "레오";
-        Crew crew = new Crew(crewNickname);
-        attendanceManager.addCrew(crew);
+        Nickname crewNickname = new Nickname("레오");
+        attendanceManager.addCrew(crewNickname);
         LocalDate attendanceDate = LocalDate.of(2024, 12, 26);
 
         //when
-        Optional<Attendance> attendance = attendanceManager.findAttendance(crew, attendanceDate);
+        Optional<Attendance> attendance = attendanceManager.findAttendance(crewNickname, attendanceDate);
 
         //then
         assertThat(attendance.isEmpty()).isTrue();
@@ -74,14 +72,13 @@ class AttendanceManagerTest {
     void addAttendance() {
         //given
         AttendanceManager attendanceManager = new AttendanceManager();
-        String crewNickname = "레오";
-        Crew crew = new Crew(crewNickname);
-        attendanceManager.addCrew(crew);
+        Nickname crewNickname = new Nickname("레오");
+        attendanceManager.addCrew(crewNickname);
         LocalDate attendanceDate = LocalDate.of(2024, 12, 26);
         LocalTime attendanceTime = LocalTime.of(10, 0);
 
         //when
-        Attendance result = attendanceManager.addAttendance(crew, attendanceDate, attendanceTime);
+        Attendance result = attendanceManager.addAttendance(crewNickname, attendanceDate, attendanceTime);
 
         //then
         assertAll(
@@ -89,7 +86,7 @@ class AttendanceManagerTest {
                 () -> assertThat(result.isDateEquals(attendanceDate)).isTrue(),
                 () -> assertThat(result.getStatus()).isEqualTo(ATTENDANCE),
                 () -> {
-                    Attendance expected = attendanceManager.findAttendance(crew, attendanceDate).get();
+                    Attendance expected = attendanceManager.findAttendance(crewNickname, attendanceDate).get();
                     assertThat(result).isEqualTo(expected);
                 }
         );
@@ -100,17 +97,16 @@ class AttendanceManagerTest {
     void modifyAttendance() {
         //given
         AttendanceManager attendanceManager = new AttendanceManager();
-        String crewNickname = "레오";
-        Crew crew = new Crew(crewNickname);
-        attendanceManager.addCrew(crew);
+        Nickname crewNickname = new Nickname("레오");
+        attendanceManager.addCrew(crewNickname);
         LocalDate attendanceDate = LocalDate.of(2024, 12, 26);
         LocalTime attendanceTime = LocalTime.of(10, 0);
-        attendanceManager.addAttendance(crew, attendanceDate, attendanceTime);
+        attendanceManager.addAttendance(crewNickname, attendanceDate, attendanceTime);
 
         LocalTime modificationTime = LocalTime.of(10, 6);
 
         //when
-        Attendance result = attendanceManager.modifyAttendance(crew, attendanceDate, modificationTime);
+        Attendance result = attendanceManager.modifyAttendance(crewNickname, attendanceDate, modificationTime);
 
         //then
         assertAll(
@@ -118,7 +114,7 @@ class AttendanceManagerTest {
                 () -> assertThat(result.isDateEquals(attendanceDate)).isTrue(),
                 () -> assertThat(result.getStatus()).isEqualTo(LATE),
                 () -> {
-                    Attendance expected = attendanceManager.findAttendance(crew, attendanceDate).get();
+                    Attendance expected = attendanceManager.findAttendance(crewNickname, attendanceDate).get();
                     assertThat(result).isEqualTo(expected);
                 }
         );
