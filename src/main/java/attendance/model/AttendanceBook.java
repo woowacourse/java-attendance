@@ -59,10 +59,17 @@ public class AttendanceBook {
     }
 
     private void judgeAbsence(String name, LocalDate attendDate) {
-        
+
         if (!AttendanceTime.isWeekend(attendDate.getDayOfWeek()) && !isAlreadyExists(name, attendDate)) {
             attendances.get(name).add(new AttendanceTime(attendDate));
         }
     }
 
+    public int getAttendanceStatusCount(final String name, final AttendanceStatus attendanceStatus) {
+
+        return (int) attendances.get(name)
+                .stream()
+                .filter(attendanceTime -> AttendanceStatus.getAttendanceStatus(attendanceTime) == attendanceStatus)
+                .count();
+    }
 }
