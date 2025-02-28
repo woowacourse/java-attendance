@@ -1,5 +1,7 @@
 package controller;
 
+import domain.Crew;
+import domain.CrewRecords;
 import view.InputView;
 
 import java.util.regex.Pattern;
@@ -24,6 +26,10 @@ public class AttendanceController {
     private void checkIn() {
         String nickname = inputView.readCheckInNickname();
         String time = inputView.readCheckInTime();
+
+        Crew crew = new Crew(nickname);
+        CrewRecords crewRecords = new CrewRecords();
+        crewRecords.validateCrew(crew);
     }
 
     private void validateMenu(String input) {
