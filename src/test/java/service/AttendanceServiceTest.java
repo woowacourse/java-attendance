@@ -98,18 +98,13 @@ class AttendanceServiceTest {
 
             LocalDate from = LocalDate.of(2025, 2, 3);
             LocalDate to = LocalDate.of(2025, 2, 25);
-
-            List<AttendanceRecord> misoRecords
-                    = AttendanceRecordsGenerator.generate(from, to,
+            List<AttendanceRecord> misoRecords = AttendanceRecordsGenerator.generate(from, to,
                     miso, 6, 4);
-            List<AttendanceRecord> boogieRecords
-                    = AttendanceRecordsGenerator.generate(from, to,
+            List<AttendanceRecord> boogieRecords = AttendanceRecordsGenerator.generate(from, to,
                     boogie, 7, 4);
-            List<AttendanceRecord> woogaRecords
-                    = AttendanceRecordsGenerator.generate(from, to,
+            List<AttendanceRecord> woogaRecords = AttendanceRecordsGenerator.generate(from, to,
                     wooga, 1, 5);
-            List<AttendanceRecord> postyRecords
-                    = AttendanceRecordsGenerator.generate(from, to,
+            List<AttendanceRecord> postyRecords = AttendanceRecordsGenerator.generate(from, to,
                     posty, 1, 5);
             List<AttendanceRecord> allRecords = new ArrayList<>();
             allRecords.addAll(misoRecords);
