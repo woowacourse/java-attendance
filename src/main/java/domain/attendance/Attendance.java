@@ -25,12 +25,20 @@ public class Attendance {
 
     public void addAttendance(LocalDateTime  attendanceDateTime) {
         LocalDate attendanceDate = LocalDate.from(attendanceDateTime);
+        validateAttendanceTime(attendanceDateTime);
+        if(isAttendanceDay(attendanceDate) &&
+                isOnCampusOperatingTime(LocalTime.of(attendanceDateTime.getHour(),attendanceDateTime.getMinute()))){
+            attendanceDates.put(attendanceDate,new AttendanceDate(attendanceDateTime));
+        }
+    }
+
+    private void validateAttendanceTime(LocalDateTime attendanceDateTime){
+        LocalDate attendanceDate = LocalDate.from(attendanceDateTime);
         if(has(attendanceDate)){
             throw new IllegalArgumentException("[ERROR] 출석 기록이 이미 존재합니다.");
         }
-        if(isAttendanceDay(LocalDate.from(attendanceDateTime)) &&
-                isOnCampusOperatingTime(LocalTime.of(attendanceDateTime.getHour(),attendanceDateTime.getMinute()))){
-            attendanceDates.put(attendanceDate,new AttendanceDate(attendanceDateTime));
+        if(attendanceDateTime.isAfter(LocalDateTime.now())){
+            throw new IllegalArgumentException("[ERROR] 출석 시간이 옳바르지 않습니다.");
         }
     }
 
