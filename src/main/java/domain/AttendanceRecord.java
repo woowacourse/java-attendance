@@ -41,7 +41,7 @@ public record AttendanceRecord(
 
     private void validateOffDate(LocalDate date) {
         if (DateTimeUtil.isWeekend(date)
-                || DateTimeUtil.isHoliday(date)) {
+                || Holiday.isHoliday(date)) {
             throw new IllegalArgumentException(date + ": 주말 및 공휴일에는 출석을 기록할 수 없습니다.");
         }
     }

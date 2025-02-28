@@ -28,13 +28,6 @@ class DateTimeUtilTest {
     }
 
     @Test
-    @DisplayName("해당 날짜가 공휴일이면 true를 반환한다")
-    void isHolidayTest() {
-        // when & then
-        Assertions.assertThat(DateTimeUtil.isHoliday(LocalDateFixture.CHRISTMAS)).isTrue();
-    }
-
-    @Test
     @DisplayName("시간(시분)과 시간 사이를 구분할 수 있다")
     void IsInRangeTest() {
         // given

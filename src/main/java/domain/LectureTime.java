@@ -27,14 +27,14 @@ public enum LectureTime {
     }
 
     public static boolean isLectureDate(LocalDate date) {
-        if (DateTimeUtil.isHoliday(date) || DateTimeUtil.isWeekend(date)) {
+        if (Holiday.isHoliday(date) || DateTimeUtil.isWeekend(date)) {
             return false;
         }
         return Arrays.stream(values())
                 .map(lectureTime -> lectureTime.dayOfWeek)
                 .anyMatch(dayOfWeek1 -> dayOfWeek1 == date.getDayOfWeek());
     }
-    
+
     public static LectureTime from(LocalDate date) {
         return Arrays.stream(values())
                 .filter(lectureTime -> lectureTime.dayOfWeek == date.getDayOfWeek())
