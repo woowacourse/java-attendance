@@ -2,6 +2,8 @@ package attendance.util;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceDate;
+import attendance.domain.AttendanceTime;
 import attendance.domain.Attendances;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,7 +34,8 @@ public class AttendanceBookFactory {
         }
     }
 
-    private static AttendanceBook initAttendanceBook(final Map<String, List<LocalDateTime>> input, final LocalDate today) {
+    private static AttendanceBook initAttendanceBook(final Map<String, List<LocalDateTime>> input,
+                                                     final LocalDate today) {
         Map<String, Attendances> crewAttendances = new HashMap<>();
         for (String nickname : input.keySet()) {
             Attendances attendances = new Attendances(initAttendances(today));
@@ -45,8 +48,9 @@ public class AttendanceBookFactory {
         List<Attendance> attendances = new ArrayList<>();
         for (int day = 1; day < today.getDayOfMonth(); day++) {
             try {
-                LocalDateTime dateTime = LocalDateTime.of(today.withDayOfMonth(day), DEFAULT_TIME);
-                Attendance attendance = Attendance.from(dateTime);
+                AttendanceDate attendanceDate = AttendanceDate.from(today.withDayOfMonth(day));
+                AttendanceTime attendanceTime = AttendanceTime.from(DEFAULT_TIME);
+                Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
                 attendances.add(attendance);
             } catch (Exception ignored) {
             }

@@ -25,7 +25,7 @@ public record AttendanceDate(
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY ||
                 date.isEqual(CHRISTMAS)) {
             throw new IllegalArgumentException(String.format(INVALID_ATTEND_DATE.getMessage(),
-                    date.getMonth(),
+                    date.getMonth().getValue(),
                     date.getDayOfMonth(),
                     date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
         }

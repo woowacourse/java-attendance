@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceTest.generateAttendanceByDateTime;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +149,7 @@ public class AttendancesTest {
     public static Attendances generateAttendances(List<LocalDateTime> dateTimes) {
         List<Attendance> attendances = new ArrayList<>();
         for (LocalDateTime dateTime : dateTimes) {
-            attendances.add(Attendance.from(dateTime));
+            attendances.add(generateAttendanceByDateTime(dateTime));
         }
         return new Attendances(attendances);
     }

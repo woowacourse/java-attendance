@@ -17,11 +17,6 @@ public class Attendance {
         return new Attendance(attendanceDate, attendanceTime);
     }
 
-    public static Attendance from(final LocalDateTime dateTime) {
-        return new Attendance(AttendanceDate.from(LocalDate.from(dateTime)),
-                AttendanceTime.from(LocalTime.from(dateTime)));
-    }
-
     public void updateTime(final LocalTime time) {
         this.attendanceTime = AttendanceTime.from(time);
     }
