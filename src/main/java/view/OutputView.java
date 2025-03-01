@@ -17,7 +17,7 @@ public class OutputView {
     private static final DateTimeFormatter EMPTY_FORMATTER = DateTimeFormatter.ofPattern("--:--");
 
     public void printIntroduceCommand(final LocalDate date) {
-        System.out.printf("오늘은 %s입니다. 기능을 선택해 주세요.\n", date.format(INTRO_DATE_FORMATTER));
+        System.out.printf("\n오늘은 %s입니다. 기능을 선택해 주세요.\n", date.format(INTRO_DATE_FORMATTER));
     }
 
     public void printUpdateAttendanceResult(final AttendanceRecordDto before, final AttendanceRecordDto after) {
