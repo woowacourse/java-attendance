@@ -22,10 +22,16 @@ public class AttendanceTime {
         return new AttendanceTime(attendanceDateTime);
     }
 
-    private static void ifNotOperatingThrowException(LocalDateTime attendanceDateTime) {
-        if (!OperatingTime.isOperating(attendanceDateTime.toLocalTime())) {
-            throw new IllegalArgumentException("운영시간이 아닙니다.");
-        }
+    public boolean isSameDate(int findDate) {
+        return attendanceDateTime.getDayOfMonth() == findDate;
+    }
+
+    public LocalDateTime getAttendanceDateTime() {
+        return attendanceDateTime;
+    }
+
+    public LocalDate getDate() {
+        return attendanceDateTime.toLocalDate();
     }
 
     private static void ifWeekendThrowException(LocalDateTime attendanceDateTime) {
@@ -35,12 +41,10 @@ public class AttendanceTime {
         }
     }
 
-    public LocalDateTime getAttendanceDateTime() {
-        return attendanceDateTime;
-    }
-
-    public LocalDate getDate() {
-        return attendanceDateTime.toLocalDate();
+    private static void ifNotOperatingThrowException(LocalDateTime attendanceDateTime) {
+        if (!OperatingTime.isOperating(attendanceDateTime.toLocalTime())) {
+            throw new IllegalArgumentException("운영시간이 아닙니다.");
+        }
     }
 
     @Override

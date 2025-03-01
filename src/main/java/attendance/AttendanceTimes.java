@@ -20,6 +20,13 @@ public class AttendanceTimes {
         return attendanceTimes.add(attendanceDateTime);
     }
 
+    public AttendanceTime findAttendanceByDate(int findDate) {
+        return attendanceTimes.stream()
+            .filter(result -> result.isSameDate(findDate))
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("해당 날짜에는 출석 기록이 없습니다."));
+    }
+
     public Set<AttendanceTime> getAttendanceTimes() {
         return Collections.unmodifiableSet(attendanceTimes);
     }
