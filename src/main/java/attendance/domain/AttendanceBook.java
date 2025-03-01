@@ -11,7 +11,11 @@ public class AttendanceBook {
     private final List<Attendance> attendances;
 
     public AttendanceBook(Attendance... attendance) {
-        this.attendances = new ArrayList<>(List.of(attendance));
+        this(new ArrayList<>(List.of(attendance)));
+    }
+
+    public AttendanceBook(List<Attendance> attendances) {
+        this.attendances = attendances;
     }
 
     public void attend(Attendance newAttendance) {
