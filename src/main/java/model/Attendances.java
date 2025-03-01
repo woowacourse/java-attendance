@@ -1,6 +1,7 @@
 package model;
 
 import static constant.AttendanceConstant.COMMA_SEPARATOR;
+import static constant.ErrorMessage.CANNOT_CHECK_IN_ON_HOLIDAY;
 import static constant.ErrorMessage.NOT_FOUND_ATTENDANCE;
 import static constant.ErrorMessage.NOT_FOUND_CREW;
 import static constant.ErrorMessage.OUT_OF_OPERATION_HOURS;
@@ -50,6 +51,7 @@ public class Attendances {
 
         validateExistCrew(crew);
         validateOperationTime(request, dateTimeGenerator);
+        validateHoliday(dateTimeGenerator);
 
         attendances.get(crew).add(attendance);
 
@@ -167,6 +169,12 @@ public class Attendances {
         if (!AttendanceTime.isInOperationTime(dateTimeGenerator.getNowLocalDate(),
                 LocalTime.parse(request.checkInTime()))) {
             throw new IllegalArgumentException(OUT_OF_OPERATION_HOURS.getMessage());
+        }
+    }
+
+    private void validateHoliday(DateTimeGenerator dateTimeGenerator) {
+        if (Holiday.isHoliday(dateTimeGenerator.getNowLocalDate())) {
+            throw new IllegalArgumentException(CANNOT_CHECK_IN_ON_HOLIDAY.getMessage());
         }
     }
 
