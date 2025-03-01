@@ -16,10 +16,13 @@ public class AttendancesLoader {
 
     public Attendances load(FileReader fileReader) throws IOException {
         BufferedReader reader = new BufferedReader(fileReader);
-        skipTitleLine(reader);
-
         Map<String, List<Attendance>> attendances = new HashMap<>();
-        addAttendanceLog(reader, attendances);
+        try {
+            skipTitleLine(reader);
+            addAttendanceLog(reader, attendances);
+        } catch (Exception e) {
+            throw new IOException("[ERROR] 출석 파일을 읽는 중 오류가 발생했습니다.");
+        }
 
         return new Attendances(attendances);
     }
