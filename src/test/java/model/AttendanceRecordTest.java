@@ -185,4 +185,21 @@ class AttendanceRecordTest {
         // then
         assertThat(panalty).isEqualTo(Panalty.DISMISSAL);
     }
+
+    @Test
+    void 크루의_출석_기록에_출석을_한다() {
+        // given
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.attend(
+                new AttendanceDate(2024, 12, 2),
+                LocalTime.of(10, 5)
+        );
+        LocalDate now = LocalDate.of(2024, 12, 17);
+
+        // when
+        long attendCount = attendanceRecord.computeAttendanceCount();
+
+        // then
+        assertThat(attendCount).isEqualTo(1);
+    }
 }

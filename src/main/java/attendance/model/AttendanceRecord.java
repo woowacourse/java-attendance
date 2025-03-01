@@ -1,6 +1,7 @@
 package attendance.model;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -54,5 +55,9 @@ public record AttendanceRecord(
 
     public Panalty computePanaltyUntil(LocalDate date) {
         return Panalty.of(computeAbsencesUntil(date), computeLateCount());
+    }
+
+    public void attend(AttendanceDate attendanceDate, LocalTime attendanceTime) {
+
     }
 }
