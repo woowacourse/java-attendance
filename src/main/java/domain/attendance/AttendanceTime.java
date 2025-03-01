@@ -2,7 +2,6 @@ package domain.attendance;
 
 import domain.holiday.Holiday;
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -45,25 +44,13 @@ public class AttendanceTime implements Comparable<AttendanceTime> {
     }
 
     public boolean isLate() {
-        long minutes = calculateMinutesDifference();
+        int minutes = AttendanceSchedule.calculateLateMinutes(this.date, this.time);
         return minutes > 5 && minutes <= 30;
     }
 
     public boolean isAbsence() {
-        long minutes = calculateMinutesDifference();
+        int minutes = AttendanceSchedule.calculateLateMinutes(this.date, this.time);
         return minutes > 30;
-    }
-
-    private long calculateMinutesDifference() {
-        LocalTime start = getStartTimeForDay();
-        return Duration.between(start, time).toMinutes();
-    }
-
-    private LocalTime getStartTimeForDay() {
-        if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return LocalTime.of(13, 0);
-        }
-        return LocalTime.of(10, 0);
     }
 
     public AttendanceStatus toAttendanceStatus() {
