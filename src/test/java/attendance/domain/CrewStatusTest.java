@@ -30,4 +30,14 @@ public class CrewStatusTest {
         CrewStatus crewStatus = CrewStatus.calculate(attendanceResult);
         assertThat(crewStatus).isEqualTo(INTERVIEW);
     }
+
+    @DisplayName("결석 5회 이상일 경우, 제적을 반환한다")
+    @Test
+    void given_over_fifth_absence_then_return_absence() {
+        Map<AttendanceType, Integer> attendanceResult = new HashMap<>();
+        attendanceResult.put(LATE, 12);
+        attendanceResult.put(ABSENCE, 1);
+        CrewStatus crewStatus = CrewStatus.calculate(attendanceResult);
+        assertThat(crewStatus).isEqualTo(FIRE);
+    }
 }
