@@ -99,4 +99,11 @@ public class Attendances {
             throw new IllegalArgumentException("[ERROR] " + date.getMonthValue() + "월 " + date.getDayOfMonth() + "일은 공휴일입니다.");
         }
     }
+
+    public String checkCrewName(String nickname) {
+        if (!attendances.containsKey(nickname)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+        return nickname;
+    }
 }

@@ -48,7 +48,7 @@ public class AttendanceController {
     }
 
     private void registerAttendance() {
-        String nickname = inputView.readNickname();
+        String nickname = attendances.checkCrewName(inputView.readNickname());
         LocalTime attendanceTime = inputView.readAttendanceTime();
         LocalDateTime localDateTime = LocalDateTime.of(StandardDate.TODAY, attendanceTime);
         attendances.addAttendanceLog(nickname, localDateTime);
@@ -56,7 +56,7 @@ public class AttendanceController {
     }
 
     private void updateAttendance() {
-        String nickname = inputView.readUpdateNickname();
+        String nickname = attendances.checkCrewName(inputView.readUpdateNickname());
         int updateDayOfMonth = inputView.readUpdateDayOfMonth();
         validateDayOfMonth(updateDayOfMonth);
         LocalDate updateDate = getUpdateDate(updateDayOfMonth);
@@ -75,7 +75,7 @@ public class AttendanceController {
     }
 
     private void identifyAttendanceLogsWithCrew() {
-        String nickname = inputView.readNickname();
+        String nickname = attendances.checkCrewName(inputView.readNickname());
         outputView.printAttendanceLogsWithCrew(nickname, attendances);
 
     }

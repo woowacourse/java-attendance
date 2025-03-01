@@ -3,6 +3,8 @@ package domain;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -155,4 +157,13 @@ class AttendancesTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] " + month + "월 " + dayOfMonth + "일은 공휴일입니다.");
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"제프, 에드, 이프"})
+    void 등록되지_않은_닉네임_예외를_발생시킨다(String nickname) {
+        assertThatThrownBy(() -> attendances.checkCrewName(nickname))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
+
 }
