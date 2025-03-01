@@ -1,10 +1,11 @@
 package view;
 
-import domain.Attendance;
-import domain.ModifyResult;
+import domain.*;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
@@ -23,24 +24,52 @@ public class OutputView {
     }
 
     public static void printCheckedAttendance(Attendance attendance) {
-        System.out.println("\n" + getCheckedAttendance(attendance) + "\n");
+        System.out.println("\n" + getFormattedCheckedAttendance(attendance) + "\n");
     }
 
-    public static String getCheckedAttendance(Attendance attendance) {
-        return getFormattedDayInfo(attendance.getLocalDate()) + " "
-                + attendance.getLocalTime()
+    public static String getFormattedCheckedAttendance(Attendance attendance) {
+        String formattedCheckedAttendance = "";
+        formattedCheckedAttendance += getFormattedDayInfo(attendance.getLocalDate()) + " ";
+        if (attendance.getAttendanceStatus() == AttendanceStatus.ABSENT) {
+            formattedCheckedAttendance += "--:--" + " (" + attendance.getAttendanceStatus().getValue() + ")";
+            return formattedCheckedAttendance;
+        }
+        formattedCheckedAttendance += attendance.getLocalTime()
                 .format(DateTimeFormatter.ofPattern("HH:mm", Locale.KOREA))
                 + " (" + attendance.getAttendanceStatus().getValue() + ")";
+        return formattedCheckedAttendance;
     }
 
     public static void printModifyResult(ModifyResult modifyResult) {
         System.out.println(
-                getCheckedAttendance(modifyResult.getOldAttendance())
+                getFormattedCheckedAttendance(modifyResult.getOldAttendance())
                         + " -> "
                         + modifyResult.getNewAttendance().getLocalTime()
                         .format(DateTimeFormatter.ofPattern("HH:mm", Locale.KOREA))
                         + " (" + modifyResult.getNewAttendance().getAttendanceStatus().getValue() + ") 수정 완료!"
         );
+    }
 
+    public static void printCrewAttendanceHistory(Crew crew) {
+        System.out.println(getFormattedAttendanceHistory(crew.getAttendanceHistory()));
+        System.out.println(getFormattedPenaltyStatusCount(crew));
+    }
+
+    private static String getFormattedAttendanceHistory(List<Attendance> attendanceHistory) {
+        StringBuilder formattedAttendanceHistory = new StringBuilder();
+        for (Attendance attendance : attendanceHistory) {
+            formattedAttendanceHistory.append(getFormattedCheckedAttendance(attendance)).append("\n");
+        }
+        return formattedAttendanceHistory.toString();
+    }
+
+    private static String getFormattedPenaltyStatusCount(Crew crew) {
+        String formattedPenaltyStatusCount = "";
+        formattedPenaltyStatusCount += "출석: " + crew.getAttendCount() + "회\n"
+                + "지각: " + crew.getLateCount() + "회\n"
+                + "결석: " + crew.getAbsentCount() + "회\n\n";
+        if (crew.getPenalty() != Penalty.NONE)
+            formattedPenaltyStatusCount += crew.getPenalty().getStatus() + " 대상자입니다.";
+        return formattedPenaltyStatusCount;
     }
 }

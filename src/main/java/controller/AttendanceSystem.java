@@ -39,7 +39,7 @@ public class AttendanceSystem {
                 modifyAttendance();
             }
             if (option.equals("3")) {
-//                checkCrewAttendanceHistory();
+                checkCrewAttendanceHistory();
             }
             if (option.equals("4")) {
 //                checkPenaltyReceivedCrew();
@@ -50,6 +50,11 @@ public class AttendanceSystem {
         }
     }
 
+    private void checkCrewAttendanceHistory() {
+        String crewName = askCrewName();
+        Crew crew = allCrew.findCrewByName(crewName);
+        OutputView.printCrewAttendanceHistory(crew);
+    }
     private void modifyAttendance() {
         String crewName = askCrewName();
         Crew crew = allCrew.findCrewByName(crewName);
