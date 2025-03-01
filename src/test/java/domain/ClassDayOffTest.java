@@ -9,14 +9,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class CampusHolidayTest {
+public class ClassDayOffTest {
 
     @ParameterizedTest
     @MethodSource
     @DisplayName("주말 및 공휴일인지 확인 한다.")
     void test1(final LocalDate localDate, final boolean expected) {
         //should
-        assertThat(CampusHoliday.isDayOff(localDate)).isEqualTo(expected);
+        assertThat(ClassDayOff.isDayOff(localDate)).isEqualTo(expected);
 
     }
 

@@ -6,12 +6,12 @@ import java.time.MonthDay;
 import java.util.Arrays;
 import java.util.Objects;
 
-enum CampusHoliday {
+enum ClassDayOff {
     CHRISTMAS(MonthDay.of(12, 25));
 
     private final MonthDay monthDay;
 
-    CampusHoliday(final MonthDay monthDay) {
+    ClassDayOff(final MonthDay monthDay) {
         this.monthDay = monthDay;
     }
 
@@ -21,8 +21,8 @@ enum CampusHoliday {
     }
 
     private static boolean isHoliday(final LocalDate localDate) {
-        return Arrays.stream(CampusHoliday.values())
-                .anyMatch(campusHoliday -> Objects.equals(campusHoliday.monthDay, MonthDay.from(localDate)));
+        return Arrays.stream(ClassDayOff.values())
+                .anyMatch(classDayOff -> Objects.equals(classDayOff.monthDay, MonthDay.from(localDate)));
     }
 
     private static boolean isWeekend(final LocalDate localDate) {
