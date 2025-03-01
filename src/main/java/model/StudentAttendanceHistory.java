@@ -1,38 +1,36 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StudentAttendanceHistory {
-    private final List<AttendanceDateTime> attendanceHistory;
+    private final Map<AttendanceDate, AttendanceTime> attendanceHistory;
 
-    public StudentAttendanceHistory(List<AttendanceDateTime> attendanceHistory) {
-        this.attendanceHistory = new ArrayList<>(attendanceHistory);
+    public StudentAttendanceHistory(Map<AttendanceDate, AttendanceTime> studentAttendanceHistory) {
+        this.attendanceHistory = new HashMap<>(studentAttendanceHistory);
     }
 
-    public void addAttendanceDateTime(AttendanceDateTime attendanceDateTime) {
-        attendanceHistory.add(attendanceDateTime);
-    }
-
-    public boolean isExistSameAttendanceDateTime(AttendanceDateTime wantToFindAttendanceDateTime) {
-        return attendanceHistory.stream()
-                .anyMatch(attendanceDateTime -> attendanceDateTime.equals(wantToFindAttendanceDateTime));
-    }
-
-    public AttendanceDateTime findSameAttendanceDate(AttendanceDateTime wantToAddAttendanceDateTime) {
-        return attendanceHistory.stream()
-                .filter(attendanceDateTime -> attendanceDateTime.isSameDate(wantToAddAttendanceDateTime))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 요일입니다. 먼저 출석을 진행 후, 수정해 주세요."));
-    }
-
-    public void modifyAttendance(AttendanceDateTime wantToAddAttendanceDateTime) {
+    public void modifyStudentAttendanceHistory(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         try {
-            attendanceHistory.remove(findSameAttendanceDate(wantToAddAttendanceDateTime));
-            addAttendanceDateTime(wantToAddAttendanceDateTime);
+            if (!isExistSameAttendanceDate(attendanceDate)) {
+                throw new IllegalArgumentException("[ERROR] 출석하지 않은 요일입니다. 출석은 진행 후, 수정을 진행해 주세요.");
             }
-            catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+            attendanceHistory.put(attendanceDate, attendanceTime);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
+
+    }
+
+    public void addStudentAttendanceHistory(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        attendanceHistory.putIfAbsent(attendanceDate, attendanceTime);
+    }
+
+    public boolean isExistSameAttendanceDate(AttendanceDate attendanceDate) {
+        return attendanceHistory.containsKey(attendanceDate);
+    }
+
+    public Map<AttendanceDate, AttendanceTime> getAttendanceHistory() {
+        return attendanceHistory;
     }
 }
