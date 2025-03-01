@@ -11,19 +11,23 @@ public class CheckAllExpulsionCrewView {
     }
 
     public void printCrewExpulsions(final List<CheckExpulsionResultDto> expulsionResults) {
+        sortExpulsionResults(expulsionResults);
         ExpulsionStatusTextMaker expulsionStatusTextMaker = new ExpulsionStatusTextMaker();
-        expulsionResults.sort((o1, o2) -> {
-            final long firstAllAbsents = o1.absentCount() + (o1.lateCount() / 3);
-            final long secondAllAbsents = o2.absentCount() + (o2.lateCount() / 3);
-            if (o1 == o2) {
-                return o1.nickname().compareTo(o2.nickname());
-            }
-            return Math.toIntExact(secondAllAbsents - firstAllAbsents);
-        });
         for (CheckExpulsionResultDto expulsionResult : expulsionResults) {
             System.out.println("- %s: 결석 %d회, 지각 %d회 (%s)".formatted(expulsionResult.nickname(),
                     expulsionResult.absentCount(), expulsionResult.lateCount(),
                     expulsionStatusTextMaker.make(expulsionResult.expulsionStatus())));
         }
+    }
+
+    private static void sortExpulsionResults(final List<CheckExpulsionResultDto> expulsionResults) {
+        expulsionResults.sort((o1, o2) -> {
+            long firstAllAbsentCount = o1.allAbsents();
+            long secondAllAbsentCount = o2.allAbsents();
+            if (firstAllAbsentCount == secondAllAbsentCount) {
+                return o1.nickname().compareTo(o2.nickname());
+            }
+            return Math.toIntExact(secondAllAbsentCount - firstAllAbsentCount);
+        });
     }
 }

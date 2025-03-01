@@ -138,10 +138,11 @@ public class AttendanceController {
         for (Crew crew : allCrews) {
             List<AttendanceDateTime> attendancesThisMonth = findCrewAttendancesThisMonth(attendanceBook, crew);
             Map<AttendanceStatus, Long> attendanceStatuses = AttendanceStatusChecker.checkStatuses(attendancesThisMonth);
+            long allAbsents = AttendanceStatusChecker.calculateAllAbsent(attendancesThisMonth);
             ExpulsionStatus expulsionStatus = ExpulsionStatus.from(AttendanceStatusChecker.calculateAllAbsent(attendancesThisMonth));
             if (!expulsionStatus.equals(ExpulsionStatus.NONE)) {
                 expulsionResults.add(new CheckExpulsionResultDto(crew.getNickname(), attendanceStatuses.get(AttendanceStatus.ABSENT),
-                        attendanceStatuses.get(AttendanceStatus.LATE), expulsionStatus));
+                        attendanceStatuses.get(AttendanceStatus.LATE), allAbsents, expulsionStatus));
             }
         }
         checkAllExpulsionCrewView.printCrewExpulsions(expulsionResults);
