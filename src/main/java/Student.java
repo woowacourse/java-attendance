@@ -69,7 +69,7 @@ public class Student {
         return attendanceTimeRecord.getAttendanceTimeRecords();
     }
 
-    public long calculateAbsentCount(){
+    public long calculateAbsentCount() {
         updateAttendanceCount();
         return attendanceStatusCount.getAbsentCount() + convertTardiesToAbsence();
     }

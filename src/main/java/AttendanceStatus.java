@@ -7,13 +7,12 @@ public enum AttendanceStatus {
     LATE,
     ABSENT;
 
-    public static AttendanceStatus attendanceStatusCalculate(LocalDate todayDate ,String input) {
-        LocalTime attendanceTime = LocalTime.parse(input);
+    public static AttendanceStatus attendanceStatusCalculate(LocalDate todayDate, LocalTime attendanceTime) {
         LocalTime attendanceStartTime = WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(todayDate);
-        if (attendanceTime.isAfter(attendanceStartTime.plusMinutes(30))){
+        if (attendanceTime.isAfter(attendanceStartTime.plusMinutes(30))) {
             return ABSENT;
         }
-        if (attendanceTime.isAfter(attendanceStartTime.plusMinutes(5))){
+        if (attendanceTime.isAfter(attendanceStartTime.plusMinutes(5))) {
             return LATE;
         }
         return ATTENDANCE;

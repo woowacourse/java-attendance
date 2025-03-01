@@ -10,7 +10,7 @@ public class AttendanceStatusRecord {
 
     public AttendanceStatusRecord(List<LocalDateTime> localDateTimes) {
         Map<LocalDate, AttendanceStatus> map = new HashMap<>();
-        for (LocalDateTime localDateTime : localDateTimes){
+        for (LocalDateTime localDateTime : localDateTimes) {
             LocalDate localDate = LocalDate.from(localDateTime);
             LocalTime localTime = LocalTime.from(localDateTime);
             map.put(localDate, AttendanceStatus.attendanceStatusCalculate(localDate, localTime));
@@ -18,7 +18,7 @@ public class AttendanceStatusRecord {
         this.attendanceStatusRecords = map;
     }
 
-    public long findAttendanceStatusCount(AttendanceStatus attendanceStatus){
+    public long findAttendanceStatusCount(AttendanceStatus attendanceStatus) {
         return attendanceStatusRecords.entrySet().stream()
                 .filter(record -> record.getValue().equals(attendanceStatus))
                 .count();
@@ -32,7 +32,7 @@ public class AttendanceStatusRecord {
         attendanceStatusRecords.put(todayDate, attendanceStatus);
     }
 
-    public void putAttendanceStateToAbsent(LocalDate localDate){
+    public void putAttendanceStateToAbsent(LocalDate localDate) {
         attendanceStatusRecords.put(localDate, AttendanceStatus.ABSENT);
     }
 

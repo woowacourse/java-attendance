@@ -17,4 +17,12 @@ public class AttendanceStatusCount {
         attendanceStatusCount.put(AttendanceStatus.LATE, lateCount);
         attendanceStatusCount.put(AttendanceStatus.ABSENT, absentCount);
     }
+
+    public Map<AttendanceStatus, Long> getAttendanceStatusCount() {
+        return attendanceStatusCount;
+    }
+
+    public long getAbsentCount(){
+        return attendanceStatusCount.get(AttendanceStatus.ABSENT);
+    }
 }

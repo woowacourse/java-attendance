@@ -13,7 +13,7 @@ public class AttendanceBook {
         this.attendanceBook = attendanceBook;
     }
 
-    public AttendanceBook(Map<String, List<LocalDateTime>> fileAttendanceRecord){
+    public AttendanceBook(Map<String, List<LocalDateTime>> fileAttendanceRecord) {
         attendanceBook = fileAttendanceRecord.entrySet().stream()
                 .map(map -> new Student(map.getKey(), map.getValue()))
                 .collect(Collectors.toList());

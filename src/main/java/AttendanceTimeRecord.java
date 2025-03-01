@@ -11,7 +11,7 @@ public class AttendanceTimeRecord {
 
     public AttendanceTimeRecord(List<LocalDateTime> localDateTimes) {
         Map<LocalDate, LocalTime> map = new HashMap<>();
-        for (LocalDateTime localDateTime : localDateTimes){
+        for (LocalDateTime localDateTime : localDateTimes) {
             map.put(LocalDate.from(localDateTime), LocalTime.from(localDateTime));
         }
         this.attendanceTimeRecords = map;
@@ -24,11 +24,12 @@ public class AttendanceTimeRecord {
     public void registerAttendanceTimeRecord(LocalDate todayDate, LocalTime attendanceTime) {
         attendanceTimeRecords.put(todayDate, attendanceTime);
     }
-    public boolean checkAttendanceRecordByLocalDate(LocalDate localDate){
+
+    public boolean checkAttendanceRecordByLocalDate(LocalDate localDate) {
         return attendanceTimeRecords.get(localDate) != null;
     }
 
-    public void putNullLocalTime(LocalDate localDate){
+    public void putNullLocalTime(LocalDate localDate) {
         attendanceTimeRecords.put(localDate, null);
     }
 
