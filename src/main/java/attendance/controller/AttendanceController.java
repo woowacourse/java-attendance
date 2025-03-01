@@ -2,8 +2,11 @@ package attendance.controller;
 
 import attendance.CurrentDate;
 import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceResult;
 import attendance.domain.AttendanceTime;
+import attendance.domain.AttendanceTimes;
 import attendance.domain.AttendanceType;
+import attendance.domain.CrewStatus;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDateTime;
@@ -50,7 +53,7 @@ public class AttendanceController {
     private void initFunctionMap() {
         functionMap.put("1", this::attendConfirm);
         functionMap.put("2", this::modifyAttendance);
-        functionMap.put("3", this::confirm);
+        functionMap.put("3", this::confirmAttendanceHistory);
         functionMap.put("4", this::warning);
     }
 
@@ -77,7 +80,17 @@ public class AttendanceController {
         outputView.printModifyAttendaneTimeResult(attendanceTime, modifyAttendanceTime);
     }
 
-    private void confirm(){};
+    private void confirmAttendanceHistory(){
+        String inputNickname = inputView.inputNickname();
+        AttendanceTimes attendanceTimes = attendanceHistory.getAttendanceTimesByName(
+            inputNickname);
+        Map<AttendanceType, Integer> attendanceResult = AttendanceResult.calculateAttendanceResult(
+            attendanceTimes);
+        CrewStatus crewStatus = CrewStatus.calculate(attendanceResult);
+        outputView.printAttendanceHistory(inputNickname, attendanceTimes);
+        outputView.printAttendanceResult(attendanceResult);
+        outputView.printCrewStatus(crewStatus);
+    }
     private void warning(){};
 
 }

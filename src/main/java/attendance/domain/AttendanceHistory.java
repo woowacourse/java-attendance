@@ -43,6 +43,10 @@ public class AttendanceHistory {
         }
     }
 
+    public AttendanceTimes getAttendanceTimesByName(String nickname) {
+        return attendanceHistory.get(nickname);
+    }
+
     public Map<String, AttendanceTimes> getAttendanceHistory() {
         return Collections.unmodifiableMap(attendanceHistory);
     }
