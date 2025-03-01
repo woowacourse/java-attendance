@@ -51,13 +51,13 @@ public class CrewAttendance {
         }
     }
     
-    public AttendanceStatus getAttendanceStatusOf(final LocalDate date) {
+    public AttendanceStatus findAttendanceStatusOf(final LocalDate date) {
         validateIsAttendedDay(date);
         
         return attendances.get(date).getStatus();
     }
     
-    public Optional<LocalTime> getAttendanceTimeOf(final LocalDate date) {
+    public Optional<LocalTime> findAttendanceTimeOf(final LocalDate date) {
         validateIsAttendedDay(date);
         
         return attendances.get(date).getAttendTime().getAttendTime();
@@ -80,7 +80,7 @@ public class CrewAttendance {
                 .count();
     }
     
-    public ExpelWarning getExpelWarning() {
+    public ExpelWarning calculateExpelWarning() {
         final var lateCount = countAttendanceStatusOf(AttendanceStatus.지각);
         final var absentCount = countAttendanceStatusOf(AttendanceStatus.결석);
         
@@ -88,6 +88,6 @@ public class CrewAttendance {
     }
     
     public boolean isExpelWarningNotNormal() {
-        return getExpelWarning() != ExpelWarning.정상;
+        return calculateExpelWarning() != ExpelWarning.정상;
     }
 }

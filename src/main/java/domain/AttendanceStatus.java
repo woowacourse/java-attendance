@@ -17,13 +17,13 @@ public enum AttendanceStatus {
     
     public static AttendanceStatus of(DayOfWeek dayOfWeek, LocalTime time) {
         if (dayOfWeek == DayOfWeek.MONDAY) {
-            return getAttendanceStatusOf(time, MONDAY_LATE_THRESHOLD, MONDAY_ATTEND_THRESHOLD);
+            return calculateAttendanceStatusOf(time, MONDAY_LATE_THRESHOLD, MONDAY_ATTEND_THRESHOLD);
         }
         
-        return getAttendanceStatusOf(time, NOT_MONDAY_LATE_THRESHOLD, NOT_MONDAY_ATTEND_THRESHOLD);
+        return calculateAttendanceStatusOf(time, NOT_MONDAY_LATE_THRESHOLD, NOT_MONDAY_ATTEND_THRESHOLD);
     }
     
-    private static AttendanceStatus getAttendanceStatusOf(final LocalTime time, final LocalTime lateThreshold, final LocalTime attendThreshold) {
+    private static AttendanceStatus calculateAttendanceStatusOf(final LocalTime time, final LocalTime lateThreshold, final LocalTime attendThreshold) {
         if (time.isAfter(lateThreshold)) {
             return AttendanceStatus.결석;
         }

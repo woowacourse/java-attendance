@@ -511,7 +511,7 @@ class CrewAttendanceTest {
             sut.attend(LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
             
             //when
-            var result = sut.getExpelWarning();
+            var result = sut.calculateExpelWarning();
 
             //then
             assertAll(
@@ -573,7 +573,7 @@ class CrewAttendanceTest {
             sut.attend(attendDate, LocalTime.of(13, 0));
             
             //when
-            var result = sut.getAttendanceStatusOf(attendDate);
+            var result = sut.findAttendanceStatusOf(attendDate);
             
             //then
             assertThat(result).isEqualTo(AttendanceStatus.출석);

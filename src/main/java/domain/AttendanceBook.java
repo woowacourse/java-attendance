@@ -42,13 +42,13 @@ public class AttendanceBook {
     public Optional<LocalTime> getAttendanceTimeOf(final String nickname, final LocalDate date) {
         validateNicknameExist(nickname);
         
-        return crewAttendances.get(nickname).getAttendanceTimeOf(date);
+        return crewAttendances.get(nickname).findAttendanceTimeOf(date);
     }
     
     public AttendanceStatus getAttendanceStatusOf(final String nickname, final LocalDate date) {
         validateNicknameExist(nickname);
         
-        return crewAttendances.get(nickname).getAttendanceStatusOf(date);
+        return crewAttendances.get(nickname).findAttendanceStatusOf(date);
     }
     
     public void modify(final String nickname, final LocalDate targetDate, final LocalTime newTime) {
@@ -66,11 +66,11 @@ public class AttendanceBook {
     public Map<String, ExpelWarning> getExpelWarnings() {
         return crewAttendances.entrySet().stream()
                 .filter(entry -> entry.getValue().isExpelWarningNotNormal())
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getExpelWarning()));
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().calculateExpelWarning()));
     }
     
     public ExpelWarning getExpelWarningOf(final String nickname) {
-        return crewAttendances.get(nickname).getExpelWarning();
+        return crewAttendances.get(nickname).calculateExpelWarning();
     }
     
     public int countAttendanceStatusOf(final String nickname, final AttendanceStatus status) {
