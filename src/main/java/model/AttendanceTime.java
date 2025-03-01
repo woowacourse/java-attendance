@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class AttendanceTime {
     private final LocalTime attendanceTime;
@@ -33,5 +34,18 @@ public class AttendanceTime {
 
     public LocalTime toLocalTime() {
         return this.attendanceTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AttendanceTime that = (AttendanceTime) o;
+        return Objects.equals(attendanceTime, that.attendanceTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendanceTime);
     }
 }
