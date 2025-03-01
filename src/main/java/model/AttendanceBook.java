@@ -49,8 +49,14 @@ public class AttendanceBook {
     }
 
     public List<Attendance> findCrewAttendance(String nickname) {
-        return crewsAttendanceRecords.stream()
-                .filter(attendance ->  attendance.isSameNickname(nickname))
+        List<Attendance> crewAttendance = crewsAttendanceRecords.stream()
+                .filter(attendance -> attendance.isSameNickname(nickname))
                 .toList();
+
+        if (crewAttendance.isEmpty()) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+
+        return crewAttendance;
     }
 }
