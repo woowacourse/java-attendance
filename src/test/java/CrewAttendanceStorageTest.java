@@ -187,14 +187,13 @@ public class CrewAttendanceStorageTest {
         LocalDate endDate = LocalDate.of(2025, 3, 1);
 
         // when
-        Map<AttendanceStatus, Integer> statistic =
-                crewAttendanceStorage.findStatisticByDateRange(crew, startDate, endDate);
+        AttendanceStatistic statistic = crewAttendanceStorage.findStatisticByDateRange(crew, startDate, endDate);
 
         // then
         assertAll(
-                () -> assertThat(statistic.get(AttendanceStatus.ATTENDANCE)).isEqualTo(3),
-                () -> assertThat(statistic.get(AttendanceStatus.LATE)).isEqualTo(1),
-                () -> assertThat(statistic.get(AttendanceStatus.ABSENCE)).isEqualTo(1)
+                () -> assertThat(statistic.getAttendanceCount()).isEqualTo(3),
+                () -> assertThat(statistic.getLateCount()).isEqualTo(1),
+                () -> assertThat(statistic.getAbsenceCount()).isEqualTo(1)
         );
     }
 }

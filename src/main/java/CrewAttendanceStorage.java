@@ -52,7 +52,7 @@ public class CrewAttendanceStorage {
                 .toList();
     }
 
-    public Map<AttendanceStatus, Integer> findStatisticByDateRange(String crew, LocalDate startDate, LocalDate endDate) {
+    public AttendanceStatistic findStatisticByDateRange(String crew, LocalDate startDate, LocalDate endDate) {
         AttendanceStorage storage = findAttendanceStorageByCrew(crew);
         Map<AttendanceStatus, Integer> result = new EnumMap<>(AttendanceStatus.class);
         startDate.datesUntil(endDate)
@@ -62,7 +62,7 @@ public class CrewAttendanceStorage {
                     final int updatedValue = result.getOrDefault(status, 0) + 1;
                     result.put(status, updatedValue);
                 });
-        return result;
+        return new AttendanceStatistic(result);
     }
 
     private AttendanceStorage findAttendanceStorageByCrew(String crew) {
