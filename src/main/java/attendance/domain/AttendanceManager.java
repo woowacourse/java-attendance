@@ -16,34 +16,34 @@ import java.util.Optional;
 public class AttendanceManager {
 
     private final AttendanceReader reader;
-    private final Attendances attendances;
+    private final AttendanceBooks attendanceBooks;
 
     public AttendanceManager(AttendanceReader reader) {
         this.reader = reader;
-        this.attendances = readAttendance();
+        this.attendanceBooks = readAttendance();
     }
 
-    private Attendances readAttendance() {
+    private AttendanceBooks readAttendance() {
         List<AttendanceFileDto> read = reader.read();
-        Attendances newAttendances = new Attendances();
+        AttendanceBooks newAttendanceBooks = new AttendanceBooks();
         for (AttendanceFileDto attendanceFileDto : read) {
-            newAttendances.addAttendance(attendanceFileDto.name(),
+            newAttendanceBooks.addAttendance(attendanceFileDto.name(),
                 new Attendance(attendanceFileDto.attendanceDate(), attendanceFileDto.attendanceTime()));
         }
-        return newAttendances;
+        return newAttendanceBooks;
     }
 
     public AttendanceInfoDto remarkAttendance(String name, LocalDate attendanceDate, LocalTime attendanceTime) {
-        attendances.validateNameExists(name);
-        attendances.hasAttendance(name, attendanceDate);
-        attendances.addAttendance(name, new Attendance(attendanceDate, attendanceTime));
+        attendanceBooks.validateNameExists(name);
+        attendanceBooks.hasAttendance(name, attendanceDate);
+        attendanceBooks.addAttendance(name, new Attendance(attendanceDate, attendanceTime));
         AttendanceStatus attendanceStatus = AttendanceStatus.findAttendanceStatus(attendanceDate, attendanceTime);
         return AttendanceInfoDto.of(attendanceDate, attendanceTime, attendanceStatus);
     }
 
     public AttendanceEditDto editAttendance(String name, LocalDate editAttendanceDate, LocalTime editAttendanceTime) {
-        attendances.validateNameExists(name);
-        Optional<LocalTime> beforeEditTime = attendances.editAttendance(name, editAttendanceDate, editAttendanceTime);
+        attendanceBooks.validateNameExists(name);
+        Optional<LocalTime> beforeEditTime = attendanceBooks.editAttendance(name, editAttendanceDate, editAttendanceTime);
         AttendanceStatus beforeEditStatus = AttendanceStatus.findAttendanceStatus(editAttendanceDate, beforeEditTime.orElse(null));
         AttendanceStatus editStatus = AttendanceStatus.findAttendanceStatus(editAttendanceDate, editAttendanceTime);
         return AttendanceEditDto.of(
@@ -51,9 +51,9 @@ public class AttendanceManager {
     }
 
     public AttendanceCheckDto checkAttendance(String name, LocalDate today) {
-        attendances.validateNameExists(name);
-        List<Attendance> attendanceUntilYesterday = attendances.findAttendanceUntilYesterday(name, today);
-        Map<AttendanceStatus, Integer> attendanceStatusCount = attendances.countAttendanceStatus(name, today);
+        attendanceBooks.validateNameExists(name);
+        List<Attendance> attendanceUntilYesterday = attendanceBooks.findAttendanceUntilYesterday(name, today);
+        Map<AttendanceStatus, Integer> attendanceStatusCount = attendanceBooks.countAttendanceStatus(name, today);
         PenaltyCount penaltyCount = new PenaltyCount(attendanceStatusCount);
         AttendancePenalty attendancePenalty = penaltyCount.findAttendancePenalty();
 
@@ -70,7 +70,7 @@ public class AttendanceManager {
     }
 
     public List<PenaltyCrewDto> findPenaltyCrews(LocalDate today) {
-        List<String> allCrewNames = attendances.getAllCrewNames();
+        List<String> allCrewNames = attendanceBooks.getAllCrewNames();
 
         List<PenaltyCrew> penaltyCrews = findPenaltyOfCrews(today, allCrewNames);
 
@@ -84,7 +84,7 @@ public class AttendanceManager {
     private List<PenaltyCrew> findPenaltyOfCrews(LocalDate today, List<String> allCrewNames) {
         List<PenaltyCrew> penaltyCrews = new ArrayList<>();
         for (String crewName : allCrewNames) {
-            Map<AttendanceStatus, Integer> attendanceStatusIntegerMap = attendances.countAttendanceStatus(crewName, today);
+            Map<AttendanceStatus, Integer> attendanceStatusIntegerMap = attendanceBooks.countAttendanceStatus(crewName, today);
             penaltyCrews.add(new PenaltyCrew(crewName, attendanceStatusIntegerMap));
         }
         return penaltyCrews;

@@ -22,20 +22,20 @@ public class AttendanceManagerTest {
     @Test
     void 출석_데이터를_읽어온다() {
         // given
-        Attendances expectedAttendances = new Attendances();
+        AttendanceBooks expectedAttendanceBooks = new AttendanceBooks();
         LocalDate attendanceDate = LocalDate.of(2024, 12, 13);
-        expectedAttendances.addAttendance("쿠키", new Attendance(attendanceDate, LocalTime.of(10, 8)));
-        expectedAttendances.addAttendance("빙봉", new Attendance(attendanceDate, LocalTime.of(10, 7)));
-        expectedAttendances.addAttendance("빙티", new Attendance(attendanceDate, LocalTime.of(10, 7)));
-        expectedAttendances.addAttendance("이든", new Attendance(attendanceDate, LocalTime.of(10, 7)));
+        expectedAttendanceBooks.addAttendance("쿠키", new Attendance(attendanceDate, LocalTime.of(10, 8)));
+        expectedAttendanceBooks.addAttendance("빙봉", new Attendance(attendanceDate, LocalTime.of(10, 7)));
+        expectedAttendanceBooks.addAttendance("빙티", new Attendance(attendanceDate, LocalTime.of(10, 7)));
+        expectedAttendanceBooks.addAttendance("이든", new Attendance(attendanceDate, LocalTime.of(10, 7)));
 
         // when
-        AttendanceManager service = new AttendanceManager(
+        AttendanceManager attendanceManager = new AttendanceManager(
             new AttendanceFileParser("src/test/java/resources/testAttendances.csv")
         );
 
         // then
-        assertThat(service).extracting("attendances").isEqualTo(expectedAttendances);
+        assertThat(attendanceManager).extracting("attendanceBooks").isEqualTo(expectedAttendanceBooks);
     }
 
     @Test

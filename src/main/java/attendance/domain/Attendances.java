@@ -2,8 +2,6 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,19 +11,17 @@ public class Attendances {
 
     private static final LocalDate START_DATE_OF_DECEMBER = LocalDate.of(2024, 12, 1);
 
-    private final Map<String, List<Attendance>> attendanceRecord;
+    private final List<Attendance> attendances;
 
-    public Attendances() {
-        this.attendanceRecord = new HashMap<>();
+    public Attendances(List<Attendance> attendances) {
+        this.attendances = attendances;
     }
 
-    public void addAttendance(String name, Attendance attendance) {
-        List<Attendance> attendances = attendanceRecord.computeIfAbsent(name, k -> new ArrayList<>());
+    public void addAttendance(Attendance attendance) {
         attendances.add(attendance);
     }
 
-    public void hasAttendance(String name, LocalDate attendanceDate) {
-        List<Attendance> attendances = attendanceRecord.get(name);
+    public void hasAttendance(LocalDate attendanceDate) {
         boolean hasAttendance = attendances.stream()
             .anyMatch(attendance -> attendance.hasAttendDate(attendanceDate));
         if(hasAttendance) {
@@ -33,47 +29,37 @@ public class Attendances {
         }
     }
 
-    public boolean hasAttendance(String name, LocalDate attendanceDate, LocalTime attendanceTime) {
-        List<Attendance> attendances = attendanceRecord.get(name);
+    public boolean hasAttendance(LocalDate attendanceDate, LocalTime attendanceTime) {
         return attendances.stream()
             .anyMatch(attendance -> attendance.hasAttend(attendanceDate, attendanceTime));
     }
 
-    public void validateNameExists(String name) {
-        if (!attendanceRecord.containsKey(name)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
-    }
-
-    public Optional<LocalTime> editAttendance(String name, LocalDate editDate, LocalTime editTime) {
-        List<Attendance> attendances = attendanceRecord.getOrDefault(name, new ArrayList<>());
-        Optional<Attendance> foundAttendance = findAttendanceExists(editDate, attendances);
+    public Optional<LocalTime> editAttendance(LocalDate editDate, LocalTime editTime) {
+        Optional<Attendance> foundAttendance = findAttendanceExists(editDate);
 
         return foundAttendance
-            .map(attendance -> editExistingAttendance(editDate, editTime, attendances, attendance))
-            .orElseGet(() -> addNonExistingAttendance(name, editDate, editTime));
+            .map(attendance -> editExistingAttendance(editDate, editTime, attendance))
+            .orElseGet(() -> addNonExistingAttendance(editDate, editTime));
     }
 
-    private Optional<Attendance> findAttendanceExists(LocalDate editDate, List<Attendance> attendances) {
+    private Optional<Attendance> findAttendanceExists(LocalDate editDate) {
         return attendances.stream()
             .filter(attendance -> attendance.hasAttendDate(editDate))
             .findFirst();
     }
 
-    private Optional<LocalTime> editExistingAttendance(LocalDate editDate, LocalTime editTime, List<Attendance> attendances, Attendance foundAttendance) {
+    private Optional<LocalTime> editExistingAttendance(LocalDate editDate, LocalTime editTime, Attendance foundAttendance) {
         int findAttendanceIndex = attendances.indexOf(foundAttendance);
         attendances.set(findAttendanceIndex, new Attendance(editDate, editTime));
         return Optional.of(foundAttendance.getAttendanceTime());
     }
 
-    private Optional<LocalTime> addNonExistingAttendance(String name, LocalDate editDate, LocalTime editTime) {
-        addAttendance(name, new Attendance(editDate, editTime));
+    private Optional<LocalTime> addNonExistingAttendance(LocalDate editDate, LocalTime editTime) {
+        addAttendance(new Attendance(editDate, editTime));
         return Optional.empty();
     }
 
-    public List<Attendance> findAttendanceUntilYesterday(String name, LocalDate today) {
-        List<Attendance> attendances = attendanceRecord.getOrDefault(name, new ArrayList<>());
-
+    public List<Attendance> findAttendanceUntilYesterday(LocalDate today) {
         addAbsenceAttendance(today, START_DATE_OF_DECEMBER, attendances);
 
         return attendances
@@ -106,8 +92,8 @@ public class Attendances {
         }
     }
 
-    public Map<AttendanceStatus, Integer> countAttendanceStatus(String name, LocalDate today) {
-        List<Attendance> attendanceUntilYesterday = findAttendanceUntilYesterday(name, today);
+    public Map<AttendanceStatus, Integer> countAttendanceStatus(LocalDate today) {
+        List<Attendance> attendanceUntilYesterday = findAttendanceUntilYesterday(today);
 
         Map<AttendanceStatus, Integer> attendanceStatusCounts = AttendanceStatus.initMap();
         for (Attendance attendance : attendanceUntilYesterday) {
@@ -118,19 +104,15 @@ public class Attendances {
         return attendanceStatusCounts;
     }
 
-    public List<String> getAllCrewNames() {
-        return attendanceRecord.keySet().stream().toList();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Attendances that = (Attendances) o;
-        return Objects.equals(attendanceRecord, that.attendanceRecord);
+        return Objects.equals(attendances, that.attendances);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(attendanceRecord);
+        return Objects.hashCode(attendances);
     }
 }
