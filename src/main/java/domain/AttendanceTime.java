@@ -10,9 +10,19 @@ public class AttendanceTime {
     private final LocalDateTime time;
 
     public AttendanceTime(LocalDateTime time) {
-        validateHoliday(time);
-        validateOperationTime(time);
         this.time = time;
+    }
+
+    public static AttendanceTime of(LocalDateTime time) {
+        validateHoliday(time.toLocalDate());
+        validateOperationTime(time);
+        return new AttendanceTime(time);
+    }
+
+    public static AttendanceTime createAbsenceTime(LocalDate day) {
+        validateHoliday(day);
+        LocalDateTime absenceStandardTime = LocalDateTime.of(day, AttendanceType.calculateAbsenceStandardTime(day));
+        return new AttendanceTime(absenceStandardTime.plusNanos(1));
     }
 
     public boolean isSameDay(AttendanceTime otherTime) {
@@ -27,20 +37,20 @@ public class AttendanceTime {
         return new AttendanceTime(LocalDateTime.of(time.toLocalDate(), newTime));
     }
 
-    private void validateOperationTime(LocalDateTime time) {
+    private static void validateOperationTime(LocalDateTime time) {
         if (!OperationSchedule.isInOperationTime(time)) {
             throw new IllegalArgumentException("운영시간이 아니면 출석할 수 없습니다.");
         }
     }
 
-    private void validateHoliday(LocalDateTime time) {
-        if (Holiday.isHoliday(time.toLocalDate())) {
+    private static void validateHoliday(LocalDate day) {
+        if (Holiday.isHoliday(day)) {
             throw new IllegalArgumentException("주말과 공휴일에는 출석할 수 없습니다.");
         }
     }
 
     public long calculateDifferenceFromAttendanceStandard() {
-        return OperationSchedule.calculateDifferenceFromStartTime(time);
+        return OperationSchedule.calculateDifferenceFromAttendanceStandard(time);
     }
 
     @Override
