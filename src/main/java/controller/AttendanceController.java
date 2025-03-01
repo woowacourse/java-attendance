@@ -14,6 +14,8 @@ import view.OutputView;
 
 public class AttendanceController {
 
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    
     private final AttendanceBook attendanceBook;
     private final InputView inputView;
     private final OutputView outputView;
@@ -60,9 +62,8 @@ public class AttendanceController {
         Crew crew = Crew.of(crewName);
         CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
 
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         String rawTime = inputView.readTime();
-        LocalTime time = LocalTime.parse(rawTime, timeFormatter);
+        LocalTime time = LocalTime.parse(rawTime, TIME_FORMATTER);
 
         AttendanceTime attendanceTime = AttendanceTime.of(today, time);
         crewAttendance.attend(attendanceTime);
@@ -83,7 +84,7 @@ public class AttendanceController {
         }
 
         String rawTime = inputView.readModifyTime();
-        LocalTime time = LocalTime.parse(rawTime, DateTimeFormatter.ISO_LOCAL_TIME);
+        LocalTime time = LocalTime.parse(rawTime, TIME_FORMATTER);
 
         AttendanceTime attendanceTime = AttendanceTime.of(date, time);
         Optional<AttendanceTime> previous = crewAttendance.modify(attendanceTime);
