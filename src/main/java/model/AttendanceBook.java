@@ -108,7 +108,9 @@ public class AttendanceBook {
                 .count();
     }
 
-    public int calculateAttendCountByNickname(String nickname) {
-        return 0;
+    public long calculateAttendCountByNickname(String nickname) {
+        return findCrewAttendance(nickname).stream()
+                .filter(Attendance::isAttend)
+                .count();
     }
 }
