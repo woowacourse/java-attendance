@@ -1,7 +1,11 @@
 package domain;
 
+import domain.constant.StandardDate;
+
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +65,7 @@ public class Attendances {
     }
 
     public void updateAttendance(String nickname, LocalDateTime updateDateTime) {
-
+        validateHoliday(updateDateTime.toLocalDate());
         List<Attendance> attendancesWithCrew = attendances.get(nickname);
         attendancesWithCrew.stream()
                 .filter(attendance -> attendance.isEqualTo(updateDateTime.toLocalDate()))
@@ -71,6 +75,23 @@ public class Attendances {
 
     public List<String> getCrewNames() {
         return attendances.keySet().stream().toList();
+    }
+
+    public void recordAllAbsences() {
+        attendances.keySet().forEach(this::recordAbsence);
+    }
+
+    private void recordAbsence(String nickname) {
+        StandardDate.TODAY.withDayOfMonth(1)
+                .datesUntil(StandardDate.TODAY)
+                .filter(date -> date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY)
+                .filter(date -> !Holiday.check(date))
+                .filter(date -> !isAlreadyAttend(nickname, date))
+                .forEach(date -> addAttendanceLog(nickname, LocalDateTime.of(date, LocalTime.MAX)));
+    }
+
+    private boolean isAlreadyAttend(String nickname, LocalDate date) {
+        return attendances.get(nickname).stream().anyMatch(attendance -> attendance.isEqualTo(date));
     }
 
     private void validateHoliday(LocalDate date) {

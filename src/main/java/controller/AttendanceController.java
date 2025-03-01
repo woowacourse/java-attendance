@@ -33,6 +33,7 @@ public class AttendanceController {
     }
 
     public void run() {
+        attendances.recordAllAbsences();
         String command = "";
         while (!EXIT.equals(command)) {
             outputView.printOptionMessage();

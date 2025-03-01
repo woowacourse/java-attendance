@@ -64,10 +64,13 @@ public class OutputView {
         System.out.println();
     }
 
-    private void printPenaltyStatus(String nickname, Attendances attendances) {
-        String penaltyName = PenaltyStatus.findStatusByNickname(nickname, attendances).getName();
-        if (!penaltyName.equals("비대상자")) {
-            System.out.printf("\n%s 대상자입니다.", penaltyName);
+    private void printAttendanceLogs(List<Attendance> logs) {
+        for (Attendance log : logs) {
+            LocalDateTime localDateTime = log.getLocalDateTime();
+            LocalDate date = localDateTime.toLocalDate();
+            String attendanceTime = convertAbsenceTime(localDateTime);
+            String dayOfWeekName = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+            System.out.printf("%d월 %02d일 %s %s (%s)\n", date.getMonthValue(), date.getDayOfMonth(), dayOfWeekName, attendanceTime, AttendanceStatus.judge(localDateTime).getName());
         }
     }
 
@@ -81,13 +84,10 @@ public class OutputView {
         System.out.printf("결석: %d회\n", absentCount);
     }
 
-    private void printAttendanceLogs(List<Attendance> logs) {
-        for (Attendance log : logs) {
-            LocalDateTime localDateTime = log.getLocalDateTime();
-            LocalDate date = localDateTime.toLocalDate();
-            LocalTime attendanceTime = localDateTime.toLocalTime();
-            String dayOfWeekName = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-            System.out.printf("%d월 %02d일 %s %s (%s)\n", date.getMonthValue(), date.getDayOfMonth(), dayOfWeekName, attendanceTime, AttendanceStatus.judge(localDateTime).getName());
+    private void printPenaltyStatus(String nickname, Attendances attendances) {
+        String penaltyName = PenaltyStatus.findStatusByNickname(nickname, attendances).getName();
+        if (!penaltyName.equals("비대상자")) {
+            System.out.printf("\n%s 대상자입니다.", penaltyName);
         }
     }
 
@@ -114,5 +114,12 @@ public class OutputView {
                         .reversed()
                         .thenComparing(nickname -> nickname)
                 ).toList();
+    }
+
+    private String convertAbsenceTime(LocalDateTime dateTime) {
+        if (dateTime.toLocalTime() == LocalTime.MAX) {
+            return "--:--";
+        }
+        return dateTime.toLocalTime().toString();
     }
 }
