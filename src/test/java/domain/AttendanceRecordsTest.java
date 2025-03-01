@@ -107,10 +107,10 @@ class AttendanceRecordsTest {
     void updateTest() {
         // given
         AttendanceRecords attendanceRecords = new AttendanceRecords();
-        AttendanceRecord oldRecord = new AttendanceRecord(LocalDateTime.parse("2024-12-03T13:10"));
+        AttendanceRecord oldRecord = new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:10"));
         attendanceRecords.add(oldRecord);
         LocalTime newTime = LocalTime.of(13, 0);
-        LocalDate oldDate = LocalDate.of(2024, 12, 3);
+        LocalDate oldDate = LocalDate.of(2024, 12, 2);
 
         // when
         attendanceRecords.update(oldDate, newTime);
@@ -120,5 +120,21 @@ class AttendanceRecordsTest {
                 () -> assertThat(oldRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.TARDY),
                 () -> assertThat(attendanceRecords.getRecordOnDate(oldDate).getAttendanceStatus()).isEqualTo(AttendanceStatus.PRESENT)
         );
+    }
+
+    @DisplayName("주어진 날짜의 출석 기록을 삭제할 수 있다.")
+    @Test
+    void removeTest() {
+        // given
+        AttendanceRecords attendanceRecords = new AttendanceRecords();
+        LocalDateTime dateTime = LocalDateTime.parse("2024-12-02T13:10");
+        AttendanceRecord record = new AttendanceRecord(dateTime);
+        attendanceRecords.add(record);
+
+        // when
+        attendanceRecords.remove(record);
+
+        // then
+        assertThat(attendanceRecords.hasRecordOnDate(dateTime.toLocalDate())).isFalse();
     }
 }
