@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public record AttendanceRecord(
         List<AttendanceDateTime> attendanceDateTimes
@@ -55,9 +55,11 @@ public record AttendanceRecord(
                 ).equals(AttendanceStatus.ATTEND)).count();
     }
 
-    public long computeAbsencesUntil(LocalDate localDate) {
-        long duringEducationDayCount = IntStream.range(1, localDate.getDayOfMonth() + 1)
-                .mapToObj(day -> LocalDate.of(2024, 12, day))
+    public long computeAbsencesUntil(LocalDate now) {
+        long duringEducationDayCount = Stream.iterate(
+                        SystemDuration.startDate,
+                        date -> date.isBefore(SystemDuration.computeLastAttendanceDate(now).plusDays(1)),
+                        date -> date.plusDays(1))
                 .filter(EducationDay::isDuringEducationDay)
                 .count();
         return duringEducationDayCount - computeAttendanceCount() - computeLateCount();

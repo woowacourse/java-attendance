@@ -10,6 +10,10 @@ public class SystemDuration {
         return !(now.isBefore(startDate) || now.isAfter(endDate));
     }
 
+    public static LocalDate getNow() {
+        return LocalDate.of(2024, 12, 16);
+    }
+
     public static LocalDate computeLastAttendanceDate(LocalDate now) {
         if (now.isBefore(SystemDuration.endDate)) {
             return now;

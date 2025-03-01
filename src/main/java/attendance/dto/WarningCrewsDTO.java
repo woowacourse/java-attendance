@@ -2,6 +2,7 @@ package attendance.dto;
 
 import attendance.model.AttendanceRecord;
 import attendance.model.AttendanceRegister;
+import attendance.model.SystemDuration;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public record WarningCrewsDto(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
             String warningType
     ) {
         public static WarningCrewDetailDTO of(String crewName, AttendanceRecord attendanceRecord) {
-            LocalDate now = LocalDate.of(2024, 12, 31);
+            LocalDate now = SystemDuration.getNow();
             return new WarningCrewDetailDTO(
                     crewName,
                     attendanceRecord.computeAbsencesUntil(now),

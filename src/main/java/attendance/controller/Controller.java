@@ -7,6 +7,7 @@ import attendance.model.AttendanceDate;
 import attendance.model.AttendanceDateTime;
 import attendance.model.AttendanceRecord;
 import attendance.model.AttendanceRegister;
+import attendance.model.SystemDuration;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -39,9 +40,9 @@ public class Controller {
     }
 
     private void addAttendance() {
-        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.now());
+        AttendanceDate attendanceDate = new AttendanceDate(SystemDuration.getNow());
         AttendanceRecord attendanceRecord = attendanceRegister.findAttendanceRecordByName(inputView.inputCrewName());
-        LocalTime time = LocalTime.now();
+        LocalTime time = LocalTime.parse(inputView.inputEntryTime());
         attendanceRecord.attend(attendanceDate, time);
         outputView.printAttendanceDetail(AttendanceDetailDto.fromArriveAttendance(attendanceDate, time));
     }
@@ -74,7 +75,7 @@ public class Controller {
             runnable.run();
         } catch (IllegalArgumentException exception) {
             outputView.printError(exception.getMessage());
-            run();
         }
+        run();
     }
 }
