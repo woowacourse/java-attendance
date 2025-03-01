@@ -30,6 +30,28 @@ public class OutputView {
             attendanceStatus.getTitle());
     }
 
+    public void printModifyAttendanceDateTime(
+        final AttendanceDate attendanceDate,
+        final AttendanceTime originalAttendanceTime,
+        final AttendanceStatus originalAttendanceStatus,
+        final AttendanceTime modifiedAttendanceTime,
+        final AttendanceStatus modifiedAttendanceStatus
+    ) {
+        System.out.printf("%s월 %s일 %s요일 %s:%s (%s) -> %s:%s (%s) 수정 완료!\n",
+            attendanceDate.getMonth(),
+            attendanceDate.getDay(),
+            attendanceDate.getAttendanceDayOfWeekDayOfWeek()
+                .getTitle(),
+            convertTime(originalAttendanceTime.getHour()
+                .orElse(null)),
+            convertTime(originalAttendanceTime.getMinute()
+                .orElse(null)), originalAttendanceStatus.getTitle(),
+            convertTime(modifiedAttendanceTime.getHour()
+                .orElse(null)),
+            convertTime(modifiedAttendanceTime.getMinute()
+                .orElse(null)), modifiedAttendanceStatus.getTitle());
+    }
+
     private String convertTime(final Integer time) {
         if (time == null) {
             return "--";
