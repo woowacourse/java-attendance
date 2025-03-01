@@ -3,7 +3,7 @@ package domain;
 import java.util.Comparator;
 import java.util.List;
 
-public record WarningCrew(String name, AttendCount attendCount) {
+public record WarningCrew(String name, AttendCount attendCount, WarningStatus warningStatus) {
 
     public static List<WarningCrew> sort(List<WarningCrew> warningCrews) {
         return warningCrews.stream()

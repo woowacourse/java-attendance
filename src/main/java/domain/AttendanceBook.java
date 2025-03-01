@@ -51,7 +51,7 @@ public class AttendanceBook {
     public List<WarningCrew> searchWarningCrew() {
         List<WarningCrew> warningCrews = attendBook.keySet().stream()
                 .filter(name -> judgeAttendStatus(name) != WarningStatus.PASS)
-                .map(name -> new WarningCrew(name, countAttend(name)))
+                .map(name -> new WarningCrew(name, countAttend(name), judgeAttendStatus(name)))
                 .toList();
         return WarningCrew.sort(warningCrews);
     }

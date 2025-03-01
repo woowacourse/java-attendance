@@ -309,7 +309,7 @@ public class AttendanceBookTest {
 
         //then
         List<WarningCrew> expected = List.of(
-                new WarningCrew(warningName, new AttendCount(3, 3, 3))
+                new WarningCrew(warningName, new AttendCount(3, 3, 3), WarningStatus.INTERVIEW)
         );
         assertThat(actual).isEqualTo(expected);
     }
