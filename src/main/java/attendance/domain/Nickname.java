@@ -1,8 +1,12 @@
 package attendance.domain;
 
+import static attendance.exception.ErrorMessage.INVALID_NICKNAME;
+
 import java.util.Objects;
 
 public class Nickname implements Comparable {
+    private static final String WHITE_SPACE = " ";
+
     final String nickname;
 
     public Nickname(final String nickname) {
@@ -17,10 +21,14 @@ public class Nickname implements Comparable {
     private void validate(final String nickname) {
         if (nickname == null ||
                 nickname.isBlank() ||
-                nickname.trim().length() != nickname.length() ||
-                nickname.split(" ").length != 1) {
-            throw new IllegalArgumentException("닉네임은 1글자 이상 필수이며 공백을 포함할 수 없습니다.");
+                hasBlank(nickname)) {
+            throw new IllegalArgumentException(INVALID_NICKNAME.getMessage());
         }
+    }
+
+    private boolean hasBlank(final String nickname) {
+        return !nickname.trim().equals(nickname) ||
+                nickname.split(WHITE_SPACE).length != 1;
     }
 
     @Override

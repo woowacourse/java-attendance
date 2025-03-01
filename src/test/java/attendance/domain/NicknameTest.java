@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static attendance.exception.ErrorMessage.INVALID_NICKNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -35,6 +36,6 @@ class NicknameTest {
         //then
         assertThatThrownBy(() -> new Nickname(nickname))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("닉네임은 1글자 이상 필수이며 공백을 포함할 수 없습니다.");
+                .hasMessage(INVALID_NICKNAME.getMessage());
     }
 }

@@ -8,7 +8,8 @@ public enum ErrorMessage {
     NOT_EXISTS_CREW_NICKNAME("[ERROR] 등록되지 않은 닉네임입니다."),
     NOT_OPERATION_TIME("[ERROR] 캠퍼스 운영 시간은 매일 08:00 ~ 23:00 입니다."),
     INVALID_TIME("유효한 시간을 입력해주세요."),
-    INVALID_DATE("유효한 날짜를 입력해주세요.");
+    INVALID_DATE("유효한 날짜를 입력해주세요."),
+    INVALID_NICKNAME("닉네임은 1글자 이상 필수이며 공백을 포함할 수 없습니다.");
 
     private final String message;
 
