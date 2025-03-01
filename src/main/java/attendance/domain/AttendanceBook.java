@@ -43,6 +43,10 @@ public class AttendanceBook {
         return attendanceRecord.registerAttendance(inputTime);
     }
 
+    public void modifyAttendance(String inputCrewName, LocalDateTime inputTime) {
+        Crew crew = findRegisteredCrew(inputCrewName);
+    }
+
     private Crew findRegisteredCrew(String inputCrewName) {
         return attendanceBook.keySet()
                 .stream()
