@@ -6,9 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import attendance.constant.AttendanceConstant;
-
 public class Crew {
+
+    private static final LocalTime CAMPUS_OPEN_TIME = LocalTime.of(8, 00);
+    private static final LocalTime CAMPUS_CLOSE_TIME = LocalTime.of(23, 00);
 
     private final String name;
     private final Map<LocalDate, LocalTime> attendanceRecords = new HashMap<>();
@@ -37,8 +38,8 @@ public class Crew {
     }
 
     private void validateAttendanceTime(LocalTime time) {
-        if (time.isBefore(AttendanceConstant.CAMPUS_OPEN_TIME) ||
-            time.isAfter(AttendanceConstant.CAMPUS_CLOSE_TIME)) {
+        if (time.isBefore(CAMPUS_OPEN_TIME) ||
+            time.isAfter(CAMPUS_CLOSE_TIME)) {
             throw new IllegalArgumentException("캠퍼스 운영시간 내에만 출석할 수 있습니다.");
         }
     }
