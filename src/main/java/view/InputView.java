@@ -32,9 +32,9 @@ public class InputView {
     }
 
     public static LocalDateTime getAttendTime(){
-        String input = scanner.nextLine();
         try{
             System.out.println("등교 시간을 입력해 주세요.");
+            String input = scanner.nextLine();
             LocalDate today = LocalDate.now();
             LocalTime time = LocalTime.parse(input, dateTimeformatter);
             return LocalDateTime.of(today,time);
