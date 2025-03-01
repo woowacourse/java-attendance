@@ -38,7 +38,7 @@ public class AttendanceController {
 
             }
             if(currentCommand == FIND_CREW_RECORD){
-
+                findCrewCommand();
             }
             if(currentCommand == FIND_WARNING_CREWS){
 
@@ -57,5 +57,12 @@ public class AttendanceController {
         crewAttendance.addAttendance(attendTime);
         AttendanceStatus status = crewAttendance.findByLocalDate(LocalDate.from(attendTime)).getStatus();
         OutputView.printAddAttendance(attendTime,status);
+    }
+
+    private void findCrewCommand(){
+        String findCrewName = InputView.getCrewName();
+        Crew findCrew = crews.findByName(findCrewName);
+
+        OutputView.printCrewAttendance(findCrewName ,findCrew.getAttendanceRecord());
     }
 }
