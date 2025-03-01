@@ -47,6 +47,15 @@ public class AttendanceController {
         }
     }
 
+    private AttendanceBook initializeAttendanceBook() {
+        FileLineReader fileLineReader = new FileLineReader();
+        List<String> crewAttendanceTexts = fileLineReader.readAllLines(ATTENDANCE_FILE_PATH, ATTENDANCE_FILE_NAME);
+        crewAttendanceTexts.removeFirst();
+        AttendanceBookInitializer attendanceBookInitializer = new AttendanceBookInitializer();
+        Map<Crew, List<AttendanceDateTime>> crewAttendances = attendanceBookInitializer.parseTexts(crewAttendanceTexts);
+        return new AttendanceBook(crewAttendances);
+    }
+
     private void branchByFeatureCommand(FeatureCommand featureCommand, AttendanceBook attendanceBook) {
         if (featureCommand.equals(FeatureCommand.ATTENDANCE_CONFIRMATION)) {
             confirmAttendance(attendanceBook);
@@ -63,15 +72,6 @@ public class AttendanceController {
         if (featureCommand.equals(FeatureCommand.QUIT)) {
             System.exit(0);
         }
-    }
-
-    private AttendanceBook initializeAttendanceBook() {
-        FileLineReader fileLineReader = new FileLineReader();
-        List<String> crewAttendanceTexts = fileLineReader.readAllLines(ATTENDANCE_FILE_PATH, ATTENDANCE_FILE_NAME);
-        crewAttendanceTexts.removeFirst();
-        AttendanceBookInitializer attendanceBookInitializer = new AttendanceBookInitializer();
-        Map<Crew, List<AttendanceDateTime>> crewAttendances = attendanceBookInitializer.parseTexts(crewAttendanceTexts);
-        return new AttendanceBook(crewAttendances);
     }
 
     private void confirmAttendance(AttendanceBook attendanceBook) {

@@ -12,22 +12,21 @@ public class AttendanceBookInitializer {
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final String CREW_DATETIME_DELIMITER = ",";
 
-    public Map<Crew, List<AttendanceDateTime>> parseTexts(List<String> crewAttendanceTexts) {
+    public Map<Crew, List<AttendanceDateTime>> parseTexts(final List<String> crewAttendanceTexts) {
         return crewAttendanceTexts.stream()
                 .map(attendanceText -> attendanceText.split(CREW_DATETIME_DELIMITER))
                 .collect(Collectors.toMap(text -> new Crew(text[0]),
-                        text -> {
-                            LocalDateTime localDateTime = parseDateTime(text[1]);
-                            List<AttendanceDateTime> attendanceDateTime = new ArrayList<>();
-                            attendanceDateTime.add(new AttendanceDateTime(localDateTime));
-                            return attendanceDateTime;},
-                        (list1, list2) -> {
-                            list1.addAll(list2);
-                            return list1;
-                        }));
+                        text -> new ArrayList<>(List.of(new AttendanceDateTime(parseDateTime(text[1])))),
+                        (existingList, newList) -> mergeTwoLists(existingList, newList)));
     }
 
-    private LocalDateTime parseDateTime(String localDateTimeText) {
+    private LocalDateTime parseDateTime(final String localDateTimeText) {
         return LocalDateTime.parse(localDateTimeText, DATE_TIME_FORMATTER);
+    }
+
+    private List<AttendanceDateTime> mergeTwoLists(final List<AttendanceDateTime> existingList,
+                                                   final List<AttendanceDateTime> newList) {
+        existingList.addAll(newList);
+        return existingList;
     }
 }
