@@ -75,7 +75,7 @@ class LectureTimeTest {
     class Fail {
 
         @Test
-        @DisplayName("해당 날짜가 교육이 있는 날이 아니면 예외를 발생시킨다")
+        @DisplayName("해당 날짜에 해당하는 교육 시간을 반환한다. 교육이 없는 날이면 예외를 발생시킨다.")
         void from_test_exception() {
             // when & then
             assertAll(() -> {
