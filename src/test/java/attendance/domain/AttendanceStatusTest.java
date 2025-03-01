@@ -21,9 +21,9 @@ class AttendanceStatusTest {
         "31, ABSENCE",
     })
     @DisplayName("등교 시간에 맞는 출석 상태를 반환한다")
-    void fromTest(int minute, String statusName) {
+    void fromTest(int minute, AttendanceStatus status) {
         // when then
         assertThat(AttendanceStatus.from(DateTimeFixture.OTHER_DAY,
-            LocalTime.of(10, 0).plusMinutes(minute)).name()).isEqualTo(statusName);
+            LocalTime.of(10, 0).plusMinutes(minute))).isEqualTo(status);
     }
 }

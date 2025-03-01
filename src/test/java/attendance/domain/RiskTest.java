@@ -17,11 +17,11 @@ class RiskTest {
         "0,6,EXPULSION",
     })
     @DisplayName("지각, 결석 횟수에 맞게 제적 대상자를 판단한다")
-    void fromTest(int lateness, int absence, String riskName) {
+    void fromTest(int lateness, int absence, Risk risk) {
         Map<AttendanceStatus, Integer> param = Map.of(
             AttendanceStatus.LATENESS, lateness,
             AttendanceStatus.ABSENCE, absence);
 
-        assertThat(Risk.of(param).name()).isEqualTo(riskName);
+        assertThat(Risk.of(param)).isEqualTo(risk);
     }
 }
