@@ -11,6 +11,10 @@ public class Crew {
         return this.name.equals(name);
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {

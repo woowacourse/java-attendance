@@ -3,6 +3,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,6 +73,24 @@ public class InputParserTest {
     void test3(PenaltyType penaltyType, String expected) {
         // when & then
         assertThat(InputParser.parsePenaltyType(penaltyType)).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("AttendanceTypeCount 를 통해 제적 위험자 출력에 필요한 형태로 파싱한다")
+    void test() {
+        // given
+        Map<LocalDateTime, AttendanceType> attendanceTypeOfDates = Map.of(
+                LocalDateTime.of(2024, 12, 2, 10, 1), AttendanceType.PRESENT,
+                LocalDateTime.of(2024, 12, 3, 10, 31), AttendanceType.ABSENCE,
+                LocalDateTime.of(2024, 12, 4, 10, 6), AttendanceType.LATE,
+                LocalDateTime.of(2024, 12, 5, 10, 31), AttendanceType.ABSENCE
+        );
+        Map<Crew, AttendanceTypeCount> input = Map.of(
+                new Crew("히로"), AttendanceTypeCount.createFrom(attendanceTypeOfDates)
+        );
+
+        // when & then
+        assertThat(InputParser.parseExpulsionCandidates(input).getFirst()).isEqualTo("- 히로: 결석 2회, 지각 1회 (경고)");
     }
 
 }
