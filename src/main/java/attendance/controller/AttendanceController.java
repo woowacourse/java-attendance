@@ -3,7 +3,6 @@ package attendance.controller;
 import attendance.Initializer;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
-import attendance.domain.AttendanceStatus;
 import attendance.domain.Crew;
 import attendance.domain.Nickname;
 import attendance.domain.StatusStatistics;
@@ -12,8 +11,8 @@ import attendance.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public class AttendanceController {
 
@@ -47,6 +46,10 @@ public class AttendanceController {
 
         if ("3".equals(function)) {
             checkRecords();
+        }
+
+        if ("4".equals(function)) {
+            checkPenalty();
         }
     }
 
@@ -84,10 +87,14 @@ public class AttendanceController {
         attendanceBook.validateCrew(crew);
 
         List<Attendance> attendances = attendanceBook.getRecordOfCrew(systemDate, crew);
-        OutputView.printAttendanceRecordsUntilYesterday(inputNickname, systemDate, attendances);
+        OutputView.printAttendanceRecordsUntilYesterday(crew, systemDate, attendances);
 
-        StatusStatistics statusStatistics = new StatusStatistics(new EnumMap<>(AttendanceStatus.class));
-        statusStatistics.calculate(attendances, systemDate);
+        StatusStatistics statusStatistics = new StatusStatistics(attendances, systemDate);
         OutputView.printStatusStatistics(statusStatistics);
+    }
+
+    public void checkPenalty() {
+        Map<Crew, StatusStatistics> crewsAndStatistics = attendanceBook.getCrewsAndStatistics(systemDate);
+        OutputView.printPenaltyCrews(crewsAndStatistics);
     }
 }

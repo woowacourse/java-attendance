@@ -3,6 +3,7 @@ package attendance.view;
 import attendance.constant.Holiday;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.Crew;
 import attendance.domain.Penalty;
 import attendance.domain.StatusStatistics;
 import attendance.util.DateUtil;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class OutputView {
 
@@ -39,8 +41,8 @@ public class OutputView {
                 newAttendance.determineStatus().getName());
     }
 
-    public static void printAttendanceRecordsUntilYesterday(String nickname, LocalDate today, List<Attendance> attendances) {
-        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", nickname);
+    public static void printAttendanceRecordsUntilYesterday(Crew crew, LocalDate today, List<Attendance> attendances) {
+        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", crew.getNickname());
         for (int day = 1; day < today.getDayOfMonth(); day++) {
             LocalDate currentDate = LocalDate.of(today.getYear(), today.getMonthValue(), day);
             if (DateUtil.isWeekend(currentDate) || Holiday.isHoliday(currentDate)) {
@@ -86,5 +88,25 @@ public class OutputView {
         if (penalty != Penalty.NONE) {
             System.out.printf("%n%s 대상자입니다.%n", penalty.getName());
         }
+    }
+
+    public static void printPenaltyCrews(Map<Crew, StatusStatistics> crewsAndStatistics) {
+        System.out.println("제적 위험자 조회 결과");
+        crewsAndStatistics.forEach(((crew, statusStatistics) -> {
+            int lateCount = statusStatistics.getAttendanceStatusCount(AttendanceStatus.LATE);
+            int absentCount = statusStatistics.getAttendanceStatusCount(AttendanceStatus.ABSENT);
+            Penalty penalty = Penalty.determine(lateCount, absentCount);
+
+            if (penalty != Penalty.NONE) {
+                System.out.printf("- %s: %s %d회, %s %d회 (%s)%n",
+                        crew.getNickname().nickname(),
+                        AttendanceStatus.LATE.getName(),
+                        lateCount,
+                        AttendanceStatus.ABSENT.getName(),
+                        absentCount,
+                        penalty.getName());
+            }
+        }));
+        System.out.println();
     }
 }
