@@ -44,24 +44,25 @@ public class AttendanceTime implements Comparable<AttendanceTime> {
     }
 
     public boolean isLate() {
-        LocalTime start = LocalTime.of(10, 0);
-        if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
-            start = LocalTime.of(13, 0);
-        }
-        long minutes = Duration.between(start, time).toMinutes();
-        if (minutes <= 5) {
-            return false;
-        }
-        return minutes <= 30;
+        long minutes = calculateMinutesDifference();
+        return minutes > 5 && minutes <= 30;
     }
 
     public boolean isAbsence() {
-        LocalTime start = LocalTime.of(10, 0);
-        if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
-            start = LocalTime.of(13, 0);
-        }
-        long minutes = Duration.between(start, time).toMinutes();
+        long minutes = calculateMinutesDifference();
         return minutes > 30;
+    }
+
+    private long calculateMinutesDifference() {
+        LocalTime start = getStartTimeForDay();
+        return Duration.between(start, time).toMinutes();
+    }
+
+    private LocalTime getStartTimeForDay() {
+        if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
+            return LocalTime.of(13, 0);
+        }
+        return LocalTime.of(10, 0);
     }
 
     public AttendanceStatus toAttendanceStatus() {
