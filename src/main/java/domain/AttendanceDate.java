@@ -3,6 +3,7 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Objects;
+import util.DateTimeParser;
 
 public class AttendanceDate {
 
@@ -18,8 +19,8 @@ public class AttendanceDate {
     }
 
     private void validateDate(final LocalDate localDate) {
-        if (CampusHoliday.isDayOff(localDate)) {
-            throw new IllegalArgumentException();
+        if (ClassDayOff.isDayOff(localDate)) {
+            throw new IllegalArgumentException(String.format("[ERROR] %s은 등교일이 아닙니다.", DateTimeParser.parseToLocalDateKoreanFormat(localDate)));
         }
     }
 

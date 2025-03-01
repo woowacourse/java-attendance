@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Objects;
+import util.DateTimeParser;
 
 public enum ClassTime {
     MONDAY(DayOfWeek.MONDAY, LocalTime.of(13, 0)),
@@ -25,6 +26,7 @@ public enum ClassTime {
                 .filter(classTime -> Objects.equals(classTime.dayOfWeek, dayOfWeek))
                 .map(classTime -> classTime.startTime)
                 .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(String.format("[ERROR] %s 강의 시간을 찾을 수 없습니다.",
+                        DateTimeParser.parseToDayOfWeekKoreanFormat(dayOfWeek))));
     }
 }
