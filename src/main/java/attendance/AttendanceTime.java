@@ -6,6 +6,7 @@ import static attendance.DayOfWeek.findDayOfWeek;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class AttendanceTime {
 
@@ -37,7 +38,23 @@ public class AttendanceTime {
     public LocalDateTime getAttendanceDateTime() {
         return attendanceDateTime;
     }
+
     public LocalDate getDate() {
         return attendanceDateTime.toLocalDate();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AttendanceTime that = (AttendanceTime) o;
+        return Objects.equals(attendanceDateTime.toLocalDate(),
+            that.attendanceDateTime.toLocalDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(attendanceDateTime.toLocalDate());
     }
 }

@@ -19,6 +19,7 @@ public class AttendanceHistory {
     public void add(String nickname, AttendanceTime attendanceTime) {
         attendanceHistory.computeIfAbsent(nickname, k -> AttendanceTimes.create());
         AttendanceTimes attendanceTimes = attendanceHistory.get(nickname);
+        validateAlreadyAttendance(nickname, attendanceTime);
         attendanceTimes.add(attendanceTime);
     }
 
@@ -26,4 +27,10 @@ public class AttendanceHistory {
         return Collections.unmodifiableMap(attendanceHistory);
     }
 
+    private void validateAlreadyAttendance(String nickname, AttendanceTime attendanceTime) {
+        AttendanceTimes attendanceTimes = attendanceHistory.get(nickname);
+        if (attendanceTimes.hasAlreadyAttendanceInDate(attendanceTime)) {
+            throw new IllegalArgumentException("해당 날짜에 이미 출석했습니다. 수정 기능을 이용해주세요.");
+        }
+    }
 }

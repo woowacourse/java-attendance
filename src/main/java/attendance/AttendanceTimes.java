@@ -23,4 +23,9 @@ public class AttendanceTimes {
     public List<AttendanceTime> getAttendanceTimes() {
         return Collections.unmodifiableList(attendanceTimes);
     }
+
+    public boolean hasAlreadyAttendanceInDate(AttendanceTime compareAttendanceTime) {
+        return attendanceTimes.stream()
+            .anyMatch(result -> result.equals(compareAttendanceTime));
+    }
 }
