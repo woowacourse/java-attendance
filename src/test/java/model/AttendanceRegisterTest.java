@@ -159,4 +159,16 @@ class AttendanceRegisterTest {
         // then
         assertThat(attendanceRecord.attendanceDateTimes().size()).isEqualTo(1);
     }
+
+    @Test
+    void 특정_크루의_출석_기록이_존재하지_않으면_예외가_발생한다() {
+        // given
+        AttendanceRegister attendanceRegister = new AttendanceRegister();
+        AttendanceDate attendanceDate = new AttendanceDate(2024, 12, 10);
+        LocalTime attendanceTime = LocalTime.of(10, 5);
+        attendanceRegister.attend("한스", attendanceDate, attendanceTime);
+
+        // when & then
+        assertThatThrownBy(() -> attendanceRegister.findAttendanceRecordByCrewName("빙티"));
+    }
 }
