@@ -7,18 +7,24 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AttendanceBook {
-    
+
+    private final Crews crews;
     private final List<Attendance> attendances;
 
-    public AttendanceBook(Attendance... attendance) {
-        this(new ArrayList<>(List.of(attendance)));
+    public AttendanceBook(Crews crews, Attendance... attendance) {
+        this(crews, new ArrayList<>(List.of(attendance)));
     }
 
-    public AttendanceBook(List<Attendance> attendances) {
+    public AttendanceBook(Crews crews, List<Attendance> attendances) {
+        this.crews = crews;
         this.attendances = attendances;
     }
 
-    public void attend(Attendance newAttendance) {
+    public void attend(String nickname, LocalDateTime attendanceDateTime) {
+        if (!crews.contains(nickname)) {
+            throw new IllegalArgumentException(nickname + "은 등록되지 않은 닉네임입니다.");
+        }
+        Attendance newAttendance = new Attendance(nickname, attendanceDateTime);
         if (isAlreadyAttend(newAttendance)) {
             throw new IllegalArgumentException("이미 출석한 경우 다시 출석할 수 없습니다.");
         }

@@ -9,6 +9,7 @@ import attendance.view.Command;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AttendanceController {
@@ -33,8 +34,10 @@ public class AttendanceController {
     public void attend(LocalDate attendanceDate, AttendanceBook attendanceBook) {
         String nickname = inputView.inputNickname();
         LocalTime attendanceTime = inputView.inputAttendanceTime();
-        Attendance attendance = new Attendance(nickname, attendanceDate, attendanceTime);
-        attendanceBook.attend(attendance);
-        outputView.printAttendance(attendance);
+        
+        LocalDateTime attendanceDateTime = LocalDateTime.of(attendanceDate, attendanceTime);
+        attendanceBook.attend(nickname, attendanceDateTime);
+
+        outputView.printAttendance(new Attendance(nickname, LocalDateTime.of(attendanceDate, attendanceTime)));
     }
 }

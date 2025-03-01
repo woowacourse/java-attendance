@@ -14,10 +14,10 @@ public class AttendanceBookTest {
         //given
         String nickname = "pobi";
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 1);
-        AttendanceBook attendanceBook = new AttendanceBook();
+        AttendanceBook attendanceBook = new AttendanceBook(new Crews());
 
         //when
-        assertThatThrownBy(() -> attendanceBook.attend(new Attendance(nickname, attendanceDateTime)))
+        assertThatThrownBy(() -> attendanceBook.attend(nickname, attendanceDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(nickname + "은 등록되지 않은 닉네임입니다.");
     }
@@ -27,10 +27,11 @@ public class AttendanceBookTest {
         //given
         String nickname = "pobi";
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 1);
-        AttendanceBook attendanceBook = new AttendanceBook(new Attendance(nickname, attendanceDateTime));
+        AttendanceBook attendanceBook = new AttendanceBook(new Crews(nickname),
+                new Attendance(nickname, attendanceDateTime));
 
         //when
-        assertThatThrownBy(() -> attendanceBook.attend(new Attendance(nickname, attendanceDateTime)))
+        assertThatThrownBy(() -> attendanceBook.attend(nickname, attendanceDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 출석한 경우 다시 출석할 수 없습니다.");
     }
@@ -40,14 +41,14 @@ public class AttendanceBookTest {
         //given
         String nickname = "pobi";
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 1);
-        AttendanceBook attendanceBook = new AttendanceBook();
+        AttendanceBook attendanceBook = new AttendanceBook(new Crews(nickname));
 
         //when
-        attendanceBook.attend(new Attendance(nickname, attendanceDateTime));
+        attendanceBook.attend(nickname, attendanceDateTime);
 
         //then
         assertThat(attendanceBook)
-                .isEqualTo(new AttendanceBook(new Attendance(nickname, attendanceDateTime)));
+                .isEqualTo(new AttendanceBook(new Crews(nickname), new Attendance(nickname, attendanceDateTime)));
     }
 
     @Test
@@ -55,7 +56,8 @@ public class AttendanceBookTest {
         //given
         String nickname = "pobi";
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 1);
-        AttendanceBook attendanceBook = new AttendanceBook(new Attendance(nickname, attendanceDateTime));
+        AttendanceBook attendanceBook = new AttendanceBook(new Crews(nickname),
+                new Attendance(nickname, attendanceDateTime));
 
         //when
         attendanceBook.updateAttendance(
@@ -65,6 +67,7 @@ public class AttendanceBookTest {
 
         //then
         assertThat(attendanceBook).isEqualTo(new AttendanceBook(
+                new Crews(nickname),
                 new Attendance(
                         "pobi",
                         LocalDateTime.of(2024, 12, 13, 11, 1)
@@ -75,7 +78,7 @@ public class AttendanceBookTest {
     @Test
     void 해당_날의_출석이_없는_경우에도_출석을_수정할_수_있다() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        AttendanceBook attendanceBook = new AttendanceBook(new Crews("pobi"));
 
         //when
         attendanceBook.updateAttendance(
@@ -85,6 +88,7 @@ public class AttendanceBookTest {
 
         //then
         assertThat(attendanceBook).isEqualTo(new AttendanceBook(
+                new Crews("pobi"),
                 new Attendance(
                         "pobi",
                         LocalDateTime.of(2024, 12, 13, 11, 1)
@@ -96,6 +100,7 @@ public class AttendanceBookTest {
     void 크루의_출석_기록을_조회할_수_있다() {
         //given
         AttendanceBook attendanceBook = new AttendanceBook(
+                new Crews("pobi", "neo"),
                 new Attendance("pobi", LocalDateTime.of(2024, 11, 25, 10, 1)),
                 new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 13, 1)),
                 new Attendance("neo", LocalDateTime.of(2024, 12, 3, 10, 1))
@@ -121,7 +126,11 @@ public class AttendanceBookTest {
         Attendance pobiAttendance = new Attendance("pobi", LocalDateTime.of(2024, 11, 25, 10, 1));
         Attendance neoAttendance = new Attendance("neo", LocalDateTime.of(2024, 12, 2, 13, 1));
         Attendance surfAttendance = new Attendance("surf", LocalDateTime.of(2024, 12, 3, 10, 1));
-        AttendanceBook attendanceBook = new AttendanceBook(pobiAttendance, neoAttendance, surfAttendance);
+        AttendanceBook attendanceBook = new AttendanceBook(
+                new Crews("pobi", "neo", "surf"),
+                pobiAttendance,
+                neoAttendance,
+                surfAttendance);
 
         //when
         CrewAttendances crewAttendances = attendanceBook.createCrewAttendances();
