@@ -96,18 +96,21 @@ public class AttendanceBookTest {
         book.attend(crew, _20250227andTime);
 
         LocalDate dateToFind = LocalDate.of(2025, 2, 27);
-        AttendanceDateTime record = book.findRecordByCrewAndDate(crew, dateToFind).orElseThrow();
+        AttendanceDateTime record = book.getRecordByCrewAndDate(crew, dateToFind);
 
         assertThat(record).isEqualTo(_20250227andTime);
     }
 
     @Test
-    void 크루의_특정_날짜의_출석기록이_없으면_비어있는_Optional을_반환한다() {
+    void 크루의_특정_날짜의_출석기록이_없는데_조회하면_날짜만_가진_결석_출석일시가_나온다() {
         LocalDate dateToFind = LocalDate.of(2025, 2, 27);
 
-        Optional<AttendanceDateTime> record = book.findRecordByCrewAndDate(crew, dateToFind);
+        AttendanceDateTime record = book.getRecordByCrewAndDate(crew, dateToFind);
 
-        assertThat(record).isEmpty();
+        assertAll(
+            () -> assertThat(record.getDate()).isEqualTo(dateToFind),
+            () -> assertThat(record.getTime()).isNull()
+        );
     }
 
     @Test
@@ -119,7 +122,7 @@ public class AttendanceBookTest {
         var newRecord = AttendanceDateTime.of(2025, 2, 27, 10, 5);
         book.modify(crew, dateToModify, newRecord);
 
-        var findRecord = book.findRecordByCrewAndDate(crew, dateToModify).orElseThrow();
+        var findRecord = book.getRecordByCrewAndDate(crew, dateToModify);
         assertThat(findRecord).isEqualTo(newRecord);
     }
 
@@ -132,7 +135,7 @@ public class AttendanceBookTest {
         var newRecord = AttendanceDateTime.of(2025, 2, 27, 10, 5);
         book.modify(crew, dateToModify, newRecord);
 
-        var findRecord = book.findRecordByCrewAndDate(crew, dateToModify).orElseThrow();
+        var findRecord = book.getRecordByCrewAndDate(crew, dateToModify);
         assertThat(findRecord).isEqualTo(newRecord);
     }
 
@@ -180,7 +183,8 @@ public class AttendanceBookTest {
     void 날짜범위_내_해당하는_출석상태가_없는경우_null이_아닌_0이다() {
         var fromMonday = LocalDate.of(2025, 2, 17);
         var toFriday = LocalDate.of(2025, 2, 21);
-        Map<AttendanceStatus, Integer> map = book.countAttendanceStatuses(crew, fromMonday, toFriday);
+        Map<AttendanceStatus, Integer> map = book.countAttendanceStatuses(crew, fromMonday,
+            toFriday);
 
         assertAll(
             () -> assertThat(map.containsKey(AttendanceStatus.ON_TIME)).isTrue(),

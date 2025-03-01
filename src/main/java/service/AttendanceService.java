@@ -33,12 +33,11 @@ public class AttendanceService {
         AttendanceDateTime attendanceDateTime = AttendanceDateTime.from(dateTime);
         book.attend(crew, attendanceDateTime);
 
-        return book.findRecordByCrewAndDate(crew, date).orElseThrow();
+        return book.getRecordByCrewAndDate(crew, date);
     }
 
     public ModifyResult modify(Crew crew, LocalDate dateToBeModified, LocalTime timeToModify) {
-        AttendanceDateTime before = book.findRecordByCrewAndDate(crew, dateToBeModified)
-            .orElse(AttendanceDateTime.ofAbsence(dateToBeModified));
+        AttendanceDateTime before = book.getRecordByCrewAndDate(crew, dateToBeModified);
 
         LocalDateTime dateTime = LocalDateTime.of(dateToBeModified, timeToModify);
         AttendanceDateTime after = AttendanceDateTime.from(dateTime);

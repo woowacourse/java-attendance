@@ -40,11 +40,12 @@ public class AttendanceBook {
         return records.getRecordsWithMissingDatesBetween(fromInclusive, endInclusive);
     }
 
-    public Optional<AttendanceDateTime> findRecordByCrewAndDate(Crew crew, LocalDate date) {
+    public AttendanceDateTime getRecordByCrewAndDate(Crew crew, LocalDate date) {
         return findAllRecordsByCrew(crew)
             .stream()
             .filter(adt -> adt.isSameDate(date))
-            .findAny();
+            .findAny()
+            .orElse(AttendanceDateTime.ofAbsence(date));
     }
 
     public void modify(Crew crew, LocalDate dateToModify, AttendanceDateTime newRecord) {
