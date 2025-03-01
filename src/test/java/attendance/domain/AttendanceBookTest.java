@@ -56,7 +56,7 @@ public class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentTime);
 
         LocalDateTime inputTime = LocalDateTime.of(year, month, day, hour, minute);
-        Assertions.assertThat(attendanceBook.registerAttendance(crewName, inputTime))
+        Assertions.assertThat(attendanceBook.registerAttendance(crewName, inputTime).getAttendanceStatus())
                 .isEqualTo(attendanceStatus);
     }
 }

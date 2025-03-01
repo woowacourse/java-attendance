@@ -37,7 +37,7 @@ public class AttendanceBook {
         }
     }
 
-    public AttendanceStatus registerAttendance(String inputCrewName, LocalDateTime inputTime) {
+    public AttendanceTime registerAttendance(String inputCrewName, LocalDateTime inputTime) {
         Crew crew = findRegisteredCrew(inputCrewName);
         AttendanceRecord attendanceRecord = attendanceBook.get(crew);
         return attendanceRecord.registerAttendance(inputTime);

@@ -27,22 +27,11 @@ public class AttendanceRecord {
         return 0;
     }
 
-    public AttendanceStatus registerAttendance(LocalDateTime inputTime) {
+    public AttendanceTime registerAttendance(LocalDateTime inputTime) {
         validateSameTime(inputTime);
         AttendanceTime attendanceTime = new AttendanceTime(inputTime);
         attendanceRecord.add(attendanceTime);
-        return findAttendanceStatus(attendanceTime);
-
-    }
-
-    private static AttendanceStatus findAttendanceStatus(AttendanceTime attendanceTime) {
-        if (attendanceTime.isAttendance()) {
-            return AttendanceStatus.ATTENDANCE;
-        }
-        if (attendanceTime.isLate()) {
-            return AttendanceStatus.LATE;
-        }
-        return AttendanceStatus.ABSENCE;
+        return attendanceRecord.getLast();
     }
 
     private void validateSameTime(LocalDateTime inputTime) {

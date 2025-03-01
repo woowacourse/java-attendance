@@ -27,4 +27,7 @@ public class AttendanceTime {
         return this.attendanceStatus.equals(AttendanceStatus.ABSENCE);
     }
 
+    public AttendanceStatus getAttendanceStatus() {
+        return attendanceStatus;
+    }
 }
