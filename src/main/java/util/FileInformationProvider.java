@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class FileInformationProvider {
-    public Map<String, List<LocalDateTime>> loadStudentAttendance() throws IOException {
+    public static Map<String, List<LocalDateTime>> loadStudentAttendance() throws IOException {
         List<String> fileAttendanceRecord = attendanceRecordReader();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -22,7 +22,7 @@ public class FileInformationProvider {
                 ));
     }
 
-    private List<String> attendanceRecordReader() throws IOException {
+    private static List<String> attendanceRecordReader() throws IOException {
         String filePath = "src/main/resources/attendances.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             return br.lines()
