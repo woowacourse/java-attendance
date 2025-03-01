@@ -151,5 +151,23 @@ class AttendanceRecordTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 날짜의 출석 시간이 기록되어 있지 않습니다.");
         }
+
+        @Test
+        void 해당_날짜의_출석시간이_기록되어있지않다면_조회하지않는다() {
+            // given
+            Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
+            AttendanceRecord attendanceRecord = new AttendanceRecord(
+                attendanceDateTimes);
+
+            AttendanceDate attendanceDate = new AttendanceDate(
+                2024, 12, 2);
+
+            // when & then
+            assertThatThrownBy(
+                () -> attendanceRecord.findAttendanceTimeByDate(
+                    attendanceDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 날짜의 출석 시간이 기록되어 있지 않습니다.");
+        }
     }
 }

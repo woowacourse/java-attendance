@@ -45,16 +45,20 @@ public class AttendanceRecord {
             attendanceDateTime.getAttendanceTime());
     }
 
-    private boolean isContainsKey(final AttendanceDateTime attendanceDateTime) {
-        return attendanceDateTimes.containsKey(
-            attendanceDateTime.getAttendanceDate());
-    }
-
     public AttendanceDateTime findAttendanceTimeByDate(final AttendanceDate attendanceDate) {
+        if (!attendanceDateTimes.containsKey(attendanceDate)) {
+            throw new IllegalArgumentException("해당 날짜의 출석 시간이 기록되어 있지 않습니다.");
+        }
+        
         final AttendanceTime attendanceTime = attendanceDateTimes.get(
             attendanceDate);
 
         return new AttendanceDateTime(attendanceDate, attendanceTime);
+    }
+
+    private boolean isContainsKey(final AttendanceDateTime attendanceDateTime) {
+        return attendanceDateTimes.containsKey(
+            attendanceDateTime.getAttendanceDate());
     }
 
     public Map<AttendanceDate, AttendanceTime> getAttendanceDateTimes() {
