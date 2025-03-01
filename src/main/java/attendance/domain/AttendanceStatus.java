@@ -62,4 +62,8 @@ public enum AttendanceStatus {
             .collect(Collectors.groupingBy(status -> status,
                 Collectors.summingInt(e -> 1)));
     }
+
+    public String getTitle() {
+        return title;
+    }
 }
