@@ -44,8 +44,17 @@ public class AttendanceController {
     private void retryUntilQuit(final AttendanceBook attendanceBook, final Crews crews) {
         UserCommand userCommand = inputUserCommand();
         while (userCommand != UserCommand.QUIT) {
-            runCommand(userCommand, attendanceBook, crews);
+            runCommandNotException(userCommand, attendanceBook, crews);
             userCommand = inputUserCommand();
+        }
+    }
+
+    private void runCommandNotException(final UserCommand userCommand, final AttendanceBook attendanceBook,
+                                        final Crews crews) {
+        try {
+            runCommand(userCommand, attendanceBook, crews);
+        } catch (final IllegalArgumentException | IllegalStateException e) {
+            outputView.printExceptionMessage(e.getMessage());
         }
     }
 
@@ -134,7 +143,7 @@ public class AttendanceController {
         return crews.findByName(crewName);
     }
 
-    private Crew inputUpdateCrew(final Crews crews){
+    private Crew inputUpdateCrew(final Crews crews) {
         final String crewName = inputView.readUpdateCrewName();
         return crews.findByName(crewName);
     }

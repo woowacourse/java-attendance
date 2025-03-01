@@ -25,7 +25,7 @@ public class AttendanceBook {
 
     private void validateAlreadyRegister(final Crew crew) {
         if (attendanceBook.containsKey(crew)) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("오늘 이미 출석한 크루입니다.");
         }
     }
 
@@ -36,7 +36,7 @@ public class AttendanceBook {
 
     private void validateContainsCrew(final Crew crew) {
         if (!attendanceBook.containsKey(crew)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("존재하지 않는 크루입니다.");
         }
     }
 

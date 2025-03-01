@@ -21,7 +21,7 @@ public enum RiskOfExpulsionStatus {
         return sortDescByAbsenceCountBoundary().stream()
                 .filter(status -> absenceCount >= status.absenceCountBoundary)
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 결석 횟수입니다."));
     }
 
     private static List<RiskOfExpulsionStatus> sortDescByAbsenceCountBoundary() {

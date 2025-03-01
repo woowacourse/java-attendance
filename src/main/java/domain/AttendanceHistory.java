@@ -36,13 +36,13 @@ public class AttendanceHistory {
 
     private void validateAlreadyAttendance(final LocalDateTime attendanceDateTime) {
         if (attendanceHistory.containsKey(attendanceDateTime.toLocalDate())) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("주어진 날짜는 이미 출석이 완료되었습니다.");
         }
     }
 
     private void validateAttendanceDay(final LocalDateTime attendanceDateTime) {
         if (!isAttendanceDay(attendanceDateTime.toLocalDate())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주어진 날짜는 출석하는 날이 아닙니다.");
         }
     }
 
@@ -58,7 +58,7 @@ public class AttendanceHistory {
     private static void validateAttendanceTime(final LocalDateTime afterTime) {
         final LocalTime time = afterTime.toLocalTime();
         if (time.isBefore(START_TIME) || time.isAfter(END_TIME)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("출석이 가능한 시간이 아닙니다.");
         }
     }
 
