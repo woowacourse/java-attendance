@@ -37,13 +37,17 @@ public class Attendance {
         return localDateTime.getDayOfMonth() == updateDateTime.getDayOfMonth();
     }
 
-    public List<LocalDateTime> getAttendanceTime() {
-        return new ArrayList<>(attendanceTime);
-    }
-
     public boolean isSame(final String name) {
         return this.crew.isSame(name);
     }
 
+    public boolean isContains(final LocalDate date) {
+        return attendanceTime.stream()
+                .anyMatch(attendance -> attendance.toLocalDate().equals(date));
+    }
+
+    public List<LocalDateTime> getAttendanceTime() {
+        return new ArrayList<>(attendanceTime);
+    }
 }
 

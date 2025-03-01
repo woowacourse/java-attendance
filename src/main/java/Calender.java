@@ -41,7 +41,7 @@ public enum Calender {
         }
     }
 
-    private static boolean isHolyDay(final LocalDate localDate) {
+    public static boolean isHolyDay(final LocalDate localDate) {
         return localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)
                 || localDate.getDayOfMonth() == HOLY_DAY;
     }
