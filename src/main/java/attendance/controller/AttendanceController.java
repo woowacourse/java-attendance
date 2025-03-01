@@ -54,12 +54,6 @@ public class AttendanceController {
 
     private void remarkAttendance(LocalDate today) {
         String name = inputView.readAttendanceName();
-        attendanceManager.validateNameExists(name);
-        if (attendanceManager.hasAttendance(name, today)) {
-            outputView.printUseEdit();
-            return;
-        }
-
         LocalTime attendanceTime = inputView.readRemarkAttendanceTime();
         AttendanceInfoDto attendanceInfoDto = attendanceManager.remarkAttendance(name, today, attendanceTime);
         outputView.printRemarkAttendanceResult(attendanceInfoDto);
@@ -67,8 +61,6 @@ public class AttendanceController {
 
     private void editAttendance() {
         String name = inputView.readEditAttendanceName();
-        attendanceManager.validateNameExists(name);
-
         LocalDate editAttendanceDate = inputView.readEditAttendanceDate();
         LocalTime editAttendanceTime = inputView.readEditAttendanceTime();
         AttendanceEditDto attendanceEditDto = attendanceManager.editAttendance(name, editAttendanceDate, editAttendanceTime);
@@ -77,8 +69,6 @@ public class AttendanceController {
 
     private void checkAttendance(LocalDate today) {
         String name = inputView.readAttendanceName();
-        attendanceManager.validateNameExists(name);
-
         AttendanceCheckDto attendanceCheckDto = attendanceManager.checkAttendance(name, today);
         outputView.printCheckAttendanceResult(attendanceCheckDto);
     }

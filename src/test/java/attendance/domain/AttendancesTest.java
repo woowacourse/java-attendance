@@ -197,25 +197,19 @@ public class AttendancesTest {
     }
 
     @Test
-    void 출석을_원하는_날짜에_출석기록이_있는지_확인한다() {
+    void 출석을_원하는_날짜에_출석기록이_있으면_예외를_반환한다() {
         // given
         Attendances attendances = new Attendances();
-        LocalDate twodaysAgo = LocalDate.of(2024, 12, 3);
         LocalDate yesterday = LocalDate.of(2024, 12, 4);
         LocalDate today = LocalDate.of(2024, 12, 5);
-        attendances.addAttendance(
-            "빙티", new Attendance(twodaysAgo, LocalTime.of(10, 1)));
         attendances.addAttendance(
             "빙봉", new Attendance(yesterday, LocalTime.of(10, 6)));
         attendances.addAttendance(
             "루디", new Attendance(today, LocalTime.of(10, 3)));
 
-        // when
-        boolean hasAttendance1 = attendances.hasAttendance("빙봉", yesterday);
-        boolean hasAttendance2 = attendances.hasAttendance("빙봉", today);
-
-        // then
-        assertThat(hasAttendance1).isTrue();
-        assertThat(hasAttendance2).isFalse();
+        // when & then
+        assertThatThrownBy(() -> attendances.hasAttendance("루디", today))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("[ERROR] 이미 출석기록이 존재합니다. 출석 수정을 이용해주세요.");
     }
 }

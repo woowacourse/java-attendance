@@ -33,21 +33,16 @@ public class AttendanceManager {
         return newAttendances;
     }
 
-    public void validateNameExists(String name) {
-        attendances.validateNameExists(name);
-    }
-
-    public boolean hasAttendance(String name, LocalDate attendanceDate) {
-        return attendances.hasAttendance(name, attendanceDate);
-    }
-
     public AttendanceInfoDto remarkAttendance(String name, LocalDate attendanceDate, LocalTime attendanceTime) {
+        attendances.validateNameExists(name);
+        attendances.hasAttendance(name, attendanceDate);
         attendances.addAttendance(name, new Attendance(attendanceDate, attendanceTime));
         AttendanceStatus attendanceStatus = AttendanceStatus.findAttendanceStatus(attendanceDate, attendanceTime);
         return AttendanceInfoDto.of(attendanceDate, attendanceTime, attendanceStatus);
     }
 
     public AttendanceEditDto editAttendance(String name, LocalDate editAttendanceDate, LocalTime editAttendanceTime) {
+        attendances.validateNameExists(name);
         Optional<LocalTime> beforeEditTime = attendances.editAttendance(name, editAttendanceDate, editAttendanceTime);
         AttendanceStatus beforeEditStatus = AttendanceStatus.findAttendanceStatus(editAttendanceDate, beforeEditTime.orElse(null));
         AttendanceStatus editStatus = AttendanceStatus.findAttendanceStatus(editAttendanceDate, editAttendanceTime);
@@ -56,6 +51,7 @@ public class AttendanceManager {
     }
 
     public AttendanceCheckDto checkAttendance(String name, LocalDate today) {
+        attendances.validateNameExists(name);
         List<Attendance> attendanceUntilYesterday = attendances.findAttendanceUntilYesterday(name, today);
         Map<AttendanceStatus, Integer> attendanceStatusCount = attendances.countAttendanceStatus(name, today);
         PenaltyCount penaltyCount = new PenaltyCount(attendanceStatusCount);

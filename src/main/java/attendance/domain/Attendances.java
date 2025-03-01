@@ -24,10 +24,13 @@ public class Attendances {
         attendances.add(attendance);
     }
 
-    public boolean hasAttendance(String name, LocalDate attendanceDate) {
+    public void hasAttendance(String name, LocalDate attendanceDate) {
         List<Attendance> attendances = attendanceRecord.get(name);
-        return attendances.stream()
+        boolean hasAttendance = attendances.stream()
             .anyMatch(attendance -> attendance.hasAttendDate(attendanceDate));
+        if(hasAttendance) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석기록이 존재합니다. 출석 수정을 이용해주세요.");
+        }
     }
 
     public boolean hasAttendance(String name, LocalDate attendanceDate, LocalTime attendanceTime) {
