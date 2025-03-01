@@ -3,15 +3,15 @@ package attendance.controller;
 import attendance.controller.util.DateTimeConverter;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
-import attendance.util.AttendanceBookFactory;
 import attendance.domain.AttendanceDate;
+import attendance.domain.AttendancePenalty;
 import attendance.domain.AttendanceTime;
 import attendance.domain.Attendances;
 import attendance.domain.Menu;
-import attendance.domain.AttendancePenalty;
 import attendance.dto.AttendanceResultResponse;
 import attendance.dto.AttendancesResponse;
 import attendance.dto.PenaltyCrewsResponse;
+import attendance.util.AttendanceBookFactory;
 import attendance.util.AttendancesFileReader;
 import attendance.util.CrewAttendancesDataParser;
 import attendance.view.InputView;
@@ -19,6 +19,8 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 
 public class AttendanceController {
     private final InputView inputView;
@@ -33,9 +35,13 @@ public class AttendanceController {
     }
 
     public void run() {
-        attendanceBook = AttendanceBookFactory.create(
-                CrewAttendancesDataParser.parse(AttendancesFileReader.read()), today);
-        while (!processMenu()) {
+        String fileInput = AttendancesFileReader.read();
+        Map<String, List<LocalDateTime>> crewAttendancesData = CrewAttendancesDataParser.parse(fileInput);
+        attendanceBook = AttendanceBookFactory.create(crewAttendancesData, today);
+
+        boolean continueProcessMenu = true;
+        while (continueProcessMenu) {
+            continueProcessMenu = processMenu();
         }
     }
 
@@ -44,7 +50,7 @@ public class AttendanceController {
             return executeMenu(inputView.readSelectMenu(today));
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e.getMessage());
-            return false;
+            return true;
         }
     }
 
@@ -62,7 +68,7 @@ public class AttendanceController {
         if (Menu.PRINT_WARNING.equals(selectedMenu)) {
             printPenaltyCrews();
         }
-        return Menu.QUIT.equals(selectedMenu);
+        return !Menu.QUIT.equals(selectedMenu);
     }
 
     private void attend() {
@@ -84,10 +90,11 @@ public class AttendanceController {
                 inputView.readUpdateAttendanceDay(), inputView.readUpdateAttendanceTime(), today);
 
         Attendance before = attendanceBook.findByNicknameAndDate(nickname, dateTime);
+        AttendanceResultResponse beforeResponse = AttendanceResultResponse.from(before);
         Attendance after = attendanceBook.updateAttendance(nickname, dateTime);
+        AttendanceResultResponse afterResponse = AttendanceResultResponse.from(after);
 
-        outputView.printUpdateResult(
-                AttendanceResultResponse.from(before), AttendanceResultResponse.from(after));
+        outputView.printUpdateResult(beforeResponse, afterResponse);
     }
 
     private void printAttendancesByCrew() {
