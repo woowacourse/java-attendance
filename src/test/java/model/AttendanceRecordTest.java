@@ -1,6 +1,7 @@
 package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.model.AttendanceDate;
 import attendance.model.AttendanceDateTime;
@@ -194,12 +195,27 @@ class AttendanceRecordTest {
                 new AttendanceDate(2024, 12, 2),
                 LocalTime.of(10, 5)
         );
-        LocalDate now = LocalDate.of(2024, 12, 17);
 
         // when
         long attendCount = attendanceRecord.computeAttendanceCount();
 
         // then
         assertThat(attendCount).isEqualTo(1);
+    }
+
+    @Test
+    void 이미_동일_날짜에_출석_기록이_존재하는_경우_출석시_예외가_발생한다() {
+        // given
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.attend(
+                new AttendanceDate(2024, 12, 2),
+                LocalTime.of(10, 5)
+        );
+
+        // when & then
+        assertThatThrownBy(() -> attendanceRecord.attend(
+                new AttendanceDate(2024, 12, 2),
+                LocalTime.of(10, 5)
+        )).isInstanceOf(IllegalArgumentException.class);
     }
 }
