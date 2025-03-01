@@ -15,6 +15,26 @@ class AttendanceBookTest {
     class ValidCases {
 
         @Test
+        void 출석일시를_저장한다() {
+            // given
+            Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
+            AttendanceRecord attendanceRecord = new AttendanceRecord(
+                attendanceDateTimes);
+            AttendanceBook attendanceBook = new AttendanceBook(new Crew("머피"),
+                attendanceRecord);
+
+            AttendanceDate attendanceDate = new AttendanceDate(2024, 12, 3);
+            AttendanceTime attendanceTime = new AttendanceTime(10, 0);
+            final AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
+                attendanceDate, attendanceTime);
+            // when
+            attendanceBook.save(attendanceDateTime);
+
+            // then
+            assertThat(attendanceBook.retrieveByDate(attendanceDate)).isEqualTo(
+                attendanceDateTime);
+        }
+        @Test
         void 출석일시를_오름차순_정렬하여_반환한다() {
             // given
             Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
