@@ -29,4 +29,25 @@ public class RiskOfDismissalTest {
         Assertions.assertThat(sum)
                 .isEqualTo(2);
     }
+
+    @DisplayName("크루의 결석, 지각 총합을 구할 수 있다. 하지만, 지각 3번은 결석 1번이다.")
+    @Test
+    void total_by_crew2() {
+        // given
+        CrewAttendances crewAttendances = new CrewAttendances("율무",
+                List.of(
+                        new Attendance(LocalDate.of(2024, 12, 2), LocalTime.of(10, 6)),
+                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 6)),
+                        new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 31))
+                )
+        );
+
+        // when
+        final var sum = crewAttendances.attendPolicyCountSum(LocalDate.of(2024, 12, 6));
+
+        // then
+        Assertions.assertThat(sum)
+                .isEqualTo(2);
+    }
 }
