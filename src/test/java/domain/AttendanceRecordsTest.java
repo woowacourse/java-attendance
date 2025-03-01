@@ -41,7 +41,7 @@ public class AttendanceRecordsTest {
         AttendanceDateTime sameDate_as_DateTime1 = AttendanceDateTime.parse("2025-02-27T10:30");
         assertThatThrownBy(() -> records.add(sameDate_as_DateTime1))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("[ERROR] 이미 출석하셨습니다. 수정 기능을 이용해 주세요.");
+            .hasMessage("이미 출석하셨습니다. 수정 기능을 이용해 주세요.");
     }
 
     @Test
