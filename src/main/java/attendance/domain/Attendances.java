@@ -1,10 +1,11 @@
 package attendance.domain;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Attendances {
 
@@ -23,7 +24,7 @@ public class Attendances {
 
     public Attendance findByCrewNameAndLocalDate(String crewName, LocalDate localDate) {
         return attendances.stream()
-                .filter(attendance -> attendance.isSameLocalDate(crewName, localDate))
+                .filter(attendance -> attendance.isSameNameAndLocalDate(crewName, localDate))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 존재하지 않습니다."));
     }
@@ -43,33 +44,36 @@ public class Attendances {
     }
 
     public Map<LocalDate, Attendance> getMonthlyAttendanceMap(String crewName, int year, int month) {
-        Map<LocalDate, Attendance> monthlyAttendances = new HashMap<>();
+        Map<LocalDate, Attendance> monthlyAttendances = getCrewAttendancesAsMap(crewName, year, month);
+        fillMissingWeekdayAttendances(monthlyAttendances, year, month);
+        return monthlyAttendances;
+    }
 
+    private Map<LocalDate, Attendance> getCrewAttendancesAsMap(String crewName, int year, int month) {
         List<Attendance> crewAttendances = findAttendancesByCrewName(crewName, year, month);
 
-        for (Attendance attendance : crewAttendances) {
-            LocalDate attendanceDate = attendance.getAttendanceTime().getLocalDate();
-            monthlyAttendances.put(attendanceDate, attendance);
-        }
+        return crewAttendances.stream()
+                .collect(Collectors.toMap(
+                        attendance -> attendance.getAttendanceTime().getLocalDate(),
+                        attendance -> attendance
+                ));
+    }
 
-        LocalDate today = LocalDate.now();
+    private void fillMissingWeekdayAttendances(Map<LocalDate, Attendance> monthlyAttendances, int year, int month) {
         LocalDate firstDay = LocalDate.of(year, month, 1);
+        LocalDate endDate = determineEndDate(firstDay);
+
+        Stream.iterate(firstDay, date -> !date.isAfter(endDate), date -> date.plusDays(1))
+                .filter(this::isWeekday)
+                .filter(date -> !monthlyAttendances.containsKey(date))
+                .forEach(date -> monthlyAttendances.put(date, null));
+    }
+
+    private LocalDate determineEndDate(LocalDate firstDay) {
+        LocalDate today = LocalDate.now();
         LocalDate lastDayOfMonth = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
 
-        LocalDate endDate;
-        if (today.isBefore(lastDayOfMonth)) {
-            endDate = today.minusDays(1);
-        } else {
-            endDate = lastDayOfMonth;
-        }
-
-        for (LocalDate date = firstDay; !date.isAfter(endDate); date = date.plusDays(1)) {
-            if (isWeekday(date) && !monthlyAttendances.containsKey(date)) {
-                monthlyAttendances.put(date, null);
-            }
-        }
-
-        return monthlyAttendances;
+        return today.isBefore(lastDayOfMonth) ? today.minusDays(1) : lastDayOfMonth;
     }
 
     private boolean isWeekday(LocalDate date) {

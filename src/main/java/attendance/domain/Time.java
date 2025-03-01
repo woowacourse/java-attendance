@@ -16,7 +16,7 @@ public class Time {
         validateCampusOperationTime(attendanceTime);
         this.attendanceTime = attendanceTime;
     }
-
+    
     private void validateCampusOperationTime(LocalDateTime attendanceTime) {
         if (attendanceTime.getHour() < 8 || (attendanceTime.getHour() == 23 && attendanceTime.getMinute() > 0)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
@@ -55,10 +55,6 @@ public class Time {
         return attendanceTime.toLocalDate();
     }
 
-    public LocalDateTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
     public int getMonth() {
         return attendanceTime.getMonthValue();
     }
@@ -77,9 +73,5 @@ public class Time {
 
     public int getMinute() {
         return attendanceTime.getMinute();
-    }
-
-    public int getYear() {
-        return attendanceTime.getYear();
     }
 }

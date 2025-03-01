@@ -4,9 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import dto.AcademicStatusResultDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,10 +94,10 @@ class AttendanceBookTest {
         // given
 
         // when
-        AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCrewName(monthlyAttendances);
+        AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCalendar(monthlyAttendances);
 
         // then
-        assertThat(academicStatus).isEqualTo(AcademicStatus.INTERVIEW);
+        assertThat(academicStatus).isEqualTo(AcademicStatus.EXPELLED);
     }
 
     @DisplayName("출석을 추가한다.")
@@ -111,7 +113,7 @@ class AttendanceBookTest {
                 2025, 2);
 
         // then
-        assertThat(resultAttendances.size()).isEqualTo(9);
+        assertThat(resultAttendances.size()).isEqualTo(20);
     }
 
     @DisplayName("크루 이름, 년,월,일로 출석 기록 하나를 가져온다.")
@@ -140,6 +142,20 @@ class AttendanceBookTest {
                 2025, 2);
 
         // then
-        assertThat(resultAttendances.size()).isEqualTo(8);
+        assertThat(resultAttendances.size()).isEqualTo(20);
+    }
+
+    @DisplayName("제적 위험자를 가져온다.")
+    @Test
+    void 제적_위험자를_가져온다() {
+
+        // given
+
+        // when
+        List<AcademicStatusResultDTO> academicStatusResultDTOS = attendanceBook.getExpulsionCrews(
+                AcademicStatus.EXPELLED, LocalDate.of(2025, 2, 27));
+
+        // then
+        assertThat(academicStatusResultDTOS.size()).isEqualTo(1);
     }
 }

@@ -43,7 +43,7 @@ public class AttendanceController {
     private final Map<String, Supplier<Boolean>> functions;
 
     private final int inputYear = LocalDate.now().getYear();
-    private final int inputMonth = 2;
+    private final int inputMonth = LocalDate.now().getMonthValue();
     private final int inputDay = LocalDate.now().getDayOfMonth();
 
 
@@ -118,15 +118,6 @@ public class AttendanceController {
         return false;
     }
 
-    private Time createTime(final LocalDate date, final String attendanceTime) {
-        if (!attendanceTime.matches(TIME_REGEX)) {
-            throw new IllegalArgumentException("[ERROR] 올바른 시간 형식(HH:mm)으로 입력해주세요.");
-        }
-        String[] split = attendanceTime.split(":");
-        return new Time(LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
-                Parser.parseToInt(split[0]), Parser.parseToInt(split[1])));
-    }
-
     public boolean attendanceModifyFunction() {
 
         String crewName = inputView.inputModifyCrewName();
@@ -155,23 +146,6 @@ public class AttendanceController {
                 attendance.checkStatus().getValue());
     }
 
-    private LocalDate createLocalDate(int year, int month, int day) {
-        try {
-            return LocalDate.of(year, month, day);
-        } catch (DateTimeException e) {
-            throw new IllegalArgumentException("[ERROR] 올바르지 않은 입력입니다.");
-        }
-    }
-
-    private LocalTime createLocalTime(String time) {
-        if (!time.matches(TIME_REGEX)) {
-            throw new IllegalArgumentException("[ERROR] 올바른 시간 형식(HH:mm)으로 입력해주세요.");
-        }
-
-        String[] split = time.split(":");
-        return LocalTime.of(Parser.parseToInt(split[0]), Parser.parseToInt(split[1]));
-    }
-
     public boolean attendanceHistoryByNameFunction() {
 
         String crewName = inputView.inputCrewName();
@@ -187,7 +161,7 @@ public class AttendanceController {
         long late = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.LATE);
         long absent = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.ABSENT);
 
-        AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCrewName(monthlyAttendances);
+        AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCalendar(monthlyAttendances);
         outputView.printAcademicStatusResult(
                 new AcademicStatusResultDTO(crewName, attend, late, absent, academicStatus));
 
@@ -202,5 +176,31 @@ public class AttendanceController {
                 .forEach(outputView::printCrewsAtRiskOfExpulsion);
 
         return false;
+    }
+
+    private Time createTime(final LocalDate date, final String attendanceTime) {
+        if (!attendanceTime.matches(TIME_REGEX)) {
+            throw new IllegalArgumentException("[ERROR] 올바른 시간 형식(HH:mm)으로 입력해주세요.");
+        }
+        String[] split = attendanceTime.split(":");
+        return new Time(LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
+                Parser.parseToInt(split[0]), Parser.parseToInt(split[1])));
+    }
+
+    private LocalTime createLocalTime(String time) {
+        if (!time.matches(TIME_REGEX)) {
+            throw new IllegalArgumentException("[ERROR] 올바른 시간 형식(HH:mm)으로 입력해주세요.");
+        }
+
+        String[] split = time.split(":");
+        return LocalTime.of(Parser.parseToInt(split[0]), Parser.parseToInt(split[1]));
+    }
+
+    private LocalDate createLocalDate(int year, int month, int day) {
+        try {
+            return LocalDate.of(year, month, day);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("[ERROR] 올바르지 않은 입력입니다.");
+        }
     }
 }

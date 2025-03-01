@@ -2,11 +2,12 @@ package attendance.domain;
 
 import dto.AcademicStatusResultDTO;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
 
@@ -29,7 +30,7 @@ public class AttendanceBook {
         return attendances.getStatusCount(monthlyAttendances, attendanceStatus);
     }
 
-    public AcademicStatus getAcademicStatusByCrewName(Map<LocalDate, Attendance> monthlyAttendances) {
+    public AcademicStatus getAcademicStatusByCalendar(Map<LocalDate, Attendance> monthlyAttendances) {
 
         long late = getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.LATE);
         long absent = getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.ABSENT);
@@ -50,17 +51,30 @@ public class AttendanceBook {
     }
 
     public List<AcademicStatusResultDTO> getExpulsionCrews(AcademicStatus academicStatus, LocalDate localDate) {
-        List<AcademicStatusResultDTO> academicStatusResultDTOS = new ArrayList<>();
-        for (String crewName : crewNames) {
-            Map<LocalDate, Attendance> monthlyAttendances = findAttendancesByCrewNameAndYearAndMonth(crewName,
-                    localDate.getYear(), localDate.getMonthValue());
-            if (getAcademicStatusByCrewName(monthlyAttendances).equals(academicStatus)) {
-                academicStatusResultDTOS.add(new AcademicStatusResultDTO(crewName,
-                        attendances.getStatusCount(monthlyAttendances, AttendanceStatus.ATTEND),
-                        attendances.getStatusCount(monthlyAttendances, AttendanceStatus.LATE),
-                        attendances.getStatusCount(monthlyAttendances, AttendanceStatus.ABSENT), academicStatus));
-            }
-        }
+        List<AcademicStatusResultDTO> academicStatusResultDTOS = filterCrewsByAcademicStatus(academicStatus, localDate);
+        sortAcademicStatusResults(academicStatusResultDTOS);
+        return academicStatusResultDTOS;
+    }
+
+    private List<AcademicStatusResultDTO> filterCrewsByAcademicStatus(AcademicStatus academicStatus,
+                                                                      LocalDate localDate) {
+        return crewNames.stream()
+                .map(crewName -> {
+                    Map<LocalDate, Attendance> monthlyAttendances = findAttendancesByCrewNameAndYearAndMonth(
+                            crewName, localDate.getYear(), localDate.getMonthValue());
+                    return new AbstractMap.SimpleEntry<>(crewName, monthlyAttendances);
+                })
+                .filter(entry -> getAcademicStatusByCalendar(entry.getValue()).equals(academicStatus))
+                .map(entry -> new AcademicStatusResultDTO(
+                        entry.getKey(),
+                        attendances.getStatusCount(entry.getValue(), AttendanceStatus.ATTEND),
+                        attendances.getStatusCount(entry.getValue(), AttendanceStatus.LATE),
+                        attendances.getStatusCount(entry.getValue(), AttendanceStatus.ABSENT),
+                        academicStatus))
+                .collect(Collectors.toList());
+    }
+
+    private void sortAcademicStatusResults(List<AcademicStatusResultDTO> academicStatusResultDTOS) {
         academicStatusResultDTOS.sort(new Comparator<AcademicStatusResultDTO>() {
             @Override
             public int compare(AcademicStatusResultDTO o1, AcademicStatusResultDTO o2) {
@@ -73,8 +87,5 @@ public class AttendanceBook {
                 return o1.crewName().compareTo(o2.crewName());
             }
         });
-
-        return academicStatusResultDTOS;
-
     }
 }

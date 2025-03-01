@@ -2,6 +2,7 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.AssertionsForClassTypes;
@@ -66,4 +67,41 @@ class AttendanceTest {
         // then
         AssertionsForClassTypes.assertThat(isSame).isEqualTo(result);
     }
+
+    @DisplayName("이름과 연월일이 같으면 true 다르면 false를 반환한다.")
+    @ParameterizedTest
+    @CsvSource(value = {
+            "체체, 2025,2,27, true", "체체, 2025,2,28, false", "추추, 2025,2,27, false", "추추,2025,2,28, false"
+    })
+    void 이름과_연월일이_같으면_true_다르면_false를_반환한다(String name, int year, int month, int day, boolean result) {
+
+        // given
+        Attendance attendance = new Attendance("체체", new Time(LocalDateTime.of(2025, 2, 27, 10, 5)));
+
+        // when & then
+        assertThat(attendance.isSameNameAndLocalDate(name, LocalDate.of(year, month, day))).isEqualTo(result);
+    }
+
+    @DisplayName("연월일 또는 이름이 다르면 두 객체는 다르다.")
+    @ParameterizedTest
+    @CsvSource(value = {
+            "체체,2025,2,27, 추추,2025,2,27,false", "체체,2025,2,27,체체,2025,2,28,false",
+            "체체,2025,2,27, 추추,2025,2,28,false", "체체,2025,2,27,체체,2025,2,27,true"
+    })
+    void 연월일이_다르면_두_객체는_다르다(String crewName, int year, int month, int day, String otherCrewName, int otherYear,
+                            int otherMonth, int otherDay, boolean result) {
+
+        // given
+        Attendance attendance = new Attendance(crewName, new Time(LocalDateTime.of(year, month, day, 10, 0)));
+        Attendance otherAttendance = new Attendance(otherCrewName,
+                new Time(LocalDateTime.of(otherYear, otherMonth, otherDay, 10, 0)));
+
+        // when
+        boolean isEqual = attendance.equals(otherAttendance);
+
+        // then
+        assertThat(isEqual).isEqualTo(result);
+    }
+
+
 }

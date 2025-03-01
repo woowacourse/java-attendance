@@ -94,7 +94,7 @@ class AttendancesTest {
     @DisplayName("크루 이름을 통해 해당 크루의 출석 기록을 모두 가져온다.")
     @ParameterizedTest
     @CsvSource(value = {
-            "ATTEND,1", "LATE,1", "ABSENT,1"
+            "ATTEND,1", "LATE,1", "ABSENT,18"
     })
     void 크루_이름을_통해_해당_월의_출석_상태를_가져온다(AttendanceStatus status, int result) {
 
@@ -134,7 +134,7 @@ class AttendancesTest {
         long count = attendances.getStatusCount(monthlyAttendances, AttendanceStatus.ABSENT);
 
         // then
-        assertThat(count).isEqualTo(4);
+        assertThat(count).isEqualTo(19);
 
     }
 

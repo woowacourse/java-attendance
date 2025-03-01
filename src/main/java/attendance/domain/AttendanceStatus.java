@@ -38,7 +38,7 @@ public enum AttendanceStatus {
                 .findFirst()
                 .orElse(ABSENT);
     }
-
+    
     private static LocalTime getStartTimeByDayOfWeek(DayOfWeek dayOfWeek) {
         if (dayOfWeek == DayOfWeek.MONDAY) {
             return LocalTime.of(13, 0);

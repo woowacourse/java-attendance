@@ -14,13 +14,13 @@ public class Attendance {
         this.attendanceTime = attendanceTime;
     }
 
-    public boolean isSameLocalDate(String crewName, LocalDate localDate) {
-        return this.crewName.equals(crewName) && attendanceTime.isSameLocalDate(localDate);
-    }
-
     public Attendance modifyAttendanceTime(LocalTime modifyTime) {
         attendanceTime.modify(modifyTime);
         return this;
+    }
+
+    public boolean isSameNameAndLocalDate(String crewName, LocalDate localDate) {
+        return this.crewName.equals(crewName) && attendanceTime.isSameLocalDate(localDate);
     }
 
     public boolean isSameCrewName(String crewName) {
@@ -34,7 +34,7 @@ public class Attendance {
     public AttendanceStatus checkStatus() {
         return attendanceTime.getStatus();
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
