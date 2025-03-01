@@ -58,6 +58,13 @@ public record AttendanceRecord(
     }
 
     public void attend(AttendanceDate attendanceDate, LocalTime attendanceTime) {
+        validateExistAttendance(attendanceDate);
         attendanceDateTimes.add(new AttendanceDateTime(attendanceDate, attendanceTime));
+    }
+
+    private void validateExistAttendance(AttendanceDate attendanceDate) {
+        if (containsAttendanceDateTimeByDate(attendanceDate)) {
+            throw new IllegalArgumentException("이미 출석한 날짜입니다.");
+        }
     }
 }
