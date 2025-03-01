@@ -68,6 +68,6 @@ public class AttendanceRegister {
     }
 
     public void addNewCrew(String crewName) {
-
+        register.putIfAbsent(crewName, new AttendanceRecord());
     }
 }
