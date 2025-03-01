@@ -3,6 +3,8 @@ package controller;
 import domain.AttendanceRecord;
 import domain.Crew;
 import domain.CrewRecords;
+import domain.CrewRecordsGenerator;
+import util.FileReader;
 import view.InputView;
 import view.OutputView;
 
@@ -16,10 +18,12 @@ public class AttendanceController {
     private final LocalDate currentDate = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
     private final InputView inputView;
     private final OutputView outputView;
+    private final CrewRecords crewRecords;
 
     public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
+        this.crewRecords = loadCrewRecords();
     }
 
     public void run() {
@@ -32,6 +36,11 @@ public class AttendanceController {
         if (menuSelection.equals("2")) {
             editRecord();
         }
+    }
+
+    private CrewRecords loadCrewRecords() {
+        CrewRecordsGenerator crewRecordsGenerator = new CrewRecordsGenerator();
+        return crewRecordsGenerator.generate(FileReader.read("src/main/resources/attendances.csv"));
     }
 
     private void checkIn() {
