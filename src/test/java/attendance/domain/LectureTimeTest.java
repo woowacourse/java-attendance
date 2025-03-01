@@ -1,13 +1,11 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -15,19 +13,23 @@ import attendance.fixture.DateTimeFixture;
 
 class LectureTimeTest {
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({
+        "0,MONDAY",
+        "1,TUESDAY",
+        "2,WEDNESDAY",
+        "3,THURSDAY",
+        "4,FRIDAY",
+        "5,SATURDAY",
+        "6,SUNDAY",
+    })
     @DisplayName("요일에 맞는 운영시간 객체를 계산한다")
-    void fromTest() {
-        // when then
-        assertSoftly(softly -> {
-            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(0))).isEqualTo(LectureTime.MONDAY);
-            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(1))).isEqualTo(LectureTime.TUESDAY);
-            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(2))).isEqualTo(LectureTime.WEDNESDAY);
-            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(3))).isEqualTo(LectureTime.THURSDAY);
-            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(4))).isEqualTo(LectureTime.FRIDAY);
-            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(5))).isEqualTo(LectureTime.SATURDAY);
-            softly.assertThat(LectureTime.from(DateTimeFixture.MONDAY.plusDays(6))).isEqualTo(LectureTime.SUNDAY);
-        });
+    void fromTest(int daysToAdd, LectureTime expected) {
+        // when
+        LocalDate date = DateTimeFixture.MONDAY.plusDays(daysToAdd);
+
+        // then
+        assertThat(LectureTime.from(date)).isEqualTo(expected);
     }
 
     @ParameterizedTest

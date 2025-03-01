@@ -1,8 +1,7 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.LocalDate;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import attendance.fixture.CrewFixture;
 import attendance.fixture.CrewsFixture;
@@ -32,11 +32,16 @@ class CrewTest {
     @Test
     @DisplayName("닉네임과 등교 시간을 입력하면 출석할 수 있다")
     void attendanceTest() {
-        // when then
-        assertThatCode(() -> {
-            Crew found = crews.get("pobi");
+        // given
+        Crew found = crews.get("pobi");
+
+        // when
+        Throwable throwable = catchThrowable(() -> {
             found.attendance(DateTimeFixture.MONDAY, DateTimeFixture.MONDAY_START_TIME);
-        }).doesNotThrowAnyException();
+        });
+
+        // then
+        assertThat(throwable).doesNotThrowAnyException();
     }
 
     @Test
@@ -45,10 +50,13 @@ class CrewTest {
         // given
         crew.attendance(DateTimeFixture.MONDAY, DateTimeFixture.MONDAY_START_TIME);
 
-        // when then
-        assertThatThrownBy(() -> {
+        // when
+        Throwable throwable = catchThrowable(() -> {
             crew.attendance(DateTimeFixture.MONDAY, LocalTime.of(10, 00));
-        }).isInstanceOf(IllegalArgumentException.class);
+        });
+
+        // then
+        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
@@ -58,10 +66,13 @@ class CrewTest {
     })
     @DisplayName("운영시간이 아닌 시간에 등교를 시도할 경우 예외를 반환한다")
     void attendanceExceptionTest2(int hour, int minute) {
-        // when then
-        assertThatThrownBy(() -> {
+        // when
+        Throwable throwable = catchThrowable(() -> {
             crew.attendance(DateTimeFixture.MONDAY, LocalTime.of(hour, minute));
-        }).isInstanceOf(IllegalArgumentException.class);
+        });
+
+        // then
+        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
@@ -71,10 +82,13 @@ class CrewTest {
     })
     @DisplayName("휴무일에 등교를 시도할 경우 예외를 반환한다")
     void attendanceExceptionTest3(int year, int hour, int minute) {
-        // when then
-        assertThatThrownBy(() -> {
+        // when
+        Throwable throwable = catchThrowable(() -> {
             crew.attendance(LocalDate.of(year, hour, minute), DateTimeFixture.MONDAY_START_TIME);
-        }).isInstanceOf(IllegalArgumentException.class);
+        });
+
+        // then
+        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -95,34 +109,38 @@ class CrewTest {
     @Test
     @DisplayName("출석하지 않은 날짜를 수정 시도할 경우 예외를 반환한다")
     void modifyAttendanceExceptionTest() {
-        // when then
-        assertThatThrownBy(() -> {
+        // when
+        Throwable throwable = catchThrowable(() -> {
             crew.modifyAttendance(DateTimeFixture.MONDAY, DateTimeFixture.MONDAY_START_TIME.plusMinutes(30));
-        }).isInstanceOf(IllegalArgumentException.class);
+        });
+
+        // then
+        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 2})
     @DisplayName("등교 기록이 없으면 결석을 반환한다")
-    void fromAbsenceTest() {
-        // when then
-        assertSoftly(softly -> {
-            softly.assertThat(crew.getAttendanceStatusOf(DateTimeFixture.OTHER_DAY.plusDays(0)))
-                .isEqualTo(AttendanceStatus.ABSENCE);
-            softly.assertThat(crew.getAttendanceStatusOf(DateTimeFixture.OTHER_DAY.plusDays(1)))
-                .isEqualTo(AttendanceStatus.ABSENCE);
-            softly.assertThat(crew.getAttendanceStatusOf(DateTimeFixture.OTHER_DAY.plusDays(2)))
-                .isEqualTo(AttendanceStatus.ABSENCE);
-        });
+    void fromAbsenceTest(int plusDays) {
+        // when
+        LocalDate date = DateTimeFixture.OTHER_DAY.plusDays(plusDays);
+
+        // then
+        assertThat(crew.getAttendanceStatusOf(date)).isEqualTo(AttendanceStatus.ABSENCE);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({
+        "2025,3,1",
+        "2025,3,2",
+    })
     @DisplayName("등교 기록이 없어도 주말 및 공휴일이면 결석을 반환하지 않는다")
-    void fromAbsenceTest2() {
-        // when then
-        assertSoftly(softly -> {
-            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025,3,1))).isEqualTo(AttendanceStatus.DAY_OFF);
-            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025,3,2))).isEqualTo(AttendanceStatus.DAY_OFF);
-        });
+    void fromAbsenceTest2(int year, int month, int day) {
+        // when
+        LocalDate date = LocalDate.of(year, month, day);
+
+        // then
+        assertThat(crew.getAttendanceStatusOf(date)).isEqualTo(AttendanceStatus.DAY_OFF);
     }
 
     @Test

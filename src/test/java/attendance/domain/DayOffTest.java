@@ -19,7 +19,10 @@ class DayOffTest {
     })
     @DisplayName("주말 및 공휴일 여부를 판단한다")
     void isDayOffTest(int year, int month, int day, boolean expected) {
-        // when then
-        assertThat(DayOff.isDayOff(LocalDate.of(year, month, day))).isEqualTo(expected);
+        // when
+        LocalDate date = LocalDate.of(year, month, day);
+
+        // then
+        assertThat(DayOff.isDayOff(date)).isEqualTo(expected);
     }
 }

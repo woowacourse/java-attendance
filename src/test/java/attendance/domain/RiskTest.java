@@ -18,10 +18,12 @@ class RiskTest {
     })
     @DisplayName("지각, 결석 횟수에 맞게 제적 대상자를 판단한다")
     void fromTest(int lateness, int absence, Risk risk) {
+        // when
         Map<AttendanceStatus, Integer> param = Map.of(
             AttendanceStatus.LATENESS, lateness,
             AttendanceStatus.ABSENCE, absence);
 
+        // then
         assertThat(Risk.of(param)).isEqualTo(risk);
     }
 }
