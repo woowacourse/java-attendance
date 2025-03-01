@@ -1,7 +1,9 @@
 package model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,14 +16,13 @@ public class StudentsTest {
     Student student;
 
     List<Student> studentList;
-    AttendanceDateTime addAttendanceDateTime = new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 13, 13));
 
     @BeforeEach
     void set() {
         studentAttendanceHistory = new StudentAttendanceHistory(
-                List.of(new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 12, 12)),
-                        new AttendanceDateTime(LocalDateTime.of(2024, 12, 13, 12, 12)))
-        );
+                Map.of(
+                        new AttendanceDate(LocalDate.of(2024, 12, 12)), new AttendanceTime(LocalTime.of(8, 0))
+                )  );
         student = new Student("이든", studentAttendanceHistory);
         studentList = List.of(student);
         students = new Students(studentList);
