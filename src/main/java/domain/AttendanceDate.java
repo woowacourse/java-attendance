@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public class AttendanceDate {
@@ -9,6 +10,10 @@ public class AttendanceDate {
     public AttendanceDate(final LocalDate localDate) {
         validateDate(localDate);
         this.localDate = localDate;
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return localDate.getDayOfWeek();
     }
 
     private void validateDate(final LocalDate localDate) {
