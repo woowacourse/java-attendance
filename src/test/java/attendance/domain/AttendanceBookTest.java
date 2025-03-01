@@ -3,11 +3,11 @@ package attendance.domain;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class AttendanceBookTest {
 
@@ -16,12 +16,25 @@ public class AttendanceBookTest {
         //given
         Crew crew = new Crew("우가");
         Crews crews = new Crews(Set.of(crew));
-        AttendanceTime attendanceTime = new AttendanceTime(LocalDateTime.of(2025, 2, 28, 9, 59));
-        AttendanceRecord attendanceRecord = new AttendanceRecord(List.of(attendanceTime));
+        LocalDateTime now = LocalDateTime.of(2025, 2, 28, 9, 59);
 
-        Map<Crew, AttendanceRecord> originalAttendanceBook = new HashMap<>();
-        originalAttendanceBook.put(crews.findCrew("우가"), attendanceRecord);
+        assertDoesNotThrow(() -> new AttendanceBook(crews, now));
+    }
 
-        assertDoesNotThrow(() -> new AttendanceBook(originalAttendanceBook));
+    @ParameterizedTest
+    @CsvSource(value = "2025, 2, 28, 9, 59, 19")
+    public void 현재_날짜_이전날까지_출석부_없는_평일날_생성(int year, int month, int day, int hour, int minute, int expectedResult) {
+        //given
+        Crew crew = new Crew("우가");
+        Crews crews = new Crews(Set.of(crew));
+        LocalDateTime now = LocalDateTime.of(year, month, day, hour, minute);
+
+        //when
+        AttendanceBook attendanceBook = new AttendanceBook(crews, now);
+
+        //then
+        Assertions.assertThat(attendanceBook.getAttendanceBook().get(crew).getAttendanceRecord().size())
+                .isEqualTo(expectedResult);
+
     }
 }
