@@ -132,7 +132,7 @@ public class AttendanceBookTest {
 
         int count = 0;
         LocalDate now = LocalDate.now();
-        for (int day = 1; day <= now.getDayOfMonth(); day++) {
+        for (int day = 1; day < now.getDayOfMonth(); day++) {
             LocalDate localDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
             if (AttendanceTime.isWeekend(localDate.getDayOfWeek())) {
                 count++;
