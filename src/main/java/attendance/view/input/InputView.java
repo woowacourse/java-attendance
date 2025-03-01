@@ -20,6 +20,8 @@ public class InputView {
         DayOfWeek.SATURDAY, "토",
         DayOfWeek.SUNDAY, "일"
     );
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(
+        "HH:mm");
 
     public MenuOption readMenuOption(final LocalDate localDate) {
         System.out.printf("오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.%n",
@@ -41,7 +43,20 @@ public class InputView {
         return readInput();
     }
 
+    public LocalTime readAttendanceDate() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        return parseLocalTime(readInput());
+    }
+
     private String readInput() {
         return scanner.nextLine();
+    }
+
+    private LocalTime parseLocalTime(final String time) {
+        try {
+            return LocalTime.parse(time.trim(), TIME_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("잘못된 시간 형식입니다.");
+        }
     }
 }
