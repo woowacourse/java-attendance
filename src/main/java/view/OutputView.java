@@ -5,8 +5,7 @@ import domain.Crew;
 import domain.PenaltyType;
 import dto.AttendanceStatusDto;
 import dto.AttendanceStatusesOfCrewDto;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Comparator;
@@ -17,16 +16,15 @@ import java.util.Map.Entry;
 import java.util.Objects;
 
 public class OutputView {
-    public static void printToday() {
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        String date = now.format(DateTimeFormatter.ofPattern("M월 d일"));
-        String dayOfWeek = now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        System.out.printf("오늘은 %s %s입니다. ", date, dayOfWeek);
+    public static void printToday(LocalDate currentDate) {
+        String date = currentDate.format(DateTimeFormatter.ofPattern("M월 d일"));
+        String dayOfWeek = currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        System.out.printf("%n오늘은 %s %s입니다. ", date, dayOfWeek);
     }
 
     public static void printAttendanceStatus(AttendanceStatusDto dto) {
         if (Objects.equals(dto.hour(), "--") || Objects.equals(dto.minute(), "--")) {
-            System.out.printf("%n%02d월 %02d일 %s %s:%s (%s)%n%n",
+            System.out.printf("%02d월 %02d일 %s %s:%s (%s)%n",
                     dto.month(),
                     dto.day(),
                     dto.dayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
@@ -36,7 +34,7 @@ public class OutputView {
             return;
         }
 
-        System.out.printf("%n%02d월 %02d일 %s %02d:%02d (%s)%n%n",
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)%n",
                 dto.month(),
                 dto.day(),
                 dto.dayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
@@ -48,20 +46,23 @@ public class OutputView {
     public static void printAttendanceStatus(AttendanceStatusesOfCrewDto dto, String nickname) {
         List<AttendanceStatusDto> statusDtos = dto.attendanceStatusDtos();
 
-        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", nickname);
+        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n", nickname);
         for (AttendanceStatusDto statusDto : statusDtos) {
             printAttendanceStatus(statusDto);
         }
 
-        System.out.println();
+        System.out.println("\n");
         for (Entry<AttendanceType, Integer> entry : dto.attendanceTypeCount().entrySet()) {
             String typeName = entry.getKey().getName();
             int count = entry.getValue();
 
             System.out.printf("%s: %d회%n", typeName, count);
         }
+
         String penaltyName = dto.penaltyType().getName();
-        System.out.printf("%n%s 대상자입니다.%n%n", penaltyName);
+        if (!penaltyName.isBlank()) {
+            System.out.printf("%n%s 대상자입니다.%n%n", penaltyName);
+        }
     }
 
     public static void printErrorMessage(String message) {
