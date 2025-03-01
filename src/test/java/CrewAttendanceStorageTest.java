@@ -206,9 +206,9 @@ public class CrewAttendanceStorageTest {
 
         String 경고_대상자 = "경고대상자"; // 결석 2회
         AttendanceStorage storageOf경고_대상자 = AttendanceStorage.of(List.of(
-                new ExistAttendance(startDate, LocalTime.of(13, 0)), // 월 - 지각
-                new ExistAttendance(startDate.plusDays(1), LocalTime.of(10, 0)), // 화 - 지각
-                new ExistAttendance(startDate.plusDays(2), LocalTime.of(10, 0)), // 수 - 지각
+                new ExistAttendance(startDate, LocalTime.of(13, 30)), // 월 - 지각
+                new ExistAttendance(startDate.plusDays(1), LocalTime.of(10, 30)), // 화 - 지각
+                new ExistAttendance(startDate.plusDays(2), LocalTime.of(10, 30)), // 수 - 지각
                 new ExistAttendance(startDate.plusDays(3), LocalTime.of(10, 0)), // 목 - 출석
                 new ExistAttendance(startDate.plusDays(4), LocalTime.of(10, 0)) // 금 - 출석
                 // 월 - 결석

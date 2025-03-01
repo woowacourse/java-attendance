@@ -65,6 +65,16 @@ public class CrewAttendanceStorage {
     }
 
     public Map<String, AttendanceStatistic> findRiskCrewStatistics(LocalDate startDate, LocalDate endDate) {
-        return null;
+        Map<String, AttendanceStatistic> result = new HashMap<>();
+        for (Map.Entry<String, AttendanceStorage> entry : storages.entrySet()) {
+            String crew = entry.getKey();
+            AttendanceStorage storage = entry.getValue();
+            AttendanceStatistic statistic = storage.getStatisticByDateRange(startDate, endDate);
+            ExpulsionRiskStatus status = statistic.getExpulsionRiskStatus();
+            if (status != ExpulsionRiskStatus.NORMAL) {
+                result.put(crew, statistic);
+            }
+        }
+        return result;
     }
 }
