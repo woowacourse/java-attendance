@@ -4,6 +4,7 @@ import constant.MenuOption;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import model.AttendanceBook;
 import model.Student;
 import util.AttendanceRecordFormatter;
@@ -17,6 +18,15 @@ public class Controller {
 
     public void run() throws IOException {
         AttendanceBook attendanceBook = new AttendanceBook(FileInformationProvider.loadStudentAttendance());
+        attendanceBook.updateNonExistentAttendanceRecords(TODAY);
+        while (true){
+            if (handleMenuChoice(attendanceBook)) {
+                return;
+            }
+        }
+    }
+
+    private boolean handleMenuChoice(AttendanceBook attendanceBook) {
         OutPutView.displayAttendanceMenu(TODAY);
         MenuOption menuOption = chooseMenuOption();
         if (menuOption.equals(MenuOption.ATTENDANCE_REGISTER)){
@@ -29,11 +39,12 @@ public class Controller {
             functionCrewAttendanceCheck(attendanceBook);
         }
         if (menuOption.equals(MenuOption.EXPULSION_RISK)){
-
+            functionExpulsionRisk(attendanceBook);
         }
         if (menuOption.equals(MenuOption.QUIT)){
-            return;
+            return true;
         }
+        return false;
     }
 
     private MenuOption chooseMenuOption(){
@@ -48,7 +59,7 @@ public class Controller {
     private void functionAttendanceRegister(AttendanceBook attendanceBook){
         try{
             String nickName = requestNickName();
-            LocalTime attendanceTime = InputView.inputAttendanceTime();
+            LocalTime attendanceTime = requestAttendanceTime();
             Student student = attendanceBook.findStudentByNickName(nickName);
             student.registerAttendanceRecord(TODAY, attendanceTime);
             OutPutView.displayRegisterAttendanceRecord(AttendanceRecordFormatter.attendanceRecordFormatter(
@@ -57,6 +68,12 @@ public class Controller {
             System.out.println(e.getMessage());
             functionAttendanceRegister(attendanceBook);
         }
+    }
+
+    private static LocalTime requestAttendanceTime() {
+        OutPutView.requestAttendanceTime();
+        LocalTime attendanceTime = InputView.inputAttendanceTime();
+        return attendanceTime;
     }
 
     private void functionAttendanceModify(AttendanceBook attendanceBook) {
@@ -77,11 +94,16 @@ public class Controller {
             Student student = attendanceBook.findStudentByNickName(nickName);
             OutPutView.displayTotalAttendanceRecord(student);
             OutPutView.displayTotalAttendanceCount(student);
-            OutPutView.displayExpulsionRisk(student);
+            OutPutView.displayCounselingCandidate(student);
         }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
             functionCrewAttendanceCheck(attendanceBook);
         }
+    }
+
+    private void functionExpulsionRisk(AttendanceBook attendanceBook){
+        List<Student> expulsionRiskStudents = attendanceBook.findExpulsionRiskStudents();
+        OutPutView.displayExpulsionRiskStudents(expulsionRiskStudents);
     }
 
     private void modifyAttendanceRecord(Student student, int modifyDate) {
