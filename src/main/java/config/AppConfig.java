@@ -16,7 +16,10 @@ public enum AppConfig {
     INSTANCE;
 
     private static final Path FILE_PATH = Paths.get("src/main/resources/attendances.csv");
+
     public static final LocalDate TODAY = LocalDate.of(2024, 12, 13);
+    public static final int ATTENDANCE_YEAR = 2024;
+    public static final int ATTENDANCE_MONTH = 12;
 
     public AttendanceController createAttendanceController() {
         return new AttendanceController(createInputView(), createOutputView(), createAttendanceSheet());
@@ -31,7 +34,8 @@ public enum AppConfig {
     }
 
     private AttendanceSheet createAttendanceSheet() {
-        ReadFile<Attendance, AttendanceSheet> readFile = new AttendanceSheetFactory(new TimePolicy(), new AbsentPolicy());
+        ReadFile<Attendance, AttendanceSheet> readFile = new AttendanceSheetFactory(new TimePolicy(),
+                new AbsentPolicy());
         return readFile.loadFile(FILE_PATH);
     }
 }
