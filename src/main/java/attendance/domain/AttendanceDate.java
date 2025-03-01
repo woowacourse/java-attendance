@@ -7,6 +7,8 @@ import java.util.Objects;
 
 public class AttendanceDate {
 
+    public static final AttendanceDate ATTENDANCE_START_DATE = new AttendanceDate(LocalDate.of(2024, 12, 2));
+
     private final LocalDate attendanceDate;
 
     public AttendanceDate(LocalDate attendanceDate) {

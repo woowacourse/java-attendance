@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class AttendanceResult implements Comparable<AttendanceResult> {
 
-    private static final AttendanceDate ATTENDANCE_START_DATE = new AttendanceDate(LocalDate.of(2024, 12, 2));
+    private static final int LATE_TO_ABSENT_UNIT = 3;
 
     private final String nickname;
     private final Map<AttendanceStatus, Integer> attendanceStatus;
@@ -24,7 +24,7 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
                                           List<Attendance> attendances,
                                           LocalDate attendanceEndDate) {
         Map<AttendanceStatus, Integer> attendanceMap = new HashMap<>();
-        AttendanceDate currentDate = ATTENDANCE_START_DATE;
+        AttendanceDate currentDate = AttendanceDate.ATTENDANCE_START_DATE;
         while (currentDate.isBeforeAndEqual(attendanceEndDate)) {
             findAttendanceByDate(nickname, attendances, currentDate)
                     .ifPresentOrElse(
@@ -54,29 +54,18 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
         return WarningLevel.from(calculateTotalAbsent());
     }
 
+    private int calculateTotalAbsent() {
+        int lateCount = getLateCount();
+        int absentCount = getAbsentCount();
+        return lateCount / LATE_TO_ABSENT_UNIT + absentCount;
+    }
+
     public String getNickname() {
         return nickname;
     }
 
     public Map<AttendanceStatus, Integer> getAttendanceStatus() {
         return Collections.unmodifiableMap(attendanceStatus);
-    }
-
-    @Override
-    public int compareTo(AttendanceResult o) {
-        if (this.calculateTotalAbsent() == o.calculateTotalAbsent()) {
-            if (this.getLateCount() == o.getLateCount()) {
-                return this.nickname.compareTo(o.nickname);
-            }
-            return o.getLateCount() - this.getLateCount();
-        }
-        return o.calculateTotalAbsent() - this.calculateTotalAbsent();
-    }
-
-    private int calculateTotalAbsent() {
-        int lateCount = getLateCount();
-        int absentCount = getAbsentCount();
-        return lateCount / 3 + absentCount;
     }
 
     private int getLateCount() {
@@ -103,5 +92,16 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
     @Override
     public int hashCode() {
         return Objects.hashCode(attendanceStatus);
+    }
+
+    @Override
+    public int compareTo(AttendanceResult o) {
+        if (this.calculateTotalAbsent() == o.calculateTotalAbsent()) {
+            if (this.getLateCount() == o.getLateCount()) {
+                return this.nickname.compareTo(o.nickname);
+            }
+            return o.getLateCount() - this.getLateCount();
+        }
+        return o.calculateTotalAbsent() - this.calculateTotalAbsent();
     }
 }
