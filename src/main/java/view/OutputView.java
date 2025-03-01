@@ -105,7 +105,7 @@ public class OutputView {
     public void printExpulsionCandidate(AttendanceStatistics expulsionCandidates) {
         expulsionCandidates.getAttendanceStatistics().forEach(expulsionCandidate ->
                 System.out.printf(ViewMessage.RISK_OF_EXPULSION_FORMAT,
-                        expulsionCandidate.getNickname(),
+                        expulsionCandidate.getNickname().value(),
                         expulsionCandidate.getCount(AttendanceStateRule.ABSENT),
                         expulsionCandidate.getCount(AttendanceStateRule.LATE),
                         AbsentRule.calculateAbsentPolicy(expulsionCandidate).getDescription())
