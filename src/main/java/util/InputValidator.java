@@ -1,8 +1,12 @@
 package util;
 
+import static constant.ErrorMessage.INVALID_DAY_FORMAT;
 import static constant.ErrorMessage.INVALID_INPUT_NULL_OR_BLANK;
 import static constant.ErrorMessage.INVALID_INTEGER_FORMAT;
 import static constant.ErrorMessage.INVALID_TIME_FORMAT;
+
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 public class InputValidator {
 
@@ -28,6 +32,17 @@ public class InputValidator {
 
         if (!input.matches(timeRegex)) {
             throw new IllegalArgumentException(INVALID_TIME_FORMAT.getMessage());
+        }
+    }
+
+    public static void validateDay(String input, LocalDateTime dateTime) {
+        validateInteger(input);
+
+        int day = Integer.parseInt(input);
+        int lastDay = YearMonth.of(dateTime.getYear(), dateTime.getMonthValue()).atEndOfMonth().getDayOfMonth();
+
+        if (day < 1 || day > lastDay) {
+            throw new IllegalArgumentException(INVALID_DAY_FORMAT.getMessage());
         }
     }
 }
