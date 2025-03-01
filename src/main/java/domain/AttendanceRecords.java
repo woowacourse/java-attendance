@@ -1,6 +1,8 @@
 package domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.TreeSet;
 
 public class AttendanceRecords {
@@ -15,6 +17,20 @@ public class AttendanceRecords {
 
     public void remove(AttendanceRecord record) {
         records.remove(record);
+    }
+
+    public void update(LocalDate oldDate, LocalTime newTime) {
+        AttendanceRecord oldRecord = getRecordOnDate(oldDate);
+        AttendanceRecord newRecord = new AttendanceRecord(LocalDateTime.of(oldDate, newTime));
+        remove(oldRecord);
+        add(newRecord);
+    }
+
+    public AttendanceRecord getRecordOnDate(LocalDate date) {
+        return records.stream()
+                .filter(record -> record.getDate().equals(date))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜에 출석 기록이 없습니다." + System.lineSeparator()));
     }
 
     public boolean hasRecordOnDate(LocalDate date) {
