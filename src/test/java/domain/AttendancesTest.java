@@ -32,7 +32,8 @@ class AttendancesTest {
                         new Attendance(LocalDateTime.of(2025, 2, 4, 10, 31)),
                         new Attendance(LocalDateTime.of(2025, 2, 5, 10, 31)),
                         new Attendance(LocalDateTime.of(2025, 2, 6, 11, 0)),
-                        new Attendance(LocalDateTime.of(2025, 2, 7, 10, 40))),
+                        new Attendance(LocalDateTime.of(2025, 2, 7, 10, 40)),
+                        new Attendance(LocalDateTime.of(2025, 2, 10, 13, 40))),
                 "빙티", List.of(
                         new Attendance(LocalDateTime.of(2025, 2, 3, 13, 30)),
                         new Attendance(LocalDateTime.of(2025, 2, 4, 12, 0)),
@@ -44,7 +45,7 @@ class AttendancesTest {
                         new Attendance(LocalDateTime.of(2025, 2, 4, 10, 15)),
                         new Attendance(LocalDateTime.of(2025, 2, 5, 12, 0)),
                         new Attendance(LocalDateTime.of(2025, 2, 6, 9, 56)),
-                        new Attendance(LocalDateTime.of(2025, 2, 7, 10, 45))),
+                        new Attendance(LocalDateTime.of(2025, 2, 7, 10, 20))),
                 "쿠키", List.of(
                         new Attendance(LocalDateTime.of(2025, 2, 3, 13, 31)),
                         new Attendance(LocalDateTime.of(2025, 2, 4, 11, 0)),
@@ -65,7 +66,7 @@ class AttendancesTest {
     }
 
     @Test
-    void 결석_5회_이상일경우_제적_대상자이다() {
+    void 결석_5회_초과일경우_제적_대상자이다() {
         String nickname = "이든";
 
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
@@ -74,7 +75,7 @@ class AttendancesTest {
     }
 
     @Test
-    void 결석_3회_초과일경우_면담_대상자이다() {
+    void 결석_3회_이상일경우_면담_대상자이다() {
         String nickname = "빙티";
 
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
@@ -83,7 +84,7 @@ class AttendancesTest {
     }
 
     @Test
-    void 결석_3회_초과일경우_경고_대상자이다() {
+    void 결석_2회_이상일경우_경고_대상자이다() {
         String nickname = "빙봉";
 
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
@@ -95,9 +96,9 @@ class AttendancesTest {
     void 지각_3회는_결석_1회로_간주한다() {
         String nickname = "쿠키";
 
-        PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
+        int totalAbsentCount = PenaltyStatus.getTotalAbsentCount(nickname, attendances);
 
-        assertThat(statusByNickname).isEqualTo(PenaltyStatus.CAUTION);
+        assertThat(totalAbsentCount).isEqualTo(3);
     }
 
     @Test
