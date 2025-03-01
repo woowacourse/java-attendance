@@ -2,7 +2,6 @@ import exception.CrewNotExistException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,15 +53,7 @@ public class CrewAttendanceStorage {
 
     public AttendanceStatistic findStatisticByDateRange(String crew, LocalDate startDate, LocalDate endDate) {
         AttendanceStorage storage = findAttendanceStorageByCrew(crew);
-        Map<AttendanceStatus, Integer> result = new EnumMap<>(AttendanceStatus.class);
-        startDate.datesUntil(endDate)
-                .forEach(date -> {
-                    Attendance attendance = storage.findByDate(date);
-                    AttendanceStatus status = attendance.getStatus();
-                    final int updatedValue = result.getOrDefault(status, 0) + 1;
-                    result.put(status, updatedValue);
-                });
-        return new AttendanceStatistic(result);
+        return storage.getStatisticByDateRange(startDate, endDate);
     }
 
     private AttendanceStorage findAttendanceStorageByCrew(String crew) {

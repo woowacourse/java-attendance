@@ -2,9 +2,7 @@ import exception.DuplicateAttendanceException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class AttendanceStorage {
     private final Set<Attendance> attendances;
@@ -41,5 +39,17 @@ public class AttendanceStorage {
         Attendance attendance = findByDate(date);
         attendances.remove(attendance);
         return attendances.add(new ExistAttendance(date, modifyTime));
+    }
+
+    public AttendanceStatistic getStatisticByDateRange(LocalDate start, LocalDate end) {
+        Map<AttendanceStatus, Integer> result = new EnumMap<>(AttendanceStatus.class);
+        start.datesUntil(end)
+                .forEach(date -> {
+                    Attendance attendance = findByDate(date);
+                    AttendanceStatus status = attendance.getStatus();
+                    final int updatedValue = result.getOrDefault(status, 0) + 1;
+                    result.put(status, updatedValue);
+                });
+        return new AttendanceStatistic(result);
     }
 }

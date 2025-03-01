@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -187,6 +188,30 @@ public class AttendanceStorageTest {
         assertAll(
                 () -> assertThat(attendance.isTimeRecorded()).isTrue(),
                 () -> assertThat(attendance.getTime()).isEqualTo(modifiedTime)
+        );
+    }
+
+    @DisplayName("날짜를 입력하면 전날까지의 출석 통계 결과를 반환할 수 있다.")
+    @Test
+    void test12() {
+        // given
+        AttendanceStorage attendanceStorage = AttendanceStorage.of(List.of(
+                new ExistAttendance(LocalDate.of(2025, 2, 24), LocalTime.of(13, 0)),
+                new ExistAttendance(LocalDate.of(2025, 2, 25), LocalTime.of(10, 30)),
+                new ExistAttendance(LocalDate.of(2025, 2, 27), LocalTime.of(10, 0)),
+                new ExistAttendance(LocalDate.of(2025, 2, 28), LocalTime.of(10, 0))
+        )); // 출석 3 지각 1 결석 1
+        LocalDate startDate = LocalDate.of(2025, 2, 24);
+        LocalDate endDate = LocalDate.of(2025, 3, 1);
+
+        // when
+        AttendanceStatistic statistic = attendanceStorage.getStatisticByDateRange(startDate, endDate);
+
+        // then
+        assertAll(
+                () -> assertThat(statistic.getAttendanceCount()).isEqualTo(3),
+                () -> assertThat(statistic.getLateCount()).isEqualTo(1),
+                () -> assertThat(statistic.getAbsenceCount()).isEqualTo(1)
         );
     }
 }
