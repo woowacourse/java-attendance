@@ -12,6 +12,7 @@ public class CommandTest {
             "2, ATTENDANCE_UPDATE",
             "3, ATTENDANCE_CHECK",
             "4, ATTENDANCE_WARNING_CHECK",
+            "Q, QUIT",
     })
     void 입력값에_따라_커멘드로_변환할_수_있다(String value, Command expected) {
         //when
