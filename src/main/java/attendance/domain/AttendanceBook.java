@@ -91,12 +91,10 @@ public class AttendanceBook {
                 .map(name -> {
                     int absent = getAttendanceStatusCount(name, AttendanceStatus.ABSENT);
                     int late = getAttendanceStatusCount(name, AttendanceStatus.LATE);
-                    return new ExpulsionCandidate(name, absent, late,
-                            AcademicStatus.getAcademicStatus(late, absent));
+                    return new ExpulsionCandidate(name, absent, late, AcademicStatus.getAcademicStatus(late, absent));
                 })
                 .filter(crew -> crew.status() == academicStatus)
-                .sorted(Comparator.comparing(ExpulsionCandidate::absent))
-                .sorted(Comparator.comparing(ExpulsionCandidate::name))
+                .sorted(Comparator.comparing(ExpulsionCandidate::absent).thenComparing(ExpulsionCandidate::name))
                 .toList();
     }
 }
