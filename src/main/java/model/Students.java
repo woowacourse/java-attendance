@@ -1,12 +1,13 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Students {
     private final List<Student> students;
 
     public Students(List<Student> students) {
-        this.students = students;
+        this.students = new ArrayList<>(students);
     }
 
     public Student findStudentByName(String studentName) {
