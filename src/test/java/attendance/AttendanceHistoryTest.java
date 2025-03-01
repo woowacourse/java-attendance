@@ -4,6 +4,7 @@ package attendance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,5 +68,29 @@ public class AttendanceHistoryTest {
         assertThatThrownBy(() -> attendanceHistory.add(nickname, duplicateAttendanceTime))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("해당 날짜에 이미 출석했습니다. 수정 기능을 이용해주세요.");
+    }
+
+    @DisplayName("날짜를 입력받고, 해당 날짜의 크루에 대한 출석 기록이 존재하지 않는다면, 예외를 발생시켜야 한다.")
+    @Test
+    void given_date_and_find_attendance_but_not_exist_then_throw_exception() {
+        String nickname = "젠슨";
+        int findDate = 3;
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalDateTime.of(2024, 12, 4, 10, 0));
+        attendanceHistory.add(nickname, attendanceTime);
+        assertThatThrownBy(() -> attendanceHistory.getAttendanceTimeByDate(nickname, findDate))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("해당 날짜에는 출석 기록이 없습니다.");
+    }
+
+    @DisplayName("크루의 닉네임과 날짜(date)를 입력받았을 때, 해당하는 출석 기록을 가져온다")
+    @Test
+    void given_nickname_and_date_then_return_attendance_time() {
+        String nickname = "젠슨";
+        int findDate = 3;
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalDateTime.of(2024, 12, 3, 10, 0));
+        attendanceHistory.add(nickname, attendanceTime);
+        LocalDate expectedAttendanceDate = LocalDate.of(2024, 12, 3);
+        AttendanceTime foundAttendanceTime = attendanceHistory.getAttendanceTimeByDate(nickname, findDate);
+        assertThat(foundAttendanceTime.getDate()).isEqualTo(expectedAttendanceDate);
     }
 }

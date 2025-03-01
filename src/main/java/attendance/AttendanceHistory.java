@@ -3,6 +3,7 @@ package attendance;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class AttendanceHistory {
 
@@ -24,6 +25,15 @@ public class AttendanceHistory {
 
     public Map<String, AttendanceTimes> getAttendanceHistory() {
         return Collections.unmodifiableMap(attendanceHistory);
+    }
+
+    public AttendanceTime getAttendanceTimeByDate(String nickname, int findDate) {
+        AttendanceTimes attendanceTimes = attendanceHistory.get(nickname);
+        Set<AttendanceTime> attendanceTimes1 = attendanceTimes.getAttendanceTimes();
+        return attendanceTimes1.stream()
+            .filter(result -> result.getDate().getDayOfMonth() == findDate)
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("해당 날짜에는 출석 기록이 없습니다."));
     }
 
     private void validateAlreadyAttendance(boolean isAdded) {
