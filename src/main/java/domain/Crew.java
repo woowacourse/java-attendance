@@ -3,9 +3,17 @@ package domain;
 import domain.attendance.Attendance;
 import domain.attendance.StudentStatus;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 public class Crew {
+    public static final Comparator<Crew> CREW_COMPARATOR = Comparator
+            .comparingInt((Crew c) -> c.attendanceRecord.getAbsenceCount()).reversed()
+            .thenComparing((Crew c) -> c.attendanceRecord.getTardyCount(), Comparator.reverseOrder())
+            .thenComparing(Crew::getName);
+
+
+
     private final String name;
     private final Attendance attendanceRecord;
 
@@ -25,6 +33,10 @@ public class Crew {
     @Override
     public int hashCode() {
         return Objects.hash(name, attendanceRecord);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Attendance getAttendanceRecord() {

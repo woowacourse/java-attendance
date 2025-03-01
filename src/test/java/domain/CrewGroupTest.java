@@ -1,10 +1,13 @@
 package domain;
 
+import domain.attendance.Attendance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
@@ -47,6 +50,54 @@ class CrewGroupTest {
         @DisplayName("존재하지 않는 크루원을 조회하면 에러가 발생")
         void findMissingCrewByName(){
             assertThatThrownBy(() -> crewGroup.findByName("네오")).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Nested
+    class sortTest{
+        @DisplayName("정렬된 Attendance Test")
+        @Test
+        void getSortedAttendanceTest(){
+            CrewGroup crewGroup = new CrewGroup();
+            crewGroup.addCrew("가이온");
+            crewGroup.addCrew("돔푸");
+            crewGroup.addCrew("리사");
+            crewGroup.addCrew("네오");
+
+
+            Attendance attendance1 = crewGroup.findByName("가이온").getAttendanceRecord();
+            attendance1.addAttendance(LocalDateTime.of(2025,2,11,12,0));
+            attendance1.addAttendance(LocalDateTime.of(2025,2,12,12,0));
+            attendance1.addAttendance(LocalDateTime.of(2025,2,13,12,0));
+            attendance1.addAttendance(LocalDateTime.of(2025,2,14,12,0));
+            attendance1.addAttendance(LocalDateTime.of(2025,2,17,13,0));
+
+            Attendance attendance2 = crewGroup.findByName("돔푸").getAttendanceRecord();
+            attendance2.addAttendance(LocalDateTime.of(2025,2,11,12,0));
+            attendance2.addAttendance(LocalDateTime.of(2025,2,12,12,0));
+            attendance2.addAttendance(LocalDateTime.of(2025,2,13,12,0));
+            attendance2.addAttendance(LocalDateTime.of(2025,2,14,12,0));
+            attendance2.addAttendance(LocalDateTime.of(2025,2,17,13,6));
+
+            Attendance attendance3 = crewGroup.findByName("리사").getAttendanceRecord();
+            attendance3.addAttendance(LocalDateTime.of(2025,2,11,12,0));
+            attendance3.addAttendance(LocalDateTime.of(2025,2,12,12,0));
+            attendance3.addAttendance(LocalDateTime.of(2025,2,13,12,0));
+            attendance3.addAttendance(LocalDateTime.of(2025,2,14,10,0));
+            attendance3.addAttendance(LocalDateTime.of(2025,2,17,13,0));
+
+            Attendance attendance4 = crewGroup.findByName("네오").getAttendanceRecord();
+            attendance4.addAttendance(LocalDateTime.of(2025,2,11,12,0));
+            attendance4.addAttendance(LocalDateTime.of(2025,2,12,12,0));
+            attendance4.addAttendance(LocalDateTime.of(2025,2,13,12,0));
+            attendance4.addAttendance(LocalDateTime.of(2025,2,14,10,0));
+            attendance4.addAttendance(LocalDateTime.of(2025,2,17,13,0));
+
+            List<Crew> sortedGroup = crewGroup.getSortedWarningCrews();
+            assertThat(sortedGroup.getFirst().getName()).isEqualTo("돔푸");
+            assertThat(sortedGroup.get(1).getName()).isEqualTo("가이온");
+            assertThat(sortedGroup.get(2).getName()).isEqualTo("네오");
+            assertThat(sortedGroup.get(3).getName()).isEqualTo("리사");
         }
     }
 }
