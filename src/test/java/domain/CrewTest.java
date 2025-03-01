@@ -1,6 +1,8 @@
 package domain;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.junit.jupiter.api.Test;
 
 class CrewTest {
@@ -12,7 +14,7 @@ class CrewTest {
         Crew crew = Crew.fromName("제프리");
 
         // then
-        Assertions.assertThat(crew.getName()).isEqualTo("제프리");
+        assertThat(crew.getName()).isEqualTo("제프리");
     }
 
     @Test
@@ -21,7 +23,7 @@ class CrewTest {
         String name = "제프리1";
 
         // when // then
-        Assertions.assertThatThrownBy(() -> Crew.fromName(name))
+        assertThatThrownBy(() -> Crew.fromName(name))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 크루 이름을 정상적으로 입력해 주세요.");
     }
@@ -32,7 +34,7 @@ class CrewTest {
         String name = "제프ㅇ리";
 
         // when // then
-        Assertions.assertThatThrownBy(() -> Crew.fromName(name))
+        assertThatThrownBy(() -> Crew.fromName(name))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 크루 이름을 정상적으로 입력해 주세요.");
     }
@@ -43,7 +45,7 @@ class CrewTest {
         String name = "제프:리";
 
         // when // then
-        Assertions.assertThatThrownBy(() -> Crew.fromName(name))
+        assertThatThrownBy(() -> Crew.fromName(name))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 크루 이름을 정상적으로 입력해 주세요.");
     }
@@ -59,7 +61,7 @@ class CrewTest {
         Crew crew2 = Crew.fromName(name2);
 
         // then
-        Assertions.assertThat(crew1).isEqualTo(crew2);
+        assertThat(crew1).isEqualTo(crew2);
     }
 
 }
