@@ -142,6 +142,7 @@ public class AttendanceController {
         printCrewAttendanceRecords(crewAttendances);
     }
 
+    // OutputView
     private void printCrewAttendanceRecords(CrewAttendances crewAttendances) {
         System.out.print(System.lineSeparator());
         System.out.printf("이번 달 %s의 출석 기록입니다.%n", crewAttendances.getNickname());
@@ -192,7 +193,7 @@ public class AttendanceController {
 
     // 4번 기능
     private void printRiskOfExpulsion(AttendanceBook book) {
-        List<CrewAttendances> risk = book.findRisk(today);
+        List<CrewAttendances> risk = book.findSortedRiskOfDismissalCrews(today);
 
         System.out.print(System.lineSeparator());
         System.out.println("제적 위험자 조회 결과");
@@ -203,5 +204,4 @@ public class AttendanceController {
         }
         System.out.print(System.lineSeparator());
     }
-
 }

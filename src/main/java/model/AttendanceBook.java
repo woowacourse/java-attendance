@@ -53,22 +53,23 @@ public class AttendanceBook {
         return findAttendance;
     }
 
-    public List<CrewAttendances> findRisk(LocalDate date) {
+    public List<CrewAttendances> findSortedRiskOfDismissalCrews(LocalDate date) {
         return crewsAttendances.stream()
                 .filter(crew -> crew.determineAttendPenalty(date) != AbsentPenalty.NONE)
-                .sorted(new Comparator<CrewAttendances>() {
-                    @Override
-                    public int compare(CrewAttendances o1, CrewAttendances o2) {
-                        int count1 = o1.attendPolicyCountSum(date);
-                        int count2 = o2.attendPolicyCountSum(date);
-
-                        if (count1 == count2) {
-                            return o1.getNickname().compareTo(o2.getNickname());
-                        }
-
-                        return count2 - count1;
-                    }
-                })
+                .sorted(riskOfDismissalComparator(date))
                 .toList();
+    }
+
+    private Comparator<CrewAttendances> riskOfDismissalComparator(LocalDate date) {
+        return (o1, o2) -> {
+            int count1 = o1.attendPolicyCountSum(date);
+            int count2 = o2.attendPolicyCountSum(date);
+
+            if (count1 == count2) {
+                return o1.getNickname().compareTo(o2.getNickname());
+            }
+
+            return count2 - count1;
+        };
     }
 }
