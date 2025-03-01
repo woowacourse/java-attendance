@@ -1,5 +1,6 @@
 package model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -35,5 +36,25 @@ public class Attendance {
 
     public boolean isBefore(LocalDate date) {
         return this.attendDate.isBefore(date);
+    }
+
+    public int getMonth() {
+        return this.attendDate.getMonth().getValue();
+    }
+
+    public int getDay() {
+        return this.attendDate.getDayOfMonth();
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return this.attendDate.getDayOfWeek();
+    }
+
+    public int getHour() {
+        return this.attendTime.getHour();
+    }
+
+    public int getMinute() {
+        return this.attendTime.getMinute();
     }
 }

@@ -71,9 +71,6 @@ public class CrewAttendances {
         int absentCount = calculateAbsentCountUntilDate(date);
         int lateCount = calculateLateCountUntilDate(date);
 
-        System.out.println(absentCount);
-        System.out.println(lateCount);
-
         absentCount += lateCount / 3;
         return AbsentPenalty.determine(absentCount);
     }
@@ -97,4 +94,9 @@ public class CrewAttendances {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없습니다."));
     }
+
+    public String getNickname() {
+        return nickname;
+    }
+
 }

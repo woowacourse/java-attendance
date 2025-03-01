@@ -17,13 +17,24 @@ public class AttendanceBook {
         checker.determine(date, time);
 
         CrewAttendances crew = findCrewAttendance(nickname);
-        if (crew.isAlreadyAttend(date)) {
-            throw new IllegalArgumentException();
-        }
+        validateAlreadyAttend(date, crew);
 
         Attendance attendance = new Attendance(date, time);
         crew.addAttendance(attendance);
         return attendance;
+    }
+
+    private void validateAlreadyAttend(LocalDate date, CrewAttendances crew) {
+        if (crew.isAlreadyAttend(date)) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요.");
+        }
+    }
+
+    public CrewAttendances findCrewAttendance(String nickname) {
+        return crewsAttendances.stream()
+                .filter(crew -> crew.isSameNickname(nickname))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
 
     public Attendance findAttendance(String nickname, LocalDate date) {
@@ -41,10 +52,10 @@ public class AttendanceBook {
         return findAttendance;
     }
 
-    public CrewAttendances findCrewAttendance(String nickname) {
+    public List<String> allNames() {
         return crewsAttendances.stream()
-                .filter(crew -> crew.isSameNickname(nickname))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+                .map(CrewAttendances::getNickname)
+                .distinct()
+                .toList();
     }
 }
