@@ -52,7 +52,7 @@ public class AttendanceStatusChecker {
 
     public static long calculateAllAbsent(List<AttendanceDateTime> attendanceDateTimes) {
         Map<AttendanceStatus, Long> attendanceStatuses = checkStatuses(attendanceDateTimes);
-        long absentCount = attendanceStatuses.get(AttendanceStatus.ABSENT);
+        long absentCount = attendanceStatuses.getOrDefault(AttendanceStatus.ABSENT, 0L);
         absentCount += attendanceStatuses.getOrDefault(AttendanceStatus.LATE, 0L) / LATE_COUNT_PER_ABSENT;
         return absentCount;
     }

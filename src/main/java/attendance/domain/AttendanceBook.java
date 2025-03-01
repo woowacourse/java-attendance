@@ -1,9 +1,8 @@
 package attendance.domain;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AttendanceBook {
 
@@ -44,5 +43,9 @@ public class AttendanceBook {
     public void removeAttendanceDateTime(Crew crew,AttendanceDateTime attendanceDateTime) {
         List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
         attendances.remove(attendanceDateTime);
+    }
+
+    public Set<Crew> getAllCrews() {
+        return this.crewAttedances.keySet();
     }
 }

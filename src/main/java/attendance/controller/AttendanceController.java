@@ -2,10 +2,8 @@ package attendance.controller;
 
 import attendance.domain.*;
 import attendance.domain.AttendanceStatusChecker.AttendanceStatus;
-import attendance.view.AttendanceConfirmView;
-import attendance.view.AttendanceModifyView;
-import attendance.view.CrewAttendanceCheckView;
-import attendance.view.FileLineReader;
+import attendance.dto.CheckExpulsionResultDto;
+import attendance.view.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +11,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AttendanceController {
 
@@ -21,18 +20,20 @@ public class AttendanceController {
     private final AttendanceConfirmView attendanceConfirmView;
     private final AttendanceModifyView attendanceModifyView;
     private final CrewAttendanceCheckView crewAttendanceCheckView;
+    private final CheckAllExpulsionCrewView checkAllExpulsionCrewView;
 
     public AttendanceController(final AttendanceConfirmView attendanceConfirmView,
                                 final AttendanceModifyView attendanceModifyView,
-                                final CrewAttendanceCheckView crewAttendanceCheckView) {
+                                final CrewAttendanceCheckView crewAttendanceCheckView,
+                                final CheckAllExpulsionCrewView checkAllExpulsionCrewView) {
         this.attendanceConfirmView = attendanceConfirmView;
         this.attendanceModifyView = attendanceModifyView;
         this.crewAttendanceCheckView = crewAttendanceCheckView;
+        this.checkAllExpulsionCrewView = checkAllExpulsionCrewView;
     }
 
     public void run() {
         AttendanceBook attendanceBook = initializeAttendanceBook();
-        checkCrewAttendance(attendanceBook);
     }
 
     private AttendanceBook initializeAttendanceBook() {
@@ -83,10 +84,10 @@ public class AttendanceController {
         crewAttendanceCheckView.printExpulsionStatus(expulsionStatus);
     }
 
-    private static List<AttendanceDateTime> findCrewAttendancesThisMonth(AttendanceBook attendanceBook, Crew crew) {
+    private List<AttendanceDateTime> findCrewAttendancesThisMonth(AttendanceBook attendanceBook, Crew crew) {
         LocalDate today = LocalDate.now();
         List<AttendanceDateTime> crewAttendanceDateTimes = new ArrayList<>();
-        for (int day=1; day<=today.lengthOfMonth(); day++) {
+        for (int day=1; day<=today.getDayOfMonth()-1; day++) {
             try {
                 crewAttendanceDateTimes.add(attendanceBook.findAttendanceDateTimeByCrewAndDay(crew, day));
             } catch (IllegalArgumentException exception) {
@@ -99,5 +100,22 @@ public class AttendanceController {
             }
         }
         return crewAttendanceDateTimes;
+    }
+
+    private void checkAllExpulsionCrews(AttendanceBook attendanceBook) {
+        checkAllExpulsionCrewView.printTitle();
+        List<CheckExpulsionResultDto> expulsionResults = new ArrayList<>();
+        Set<Crew> allCrews = attendanceBook.getAllCrews();
+        allCrews.stream()
+                .forEach(crew -> {
+                    List<AttendanceDateTime> attendancesThisMonth = findCrewAttendancesThisMonth(attendanceBook, crew);
+                    Map<AttendanceStatus, Long> attendanceStatuses = AttendanceStatusChecker.checkStatuses(attendancesThisMonth);
+                    ExpulsionStatus expulsionStatus = ExpulsionStatus.from(AttendanceStatusChecker.calculateAllAbsent(attendancesThisMonth));
+                    if (!expulsionStatus.equals(ExpulsionStatus.NONE)) {
+                        expulsionResults.add(new CheckExpulsionResultDto(crew.getNickname(), attendanceStatuses.getOrDefault(AttendanceStatus.ABSENT, 0L),
+                                attendanceStatuses.getOrDefault(AttendanceStatus.LATE, 0L), expulsionStatus));
+                    }
+                });
+        checkAllExpulsionCrewView.printCrewExpulsions(expulsionResults);
     }
 }
