@@ -25,8 +25,7 @@ public class AttendanceResultTest {
         attendanceTimes.add(lateAttendanceTime2);
         attendanceTimes.add(absenceAttendanceTime1);
 
-        AttendanceResult attendanceResult = AttendanceResult.create();
-        Map<AttendanceType, Integer> result = attendanceResult.calculateAttendanceResult(attendanceTimes);
+        Map<AttendanceType, Integer> result = AttendanceResult.calculateAttendanceResult(attendanceTimes);
         assertThat(result.get(ATTENDANCE)).isEqualTo(2);
         assertThat(result.get(LATE)).isEqualTo(2);
         assertThat(result.get(ABSENCE)).isEqualTo(1);

@@ -5,17 +5,8 @@ import java.util.Map;
 
 public class AttendanceResult {
 
-    private final Map<AttendanceType, Integer> attendanceResult;
-
-    private AttendanceResult() {
-        this.attendanceResult = new HashMap<>();
-    }
-
-    public static AttendanceResult create() {
-        return new AttendanceResult();
-    }
-
-    public Map<AttendanceType, Integer> calculateAttendanceResult(AttendanceTimes attendanceTimes) {
+    public static Map<AttendanceType, Integer> calculateAttendanceResult(AttendanceTimes attendanceTimes) {
+        Map<AttendanceType, Integer> attendanceResult = new HashMap<>();
         for (AttendanceTime attendanceTime : attendanceTimes.getAttendanceTimes()) {
             AttendanceType attendanceType = AttendanceType.decideAttendanceType(attendanceTime);
             attendanceResult.put(attendanceType, attendanceResult.getOrDefault(attendanceType, 0) + 1);
