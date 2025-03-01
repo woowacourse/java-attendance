@@ -48,7 +48,7 @@ public class AttendanceBook {
                 .stream()
                 .filter(crew -> crew.getName().equals(inputCrewName))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("해당 크루를 찾을 수 없습니다."));
     }
 
     public Map<Crew, AttendanceRecord> getAttendanceBook() {
