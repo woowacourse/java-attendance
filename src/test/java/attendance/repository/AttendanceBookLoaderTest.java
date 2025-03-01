@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 class AttendanceBookLoaderTest {
 
-    private static final String TEST_FILE_PATH = "src/test/java/attendance/resources/attendances-test.csv";
+    private static final String TEST_FILE_PATH = "src/test/resources/attendances-test.csv";
 
     @Nested
     class ValidCases {
