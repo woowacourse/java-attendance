@@ -73,6 +73,9 @@ public class AttendanceController {
 
     private void viewRecord() {
         String nickname = inputView.readNickname();
+
+        Crew crew = new Crew(nickname);
+        crewRecords.validateCrew(crew);
     }
 
     private void validateMenu(String input) {
