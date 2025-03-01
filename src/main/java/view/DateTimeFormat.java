@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 
 public enum DateTimeFormat {
     DATE("MM월 dd일 E요일"),
-    TIME("hh:mm");
+    TIME("HH:mm");
 
     private final String format;
     private final DateTimeFormatter formatter;
