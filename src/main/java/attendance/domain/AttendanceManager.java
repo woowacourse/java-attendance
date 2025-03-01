@@ -53,4 +53,8 @@ public class AttendanceManager {
         validateExistCrew(crewName);
         return crewAttendances.get(crewName);
     }
+
+    public Map<LocalDate, Attendance> getCrewAttendances(String crewName){
+        return findAttendancesByName(crewName).getAttendances();
+    }
 }

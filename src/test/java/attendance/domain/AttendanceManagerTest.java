@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -161,6 +162,18 @@ public class AttendanceManagerTest {
         WarningLevel warningLevel = attendanceManager.calculateCrewWarningLevel(crewName, endDate);
 
         assertThat(warningLevel).isEqualTo(WarningLevel.REMOVE);
+    }
+
+    @Test
+    void 특정_크루의_출석_목록을_반환한다(){
+        String crewName = "빙티";
+        Map<String, Attendances> crewAttendances = new HashMap<>();
+        crewAttendances.put(crewName, AttendancesTestFixture.createAttendances(3, 5, 28));
+        AttendanceManager manager = new AttendanceManager(crewAttendances);
+
+        Map<LocalDate, Attendance> findAttendances = manager.getCrewAttendances(crewName);
+
+        assertThat(findAttendances).isNotNull();
     }
 
 
