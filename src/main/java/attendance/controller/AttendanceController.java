@@ -6,9 +6,10 @@ import attendance.domain.AttendanceTime;
 import attendance.domain.AttendanceType;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AttendanceController {
 
@@ -16,6 +17,7 @@ public class AttendanceController {
     private final OutputView outputView;
     private final AttendanceHistory attendanceHistory;
     private final CurrentDate currentDate;
+    private final Map<String, Runnable> functionMap = new HashMap<>();
 
     public AttendanceController(InputView inputView, OutputView outputView, AttendanceHistory attendanceHistory,
         CurrentDate currentDate) {
@@ -23,17 +25,48 @@ public class AttendanceController {
         this.outputView = outputView;
         this.attendanceHistory = attendanceHistory;
         this.currentDate = currentDate;
+        initFunctionMap();
     }
 
     public void start() {
-        String inputNickname = inputView.inputNickname();
-        attendanceHistory.isValidCrew(inputNickname);
-        LocalDate nowDate = currentDate.now();
-        LocalTime nowTime = inputView.inputAttendanceTime();
-        AttendanceTime attendanceTime = AttendanceTime.from(LocalDateTime.of(nowDate, nowTime));
-        attendanceHistory.add(inputNickname, attendanceTime);
-        outputView.printAttendanceInfo(attendanceTime, AttendanceType.decideAttendanceType(attendanceTime));
+        while(true) {
+            inputView.todayDateMessage(currentDate.now());
+            String userChooseFunction = inputView.inputFunction();
+            if (userChooseFunction.equals("Q")) {
+                break;
+            }
+            startAttendanceProcess(userChooseFunction);
+        }
     }
 
+    private void startAttendanceProcess(String userChooseFunction) {
+        Runnable function = functionMap.get(userChooseFunction);
+        if (function == null) {
+            throw new IllegalArgumentException("잘못된 입력입니다.");
+        }
+        function.run();
+    }
+
+    private void initFunctionMap() {
+        functionMap.put("1", this::attendConfirm);
+        functionMap.put("2", this::edit);
+        functionMap.put("3", this::confirm);
+        functionMap.put("4", this::warning);
+    }
+
+    private void attendConfirm(){
+        String inputNickname = inputView.inputNickname();
+        attendanceHistory.isValidCrew(inputNickname);
+        LocalTime nowTime = inputView.inputAttendanceTime();
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalDateTime.of(currentDate.now(), nowTime));
+        attendanceHistory.add(inputNickname, attendanceTime);
+        outputView.printAttendanceInfo(
+            attendanceTime, AttendanceType.decideAttendanceType(attendanceTime)
+        );
+    }
+
+    private void edit(){};
+    private void confirm(){};
+    private void warning(){};
 
 }
