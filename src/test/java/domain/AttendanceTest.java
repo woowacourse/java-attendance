@@ -1,5 +1,6 @@
 package domain;
 
+import domain.constant.StandardDate;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ class AttendanceTest {
     @Test
     void 출석시간을_통해_출석체크한다() {
         LocalTime attendanceTime = LocalTime.of(10, 0);
-        LocalDateTime localDateTime = LocalDateTime.of(LocalDate.now(), attendanceTime);
+        LocalDateTime localDateTime = LocalDateTime.of(StandardDate.TODAY, attendanceTime);
 
         assertThatCode(() -> new Attendance(localDateTime))
                 .doesNotThrowAnyException();
