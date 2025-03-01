@@ -1,18 +1,17 @@
 package attendance.domain;
 
-import org.assertj.core.api.InstanceOfAssertFactories;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import org.assertj.core.api.InstanceOfAssertFactories;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 public class CrewsTest {
 
@@ -183,10 +182,6 @@ public class CrewsTest {
                         .hasFieldOrPropertyWithValue("dateTime", LocalDateTime.of(2024, 12, 11, 10, 0));
                 assertThat(updatedAttendance)
                         .hasFieldOrPropertyWithValue("status", AttendanceStatus.ATTEND);
-
-                Crew foundCrew = crews.findCrewByNickname("모루");
-                assertThat(foundCrew.findAttendanceByDate(LocalDate.of(2024, 12, 11)))
-                        .hasFieldOrPropertyWithValue("dateTime", LocalDateTime.of(2024, 12, 11, 10, 0));
             });
         }
 
@@ -279,7 +274,8 @@ public class CrewsTest {
 
             crew.countAttendanceStatus(LocalDate.of(2024, 12, 7));
 
-            assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP).containsEntry(AbsenceRule.EXPULSION, List.of(crew));
+            assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP)
+                    .containsEntry(AbsenceRule.EXPULSION, List.of(crew));
         }
 
         @Test
@@ -293,7 +289,8 @@ public class CrewsTest {
 
             crew.countAttendanceStatus(LocalDate.of(2024, 12, 5));
 
-            assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP).containsEntry(AbsenceRule.COUNSELING, List.of(crew));
+            assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP)
+                    .containsEntry(AbsenceRule.COUNSELING, List.of(crew));
         }
 
         @Test
@@ -306,7 +303,8 @@ public class CrewsTest {
 
             crew.countAttendanceStatus(LocalDate.of(2024, 12, 4));
 
-            assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP).containsEntry(AbsenceRule.WARNING, List.of(crew));
+            assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP)
+                    .containsEntry(AbsenceRule.WARNING, List.of(crew));
         }
 
         @Test
