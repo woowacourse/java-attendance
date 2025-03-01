@@ -3,12 +3,13 @@ package attendance.domain;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
-    private final Map<Crew, AttendanceRecord> attendanceBook;
+    private final Map<Crew, List<AttendanceRecord>> attendanceBook;
     private static final int DEFAULT_VALUE = 0;
 
     public AttendanceBook(Crews crews, LocalDateTime now) {
@@ -22,13 +23,14 @@ public class AttendanceBook {
         }
     }
 
-    private AttendanceRecord putDefaultValue(LocalDateTime now) {
+    private List<AttendanceRecord> putDefaultValue(LocalDateTime now) {
         List<AttendanceTime> attendanceTimes = new ArrayList<>();
         for (int i = 1; i < now.getDayOfMonth(); i++) {
             LocalDateTime dateTime = now.withDayOfMonth(i).withHour(DEFAULT_VALUE).withMinute(DEFAULT_VALUE);
             excludeWeekend(dateTime, attendanceTimes);
         }
-        return new AttendanceRecord(attendanceTimes);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceTimes);
+        return Collections.singletonList(attendanceRecord);
     }
 
     private void excludeWeekend(LocalDateTime dateTime, List<AttendanceTime> attendanceTimes) {
@@ -39,21 +41,21 @@ public class AttendanceBook {
 
     public AttendanceTime registerAttendance(String inputCrewName, LocalDateTime inputTime) {
         Crew crew = findRegisteredCrew(inputCrewName);
-        AttendanceRecord attendanceRecord = attendanceBook.get(crew);
+        AttendanceRecord attendanceRecord = attendanceBook.get(crew).getLast();
         return attendanceRecord.registerAttendance(inputTime);
     }
 
     public AttendanceTime findBeforeAttendanceRecord(String inputCrewName, LocalDateTime inputTime) {
         Crew crew = findRegisteredCrew(inputCrewName);
-        AttendanceRecord attendanceRecord = attendanceBook.get(crew);
+        AttendanceRecord attendanceRecord = attendanceBook.get(crew).getLast();
         return attendanceRecord.findAttendanceRecord(inputTime);
     }
 
     public AttendanceTime modifyAttendance(String inputCrewName, LocalDateTime inputTime) {
         Crew crew = findRegisteredCrew(inputCrewName);
-        AttendanceRecord attendanceRecord = attendanceBook.get(crew);
+        AttendanceRecord attendanceRecord = attendanceBook.get(crew).getLast();
         AttendanceRecord updatedAttendanceRecord = attendanceRecord.modifyAttendanceTime(inputTime);
-        attendanceBook.put(crew, updatedAttendanceRecord);
+        attendanceBook.put(crew, List.of(updatedAttendanceRecord));
         return updatedAttendanceRecord.findAttendanceRecord(inputTime);
     }
 
@@ -66,7 +68,7 @@ public class AttendanceBook {
                 .orElseThrow(() -> new IllegalArgumentException("해당 크루를 찾을 수 없습니다."));
     }
 
-    public Map<Crew, AttendanceRecord> getAttendanceBook() {
+    public Map<Crew, List<AttendanceRecord>> getAttendanceBook() {
         return attendanceBook;
     }
 
