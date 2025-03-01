@@ -49,4 +49,14 @@ public class StudentAttendanceHistoryTest {
         ), new AttendanceTime(LocalTime.of(9, 0)));
     }
 
+    @Test
+    @DisplayName("키 값 보유 테스트")
+    void test3() {
+        Assertions.assertTrue(
+                studentAttendanceHistoryMap.isExistSameAttendanceDate(new AttendanceDate(LocalDate.of(
+                        2024, 12, 12
+                )))
+        );
+    }
+
 }
