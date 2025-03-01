@@ -37,6 +37,12 @@ public class AttendanceTimes {
                 .toList();
     }
 
+    public Optional<AttendanceTime> readAttendanceV2(LocalDate date) {
+        return attendanceLog.stream()
+                .filter(attendanceTime -> attendanceTime.isSameDate(date))
+                .findAny();
+    }
+
     public Optional<AttendanceTime> modifyAttendance(AttendanceTime time) {
         Optional<AttendanceTime> currentTime = attendanceLog.stream()
                 .filter(attendanceTime -> attendanceTime.isSameDate(time))

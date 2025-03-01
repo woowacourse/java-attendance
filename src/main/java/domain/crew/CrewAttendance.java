@@ -32,6 +32,10 @@ public class CrewAttendance {
         return attendanceTimes.readAttendance(date);
     }
 
+    public Optional<AttendanceTime> readLog(LocalDate date) {
+        return attendanceTimes.readAttendanceV2(date);
+    }
+
     public DisciplinaryStatus getDisciplinaryStatus(LocalDate date) {
         int absenceCount = getAbsenceBeforeDate(date);
         int lateCount = getLateBeforeDate(date);

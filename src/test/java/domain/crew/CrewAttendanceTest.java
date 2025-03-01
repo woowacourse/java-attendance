@@ -179,6 +179,45 @@ class CrewAttendanceTest {
     }
 
     @Test
+    @DisplayName("날짜로부터 존재하는 출석 기록 반환")
+    void readPresentAttendanceLogTest() {
+        // given
+        CrewAttendance crewAttendance = CrewAttendance.of(
+                Crew.of("차니"), createAttendanceTimes()
+        );
+
+        // when
+        Optional<AttendanceTime> log = crewAttendance.readLog(
+                LocalDate.of(2024, 12, 13)
+        );
+
+        // then
+        AttendanceTime expected = AttendanceTime.of(
+                LocalDate.of(2024, 12, 13),
+                LocalTime.of(11, 6)
+        );
+        assertThat(log).isPresent();
+        assertThat(log.get()).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("날짜로부터 존재하지 않는 출석 기록 반환")
+    void readEmptyAttendanceLogTest() {
+        // given
+        CrewAttendance crewAttendance = CrewAttendance.of(
+                Crew.of("차니"), createAttendanceTimes()
+        );
+
+        // when
+        Optional<AttendanceTime> log = crewAttendance.readLog(
+                LocalDate.of(2024, 12, 15)
+        );
+
+        // then
+        assertThat(log).isEmpty();
+    }
+
+    @Test
     @DisplayName("해당 크루의 출석부를 보고 정상 학생 판단 후 반환")
     void getDisciplinaryStatusNormalTest() {
         // given

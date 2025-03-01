@@ -93,6 +93,39 @@ class AttendanceTimesTest {
     }
 
     @Test
+    @DisplayName("날짜를 입력 시 해당 날짜에 대한 AttendanceTime 반환")
+    void readPresentAttendanceTest() {
+        // given
+        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
+        LocalDate today = LocalDate.of(2024, 12, 12);
+
+        // when
+        Optional<AttendanceTime> log = attendanceTimes.readAttendanceV2(today);
+
+        // then
+        AttendanceTime expected = AttendanceTime.of(
+                LocalDate.of(2024, 12, 12),
+                LocalTime.of(10, 5)
+        );
+        assertThat(log).isPresent();
+        assertThat(log.get()).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("출석이 존재하지 않는 날짜를 입력 시 해당 날짜에 대한 Optional is empty")
+    void readEmptyAttendanceTestV2() {
+        // given
+        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
+        LocalDate today = LocalDate.of(2024, 12, 14);
+
+        // when
+        Optional<AttendanceTime> log = attendanceTimes.readAttendanceV2(today);
+
+        // then
+        assertThat(log).isEmpty();
+    }
+
+    @Test
     @DisplayName("원하는 날짜의 출석을 수정")
     void modifyAttendanceInAttendancesTest() {
         // given
