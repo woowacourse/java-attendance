@@ -1,5 +1,6 @@
 package attendance.view;
 
+import attendance.io.view.Command;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

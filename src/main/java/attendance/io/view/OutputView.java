@@ -1,4 +1,4 @@
-package attendance.view;
+package attendance.io.view;
 
 import static attendance.domain.AttendanceStatus.ABSENT;
 import static attendance.domain.AttendanceStatus.ATTENDANCE;

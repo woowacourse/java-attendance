@@ -1,20 +1,20 @@
 package attendance.controller;
 
-import static attendance.view.Command.ATTENDANCE;
-import static attendance.view.Command.ATTENDANCE_CHECK;
-import static attendance.view.Command.ATTENDANCE_UPDATE;
-import static attendance.view.Command.ATTENDANCE_WARNING_CHECK;
-import static attendance.view.Command.QUIT;
+import static attendance.io.view.Command.ATTENDANCE;
+import static attendance.io.view.Command.ATTENDANCE_CHECK;
+import static attendance.io.view.Command.ATTENDANCE_UPDATE;
+import static attendance.io.view.Command.ATTENDANCE_WARNING_CHECK;
+import static attendance.io.view.Command.QUIT;
 
-import attendance.AttendanceBookInitializer;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceResult;
 import attendance.domain.CrewAttendance;
 import attendance.domain.CrewAttendances;
-import attendance.view.Command;
-import attendance.view.InputView;
-import attendance.view.OutputView;
+import attendance.initialize.AttendanceBookInitializer;
+import attendance.io.view.Command;
+import attendance.io.view.InputView;
+import attendance.io.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -32,8 +32,8 @@ public class AttendanceController {
         this.outputView = outputView;
     }
 
-    public void run(LocalDate today) {
-        AttendanceBook attendanceBook = new AttendanceBookInitializer().Initialize();
+    public void run(LocalDate today, AttendanceBookInitializer attendanceBookInitializer) {
+        AttendanceBook attendanceBook = attendanceBookInitializer.Initialize();
         inputCommandAndExecuteUtilQuit(today, attendanceBook);
     }
 

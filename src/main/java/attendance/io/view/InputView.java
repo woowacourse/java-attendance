@@ -1,4 +1,4 @@
-package attendance.view;
+package attendance.io.view;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
