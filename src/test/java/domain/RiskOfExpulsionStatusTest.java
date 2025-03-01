@@ -32,9 +32,11 @@ public class RiskOfExpulsionStatusTest {
 
         private static Stream<Arguments> provideAbsenceCountAndRiskOfExpulsionStatus() {
             return Stream.of(
+                    Arguments.of(0, RiskOfExpulsionStatus.NORMAL),
                     Arguments.of(1, RiskOfExpulsionStatus.NORMAL),
                     Arguments.of(2, RiskOfExpulsionStatus.WARNING),
                     Arguments.of(3, RiskOfExpulsionStatus.INTERVIEW),
+                    Arguments.of(5, RiskOfExpulsionStatus.INTERVIEW),
                     Arguments.of(6, RiskOfExpulsionStatus.EXPULSION)
             );
         }

@@ -7,10 +7,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendanceHistoryTest {
@@ -122,9 +125,12 @@ public class AttendanceHistoryTest {
             // given
             final Crew owner = new Crew("owner");
             final var attendanceHistory = new AttendanceHistory(owner);
-            final LocalDate targetDate = LocalDate.of(2024, 12, 3);
+            attendanceHistory.updateTimeByDate(LocalDateTime.of(2024, 12, 2, 10, 5));
+            attendanceHistory.updateTimeByDate(LocalDateTime.of(2024, 12, 3, 10, 30));
+            attendanceHistory.updateTimeByDate(LocalDateTime.of(2024, 12, 4, 10, 31));
+            final LocalDate targetDate = LocalDate.of(2024, 12, 5);
             final Map<AttendanceStatus, Integer> expected = Map.of(
-                    AttendanceStatus.ATTENDANCE, 0, AttendanceStatus.LATE, 0, AttendanceStatus.ABSENCE, 1);
+                    AttendanceStatus.ATTENDANCE, 1, AttendanceStatus.LATE, 1, AttendanceStatus.ABSENCE, 1);
 
             // when
             final Map<AttendanceStatus, Integer> actual = attendanceHistory.calculateAttendanceStatusStatistics(
@@ -149,19 +155,36 @@ public class AttendanceHistoryTest {
             assertThat(actual).isTrue();
         }
 
+        /*
+        정상 대상자: 결석 1회 이하
+        경고 대상자: 결석 2회 이상, 지각 6회 이상
+        면담 대상자: 결석 3회 이상, 지각 9회 이상
+        제적 대상자: 결석 5회 초과, 지각 15회 이상
+        */
         @DisplayName("제적 위험 상태를 반환한다.")
-        @Test
-        public void calculateRiskOfExpulsion() throws Exception {
+        @ParameterizedTest
+        @MethodSource("provideDayOfMonthAndRiskOfExpulsion")
+        public void calculateRiskOfExpulsion(final int dayOfMonth, final RiskOfExpulsionStatus expected) throws Exception {
             // given
             final Crew owner = new Crew("owner");
             final var attendanceHistory = new AttendanceHistory(owner);
-            final LocalDate targetDate = LocalDate.of(2024, 12, 13);
+            final LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
 
             // when
             final RiskOfExpulsionStatus actual = attendanceHistory.calculateRiskOfExpulsionStatus(targetDate);
 
             // then
-            assertThat(actual).isEqualByComparingTo(RiskOfExpulsionStatus.EXPULSION);
+            assertThat(actual).isEqualByComparingTo(expected);
+        }
+
+        private static Stream<Arguments> provideDayOfMonthAndRiskOfExpulsion() {
+            return Stream.of(
+                    Arguments.of(3, RiskOfExpulsionStatus.NORMAL),
+                    Arguments.of(4, RiskOfExpulsionStatus.WARNING),
+                    Arguments.of(5, RiskOfExpulsionStatus.INTERVIEW),
+                    Arguments.of(7, RiskOfExpulsionStatus.INTERVIEW),
+                    Arguments.of(10, RiskOfExpulsionStatus.EXPULSION)
+            );
         }
     }
 

@@ -4,9 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceStatusTest {
 
@@ -14,49 +17,52 @@ public class AttendanceStatusTest {
     @DisplayName("성공 테스트")
     class SuccessCases {
 
-        @DisplayName("출석 시간이 기준 시간을 5분 초과, 30분 이하라면 지각처리된다.")
-        @Test
-        public void calculateStatus() throws Exception {
+        @DisplayName("화,수,목,금기준 출석 시간에 따라 상태를 계산한다.")
+        @ParameterizedTest
+        @MethodSource("provideTimeAndAttendanceStatus")
+        public void calculateStatus(final LocalTime time, final AttendanceStatus expected) throws Exception {
             // given
             final DayOfWeek tuesday = DayOfWeek.TUESDAY;
-            final LocalTime lateTime1 = LocalTime.of(10, 6);
-            final LocalTime lateTime2 = LocalTime.of(10, 30);
 
             // when
-            final AttendanceStatus actual1 = AttendanceStatus.calculateStatus(lateTime1, tuesday);
-            final AttendanceStatus actual2 = AttendanceStatus.calculateStatus(lateTime2, tuesday);
+            final AttendanceStatus actual = AttendanceStatus.calculateStatus(time, tuesday);
 
             // then
-            assertThat(actual1).isEqualByComparingTo(AttendanceStatus.LATE);
-            assertThat(actual2).isEqualByComparingTo(AttendanceStatus.LATE);
+            assertThat(actual).isEqualByComparingTo(expected);
         }
 
-        @DisplayName("출석 시간이 기준 시간을 30분 초과라면, 결석처리된다.")
-        @Test
-        public void calculateStatus2() throws Exception {
-            // given
-            final DayOfWeek tuesday = DayOfWeek.TUESDAY;
-            final LocalTime absenceTime = LocalTime.of(10, 31);
-
-            // when
-            final AttendanceStatus actual = AttendanceStatus.calculateStatus(absenceTime, tuesday);
-
-            // then
-            assertThat(actual).isEqualByComparingTo(AttendanceStatus.ABSENCE);
+        private static Stream<Arguments> provideTimeAndAttendanceStatus() {
+            return Stream.of(
+                    Arguments.of(LocalTime.of(10, 0), AttendanceStatus.ATTENDANCE),
+                    Arguments.of(LocalTime.of(10, 5), AttendanceStatus.ATTENDANCE),
+                    Arguments.of(LocalTime.of(10, 6), AttendanceStatus.LATE),
+                    Arguments.of(LocalTime.of(10, 30), AttendanceStatus.LATE),
+                    Arguments.of(LocalTime.of(10, 31), AttendanceStatus.ABSENCE)
+            );
         }
 
-        @DisplayName("출석 시간이 기준 시간 + 5분 이하라면, 출석처리된다.")
-        @Test
-        public void calculateStatus3() throws Exception {
+        @DisplayName("월요일 기준 출석 시간에 따라 상태를 계산한다.")
+        @ParameterizedTest
+        @MethodSource("provideTimeAndAttendanceStatusForMonday")
+        public void calculateStatusForMonday(final LocalTime time, final AttendanceStatus expected) throws Exception {
             // given
-            final DayOfWeek tuesday = DayOfWeek.TUESDAY;
-            final LocalTime attendanceTime = LocalTime.of(10, 5);
+            final DayOfWeek tuesday = DayOfWeek.MONDAY;
 
             // when
-            final AttendanceStatus actual = AttendanceStatus.calculateStatus(attendanceTime, tuesday);
+            final AttendanceStatus actual = AttendanceStatus.calculateStatus(time, tuesday);
 
             // then
-            assertThat(actual).isEqualByComparingTo(AttendanceStatus.ATTENDANCE);
+            assertThat(actual).isEqualByComparingTo(expected);
+        }
+
+        private static Stream<Arguments> provideTimeAndAttendanceStatusForMonday() {
+            return Stream.of(
+                    Arguments.of(LocalTime.of(13, 0), AttendanceStatus.ATTENDANCE),
+                    Arguments.of(LocalTime.of(13, 5), AttendanceStatus.ATTENDANCE),
+                    Arguments.of(LocalTime.of(13, 6), AttendanceStatus.LATE),
+                    Arguments.of(LocalTime.of(13, 30), AttendanceStatus.LATE),
+                    Arguments.of(LocalTime.of(13, 31), AttendanceStatus.ABSENCE)
+            );
         }
 
     }

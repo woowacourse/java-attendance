@@ -8,6 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendanceBookTest {
 
@@ -31,19 +33,36 @@ public class AttendanceBookTest {
         }
 
         @DisplayName("제적 위험자들의 통계를 반환한다.")
-        @Test
-        public void calculateRiskOfExpulsionCrewStatistics() throws Exception {
+        @ParameterizedTest
+        @ValueSource(ints = {4, 5, 7, 10})
+        public void calculateRiskOfExpulsionCrewStatistics(final int dayOfMonth) throws Exception {
             // given
             final var crew = new Crew("헤일러");
             final var attendanceBook = new AttendanceBook();
             attendanceBook.registerCrew(crew);
-            final LocalDate targetDate = LocalDate.of(2024, 12, 13);
+            final LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
 
             // when
             final List<AttendanceHistory> actual = attendanceBook.calculateRiskOfExpulsionHistory(targetDate);
 
             // then
             assertThat(actual.getFirst().getCrew()).isEqualTo(crew);
+        }
+
+        @DisplayName("제적 위험자가 아니라면, 통계에 포함되지 않는다.")
+        @Test
+        public void calculateRiskOfExpulsionCrewStatisticsForNormal() throws Exception{
+            // given
+            final var crew = new Crew("헤일러");
+            final var attendanceBook = new AttendanceBook();
+            attendanceBook.registerCrew(crew);
+            final LocalDate targetDate = LocalDate.of(2024, 12, 3);
+
+            // when
+            final List<AttendanceHistory> actual = attendanceBook.calculateRiskOfExpulsionHistory(targetDate);
+
+            // then
+            assertThat(actual).isEmpty();
         }
 
         @DisplayName("크루가 출석부에 등록되어 있는지 여부를 검사한다.")
