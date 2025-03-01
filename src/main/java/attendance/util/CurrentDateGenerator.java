@@ -6,6 +6,6 @@ public class CurrentDateGenerator implements DateGenerator {
 
     @Override
     public LocalDate generate() {
-        return LocalDate.of(2025, 2, 24);
+        return LocalDate.of(2025, 3, 19);
     }
 }
