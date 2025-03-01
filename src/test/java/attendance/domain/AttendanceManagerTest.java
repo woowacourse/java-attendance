@@ -8,13 +8,11 @@ import attendance.domain.fixture.AttendanceManagerTestFixture;
 import attendance.domain.fixture.AttendancesTestFixture;
 import attendance.domain.fixture.LocalDateTestFixture;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -61,17 +59,16 @@ public class AttendanceManagerTest {
     }
 
     @Test
-    void 출석_저장_시_출석_시각을_반환한다() {
+    void 출석_저장_시_출석_정보를_반환한다() {
         String crewName = "빙티";
         AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
         LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(10, 0);
 
-        LocalDateTime result = attendanceManager.attend(crewName, attendDate, attendTime);
+        Attendance result = attendanceManager.attend(crewName, attendDate, attendTime);
 
-        assertThat(result.getHour()).isEqualTo(10);
-        assertThat(result.getMinute()).isEqualTo(0);
-        assertThat(result.toLocalDate()).isEqualTo(attendDate);
+        assertThat(result.time().getHour()).isEqualTo(10);
+        assertThat(result.time().getMinute()).isEqualTo(0);
     }
 
     @Test
@@ -165,7 +162,7 @@ public class AttendanceManagerTest {
     }
 
     @Test
-    void 특정_크루의_출석_목록을_반환한다(){
+    void 특정_크루의_출석_목록을_반환한다() {
         String crewName = "빙티";
         Map<String, Attendances> crewAttendances = new HashMap<>();
         crewAttendances.put(crewName, AttendancesTestFixture.createAttendances(3, 5, 28));

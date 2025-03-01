@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
 
@@ -18,13 +17,13 @@ public class AttendanceManager {
         }
     }
 
-    public LocalDateTime attend(String crewName, LocalDate date, LocalTime time) {
+    public Attendance attend(String crewName, LocalDate date, LocalTime time) {
         Attendances attendances = findAttendancesByName(crewName);
         checkDuplicateAttendance(attendances, date);
         AttendanceChecker.checkCampusOpen(date, time);
 
         attendances.addAttendance(date, time);
-        return LocalDateTime.of(date, time);
+        return attendances.getCurrentAttendance(date);
     }
 
     private void checkDuplicateAttendance(Attendances attendances, LocalDate date) {
@@ -54,7 +53,7 @@ public class AttendanceManager {
         return crewAttendances.get(crewName);
     }
 
-    public Map<LocalDate, Attendance> getCrewAttendances(String crewName){
+    public Map<LocalDate, Attendance> getCrewAttendances(String crewName) {
         return findAttendancesByName(crewName).getAttendances();
     }
 }

@@ -4,7 +4,9 @@ import attendance.controller.AttendanceCommand;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Arrays;
 import java.util.Locale;
@@ -13,6 +15,7 @@ public class InputView {
     private static final String COMMAND_MESSAGE_HEADER_FORMAT = "오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.\n";
     private static final String COMMAND_PROMPT_FORMAT = "%s. %s\n";
     private static final String NICK_NAME_PROMPT = "닉네임을 입력해 주세요.\n";
+    private static final String ENTER_ATTENDANCE_TIME_PROMPT = "등교 시간을 입력해 주세요.\n";
 
 
     private final BufferedReader bufferedReader;
@@ -48,6 +51,25 @@ public class InputView {
     public String inputCrewName() {
         System.out.print(NICK_NAME_PROMPT);
         return readLine();
+    }
+
+    public LocalTime inputEnterTime() {
+        try {
+            System.out.print(ENTER_ATTENDANCE_TIME_PROMPT);
+            return parseTime();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return inputEnterTime();
+        }
+    }
+
+    private LocalTime parseTime() {
+        try {
+            String inputTime = readLine();
+            return LocalTime.parse(inputTime);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("[ERROR] 입력 형식이 올바르지 않습니다. HH:mm 형식으로 입력해주세요.\n");
+        }
     }
 
     private String readLine() {
