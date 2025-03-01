@@ -9,8 +9,8 @@ public class AttendanceBook {
     private final AttendanceRecord attendanceRecord;
 
     public AttendanceBook(
-        Crew crew,
-        AttendanceRecord attendanceRecord
+        final Crew crew,
+        final AttendanceRecord attendanceRecord
     ) {
         validateNotNull(crew, attendanceRecord);
         this.crew = crew;

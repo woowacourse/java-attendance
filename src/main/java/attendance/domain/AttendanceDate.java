@@ -113,11 +113,7 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
     public AttendanceDayOfWeek getAttendanceDayOfWeekDayOfWeek() {
         return AttendanceDayOfWeek.from(LocalDate.of(year, month, day));
     }
-
-    public int getYear() {
-        return year;
-    }
-
+    
     public int getMonth() {
         return month;
     }

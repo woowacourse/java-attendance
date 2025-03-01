@@ -13,7 +13,7 @@ public class AttendanceBookRepository {
 
     private final Map<String, AttendanceBook> attendanceBooks;
 
-    public AttendanceBookRepository(Map<String, AttendanceBook> attendanceBooks) {
+    public AttendanceBookRepository(final Map<String, AttendanceBook> attendanceBooks) {
         validateNotNull(attendanceBooks);
         this.attendanceBooks = new HashMap<>(attendanceBooks);
     }
@@ -36,7 +36,7 @@ public class AttendanceBookRepository {
             attendanceBookLoader.loadAttendanceBooks());
     }
 
-    public Optional<AttendanceBook> findByCrewNickname(String crewNickname) {
+    public Optional<AttendanceBook> findByCrewNickname(final String crewNickname) {
         return Optional.ofNullable(attendanceBooks.get(crewNickname));
     }
 
@@ -86,7 +86,7 @@ public class AttendanceBookRepository {
         final Map<AttendanceStatus, Integer> statusCount = AttendanceStatus.from(
             attendanceBook.retrieveOrderByDateTimeUntilDate(untilDate)
         );
-        
+
         return AttendancePenalty.calculateAbsenceCount(statusCount);
     }
 
