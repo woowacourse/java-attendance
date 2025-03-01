@@ -31,25 +31,9 @@ public class AttendanceTime {
         this.minute = ABSENT_VALUE;
     }
 
-    private void validateAttendDate(final LocalDate date) {
-
-        if (isWeekend(date.getDayOfWeek())) {
-            throw new IllegalArgumentException("[ERROR] 등교 날짜가 아닙니다.");
-        }
-    }
-
     public static boolean isWeekend(final DayOfWeek day) {
 
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
-    }
-
-    private void validateOperatingTime(final int hour, final int minute) {
-
-        LocalTime inputTime = LocalTime.of(hour, minute);
-
-        if (inputTime.isBefore(CAMPUS_START_TIME) || inputTime.isAfter(CAMPUS_END_TIME)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
-        }
     }
 
     public boolean isMonday() {
@@ -91,5 +75,21 @@ public class AttendanceTime {
     public LocalDate getDate() {
 
         return LocalDate.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+    }
+
+    private void validateAttendDate(final LocalDate date) {
+
+        if (isWeekend(date.getDayOfWeek())) {
+            throw new IllegalArgumentException("[ERROR] 등교 날짜가 아닙니다.");
+        }
+    }
+
+    private void validateOperatingTime(final int hour, final int minute) {
+
+        LocalTime inputTime = LocalTime.of(hour, minute);
+
+        if (inputTime.isBefore(CAMPUS_START_TIME) || inputTime.isAfter(CAMPUS_END_TIME)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+        }
     }
 }

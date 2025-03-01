@@ -31,6 +31,11 @@ public enum AttendanceStatus {
         return calculateAttendanceStatus(attendanceTime, OTHER_DAY_LATE, OTHER_DAY_ABSENT);
     }
 
+    public String getValue() {
+
+        return value;
+    }
+
     private static AttendanceStatus calculateAttendanceStatus(final AttendanceTime attendanceTime,
                                                               final LocalTime lateTime,
                                                               final LocalTime absentTime) {
@@ -42,10 +47,5 @@ public enum AttendanceStatus {
             return LATE;
         }
         return ABSENT;
-    }
-
-    public String getValue() {
-
-        return value;
     }
 }

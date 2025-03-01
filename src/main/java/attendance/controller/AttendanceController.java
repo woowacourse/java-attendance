@@ -59,6 +59,11 @@ public class AttendanceController {
         runSystem(attendanceBook);
     }
 
+    private Function inputFunction() {
+
+        return retryInput(() -> Function.getFunction(inputView.inputFunction()));
+    }
+
     private void doFunction(final Function function, final AttendanceBook attendanceBook) {
 
         if (function == Function.ADD_ATTENDANCE) {
@@ -75,16 +80,6 @@ public class AttendanceController {
         }
     }
 
-    private boolean isWeekend(final LocalDate date) {
-
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
-    }
-
-    private Function inputFunction() {
-
-        return retryInput(() -> Function.getFunction(inputView.inputFunction()));
-    }
-
     private void addAttendance(final AttendanceBook attendanceBook) {
 
         validateAttendDate();
@@ -99,13 +94,6 @@ public class AttendanceController {
         outputView.printLine();
     }
 
-    private void validateAlreadyAttended(final String crewName, final AttendanceBook attendanceBook) {
-
-        if (attendanceBook.isAlreadyExists(crewName, LocalDate.now())) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석 기록이 존재합니다. 출석 수정 기능을 이용해 주세요.");
-        }
-    }
-
     private void validateAttendDate() {
 
         if (isWeekend(LocalDate.now())) {
@@ -117,6 +105,11 @@ public class AttendanceController {
         }
     }
 
+    private boolean isWeekend(final LocalDate date) {
+
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
     private String inputCrewName(final AttendanceBook attendanceBook) {
 
         return retryInput(() -> {
@@ -124,6 +117,13 @@ public class AttendanceController {
             validateCrewNickname(attendanceBook, name);
             return name;
         });
+    }
+
+    private void validateCrewNickname(final AttendanceBook attendanceBook, final String name) {
+
+        if (!attendanceBook.isCrewExists(name)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
 
     private AttendanceTime inputAttendanceTime() {
@@ -136,10 +136,10 @@ public class AttendanceController {
         });
     }
 
-    private void validateCrewNickname(final AttendanceBook attendanceBook, final String name) {
+    private void validateAlreadyAttended(final String crewName, final AttendanceBook attendanceBook) {
 
-        if (!attendanceBook.isCrewExists(name)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        if (attendanceBook.isAlreadyExists(crewName, LocalDate.now())) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석 기록이 존재합니다. 출석 수정 기능을 이용해 주세요.");
         }
     }
 

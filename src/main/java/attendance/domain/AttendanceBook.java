@@ -51,22 +51,6 @@ public class AttendanceBook {
         }
     }
 
-    private void initAbsence(final String name) {
-
-        LocalDate now = LocalDate.now();
-        for (int day = 1; day < now.getDayOfMonth(); day++) {
-            LocalDate attendDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
-            judgeAbsence(name, attendDate);
-        }
-    }
-
-    private void judgeAbsence(final String name, final LocalDate attendDate) {
-
-        if (!AttendanceTime.isWeekend(attendDate.getDayOfWeek()) && !isAlreadyExists(name, attendDate)) {
-            attendances.get(name).add(new AttendanceTime(attendDate));
-        }
-    }
-
     public int getAttendanceStatusCount(final String name, final AttendanceStatus attendanceStatus) {
 
         return (int) attendances.get(name)
@@ -82,6 +66,22 @@ public class AttendanceBook {
         expulsionCandidates.addAll(getCrewsByAcademicStatus(AcademicStatus.INTERVIEW));
         expulsionCandidates.addAll(getCrewsByAcademicStatus(AcademicStatus.WARN));
         return expulsionCandidates;
+    }
+
+    private void initAbsence(final String name) {
+
+        LocalDate now = LocalDate.now();
+        for (int day = 1; day < now.getDayOfMonth(); day++) {
+            LocalDate attendDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
+            judgeAbsence(name, attendDate);
+        }
+    }
+
+    private void judgeAbsence(final String name, final LocalDate attendDate) {
+
+        if (!AttendanceTime.isWeekend(attendDate.getDayOfWeek()) && !isAlreadyExists(name, attendDate)) {
+            attendances.get(name).add(new AttendanceTime(attendDate));
+        }
     }
 
     private List<ExpulsionCandidate> getCrewsByAcademicStatus(final AcademicStatus academicStatus) {
