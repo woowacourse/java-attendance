@@ -26,22 +26,27 @@ public class FileInput {
     public static Map<String, StudentAttendanceHistory> readFileAndMakeStudentInformation() {
         List<String> fileInformation = readFile();
         Map<String, StudentAttendanceHistory> studentInformationInFile = new HashMap<>();
+        try{
+            for (String studentInformation : fileInformation) {
+                if (!studentInformation.matches(FILE_INFORMATION_REGEX)) {
+                    throw new IllegalArgumentException("[ERROR] 학생 출석 정보 형식과 맞지 않습니다. 파일을 다시 확인해 주세요.");
+                }
 
-        for (String studentInformation : fileInformation) {
-            if (!studentInformation.matches(FILE_INFORMATION_REGEX)) { // [!] 조건 반대로 수정
-                throw new IllegalArgumentException("[ERROR] 학생 출석 정보 형식과 맞지 않습니다. 파일을 다시 확인해 주세요.");
+                String[] studentNameAndAttendanceDateTimeInformation = studentInformation.split(",");
+                String studentName = studentNameAndAttendanceDateTimeInformation[NAME_INDEX];
+                String timeInformation = studentNameAndAttendanceDateTimeInformation[ATTENDANCE_DATE_TIME_INDEX];
+
+                LocalDateTime studentDateTime = LocalDateTime.parse(timeInformation, ATTENDANCE_DATE_TIME_FORMATTER);
+                AttendanceDateTime attendanceDateTime = new AttendanceDateTime(studentDateTime);
+
+                studentInformationInFile.computeIfAbsent(studentName, k -> new StudentAttendanceHistory(new ArrayList<>())).addAttendanceDateTime(attendanceDateTime);
             }
-
-            String[] studentNameAndAttendanceDateTimeInformation = studentInformation.split(",");
-            String studentName = studentNameAndAttendanceDateTimeInformation[NAME_INDEX];
-            String timeInformation = studentNameAndAttendanceDateTimeInformation[ATTENDANCE_DATE_TIME_INDEX];
-
-            LocalDateTime studentDateTime = LocalDateTime.parse(timeInformation, ATTENDANCE_DATE_TIME_FORMATTER);
-            AttendanceDateTime attendanceDateTime = new AttendanceDateTime(studentDateTime);
-
-            studentInformationInFile.computeIfAbsent(studentName, k -> new StudentAttendanceHistory(new ArrayList<>())).addAttendanceDateTime(attendanceDateTime);
+            return studentInformationInFile;
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            throw new UncheckedIOException(new IOException());
         }
-        return studentInformationInFile;
+
 }
 
     private static List<String> readFile() {
