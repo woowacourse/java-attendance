@@ -2,6 +2,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import model.Attendance;
+import model.AttendanceBook;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,7 @@ public class AttendanceCheckTest {
 
         // then
         Assertions.assertThat(attendance)
-                .isEqualTo(new Attendance(nickname, date, time));
+                .isEqualTo(attendanceBook.findAttendance(nickname, date));
     }
 
     @DisplayName("이미 출석했으면 출석할 수 없다.")

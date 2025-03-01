@@ -1,8 +1,9 @@
+package model;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import model.AttendanceDateTimeChecker;
 
 public class AttendanceBook {
 
@@ -17,7 +18,7 @@ public class AttendanceBook {
         checker.determine(date, time);
 
         Attendance attendance = new Attendance(nickname, date, time);
-        if (isAlreadyAttend(attendance)) {
+        if (isAlreadyAttend(nickname, date)) {
             throw new IllegalArgumentException();
         }
 
@@ -25,9 +26,9 @@ public class AttendanceBook {
         return attendance;
     }
 
-    private boolean isAlreadyAttend(Attendance attendance) {
+    private boolean isAlreadyAttend(String nickname, LocalDate date) {
         return crewsAttendanceRecords.stream()
-                .anyMatch(crew -> crew.equals(attendance));
+                .anyMatch(attendance -> attendance.isSameDate(nickname, date));
     }
 
     public Attendance findAttendance(String nickname, LocalDate date) {
