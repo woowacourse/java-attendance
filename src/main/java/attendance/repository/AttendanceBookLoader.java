@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class AttendanceBookLoader {
 
-    private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern(
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
         "yyyy-MM-dd HH:mm");
     private final String filePath;
 
@@ -91,7 +91,7 @@ public class AttendanceBookLoader {
 
     private LocalDateTime parseLocalDateTime(final String localDateTime) {
         try {
-            return LocalDateTime.parse(localDateTime, DEFAULT_FORMATTER);
+            return LocalDateTime.parse(localDateTime, DATE_TIME_FORMATTER);
         } catch (final DateTimeParseException e) {
             throw new IllegalArgumentException("잘못된 날짜 형식입니다.", e);
         }
