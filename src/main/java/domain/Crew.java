@@ -1,3 +1,5 @@
+package domain;
+
 public class Crew {
 
     private final String name;

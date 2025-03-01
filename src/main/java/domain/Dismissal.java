@@ -1,3 +1,5 @@
+package domain;
+
 public enum Dismissal {
 
     WARNING("경고", 2),
