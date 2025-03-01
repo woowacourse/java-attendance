@@ -47,12 +47,6 @@ public class AttendanceBook {
                 );
     }
 
-    private void validateExistNickname(String nickname) {
-        if (!crews.contains(nickname)) {
-            throw new IllegalArgumentException(nickname + "은 등록되지 않은 닉네임입니다.");
-        }
-    }
-
     public Optional<Attendance> findAttendance(String nickname, LocalDate attendanceDate) {
         return attendances.stream()
                 .filter(attendance -> attendance.isAlreadyAttend(
@@ -62,10 +56,17 @@ public class AttendanceBook {
     }
 
     public CrewAttendance findAttendancesByNickname(String nickname) {
+        validateExistNickname(nickname);
         List<Attendance> attendances = this.attendances.stream()
                 .filter(attendance -> attendance.isEqualNickname(nickname))
                 .toList();
         return new CrewAttendance(nickname, attendances);
+    }
+
+    private void validateExistNickname(String nickname) {
+        if (!crews.contains(nickname)) {
+            throw new IllegalArgumentException(nickname + "은 등록되지 않은 닉네임입니다.");
+        }
     }
 
     public CrewAttendances createCrewAttendances() {

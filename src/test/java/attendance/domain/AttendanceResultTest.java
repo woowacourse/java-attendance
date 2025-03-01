@@ -21,7 +21,7 @@ public class AttendanceResultTest {
         LocalDate endDate = LocalDate.of(2024, 12, 9);
 
         //when
-        AttendanceResult attendanceResult = AttendanceResult.create("pobi", attendances, new AttendanceDate(endDate));
+        AttendanceResult attendanceResult = AttendanceResult.create("pobi", attendances, endDate);
 
         //then
         assertThat(attendanceResult).isEqualTo(new AttendanceResult(

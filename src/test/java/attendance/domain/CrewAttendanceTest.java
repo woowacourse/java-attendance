@@ -33,10 +33,10 @@ public class CrewAttendanceTest {
                 new Attendance("pobi", LocalDateTime.of(2024, 12, 4, 10, 1))
         );
         CrewAttendance crewAttendance = new CrewAttendance("pobi", attendances);
-        AttendanceDate attendanceEndDate = new AttendanceDate(LocalDate.of(2024, 12, 5));
+        LocalDate attendanceEndDate = LocalDate.of(2024, 12, 5);
 
         //when
-        AttendanceResult attendanceResult = crewAttendance.getAttendanceCount(attendanceEndDate);
+        AttendanceResult attendanceResult = crewAttendance.createAttendanceResult(attendanceEndDate);
 
         //then
         assertThat(attendanceResult)

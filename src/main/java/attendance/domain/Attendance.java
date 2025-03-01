@@ -51,6 +51,10 @@ public class Attendance {
         return LocalDateTime.of(attendanceDate.getAttendanceDate(), attendanceTime);
     }
 
+    public LocalDate getAttendanceDate() {
+        return attendanceDate.getAttendanceDate();
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {

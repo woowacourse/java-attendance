@@ -1,11 +1,14 @@
 package attendance.controller;
 
 import static attendance.view.Command.ATTENDANCE;
+import static attendance.view.Command.ATTENDANCE_CHECK;
 import static attendance.view.Command.ATTENDANCE_UPDATE;
 
 import attendance.AttendanceBookInitializer;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceResult;
+import attendance.domain.CrewAttendance;
 import attendance.view.Command;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -35,6 +38,9 @@ public class AttendanceController {
         if (command == ATTENDANCE_UPDATE) {
             updateAttendance(YearMonth.from(today), attendanceBook);
         }
+        if (command == ATTENDANCE_CHECK) {
+            checkAttendances(today.minusDays(1), attendanceBook);
+        }
     }
 
     public void attend(LocalDate attendanceDate, AttendanceBook attendanceBook) {
@@ -60,5 +66,12 @@ public class AttendanceController {
         Attendance currentAttendance = new Attendance(nickname, updateDateTime);
 
         outputView.printUpdatedAttendance(pastAttendance, currentAttendance);
+    }
+
+    private void checkAttendances(LocalDate checkEndDate, AttendanceBook attendanceBook) {
+        String nickname = inputView.inputNickname();
+        CrewAttendance crewAttendance = attendanceBook.findAttendancesByNickname(nickname);
+        AttendanceResult attendanceResult = crewAttendance.createAttendanceResult(checkEndDate);
+        outputView.printAttendanceResult(crewAttendance.getAttendances(), attendanceResult, checkEndDate);
     }
 }

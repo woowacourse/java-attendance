@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,16 +13,16 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
     private static final AttendanceDate ATTENDANCE_START_DATE = new AttendanceDate(LocalDate.of(2024, 12, 2));
 
     private final String nickname;
-    private final Map<AttendanceStatus, Integer> attendances;
+    private final Map<AttendanceStatus, Integer> attendanceStatus;
 
-    public AttendanceResult(String nickname, Map<AttendanceStatus, Integer> attendances) {
+    public AttendanceResult(String nickname, Map<AttendanceStatus, Integer> attendanceStatus) {
         this.nickname = nickname;
-        this.attendances = attendances;
+        this.attendanceStatus = attendanceStatus;
     }
 
     public static AttendanceResult create(String nickname,
                                           List<Attendance> attendances,
-                                          AttendanceDate attendanceEndDate) {
+                                          LocalDate attendanceEndDate) {
         Map<AttendanceStatus, Integer> attendanceMap = new HashMap<>();
         AttendanceDate currentDate = ATTENDANCE_START_DATE;
         while (currentDate.isBeforeAndEqual(attendanceEndDate)) {
@@ -53,6 +54,14 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
         return WarningLevel.from(calculateTotalAbsent());
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public Map<AttendanceStatus, Integer> getAttendanceStatus() {
+        return Collections.unmodifiableMap(attendanceStatus);
+    }
+
     @Override
     public int compareTo(AttendanceResult o) {
         if (this.calculateTotalAbsent() == o.calculateTotalAbsent()) {
@@ -71,11 +80,11 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
     }
 
     private int getLateCount() {
-        return attendances.getOrDefault(AttendanceStatus.LATE, 0);
+        return attendanceStatus.getOrDefault(AttendanceStatus.LATE, 0);
     }
 
     private int getAbsentCount() {
-        return attendances.getOrDefault(AttendanceStatus.ABSENT, 0);
+        return attendanceStatus.getOrDefault(AttendanceStatus.ABSENT, 0);
     }
 
     @Override
@@ -88,11 +97,11 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
         }
 
         AttendanceResult that = (AttendanceResult) object;
-        return Objects.equals(attendances, that.attendances);
+        return Objects.equals(attendanceStatus, that.attendanceStatus);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(attendances);
+        return Objects.hashCode(attendanceStatus);
     }
 }

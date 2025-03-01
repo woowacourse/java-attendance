@@ -1,6 +1,8 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,8 +32,12 @@ public class CrewAttendance {
                 .allMatch(attendance -> attendance.isEqualNickname(nickname));
     }
 
-    public AttendanceResult getAttendanceCount(AttendanceDate endAttendanceDate) {
+    public AttendanceResult createAttendanceResult(LocalDate endAttendanceDate) {
         return AttendanceResult.create(nickname, attendances, endAttendanceDate);
+    }
+
+    public List<Attendance> getAttendances() {
+        return Collections.unmodifiableList(attendances);
     }
 
     @Override

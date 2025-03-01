@@ -3,7 +3,6 @@ package attendance.domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.MonthDay;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class AttendanceDate {
@@ -56,9 +55,9 @@ public class AttendanceDate {
         return attendanceDate;
     }
 
-    public boolean isBeforeAndEqual(AttendanceDate attendanceDate) {
-        return this.attendanceDate.isBefore(attendanceDate.attendanceDate) ||
-                this.attendanceDate.isEqual(attendanceDate.attendanceDate);
+    public boolean isBeforeAndEqual(LocalDate date) {
+        return this.attendanceDate.isBefore(date) ||
+                this.attendanceDate.isEqual(date);
     }
 
     @Override
@@ -77,20 +76,5 @@ public class AttendanceDate {
     @Override
     public int hashCode() {
         return Objects.hashCode(attendanceDate);
-    }
-
-    private enum Holiday {
-        CHRISTMAS(MonthDay.of(12, 25));
-
-        private final MonthDay monthDay;
-
-        Holiday(MonthDay monthDay) {
-            this.monthDay = monthDay;
-        }
-
-        public static boolean isHoliday(MonthDay monthDay) {
-            return Arrays.stream(values())
-                    .anyMatch(holiday -> holiday.monthDay.equals(monthDay));
-        }
     }
 }
