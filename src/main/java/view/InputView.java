@@ -22,7 +22,7 @@ public class InputView {
         return scanner.nextLine().toUpperCase();
     }
 
-    public String readCheckInNickname() {
+    public String readNickname() {
         System.out.println("닉네임을 입력해 주세요.");
         return scanner.nextLine();
     }

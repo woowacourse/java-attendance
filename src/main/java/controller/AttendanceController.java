@@ -36,6 +36,9 @@ public class AttendanceController {
         if (menuSelection.equals("2")) {
             updateRecord();
         }
+        if (menuSelection.equals("3")) {
+            viewRecord();
+        }
     }
 
     private CrewRecords loadCrewRecords() {
@@ -44,7 +47,7 @@ public class AttendanceController {
     }
 
     private void checkIn() {
-        String nickname = inputView.readCheckInNickname();
+        String nickname = inputView.readNickname();
         String time = inputView.readCheckInTime();
 
         Crew crew = new Crew(nickname);
@@ -66,6 +69,10 @@ public class AttendanceController {
         crewRecords.updateRecord(crew, date, LocalTime.parse(time));
         AttendanceRecord newRecord = crewRecords.getRecordOnDate(crew, date);
         outputView.printUpdateResult(oldRecord, newRecord, LocalTime.parse(time));
+    }
+
+    private void viewRecord() {
+        String nickname = inputView.readNickname();
     }
 
     private void validateMenu(String input) {
