@@ -3,7 +3,6 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -65,8 +64,12 @@ public class AttendanceTime implements Comparable<AttendanceTime> {
         return minutes > 30;
     }
 
-    public LocalDateTime toLocalDateTime() {
-        return LocalDateTime.of(this.date, this.time);
+    public LocalDate toLocalDate() {
+        return date;
+    }
+
+    public LocalTime toLocalTime() {
+        return time;
     }
 
     public boolean isSameDate(AttendanceTime attendanceTime) {
