@@ -42,7 +42,7 @@ public class OutputView {
     }
 
     public static void printAttendanceRecordsUntilYesterday(Crew crew, LocalDate today, List<Attendance> attendances) {
-        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", crew.getNickname());
+        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", crew.getNickname().nickname());
         for (int day = 1; day < today.getDayOfMonth(); day++) {
             LocalDate currentDate = LocalDate.of(today.getYear(), today.getMonthValue(), day);
             if (DateUtil.isWeekend(currentDate) || Holiday.isHoliday(currentDate)) {
@@ -91,7 +91,7 @@ public class OutputView {
     }
 
     public static void printPenaltyCrews(Map<Crew, StatusStatistics> crewsAndStatistics) {
-        System.out.println("제적 위험자 조회 결과");
+        System.out.printf("%n제적 위험자 조회 결과%n");
         crewsAndStatistics.forEach(((crew, statusStatistics) -> {
             int lateCount = statusStatistics.getAttendanceStatusCount(AttendanceStatus.LATE);
             int absentCount = statusStatistics.getAttendanceStatusCount(AttendanceStatus.ABSENT);
@@ -108,5 +108,9 @@ public class OutputView {
             }
         }));
         System.out.println();
+    }
+
+    public static void printErrorMessage(String message) {
+        System.out.println(message);
     }
 }
