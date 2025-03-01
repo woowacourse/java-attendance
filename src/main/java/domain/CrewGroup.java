@@ -33,10 +33,10 @@ public class CrewGroup {
     }
 
     public List<Crew> getSortedWarningCrews() {
-        Predicate<Map.Entry<String,Crew>> isNotNoneStatus = crewEntry -> !crewEntry.getValue().
-                getAttendanceRecord().
-                getStudentStatus().
-                equals(StudentStatus.NONE);
+        Predicate<Map.Entry<String,Crew>> isNotNoneStatus = crewEntry -> !crewEntry.getValue()
+                .getAttendanceRecord()
+                .getStudentStatus()
+                .equals(StudentStatus.NONE);
 
         return crews.entrySet().stream()
                 .filter(isNotNoneStatus)
