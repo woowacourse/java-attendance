@@ -2,7 +2,7 @@ package attendance.domain;
 
 import java.util.Objects;
 
-public class AttendanceDateTime {
+public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
 
     private final AttendanceDate attendanceDate;
     private final AttendanceTime attendanceTime;
@@ -47,5 +47,15 @@ public class AttendanceDateTime {
     @Override
     public int hashCode() {
         return Objects.hash(attendanceDate, attendanceTime);
+    }
+
+    @Override
+    public int compareTo(final AttendanceDateTime o) {
+        int dateDiff = this.attendanceDate.compareTo(o.attendanceDate);
+        if (dateDiff != 0) {
+            return dateDiff;
+        }
+
+        return this.attendanceTime.compareTo(o.attendanceTime);
     }
 }

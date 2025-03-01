@@ -4,7 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class AttendanceDate {
+public class AttendanceDate implements Comparable<AttendanceDate> {
 
     public static final AttendanceDate FIRST_DATE = new AttendanceDate(
         2024, 12, 2);
@@ -140,5 +140,11 @@ public class AttendanceDate {
     @Override
     public int hashCode() {
         return Objects.hash(year, month, day);
+    }
+
+    @Override
+    public int compareTo(final AttendanceDate o) {
+        return LocalDate.of(this.year, this.month, this.day)
+            .compareTo(LocalDate.of(o.year, o.month, o.day));
     }
 }

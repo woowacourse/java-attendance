@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 public class AttendanceBook {
@@ -25,6 +26,13 @@ public class AttendanceBook {
         }
     }
 
+    public List<AttendanceDateTime> retrieveOrderByDateTimeUntilDate(final AttendanceDate untilDate) {
+        return attendanceRecord.findAllUntilDate(untilDate)
+            .stream()
+            .sorted()
+            .toList();
+    }
+
     public Crew getCrew() {
         return crew;
     }
@@ -36,7 +44,7 @@ public class AttendanceBook {
         }
 
         final AttendanceBook that = (AttendanceBook) o;
-        
+
         return Objects.equals(crew, that.crew)
             && Objects.equals(attendanceRecord, that.attendanceRecord);
     }
