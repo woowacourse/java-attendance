@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import dto.AttendanceCheckInRequest;
 import dto.AttendanceCheckInResponse;
+import dto.AttendanceHistoryRequest;
+import dto.AttendanceHistoryResponse;
 import dto.AttendanceUpdateRequest;
 import dto.AttendanceUpdateResponse;
 import java.time.LocalDate;
@@ -157,5 +159,24 @@ class AttendancesTest {
         assertThat(response.previousAttendanceType()).isEqualTo(AttendanceType.ABSENCE);
         assertThat(response.updateTime()).isEqualTo(LocalTime.of(10, 0));
         assertThat(response.updateAttendanceType()).isEqualTo(AttendanceType.SUCCESS);
+    }
+
+    @Test
+    @DisplayName("특정 크루의 출석 기록을 가져온다.")
+    void test8() {
+        // given
+        String nickname = "미소";
+        AttendanceHistoryRequest request = new AttendanceHistoryRequest(nickname);
+
+        // when
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request);
+
+        // then
+        assertThat(response.nickname()).isEqualTo(nickname);
+        assertThat(response.attendances()).hasSize(9);
+        assertThat(response.attendanceTotal().get(AttendanceType.SUCCESS)).isEqualTo(3);
+        assertThat(response.attendanceTotal().get(AttendanceType.BE_LATE)).isEqualTo(2);
+        assertThat(response.attendanceTotal().get(AttendanceType.ABSENCE)).isEqualTo(4);
+        assertThat(response.punishmentType()).isEqualTo(PunishmentType.MEETING);
     }
 }
