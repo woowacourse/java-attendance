@@ -7,8 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("출석부 테스트")
 public class AttendanceBookTest {
@@ -49,5 +48,19 @@ public class AttendanceBookTest {
 
         assertThatCode(() -> attendanceBook.update(crew, oldAttendance, newAttendance))
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 출석부에_존재하는_크루가_아니라면_예외를_반환한다() {
+        AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
+        Crew crew = new Crew(new Nickname("듀이"));
+        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
+        attendanceBook.add(crew, attendance);
+
+        Crew anotherCrew = new Crew(new Nickname("브라운"));
+
+        assertThatThrownBy(() -> attendanceBook.validateCrew(anotherCrew))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 }
