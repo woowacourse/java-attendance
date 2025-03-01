@@ -65,7 +65,7 @@ public class AttendanceBook {
     
     public Map<String, ExpelWarning> getExpelWarnings() {
         return crewAttendances.entrySet().stream()
-                .filter(entry -> entry.getValue().getExpelWarning() != ExpelWarning.정상)
+                .filter(entry -> entry.getValue().isExpelWarningNotNormal())
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getExpelWarning()));
     }
     

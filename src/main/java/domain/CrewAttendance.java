@@ -86,4 +86,8 @@ public class CrewAttendance {
         
         return ExpelWarning.of(lateCount, absentCount);
     }
+    
+    public boolean isExpelWarningNotNormal() {
+        return getExpelWarning() != ExpelWarning.정상;
+    }
 }

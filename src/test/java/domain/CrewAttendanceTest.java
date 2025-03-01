@@ -1,18 +1,18 @@
 package domain;
 
-import org.assertj.core.groups.Tuple;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+
+import org.assertj.core.groups.Tuple;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class CrewAttendanceTest {
 
@@ -517,6 +517,48 @@ class CrewAttendanceTest {
             assertAll(
                     () -> assertThat(result).isEqualTo(ExpelWarning.경고)
             );
+        }
+    }
+    
+    @Nested
+    class 제적_위험도_비정상_확인_테스트 {
+        
+        @Test
+        void 제적_위험도가_비정상인지_확인할_수_있다() {
+            //given
+            var sut = new CrewAttendance(LocalDate.of(2024, 12, 10));
+            
+            sut.attend(LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.attend(LocalDate.of(2024, 12, 3), LocalTime.of(10, 3));
+            sut.attend(LocalDate.of(2024, 12, 5), LocalTime.of(10, 15));
+            sut.attend(LocalDate.of(2024, 12, 6), LocalTime.of(10, 40));
+            sut.attend(LocalDate.of(2024, 12, 9), LocalTime.of(13, 3));
+            sut.attend(LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
+            
+            //when
+            var result = sut.isExpelWarningNotNormal();
+            
+            //then
+            assertThat(result).isTrue();
+        }
+        
+        @Test
+        void 제적_위험도가_정상이라면_false_이다() {
+            //given
+            var sut = new CrewAttendance(LocalDate.of(2024, 12, 10));
+            
+            sut.attend(LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.attend(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
+            sut.attend(LocalDate.of(2024, 12, 5), LocalTime.of(10, 0));
+            sut.attend(LocalDate.of(2024, 12, 6), LocalTime.of(10, 0));
+            sut.attend(LocalDate.of(2024, 12, 9), LocalTime.of(13, 0));
+            sut.attend(LocalDate.of(2024, 12, 10), LocalTime.of(10, 0));
+            
+            //when
+            var result = sut.isExpelWarningNotNormal();
+            
+            //then
+            assertThat(result).isFalse();
         }
     }
     
