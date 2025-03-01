@@ -71,4 +71,30 @@ public class AttendanceCheckTest {
                         () -> attendanceBook.findAttendance("율무", LocalDate.of(2024, 12, 3)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("운영 시간 전에 출석할 수 없다.")
+    @Test
+    void attendance_check_before_operating_time() {
+        // given
+        AttendanceBook attendanceBook = new AttendanceBook(new ArrayList<>());
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(
+                        () -> attendanceBook.check("율무", LocalDate.of(2024, 12, 3), LocalTime.of(7, 48)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("운영 시간 후에 출석할 수 없다.")
+    @Test
+    void attendance_check_after_operating_time() {
+        // given
+        AttendanceBook attendanceBook = new AttendanceBook(new ArrayList<>());
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(
+                        () -> attendanceBook.check("율무", LocalDate.of(2024, 12, 3), LocalTime.of(23, 48)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
