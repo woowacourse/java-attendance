@@ -3,6 +3,7 @@ package attendance.view;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class InputView {
@@ -30,10 +31,49 @@ public class InputView {
     public LocalTime inputAttendanceTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         String rawAttendanceTime = readLine();
-        return LocalTime.parse(rawAttendanceTime, DateTimeFormatter.ofPattern("HH:mm"));
+        return toLocalTime(rawAttendanceTime);
+    }
+
+    public String inputNicknameForAttendanceUpdate() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return readLine();
+    }
+
+    public int inputUpdateDateOfMonth() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return toDateOfMonth(readLine());
+    }
+
+    public LocalTime inputUpdateTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        return toLocalTime(readLine());
     }
 
     private String readLine() {
         return scanner.nextLine().trim();
+    }
+
+    private int toDateOfMonth(String value) {
+        try {
+            int date = Integer.parseInt(value);
+            validateDateOfMonth(date);
+            return date;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("숫자를 입력하세요");
+        }
+    }
+
+    private void validateDateOfMonth(int date) {
+        if (date < 1 || date > 31) {
+            throw new IllegalArgumentException("날짜는 1일 이상 31일 이하여야 합니다.");
+        }
+    }
+
+    private LocalTime toLocalTime(String rawAttendanceTime) {
+        try {
+            return LocalTime.parse(rawAttendanceTime, DateTimeFormatter.ofPattern("HH:mm"));
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("시간 형식은 HH:mm이어야 합니다.");
+        }
     }
 }

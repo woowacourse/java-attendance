@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +22,7 @@ public class AttendanceBook {
     }
 
     public void attend(String nickname, LocalDateTime attendanceDateTime) {
-        if (!crews.contains(nickname)) {
-            throw new IllegalArgumentException(nickname + "은 등록되지 않은 닉네임입니다.");
-        }
+        validateExistNickname(nickname);
         Attendance newAttendance = new Attendance(nickname, attendanceDateTime);
         if (isAlreadyAttend(newAttendance)) {
             throw new IllegalArgumentException("이미 출석한 경우 다시 출석할 수 없습니다.");
@@ -37,18 +36,28 @@ public class AttendanceBook {
     }
 
     public void updateAttendance(String nickname, LocalDateTime updateDateTime) {
-        findAttendance(nickname, updateDateTime)
+        validateExistNickname(nickname);
+        findAttendance(nickname, updateDateTime.toLocalDate())
                 .ifPresentOrElse(
-                        attendance -> attendance.updateAttendanceTime(updateDateTime.toLocalTime()),
+                        attendance -> {
+                            attendances.remove(attendance);
+                            attendances.add(new Attendance(nickname, updateDateTime));
+                        },
                         () -> attendances.add(new Attendance(nickname, updateDateTime))
                 );
     }
 
-    private Optional<Attendance> findAttendance(String nickname, LocalDateTime updateDateTime) {
+    private void validateExistNickname(String nickname) {
+        if (!crews.contains(nickname)) {
+            throw new IllegalArgumentException(nickname + "은 등록되지 않은 닉네임입니다.");
+        }
+    }
+
+    public Optional<Attendance> findAttendance(String nickname, LocalDate attendanceDate) {
         return attendances.stream()
                 .filter(attendance -> attendance.isAlreadyAttend(
                         nickname,
-                        new AttendanceDate(updateDateTime.toLocalDate())))
+                        new AttendanceDate(attendanceDate)))
                 .findFirst();
     }
 

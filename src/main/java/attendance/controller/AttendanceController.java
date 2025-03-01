@@ -1,6 +1,7 @@
 package attendance.controller;
 
 import static attendance.view.Command.ATTENDANCE;
+import static attendance.view.Command.ATTENDANCE_UPDATE;
 
 import attendance.AttendanceBookInitializer;
 import attendance.domain.Attendance;
@@ -11,6 +12,8 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
+import java.util.Optional;
 
 public class AttendanceController {
 
@@ -29,15 +32,33 @@ public class AttendanceController {
         if (command == ATTENDANCE) {
             attend(today, attendanceBook);
         }
+        if (command == ATTENDANCE_UPDATE) {
+            updateAttendance(YearMonth.from(today), attendanceBook);
+        }
     }
 
     public void attend(LocalDate attendanceDate, AttendanceBook attendanceBook) {
         String nickname = inputView.inputNickname();
         LocalTime attendanceTime = inputView.inputAttendanceTime();
-        
+
         LocalDateTime attendanceDateTime = LocalDateTime.of(attendanceDate, attendanceTime);
         attendanceBook.attend(nickname, attendanceDateTime);
 
-        outputView.printAttendance(new Attendance(nickname, LocalDateTime.of(attendanceDate, attendanceTime)));
+        outputView.printAttendance(new Attendance(nickname, attendanceDateTime));
+    }
+
+    private void updateAttendance(YearMonth uppdateYearMonth, AttendanceBook attendanceBook) {
+        String nickname = inputView.inputNicknameForAttendanceUpdate();
+        int dateOfMonth = inputView.inputUpdateDateOfMonth();
+        LocalTime updateTime = inputView.inputUpdateTime();
+
+        LocalDate updateDate = LocalDate.of(uppdateYearMonth.getYear(), uppdateYearMonth.getMonth(), dateOfMonth);
+        LocalDateTime updateDateTime = LocalDateTime.of(updateDate, updateTime);
+
+        Optional<Attendance> pastAttendance = attendanceBook.findAttendance(nickname, updateDate);
+        attendanceBook.updateAttendance(nickname, updateDateTime);
+        Attendance currentAttendance = new Attendance(nickname, updateDateTime);
+
+        outputView.printUpdatedAttendance(pastAttendance, currentAttendance);
     }
 }
