@@ -52,4 +52,13 @@ public class AttendanceTimeTest {
                 attendanceTime1.isNotOpeningTime()
         );
     }
+
+    @Test
+    @DisplayName("00시 00분 을 판단하는 메서드 테스트")
+    void test6() {
+        AttendanceTime attendanceTime1 = new AttendanceTime(LocalTime.of(0, 0));
+        Assertions.assertTrue(
+                attendanceTime1.isZeroTime()
+        );
+    }
 }
