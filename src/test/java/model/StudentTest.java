@@ -11,6 +11,7 @@ public class StudentTest {
     AttendanceDateTime addAttendanceDateTime;
     AttendanceDateTime deleteAttendanceDateTime;
     StudentAttendanceHistory studentAttendanceHistory;
+    Student student;
 
     @BeforeEach
     void set() {
@@ -20,7 +21,7 @@ public class StudentTest {
                 List.of(new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 12, 12)),
                         new AttendanceDateTime(LocalDateTime.of(2024, 12, 13, 12, 12)))
         );
-        Student student = new Student("이든", studentAttendanceHistory);
+        student = new Student("이든", studentAttendanceHistory);
     }
 
     @Test
@@ -28,7 +29,7 @@ public class StudentTest {
     void test1() {
         student.addAttendanceDateTime(addAttendanceDateTime);
         Assertions.assertTrue(
-                student.isExistSameDay(addAttendanceDateTime)
+                student.isExistSameAttendanceDateTime(addAttendanceDateTime)
         );
     }
 
@@ -37,7 +38,7 @@ public class StudentTest {
     void test2() {
         student.modifyAttendanceDateTime(deleteAttendanceDateTime);
         Assertions.assertFalse(
-                student.isExistSameDay(deleteAttendanceDateTime)
+                student.isExistSameAttendanceDateTime(deleteAttendanceDateTime)
         );
     }
 
@@ -46,7 +47,7 @@ public class StudentTest {
     void test3() {
         student.modifyAttendanceDateTime(deleteAttendanceDateTime);
         Assertions.assertTrue(
-                student.isExistSameDay(deleteAttendanceDateTime)
+                student.isExistSameAttendanceDateTime(deleteAttendanceDateTime)
         );
     }
 }
