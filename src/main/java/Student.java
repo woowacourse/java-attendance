@@ -45,10 +45,19 @@ public class Student {
         return attendanceStatusRecord.findAttendanceStatusCount(AttendanceStatus.LATE) / 3;
     }
 
-    public void nonAttendanceRecordStatusIsAbsent(LocalDate today) {
-        if (!attendanceTimeRecord.checkAttendanceRecordByLocalDate(today)) {
-            attendanceTimeRecord.putNullLocalTime(today);
-            attendanceStatusRecord.putAttendanceStateToAbsent(today);
+    public void updateNonAttendanceRecordStatusIsAbsent(LocalDate today) {
+        LocalDate startDate = LocalDate.of(today.getYear(), 12, 1);
+        LocalDate endDate = today.minusDays(1);
+
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            registerAsAbsentIfNoAttendance(date);
+        }
+    }
+
+    private void registerAsAbsentIfNoAttendance(LocalDate date) {
+        if (!attendanceTimeRecord.checkAttendanceRecordByLocalDate(date)) {
+            attendanceTimeRecord.putNullLocalTime(date);
+            attendanceStatusRecord.putAttendanceStateToAbsent(date);
         }
     }
 
