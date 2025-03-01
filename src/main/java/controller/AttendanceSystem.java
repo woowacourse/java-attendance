@@ -9,6 +9,8 @@ import static view.UserInputView.*;
 
 import domain.AllCrew;
 import domain.Crew;
+import view.OutputView;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
@@ -50,11 +52,16 @@ public class AttendanceSystem {
         }
     }
 
+    private void checkPenaltyReceivedCrew() {
+        // allCrew에서 제적위험자 crew들만 찾아서 리스트로 넘기면 뷰에서 출력만 하도록
+    }
+
     private void checkCrewAttendanceHistory() {
         String crewName = askCrewName();
         Crew crew = allCrew.findCrewByName(crewName);
         OutputView.printCrewAttendanceHistory(crew);
     }
+
     private void modifyAttendance() {
         String crewName = askCrewName();
         Crew crew = allCrew.findCrewByName(crewName);
