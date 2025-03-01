@@ -35,4 +35,31 @@ public class CsvReaderTest {
         //when & then
         Assertions.assertThatThrownBy(() -> CsvReader.readFile(path));
     }
+
+    @Test
+    @DisplayName("하나의 행을 분리한다")
+    void splitRow() {
+        //given
+        String path = "attendances.csv";
+        List<String> lines = CsvReader.readFile(path);
+        String row = lines.getFirst();
+
+        //when
+        List<String> actual = CsvReader.splitRow(lines.getFirst());
+
+        //then
+        List<String> expected = List.of("빙티", "2024-12-02 10:00");
+        assertThat(actual).containsExactlyElementsOf(expected);
+    }
+
+    @Test
+    @DisplayName("잘못된 형식의 행을 분리할 경우, 예외를 던진다")
+    void throwExceptionWhenWrongFormatCsvFile() {
+        //given
+        String path = "wrong_format.csv";
+        List<String> lines = CsvReader.readFile(path);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> CsvReader.splitRow(lines.getFirst()));
+    }
 }

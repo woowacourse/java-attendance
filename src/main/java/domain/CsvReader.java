@@ -10,6 +10,8 @@ import java.util.List;
 
 public class CsvReader {
 
+    private static final String CSV_DELIMITER = ",";
+
     private CsvReader() {
     }
 
@@ -35,5 +37,17 @@ public class CsvReader {
 
     private static List<String> removeFirstRow(BufferedReader reader) {
         return reader.lines().skip(1).toList();
+    }
+
+    public static List<String> splitRow(String row) {
+        List<String> split = List.of(row.split(CSV_DELIMITER));
+        isNotMatchRowFormat(split);
+        return split;
+    }
+
+    private static void isNotMatchRowFormat(final List<String> split) {
+        if (split.size() != 2) {
+            throw new IllegalStateException("행 구조가 잘못되었습니다");
+        }
     }
 }
