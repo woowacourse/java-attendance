@@ -84,4 +84,23 @@ class AttendanceBookTest {
         assertThat(modifiedInfos.getAttendanceInfos().getFirst().getHour()).isEqualTo(10);
         assertThat(modifiedInfos.getAttendanceInfos().getFirst().getMinute()).isEqualTo(4);
     }
+
+    @Test
+    void 크루_이름으로_크루의_출석정보를_가져온다() {
+        // given
+        AttendanceBook attendanceBook = AttendanceBook.initBook();
+        Crew crew = Crew.fromName("제프리");
+        attendanceBook.addCrew(crew);
+        CampusDate campusDate = CampusDate.fromDate(LocalDate.of(2025, 2, 27));
+        CampusTime campusTime = CampusTime.from("10:06");
+        attendanceBook.addInfoWithDateAndTime(crew, campusDate, campusTime);
+
+        // when
+        AttendanceInfos infoByCrew = attendanceBook.findInfoByCrew(crew);
+
+        // then
+        assertThat(infoByCrew.getAttendanceInfos()).hasSize(1);
+        assertThat(infoByCrew.getAttendanceInfos().getFirst().getHour()).isEqualTo(10);
+        assertThat(infoByCrew.getAttendanceInfos().getFirst().getMinute()).isEqualTo(6);
+    }
 }

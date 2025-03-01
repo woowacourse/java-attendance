@@ -32,6 +32,10 @@ public class AttendanceBook {
         return book.get(crew).modifyInfoByDateAndTime(date, time);
     }
 
+    public AttendanceInfos findInfoByCrew(final Crew crew) {
+        return AttendanceInfos.from(book.get(crew).getAttendanceInfos());
+    }
+
     public Map<Crew, AttendanceInfos> getBook() {
         return new HashMap<>(book);
     }
