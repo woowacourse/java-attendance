@@ -34,6 +34,10 @@ public class Attendance {
         this.attendanceTime = attendanceTime.changeTime(newTime);
     }
 
+    public AttendanceType judgeType() {
+        return AttendanceType.calculateType(attendanceTime);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
