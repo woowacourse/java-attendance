@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,18 +104,19 @@ public class AttendanceBookTest {
         });
     }
 
+
+
     @Test
-    @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 기록을 확인할 수 있다")
-    void checkAttendancesRecord() {
+    @DisplayName("제적 위험자를 확인한다")
+    void checkSubjectCrew() {
         //given
-        Crew inputCrew = new Crew("Lemon");
-        List<Attendance> attendances = attendanceBook.checkAttendancesRecord(inputCrew);
-        LocalDate nowDate = LocalDate.of(2024,12,14).minusDays(1);
-        /*
-        // expected
-        Assertions.assertThat(attendances)
-            .isNotEmpty(); // 리스트가 비어있지 않은지 검증
-        Assertions.assertThat(attendances.getLast().getAttendanceDate()).isEqualTo(nowDate);
-        */
+        Map<Crew, AttendanceStatus> crewAttendanceStatus = attendanceBook.checkExpelledCrews();
+        AttendanceStatus attendanceStatus = crewAttendanceStatus.get(crew);
+
+        //expected
+        Assertions.assertThat(attendanceStatus.getAttendanceCount()).isEqualTo(7);
+        Assertions.assertThat(attendanceStatus.getLateCount()).isEqualTo(3);
+        Assertions.assertThat(attendanceStatus.getAbsentCount()).isEqualTo(4);
+        Assertions.assertThat(attendanceStatus.getSubjectStatus()).isEqualTo("면담 대상자");
     }
 }

@@ -90,16 +90,16 @@ public class AttendanceLogTest {
     @Test
     @DisplayName("지각,출석,결석에 따라 대상자를 선정한다.")
     void checkSubjectStatusTest() {
-
-        //given
+        // given
         int attendanceCount = attendanceLog.countAttendanceStatus(Subject.ATTENDANCE);
-        int lateCount =  attendanceLog.countAttendanceStatus(Subject.LATE);
+        int lateCount = attendanceLog.countAttendanceStatus(Subject.LATE);
         int absentCount = attendanceLog.countAttendanceStatus(Subject.ABSENT);
 
-        //when
-        String subjectStatus = attendanceLog.checkSubjectStatus(attendanceCount, lateCount, absentCount);
+        // when
+        AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceCount, lateCount, absentCount);
+        String subjectStatus = attendanceStatus.getSubjectStatus(); // 이제 상태는 객체에 캡슐화돼 있음
 
-        //then
+        // then
         assertThat(subjectStatus).isEqualTo("면담 대상자");
     }
 

@@ -3,6 +3,7 @@ package attendance.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
     private final Map<Crew, AttendanceLog> attendanceRecord;
@@ -25,6 +26,7 @@ public class AttendanceBook {
         return attendanceLog.modifyAttendanceRecord(newALocalDateTime);
     }
 
+
     //3. 출석 확인
     public List<Attendance> checkAttendancesRecord(Crew crew) {
         validateCrewExistance(crew);
@@ -32,7 +34,22 @@ public class AttendanceBook {
         return attendanceLog.checkAttendancesRecord();
     }
 
-    //4. 제적 위험자 확인
+    // 4. 제적 위험자 확인
+    public Map<Crew, AttendanceStatus> checkExpelledCrews() {
+        return attendanceRecord.entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> {
+                    AttendanceLog attendanceLog = entry.getValue();
+                    int attendanceCount = attendanceLog.countAttendanceStatus(Subject.ATTENDANCE);
+                    int lateCount = attendanceLog.countAttendanceStatus(Subject.LATE);
+                    int absentCount = attendanceLog.countAttendanceStatus(Subject.ABSENT);
+                    return new AttendanceStatus(attendanceCount, lateCount, absentCount);
+                }
+            ));
+    }
+
+
 
     private void validateCrewExistance(Crew crew) {
         if (attendanceRecord.get(crew) == null) {
