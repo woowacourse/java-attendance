@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -13,6 +14,13 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @DisplayName("휴일 테스트")
 class HolidaysTest {
+
+    @Test
+    @DisplayName("공휴일 파일을 읽어 휴일 객체를 생성한다")
+    void 공휴일_파일을_읽어_휴일_객체를_생성한다() {
+        assertThatNoException()
+                .isThrownBy(() -> Holidays.initHoliday());
+    }
 
     @ParameterizedTest
     @CsvSource({
