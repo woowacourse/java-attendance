@@ -49,7 +49,7 @@ public class StudentTest {
         LocalDate recordData = LocalDate.of(2024, 12, 13);
         LocalTime attendanceTime = LocalTime.parse("10:59");
 
-        String modifyDate = "13";
+        int modifyDate = 13;
         LocalTime modifyTime = LocalTime.parse("10:00");
 
         LocalTime expect = LocalTime.of(10, 0);
@@ -68,7 +68,7 @@ public class StudentTest {
         LocalDate recordData = LocalDate.of(2024, 12, 13);
         LocalTime attendanceTime = LocalTime.parse("10:59");
 
-        String modifyDate = "13";
+        int modifyDate = 13;
         LocalTime modifyTime = LocalTime.parse("10:00");
 
         AttendanceStatus expect = AttendanceStatus.ATTENDANCE;
