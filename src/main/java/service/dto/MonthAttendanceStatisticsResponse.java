@@ -10,4 +10,11 @@ public record MonthAttendanceStatisticsResponse(
         RiskRank riskRank
 ) {
 
+    public record AttendanceStatusCount(
+            int attendanceCount,
+            int lateCount,
+            int absentCount
+    ) {
+
+    }
 }

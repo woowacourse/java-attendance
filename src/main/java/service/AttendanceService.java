@@ -21,15 +21,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import service.dto.AttendanceStatusCount;
 import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.MonthAttendanceStatisticsResponse;
-import service.dto.RiskCrew;
+import service.dto.MonthAttendanceStatisticsResponse.AttendanceStatusCount;
 import service.dto.RiskCrewsResponse;
+import service.dto.RiskCrewsResponse.RiskCrew;
 import service.dto.SaveAttendanceRecordResponse;
 
 public class AttendanceService {
-    
+
     private final Crews crews;
     private final AttendanceRecords attendanceRecords;
 

@@ -9,8 +9,8 @@ import domain.AttendanceRecord;
 import domain.EmptyAttendanceRecord;
 import domain.RiskRank;
 import java.util.List;
-import service.dto.AttendanceStatusCount;
 import service.dto.ModifyAttendanceRecordResponse;
+import service.dto.MonthAttendanceStatisticsResponse.AttendanceStatusCount;
 import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 
