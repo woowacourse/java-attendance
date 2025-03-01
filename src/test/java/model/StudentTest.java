@@ -15,7 +15,7 @@ public class StudentTest {
 
     @BeforeEach
     void set() {
-        addAttendanceDateTime = new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 12, 12));
+        addAttendanceDateTime = new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 13, 13));
         deleteAttendanceDateTime = new AttendanceDateTime(LocalDateTime.of(2024, 12, 13, 12, 12));
         studentAttendanceHistory = new StudentAttendanceHistory(
                 List.of(new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 12, 12)),
@@ -36,9 +36,10 @@ public class StudentTest {
     @Test
     @DisplayName("수정하고 싶은 날짜의 일자를 비교하여 삭제하는 메서드 테스트")
     void test2() {
-        student.modifyAttendanceDateTime(deleteAttendanceDateTime);
+        student.modifyAttendanceDateTime(addAttendanceDateTime);
         Assertions.assertFalse(
-                student.isExistSameAttendanceDateTime(deleteAttendanceDateTime)
+                student.isExistSameAttendanceDateTime(
+                        new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 12, 12)))
         );
     }
 
