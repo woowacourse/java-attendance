@@ -35,4 +35,14 @@ public class AttendanceDateTest {
         Assertions.assertFalse(notMonday.isMonday());
     }
 
+    @Test
+    @DisplayName("같은 요일 비교하는 메서드 테스트")
+    void test7() {
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 12));
+        AttendanceDate attendanceDate1 = new AttendanceDate(LocalDate.of(2024, 12, 12));
+        Assertions.assertTrue(
+                attendanceDate.isSameDate(attendanceDate1)
+        );
+    }
+
 }
