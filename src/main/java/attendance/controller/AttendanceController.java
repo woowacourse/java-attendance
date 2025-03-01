@@ -54,14 +54,14 @@ public class AttendanceController {
             handleCheckAttendance(currentDate);
         }
 
-        if (menuOption == MenuOption.EDIT) {
+        if (menuOption == MenuOption.MODIFY) {
             handleEditAttendance(currentDate);
         }
     }
 
     private void handleCheckAttendance(final LocalDate currentDate) {
         final AttendanceBook attendanceBook = findAttendanceBook(
-            inputView.readCrewNickName());
+            inputView.readCrewNickNameForCheck());
 
         final AttendanceDate attendanceDate = AttendanceDate.from(
             currentDate);
@@ -97,7 +97,7 @@ public class AttendanceController {
 
     private void handleEditAttendance(final LocalDate currentDate) {
         final AttendanceBook attendanceBook = findAttendanceBook(
-            inputView.readUpdateNickName());
+            inputView.readCrewNickNameForModify());
 
         final AttendanceDate attendanceDate = new AttendanceDate(
             currentDate.getYear(),

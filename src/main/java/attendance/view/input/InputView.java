@@ -38,7 +38,7 @@ public class InputView {
         return MenuOption.from(readInput());
     }
 
-    public String readCrewNickName() {
+    public String readCrewNickNameForCheck() {
         System.out.println("닉네임을 입력해 주세요.");
         return readInput();
     }
@@ -48,7 +48,7 @@ public class InputView {
         return parseLocalTime(readInput());
     }
 
-    public String readUpdateNickName() {
+    public String readCrewNickNameForModify() {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
         return readInput();
     }
