@@ -36,4 +36,8 @@ public class Attendance {
     public int hashCode() {
         return Objects.hash(nickname, attendDate, attendTime);
     }
+
+    public void updateTime(LocalTime updateTime) {
+        this.attendTime = updateTime;
+    }
 }
