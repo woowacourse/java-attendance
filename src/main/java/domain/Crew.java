@@ -2,7 +2,7 @@ package domain;
 
 import exception.AppException;
 
-public class Crew {
+public class Crew implements Comparable<Crew> {
     private final String name;
 
     private Crew(String name) {
@@ -36,5 +36,23 @@ public class Crew {
         if (!name.matches("^[가-힣]+$")) {
             throw new AppException("이름은 한글이어야 합니다.");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Crew crew = (Crew) o;
+        return name.equals(crew.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public int compareTo(Crew crew) {
+        return name.compareTo(crew.name);
     }
 }
