@@ -9,6 +9,7 @@ import dto.AttendanceCheckInRequest;
 import dto.AttendanceCheckInResponse;
 import dto.AttendanceHistoryRequest;
 import dto.AttendanceHistoryResponse;
+import dto.AttendanceRiskCrewsResponse;
 import dto.AttendanceUpdateRequest;
 import dto.AttendanceUpdateResponse;
 import java.time.LocalDate;
@@ -178,5 +179,28 @@ class AttendancesTest {
         assertThat(response.attendanceTotal().get(AttendanceType.BE_LATE)).isEqualTo(2);
         assertThat(response.attendanceTotal().get(AttendanceType.ABSENCE)).isEqualTo(4);
         assertThat(response.punishmentType()).isEqualTo(PunishmentType.MEETING);
+    }
+
+    @Test
+    @DisplayName("제적 위험자 리스트를 가져온다.")
+    void test9() {
+        // given
+
+        // when
+        AttendanceRiskCrewsResponse response = attendances.findRiskCrews();
+
+        // then
+        assertThat(response.riskCrewResponses().get(0).crew().getNickname()).isEqualTo("네오");
+        assertThat(response.riskCrewResponses().get(1).crew().getNickname()).isEqualTo("미소");
+        assertThat(response.riskCrewResponses().get(2).crew().getNickname()).isEqualTo("포비");
+        assertThat(response.riskCrewResponses().get(0).attendanceTotal().get(AttendanceType.ABSENCE)).isEqualTo(6);
+        assertThat(response.riskCrewResponses().get(0).attendanceTotal().get(AttendanceType.BE_LATE)).isEqualTo(0);
+        assertThat(response.riskCrewResponses().get(1).attendanceTotal().get(AttendanceType.ABSENCE)).isEqualTo(4);
+        assertThat(response.riskCrewResponses().get(1).attendanceTotal().get(AttendanceType.BE_LATE)).isEqualTo(2);
+        assertThat(response.riskCrewResponses().get(2).attendanceTotal().get(AttendanceType.ABSENCE)).isEqualTo(5);
+        assertThat(response.riskCrewResponses().get(2).attendanceTotal().get(AttendanceType.BE_LATE)).isEqualTo(2);
+        assertThat(response.riskCrewResponses().get(0).punishmentType()).isEqualTo(PunishmentType.EXPULSION);
+        assertThat(response.riskCrewResponses().get(1).punishmentType()).isEqualTo(PunishmentType.MEETING);
+        assertThat(response.riskCrewResponses().get(2).punishmentType()).isEqualTo(PunishmentType.MEETING);
     }
 }
