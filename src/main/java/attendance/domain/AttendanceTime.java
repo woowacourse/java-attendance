@@ -6,6 +6,7 @@ import static attendance.domain.DayOfWeek.findDayOfWeek;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class AttendanceTime {
@@ -32,6 +33,10 @@ public class AttendanceTime {
 
     public LocalDate getDate() {
         return attendanceDateTime.toLocalDate();
+    }
+
+    public LocalTime getTime() {
+        return attendanceDateTime.toLocalTime();
     }
 
     private static void ifWeekendThrowException(LocalDateTime attendanceDateTime) {

@@ -3,11 +3,15 @@ package attendance.domain;
 import static attendance.domain.DayOfWeek.*;
 
 public enum AttendanceType {
-    ATTENDANCE(0), LATE(5), ABSENCE(30);
+    ATTENDANCE("출석", 0),
+    LATE("지각", 5),
+    ABSENCE("결석", 30);
 
+    private final String type;
     private final int typeDecisionValue;
 
-    AttendanceType(int typeDecisionValue) {
+    AttendanceType(String type, int typeDecisionValue) {
+        this.type = type;
         this.typeDecisionValue = typeDecisionValue;
     }
 
@@ -24,5 +28,9 @@ public enum AttendanceType {
             return LATE;
         }
         return ATTENDANCE;
+    }
+
+    public String getType() {
+        return type;
     }
 }

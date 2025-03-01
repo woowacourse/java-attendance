@@ -43,4 +43,8 @@ public enum DayOfWeek  {
         LocalDateTime attendanceDateTime = attendanceTime.getAttendanceDateTime();
         return attendanceDateTime.getMinute() - attendanceStartingTime.getMinute();
     }
+
+    public String getDayOfWeekName() {
+        return dayOfWeekName;
+    }
 }
