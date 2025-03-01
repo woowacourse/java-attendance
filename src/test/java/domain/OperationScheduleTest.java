@@ -1,6 +1,7 @@
+package domain;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-import domain.OperationSchedule;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

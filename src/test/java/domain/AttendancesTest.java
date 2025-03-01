@@ -1,11 +1,8 @@
+package domain;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import domain.Attendance;
-import domain.AttendanceTime;
-import domain.AttendanceType;
-import domain.Attendances;
-import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
