@@ -1,8 +1,10 @@
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import domain.Attend;
 import domain.AttendanceBook;
 import domain.Current;
+import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,5 +45,20 @@ public class AttendanceBookTest {
 
         //when & then
         assertDoesNotThrow(() -> attendanceBook.addAttend(name, attend));
+    }
+
+    @Test
+    @DisplayName("대상 출석 데이터가 이미 존재하면 예외를 던진다")
+    void throwExceptionExistAttend() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        Attend attend = new Attend(Current.TODAY.getDate());
+        attendanceBook.register(name);
+        attendanceBook.addAttend(name, attend);
+
+        //when & then
+        Attend anotherAttend = new Attend(Current.TODAY.getDate(), LocalTime.of(11, 0));
+        Assertions.assertThatThrownBy(() -> attendanceBook.addAttend(name, anotherAttend));
     }
 }
