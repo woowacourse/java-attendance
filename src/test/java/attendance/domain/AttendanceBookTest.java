@@ -5,8 +5,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import attendance.exception.AttendanceArgumentException;
 
 class AttendanceBookTest {
     private final AttendanceReader attendanceReader = new AttendanceReader("attendances.csv");
@@ -24,5 +27,15 @@ class AttendanceBookTest {
 
         var attendance = new Attendance(dateTime);
         assertThat(attendanceBook.getAttendance(nickname, dateTime.toLocalDate())).isEqualTo(attendance);
+    }
+
+    @Test
+    @DisplayName("등록되지 않은 닉네임으로 출석할 경우, 예외가 발생한다.")
+    void test_() {
+        var nickname = new Nickname("때지");
+        var dateTime = LocalDateTime.now();
+        Assertions.assertThatThrownBy(() -> attendanceBook.add(nickname, dateTime))
+            .isInstanceOf(AttendanceArgumentException.class)
+            .hasMessageContaining("등록되지 않은");
     }
 }
