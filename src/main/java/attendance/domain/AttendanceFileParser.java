@@ -18,6 +18,7 @@ public class AttendanceFileParser implements AttendanceReader{
     public static final String DELIMITER = ",";
     public static final int NAME_INDEX = 0;
     public static final int LOCAL_DATE_TIME_INDEX = 1;
+    public static final int HEADER_LINE = 1;
 
     private final String path;
 
@@ -27,7 +28,7 @@ public class AttendanceFileParser implements AttendanceReader{
 
     public List<AttendanceFileDto> read() {
         try (Stream<String> lines = Files.lines(Path.of(path))) {
-            return lines.skip(1)
+            return lines.skip(HEADER_LINE)
                 .map(this::parseToAttendanceFileDto)
                 .toList();
         } catch (IOException e) {
