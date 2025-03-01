@@ -1,11 +1,13 @@
 package util;
 
+import static constant.ErrorMessage.INVALID_DAY_FORMAT;
 import static constant.ErrorMessage.INVALID_INPUT_NULL_OR_BLANK;
 import static constant.ErrorMessage.INVALID_INTEGER_FORMAT;
 import static constant.ErrorMessage.INVALID_TIME_FORMAT;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -91,5 +93,30 @@ class InputValidatorTest {
         assertThatThrownBy(() -> InputValidator.validateTime(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(INVALID_TIME_FORMAT.getMessage());
+    }
+
+    @Test
+    @DisplayName("유효한 일 입력 시 예외가 발생하지 않는다.")
+    void test8() {
+        // given
+        String input = "5";
+        LocalDateTime dateTime = LocalDateTime.of(2025, 2, 28, 10, 0);
+
+        // when & then
+        assertThatCode(() -> InputValidator.validateDay(input, dateTime))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("해당 달의 유효하지 않은 일 입력 시 예외가 발생한다.")
+    void test9() {
+        // given
+        String input = "29";
+        LocalDateTime dateTime = LocalDateTime.of(2025, 2, 28, 10, 0);
+
+        // when & then
+        assertThatThrownBy(() -> InputValidator.validateDay(input, dateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(INVALID_DAY_FORMAT.getMessage());
     }
 }
