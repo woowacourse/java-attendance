@@ -1,5 +1,10 @@
 package domain;
 
+import static constants.NumberConstants.EXPULSION_COUNT;
+import static constants.NumberConstants.INTERVIEW_COUNT;
+import static constants.NumberConstants.LATE_TO_ABSENT;
+import static constants.NumberConstants.WARNING_COUNT;
+
 import dto.CheckAttendanceRecordResponse;
 import dto.PenaltyResponse;
 import java.util.List;
@@ -26,15 +31,16 @@ public class PenaltyStatus {
     }
 
     private static String judgePenalty(int lateCount, int absentCount) {
-        int penaltyCount = absentCount + lateCount / 3;
-        if (penaltyCount > 5) {
+        int penaltyCount = absentCount + lateCount / LATE_TO_ABSENT;
+        if (penaltyCount > EXPULSION_COUNT) {
             return "제적";
         }
-        if (penaltyCount >= 3) {
+
+        if (penaltyCount >= INTERVIEW_COUNT) {
             return "면담";
         }
 
-        if (penaltyCount == 2) {
+        if (penaltyCount == WARNING_COUNT) {
             return "경고";
         }
 
