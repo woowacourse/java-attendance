@@ -5,7 +5,7 @@ import java.util.List;
 
 public enum MenuOption {
     CHECK("1", "출석 확인"),
-    EDIT("2", "출석 수정"),
+    MODIFY("2", "출석 수정"),
     RECORD("3", "크루별 출석 기록 확인"),
     RISK("4", "제적 위험자 확인"),
     EXIT("Q", "종료");
