@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class AttendanceReader {
+public class AttendanceFileReader {
     private static final String CANT_FIND_FILE = "[ERROR] 파일을 찾을 수 없습니다: ";
     private static final String CANT_READ_FILE = "[ERROR] 파일을 읽는 과정에서 예상치 못한 오류가 발생했습니다: ";
     private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
@@ -18,26 +18,32 @@ public class AttendanceReader {
     private final String fileName;
     private final SystemDateTime systemDateTime;
 
-    public AttendanceReader(String fileName, SystemDateTime systemDateTime) {
+    public AttendanceFileReader(String fileName, SystemDateTime systemDateTime) {
         this.fileName = fileName;
         this.systemDateTime = systemDateTime;
     }
 
     public AttendanceBook load() throws FileNotFoundException {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
-        if (inputStream == null) {
-            throw new FileNotFoundException(CANT_FIND_FILE + fileName);
-        }
+        InputStream inputStream = getInputStream();
         try (var inputStreamReader = new InputStreamReader(inputStream);
              var bufferedReader = new BufferedReader(inputStreamReader)) {
-            return generateAttendanceBook(bufferedReader);
+            var lines = readLines(bufferedReader);
+            inputStream.close();
+            return generateAttendanceBook(lines);
         } catch (IOException e) {
             throw new RuntimeException(CANT_READ_FILE + fileName);
         }
     }
 
-    private AttendanceBook generateAttendanceBook(BufferedReader bufferedReader) {
-        var lines = readLines(bufferedReader);
+    private InputStream getInputStream() throws FileNotFoundException {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (inputStream == null) {
+            throw new FileNotFoundException(CANT_FIND_FILE + fileName);
+        }
+        return inputStream;
+    }
+
+    private AttendanceBook generateAttendanceBook(List<String> lines) {
         var attendanceBook = new AttendanceBook(systemDateTime);
         for (String line : lines) {
             var parts = line.split(REGEX);

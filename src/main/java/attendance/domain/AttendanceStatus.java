@@ -7,7 +7,7 @@ public enum AttendanceStatus {
     LATE(5),
     ABSENCE(30);
 
-    private int value;
+    private final int value;
 
     AttendanceStatus(int value) {
         this.value = value;

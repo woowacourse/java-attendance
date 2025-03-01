@@ -13,8 +13,9 @@ import attendance.exception.AttendanceArgumentException;
 
 class AttendanceBookTest {
     private final SystemDateTime systemDateTime = new AttendanceDateTime();
-    private final AttendanceReader attendanceReader = new AttendanceReader("attendances.csv", systemDateTime);
-    private final AttendanceBook attendanceBook = attendanceReader.load();
+    private final AttendanceFileReader attendanceFileReader
+        = new AttendanceFileReader("attendances.csv", systemDateTime);
+    private final AttendanceBook attendanceBook = attendanceFileReader.load();
 
     AttendanceBookTest() throws FileNotFoundException {
     }
