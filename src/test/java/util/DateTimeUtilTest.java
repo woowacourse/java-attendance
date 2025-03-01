@@ -18,6 +18,7 @@ class DateTimeUtilTest {
     @Nested
     @DisplayName("예외가 발생하지 않는 테스트")
     class Success {
+
         private static Stream<Arguments> convertToLocalTimeCases() {
             return Stream.of(
                     Arguments.of("00:00", LocalTime.of(0, 0)),

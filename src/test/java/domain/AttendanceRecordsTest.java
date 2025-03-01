@@ -17,6 +17,7 @@ public class AttendanceRecordsTest {
     @Nested
     @DisplayName("예외가 발생하지 않는 테스트")
     class Success {
+
         @Test
         @DisplayName("출석 기록을 추가한다")
         void add_test() {
