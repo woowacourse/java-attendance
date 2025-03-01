@@ -22,4 +22,8 @@ public class Attendance {
     public void updateTime(LocalTime updateTime) {
         this.attendTime = updateTime;
     }
+
+    public boolean isSameNickname(String nickname) {
+        return this.nickname.equals(nickname);
+    }
 }

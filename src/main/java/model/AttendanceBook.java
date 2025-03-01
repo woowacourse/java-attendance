@@ -49,6 +49,8 @@ public class AttendanceBook {
     }
 
     public List<Attendance> findCrewAttendance(String nickname) {
-        return null;
+        return crewsAttendanceRecords.stream()
+                .filter(attendance ->  attendance.isSameNickname(nickname))
+                .toList();
     }
 }
