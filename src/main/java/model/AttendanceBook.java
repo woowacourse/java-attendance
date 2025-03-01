@@ -61,12 +61,6 @@ public class AttendanceBook {
         return crewAttendance;
     }
 
-    public long calculateAbsentCountByNickname(String nickname) {
-        return findCrewAttendance(nickname).stream()
-                .filter(Attendance::isAbsent)
-                .count();
-    }
-
     public long calculateAbsentCountByNicknameUntilDate(String nickname, LocalDate date) {
         int absentCount = 0;
         for (int day = 1; day < date.getDayOfMonth(); day++) {
