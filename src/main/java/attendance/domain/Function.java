@@ -1,4 +1,4 @@
-package attendance.model;
+package attendance.domain;
 
 import java.util.Arrays;
 
@@ -13,7 +13,7 @@ public enum Function {
     private final String value;
 
     Function(String value) {
-        
+
         this.value = value;
     }
 

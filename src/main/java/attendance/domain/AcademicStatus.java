@@ -1,4 +1,4 @@
-package attendance.model;
+package attendance.domain;
 
 public enum AcademicStatus {
     INTERVIEW("면담"),

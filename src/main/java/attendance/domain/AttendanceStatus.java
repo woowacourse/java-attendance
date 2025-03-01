@@ -1,9 +1,9 @@
-package attendance.model;
+package attendance.domain;
 
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
-    
+
     ATTEND("출석"),
     LATE("지각"),
     ABSENT("결석");

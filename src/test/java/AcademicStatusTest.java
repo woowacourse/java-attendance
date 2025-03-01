@@ -1,4 +1,4 @@
-import attendance.model.AcademicStatus;
+import attendance.domain.AcademicStatus;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;

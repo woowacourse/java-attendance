@@ -1,12 +1,12 @@
 package attendance.controller;
 
+import attendance.domain.AcademicStatus;
+import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.AttendanceTime;
+import attendance.domain.ExpulsionCandidate;
+import attendance.domain.Function;
 import attendance.dto.CrewAttendanceDTO;
-import attendance.model.AcademicStatus;
-import attendance.model.AttendanceBook;
-import attendance.model.AttendanceStatus;
-import attendance.model.AttendanceTime;
-import attendance.model.ExpulsionCandidate;
-import attendance.model.Function;
 import attendance.util.AttendanceReader;
 import attendance.util.Parser;
 import attendance.view.InputView;

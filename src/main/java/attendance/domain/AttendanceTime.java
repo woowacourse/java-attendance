@@ -1,4 +1,4 @@
-package attendance.model;
+package attendance.domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -88,7 +88,7 @@ public class AttendanceTime {
     }
 
     public LocalDate getDate() {
-        
+
         return LocalDate.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
     }
 }

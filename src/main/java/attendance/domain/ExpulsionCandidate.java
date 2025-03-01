@@ -1,4 +1,4 @@
-package attendance.model;
+package attendance.domain;
 
 public record ExpulsionCandidate(String name,
                                  int absent,

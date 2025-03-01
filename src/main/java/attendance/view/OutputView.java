@@ -1,10 +1,10 @@
 package attendance.view;
 
+import attendance.domain.AcademicStatus;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.AttendanceTime;
+import attendance.domain.ExpulsionCandidate;
 import attendance.dto.CrewAttendanceDTO;
-import attendance.model.AcademicStatus;
-import attendance.model.AttendanceStatus;
-import attendance.model.AttendanceTime;
-import attendance.model.ExpulsionCandidate;
 import java.time.format.TextStyle;
 import java.util.EnumMap;
 import java.util.List;

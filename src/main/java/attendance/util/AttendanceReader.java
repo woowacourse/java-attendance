@@ -1,7 +1,7 @@
 package attendance.util;
 
-import attendance.model.AttendanceBook;
-import attendance.model.AttendanceTime;
+import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceTime;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

@@ -1,4 +1,4 @@
-import attendance.model.AttendanceTime;
+import attendance.domain.AttendanceTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;

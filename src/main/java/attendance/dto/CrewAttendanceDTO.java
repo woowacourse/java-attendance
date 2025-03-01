@@ -1,8 +1,8 @@
 package attendance.dto;
 
-import attendance.model.AcademicStatus;
-import attendance.model.AttendanceStatus;
-import attendance.model.AttendanceTime;
+import attendance.domain.AcademicStatus;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.AttendanceTime;
 import java.util.EnumMap;
 import java.util.List;
 
