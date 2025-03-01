@@ -1,7 +1,6 @@
 package attendance.controller;
 
 import static attendance.view.Command.ATTENDANCE;
-import static attendance.view.Command.from;
 
 import attendance.AttendanceBookInitializer;
 import attendance.domain.Attendance;
@@ -25,7 +24,7 @@ public class AttendanceController {
     public void run(LocalDate today) {
         AttendanceBook attendanceBook = new AttendanceBookInitializer().Initialize();
 
-        Command command = from(inputView.inputCommand(today));
+        Command command = inputView.inputCommand(today);
         if (command == ATTENDANCE) {
             attend(today, attendanceBook);
         }

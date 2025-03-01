@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AttendanceBook {
-
+    
     private final List<Attendance> attendances;
 
     public AttendanceBook(Attendance... attendance) {

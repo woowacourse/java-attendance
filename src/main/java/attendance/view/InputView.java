@@ -17,9 +17,9 @@ public class InputView {
 
     private final Scanner scanner = new Scanner(System.in);
 
-    public String inputCommand(LocalDate today) {
+    public Command inputCommand(LocalDate today) {
         System.out.printf(INPUT_COMMAND_FORMAT, today.format(DateTimeFormatter.ofPattern("MM월 dd일 E요일")));
-        return readLine();
+        return Command.from(readLine());
     }
 
     public String inputNickname() {

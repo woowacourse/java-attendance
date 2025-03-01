@@ -8,11 +8,16 @@ public class OutputView {
 
 
     public void printAttendance(Attendance attendance) {
+        printEmptyLine();
         System.out.printf(
                 "%s (%s)\n",
                 attendance.getAttendanceDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
                 toKoreaAttendanceStatus(attendance.getAttendanceStatus())
         );
+    }
+
+    private void printEmptyLine() {
+        System.out.println();
     }
 
     public String toKoreaAttendanceStatus(AttendanceStatus attendanceStatus) {
