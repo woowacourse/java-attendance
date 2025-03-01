@@ -8,12 +8,22 @@ import java.util.Locale;
 import model.AttendanceStatus;
 
 public class AttendanceRecordFormatter {
-    public static String attendanceRecordFormatter(LocalTime localTime, AttendanceStatus attendanceStatus, LocalDate localDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+    public static String attendanceRecordFormatter(LocalTime localTime,
+                                                   AttendanceStatus attendanceStatus,
+                                                   LocalDate localDate) {
+        String attendanceTime = localTimeFormatter(localTime);
         return localDate.getMonthValue() + "월" +
                 localDate.getDayOfMonth() + "일" +
                 localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA) +
-                localTime.format(formatter) +
-                "(" + attendanceStatus.getAttendanceStatus() + ")";
+                attendanceTime +
+                " (" + attendanceStatus.getAttendanceStatus() + ")";
+    }
+
+    private static String localTimeFormatter(LocalTime localTime){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        if (localTime == null){
+            return "--:--";
+        }
+        return localTime.format(formatter);
     }
 }
