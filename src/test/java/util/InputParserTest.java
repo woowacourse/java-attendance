@@ -2,6 +2,7 @@ package util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -61,5 +62,21 @@ class InputParserTest {
         // then
         String expected = "AB C";
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("입력 값을 분리한다.")
+    void test5() {
+        // given
+        String input = "AB C";
+
+        // when
+        List<String> result = InputParser.split(input, " ");
+
+        // then
+        String expected1 = "AB";
+        String expected2 = "C";
+        assertThat(result.get(0)).isEqualTo(expected1);
+        assertThat(result.get(1)).isEqualTo(expected2);
     }
 }
