@@ -103,4 +103,10 @@ class AttendanceBookTest {
         assertThat(infoByCrew.getAttendanceInfos().getFirst().getHour()).isEqualTo(10);
         assertThat(infoByCrew.getAttendanceInfos().getFirst().getMinute()).isEqualTo(6);
     }
+
+    @Test
+    void 위험관리대상_크루들의_정보를_출력한다() {
+        // TODO : Q4
+    }
+
 }

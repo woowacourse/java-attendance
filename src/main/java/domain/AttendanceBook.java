@@ -2,6 +2,8 @@ package domain;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
 
@@ -34,6 +36,17 @@ public class AttendanceBook {
 
     public AttendanceInfos findInfoByCrew(final Crew crew) {
         return AttendanceInfos.from(book.get(crew).getAttendanceInfos());
+    }
+
+    public AttendanceBook findRiskCrewBook(final CampusDate date) {
+        return new AttendanceBook(book.entrySet().stream()
+                .filter(entry -> isRiskCrew(date, entry))
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
+    }
+
+    private boolean isRiskCrew(final CampusDate date, final Entry<Crew, AttendanceInfos> entry) {
+        return entry.getValue().countsByDate(date).calculateAttendanceRiskLevel()
+                != AttendanceRiskLevel.NORMAL;
     }
 
     public Map<Crew, AttendanceInfos> getBook() {
