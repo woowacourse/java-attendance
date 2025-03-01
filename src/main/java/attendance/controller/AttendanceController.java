@@ -1,100 +1,114 @@
 package attendance.controller;
 
-import attendance.dto.AttendanceInfoDto;
-import attendance.dto.EditResponseDto;
-import attendance.dto.PenaltyCrewInfoDto;
+import attendance.dto.AttendanceChangeInfoDto;
+import attendance.dto.CrewAttendanceResultDto;
+import attendance.dto.DangerCrewDto;
 import attendance.service.AttendanceService;
 import attendance.service.DateGenerator;
-import attendance.utils.HolidayChecker;
 import attendance.utils.Option;
-import attendance.view.InputView;
-import attendance.view.OutputView;
+import attendance.utils.WorkDayChecker;
+import attendance.view.InputViewer;
+import attendance.view.OutputViewer;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Supplier;
 
 public class AttendanceController {
 
-    private final InputView inputView;
-    private final OutputView outputView;
     private final AttendanceService attendanceService;
     private final DateGenerator dateGenerator;
 
-    public AttendanceController(InputView inputView, OutputView outputView, AttendanceService attendanceService,
-                                DateGenerator dateGenerator) {
-        this.inputView = inputView;
-        this.outputView = outputView;
+    public AttendanceController(AttendanceService attendanceService, DateGenerator dateGenerator) {
         this.attendanceService = attendanceService;
         this.dateGenerator = dateGenerator;
     }
 
     public void run() {
-        attendanceService.readFile();
-        LocalDate today = dateGenerator.generate();
-        Option option = null;
-
-        while (option != Option.QUIT) {
-            option = inputView.readOption(today);
-            chooseOption(option, today);
-        }
+        Option option;
+        do {
+            option = executeWithPrintError(this::readOption);
+            Option copyOption = option;
+            executeWithPrintError(() -> chooseOption(copyOption));
+        } while (option.equals(Option.QUIT));
     }
 
-    private void chooseOption(Option option, LocalDate today) {
-        if (option == Option.ONE) {
-            optionOne(today);
+    private Option readOption() {
+        return InputViewer.readOption(dateGenerator.generate());
+    }
+
+    private void chooseOption(Option option) {
+        if (option.equals(Option.ONE)) {
+            optionOne();
         }
 
-        if (option == Option.TWO) {
+        if (option.equals(Option.TWO)) {
             optionTwo();
         }
 
-        if (option == Option.THREE) {
-            optionThree(today);
+        if (option.equals(Option.THREE)) {
+            optionThree();
         }
 
-        if (option == Option.FOUR) {
-            optionFour(today);
+        if (option.equals(Option.FOUR)) {
+            optionFour();
         }
     }
 
-    private void optionOne(LocalDate today) {
-        HolidayChecker.validWeekDay(today);
+    private void optionOne() {
+        LocalDate today = dateGenerator.generate();
+        WorkDayChecker.validateWorkDay(today);
 
-        String nickname = inputView.readNickname();
-        attendanceService.findName(nickname);
+        String nickname = InputViewer.readNickname();
+        attendanceService.validateName(nickname);
 
-        LocalTime localTime = inputView.readTime();
-        attendanceService.insertAttendance(nickname, today, localTime);
+        LocalTime attendanceTime = InputViewer.readAttendanceTime();
+        attendanceService.addAttendanceByName(nickname, attendanceTime);
 
-        String attendanceStatus = attendanceService.getAttendanceStatus(today, localTime);
-        outputView.addResult(new AttendanceInfoDto(today, localTime, attendanceStatus));
+        OutputViewer.printAttendance(today, attendanceTime);
     }
 
     private void optionTwo() {
-        String nickName = inputView.readEditNickName();
-        attendanceService.findName(nickName);
-        LocalDate date = inputView.readEditDate();
-        LocalTime editTime = inputView.readEditTime();
+        String nickname = InputViewer.readNicknameForEdit();
+        attendanceService.validateName(nickname);
 
-        EditResponseDto responseDto = attendanceService.edit(nickName, date, editTime);
+        LocalDate editDate = InputViewer.readLocalDateForEdit();
+        LocalTime editTime = InputViewer.readLocalTimeForEdit();
 
-        outputView.editResult(responseDto);
+        AttendanceChangeInfoDto infoDto = attendanceService.editAttendanceByName(nickname, editDate, editTime);
+
+        OutputViewer.printEditAttendance(infoDto.attendanceDate(), infoDto.previousTime(), infoDto.editTime());
     }
 
-    private void optionThree(LocalDate today) {
-        String nickname = inputView.readNickname();
-        attendanceService.findName(nickname);
+    private void optionThree() {
+        String nickname = InputViewer.readNickname();
 
-        Map<LocalDate, AttendanceInfoDto> dtoMap = attendanceService.getAttendanceInfos(nickname, today);
-        List<Integer> counts = attendanceService.getAttendanceCounts(nickname, today);
-        String penalty = attendanceService.getAttendancePenalty(counts);
+        CrewAttendanceResultDto result = attendanceService.getAttendanceResultByName(nickname);
 
-        outputView.attendanceResult(nickname, dtoMap, counts, penalty, today);
+        OutputViewer.printAttendanceResultByCrew(nickname, result, dateGenerator.generate());
     }
 
-    private void optionFour(LocalDate today) {
-        List<PenaltyCrewInfoDto> crewsInfos = attendanceService.getCrewsName(today);
-        outputView.penaltyCrews(crewsInfos);
+    private void optionFour() {
+        List<DangerCrewDto> dangerCrewDtos = attendanceService.getDangerCrews();
+
+        OutputViewer.printDangerCrews(dangerCrewDtos);
     }
+
+    private void executeWithPrintError(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (final IllegalArgumentException e) {
+            OutputViewer.printErrorMessage(e);
+        }
+    }
+
+    private <T> T executeWithPrintError(Supplier<T> inputSupplier) {
+        try {
+            return inputSupplier.get();
+        } catch (final IllegalArgumentException e) {
+            OutputViewer.printErrorMessage(e);
+            throw e;
+        }
+    }
+
 }

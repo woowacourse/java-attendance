@@ -1,21 +1,15 @@
 package attendance.common;
 
-import attendance.utils.DateConverter;
-import java.time.LocalDate;
-
 public enum ErrorMessage {
 
-    INVALID_OPTION_INPUT("기능은 1,2,3,4,Q만 입력 가능합니다"),
-    NOT_OPEN_TIME("운영시간은 08 ~ 23시 까지 입니다."),
-    NO_NAME("등록되지 않은 닉네임입니다."),
-    NO_ATTENDANCE_RECORD("출석 기록을 찾을 수 없습니다."),
-    ALREADY_ATTENDED("이미 출석을 하였습니다. 수정 기능을 이용해주세요."),
-    INVALID_DATE("출석기록하는 달이 아닙니다."),
-    NOT_OPEN_DAY("%s은 등교일이 아닙니다."),
-    INVALID_TIME_FORMAT_INPUT("HH:mm 형식을 지켜 작성해주세요."),
-    INVALID_FORMAT("올바른 입력 형식이 아닙니다.");
-
-    private static final String PREFIX = "[ERROR] ";
+    INVALID_ATTENDANCE_DAY("주말과 공휴일은 운영하지 않습니다."),
+    INVALID_ATTENDANCE_TIME("운영 시간이 아닙니다. 8:00 ~ 23:00 사이에 출석해주세요."),
+    ALREADY_ATTENDANCE("이미 출석 처리가 되었습니다."),
+    NOT_EXIST_ATTENDANCE("출석 정보가 존재하지 않습니다. 날짜를 확인해주세요."),
+    NOT_EXIST_CREW("해당 크루가 존재하지 않습니다."),
+    INVALID_INPUT_OPTION("숫자 1~4 또는 문자 'Q'만 입력할 수 있습니다."),
+    INVALID_TIME_FORMAT("시간 형식이 올바르지 않습니다. HH:mm 형식이어야 합니다. (예: 09:59)"),
+    INVALID_DAY_INPUT("숫자 1~31 로만 입력할 수 있습니다.");
 
     private final String message;
 
@@ -23,11 +17,7 @@ public enum ErrorMessage {
         this.message = message;
     }
 
-    public static String getFormattedMessage(LocalDate localDate) {
-        return String.format(NOT_OPEN_DAY.getMessage(), DateConverter.convertToString(localDate));
-    }
-
     public String getMessage() {
-        return PREFIX + message;
+        return message;
     }
 }

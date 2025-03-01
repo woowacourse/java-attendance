@@ -4,10 +4,9 @@ import attendance.domain.Attendance;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record AttendanceInfoDto(LocalDate attendanceDate, LocalTime attendanceTime, String statusMessage) {
+public record AttendanceInfoDto(LocalDate attendanceDate, LocalTime attendanceTime) {
 
-    public static AttendanceInfoDto toDto(Attendance attendance) {
-        return new AttendanceInfoDto(attendance.getAttendanceDate(), attendance.getAttendanceTime(),
-                attendance.getStatusMessage());
+    public static AttendanceInfoDto from(Attendance attendance) {
+        return new AttendanceInfoDto(attendance.getAttendanceDate(), attendance.getAttendanceTime());
     }
 }

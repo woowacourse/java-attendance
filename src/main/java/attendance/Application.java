@@ -1,19 +1,20 @@
 package attendance;
 
+import attendance.common.Constants;
 import attendance.controller.AttendanceController;
 import attendance.service.AttendanceService;
+import attendance.service.DateGenerator;
 import attendance.service.DateGeneratorImpl;
-import attendance.utils.ErrorUtils;
-import attendance.view.InputView;
-import attendance.view.OutputView;
+import attendance.utils.FileReaderUtil;
 
 public class Application {
 
     public static void main(String[] args) {
-        AttendanceController controller = new AttendanceController(
-                new InputView(), new OutputView(), new AttendanceService(), new DateGeneratorImpl()
-        );
+        DateGenerator dateGenerator = new DateGeneratorImpl();
+        AttendanceService attendanceService = new AttendanceService(dateGenerator,
+                FileReaderUtil.readFile(Constants.FILE_PATH));
+        AttendanceController attendanceController = new AttendanceController(attendanceService, dateGenerator);
 
-        ErrorUtils.executeWithPrintError(controller::run);
+        attendanceController.run();
     }
 }
