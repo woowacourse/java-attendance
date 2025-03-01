@@ -3,7 +3,6 @@ package view;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class InputView {
@@ -12,6 +11,15 @@ public class InputView {
 
     public InputView() {
         sc = new Scanner(System.in);
+    }
+
+    public UserCommand readUserCommand() {
+        System.out.println("1. 출석 확인");
+        System.out.println("2. 출석 수정");
+        System.out.println("3. 크루별 출석 기록 확인");
+        System.out.println("4. 제적 위험자 확인");
+        System.out.println("Q. 종료");
+        return UserCommand.of(sc.nextLine());
     }
 
     public String readCrewName() {
@@ -42,7 +50,7 @@ public class InputView {
         }
     }
 
-    public LocalTime readUpdateTime(){
+    public LocalTime readUpdateTime() {
         System.out.println("언제로 변경하겠습니까?");
         try {
             return LocalTime.parse(sc.nextLine(), TIME_FORMATTER);

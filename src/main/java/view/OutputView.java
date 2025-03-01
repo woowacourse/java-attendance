@@ -3,6 +3,7 @@ package view;
 
 import dto.AttendanceRecordDto;
 import dto.RiskOfExpulsionCrewDto;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,13 @@ public class OutputView {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm");
     private static final DateTimeFormatter EMPTY_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--");
+    private static final DateTimeFormatter INTRO_DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter EMPTY_FORMATTER = DateTimeFormatter.ofPattern("--:--");
+
+    public void printIntroduceCommand(final LocalDate date) {
+        System.out.printf("오늘은 %s입니다. 기능을 선택해 주세요.\n", date.format(INTRO_DATE_FORMATTER));
+    }
 
     public void printUpdateAttendanceResult(final AttendanceRecordDto before, final AttendanceRecordDto after) {
         System.out.printf("%s -> %s", formatAttendanceRecord(before), formatAttendanceTime(after));

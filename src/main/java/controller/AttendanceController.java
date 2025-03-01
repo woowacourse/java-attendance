@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import view.InputView;
 import view.OutputView;
+import view.UserCommand;
 
 public class AttendanceController {
     private final SavedDataLoader savedDataLoader;
@@ -36,10 +37,27 @@ public class AttendanceController {
         final AttendanceBook attendanceBook = new AttendanceBook();
         final Crews crews = savedDataLoader.loadCrews();
         savedDataLoader.loadAttendances(attendanceBook, crews);
-        updateAttendance(attendanceBook, crews);
+        retryUntilQuit(attendanceBook, crews);
     }
 
-    public void attendance(final AttendanceBook attendanceBook, final Crews crews) {
+    private void retryUntilQuit(final AttendanceBook attendanceBook, final Crews crews) {
+        UserCommand userCommand = inputUserCommand();
+        while (userCommand != UserCommand.QUIT) {
+            runCommand(userCommand, attendanceBook, crews);
+            userCommand = inputUserCommand();
+        }
+    }
+
+    private void runCommand(final UserCommand userCommand, final AttendanceBook attendanceBook, final Crews crews) {
+        switch (userCommand) {
+            case CHECK_ATTENDANCE -> attendance(attendanceBook, crews);
+            case UPDATE_ATTENDANCE -> updateAttendance(attendanceBook, crews);
+            case CHECK_ATTENDANCE_HISTORY -> checkAttendanceForEachCrew(attendanceBook, crews);
+            case CHECK_RISK_OF_EXPULSION_CREWS -> checkRiskOfExpulsionCrews(attendanceBook);
+        }
+    }
+
+    private void attendance(final AttendanceBook attendanceBook, final Crews crews) {
         final Crew crew = inputCrew(crews);
         final LocalTime attendanceTime = inputView.readAttendanceTime();
 
@@ -49,7 +67,7 @@ public class AttendanceController {
         outputView.printAttendanceRecord(dtoConverter.convertToAttendanceRecordDto(attendanceRecord));
     }
 
-    public void updateAttendance(final AttendanceBook attendanceBook, final Crews crews) {
+    private void updateAttendance(final AttendanceBook attendanceBook, final Crews crews) {
         final Crew crew = crews.findByName(inputView.readUpdateCrewName());
         final int updateMonthOfDay = inputView.readUpdateMonthOfDay();
         final LocalTime updateTime = inputView.readUpdateTime();
@@ -65,7 +83,7 @@ public class AttendanceController {
 
     }
 
-    public void checkAttendanceForEachCrew(final AttendanceBook attendanceBook, final Crews crews) {
+    private void checkAttendanceForEachCrew(final AttendanceBook attendanceBook, final Crews crews) {
         final Crew crew = inputCrew(crews);
         outputView.printIntroduceAttendanceRecords(crew.getName());
         final AttendanceHistory attendanceHistory = outputAttendanceRecord(attendanceBook, crew);
@@ -92,11 +110,16 @@ public class AttendanceController {
         }
     }
 
-    public void checkRiskOfExpulsionCrews(final AttendanceBook attendanceBook) {
+    private void checkRiskOfExpulsionCrews(final AttendanceBook attendanceBook) {
         final List<AttendanceHistory> attendanceHistories = attendanceBook.calculateRiskOfExpulsionHistory(now());
         final List<RiskOfExpulsionCrewDto> riskOfExpulsionCrewDtos = dtoConverter.convertToRiskOfExpulsionCrewDtos(
                 attendanceHistories, now());
         outputView.printRiskOfExpulsionCrews(riskOfExpulsionCrewDtos);
+    }
+
+    private UserCommand inputUserCommand() {
+        outputView.printIntroduceCommand(now());
+        return inputView.readUserCommand();
     }
 
     private Crew inputCrew(final Crews crews) {
