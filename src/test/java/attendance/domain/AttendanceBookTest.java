@@ -64,4 +64,17 @@ public class AttendanceBookTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorMessage.CREW_NICKNAME_NOT_EXIST_ERROR.getMessage());
     }
+
+    @Test
+    void 출석부에서_해당날짜_이전까지_크루의_출석기록을_가져올수_있다() {
+        AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
+        Crew crew = new Crew(new Nickname("듀이"));
+        Attendance attendance1 = new Attendance(LocalDate.of(2024, 12, 11), LocalTime.of(10, 0));
+        Attendance attendance2 = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
+        attendanceBook.add(crew, attendance1);
+        attendanceBook.add(crew, attendance2);
+
+        LocalDate today = LocalDate.of(2024, 12, 13);
+        assertThat(attendanceBook.getRecordOfCrew(today, crew)).hasSize(2);
+    }
 }
