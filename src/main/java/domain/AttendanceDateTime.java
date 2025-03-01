@@ -25,6 +25,12 @@ public class AttendanceDateTime {
         return this.date.isEqual(date);
     }
 
+    public boolean isBetweenDates(LocalDate fromInclusive, LocalDate toInclusive) {
+        return date.equals(fromInclusive)
+            || date.equals(toInclusive)
+            || (date.isAfter(fromInclusive) && date.isBefore(toInclusive));
+    }
+
     public AttendanceStatus getAttendanceStatus() {
         if (time == null) {
             return AttendanceStatus.ABSENCE;

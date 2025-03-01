@@ -35,7 +35,7 @@ public class AttendanceBook {
     public List<AttendanceDateTime> listAttendancesOfCrew(Crew crew, LocalDate fromInclusive,
         LocalDate endInclusive) {
         AttendanceRecords records = crewRecords.getOrDefault(crew, new AttendanceRecords());
-        return records.getRecordsWithMissingDates(fromInclusive, endInclusive);
+        return records.getRecordsWithMissingDatesBetween(fromInclusive, endInclusive);
     }
 
     public Optional<AttendanceDateTime> findRecordByCrewAndDate(Crew crew, LocalDate date) {

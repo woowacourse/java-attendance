@@ -83,7 +83,7 @@ public class AttendanceRecordsTest {
 
         var fromMonday = LocalDate.of(2025, 2, 17);
         var toSunday = LocalDate.of(2025, 2, 23);
-        List<AttendanceDateTime> dates = records.getRecordsWithMissingDates(fromMonday, toSunday);
+        List<AttendanceDateTime> dates = records.getRecordsWithMissingDatesBetween(fromMonday, toSunday);
 
         assertAll(
             () -> assertThat(dates).hasSize(5),
@@ -94,6 +94,22 @@ public class AttendanceRecordsTest {
                 AttendanceDateTime.ofAbsence(LocalDate.of(2025, 2, 20)),
                 AttendanceDateTime.ofAbsence(LocalDate.of(2025, 2, 21))
             )
+        );
+    }
+
+    @Test
+    void 두_날짜_사이의_출석기록을_제외하여_조회할_수_있다() {
+        records.add(AttendanceDateTime.of(2025, 2, 17, 13, 0));
+        records.add(AttendanceDateTime.of(2025, 2, 18, 10, 0));
+        records.add(AttendanceDateTime.of(2025, 2, 19, 10, 0));
+
+        var fromTuesday = LocalDate.of(2025, 2, 18);
+        var toWednesday = LocalDate.of(2025, 2, 19);
+        List<AttendanceDateTime> dates = records.getRecordsWithMissingDatesBetween(fromTuesday, toWednesday);
+
+        assertAll(
+            () -> assertThat(dates).hasSize(2),
+            () -> assertThat(dates).doesNotContain(AttendanceDateTime.of(2025, 2, 17, 13, 0))
         );
     }
 }

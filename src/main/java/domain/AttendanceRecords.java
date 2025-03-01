@@ -32,19 +32,20 @@ public class AttendanceRecords {
         return new ArrayList<>(records);
     }
 
-    public List<AttendanceDateTime> getRecordsWithMissingDates(LocalDate fromInclusive, LocalDate toInclusive) {
-        int countToConsider = toInclusive.getDayOfMonth() - fromInclusive.getDayOfMonth() + 1;
-        List<AttendanceDateTime> missingDates = collectMissingDates(fromInclusive, countToConsider);
+    public List<AttendanceDateTime> getRecordsWithMissingDatesBetween(LocalDate fromInclusive, LocalDate toInclusive) {
+        List<AttendanceDateTime> recordsBetweenDates = records.stream()
+            .filter(adt -> adt.isBetweenDates(fromInclusive, toInclusive))
+            .toList();
 
-        return concat(records, missingDates);
+        List<AttendanceDateTime> missingDates = collectMissingDates(recordsBetweenDates, fromInclusive, toInclusive);
+        return concat(recordsBetweenDates, missingDates);
     }
 
-    private List<AttendanceDateTime> collectMissingDates(LocalDate fromInclusive, int count) {
+    private List<AttendanceDateTime> collectMissingDates(List<AttendanceDateTime> records, LocalDate fromInclusive, LocalDate toInclusive) {
         List<LocalDate> presentDates = records.stream()
             .map(AttendanceDateTime::getDate)
             .toList();
-        return Stream.iterate(fromInclusive, date -> date.plusDays(1))
-            .limit(count)
+        return fromInclusive.datesUntil(toInclusive.plusDays(1))
             .filter(DateUtils::isWorkingDay)
             .filter(date -> !presentDates.contains(date))
             .map(AttendanceDateTime::ofAbsence)
