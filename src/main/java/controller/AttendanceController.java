@@ -34,7 +34,7 @@ public class AttendanceController {
             checkIn();
         }
         if (menuSelection.equals("2")) {
-            editRecord();
+            updateRecord();
         }
     }
 
@@ -54,16 +54,16 @@ public class AttendanceController {
         outputView.printCheckInResult(attendanceRecord);
     }
 
-    private void editRecord() {
-        String nickname = inputView.readEditNickname();
-        String dateOfMonth = inputView.readEditDate();
-        String time = inputView.readEditTime();
+    private void updateRecord() {
+        String nickname = inputView.readUpdateNickname();
+        String dateOfMonth = inputView.readUpdateDate();
+        String time = inputView.readUpdateTime();
 
         Crew crew = new Crew(nickname);
         crewRecords.validateCrew(crew);
         LocalDate date = LocalDate.of(2024, 12, Integer.parseInt(dateOfMonth));
         AttendanceRecord oldRecord = crewRecords.getRecordOnDate(crew, date);
-        crewRecords.editRecord(crew, date, LocalTime.parse(time));
+        crewRecords.updateRecord(crew, date, LocalTime.parse(time));
         AttendanceRecord newRecord = crewRecords.getRecordOnDate(crew, date);
         outputView.printUpdateResult(oldRecord, newRecord, LocalTime.parse(time));
     }

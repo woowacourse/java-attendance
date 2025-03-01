@@ -22,7 +22,7 @@ public class CrewRecords {
         records.get(crew).add(record);
     }
 
-    public void editRecord(Crew crew, LocalDate oldDate, LocalTime newTime) {
+    public void updateRecord(Crew crew, LocalDate oldDate, LocalTime newTime) {
         records.get(crew).update(oldDate, newTime);
     }
 

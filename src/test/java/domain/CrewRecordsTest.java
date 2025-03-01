@@ -45,7 +45,7 @@ class CrewRecordsTest {
 
     @DisplayName("입력 받은 날짜의 출석 시간을 수정할 수 있다.")
     @Test
-    void editRecordTest() {
+    void updateRecordTest() {
         // given
         CrewRecords crewRecords = new CrewRecords();
         Crew crew = new Crew("저스틴");
@@ -56,7 +56,7 @@ class CrewRecordsTest {
         // when
         crewRecords.addCrewRecords(crew, new AttendanceRecords());
         crewRecords.addRecord(crew, oldRecord);
-        crewRecords.editRecord(crew, oldDate, newTime);
+        crewRecords.updateRecord(crew, oldDate, newTime);
 
         // then
         assertAll(
