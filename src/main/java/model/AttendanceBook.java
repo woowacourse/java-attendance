@@ -60,7 +60,9 @@ public class AttendanceBook {
         return crewAttendance;
     }
 
-    public int calculateAbsentCountByNickname(String nickname) {
-        return 1;
+    public long calculateAbsentCountByNickname(String nickname) {
+        return findCrewAttendance(nickname).stream()
+                .filter(Attendance::isAbsent)
+                .count();
     }
 }

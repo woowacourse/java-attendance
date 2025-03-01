@@ -26,4 +26,8 @@ public class Attendance {
     public boolean isSameNickname(String nickname) {
         return this.nickname.equals(nickname);
     }
+
+    public boolean isAbsent() {
+        return attendTime.isAfter(LocalTime.of(10, 30));
+    }
 }
