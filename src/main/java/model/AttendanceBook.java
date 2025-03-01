@@ -1,6 +1,5 @@
 package model;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -29,12 +28,12 @@ public class AttendanceBook {
 
     private boolean isAlreadyAttend(String nickname, LocalDate date) {
         return crewsAttendanceRecords.stream()
-                .anyMatch(attendance -> attendance.isSameDate(nickname, date));
+                .anyMatch(attendance -> attendance.isSameDate(date) && attendance.isSameNickname(nickname));
     }
 
     public Attendance findAttendance(String nickname, LocalDate date) {
         return crewsAttendanceRecords.stream()
-                .filter(attendance -> attendance.isSameDate(nickname, date))
+                .filter(attendance -> attendance.isSameDate(date) && attendance.isSameNickname(nickname))
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
     }
@@ -49,7 +48,7 @@ public class AttendanceBook {
         return findAttendance;
     }
 
-    public List<Attendance> findCrewAttendance(String nickname) {
+    public CrewAttendances findCrewAttendance(String nickname) {
         List<Attendance> crewAttendance = crewsAttendanceRecords.stream()
                 .filter(attendance -> attendance.isSameNickname(nickname))
                 .toList();
@@ -58,54 +57,6 @@ public class AttendanceBook {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
 
-        return crewAttendance;
-    }
-
-    public long calculateAbsentCountByNicknameUntilDate(String nickname, LocalDate date) {
-        int absentCount = 0;
-        for (int day = 1; day < date.getDayOfMonth(); day++) {
-            if (isWeekend(date.withDayOfMonth(day)) || isHoliday(date.withDayOfMonth(day))) {
-                continue;
-            }
-
-            absentCount += increaseAbsentCountByNickname(nickname, date.withDayOfMonth(day));
-        }
-
-        return absentCount;
-    }
-
-    private boolean isWeekend(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
-    }
-
-    private boolean isHoliday(LocalDate date) {
-        return date.isEqual(LocalDate.of(2024, 12, 25));
-    }
-
-    private int increaseAbsentCountByNickname(String nickname, LocalDate date) {
-        for (Attendance crewsAttendanceRecord : crewsAttendanceRecords) {
-            if (crewsAttendanceRecord.isSameDate(nickname, date)) {
-                if (crewsAttendanceRecord.isAbsent()) {
-                    return 1;
-                }
-                return 0;
-            }
-        }
-
-        return 1;
-    }
-
-    public long calculateLateCountByNicknameUntilDate(String nickname, LocalDate date) {
-        return findCrewAttendance(nickname).stream()
-                .filter(attendance -> attendance.isBefore(date))
-                .filter(Attendance::isLate)
-                .count();
-    }
-
-    public long calculateAttendCountByNicknameUntilDate(String nickname, LocalDate date) {
-        return findCrewAttendance(nickname).stream()
-                .filter(attendance -> attendance.isBefore(date))
-                .filter(Attendance::isAttend)
-                .count();
+        return new CrewAttendances(nickname, crewAttendance);
     }
 }

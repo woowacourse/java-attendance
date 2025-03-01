@@ -3,6 +3,7 @@ import java.time.LocalTime;
 import java.util.List;
 import model.Attendance;
 import model.AttendanceBook;
+import model.CrewAttendances;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,8 +24,8 @@ public class CrewAttendanceTest {
         final var crewAttendances = attendanceBook.findCrewAttendance(nickname);
 
         // then
-        Assertions.assertThat(crewAttendances)
-                .containsExactly(attendRecord1, attendRecord2);
+        Assertions.assertThat(crewAttendances.allAttendanceCount())
+                .isEqualTo(2);
     }
 
     @DisplayName("없는 닉네임 입력 시 예외를 발생한다.")
@@ -48,13 +49,14 @@ public class CrewAttendanceTest {
     void calculate_absent_count_but_none_record() {
         // given
         LocalDate today = LocalDate.of(2024, 12, 6);
-        Attendance attendRecord1 = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 33));
-        Attendance attendRecord2 = new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 31));
-        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendRecord1, attendRecord2));
-        final var nickname = "율무";
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 33)),
+                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 31))
+        ));
+        CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
 
         // when
-        final var absentCount = attendanceBook.calculateAbsentCountByNicknameUntilDate(nickname, today);
+        final var absentCount = crewAttendances.calculateAbsentCountUntilDate(today);
 
         // then
         Assertions.assertThat(absentCount)
@@ -66,13 +68,14 @@ public class CrewAttendanceTest {
     void calculate_absent_count_except_weekend() {
         // given
         LocalDate today = LocalDate.of(2024, 12, 8);
-        Attendance attendRecord1 = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 33));
-        Attendance attendRecord2 = new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 31));
-        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendRecord1, attendRecord2));
-        final var nickname = "율무";
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 33)),
+                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 31))
+        ));
+        CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
 
         // when
-        final var absentCount = attendanceBook.calculateAbsentCountByNicknameUntilDate(nickname, today);
+        final var absentCount = crewAttendances.calculateAbsentCountUntilDate(today);
 
         // then
         Assertions.assertThat(absentCount)
@@ -91,11 +94,10 @@ public class CrewAttendanceTest {
                 new Attendance("율무", LocalDate.of(2024, 12, 5), LocalTime.of(10, 3)),
                 new Attendance("율무", LocalDate.of(2024, 12, 6), LocalTime.of(10, 3))
                 ));
-
-        final var nickname = "율무";
+        CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
 
         // when
-        final var absentCount = attendanceBook.calculateAbsentCountByNicknameUntilDate(nickname, today);
+        final var absentCount = crewAttendances.calculateAbsentCountUntilDate(today);
 
         // then
         Assertions.assertThat(absentCount)
@@ -111,10 +113,10 @@ public class CrewAttendanceTest {
                 new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
                 new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 10))
         ));
-        final var nickname = "율무";
+        CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
 
         // when
-        final var lateCount = attendanceBook.calculateLateCountByNicknameUntilDate(nickname, today);
+        final var lateCount = crewAttendances.calculateLateCountUntilDate(today);
 
         // then
         Assertions.assertThat(lateCount)
@@ -130,13 +132,32 @@ public class CrewAttendanceTest {
                 new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
                 new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(9, 47))
         ));
-        final var nickname = "율무";
+        CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
 
         // when
-        final var attendCount = attendanceBook.calculateAttendCountByNicknameUntilDate(nickname, today);
+        final var attendCount = crewAttendances.calculateAttendCountUntilDate(today);
 
         // then
         Assertions.assertThat(attendCount)
                 .isEqualTo(2);
+    }
+
+    @DisplayName("크루의 출석 상태를 결정한다.")
+    @Test
+    void determine_crew_absent_penalty() {
+//        // given
+//        LocalDate today = LocalDate.of(2024, 12, 5);
+//        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+//                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+//                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(9, 47))
+//        ));
+//        CrewAttendances crewAttendances = attendanceBook.findCrewAttendance2("율무");
+//
+//        // when
+//        final var penalty = attendanceBook.
+//
+//        // then
+//        Assertions.assertThat(attendCount)
+//                .isEqualTo(2);
     }
 }

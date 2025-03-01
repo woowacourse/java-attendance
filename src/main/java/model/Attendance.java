@@ -15,8 +15,8 @@ public class Attendance {
         this.attendTime = attendTime;
     }
 
-    public boolean isSameDate(String nickname, LocalDate attendDate) {
-        return this.nickname.equals(nickname) && this.attendDate.isEqual(attendDate);
+    public boolean isSameDate(LocalDate attendDate) {
+        return this.attendDate.isEqual(attendDate);
     }
 
     public void updateTime(LocalTime updateTime) {
