@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record Attendance(LocalTime time, AttendanceStatus status) {
-    public Attendance(LocalTime time, LocalDate date) {
+    public Attendance(LocalDate date, LocalTime time) {
         this(time, AttendanceStatus.of(date, time));
     }
 }
