@@ -51,4 +51,12 @@ public class StudentTest {
                 student.isExistSameAttendanceDateTime(deleteAttendanceDateTime)
         );
     }
+
+    @Test
+    @DisplayName("이름이 같은지 확이하는 메서드 테스트")
+    void test4() {
+        Assertions.assertTrue(
+                student.isSameName("이든")
+        );
+    }
 }
