@@ -23,6 +23,16 @@ public class AttendanceReaderTest {
     }
 
     @Test
+    @DisplayName("csv 정보를 불러와, AttendanceBook으로 반환한다.")
+    void test_returnAttendanceBookFromCsv() throws FileNotFoundException {
+        var attendanceReader = new AttendanceReader(ATTENDANCE_CSV);
+
+        var loadedBook = attendanceReader.load();
+        var attendanceBook = new AttendanceBook();
+        assertSame(loadedBook, attendanceBook);
+    }
+
+    @Test
     @DisplayName("잘못된 주소의 csv 정보를 불러올때, 예외가 발생한다.")
     void error_LoadingCsvWithWrongFileName() {
         var attendanceReader = new AttendanceReader("/ErrorFile.csv");
