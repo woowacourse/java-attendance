@@ -1,9 +1,13 @@
 package attendance.view.ouput;
 
+import attendance.controller.dto.AttendanceRecordsDto;
+import attendance.controller.dto.AttendanceRecordsDto.AttendanceRecordDto;
 import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceDateTime;
+import attendance.domain.AttendancePenalty;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceTime;
+import java.util.List;
 
 public class OutputView {
 
@@ -52,6 +56,39 @@ public class OutputView {
                 .orElse(null)), modifiedAttendanceStatus.getTitle());
     }
 
+    public void printAttendanceRecord(final AttendanceRecordsDto attendanceRecordsDto) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n",
+            attendanceRecordsDto.crew()
+                .getNickname());
+        printAttendanceRecordDtos(attendanceRecordsDto.attendanceRecords());
+        printAttendanceStatus(
+            attendanceRecordsDto.attendanceCount(),
+            attendanceRecordsDto.lateCount(),
+            attendanceRecordsDto.absenceCount());
+        printAttendancePenalty(attendanceRecordsDto.attendancePenalty());
+    }
+
+    private void printAttendanceRecordDtos(final List<AttendanceRecordDto> attendanceRecordDtos) {
+        attendanceRecordDtos.forEach(attendanceRecordDto -> {
+            final AttendanceDateTime attendanceDateTime = attendanceRecordDto.attendanceDateTime();
+            final AttendanceStatus attendanceStatus = attendanceRecordDto.attendanceStatus();
+
+            final AttendanceDate attendanceDate = attendanceDateTime.getAttendanceDate();
+            final AttendanceTime attendanceTime = attendanceDateTime.getAttendanceTime();
+
+            System.out.printf("%s월 %s일 %s요일 %s:%s (%s)\n",
+                attendanceDate.getMonth(),
+                attendanceDate.getDay(),
+                attendanceDate.getAttendanceDayOfWeekDayOfWeek()
+                    .getTitle(),
+                convertTime(attendanceTime.getHour()
+                    .orElse(null)),
+                convertTime(attendanceTime.getMinute()
+                    .orElse(null)),
+                attendanceStatus.getTitle());
+        });
+    }
+
     private String convertTime(final Integer time) {
         if (time == null) {
             return "--";
@@ -63,5 +100,21 @@ public class OutputView {
         }
 
         return rawTime;
+    }
+
+    private void printAttendanceStatus(
+        final int attendanceCount,
+        final int lateCount,
+        final int absenceCount
+    ) {
+        System.out.printf("출석: %d회\n", attendanceCount);
+        System.out.printf("지각: %d회\n", lateCount);
+        System.out.printf("결석: %d회\n", absenceCount);
+    }
+
+    private void printAttendancePenalty(final AttendancePenalty attendancePenalty) {
+        if (!attendancePenalty.isNoPenalty()) {
+            System.out.printf("%s 대상자입니다.\n", attendancePenalty.getTitle());
+        }
     }
 }

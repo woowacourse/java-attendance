@@ -51,4 +51,12 @@ public enum AttendancePenalty {
 
         return NONE;
     }
+
+    public boolean isNoPenalty() {
+        return this == NONE;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }
