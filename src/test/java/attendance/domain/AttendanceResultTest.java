@@ -96,4 +96,27 @@ public class AttendanceResultTest {
         //then
         assertThat(result).isEqualTo(-1);
     }
+
+    @Test
+    void 전체_결석_횟수와_지각_횟수가_같다면_이름을_기준으로_비교한다() {
+        //given
+        AttendanceResult attendanceResult1 = new AttendanceResult(
+                "pobi",
+                Map.of(
+                        AttendanceStatus.ABSENT, 4,
+                        AttendanceStatus.LATE, 2
+                ));
+        AttendanceResult attendanceResult2 = new AttendanceResult(
+                "neo",
+                Map.of(
+                        AttendanceStatus.ABSENT, 4,
+                        AttendanceStatus.LATE, 2
+                ));
+
+        //when
+        int result = attendanceResult1.compareTo(attendanceResult2);
+
+        //then
+        assertThat(result).isEqualTo(-1);
+    }
 }
