@@ -7,12 +7,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AttendanceRecordTest {
 
     @Test
-    public void 출석_기록_추가() {
+    void 출석_기록_추가() {
         //given
         LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 27, 9, 59);
         List<AttendanceTime> attendanceTimes = List.of(new AttendanceTime(localDateTime));
@@ -22,7 +22,7 @@ public class AttendanceRecordTest {
     }
 
     @Test
-    public void 원본_리스트_수정시_내부_리스트_영향_없음() {
+    void 원본_리스트_수정시_내부_리스트_영향_없음() {
         //given
         LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 27, 9, 59);
         LocalDateTime localDateTime2 = LocalDateTime.of(2025, 2, 28, 10, 31);
@@ -40,7 +40,7 @@ public class AttendanceRecordTest {
     }
 
     @Test
-    public void 내부_리스트_수정_불가능_확인() {
+    void 내부_리스트_수정_불가능_확인() {
         //given
         LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 27, 9, 59);
         LocalDateTime localDateTime2 = LocalDateTime.of(2025, 2, 28, 10, 31);
@@ -57,7 +57,7 @@ public class AttendanceRecordTest {
     }
 
     @Test
-    public void 패널티_없는_상태_반환_결석_1회() {
+    void 패널티_없는_상태_반환_결석_1회() {
         //given
         LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
         List<AttendanceTime> attendanceTimes = List.of(new AttendanceTime(attendanceTimeOne));
@@ -69,7 +69,7 @@ public class AttendanceRecordTest {
     }
 
     @Test
-    public void 패널티_없는_상태_반환_결석_0회() {
+    void 패널티_없는_상태_반환_결석_0회() {
         //given
         LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 12, 31);
         List<AttendanceTime> attendanceTimes = List.of(new AttendanceTime(attendanceTimeOne));
@@ -81,7 +81,7 @@ public class AttendanceRecordTest {
     }
 
     @Test
-    public void 패널티_경고_상태_반환() {
+    void 패널티_경고_상태_반환() {
         //given
         LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
         LocalDateTime attendanceTimeTwo = LocalDateTime.of(2025, 2, 25, 10, 31);
@@ -95,7 +95,7 @@ public class AttendanceRecordTest {
     }
 
     @Test
-    public void 패널티_면담_상태_반환() {
+    void 패널티_면담_상태_반환() {
         //given
         LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
         LocalDateTime attendanceTimeTwo = LocalDateTime.of(2025, 2, 25, 10, 31);
@@ -114,7 +114,7 @@ public class AttendanceRecordTest {
     }
 
     @Test
-    public void 패널티_제적_상태_반환() {
+    void 패널티_제적_상태_반환() {
         //given
         LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
         LocalDateTime attendanceTimeTwo = LocalDateTime.of(2025, 2, 25, 10, 31);
@@ -137,5 +137,20 @@ public class AttendanceRecordTest {
 
         //then
         Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.EXPULSION);
+    }
+
+    @Test
+    void 출석_기록이_있으면_예외_발생() {
+        //given
+        LocalDateTime inputTime = LocalDateTime.of(2025, 2, 28, 9, 59);
+
+        AttendanceRecord attendanceRecord = new AttendanceRecord(
+                List.of(new AttendanceTime(LocalDateTime.of(2025, 2, 28, 10, 31)))
+        );
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> attendanceRecord.registerAttendance(inputTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 출석 기록이 있습니다.");
     }
 }

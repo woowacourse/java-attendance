@@ -14,9 +14,9 @@ public class AttendanceStatusTest {
             "2025, 2, 26, 9, 59, ATTENDANCE", "2025, 2, 26, 10, 6, LATE", "2025, 2, 26, 10, 31, ABSENCE",
             "2025, 2, 27, 9, 59, ATTENDANCE", "2025, 2, 27, 10, 6, LATE", "2025, 2, 27, 10, 31, ABSENCE",
             "2025, 2, 28, 9, 59, ATTENDANCE", "2025, 2, 28, 10, 6, LATE", "2025, 2, 28, 10, 31, ABSENCE"})
-    public void 요일별_출석_지각_결석_확인(int year, int month, int day, int hour, int minute, AttendanceStatus attendanceStatus) {
+    void 요일별_출석_지각_결석_확인(int year, int month, int day, int hour, int minute, AttendanceStatus attendanceStatus) {
         //given
-        LocalDateTime localDateTime = LocalDateTime.of(year, month, day, hour,minute);
+        LocalDateTime localDateTime = LocalDateTime.of(year, month, day, hour, minute);
 
         //when & then
         Assertions.assertThat(AttendanceStatus.fetchUserAttendanceStatus(localDateTime)).isEqualTo(attendanceStatus);

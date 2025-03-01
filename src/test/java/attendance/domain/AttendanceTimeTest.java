@@ -15,7 +15,7 @@ public class AttendanceTimeTest {
             "2025, 2, 26, 9, 59", "2025, 2, 26, 10, 6", "2025, 2, 26, 10, 31",
             "2025, 2, 27, 9, 59", "2025, 2, 27, 10, 6", "2025, 2, 27, 10, 31",
             "2025, 2, 28, 9, 59", "2025, 2, 28, 10, 6", "2025, 2, 28, 10, 31"})
-    public void 출석_시간_생성(int year, int month, int day, int hour, int minute) {
+    void 출석_시간_생성(int year, int month, int day, int hour, int minute) {
         //given
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, hour, minute);
 

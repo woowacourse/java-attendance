@@ -7,14 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.HashSet;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class CrewsTest {
 
     @DisplayName("크루 추가")
     @Test
-    public void 크루_추가() {
+    void 크루_추가() {
         //given
         Set<Crew> originalCrews = new HashSet<>();
         originalCrews.add(new Crew("우가"));
@@ -24,7 +24,7 @@ public class CrewsTest {
     }
 
     @Test
-    public void 원본_리스트_수정시_내부_리스트_영향_없음() {
+    void 원본_리스트_수정시_내부_리스트_영향_없음() {
         //given
         Set<Crew> originalCrews = new HashSet<>();
         originalCrews.add(new Crew("우가"));
@@ -40,7 +40,7 @@ public class CrewsTest {
     }
 
     @Test
-    public void 내부_리스트_수정_불가능_확인() {
+    void 내부_리스트_수정_불가능_확인() {
         //given
         Set<Crew> originalCrews = new HashSet<>();
         originalCrews.add(new Crew("우가"));
@@ -54,7 +54,7 @@ public class CrewsTest {
     }
 
     @Test
-    public void 닉네임_일치_크루_반환() {
+    void 닉네임_일치_크루_반환() {
         //given
         Set<Crew> originalCrews = new HashSet<>();
         Crew crew = new Crew("우가");

@@ -53,7 +53,7 @@ public class AttendanceRecord {
 
     private void checkSameDateTime(LocalDateTime inputTime, AttendanceTime attendanceTime) {
         if (attendanceTime.isSameDateTime(inputTime)) {
-            throw new IllegalArgumentException("이미 출석 기록이 있습니다");
+            throw new IllegalArgumentException("이미 출석 기록이 있습니다.");
         }
     }
 
