@@ -14,12 +14,24 @@ public class StudentAttendanceHistory {
         attendanceHistory.add(attendanceDateTime);
     }
 
-    public boolean isContainsAttendanceDateTime(AttendanceDateTime wantToFindAttendanceDateTime) {
+    public boolean isExistSameAttendanceDateTime(AttendanceDateTime wantToFindAttendanceDateTime) {
         return attendanceHistory.stream()
                 .anyMatch(attendanceDateTime -> attendanceDateTime.equals(wantToFindAttendanceDateTime));
     }
 
-    public void removeAttendanceDateTime(AttendanceDateTime attendanceDateTime) {
-        attendanceHistory.remove(attendanceDateTime);
+    public AttendanceDateTime findSameAttendanceDate(AttendanceDateTime wantToAddAttendanceDateTime) {
+        return attendanceHistory.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.isSameDate(wantToAddAttendanceDateTime))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 요일입니다. 먼저 출석을 진행 후, 수정해 주세요."));
+    }
+
+    public void modifyAttendance(AttendanceDateTime wantToAddAttendanceDateTime) {
+        try {
+            attendanceHistory.remove(findSameAttendanceDate(wantToAddAttendanceDateTime));
+            }
+            catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+        }
     }
 }
