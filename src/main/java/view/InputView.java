@@ -22,11 +22,11 @@ public class InputView {
 
     public static AttendanceOptionRequest readAttendanceOptionRequest(DateTimeGenerator dateTimeGenerator) {
         LocalDate now = dateTimeGenerator.now();
-
         println(String.format(InputViewMessage.ATTENDANCE_OPTION_PROMPT.getMessage(),
-                now.getMonth().getValue(),
+                now.getMonthValue(),
                 now.getDayOfMonth(),
                 now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+
         String option = readTrimmedInput();
         InputValidator.validateNullOrBlank(option);
 
