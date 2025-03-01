@@ -34,7 +34,7 @@ public class AttendanceService {
     }
 
     public boolean checkRestDay(LocalDate localDate) {
-        return !AttendanceDateTime.generateWithoutTimeFrom(localDate).isRestDay();
+        return AttendanceDateTime.generateWithoutTimeFrom(localDate).isRestDay();
     }
 
     public AttendanceStatusDto addAttendanceHistory(Crew crew, LocalDateTime localDateTime) {
