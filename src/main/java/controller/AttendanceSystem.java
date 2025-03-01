@@ -30,7 +30,7 @@ public class AttendanceSystem {
             today = LocalDate.now();
             Scanner scanner = new Scanner(new File("src/main/resources/attendances.csv"));
             allCrew = new AllCrew(scanner);
-            allCrew.fillAllCrewsEmptyDateWithAbsent(today);
+            allCrew.fillAllCrewsEmptyDateWithAbsent(today.minusDays(1));
         } catch (FileNotFoundException e){
             throw new FileNotFoundException(NO_ATTENDANCES_FILE.getMessage());
         }
