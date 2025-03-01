@@ -37,6 +37,19 @@ public class AttendanceBook {
         }
     }
 
+    public AttendanceStatus registerAttendance(String inputCrewName, LocalDateTime inputTime) {
+        Crew crew = findRegisteredCrew(inputCrewName);
+        AttendanceRecord attendanceRecord = attendanceBook.get(crew);
+        return attendanceRecord.registerAttendance(inputTime);
+    }
+
+    private Crew findRegisteredCrew(String inputCrewName) {
+        return attendanceBook.keySet()
+                .stream()
+                .filter(crew -> crew.getName().equals(inputCrewName))
+                .findFirst()
+                .orElseThrow();
+    }
 
     public Map<Crew, AttendanceRecord> getAttendanceBook() {
         return attendanceBook;
