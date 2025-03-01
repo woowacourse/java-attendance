@@ -58,9 +58,17 @@ public class AttendResultTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
+    private static Stream<Arguments> provideAttend() {
+        return Stream.of(
+                Arguments.of(new Attend(LocalDate.of(2024, 12, 5), LocalTime.of(10, 0))),
+                Arguments.of(new Attend(LocalDate.of(2024, 12, 5)))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideAttend")
     @DisplayName("출석 데이터를 추가하는 기능")
-    void addAttend() {
+    void addAttend(Attend targetAttend) {
         //given
         List<Attend> attend = List.of(
                 new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
@@ -68,7 +76,6 @@ public class AttendResultTest {
                 new Attend(LocalDate.of(2024, 12, 4), LocalTime.of(10, 0))
         );
         AttendResult attendResult = new AttendResult(attend);
-        Attend targetAttend = new Attend(LocalDate.of(2024, 12, 5), LocalTime.of(10, 0));
 
         //when
         attendResult.addAttend(targetAttend);
@@ -124,9 +131,6 @@ public class AttendResultTest {
         List<Attend> actualAttend = new ArrayList<>(attend);
         actualAttend.add(targetAttend);
         AttendResult expectedResult = new AttendResult(actualAttend);
-
-        System.out.println(attendResult.getAttendResult());
-        System.out.println(actualAttend);
 
         //then
         assertAll(

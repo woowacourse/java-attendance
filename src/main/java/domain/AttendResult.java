@@ -30,7 +30,7 @@ public class AttendResult {
     }
 
     private void checkOperationTime(Attend attend) {
-        if (attend != null && !OperationTime.isContainsOperationTime(attend.getTime())) {
+        if (attend.getTime() != null && !OperationTime.isContainsOperationTime(attend.getTime())) {
             throw new IllegalArgumentException("운영 시간 외입니다.");
         }
     }
