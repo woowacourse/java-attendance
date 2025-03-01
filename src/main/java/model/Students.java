@@ -16,4 +16,9 @@ public class Students {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 학생의 이름입니다."));
     }
+
+    public boolean isExistStudent(String studentName) {
+        return students.stream()
+                .anyMatch(student -> student.isSameName(studentName));
+    }
 }
