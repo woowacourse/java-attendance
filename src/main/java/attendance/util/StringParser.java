@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ public class StringParser {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final String SPLITTER = ",";
 
     public static LocalTime parseLocalTime(final String input) {
         try {
@@ -21,13 +23,29 @@ public class StringParser {
         }
     }
 
-    public static Map<String, LocalDateTime> parseFile(final List<String> lines) {
-        Map<String, LocalDateTime> result = new HashMap<>();
+    public static Map<String, List<LocalDateTime>> parseFile(final List<String> lines) {
+        Map<String, List<LocalDateTime>> result = new HashMap<>();
         for (String line : lines) {
-            String[] split = line.split(",");
-            result.put(split[0], parseLocalDateTime(split[1]));
+            addResult(line, result);
         }
         return result;
+    }
+
+    private static void addResult(final String line, final Map<String, List<LocalDateTime>> result) {
+        String[] split = line.split(SPLITTER);
+        String nickname = split[0];
+        LocalDateTime attendanceTime = parseLocalDateTime(split[1]);
+
+        createIfNotExists(result, nickname);
+        List<LocalDateTime> times = result.get(nickname);
+        times.add(attendanceTime);
+        result.put(nickname, times);
+    }
+
+    private static void createIfNotExists(final Map<String, List<LocalDateTime>> result, final String nickname) {
+        if (!result.containsKey(nickname)) {
+            result.put(nickname, new ArrayList<>());
+        }
     }
 
     private static LocalDateTime parseLocalDateTime(final String input) {

@@ -13,7 +13,7 @@ public class TestFixture {
         return LocalDateTime.of(2024, 12, 3, 10, 0);
     }
 
-    public static LocalDateTime makeAttendanceDateTime(int day, int hour, int minute) {
+    public static LocalDateTime makeDateTime(int day, int hour, int minute) {
         return LocalDateTime.of(2024, 12, day, hour, minute);
     }
 

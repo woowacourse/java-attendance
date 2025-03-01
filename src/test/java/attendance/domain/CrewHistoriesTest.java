@@ -31,7 +31,7 @@ class CrewHistoriesTest {
         LocalDateTime yesterdayAttendanceTime = makeDefaultAttendanceTime();
         crewHistories.addHistory(nickname, yesterdayAttendanceTime);
 
-        LocalDateTime todayAttendanceTime = TestFixture.makeAttendanceDateTime(4, 10, 0);
+        LocalDateTime todayAttendanceTime = TestFixture.makeDateTime(4, 10, 0);
 
         // When
         crewHistories.addHistory(nickname, todayAttendanceTime);
