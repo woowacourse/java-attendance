@@ -5,9 +5,15 @@ import java.time.LocalTime;
 
 public enum AttendanceStatus {
 
-    ATTENDANCE,
-    LATE,
-    ABSENT;
+    ATTENDANCE("출석"),
+    LATE("지각"),
+    ABSENT("결석");
+
+    private final String attendanceStatus;
+
+    AttendanceStatus(String attendanceStatus) {
+        this.attendanceStatus = attendanceStatus;
+    }
 
     public static AttendanceStatus attendanceStatusCalculate(LocalDate todayDate, LocalTime attendanceTime) {
         LocalTime attendanceStartTime = WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(todayDate);
@@ -18,5 +24,9 @@ public enum AttendanceStatus {
             return LATE;
         }
         return ATTENDANCE;
+    }
+
+    public String getAttendanceStatus() {
+        return attendanceStatus;
     }
 }
