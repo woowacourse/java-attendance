@@ -59,8 +59,9 @@ public class StudentsTest {
                 )
         );
 
-        Assertions.assertEquals(students.findStudentByName(studentName).getStudentAttendanceHistory()
-                        .getAttendanceHistory().get(new AttendanceDate(LocalDate.of(2024, 12, 4))),
+        Assertions.assertEquals(students.findStudentByName(studentName).findAttendanceTimeByAttendanceDate(
+                        new AttendanceDate(LocalDate.of(2024, 12, 4))
+                ),
                 new AttendanceTime(LocalTime.of(0, 0)));
     }
 }
