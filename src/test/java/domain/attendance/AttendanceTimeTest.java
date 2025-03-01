@@ -26,6 +26,23 @@ class AttendanceTimeTest {
     }
 
     @Test
+    @DisplayName("운영 시간 이외 출석 시 예외 발생")
+    void givenNotOpenTimeThrowException() {
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 3);
+        LocalTime beforeOpen = LocalTime.of(7, 59);
+        LocalTime afterClosed = LocalTime.of(23, 1);
+
+        // when, then
+        assertThatThrownBy(() -> AttendanceTime.of(date, beforeOpen))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("캠퍼스 운영 시간이 아닙니다.");
+        assertThatThrownBy(() -> AttendanceTime.of(date, afterClosed))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("캠퍼스 운영 시간이 아닙니다.");
+    }
+
+    @Test
     @DisplayName("주말 출석 시간 생성 시 예외 발생")
     void givenWeekendThrowException() {
         // given
@@ -62,12 +79,14 @@ class AttendanceTimeTest {
 
         // when
         boolean b1 = attendanceTime.isSameDate(AttendanceTime.of(
-                LocalDate.of(2024, 12, 10),
-                null)
+                        LocalDate.of(2024, 12, 10),
+                        LocalTime.of(10, 5)
+                )
         );
         boolean b2 = attendanceTime.isSameDate(AttendanceTime.of(
-                LocalDate.of(2024, 12, 11),
-                null)
+                        LocalDate.of(2024, 12, 11),
+                        LocalTime.of(10, 5)
+                )
         );
 
         // then

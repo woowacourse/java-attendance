@@ -7,18 +7,29 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 public class AttendanceTime implements Comparable<AttendanceTime> {
+
+    private static final LocalTime openTime = LocalTime.of(8, 0);
+    private static final LocalTime closeTime = LocalTime.of(23, 0);
+
     private final LocalDate date;
     private LocalTime time;
 
     private AttendanceTime(LocalDate date, LocalTime time) {
-        validate(date);
+        validate(date, time);
         this.date = date;
         this.time = time;
     }
 
-    private void validate(LocalDate date) {
+    private void validate(LocalDate date, LocalTime time) {
+        validateCampusOpen(time);
         validateNotWeekend(date);
         validateNotHoliday(date);
+    }
+
+    private void validateCampusOpen(LocalTime time) {
+        if (time.isBefore(openTime) || time.isAfter(closeTime)) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
+        }
     }
 
     private void validateNotWeekend(LocalDate date) {
