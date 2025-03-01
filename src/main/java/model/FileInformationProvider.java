@@ -23,7 +23,7 @@ public class FileInformationProvider {
     }
 
     private List<String> attendanceRecordReader() throws IOException {
-        String filePath = "src/model.main/resources/attendances.csv";
+        String filePath = "src/main/resources/attendances.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             return br.lines()
                     .skip(1)
