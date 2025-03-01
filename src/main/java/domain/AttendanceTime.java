@@ -64,6 +64,10 @@ public class AttendanceTime implements Comparable<AttendanceTime> {
         return minutes > 30;
     }
 
+    public AttendanceStatus toAttendanceStatus() {
+        return AttendanceStatus.from(this);
+    }
+
     public LocalDate toLocalDate() {
         return date;
     }
