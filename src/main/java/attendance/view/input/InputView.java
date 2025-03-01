@@ -63,6 +63,11 @@ public class InputView {
         return parseLocalTime(readInput());
     }
 
+    public String readCrewNickNameForRecord() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return readInput();
+    }
+
     private int parseInt(final String input) {
         try {
             return Integer.parseInt(input.trim());
