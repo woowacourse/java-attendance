@@ -16,8 +16,8 @@ class LectureTimeTest {
     @DisplayName("예외가 발생하지 않는 테스트")
     class Success {
         @Test
-        @DisplayName("해당 날짜가 교육이 있는 날인지 확인한다")
-        void isLectureTime_test() {
+        @DisplayName("해당 날짜가 교육이 있는 날이면 true를 반환한다")
+        void isLectureTime_test_true() {
             // when & then
             SoftAssertions.assertSoftly(softAssertions -> {
                 softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.MONDAY)).isTrue();
@@ -25,6 +25,14 @@ class LectureTimeTest {
                 softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.WEDNESDAY)).isTrue();
                 softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.THURSDAY)).isTrue();
                 softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.FRIDAY)).isTrue();
+            });
+        }
+
+        @Test
+        @DisplayName("해당 날짜가 교육이 없는 날이면 false를 반환한다")
+        void isLectureTime_test_false() {
+            // when & then
+            SoftAssertions.assertSoftly(softAssertions -> {
                 softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.SATURDAY)).isFalse();
                 softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.SUNDAY)).isFalse();
             });
@@ -71,12 +79,12 @@ class LectureTimeTest {
         void from_test_exception() {
             // when & then
             assertAll(() -> {
-                Assertions.assertThatThrownBy(() -> {
-                    LectureTime.from(LocalDateFixture.SATURDAY);
-                }).isInstanceOf(IllegalArgumentException.class);
-                Assertions.assertThatThrownBy(() -> {
-                    LectureTime.from(LocalDateFixture.SUNDAY);
-                }).isInstanceOf(IllegalArgumentException.class);
+                Assertions.assertThatThrownBy(() ->
+                        LectureTime.from(LocalDateFixture.SATURDAY)
+                ).isInstanceOf(IllegalArgumentException.class);
+                Assertions.assertThatThrownBy(() ->
+                        LectureTime.from(LocalDateFixture.SUNDAY)
+                ).isInstanceOf(IllegalArgumentException.class);
             });
         }
     }
