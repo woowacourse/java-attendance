@@ -99,4 +99,17 @@ public class AttendanceTimeTest {
         //then
         assertThat(differenceNanos).isEqualTo(expected);
     }
+
+    @Test
+    void 결석처리되는_출석시간을_생성한다() {
+        //given
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 3, 10, 30, 0, 1);
+        AttendanceTime expected = AttendanceTime.of(dateTime);
+
+        //when
+        AttendanceTime actual = AttendanceTime.createAbsenceTime(dateTime.toLocalDate());
+
+        //then
+        assertThat(actual).isEqualTo(expected);
+    }
 }
