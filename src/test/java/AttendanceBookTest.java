@@ -5,6 +5,7 @@ import domain.Attend;
 import domain.AttendCount;
 import domain.AttendanceBook;
 import domain.Current;
+import domain.WarningCrew;
 import domain.WarningStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -281,6 +282,35 @@ public class AttendanceBookTest {
 
         //then
         AttendCount expected = new AttendCount(3, 3, 3);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("제적 위험 대상자를 찾는다")
+    void searchWarningCrew() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        attendanceBook.register(name);
+        List<Attend> attends = createPassAttend();
+        for (Attend attend : attends) {
+            attendanceBook.addAttend(name, attend);
+        }
+
+        String warningName = "가나다";
+        attendanceBook.register(warningName);
+        List<Attend> warningAttend = createAttendUntilToday();
+        for (Attend attend : warningAttend) {
+            attendanceBook.addAttend(warningName, attend);
+        }
+
+        //when
+        List<WarningCrew> actual = attendanceBook.searchWarningCrew();
+
+        //then
+        List<WarningCrew> expected = List.of(
+                new WarningCrew(warningName, new AttendCount(3, 3, 3))
+        );
         assertThat(actual).isEqualTo(expected);
     }
 }

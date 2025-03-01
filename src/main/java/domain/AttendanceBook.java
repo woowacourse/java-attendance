@@ -47,4 +47,18 @@ public class AttendanceBook {
         AttendResult attendResult = attendBook.get(name);
         return attendResult.judgeWarningStatus(Current.TODAY.getDay());
     }
+
+    public List<WarningCrew> searchWarningCrew() {
+        List<WarningCrew> warningCrews = attendBook.keySet().stream()
+                .filter(name -> judgeAttendStatus(name) != WarningStatus.PASS)
+                .map(name -> new WarningCrew(name, countAttend(name)))
+                .toList();
+        return WarningCrew.sort(warningCrews);
+    }
+
+    public AttendCount countAttend(String name) {
+        checkContainsName(name);
+        AttendResult attendResult = attendBook.get(name);
+        return attendResult.countAttendStatus(Current.TODAY.getDay());
+    }
 }
