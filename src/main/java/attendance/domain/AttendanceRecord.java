@@ -13,18 +13,7 @@ public class AttendanceRecord {
     }
 
     public PenaltyType checkPenaltyStatus() {
-        int absenceCounts = 0;
-        for (AttendanceTime attendanceTime : attendanceRecord) {
-            absenceCounts += calculateAbsenceCounts(attendanceTime);
-        }
-        return PenaltyType.fetchPenaltyType(absenceCounts);
-    }
-
-    private int calculateAbsenceCounts(AttendanceTime attendanceTime) {
-        if (attendanceTime.isAbsence()) {
-            return 1;
-        }
-        return 0;
+        return PenaltyType.fetchPenaltyType(checkAbsenceCounts(), checkLateCounts());
     }
 
     public AttendanceTime registerAttendance(LocalDateTime inputTime) {
@@ -63,6 +52,29 @@ public class AttendanceRecord {
             newRecords.add(attendanceTime);
         }
         return new AttendanceRecord(newRecords);
+    }
+
+    public int checkLateCounts() {
+        int totalLateCounts = 0;
+        for (AttendanceTime attendanceTime : attendanceRecord) {
+            totalLateCounts = calculateLateCounts(attendanceTime.isLate(), totalLateCounts);
+        }
+        return totalLateCounts;
+    }
+
+    public int checkAbsenceCounts() {
+        int totalAbsenceCounts = 0;
+        for (AttendanceTime attendanceTime : attendanceRecord) {
+            totalAbsenceCounts = calculateLateCounts(attendanceTime.isAbsence(), totalAbsenceCounts);
+        }
+        return totalAbsenceCounts;
+    }
+
+    private static int calculateLateCounts(boolean attendanceTime, int totalLateCounts) {
+        if (attendanceTime) {
+            totalLateCounts += 1;
+        }
+        return totalLateCounts;
     }
 
     public List<AttendanceTime> getAttendanceRecord() {
