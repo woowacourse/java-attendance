@@ -45,13 +45,6 @@ public class CrewAttendanceStorage {
         return storage.findByDate(date);
     }
 
-    private AttendanceStorage findAttendanceStorageByCrew(String crew) {
-        if (!storages.containsKey(crew)) {
-            throw new CrewNotExistException();
-        }
-        return storages.get(crew);
-    }
-
     public List<Attendance> findAttendanceByDateRange(String crew, LocalDate startDate, LocalDate endDate) {
         AttendanceStorage storage = findAttendanceStorageByCrew(crew);
         return startDate.datesUntil(endDate)
@@ -60,8 +53,8 @@ public class CrewAttendanceStorage {
     }
 
     public Map<AttendanceStatus, Integer> findStatisticByDateRange(String crew, LocalDate startDate, LocalDate endDate) {
-        Map<AttendanceStatus, Integer> result = new EnumMap<>(AttendanceStatus.class);
         AttendanceStorage storage = findAttendanceStorageByCrew(crew);
+        Map<AttendanceStatus, Integer> result = new EnumMap<>(AttendanceStatus.class);
         startDate.datesUntil(endDate)
                 .forEach(date -> {
                     Attendance attendance = storage.findByDate(date);
@@ -70,5 +63,12 @@ public class CrewAttendanceStorage {
                     result.put(status, updatedValue);
                 });
         return result;
+    }
+
+    private AttendanceStorage findAttendanceStorageByCrew(String crew) {
+        if (!storages.containsKey(crew)) {
+            throw new CrewNotExistException();
+        }
+        return storages.get(crew);
     }
 }
