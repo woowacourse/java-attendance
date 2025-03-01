@@ -4,6 +4,7 @@ import domain.Attendance;
 import domain.AttendanceBook;
 import domain.FileWithAttendanceData;
 import domain.Option;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +17,7 @@ public class Controller {
     private static final int ATTENDANCE_YEAR = 2024;
     private static final int ATTENDANCE_MONTH = 12;
     private static final int ATTENDANCE_DAY_OF_MONTH = 16;
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final InputView inputView;
@@ -80,7 +82,28 @@ public class Controller {
     }
 
     private void edit() {
+        try {
+            String name = inputView.readEditName();
+            LocalDate date = parseDate(inputView.readEditDayOfMonth());
+            LocalTime time = LocalTime.parse(inputView.readEditTime(), TIME_FORMATTER);
+            Attendance originAttendance = attendanceBook.findAttendance(name, date);
+            Attendance updatedAttendance = attendanceBook.editCrew(name, date, time);
+            outputView.displayAttendanceEdit(date, originAttendance, updatedAttendance);
+        } catch (DateTimeParseException e) {
+            System.out.println("[ERROR] 시간 형식이 일치하지 않습니다.");
+        } catch (DateTimeException e) {
+            System.out.println("[ERROR] 날짜 형식이 일치하지 않습니다.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
+    private LocalDate parseDate(String editDayOfMonth) {
+        try {
+            return LocalDate.of(ATTENDANCE_YEAR, ATTENDANCE_MONTH, Integer.parseInt(editDayOfMonth));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("[ERROR] 날짜 형식이 일치하지 않습니다.");
+        }
     }
 
     private void checkRecords() {

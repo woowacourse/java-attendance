@@ -13,7 +13,8 @@ public class AttendanceBook {
     }
 
     public void addCrew(String name, LocalDate date, LocalTime time) {
-        crews.putIfAbsent(name, new Crew(name, date, time));
+        crews.computeIfAbsent(name, key -> new Crew(name, date, time))
+                .addAttendance(date, time);
     }
 
     public Attendance attendCrew(String name, LocalDate date, LocalTime time) {
@@ -27,11 +28,26 @@ public class AttendanceBook {
         return crew.addAttendance(date, time);
     }
 
+    public Attendance editCrew(String name, LocalDate date, LocalTime time) {
+        Crew crew = crews.get(name);
+        if (crew == null) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+        return crew.updateAttendance(date, time);
+    }
+
+    public Attendance findAttendance(String name, LocalDate date) {
+        return findCrewByName(name).findAttendanceByDate(date);
+    }
+
     public boolean containsCrew(String name) {
         return crews.containsKey(name);
     }
 
     public Crew findCrewByName(String name) {
+        if (!crews.containsKey(name)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
         return crews.get(name);
     }
 }
