@@ -2,7 +2,10 @@ package controller;
 
 import controller.command.AttendCommand;
 import controller.command.ControllerCommand;
+import controller.command.ModifyCommand;
 import domain.AttendanceBook;
+import java.time.DateTimeException;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +18,7 @@ public class AttendanceController {
 
     static {
         commands.put(Selection.ATTEND, new AttendCommand());
+        commands.put(Selection.MODIFY, new ModifyCommand());
     }
 
     public static void run(AttendanceBook book) {
@@ -25,6 +29,8 @@ public class AttendanceController {
 
             } catch (QuitException q) {
                 break;
+            } catch (DateTimeException dte) {
+                OutputView.printException(new IllegalArgumentException("잘못된 날짜입니다."));
             } catch (IllegalArgumentException e) {
                 OutputView.printException(e);
             }
