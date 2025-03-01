@@ -231,7 +231,7 @@ class AttendanceRecordTest {
         LocalTime modifyTime = LocalTime.of(13, 6);
 
         // when
-        attendanceRecord.modify(modifyDate, modifyTime);
+        attendanceRecord.modify(new AttendanceDate(modifyDate), modifyTime);
         long lateCount = attendanceRecord.computeLateCount();
 
         // then

@@ -13,6 +13,16 @@ public record AttendanceRecord(
         this(new ArrayList<>());
     }
 
+    public void attend(AttendanceDate attendanceDate, LocalTime attendanceTime) {
+        validateExistAttendance(attendanceDate);
+        attendanceDateTimes.add(new AttendanceDateTime(attendanceDate, attendanceTime));
+    }
+
+    public void modify(AttendanceDate modifyDate, LocalTime modifyTime) {
+        AttendanceDateTime dateTime = findAttendanceByDate(modifyDate);
+        dateTime.modifyAttendanceTime(new AttendanceDateTime(modifyDate, modifyTime));
+    }
+
     public void add(AttendanceDateTime attendanceDateTime) {
         attendanceDateTimes.add(attendanceDateTime);
     }
@@ -57,19 +67,9 @@ public record AttendanceRecord(
         return Panalty.of(computeAbsencesUntil(date), computeLateCount());
     }
 
-    public void attend(AttendanceDate attendanceDate, LocalTime attendanceTime) {
-        validateExistAttendance(attendanceDate);
-        attendanceDateTimes.add(new AttendanceDateTime(attendanceDate, attendanceTime));
-    }
-
     private void validateExistAttendance(AttendanceDate attendanceDate) {
         if (containsAttendanceDateTimeByDate(attendanceDate)) {
             throw new IllegalArgumentException("이미 출석한 날짜입니다.");
         }
-    }
-
-    public void modify(AttendanceDate modifyDate, LocalTime modifyTime) {
-        AttendanceDateTime dateTime = findAttendanceByDate(modifyDate);
-        dateTime.modifyAttendanceTime(new AttendanceDateTime(modifyDate, modifyTime));
     }
 }
