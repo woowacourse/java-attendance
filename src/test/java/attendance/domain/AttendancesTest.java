@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -104,9 +105,9 @@ class AttendancesTest {
 
         attendances.add(attendance2);
         attendances.add(attendance3);
-
+        Map<LocalDate, Attendance> monthlyAttendance = attendances.getMonthlyAttendanceMap("체체", 2025, 2);
         // when
-        long statusCount = attendances.getStatusCount(status, crewName, LocalDate.of(2025, 2, 28));
+        long statusCount = attendances.getStatusCount(monthlyAttendance, status);
 
         // then
         assertThat(statusCount).isEqualTo(result);
@@ -127,8 +128,10 @@ class AttendancesTest {
         attendances.add(attendance4);
         attendances.add(attendance5);
 
+        Map<LocalDate, Attendance> monthlyAttendances = attendances.getMonthlyAttendanceMap(crewName, 2025, 2);
+
         // when
-        long count = attendances.getStatusCount(AttendanceStatus.ABSENT, crewName, LocalDate.of(2025, 2, 28));
+        long count = attendances.getStatusCount(monthlyAttendances, AttendanceStatus.ABSENT);
 
         // then
         assertThat(count).isEqualTo(4);

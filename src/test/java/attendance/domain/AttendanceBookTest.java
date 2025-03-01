@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +19,7 @@ class AttendanceBookTest {
     private String name;
     private Attendances attendances;
     private AttendanceBook attendanceBook;
+    private Map<LocalDate, Attendance> monthlyAttendances;
 
     @BeforeEach
     void setUp() {
@@ -44,6 +45,7 @@ class AttendanceBookTest {
         attendances.add(attendance7);
         attendances.add(attendance8);
         attendanceBook = new AttendanceBook(names, attendances);
+        monthlyAttendances = attendances.getMonthlyAttendanceMap("체체", 2025, 2);
     }
 
     @DisplayName("입력된 이름이 출석부에 없다면 예외를 발생한다.")
@@ -77,7 +79,7 @@ class AttendanceBookTest {
         // given
 
         // when
-        long totalCount = attendanceBook.getCountAcademicStatus(AttendanceStatus.LATE, "체체", LocalDate.of(2025, 2, 28));
+        long totalCount = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.LATE);
 
         // then
         assertThat(totalCount).isEqualTo(5);
@@ -90,7 +92,7 @@ class AttendanceBookTest {
         // given
 
         // when
-        AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCrewName("체체", LocalDate.of(2025, 2, 28));
+        AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCrewName(monthlyAttendances);
 
         // then
         assertThat(academicStatus).isEqualTo(AcademicStatus.INTERVIEW);
@@ -105,7 +107,8 @@ class AttendanceBookTest {
 
         // when
         attendanceBook.addAttendance(attendance);
-        List<Attendance> resultAttendances = attendanceBook.findAttendancesByCrewNameAndYearAndMonth("체체", 2025, 2);
+        Map<LocalDate, Attendance> resultAttendances = attendanceBook.findAttendancesByCrewNameAndYearAndMonth("체체",
+                2025, 2);
 
         // then
         assertThat(resultAttendances.size()).isEqualTo(9);
@@ -133,7 +136,8 @@ class AttendanceBookTest {
         // given
 
         // when
-        List<Attendance> resultAttendances = attendanceBook.findAttendancesByCrewNameAndYearAndMonth("체체", 2025, 2);
+        Map<LocalDate, Attendance> resultAttendances = attendanceBook.findAttendancesByCrewNameAndYearAndMonth("체체",
+                2025, 2);
 
         // then
         assertThat(resultAttendances.size()).isEqualTo(8);

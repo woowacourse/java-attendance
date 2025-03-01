@@ -53,7 +53,7 @@ public class Attendance {
         return Objects.hash(crewName, attendanceTime.getLocalDate());
     }
 
-    public Time getAttendTime() {
+    public Time getAttendanceTime() {
         return attendanceTime;
     }
 }

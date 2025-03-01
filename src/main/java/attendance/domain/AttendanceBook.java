@@ -1,7 +1,11 @@
 package attendance.domain;
 
+import dto.AcademicStatusResultDTO;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class AttendanceBook {
@@ -20,14 +24,15 @@ public class AttendanceBook {
         }
     }
 
-    public long getCountAcademicStatus(AttendanceStatus attendanceStatus, String crewName, LocalDate localDate) {
-        return attendances.getStatusCount(attendanceStatus, crewName, localDate);
+    public long getCountAttendanceStatus(Map<LocalDate, Attendance> monthlyAttendances,
+                                         AttendanceStatus attendanceStatus) {
+        return attendances.getStatusCount(monthlyAttendances, attendanceStatus);
     }
 
-    public AcademicStatus getAcademicStatusByCrewName(String crewName, LocalDate localDate) {
+    public AcademicStatus getAcademicStatusByCrewName(Map<LocalDate, Attendance> monthlyAttendances) {
 
-        long late = getCountAcademicStatus(AttendanceStatus.LATE, crewName, localDate);
-        long absent = getCountAcademicStatus(AttendanceStatus.ABSENT, crewName, localDate);
+        long late = getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.LATE);
+        long absent = getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.ABSENT);
 
         return AcademicStatus.getStatus(late, absent);
     }
@@ -39,8 +44,37 @@ public class AttendanceBook {
     public Attendance findAttendanceByCrewNameAndLocalDate(String crewName, LocalDate localDate) {
         return attendances.findByCrewNameAndLocalDate(crewName, localDate);
     }
-    
-    public List<Attendance> findAttendancesByCrewNameAndYearAndMonth(String crewName, int year, int month) {
-        return attendances.findAttendancesByCrewName(crewName, year, month);
+
+    public Map<LocalDate, Attendance> findAttendancesByCrewNameAndYearAndMonth(String crewName, int year, int month) {
+        return attendances.getMonthlyAttendanceMap(crewName, year, month);
+    }
+
+    public List<AcademicStatusResultDTO> getExpulsionCrews(AcademicStatus academicStatus, LocalDate localDate) {
+        List<AcademicStatusResultDTO> academicStatusResultDTOS = new ArrayList<>();
+        for (String crewName : crewNames) {
+            Map<LocalDate, Attendance> monthlyAttendances = findAttendancesByCrewNameAndYearAndMonth(crewName,
+                    localDate.getYear(), localDate.getMonthValue());
+            if (getAcademicStatusByCrewName(monthlyAttendances).equals(academicStatus)) {
+                academicStatusResultDTOS.add(new AcademicStatusResultDTO(crewName,
+                        attendances.getStatusCount(monthlyAttendances, AttendanceStatus.ATTEND),
+                        attendances.getStatusCount(monthlyAttendances, AttendanceStatus.LATE),
+                        attendances.getStatusCount(monthlyAttendances, AttendanceStatus.ABSENT), academicStatus));
+            }
+        }
+        academicStatusResultDTOS.sort(new Comparator<AcademicStatusResultDTO>() {
+            @Override
+            public int compare(AcademicStatusResultDTO o1, AcademicStatusResultDTO o2) {
+                long absences1 = o1.absent() + o1.late();
+                long absences2 = o2.absent() + o2.late();
+
+                if (absences1 != absences2) {
+                    return Long.compare(absences2, absences1);
+                }
+                return o1.crewName().compareTo(o2.crewName());
+            }
+        });
+
+        return academicStatusResultDTOS;
+
     }
 }
