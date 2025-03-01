@@ -23,31 +23,19 @@ public class Crew {
     }
 
     public Attendance updateAttendance(LocalDate date, LocalTime time) {
-        Attendance originAttendance = findAttendanceByDate(date);
-        Attendance newAttendance = new Attendance(date, time);
-        if (originAttendance != null) {
-            attendances.remove(originAttendance);
-        }
-        attendances.add(newAttendance);
-        return newAttendance;
+        attendances.removeIf(attendance -> attendance.hasSameDate(date));
+        return addAttendance(date, time);
     }
 
     public Attendance findAttendanceByDate(LocalDate date) {
-        for (Attendance attendance : attendances) {
-            if (attendance.hasSameDate(date)) {
-                return attendance;
-            }
-        }
-        return null;
+        return attendances.stream()
+                .filter(attendance -> attendance.hasSameDate(date))
+                .findFirst()
+                .orElseThrow(null);
     }
 
-
     public boolean hasAlreadyAttended(LocalDate date) {
-        for (Attendance attendance : attendances) {
-            if (attendance.hasSameDate(date)) {
-                return true;
-            }
-        }
-        return false;
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.hasSameDate(date));
     }
 }

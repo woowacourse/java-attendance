@@ -18,10 +18,7 @@ public class AttendanceBook {
     }
 
     public Attendance attendCrew(String name, LocalDate date, LocalTime time) {
-        Crew crew = crews.get(name);
-        if (crew == null) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
+        Crew crew = findCrewByName(name);
         if (crew.hasAlreadyAttended(date)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석한 경우 수정 기능을 사용하세요.");
         }
@@ -29,11 +26,7 @@ public class AttendanceBook {
     }
 
     public Attendance editCrew(String name, LocalDate date, LocalTime time) {
-        Crew crew = crews.get(name);
-        if (crew == null) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
-        return crew.updateAttendance(date, time);
+        return findCrewByName(name).updateAttendance(date, time);
     }
 
     public Attendance findAttendance(String name, LocalDate date) {
