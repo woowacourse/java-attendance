@@ -1,19 +1,23 @@
 package domain;
 
+import domain.attendance.Attendances;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AttendanceBook {
-    private final Set<Crew> crews;
+    private final Map<Crew, Attendances> attendances = new HashMap<>();
 
-    public AttendanceBook(List<String> crews) {
-        validate(crews);
-        this.crews = convertNameToCrew(crews);
+    public AttendanceBook(List<String> crewNames) {
+        validate(crewNames);
+        crewNames.forEach(crew -> this.attendances.put(new Crew(crew), new Attendances()));
     }
 
     public boolean has(String findNickname) {
-        return crews.stream().anyMatch(crew -> crew.equals(findNickname));
+        return attendances.keySet().stream()
+                .anyMatch(crew -> crew.equals(findNickname));
     }
 
     private void validate(List<String> crewNames) {

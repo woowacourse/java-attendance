@@ -38,8 +38,7 @@ class AttendancesTest {
             Attendances attendances = new Attendances(List.of(attendance1, attendance2, attendance3));
 
             // when
-            int attendanceCount = attendances.countAttendance(attendanceDate.toLocalDate(),
-                    attendanceDate.plusDays(3).toLocalDate());
+            int attendanceCount = attendances.countAttendance();
 
             // then
             Assertions.assertThat(attendanceCount).isEqualTo(3);
@@ -56,8 +55,7 @@ class AttendancesTest {
             Attendances attendances = new Attendances(List.of(tardy1, tardy2, tardy3));
 
             // when
-            int tardyCouont = attendances.countTardy(attendanceDate.toLocalDate(),
-                    attendanceDate.plusDays(3).toLocalDate());
+            int tardyCouont = attendances.countTardy();
 
             // then
             Assertions.assertThat(tardyCouont).isEqualTo(3);
@@ -74,8 +72,7 @@ class AttendancesTest {
             Attendances attendances = new Attendances(List.of(absence1, absence2, absence3));
 
             // when
-            int absenceCount = attendances.countAbsence(attendanceDate.toLocalDate(),
-                    attendanceDate.plusDays(3).toLocalDate());
+            int absenceCount = attendances.countAbsence(attendanceDate.plusDays(3).toLocalDate());
 
             // then
             Assertions.assertThat(absenceCount).isEqualTo(3);

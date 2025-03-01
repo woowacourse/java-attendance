@@ -20,15 +20,28 @@ public class Attendances {
                 .anyMatch(attendance -> attendance.has(day));
     }
 
-    public int countAttendance(LocalDate startDate, LocalDate endDate) {
-        return 0;
+    private Attendance findAttendanceByDate(LocalDate date) {
+        return attendances.stream()
+                .filter(attendance -> attendance.has(date))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(""));
     }
 
-    public int countTardy(LocalDate startDate, LocalDate endDate) {
-        return 0;
+    public int countAttendance() {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.getStatus() == AttendanceStatus.ATTENDANCE)
+                .count();
     }
 
-    public int countAbsence(LocalDate startDate, LocalDate endDate) {
-        return 0;
+    public int countTardy() {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.getStatus() == AttendanceStatus.TARDY)
+                .count();
+    }
+
+    public int countAbsence(LocalDate endDate) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.getStatus() == AttendanceStatus.ABSENCE)
+                .count();
     }
 }

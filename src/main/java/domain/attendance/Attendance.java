@@ -23,6 +23,10 @@ public class Attendance {
         return this.date.isEqual(day);
     }
 
+    public AttendanceStatus getStatus() {
+        return status;
+    }
+
     private void validate(LocalDateTime dateTime) {
         if (Holiday.isHoliday(dateTime.toLocalDate()) ||
                 dateTime.getDayOfWeek().compareTo(DayOfWeek.FRIDAY) > WEEKDAY) {
