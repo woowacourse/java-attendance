@@ -34,6 +34,10 @@ public class AttendanceDateTime {
         return attendanceDateTime.toLocalDate().equals(this.attendanceDateTime.toLocalDate());
     }
 
+    public boolean isMonday() {
+        return attendanceDateTime.getDayOfWeek().equals(DayOfWeek.MONDAY);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
