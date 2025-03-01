@@ -13,6 +13,10 @@ public class AttendanceRecords {
         records.add(record);
     }
 
+    public void remove(AttendanceRecord record) {
+        records.remove(record);
+    }
+
     public boolean hasRecordOnDate(LocalDate date) {
         return records.stream().anyMatch(record -> record.getDate().equals(date));
     }
