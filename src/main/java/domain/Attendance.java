@@ -9,9 +9,17 @@ public class Attendance {
     private final Crew crew;
     private AttendanceTime attendanceTime;
 
-    public Attendance(Crew crew, AttendanceTime attendanceTime) {
+    private Attendance(Crew crew, AttendanceTime attendanceTime) {
         this.crew = crew;
         this.attendanceTime = attendanceTime;
+    }
+
+    public static Attendance of(Crew crew, AttendanceTime attendanceTime) {
+        return new Attendance(crew, attendanceTime);
+    }
+
+    public static Attendance createAbsence(Crew crew, LocalDate day) {
+        return new Attendance(crew, AttendanceTime.createAbsenceTime(day));
     }
 
     public boolean isSameCrewAndTime(Attendance otherAttendance) {
