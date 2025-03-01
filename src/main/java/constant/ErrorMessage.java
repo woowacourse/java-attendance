@@ -11,6 +11,7 @@ public enum ErrorMessage {
     ;
 
     private static final String prefix = "[ERROR] ";
+    private static final String newLine = "\n";
     private final String message;
 
     ErrorMessage(String message) {
@@ -18,6 +19,6 @@ public enum ErrorMessage {
     }
 
     public String getMessage() {
-        return prefix + message;
+        return prefix + message + newLine;
     }
 }
