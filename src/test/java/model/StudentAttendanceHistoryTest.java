@@ -67,4 +67,28 @@ public class StudentAttendanceHistoryTest {
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 출석하지 않은 요일입니다. 먼저 출석을 진행 후, 수정해 주세요.");
     }
+
+    @Test
+    @DisplayName("수정하는 메서드 삭제 테스트")
+    void test6() {
+        AttendanceDateTime wantToFindModify = new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 13, 13));
+        studentAttendanceHistory.modifyAttendance(wantToFindModify);
+        Assertions.assertFalse(
+                studentAttendanceHistory.isExistSameAttendanceDateTime(
+                        new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 12, 12))
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("수정하는 메서드 삽입 테스트")
+    void test7() {
+        AttendanceDateTime wantToFindModify = new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 13, 13));
+        studentAttendanceHistory.modifyAttendance(wantToFindModify);
+        Assertions.assertFalse(
+                studentAttendanceHistory.isExistSameAttendanceDateTime(
+                        new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 13, 13))
+                )
+        );
+    }
 }
