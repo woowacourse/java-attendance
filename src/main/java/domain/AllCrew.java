@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+import static domain.ERROR_MESSAGE.NO_SUCH_NICKNAME;
+
 public class AllCrew {
     private final List<Crew> allCrew;
 
@@ -56,7 +58,7 @@ public class AllCrew {
             if (crew.isSameName(crewName))
                 return crew;
         }
-        throw new NoSuchElementException("[ERROR] 등록되지 않은 닉네임입니다.");
+        throw new NoSuchElementException(NO_SUCH_NICKNAME.getMessage());
     }
 
     public void fillAllCrewsEmptyDateWithAbsent(LocalDate date) {
