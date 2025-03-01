@@ -5,20 +5,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class AttendanceDateTime {
+public abstract class AttendanceDateTime {
 
-    private final LocalDate date;
-    private final LocalTime time;
+    protected final LocalDate date;
 
-    private AttendanceDateTime(LocalDateTime attendedTime) {
-        AttendanceDateTimeValidator.validateDateTime(attendedTime);
-        this.date = attendedTime.toLocalDate();
-        this.time = attendedTime.toLocalTime();
-    }
-
-    private AttendanceDateTime(LocalDate date) {
+    public AttendanceDateTime(LocalDate date) {
+        AttendanceDateTimeValidator.validateDate(date);
         this.date = date;
-        this.time = null;
     }
 
     public boolean isSameDate(LocalDate date) {
@@ -31,50 +24,25 @@ public class AttendanceDateTime {
             || (date.isAfter(fromInclusive) && date.isBefore(toInclusive));
     }
 
-    public AttendanceStatus getAttendanceStatus() {
-        if (time == null) {
-            return AttendanceStatus.ABSENCE;
-        }
-        return AttendanceStatus.determine(LocalDateTime.of(date, time));
-    }
+    public abstract LocalDate getDate();
 
-    public LocalDate getDate() {
-        return date;
-    }
+    public abstract LocalTime getTime();
 
-    public LocalTime getTime() {
-        return time;
-    }
+    public abstract AttendanceStatus getAttendanceStatus();
 
-    public static AttendanceDateTime of(int year, int month, int dayOfMonth, int hour, int minute) {
-        return new AttendanceDateTime(LocalDateTime.of(year, month, dayOfMonth, hour, minute));
+    public static AttendanceDateTime from(LocalDateTime dateTime) {
+        return new RealAttendanceDateTime(dateTime);
     }
 
     public static AttendanceDateTime ofAbsence(LocalDate date) {
-        return new AttendanceDateTime(date);
+        return new DummyAttendanceDateTime(date);
     }
 
-    public static AttendanceDateTime from(LocalDateTime localDateTime) {
-        return new AttendanceDateTime(localDateTime);
+    public static AttendanceDateTime of(int year, int month, int day, int hour, int minute) {
+        return new RealAttendanceDateTime(LocalDateTime.of(year, month, day, hour, minute));
     }
 
-    public static AttendanceDateTime parse(String attendedTime) {
-        return new AttendanceDateTime(LocalDateTime.parse(attendedTime));
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        if (!(o instanceof AttendanceDateTime that)) {
-            return false;
-        }
-
-        return Objects.equals(date, that.date) && Objects.equals(time, that.time);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hashCode(date);
-        result = 31 * result + Objects.hashCode(time);
-        return result;
+    public static AttendanceDateTime parse(String dateTime) {
+        return new RealAttendanceDateTime(LocalDateTime.parse(dateTime));
     }
 }
