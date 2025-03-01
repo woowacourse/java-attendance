@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -76,11 +77,14 @@ public class Attendances {
         LocalDate today = LocalDate.now();
         LocalDate lastDayOfMonth = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
 
-        return today.isBefore(lastDayOfMonth) ? today.minusDays(1) : lastDayOfMonth;
+        if (today.isBefore(lastDayOfMonth)) {
+            return today.minusDays(1);
+        }
+        return lastDayOfMonth;
     }
 
     private boolean isWeekday(LocalDate date) {
-        return date.getDayOfWeek().getValue() >= 1 && date.getDayOfWeek().getValue() <= 5;
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
     }
-
 }

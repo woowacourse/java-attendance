@@ -9,6 +9,8 @@ import java.util.Locale;
 
 public class Time {
 
+    private final static int CAMPUS_OPEN_HOUR = 8;
+    private final static int CAMPUS_CLOSE_HOUR = 23;
     private LocalDateTime attendanceTime;
 
     public Time(LocalDateTime attendanceTime) {
@@ -18,7 +20,8 @@ public class Time {
     }
 
     private void validateCampusOperationTime(LocalDateTime attendanceTime) {
-        if (attendanceTime.getHour() < 8 || (attendanceTime.getHour() == 23 && attendanceTime.getMinute() > 0)) {
+        if (attendanceTime.getHour() < CAMPUS_OPEN_HOUR || (attendanceTime.getHour() == CAMPUS_CLOSE_HOUR
+                && attendanceTime.getMinute() > 0)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }

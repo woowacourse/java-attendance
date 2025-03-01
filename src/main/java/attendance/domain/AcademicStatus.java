@@ -5,10 +5,12 @@ import java.util.stream.Stream;
 
 public enum AcademicStatus {
 
+
     EXPELLED("제적", count -> count > 5),
     INTERVIEW("면담", count -> count >= 3),
     WARNING("경고", count -> count == 2),
     NOT("없음", count -> count < 2);
+    private final static int CHANGE_LATE_TO_ABSENT = 3;
 
     private final String status;
     private final Predicate<Long> determineStatusConditions;
@@ -19,7 +21,7 @@ public enum AcademicStatus {
     }
 
     public static AcademicStatus getStatus(final long late, final long absent) {
-        long totalCount = late / 3 + absent;
+        long totalCount = late / CHANGE_LATE_TO_ABSENT + absent;
 
         return Stream.of(values())
                 .filter(status -> status.determineStatusConditions.test(totalCount))

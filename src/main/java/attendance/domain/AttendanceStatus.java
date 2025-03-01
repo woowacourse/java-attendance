@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.function.BiPredicate;
 
 public enum AttendanceStatus {
+
     ATTEND("출석", (arrivalTime, startTime) -> {
         Duration duration = Duration.between(startTime, arrivalTime);
         return duration.isZero() || duration.isNegative() || duration.toMinutes() <= 5;
