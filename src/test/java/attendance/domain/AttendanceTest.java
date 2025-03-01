@@ -20,7 +20,7 @@ public class AttendanceTest {
 
         assertThatThrownBy(() -> new Attendance(friday, beforeOpen))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+            .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다. 운영시간은 08:00 ~ 23:00 입니다.");
     }
 
     @Test
@@ -31,7 +31,7 @@ public class AttendanceTest {
 
         assertThatThrownBy(() -> new Attendance(friday, afterClose))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+            .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다. 운영시간은 08:00 ~ 23:00 입니다.");
     }
 
     @Test

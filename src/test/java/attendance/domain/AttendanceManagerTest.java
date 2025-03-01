@@ -81,7 +81,7 @@ public class AttendanceManagerTest {
         // when & then
         assertThatThrownBy(() -> service.remarkAttendance("빙봉", attendanceDate, attendanceTime))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+            .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다. 운영시간은 08:00 ~ 23:00 입니다.");
     }
 
     @Test
@@ -129,7 +129,7 @@ public class AttendanceManagerTest {
         // when & then
         assertThatThrownBy(() -> service.remarkAttendance("빙봉", editDate, editTime))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+            .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다. 운영시간은 08:00 ~ 23:00 입니다.");
     }
 
     @Test
