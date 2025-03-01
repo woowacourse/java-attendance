@@ -4,24 +4,28 @@ public class Student {
     private final String name;
     private final StudentAttendanceHistory studentAttendanceHistory;
 
-    public Student(String name, StudentAttendanceHistory studentAttendanceHistory) {
+    public Student(String name, StudentAttendanceHistory studentAttendanceHistoryMap) {
         this.name = name;
-        this.studentAttendanceHistory = studentAttendanceHistory;
+        this.studentAttendanceHistory = studentAttendanceHistoryMap;
     }
 
-    public void addAttendanceDateTime(AttendanceDateTime attendanceDateTime) {
-        studentAttendanceHistory.addAttendanceDateTime(attendanceDateTime);
+    public void addAttendanceDateTime(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        studentAttendanceHistory.addStudentAttendanceHistory(attendanceDate, attendanceTime);
     }
 
-    public boolean isExistSameAttendanceDateTime(AttendanceDateTime wantToFindAttendanceDateTime) {
-        return studentAttendanceHistory.isExistSameAttendanceDateTime(wantToFindAttendanceDateTime);
+    public void modifyAttendanceDateTime(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        studentAttendanceHistory.modifyStudentAttendanceHistory(attendanceDate, attendanceTime);
     }
 
-    public void modifyAttendanceDateTime(AttendanceDateTime attendanceDateTime) {
-        studentAttendanceHistory.modifyAttendance(attendanceDateTime);
+    public boolean isExistAttendanceDate(AttendanceDate attendanceDate) {
+        return studentAttendanceHistory.isExistSameAttendanceDate(attendanceDate);
     }
 
     public boolean isSameName(String studentName) {
         return studentName.equals(name);
+    }
+
+    public StudentAttendanceHistory getStudentAttendanceHistory() {
+        return studentAttendanceHistory;
     }
 }
