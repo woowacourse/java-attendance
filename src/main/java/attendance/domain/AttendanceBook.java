@@ -38,4 +38,9 @@ public class AttendanceBook {
             throw new IllegalArgumentException(ErrorMessage.CREW_NICKNAME_NOT_EXIST_ERROR.getMessage());
         }
     }
+
+    public List<Attendance> getRecordOfCrew(LocalDate today, Crew crew) {
+        Attendances attendances = attendanceBook.get(crew);
+        return attendances.getAttendancesUntilYesterday(today);
+    }
 }
