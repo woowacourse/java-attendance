@@ -15,4 +15,8 @@ public record AttendCount(long attendCount, long lateCount, long absenceCount) {
                 .filter(status -> status.equals(targetStatus))
                 .count();
     }
+
+    public long rank() {
+        return this.lateCount + this.absenceCount * 3;
+    }
 }
