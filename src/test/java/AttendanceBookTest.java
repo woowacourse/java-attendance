@@ -6,6 +6,7 @@ import domain.AttendanceBook;
 import domain.Current;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -93,5 +94,47 @@ public class AttendanceBookTest {
 
         //then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    private static Attend createAttendDateAndTime(int day, int hour, int minute) {
+        return new Attend(LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), day),
+                LocalTime.of(hour, minute));
+    }
+
+    private static Attend createAttendDate(int day) {
+        return new Attend(LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), day));
+    }
+
+    private static List<Attend> createAttendUntilToday() {
+        return List.of(
+                createAttendDateAndTime(2, 10, 5),
+                createAttendDateAndTime(3, 10, 5),
+                createAttendDateAndTime(4, 10, 5),
+                createAttendDateAndTime(5, 10, 30),
+                createAttendDateAndTime(6, 10, 30),
+                createAttendDateAndTime(9, 10, 30),
+                createAttendDateAndTime(10, 10, 31),
+                createAttendDateAndTime(11, 10, 31),
+                createAttendDateAndTime(12, 10, 31)
+        );
+    }
+
+    @Test
+    @DisplayName("대상 닉네임의 오늘 직전까지의 출석 현황을 조회한다")
+    void searchAttendResultUsingName() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        attendanceBook.register(name);
+        List<Attend> attends = createAttendUntilToday();
+        for (Attend attend : attends) {
+            attendanceBook.addAttend(name, attend);
+        }
+
+        //when
+        List<Attend> actual = attendanceBook.searchAttend(name, Current.TODAY.getDay());
+
+        //then
+        assertThat(actual).isEqualTo(attends);
     }
 }

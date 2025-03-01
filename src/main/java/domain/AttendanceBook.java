@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -31,5 +32,11 @@ public class AttendanceBook {
         checkContainsName(name);
         AttendResult attendResult = attendBook.get(name);
         return attendResult.edit(afterAttend);
+    }
+
+    public List<Attend> searchAttend(String name, final int day) {
+        checkContainsName(name);
+        AttendResult attendResult = attendBook.get(name);
+        return attendResult.getAttendResult(day);
     }
 }
