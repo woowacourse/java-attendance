@@ -46,4 +46,12 @@ public class Attendance {
     public boolean isSameDate(LocalDate inputDate) {
         return attendDate.isEqual(inputDate);
     }
+
+    public LocalDate getAttendDate() {
+        return attendDate;
+    }
+
+    public LocalTime getAttendTime() {
+        return attendTime;
+    }
 }

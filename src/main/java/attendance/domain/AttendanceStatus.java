@@ -16,6 +16,10 @@ public enum AttendanceStatus {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public static AttendanceStatus determine(LocalDate inputDate, LocalTime inputTime) {
         if (EducationTime.isBeforeAttendTime(inputDate.getDayOfWeek(), inputTime)) {
             return ATTEND;
