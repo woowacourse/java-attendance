@@ -1,13 +1,16 @@
 package controller;
 
 import domain.Attend;
+import domain.AttendCount;
 import domain.AttendReader;
 import domain.AttendStatus;
 import domain.AttendanceBook;
 import domain.Command;
 import domain.Current;
+import domain.WarningStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 import view.InputView;
 import view.OutputView;
@@ -55,6 +58,14 @@ public class AttendController {
     }
 
     private void searchAttend() {
+        String name = inputView.inputName();
+        List<Attend> attends = attendanceBook.searchAttend(name, Current.TODAY.getDay());
+        List<AttendStatus> attendStatuses = attends.stream()
+                .map(Attend::checkStatus)
+                .toList();
+        AttendCount attendCount = attendanceBook.countAttend(name);
+        WarningStatus warningStatus = attendanceBook.judgeAttendStatus(name);
+        outputView.printSearchedAttend(name, attends, attendStatuses, attendCount, warningStatus);
     }
 
     private void findWarningCrew() {
