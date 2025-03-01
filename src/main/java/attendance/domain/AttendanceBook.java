@@ -27,7 +27,7 @@ public class AttendanceBook {
         }
     }
 
-    public void saveAttendanceDateTime(Crew crew, AttendanceDateTime attendanceDateTime) {
+    public void saveAttendanceDateTime(final Crew crew, final AttendanceDateTime attendanceDateTime) {
         List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
         attendances.add(attendanceDateTime);
     }
@@ -40,7 +40,7 @@ public class AttendanceBook {
                 .orElseThrow(() -> new IllegalArgumentException("해당 일자에 출석하지 않았습니다."));
     }
 
-    public void removeAttendanceDateTime(Crew crew,AttendanceDateTime attendanceDateTime) {
+    public void removeAttendanceDateTime(final Crew crew, final AttendanceDateTime attendanceDateTime) {
         List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
         attendances.remove(attendanceDateTime);
     }
