@@ -27,7 +27,7 @@ public class Attendance implements Comparable<Attendance> {
     private void validateCampusOperatingHours(LocalTime attendanceTime) {
         if (attendanceTime == null) return;
         if (attendanceTime.isBefore(CAMPUS_OPEN_TIME) || attendanceTime.isAfter(CAMPUS_CLOSE_TIME)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영시간이 아닙니다. 운영시간은 08:00 ~ 23:00 입니다.");
         }
     }
 
