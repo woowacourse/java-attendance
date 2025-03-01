@@ -1,20 +1,35 @@
 package attendance;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import utils.AttendanceFileReader;
 
 public class AttendanceHistory {
 
     private final Map<String, AttendanceTimes> attendanceHistory;
 
-    private AttendanceHistory() {
+    private AttendanceHistory(List<String> fileReadResult) {
         this.attendanceHistory = new HashMap<>();
+        initAttendanceHistory(fileReadResult);
     }
 
-    public static AttendanceHistory create() {
-        return new AttendanceHistory();
+    public static AttendanceHistory create(List<String> fileReadResult) {
+        return new AttendanceHistory(fileReadResult);
+    }
+
+    private void initAttendanceHistory(List<String> fileReadResult) {
+        for (String file : fileReadResult) {
+            String[] split = file.split(",");
+            String nickname = split[0];
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime dateTime = LocalDateTime.parse(split[1], formatter);
+            AttendanceTime attendanceTime = AttendanceTime.from(dateTime);
+            add(nickname, attendanceTime);
+        }
     }
 
     public void add(String nickname, AttendanceTime attendanceTime) {
@@ -48,5 +63,4 @@ public class AttendanceHistory {
             throw new IllegalArgumentException("해당 날짜에 이미 출석했습니다. 수정 기능을 이용해주세요.");
         }
     }
-
 }

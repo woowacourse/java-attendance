@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +23,7 @@ public class AttendanceHistoryTest {
     @BeforeEach
     void init() {
         attendanceTimes = AttendanceTimes.create();
-        attendanceHistory = AttendanceHistory.create();
+        attendanceHistory = AttendanceHistory.create(List.of());
         attendanceHistory.add(nicknameJenson, attendanceTime1);
     }
 
