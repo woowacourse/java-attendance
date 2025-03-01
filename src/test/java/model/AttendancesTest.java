@@ -1,7 +1,9 @@
 package model;
 
+import static constant.ErrorMessage.NOT_FOUND_CREW;
 import static constant.PathConstant.ATTENDANCE_FILE_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import dto.AttendanceCheckInResponse;
 import java.time.LocalDateTime;
@@ -94,5 +96,18 @@ class AttendancesTest {
         assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now().toLocalDate());
         assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 31));
         assertThat(response.attendanceType()).isEqualTo(AttendanceType.ABSENCE);
+    }
+
+    @Test
+    @DisplayName("없는 크루가 출석을 시도하면 예외가 발생한다.")
+    void test5() {
+        // given
+        String nickname = "헤일러";
+        String checkInTime = "10:00";
+
+        // when & then
+        assertThatThrownBy(() -> attendances.add(nickname, checkInTime, dateTimeGenerator))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(NOT_FOUND_CREW.getMessage());
     }
 }
