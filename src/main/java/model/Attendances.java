@@ -47,9 +47,9 @@ public class Attendances {
         Crew crew = Crew.of(request.nickname());
         Attendance attendance = Attendance.of(dateTimeGenerator, request.checkInTime());
 
-        if (!attendances.containsKey(crew)) {
-            throw new IllegalArgumentException(NOT_FOUND_CREW.getMessage());
-        }
+        validateExistCrew(crew);
+        AttendanceTime.validateInOperationTime(dateTimeGenerator.getNowLocalDate(),
+                LocalTime.parse(request.checkInTime()));
 
         attendances.get(crew).add(attendance);
 
@@ -155,6 +155,12 @@ public class Attendances {
 
             attendanceList.sort(Comparator.comparing(Attendance::getCheckInDate));
         });
+    }
+
+    private void validateExistCrew(Crew crew) {
+        if (!attendances.containsKey(crew)) {
+            throw new IllegalArgumentException(NOT_FOUND_CREW.getMessage());
+        }
     }
 
     private Attendance find(Crew crew, LocalDate localDate) {
