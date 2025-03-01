@@ -7,6 +7,7 @@ import domain.AttendStatus;
 import domain.AttendanceBook;
 import domain.Command;
 import domain.Current;
+import domain.WarningCrew;
 import domain.WarningStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -69,6 +70,8 @@ public class AttendController {
     }
 
     private void findWarningCrew() {
+        List<WarningCrew> warningCrews = attendanceBook.searchWarningCrew();
+        outputView.printWarningCrew(warningCrews);
     }
 
     private void close() {

@@ -3,6 +3,7 @@ package view;
 import domain.Attend;
 import domain.AttendCount;
 import domain.AttendStatus;
+import domain.WarningCrew;
 import domain.WarningStatus;
 import java.time.LocalTime;
 import java.util.List;
@@ -61,5 +62,16 @@ public class OutputView {
         if (warningStatus != WarningStatus.PASS) {
             System.out.printf("%s 대상자 입니다.%n%n", WarningStatusFormatter.findStatusText(warningStatus));
         }
+    }
+
+    public void printWarningCrew(final List<WarningCrew> warningCrews) {
+        System.out.println("제적 위험자 조회 결과");
+        for (WarningCrew warningCrew : warningCrews) {
+            AttendCount attendCount = warningCrew.attendCount();
+            String warningStatus = WarningStatusFormatter.findStatusText(warningCrew.warningStatus());
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                    warningCrew.name(), attendCount.absenceCount(), attendCount.lateCount(), warningStatus);
+        }
+        System.out.println();
     }
 }
