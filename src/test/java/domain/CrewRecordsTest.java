@@ -49,19 +49,19 @@ class CrewRecordsTest {
         // given
         CrewRecords crewRecords = new CrewRecords();
         Crew crew = new Crew("저스틴");
-        AttendanceRecord oldRecord = new AttendanceRecord(LocalDateTime.parse("2024-12-03T13:10"));
-        LocalTime newTime = LocalTime.of(13, 0);
-        LocalDate oldDate = LocalDate.of(2024, 12, 3);
+        AttendanceRecord oldRecord = new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:35"));
+        LocalTime newTime = LocalTime.of(13, 30);
+        LocalDate oldDate = LocalDate.of(2024, 12, 2);
 
         // when
         crewRecords.addCrewRecords(crew, new AttendanceRecords());
         crewRecords.addRecord(crew, oldRecord);
-        crewRecords.editRecord(oldDate, newTime);
+        crewRecords.editRecord(crew, oldDate, newTime);
 
         // then
         assertAll(
-                () -> assertThat(oldRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.TARDY),
-                () -> assertThat(crewRecords.getRecordOnDate(crew, oldDate).getAttendanceStatus()).isEqualTo(AttendanceStatus.PRESENT)
+                () -> assertThat(oldRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.ABSENT),
+                () -> assertThat(crewRecords.getRecordOnDate(crew, oldDate).getAttendanceStatus()).isEqualTo(AttendanceStatus.TARDY)
         );
 
     }
