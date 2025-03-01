@@ -10,6 +10,19 @@ import org.junit.jupiter.api.Test;
 public class AttendanceBookTest {
 
     @Test
+    void 등록된_닉네임이_아닌경우_출석시_예외가_발생한다() {
+        //given
+        String nickname = "pobi";
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 1);
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        //when
+        assertThatThrownBy(() -> attendanceBook.attend(new Attendance(nickname, attendanceDateTime)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(nickname + "은 등록되지 않은 닉네임입니다.");
+    }
+
+    @Test
     void 이미_해당_날짜에_출석한_경우_다시_출석할때_예외가_발생한다() {
         //given
         String nickname = "pobi";
