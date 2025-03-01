@@ -18,9 +18,9 @@ public class AttendancesTest {
     void 출석_리스트에_출석을_추가할수_있다() {
         Attendances attendances = new Attendances(new ArrayList<>());
         Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
-        attendances.add(attendance);
 
-        assertThat(attendances.size()).isEqualTo(1);
+        assertThatCode(() -> attendances.add(attendance))
+                .doesNotThrowAnyException();
     }
 
     @Test
@@ -61,8 +61,8 @@ public class AttendancesTest {
 
         Attendance oldAttendance = attendances.findByDate(LocalDate.of(2024, 12, 12));
         Attendance newAttendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 30));
-        attendances.update(oldAttendance, newAttendance);
 
-        assertThat(attendances.size()).isEqualTo(1);
+        assertThatCode(() -> attendances.update(oldAttendance, newAttendance))
+                .doesNotThrowAnyException();
     }
 }

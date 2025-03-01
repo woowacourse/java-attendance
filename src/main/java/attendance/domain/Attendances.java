@@ -27,10 +27,6 @@ public class Attendances {
                 });
     }
 
-    public int size() {
-        return attendances.size();
-    }
-
     public Attendance findByDate(LocalDate inputDate) {
         return attendances.stream()
                 .findFirst()

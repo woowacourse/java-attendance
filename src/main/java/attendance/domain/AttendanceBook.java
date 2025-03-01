@@ -22,10 +22,6 @@ public class AttendanceBook {
         attendanceBook.put(crew, new Attendances(new ArrayList<>(List.of(attendance))));
     }
 
-    public int size() {
-        return attendanceBook.size();
-    }
-
     public Attendance findAttendanceByCrew(Crew crew, LocalDate inputDate) {
         return attendanceBook.get(crew).findByDate(inputDate);
     }

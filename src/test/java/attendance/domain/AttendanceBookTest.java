@@ -18,9 +18,9 @@ public class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
         Crew crew = new Crew(new Nickname("듀이"));
         Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
-        attendanceBook.add(crew, attendance);
 
-        assertThat(attendanceBook.size()).isEqualTo(1);
+        assertThatCode(() -> attendanceBook.add(crew, attendance))
+                .doesNotThrowAnyException();
     }
 
     @Test

@@ -15,7 +15,7 @@ public class NicknameTest {
 
     @ParameterizedTest(name = "{index} : {1}")
     @MethodSource("getEmptyOrNullNickname")
-    void 닉네임이_빈칸이거나_널이면_예외가_발생한다(String nickname, String meesage) {
+    void 닉네임이_빈칸이거나_널이면_예외가_발생한다(String nickname, String message) {
         assertThatThrownBy(() -> new Nickname(nickname))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorMessage.NICKNAME_MISSING_ERROR.getMessage());
