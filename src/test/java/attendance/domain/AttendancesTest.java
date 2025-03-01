@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -52,7 +51,7 @@ public class AttendancesTest {
 
         assertThatThrownBy(() -> attendances.findByDate(LocalDate.of(2024, 12, 13)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 수정하려는 날짜에 출석 기록이 없습니다.");
+                .hasMessage(ErrorMessage.ATTENDANCE_NOT_EXIST_ERROR.getMessage());
     }
 
     @Test

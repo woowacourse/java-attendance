@@ -2,6 +2,7 @@ package attendance.domain;
 
 import attendance.util.ErrorMessage;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class Attendances {
@@ -12,12 +13,12 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-    public void add(Attendance attendance) {
-        validateExist(attendance);
-        attendances.add(attendance);
+    public void add(Attendance newAttendance) {
+        validateAlreadyExist(newAttendance);
+        attendances.add(newAttendance);
     }
 
-    private void validateExist(Attendance newAttendance) {
+    private void validateAlreadyExist(Attendance newAttendance) {
         attendances.stream()
                 .filter(attendance -> attendance.isSameDate(newAttendance))
                 .findFirst()
@@ -28,5 +29,22 @@ public class Attendances {
 
     public int size() {
         return attendances.size();
+    }
+
+    public Attendance findByDate(LocalDate inputDate) {
+        return attendances.stream()
+                .findFirst()
+                .filter(attendance -> attendance.isSameDate(inputDate))
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ATTENDANCE_NOT_EXIST_ERROR.getMessage()));
+    }
+
+    public void update(Attendance oldAttendance, Attendance newAttendance) {
+        attendances.stream()
+                .filter(attendance -> attendance.equals(oldAttendance))
+                .findFirst()
+                .ifPresent(attendance -> {
+                    int index = attendances.indexOf(attendance);
+                    attendances.set(index, newAttendance);
+                });
     }
 }

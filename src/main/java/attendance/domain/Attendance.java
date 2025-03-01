@@ -39,7 +39,11 @@ public class Attendance {
         return AttendanceStatus.determine(attendDate, attendTime);
     }
 
-    public boolean isSameDate(Attendance inputAttendance) {
-        return attendDate.isEqual(inputAttendance.attendDate);
+    public boolean isSameDate(Attendance newAttendance) {
+        return attendDate.isEqual(newAttendance.attendDate);
+    }
+
+    public boolean isSameDate(LocalDate inputDate) {
+        return attendDate.isEqual(inputDate);
     }
 }
