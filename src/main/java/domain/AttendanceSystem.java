@@ -9,52 +9,52 @@ import java.util.stream.Collectors;
 import static util.Dates.TODAY;
 
 public class AttendanceSystem {
-    private final Map<String, AttendanceBook> attendanceBooks;
+    private final Map<Crew, AttendanceBook> attendanceBooks;
 
     public AttendanceSystem() {
         attendanceBooks = new HashMap<>();
     }
 
-    public void attendance(String name, LocalTime time) {
+    public void attendance(Crew name, LocalTime time) {
         if (attendanceBooks.get(name).hasAttendanceRecord(TODAY)) {
             throw new IllegalArgumentException();
         }
         attendanceBooks.get(name).attendance(TODAY, time);
     }
 
-    private boolean hasNoName(String name) {
+    private boolean hasNoName(Crew name) {
         return !attendanceBooks.containsKey(name);
     }
 
 
-    public LocalTime getAttendanceRecord(String name, LocalDate date) {
+    public LocalTime getAttendanceRecord(Crew name, LocalDate date) {
         return attendanceBooks.get(name).getAttendanceTimeByDate(date);
     }
 
-    public void editAttendance(String name, LocalDate date, LocalTime time) {
+    public void editAttendance(Crew name, LocalDate date, LocalTime time) {
         if (hasNoName(name)) {
             attendanceBooks.put(name, new AttendanceBook());
         }
         attendanceBooks.get(name).attendance(date, time);
     }
 
-    public int getAbsenceCount(String name) {
+    public int getAbsenceCount(Crew name) {
         return attendanceBooks.get(name).getAbsenceCount(TODAY);
     }
 
-    public int getTardyCount(String name) {
+    public int getTardyCount(Crew name) {
         return attendanceBooks.get(name).getTardyCount(TODAY);
     }
 
-    public int getAttendCount(String name) {
+    public int getAttendCount(Crew name) {
         return attendanceBooks.get(name).getAttendCount(TODAY);
     }
 
-    public RiskStatus getRisk(String name) {
+    public RiskStatus getRisk(Crew name) {
         return attendanceBooks.get(name).getRiskStatus(TODAY);
     }
 
-    public Map<String, AttendanceBook> getRiskCrews() {
+    public Map<Crew, AttendanceBook> getRiskCrews() {
         return attendanceBooks.entrySet().stream()
                 .filter(entry -> !entry.getValue().getRiskStatus(TODAY).equals(RiskStatus.NONE))
                 .collect(Collectors.toMap(
@@ -63,7 +63,7 @@ public class AttendanceSystem {
                 ));
     }
 
-    public AttendanceBook findByName(String name) {
+    public AttendanceBook findByName(Crew name) {
         if(hasNoName(name)) {
             throw new IllegalArgumentException("존재하지 않는 이름입니다.");
         }

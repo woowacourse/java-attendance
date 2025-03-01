@@ -2,6 +2,7 @@ package controller;
 
 import domain.AttendanceBook;
 import domain.AttendanceSystem;
+import domain.Crew;
 import dto.AttendanceRecordDto;
 import dto.AttendanceResultDto;
 import dto.RiskCrewDto;
@@ -73,7 +74,7 @@ public class AttendanceController {
     private void checkRiskCrews() {
         List<RiskCrewDto> riskCrews = attendanceSystem.getRiskCrews().entrySet().stream()
                 .map(entry -> new RiskCrewDto(
-                        entry.getKey(),
+                        entry.getKey().name(),
                         entry.getValue().getAbsenceCount(TODAY),
                         entry.getValue().getTardyCount(TODAY),
                         entry.getValue().getRiskStatus(TODAY)
@@ -83,19 +84,19 @@ public class AttendanceController {
     }
 
     private void checkAttendanceRecord() {
-        String name = input.getNameInput();
-        AttendanceBook attendanceBook = attendanceSystem.findByName(name);
+        Crew crew = new Crew(input.getNameInput());
+        AttendanceBook attendanceBook = attendanceSystem.findByName(crew);
         attendanceBook.getAttendanceBook();
         output.printAttendanceRecord(
-                name,
+                crew.name(),
                 TODAY,
                 attendanceBook.getAttendanceBook(),
                 attendanceBook.getAttendanceStatuses());
     }
 
     private void editAttendance() {
-        String name = input.getNameInput();
-        AttendanceBook attendanceBook = attendanceSystem.findByName(name);
+        Crew crew = new Crew(input.getNameInput());
+        AttendanceBook attendanceBook = attendanceSystem.findByName(crew);
         LocalDate date = getEditDate();
         AttendanceResultDto beforeAttendanceResult = getAttendanceResult(date, attendanceBook);
         LocalTime time = Parser.stringToLocalTime(input.getEditTimeInput());
@@ -120,8 +121,8 @@ public class AttendanceController {
 
     private void attend() {
         validateTodayIsHoliday();
-        String name = input.getNameInput();
-        AttendanceBook attendanceBook = attendanceSystem.findByName(name);
+        Crew crew = new Crew(input.getNameInput());
+        AttendanceBook attendanceBook = attendanceSystem.findByName(crew);
         LocalTime time = Parser.stringToLocalTime(input.getTimeInput());
         attendanceBook.attendance(TODAY, time);
         AttendanceResultDto attendanceResultDto = getAttendanceResult(TODAY, attendanceBook);
@@ -137,7 +138,7 @@ public class AttendanceController {
     private void initCrew() {
         List<AttendanceRecordDto> attendanceRecords = fileInput.getFileInit();
         attendanceRecords.forEach(attendanceRecordDto -> {
-            attendanceSystem.editAttendance(attendanceRecordDto.nickname(),
+            attendanceSystem.editAttendance(new Crew(attendanceRecordDto.nickname()),
                     attendanceRecordDto.attendanceDateTime().toLocalDate(),
                     attendanceRecordDto.attendanceDateTime().toLocalTime());
         });
