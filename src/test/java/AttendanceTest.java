@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.Attendance;
 import domain.AttendanceTime;
+import domain.AttendanceType;
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -82,5 +83,27 @@ public class AttendanceTest {
 
         //then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "2, 13, 5, 0, 0, SUCCESS",
+            "2, 13, 5, 0, 1, LATE",
+            "2, 13, 30, 0, 0, LATE",
+            "2, 13, 30, 0, 1, ABSENCE",
+            "3, 10, 5, 0, 0, SUCCESS",
+            "3, 10, 5, 0, 1, LATE",
+            "3, 10, 30, 0, 0, LATE",
+            "3, 10, 30, 0, 1, ABSENCE",
+    })
+    void 출석_유형을_판단한다(int date, int hour, int minute, int second, int nano, AttendanceType expected) {
+        //given
+        Crew crew = new Crew("쿠키");
+        LocalDateTime time = LocalDateTime.of(2024, 12, date, hour, minute, second, nano);
+        Attendance attendance = Attendance.of(crew, AttendanceTime.of(time));
+        //when
+        AttendanceType type = attendance.judgeType();
+        //then
+        assertThat(type).isEqualTo(expected);
     }
 }
