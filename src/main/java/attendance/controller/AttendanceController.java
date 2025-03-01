@@ -59,6 +59,7 @@ public class AttendanceController {
     }
 
     private void doFunction(final Function function, final AttendanceBook attendanceBook) {
+
         if (function == Function.ADD_ATTENDANCE) {
             addAttendance(attendanceBook);
         }
@@ -116,6 +117,7 @@ public class AttendanceController {
     }
 
     private String inputCrewName(final AttendanceBook attendanceBook) {
+
         return retryInput(() -> {
             String name = inputView.inputCrewName();
             validateCrewNickname(attendanceBook, name);
@@ -124,6 +126,7 @@ public class AttendanceController {
     }
 
     private AttendanceTime inputAttendanceTime() {
+
         LocalDate now = LocalDate.now();
         return retryInput(() -> {
             String[] split = inputView.inputAttendTime().split(":");
@@ -132,7 +135,8 @@ public class AttendanceController {
         });
     }
 
-    private static void validateCrewNickname(final AttendanceBook attendanceBook, final String name) {
+    private void validateCrewNickname(final AttendanceBook attendanceBook, final String name) {
+
         if (!attendanceBook.isCrewExists(name)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
@@ -200,6 +204,7 @@ public class AttendanceController {
 
     private EnumMap<AttendanceStatus, Integer> getAttendanceStatusMap(int attend, int late,
                                                                       int absent) {
+
         EnumMap<AttendanceStatus, Integer> attendanceStatusMap = new EnumMap<>(AttendanceStatus.class);
         attendanceStatusMap.put(AttendanceStatus.ATTEND, attend);
         attendanceStatusMap.put(AttendanceStatus.LATE, late);

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendanceTime {
+
     private final LocalDate date;
     private int hour;
     private int minute;
@@ -66,23 +67,28 @@ public class AttendanceTime {
     }
 
     public boolean isDefaultAbsent() {
+
         return hour == ABSENT_VALUE && minute == ABSENT_VALUE;
     }
 
     public void modify(final int targetHour, final int targetMinute) {
+
         this.hour = targetHour;
         this.minute = targetMinute;
     }
 
     public int getHour() {
+
         return hour;
     }
 
     public int getMinute() {
+
         return minute;
     }
 
     public LocalDate getDate() {
+        
         return LocalDate.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
     }
 }

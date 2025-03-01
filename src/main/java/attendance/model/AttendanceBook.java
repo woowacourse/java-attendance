@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
+    
     private final Map<String, List<AttendanceTime>> attendances = new HashMap<>();
 
     public void add(final String name, final AttendanceTime attendanceTime) {

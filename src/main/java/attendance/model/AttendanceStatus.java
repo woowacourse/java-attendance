@@ -3,6 +3,7 @@ package attendance.model;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
+    
     ATTEND("출석"),
     LATE("지각"),
     ABSENT("결석");
@@ -15,6 +16,7 @@ public enum AttendanceStatus {
     private static final LocalTime OTHER_DAY_ABSENT = LocalTime.of(10, 31);
 
     AttendanceStatus(final String value) {
+
         this.value = value;
     }
 
@@ -42,6 +44,7 @@ public enum AttendanceStatus {
     }
 
     public String getValue() {
+
         return value;
     }
 }
