@@ -14,6 +14,8 @@ import java.util.Map;
 
 public class AttendanceController {
 
+    private static final String EXIT = "Q";
+
     private final InputView inputView;
     private final OutputView outputView;
     private final Attendances attendances;
@@ -32,7 +34,7 @@ public class AttendanceController {
 
     public void run() {
         String command = "";
-        while (!command.equals("Q")) {
+        while (!EXIT.equals(command)) {
             outputView.printOptionMessage();
             command = inputView.readOptionNumber();
             runCommand(command);
