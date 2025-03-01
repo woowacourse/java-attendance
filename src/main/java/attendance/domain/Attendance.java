@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -9,6 +10,10 @@ public class Attendance {
     private final String nickname;
     private final AttendanceDate attendanceDate;
     private LocalTime attendanceTime;
+
+    public Attendance(String nickname, LocalDate attendanceDate, LocalTime attendanceTime) {
+        this(nickname, LocalDateTime.of(attendanceDate, attendanceTime));
+    }
 
     public Attendance(String nickname, LocalDateTime attendanceDateTime) {
         this.nickname = nickname;
@@ -40,6 +45,10 @@ public class Attendance {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public LocalDateTime getAttendanceDateTime() {
+        return LocalDateTime.of(attendanceDate.getAttendanceDate(), attendanceTime);
     }
 
     @Override

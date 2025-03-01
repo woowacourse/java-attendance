@@ -4,6 +4,7 @@ import static attendance.view.Command.ATTENDANCE;
 import static attendance.view.Command.from;
 
 import attendance.AttendanceBookInitializer;
+import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.view.Command;
 import attendance.view.InputView;
@@ -30,8 +31,11 @@ public class AttendanceController {
         }
     }
 
-    public void attend(LocalDate today, AttendanceBook attendanceBook) {
+    public void attend(LocalDate attendanceDate, AttendanceBook attendanceBook) {
         String nickname = inputView.inputNickname();
         LocalTime attendanceTime = inputView.inputAttendanceTime();
+        Attendance attendance = new Attendance(nickname, attendanceDate, attendanceTime);
+        attendanceBook.attend(attendance);
+        outputView.printAttendance(attendance);
     }
 }

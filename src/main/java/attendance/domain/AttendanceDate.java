@@ -52,6 +52,10 @@ public class AttendanceDate {
         return attendanceDate.getDayOfWeek();
     }
 
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
     public boolean isBeforeAndEqual(AttendanceDate attendanceDate) {
         return this.attendanceDate.isBefore(attendanceDate.attendanceDate) ||
                 this.attendanceDate.isEqual(attendanceDate.attendanceDate);
