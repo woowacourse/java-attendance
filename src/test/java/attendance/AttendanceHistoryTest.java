@@ -51,7 +51,7 @@ public class AttendanceHistoryTest {
         //then
         Map<String, AttendanceTimes> attendanceHistory1 = attendanceHistory.getAttendanceHistory();
         assertThat(attendanceHistory1.get(nickname).getAttendanceTimes().size()).isEqualTo(2);
-        assertThat(attendanceHistory1.get(nickname).getAttendanceTimes()).containsExactly(attendanceTime, anotherAttendanceTime);
+        assertThat(attendanceHistory1.get(nickname).getAttendanceTimes()).containsExactlyInAnyOrder(attendanceTime, anotherAttendanceTime);
     }
 
     @DisplayName("이미 해당 날짜에 출석 기록이 존재한다면, 예외를 던진다")
