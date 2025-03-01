@@ -9,7 +9,7 @@ public class StudentPunishmentTest {
     @DisplayName("제적 결정 테스트")
     void test1() {
         Assertions.assertEquals(
-                StudentPunishment.calculatePunishment(5), StudentPunishment.ABSENT
+                StudentPunishment.ABSENT, StudentPunishment.calculatePunishment(5)
         );
     }
 
@@ -17,7 +17,7 @@ public class StudentPunishmentTest {
     @DisplayName("면담 결정 테스트")
     void test2() {
         Assertions.assertEquals(
-                StudentPunishment.calculatePunishment(3), StudentPunishment.INTERVIEW
+                StudentPunishment.INTERVIEW, StudentPunishment.calculatePunishment(3)
         );
     }
 
@@ -25,7 +25,15 @@ public class StudentPunishmentTest {
     @DisplayName("경고 결정 테스트")
     void test3() {
         Assertions.assertEquals(
-                StudentPunishment.calculatePunishment(2), StudentPunishment.WARNING
+                StudentPunishment.WARNING, StudentPunishment.calculatePunishment(2)
+        );
+    }
+
+    @Test
+    @DisplayName("안전 결정 테스트")
+    void test4() {
+        Assertions.assertEquals(
+                StudentPunishment.SAFE, StudentPunishment.calculatePunishment(1)
         );
     }
 }
