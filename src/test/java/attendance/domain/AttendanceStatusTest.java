@@ -2,6 +2,8 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,8 +17,7 @@ class AttendanceStatusTest {
         @ParameterizedTest
         @CsvSource(
             value = {"null, null",
-                "13, 31"}
-            ,
+                "13, 31"},
             nullValues = {"null"}
         )
         void 출석시간을_기준으로_30분초과면_결석이다(
@@ -36,7 +37,7 @@ class AttendanceStatusTest {
         }
 
         @Test
-        void 출석시간을_기즌으로_5분초과면_지각이다() {
+        void 출석시간을_기준으로_5분초과면_지각이다() {
             // given
             AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
                 new AttendanceDate(2024, 12, 2),
@@ -71,6 +72,33 @@ class AttendanceStatusTest {
 
             // then
             assertThat(status).isEqualTo(AttendanceStatus.ATTENDANCE);
+        }
+
+        @Test
+        void 출석시간들로_출석상태의_개수를_구한다() {
+            // given
+            List<AttendanceDateTime> attendanceDateTimes = List.of(
+                new AttendanceDateTime(new AttendanceDate(2024, 12, 2),
+                    new AttendanceTime(8, 0)),  // 출석
+                new AttendanceDateTime(new AttendanceDate(2024, 12, 2),
+                    new AttendanceTime(13, 5)),  // 출석
+                new AttendanceDateTime(new AttendanceDate(2024, 12, 2),
+                    new AttendanceTime(13, 6)),  // 지각
+                new AttendanceDateTime(new AttendanceDate(2024, 12, 2),
+                    new AttendanceTime(null, null)), // 결석
+                new AttendanceDateTime(new AttendanceDate(2024, 12, 2),
+                    new AttendanceTime(13, 31)) // 결석
+            );
+
+            // when
+            Map<AttendanceStatus, Integer> attendanceStatusCounts = AttendanceStatus.from(
+                attendanceDateTimes);
+
+            // then
+            assertThat(attendanceStatusCounts)
+                .containsEntry(AttendanceStatus.ATTENDANCE, 2)
+                .containsEntry(AttendanceStatus.LATE, 1)
+                .containsEntry(AttendanceStatus.ABSENCE, 2);
         }
     }
 }

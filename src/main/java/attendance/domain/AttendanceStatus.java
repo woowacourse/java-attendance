@@ -1,5 +1,9 @@
 package attendance.domain;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public enum AttendanceStatus {
     ATTENDANCE("출석", 0),
     LATE("지각", 5),
@@ -50,5 +54,12 @@ public enum AttendanceStatus {
         }
 
         return ATTENDANCE;
+    }
+
+    public static Map<AttendanceStatus, Integer> from(final List<AttendanceDateTime> attendanceDateTimes) {
+        return attendanceDateTimes.stream()
+            .map(AttendanceStatus::from)
+            .collect(Collectors.groupingBy(status -> status,
+                Collectors.summingInt(e -> 1)));
     }
 }
