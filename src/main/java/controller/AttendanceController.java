@@ -26,13 +26,17 @@ public class AttendanceController {
 
     public void run() {
         while (true) {
-            LocalDate today = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-//            LocalDate today = LocalDate.of(2024, 12, 14); // TODO: 작동확인을 위한 코드, 추후 삭제
+//            LocalDate today = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
+            LocalDate today = LocalDate.of(2024, 12, 14); // TODO: 작동확인을 위한 코드, 추후 삭제
             String commandCode = inputView.readCommandCode(today);
             if (commandCode.equals("Q")) {
                 return;
             }
-            runCommand(commandCode, today);
+            try {
+                runCommand(commandCode, today);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
