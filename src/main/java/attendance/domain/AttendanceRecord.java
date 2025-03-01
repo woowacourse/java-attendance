@@ -1,6 +1,8 @@
 package attendance.domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -28,7 +30,7 @@ public class AttendanceRecord {
     }
 
     public void addAttendanceDateTime(final AttendanceDateTime attendanceDateTime) {
-        if (isContainsKey(attendanceDateTime)) {
+        if (isContainsKey(attendanceDateTime.getAttendanceDate())) {
             throw new IllegalArgumentException("이미 해당 날짜의 출석 시간이 기록되어 있습니다.");
         }
 
@@ -37,7 +39,7 @@ public class AttendanceRecord {
     }
 
     public void modifyAttendanceDateTime(final AttendanceDateTime attendanceDateTime) {
-        if (!isContainsKey(attendanceDateTime)) {
+        if (!isContainsKey(attendanceDateTime.getAttendanceDate())) {
             throw new IllegalArgumentException("해당 날짜의 출석 시간이 기록되어 있지 않습니다.");
         }
 
@@ -45,24 +47,39 @@ public class AttendanceRecord {
             attendanceDateTime.getAttendanceTime());
     }
 
-    public AttendanceDateTime findAttendanceTimeByDate(final AttendanceDate attendanceDate) {
+    public AttendanceDateTime findByDate(final AttendanceDate attendanceDate) {
         if (!attendanceDateTimes.containsKey(attendanceDate)) {
             throw new IllegalArgumentException("해당 날짜의 출석 시간이 기록되어 있지 않습니다.");
         }
-        
+
         final AttendanceTime attendanceTime = attendanceDateTimes.get(
             attendanceDate);
 
         return new AttendanceDateTime(attendanceDate, attendanceTime);
     }
 
-    private boolean isContainsKey(final AttendanceDateTime attendanceDateTime) {
+    private boolean isContainsKey(final AttendanceDate attendanceDate) {
         return attendanceDateTimes.containsKey(
-            attendanceDateTime.getAttendanceDate());
+            attendanceDate);
     }
 
-    public Map<AttendanceDate, AttendanceTime> getAttendanceDateTimes() {
-        return Map.copyOf(attendanceDateTimes);
+    public List<AttendanceDateTime> findAllUntilDate(final AttendanceDate untilDate) {
+        AttendanceDate currentDate = AttendanceDate.FIRST_DATE;
+        final List<AttendanceDateTime> attendanceRecord = new ArrayList<>();
+
+        while (!currentDate.isAfter(untilDate)) {
+            attendanceRecord.add(extractAttendanceDateTime(currentDate));
+            currentDate = currentDate.plusDay();
+        }
+
+        return attendanceRecord;
+    }
+
+    private AttendanceDateTime extractAttendanceDateTime(final AttendanceDate date) {
+        final AttendanceTime attendanceTime = attendanceDateTimes.getOrDefault(
+            date, AttendanceTime.EMPTY);
+
+        return new AttendanceDateTime(date, attendanceTime);
     }
 
     @Override
