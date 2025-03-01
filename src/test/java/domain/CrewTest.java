@@ -48,4 +48,18 @@ class CrewTest {
                 .hasMessage("[ERROR] 크루 이름을 정상적으로 입력해 주세요.");
     }
 
+    @Test
+    void 크루_이름이_동일하면_같은_객체로_인식한다() {
+        // given
+        String name1 = "제프리";
+        String name2 = "제프리";
+
+        // when
+        Crew crew1 = Crew.fromName(name1);
+        Crew crew2 = Crew.fromName(name2);
+
+        // then
+        Assertions.assertThat(crew1).isEqualTo(crew2);
+    }
+
 }

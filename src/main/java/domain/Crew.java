@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class Crew {
@@ -22,6 +23,20 @@ public class Crew {
         if (!pattern.matcher(name).matches()) {
             throw new IllegalArgumentException("[ERROR] 크루 이름을 정상적으로 입력해 주세요.");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Crew crew = (Crew) o;
+        return Objects.equals(name, crew.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
     }
 
     public String getName() {
