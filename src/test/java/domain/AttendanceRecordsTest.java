@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceRecordsTest {
     @DisplayName("새 출석 기록을 저장할 수 있다.")
@@ -98,5 +100,25 @@ class AttendanceRecordsTest {
 
         // then
         assertThatThrownBy(() -> attendanceRecords.add(record)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("입력 받은 날짜의 출석 시간을 수정할 수 있다.")
+    @Test
+    void updateTest() {
+        // given
+        AttendanceRecords attendanceRecords = new AttendanceRecords();
+        AttendanceRecord oldRecord = new AttendanceRecord(LocalDateTime.parse("2024-12-03T13:10"));
+        attendanceRecords.add(oldRecord);
+        LocalTime newTime = LocalTime.of(13, 0);
+        LocalDate oldDate = LocalDate.of(2024, 12, 3);
+
+        // when
+        attendanceRecords.update(oldDate, newTime);
+
+        // then
+        assertAll(
+                () -> assertThat(oldRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.TARDY),
+                () -> assertThat(attendanceRecords.getRecordOnDate(oldDate).getAttendanceStatus()).isEqualTo(AttendanceStatus.PRESENT)
+        );
     }
 }
