@@ -5,6 +5,8 @@ import domain.CrewGroup;
 import domain.attendance.Attendance;
 import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceStatus;
+import domain.attendance.TimeTable;
+import util.DateTimeUtils;
 import view.FileInputView;
 import view.InputView;
 import view.OutputView;
@@ -12,9 +14,13 @@ import view.OutputView;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 import static controller.Command.*;
+import static domain.attendance.TimeTable.*;
+import static util.DateTimeUtils.*;
 
 public class AttendanceController {
     private CrewGroup crews;
@@ -36,6 +42,7 @@ public class AttendanceController {
     private void operateCommand(){
         try{
             if(currentCommand == ATTEND){
+                validateAttendTime();
                 attendCommand();
             }
             if(currentCommand == EDIT){
@@ -49,6 +56,13 @@ public class AttendanceController {
             }
         }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
+        }
+    }
+
+    private void validateAttendTime(){
+        if(!isAttendanceDay(TODAY_DATE_NOW)){
+            throw new IllegalArgumentException("[ERROR] " + TODAY_DATE_NOW.format(localDayFormatter)
+                    + TODAY_DATE_NOW.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + "은 등교일이 아닙니다.");
         }
     }
 
