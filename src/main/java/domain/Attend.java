@@ -27,6 +27,10 @@ public class Attend {
         return AttendStatus.checkAttendStatus(this);
     }
 
+    public boolean checkTimeNull() {
+        return this.time != null;
+    }
+
     public LocalDate getDate() {
         return date;
     }
