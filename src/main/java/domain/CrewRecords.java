@@ -1,5 +1,7 @@
 package domain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +20,10 @@ public class CrewRecords {
 
     public void addRecord(Crew crew, AttendanceRecord record) {
         records.get(crew).add(record);
+    }
+
+    public void editRecord(Crew crew, LocalDate oldDate, LocalTime newTime) {
+        records.get(crew).update(oldDate, newTime);
     }
 
     public Map<Crew, AttendanceRecords> getRecords() {
