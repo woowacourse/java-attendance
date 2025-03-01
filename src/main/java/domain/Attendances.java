@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,6 +27,20 @@ public class Attendances {
 
     public Optional<Attendance> findByCrewAndDate(Crew crew, LocalDate day) {
         return attendances.stream().filter(attendance -> attendance.compareByCrewAndTime(crew, day)).findFirst();
+    }
+
+    public Attendances createMonthlyAttendances(Crew crew, LocalDate today) {
+        List<Attendance> monthlyAttendances = new ArrayList<>();
+        for (int i = 1; i <= today.getDayOfMonth(); i++) {
+            if (Holiday.isHoliday(today.withDayOfMonth(i))) {
+                continue;
+            }
+            LocalDate day = LocalDate.of(today.getYear(), today.getMonthValue(), i);
+            Attendance attendance = findByCrewAndDate(crew, day)
+                    .orElse(Attendance.createAbsence(crew, day));
+            monthlyAttendances.add(attendance);
+        }
+        return new Attendances(monthlyAttendances);
     }
 
     @Override
