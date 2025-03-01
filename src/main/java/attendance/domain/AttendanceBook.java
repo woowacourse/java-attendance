@@ -38,7 +38,7 @@ public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemD
 
     public Attendance getAttendance(Nickname nickname, LocalDate date) {
         var attendances = getAttendances(nickname);
-        return attendances.get(date);
+        return attendances.getAttendance(date);
     }
 
     private Attendances getAttendances(Nickname nickname) {
