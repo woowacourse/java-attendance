@@ -1,5 +1,6 @@
 package attendance.view.ouput;
 
+import attendance.controller.dto.AttendancePenaltyCrewsDto;
 import attendance.controller.dto.AttendanceRecordsDto;
 import attendance.controller.dto.AttendanceRecordsDto.AttendanceRecordDto;
 import attendance.domain.AttendanceDate;
@@ -116,5 +117,19 @@ public class OutputView {
         if (!attendancePenalty.isNoPenalty()) {
             System.out.printf("%s 대상자입니다.\n", attendancePenalty.getTitle());
         }
+    }
+
+    public void printAttendancePenaltyCrews(final AttendancePenaltyCrewsDto attendancePenaltyCrewsDto) {
+        System.out.println("제적 위험자 조회 결과");
+        attendancePenaltyCrewsDto.attendancePenaltyCrewDtos()
+            .forEach(attendancePenaltyCrewDto -> {
+                System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                    attendancePenaltyCrewDto.crew()
+                        .getNickname(),
+                    attendancePenaltyCrewDto.absenceCount(),
+                    attendancePenaltyCrewDto.lateCount(),
+                    attendancePenaltyCrewDto.attendancePenalty()
+                        .getTitle());
+            });
     }
 }

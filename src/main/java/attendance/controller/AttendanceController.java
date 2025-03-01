@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.controller.dto.AttendancePenaltyCrewsDto;
 import attendance.controller.dto.AttendanceRecordsDto;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceDate;
@@ -11,6 +12,7 @@ import attendance.view.input.InputView;
 import attendance.view.input.MenuOption;
 import attendance.view.ouput.OutputView;
 import java.time.LocalDate;
+import java.util.List;
 
 public class AttendanceController {
 
@@ -63,6 +65,11 @@ public class AttendanceController {
 
         if (menuOption == MenuOption.RECORD) {
             handleRecordAttendance(currentDate);
+            return;
+        }
+
+        if (menuOption == MenuOption.RISK) {
+            handleRiskAttendance(currentDate);
         }
     }
 
@@ -167,5 +174,16 @@ public class AttendanceController {
                 crewNickName)
             .orElseThrow(
                 () -> new IllegalArgumentException("해당 닉네임의 출석부가 없습니다."));
+    }
+
+    private void handleRiskAttendance(final LocalDate currentDate) {
+        final List<AttendanceBook> attendanceBooks = attendanceBookRepository.findAllPenaltyCrewUntilDateOrderByAbsenceCountAndCrewNickname(
+            AttendanceDate.from(currentDate));
+
+        final AttendancePenaltyCrewsDto attendanceRecordsDto = AttendancePenaltyCrewsDto.from(
+            attendanceBooks,
+            AttendanceDate.from(currentDate));
+
+        outputView.printAttendancePenaltyCrews(attendanceRecordsDto);
     }
 }
