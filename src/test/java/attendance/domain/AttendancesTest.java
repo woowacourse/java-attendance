@@ -25,11 +25,23 @@ class AttendancesTest {
     @Test
     @DisplayName("출석일이 휴일일 경우, 예외가 발생한다")
     void error_cantAttendanceOnHoliday() {
-        LocalDateTime weekend = LocalDateTime.of(2024, 12, 25, 10, 0);
+        LocalDateTime holiday = LocalDateTime.of(2024, 12, 25, 10, 0);
         var attendances = new Attendances(systemDateTime);
 
-        Assertions.assertThatThrownBy(() -> attendances.add(weekend))
+        Assertions.assertThatThrownBy(() -> attendances.add(holiday))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("12월 25일 수요일은 등교일이 아닙니다.");
+    }
+
+    @Test
+    @DisplayName("이미 출석했을 경우, 예외가 발생한다.")
+    void error_duplicateAttendance() {
+        LocalDateTime duplicate = LocalDateTime.of(2024, 12, 13, 10, 0);
+        var attendances = new Attendances(systemDateTime);
+        attendances.add(duplicate);
+
+        Assertions.assertThatThrownBy(() -> attendances.add(duplicate))
+            .isInstanceOf(AttendanceArgumentException.class)
+            .hasMessageContaining("이미 출석하였습니다. 수정 기능을 이용해주세요.");
     }
 }
