@@ -3,6 +3,7 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
+import java.util.Optional;
 
 public class AttendanceManager {
     private final Map<String, Attendances> crewAttendances;
@@ -17,13 +18,12 @@ public class AttendanceManager {
         }
     }
 
-    public Attendance attend(String crewName, LocalDate date, LocalTime time) {
+    public void attend(String crewName, LocalDate date, LocalTime time) {
         Attendances attendances = findAttendancesByName(crewName);
         checkDuplicateAttendance(attendances, date);
         AttendanceChecker.checkCampusOpen(date, time);
 
         attendances.addAttendance(date, time);
-        return attendances.getCurrentAttendance(date);
     }
 
     private void checkDuplicateAttendance(Attendances attendances, LocalDate date) {
@@ -32,13 +32,15 @@ public class AttendanceManager {
         }
     }
 
-    public Attendance modify(String crewName, LocalDate date, LocalTime time) {
+    public LocalTime modify(String crewName, LocalDate date, LocalTime time) {
         AttendanceChecker.checkCampusOpen(date, time);
         Attendances attendances = findAttendancesByName(crewName);
         Attendance prevAttendance = attendances.getCurrentAttendance(date);
 
         attendances.addAttendance(date, time);
-        return prevAttendance;
+        return Optional.ofNullable(prevAttendance)
+                .map(Attendance::time)
+                .orElse(null);
     }
 
     public WarningLevel calculateCrewWarningLevel(String crewName, int today) {

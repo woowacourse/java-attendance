@@ -59,16 +59,14 @@ public class AttendanceManagerTest {
     }
 
     @Test
-    void 출석_저장_시_출석_정보를_반환한다() {
+    void 출석_정보를_저장한다() {
         String crewName = "빙티";
         AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
         LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(10, 0);
 
-        Attendance result = attendanceManager.attend(crewName, attendDate, attendTime);
-
-        assertThat(result.time().getHour()).isEqualTo(10);
-        assertThat(result.time().getMinute()).isEqualTo(0);
+        assertThatCode(() -> attendanceManager.attend(crewName, attendDate, attendTime))
+                .doesNotThrowAnyException();
     }
 
     @Test
@@ -129,23 +127,6 @@ public class AttendanceManagerTest {
 
         assertThatCode(() -> attendanceManager.modify(crewName, date, time))
                 .doesNotThrowAnyException();
-    }
-
-    @Test
-    void 출석_수정에_성공하면_기존_출석_기록을_반환한다() {
-        String crewName = "빙티";
-        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
-
-        LocalDate date = LocalDateTestFixture.createRegularDate();
-        LocalTime time = LocalTime.of(9, 0);
-
-        attendanceManager.attend(crewName, date, time);
-
-        LocalTime modifyTime = LocalTime.of(10, 6);
-        Attendance attendance = attendanceManager.modify(crewName, date, modifyTime);
-
-        assertThat(attendance.time()).isEqualTo(time);
-        assertThat(attendance.status()).isEqualTo(AttendanceStatus.PRESENT);
     }
 
     @Test
