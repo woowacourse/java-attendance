@@ -218,4 +218,23 @@ class AttendanceRecordTest {
                 LocalTime.of(10, 5)
         )).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 출석_기록을_수정한다() {
+        // given
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.attend(
+                new AttendanceDate(2024, 12, 2),
+                LocalTime.of(10, 5)
+        );
+        LocalDate modifyDate = LocalDate.of(2024, 12, 2);
+        LocalTime modifyTime = LocalTime.of(13, 6);
+
+        // when
+        attendanceRecord.modify(modifyDate, modifyTime);
+        long lateCount = attendanceRecord.computeLateCount();
+
+        // then
+        assertThat(lateCount).isEqualTo(1);
+    }
 }
