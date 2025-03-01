@@ -20,8 +20,9 @@ public enum CrewStatus {
         this.condition = condition;
     }
 
-    public static CrewStatus calculate(Map<AttendanceType, Integer> attendanceResult) {
-        int statusDecisionValue = (attendanceResult.get(LATE) / 3) + attendanceResult.get(ABSENCE);
+    public static CrewStatus calculate(AttendanceResult attendanceResult) {
+        Map<AttendanceType, Integer> calculateResult = attendanceResult.getAttendanceResult();
+        int statusDecisionValue = (calculateResult.getOrDefault(LATE, 0)  / 3) + calculateResult.get(ABSENCE);
         return Arrays.stream(CrewStatus.values())
             .filter(status -> status.condition.test(statusDecisionValue))
             .findFirst()

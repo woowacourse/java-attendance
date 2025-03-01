@@ -17,7 +17,7 @@ public class CrewStatusTest {
         Map<AttendanceType, Integer> attendanceResult = new HashMap<>();
         attendanceResult.put(LATE, 3);
         attendanceResult.put(ABSENCE, 1);
-        CrewStatus crewStatus = CrewStatus.calculate(attendanceResult);
+        CrewStatus crewStatus = CrewStatus.calculate(AttendanceResult.from(attendanceResult));
         assertThat(crewStatus).isEqualTo(WARING);
     }
 
@@ -27,7 +27,7 @@ public class CrewStatusTest {
         Map<AttendanceType, Integer> attendanceResult = new HashMap<>();
         attendanceResult.put(LATE, 3);
         attendanceResult.put(ABSENCE, 2);
-        CrewStatus crewStatus = CrewStatus.calculate(attendanceResult);
+        CrewStatus crewStatus = CrewStatus.calculate(AttendanceResult.from(attendanceResult));
         assertThat(crewStatus).isEqualTo(INTERVIEW);
     }
 
@@ -37,7 +37,7 @@ public class CrewStatusTest {
         Map<AttendanceType, Integer> attendanceResult = new HashMap<>();
         attendanceResult.put(LATE, 12);
         attendanceResult.put(ABSENCE, 1);
-        CrewStatus crewStatus = CrewStatus.calculate(attendanceResult);
+        CrewStatus crewStatus = CrewStatus.calculate(AttendanceResult.from(attendanceResult));
         assertThat(crewStatus).isEqualTo(FIRE);
     }
 }

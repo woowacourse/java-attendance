@@ -7,11 +7,14 @@ import attendance.domain.AttendanceTime;
 import attendance.domain.AttendanceTimes;
 import attendance.domain.AttendanceType;
 import attendance.domain.CrewStatus;
+import attendance.domain.DangerousCrew;
+import attendance.domain.DangerousCrews;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceController {
@@ -22,7 +25,8 @@ public class AttendanceController {
     private final CurrentDate currentDate;
     private final Map<String, Runnable> functionMap = new HashMap<>();
 
-    public AttendanceController(InputView inputView, OutputView outputView, AttendanceHistory attendanceHistory,
+    public AttendanceController(InputView inputView, OutputView outputView,
+        AttendanceHistory attendanceHistory,
         CurrentDate currentDate) {
         this.inputView = inputView;
         this.outputView = outputView;
@@ -32,7 +36,7 @@ public class AttendanceController {
     }
 
     public void start() {
-        while(true) {
+        while (true) {
             inputView.todayDateMessage(currentDate.now());
             String userChooseFunction = inputView.inputFunction();
             if (userChooseFunction.equals("Q")) {
@@ -54,14 +58,15 @@ public class AttendanceController {
         functionMap.put("1", this::attendConfirm);
         functionMap.put("2", this::modifyAttendance);
         functionMap.put("3", this::confirmAttendanceHistory);
-        functionMap.put("4", this::warning);
+        functionMap.put("4", this::showDangerousCrew);
     }
 
     private void attendConfirm() {
         String inputNickname = inputView.inputNickname();
         attendanceHistory.isValidCrew(inputNickname);
         LocalTime nowTime = inputView.inputAttendanceTime();
-        AttendanceTime attendanceTime = AttendanceTime.from(LocalDateTime.of(currentDate.now(), nowTime));
+        AttendanceTime attendanceTime = AttendanceTime.from(
+            LocalDateTime.of(currentDate.now(), nowTime));
         attendanceHistory.add(inputNickname, attendanceTime);
         outputView.printAttendanceInfo(
             attendanceTime, AttendanceType.decideAttendanceType(attendanceTime)
@@ -80,17 +85,23 @@ public class AttendanceController {
         outputView.printModifyAttendaneTimeResult(attendanceTime, modifyAttendanceTime);
     }
 
-    private void confirmAttendanceHistory(){
+    private void confirmAttendanceHistory() {
         String inputNickname = inputView.inputNickname();
         AttendanceTimes attendanceTimes = attendanceHistory.getAttendanceTimesByName(
             inputNickname);
-        Map<AttendanceType, Integer> attendanceResult = AttendanceResult.calculateAttendanceResult(
+        AttendanceResult attendanceResult = AttendanceResult.calculateAttendanceResult(
             currentDate.now(), attendanceTimes);
         CrewStatus crewStatus = CrewStatus.calculate(attendanceResult);
         outputView.printAttendanceHistory(inputNickname, attendanceTimes);
         outputView.printAttendanceResult(attendanceResult);
         outputView.printCrewStatus(crewStatus);
     }
-    private void warning(){};
+
+    private void showDangerousCrew() {
+        DangerousCrews dangerousCrews = DangerousCrews.create();
+        dangerousCrews.calculateDangerousCrews(currentDate.now(), attendanceHistory);
+        List<DangerousCrew> sortedDangerousCrews = dangerousCrews.getSortedDangerousCrews();
+        outputView.printDangerousCrew(sortedDangerousCrews);
+    }
 
 }

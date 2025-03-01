@@ -27,9 +27,11 @@ public class AttendanceResultTest {
         attendanceTimes.add(absenceAttendanceTime1);
 
         LocalDate currentDate = LocalDate.of(2024, 12, 7);
-        Map<AttendanceType, Integer> result = AttendanceResult.calculateAttendanceResult(currentDate, attendanceTimes);
-        assertThat(result.get(ATTENDANCE)).isEqualTo(2);
-        assertThat(result.get(LATE)).isEqualTo(2);
-        assertThat(result.get(ABSENCE)).isEqualTo(1);
+        AttendanceResult calculateAttendanceResult = AttendanceResult.calculateAttendanceResult(currentDate,
+            attendanceTimes);
+        Map<AttendanceType, Integer> attendanceResult = calculateAttendanceResult.getAttendanceResult();
+        assertThat(attendanceResult.get(ATTENDANCE)).isEqualTo(2);
+        assertThat(attendanceResult.get(LATE)).isEqualTo(2);
+        assertThat(attendanceResult.get(ABSENCE)).isEqualTo(1);
     }
 }

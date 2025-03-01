@@ -3,12 +3,23 @@ package attendance.domain;
 import static attendance.domain.DayOfWeek.*;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceResult {
 
-    public static Map<AttendanceType, Integer> calculateAttendanceResult(LocalDate currentDate,
+    private final Map<AttendanceType, Integer> attendanceResult;
+
+    private AttendanceResult(Map<AttendanceType, Integer> attendanceResult) {
+        this.attendanceResult = attendanceResult;
+    }
+
+    public static AttendanceResult from(Map<AttendanceType, Integer> attendanceResult) {
+        return new AttendanceResult(attendanceResult);
+    }
+
+    public static AttendanceResult calculateAttendanceResult(LocalDate currentDate,
         AttendanceTimes attendanceTimes) {
         Map<AttendanceType, Integer> attendanceResult = new HashMap<>();
         calculateAbsenceDate(currentDate, attendanceTimes);
@@ -18,7 +29,7 @@ public class AttendanceResult {
             attendanceResult.put(attendanceType,
                 attendanceResult.getOrDefault(attendanceType, 0) + 1);
         }
-        return attendanceResult;
+        return AttendanceResult.from(attendanceResult);
     }
 
     private static void calculateAbsenceDate(LocalDate currentDate, AttendanceTimes attendanceTimes) {
@@ -44,5 +55,9 @@ public class AttendanceResult {
             return true;
         }
         return false;
+    }
+
+    public Map<AttendanceType, Integer> getAttendanceResult() {
+        return Collections.unmodifiableMap(attendanceResult);
     }
 }

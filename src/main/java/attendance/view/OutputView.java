@@ -2,13 +2,16 @@ package attendance.view;
 
 import static attendance.domain.AttendanceType.*;
 
+import attendance.domain.AttendanceResult;
 import attendance.domain.AttendanceTime;
 import attendance.domain.AttendanceTimes;
 import attendance.domain.AttendanceType;
 import attendance.domain.CrewStatus;
+import attendance.domain.DangerousCrew;
 import attendance.domain.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 
 public class OutputView {
@@ -19,6 +22,8 @@ public class OutputView {
     private static final String ATTENDANCE_HISTORY_NAME_MASSAGE = "이번 달 %s의 출석 기록입니다.";
     private static final String CREW_STATUS_INFO = "%s: %s회";
     private static final String CREW_STATUS = "%s 대상자입니다.";
+    private static final String DANGEROUS_CREW_MESSAGE = "제적 위험자 조회 결과";
+    private static final String DANGEROUS_CREW_INFO = "- %s: 결석 %s회, 지각 %s회 (%s)";
 
     private OutputView() {
     }
@@ -56,10 +61,11 @@ public class OutputView {
         }
     }
 
-    public void printAttendanceResult(Map<AttendanceType, Integer> attendanceResult) {
+    public void printAttendanceResult(AttendanceResult attendanceResult) {
+        Map<AttendanceType, Integer> calculateResult = attendanceResult.getAttendanceResult();
         for (AttendanceType attendanceType : AttendanceType.values()) {
             System.out.println(CREW_STATUS_INFO.formatted(
-                attendanceType.getType(), attendanceResult.get(attendanceType)));
+                attendanceType.getType(), calculateResult.get(attendanceType)));
         }
     }
 
@@ -83,5 +89,17 @@ public class OutputView {
             return;
         }
         System.out.println(CREW_STATUS.formatted(crewStatus.getStatusName()));
+    }
+
+    public void printDangerousCrew(List<DangerousCrew> sortedDangerousCrews) {
+        System.out.println(DANGEROUS_CREW_MESSAGE);
+        for (DangerousCrew dangerousCrew : sortedDangerousCrews) {
+            AttendanceResult attendanceResult = dangerousCrew.getAttendanceResult();
+            Map<AttendanceType, Integer> result = attendanceResult.getAttendanceResult();
+
+            System.out.println(DANGEROUS_CREW_INFO.formatted(
+                dangerousCrew.getNickname(), result.get(ABSENCE), result.get(LATE), dangerousCrew.getCrewStatus().getStatusName()
+            ));
+        }
     }
 }
