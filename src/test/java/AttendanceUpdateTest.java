@@ -24,7 +24,7 @@ public class AttendanceUpdateTest {
 
         // then
         Assertions.assertThat(updateAttendance)
-                .isEqualTo(attendanceBook.findAttendance(updateNickname, updateDate, updateTime));
+                .isEqualTo(attendanceBook.findAttendance(updateNickname, updateDate));
     }
 
     @DisplayName("출석 기록이 없는 날은 수정할 수 없다.")
