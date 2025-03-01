@@ -79,7 +79,7 @@ public class AttendanceController {
         Crew crew = Crew.from(nickname);
         validateHistoryNotAlreadyExists(crew, dateTime);
 
-        AttendanceStatusDto dto = attendanceService.addAttendanceHistoryOf(crew, dateTime);
+        AttendanceStatusDto dto = attendanceService.addAttendanceHistory(crew, dateTime);
         OutputView.printAttendanceStatus(dto);
     }
 
@@ -96,7 +96,7 @@ public class AttendanceController {
             return;
         }
 
-        List<AttendanceStatusDto> statusDtos = attendanceService.replaceAttendanceHistoryOf(crew, newDateTime);
+        List<AttendanceStatusDto> statusDtos = attendanceService.replaceAttendanceHistory(crew, newDateTime);
         OutputView.printEditAttendanceStatus(statusDtos);
     }
 
@@ -104,7 +104,7 @@ public class AttendanceController {
         int currentDay = currentDate.getDayOfMonth();
         String nickname = InputView.askNickname(false);
         validateNicknameRegistered(nickname);
-        AttendanceStatusesOfCrewDto statusesDto = attendanceService.getHistoriesDtoFrom(Crew.from(nickname), currentDay);
+        AttendanceStatusesOfCrewDto statusesDto = attendanceService.getHistoriesDto(Crew.from(nickname), currentDay);
         OutputView.printAttendanceStatus(statusesDto, nickname);
     }
 
@@ -115,7 +115,7 @@ public class AttendanceController {
     }
 
     private void validateIsSchoolDay() {
-        if (attendanceService.checkRestDayFrom(currentDate)) {
+        if (attendanceService.checkRestDay(currentDate)) {
             OutputView.printErrorMessage(String.format("%d월 %d일 %s은 등교일이 아닙니다.",
                     currentDate.getMonthValue(),
                     currentDate.getDayOfMonth(),
