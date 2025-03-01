@@ -3,7 +3,9 @@ package attendance.domain;
 import attendance.util.ErrorMessage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Attendances {
 
@@ -42,5 +44,12 @@ public class Attendances {
                     int index = attendances.indexOf(attendance);
                     attendances.set(index, newAttendance);
                 });
+    }
+
+    public List<Attendance> getAttendancesUntilYesterday(LocalDate today) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isSameYearAndMonth(today))
+                .filter(attendance ->  !attendance.isSameDate(today))
+                .toList();
     }
 }
