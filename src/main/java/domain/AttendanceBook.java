@@ -24,8 +24,8 @@ public class AttendanceBook {
         book.get(crew).addInfo(info);
     }
 
-    public void addInfoWithDateAndTime(final Crew crew, final CampusDate date, final CampusTime time) {
-        book.get(crew).addInfoByDateAndTime(date, time);
+    public AttendanceInfos addInfoWithDateAndTime(final Crew crew, final CampusDate date, final CampusTime time) {
+        return book.get(crew).addInfoByDateAndTime(date, time);
     }
 
     public AttendanceInfos modifyInfoWithDateAndTime(final Crew crew, final CampusDate date, final CampusTime time) {

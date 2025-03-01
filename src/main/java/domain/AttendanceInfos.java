@@ -26,9 +26,10 @@ public class AttendanceInfos {
         attendanceInfos.add(attendanceInfo);
     }
 
-    public void addInfoByDateAndTime(final CampusDate campusDate, final CampusTime campusTime) {
+    public AttendanceInfos addInfoByDateAndTime(final CampusDate campusDate, final CampusTime campusTime) {
         AttendanceInfo attendanceInfo = AttendanceInfo.fromDateAndTime(campusDate, campusTime);
         attendanceInfos.add(attendanceInfo);
+        return new AttendanceInfos(attendanceInfos);
     }
 
     public boolean hasInfoByDate(final CampusDate campusDate) {

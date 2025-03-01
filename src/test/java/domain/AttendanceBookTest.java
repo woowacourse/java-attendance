@@ -58,10 +58,10 @@ class AttendanceBookTest {
         // when
         CampusDate campusDate = CampusDate.fromDate(LocalDate.of(2025, 2, 27));
         CampusTime campusTime = CampusTime.from("10:06");
-        attendanceBook.addInfoWithDateAndTime(crew, campusDate, campusTime);
+        AttendanceInfos addedInfos = attendanceBook.addInfoWithDateAndTime(crew, campusDate, campusTime);
 
         // then
-        assertThat(attendanceBook.getBook().get(crew).getAttendanceInfos()).hasSize(1);
+        assertThat(addedInfos.getAttendanceInfos()).hasSize(1);
     }
 
     @Test
