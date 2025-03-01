@@ -18,12 +18,8 @@ public class AttendanceDate {
         return attendanceDate.getDayOfWeek();
     }
 
-    public boolean isWeekend() {
-        return (this.toDayOfWeek().equals(DayOfWeek.SATURDAY) || this.toDayOfWeek().equals(DayOfWeek.SUNDAY));
-    }
-
-    public boolean isChristmas() {
-        return (this.toLocalDate().equals(CHRISTMAS));
+    public boolean isHoliday() {
+        return (isChristmas() || isWeekend());
     }
 
     public boolean isSameDate(AttendanceDate attendanceDate) {
@@ -38,6 +34,10 @@ public class AttendanceDate {
         return (attendanceDate.isAfter(DECEMBER_START_DATE) && attendanceDate.isBefore(DECEMBER_END_DATE));
     }
 
+    public AttendanceDate plusOneDay() {
+        return new AttendanceDate(attendanceDate.plusDays(1));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,6 +49,14 @@ public class AttendanceDate {
     @Override
     public int hashCode() {
         return Objects.hash(attendanceDate);
+    }
+
+    private boolean isWeekend() {
+        return (this.toDayOfWeek().equals(DayOfWeek.SATURDAY) || this.toDayOfWeek().equals(DayOfWeek.SUNDAY));
+    }
+
+    private boolean isChristmas() {
+        return (this.toLocalDate().equals(CHRISTMAS));
     }
 
     public LocalDate toLocalDate() {
