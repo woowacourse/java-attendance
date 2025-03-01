@@ -1,7 +1,10 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.OperationSchedule;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -33,8 +36,19 @@ public class OperationScheduleTest {
         //given
         LocalDateTime time = LocalDateTime.of(2024, 12, date, hour, minute, second, nano);
         //when
-        long difference = OperationSchedule.calculateDifferenceFromStartTime(time);
+        long difference = OperationSchedule.calculateDifferenceFromAttendanceStandard(time);
         //then
         assertThat(difference).isEqualTo(expected);
+    }
+
+    @Test
+    void 교육시작시간에_분을_더한다() {
+        //given
+        LocalDate day = LocalDate.of(2024, 12, 3);
+        LocalTime expected = LocalTime.of(10, 30);
+        //when
+        LocalTime actual = OperationSchedule.addMinutesToStartTime(day, 30);
+        //then
+        assertThat(actual).isEqualTo(expected);
     }
 }
