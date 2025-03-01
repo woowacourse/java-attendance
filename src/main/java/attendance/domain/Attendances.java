@@ -11,6 +11,15 @@ public record Attendances(Map<LocalDate, Attendance> attendances) {
         this(new HashMap<>());
     }
 
+    public void put(LocalDateTime dateTime) {
+    }
+
     public void add(LocalDateTime dateTime) {
+        LocalDate date = dateTime.toLocalDate();
+        attendances.put(date, new Attendance(dateTime));
+    }
+
+    public Attendance get(LocalDate date) {
+        return attendances.get(date);
     }
 }
