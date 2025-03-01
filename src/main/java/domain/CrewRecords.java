@@ -26,6 +26,10 @@ public class CrewRecords {
         records.get(crew).update(oldDate, newTime);
     }
 
+    public AttendanceRecord getRecordOnDate(Crew crew, LocalDate date) {
+        return records.get(crew).getRecordOnDate(date);
+    }
+
     public Map<Crew, AttendanceRecords> getRecords() {
         return records;
     }
