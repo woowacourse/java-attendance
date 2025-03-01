@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import attendance.util.ErrorMessage;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,5 +31,11 @@ public class AttendanceBook {
     public void update(Crew crew, Attendance oldAttendance, Attendance newAttendance) {
         Attendances attendances = attendanceBook.get(crew);
         attendances.update(oldAttendance, newAttendance);
+    }
+
+    public void validateCrew(Crew crew) {
+        if (!attendanceBook.containsKey(crew)) {
+            throw new IllegalArgumentException(ErrorMessage.CREW_NICKNAME_NOT_EXIST_ERROR.getMessage());
+        }
     }
 }

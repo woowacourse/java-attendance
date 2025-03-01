@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.util.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -61,6 +62,6 @@ public class AttendanceBookTest {
 
         assertThatThrownBy(() -> attendanceBook.validateCrew(anotherCrew))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+                .hasMessage(ErrorMessage.CREW_NICKNAME_NOT_EXIST_ERROR.getMessage());
     }
 }
