@@ -44,4 +44,23 @@ public class StudentsTest {
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 존재하지 않는 학생의 이름입니다.");
     }
+
+    @Test
+    @DisplayName("파일에 없는 내역 업데이트 하는 테스트")
+    void test3() {
+        String studentName = "이든";
+        AttendanceDate today = new AttendanceDate(LocalDate.of(2024, 12, 12));
+
+        students.updateMissingAttendanceRecords(studentName, today);
+
+        Assertions.assertTrue(
+                students.findStudentByName(studentName).isExistAttendanceDate(
+                        new AttendanceDate(LocalDate.of(2024, 12, 4))
+                )
+        );
+
+        Assertions.assertEquals(students.findStudentByName(studentName).getStudentAttendanceHistory()
+                        .getAttendanceHistory().get(new AttendanceDate(LocalDate.of(2024, 12, 4))),
+                new AttendanceTime(LocalTime.of(0, 0)));
+    }
 }
