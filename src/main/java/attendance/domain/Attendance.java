@@ -30,7 +30,9 @@ public class Attendance {
     }
 
     public AttendanceStatus checkAttendanceStatus() {
-        return attendanceTime.checkAttendanceStatus(attendanceDate.isMonday());
+        LocalTime absenceThreshold = CampusOperatingRule.getAbsenceThreshold(attendanceDate.isMonday());
+        LocalTime lateThreshold = CampusOperatingRule.getLateThreshold(attendanceDate.isMonday());
+        return attendanceTime.checkAttendanceStatus(absenceThreshold, lateThreshold);
     }
 
     public LocalDateTime getAttendanceDateTime() {

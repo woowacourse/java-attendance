@@ -12,9 +12,7 @@ public record AttendanceTime(
         return new AttendanceTime(time);
     }
 
-    public AttendanceStatus checkAttendanceStatus(final boolean isMonday) {
-        LocalTime absenceThreshold = CampusOperatingRule.getAbsenceThreshold(isMonday);
-        LocalTime lateThreshold = CampusOperatingRule.getLateThreshold(isMonday);
+    public AttendanceStatus checkAttendanceStatus(LocalTime absenceThreshold, LocalTime lateThreshold) {
         if (time.isAfter(absenceThreshold)) {
             return AttendanceStatus.ABSENCE;
         }
