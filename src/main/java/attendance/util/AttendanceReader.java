@@ -6,11 +6,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class AttendanceReader {
+public final class AttendanceReader {
 
     private static final String ATTENDANCE_FILE_PATH = "src/main/resources/attendances.csv";
     private static final String DELIMITER = ",";
     private static final DateTimeFormatter ATTENDANCE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    private AttendanceReader() {
+    }
 
     public static void initAttendances(final AttendanceBook attendanceBook) {
 

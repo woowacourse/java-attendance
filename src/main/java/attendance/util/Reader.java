@@ -8,6 +8,9 @@ import java.util.List;
 
 public final class Reader {
 
+    private Reader() {
+    }
+
     public static List<String> getContents(final String filePath) {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
