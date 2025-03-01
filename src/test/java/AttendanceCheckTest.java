@@ -51,7 +51,7 @@ public class AttendanceCheckTest {
         AttendanceBook attendanceBook = new AttendanceBook(List.of(attendance));
 
         // when
-        Attendance find = attendanceBook.findAttendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
+        Attendance find = attendanceBook.findAttendance("율무", LocalDate.of(2024, 12, 3));
 
         // then
         Assertions.assertThat(find)
@@ -68,7 +68,7 @@ public class AttendanceCheckTest {
         // when
         // then
         Assertions.assertThatThrownBy(
-                        () -> attendanceBook.findAttendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)))
+                        () -> attendanceBook.findAttendance("율무", LocalDate.of(2024, 12, 3)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -26,9 +26,9 @@ public class AttendanceBook {
                 .anyMatch(crew -> crew.equals(attendance));
     }
 
-    public Attendance findAttendance(String nickname, LocalDate date, LocalTime time) {
+    public Attendance findAttendance(String nickname, LocalDate date) {
         return crewsAttendanceRecords.stream()
-                .filter(attendance -> attendance.equals(new Attendance(nickname, date, time)))
+                .filter(attendance -> attendance.isSameDate(nickname, date))
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
     }
