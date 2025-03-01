@@ -2,6 +2,8 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalTime;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -22,6 +24,6 @@ class AttendanceStatusTest {
     void fromTest(int minute, String statusName) {
         // when then
         assertThat(AttendanceStatus.from(DateTimeFixture.OTHER_DAY,
-            DateTimeFixture.OTHER_DAY_START_TIME.plusMinutes(minute)).name()).isEqualTo(statusName);
+            LocalTime.of(10, 0).plusMinutes(minute)).name()).isEqualTo(statusName);
     }
 }

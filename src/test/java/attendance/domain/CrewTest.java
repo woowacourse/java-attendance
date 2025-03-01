@@ -120,8 +120,8 @@ class CrewTest {
     void fromAbsenceTest2() {
         // when then
         assertSoftly(softly -> {
-            softly.assertThat(crew.getAttendanceStatusOf(DateTimeFixture.SATURDAY)).isEqualTo(AttendanceStatus.DAY_OFF);
-            softly.assertThat(crew.getAttendanceStatusOf(DateTimeFixture.SUNDAY)).isEqualTo(AttendanceStatus.DAY_OFF);
+            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025,3,1))).isEqualTo(AttendanceStatus.DAY_OFF);
+            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025,3,2))).isEqualTo(AttendanceStatus.DAY_OFF);
         });
     }
 
