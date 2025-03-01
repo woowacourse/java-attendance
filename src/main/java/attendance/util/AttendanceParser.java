@@ -1,7 +1,6 @@
 package attendance.util;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -29,7 +28,7 @@ public class AttendanceParser {
         try (final Stream<String> lines = Files.lines(Path.of("src/main/resources/attendances.csv"))) {
             return parseLines(lines.skip(HEADER_HEIGHT));
         } catch (final IOException e) {
-            throw new UncheckedIOException(e);
+            throw new IllegalStateException("파일을 읽는 과정에서 문제가 발생했습니다.");
         }
     }
 
