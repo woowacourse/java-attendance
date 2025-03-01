@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import domain.Attend;
 import domain.AttendCount;
 import domain.AttendResult;
+import domain.WarningStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -172,5 +173,25 @@ public class AttendResultTest {
         //then
         AttendCount expected = new AttendCount(1, 1, 2);
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("현재 출석 정보들을 기반으로 제적 위험 여부를 판정한다")
+    void judgeWarningStatus() {
+        //given
+        List<Attend> attend = List.of(
+                new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(13, 0)),
+                new Attend(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                new Attend(LocalDate.of(2024, 12, 4), LocalTime.of(10, 31)),
+                new Attend(LocalDate.of(2024, 12, 5))
+        );
+        AttendResult attendResult = new AttendResult(attend);
+        int targetDay = 6;
+
+        //when
+        WarningStatus actual = attendResult.judgeWarningStatus(targetDay);
+
+        //then
+        assertThat(actual).isEqualTo(WarningStatus.WARNING);
     }
 }

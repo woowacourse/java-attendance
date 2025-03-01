@@ -41,4 +41,10 @@ public class AttendanceBook {
         AttendResult attendResult = attendBook.get(name);
         return attendResult.getAttendResult(day);
     }
+
+    public WarningStatus judgeAttendStatus(String name) {
+        checkContainsName(name);
+        AttendResult attendResult = attendBook.get(name);
+        return attendResult.judgeWarningStatus(Current.TODAY.getDay());
+    }
 }

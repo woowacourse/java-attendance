@@ -2,8 +2,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import domain.Attend;
+import domain.AttendCount;
 import domain.AttendanceBook;
 import domain.Current;
+import domain.WarningStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -61,6 +63,7 @@ public class AttendanceBookTest {
         LocalTime afterTime = after.getFirst().getTime();
         assertThat(beforeTime).isEqualTo(afterTime);
     }
+
     @Test
     @DisplayName("대상 닉네임의 출석을 추가한다")
     void addAttendUsingName() {
@@ -122,18 +125,14 @@ public class AttendanceBookTest {
                 LocalTime.of(hour, minute));
     }
 
-    private static Attend createAttendDate(int day) {
-        return new Attend(LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), day));
-    }
-
     private static List<Attend> createAttendUntilToday() {
         return List.of(
-                createAttendDateAndTime(2, 10, 5),
+                createAttendDateAndTime(2, 13, 5),
                 createAttendDateAndTime(3, 10, 5),
                 createAttendDateAndTime(4, 10, 5),
                 createAttendDateAndTime(5, 10, 30),
                 createAttendDateAndTime(6, 10, 30),
-                createAttendDateAndTime(9, 10, 30),
+                createAttendDateAndTime(9, 13, 30),
                 createAttendDateAndTime(10, 10, 31),
                 createAttendDateAndTime(11, 10, 31),
                 createAttendDateAndTime(12, 10, 31)
@@ -157,5 +156,131 @@ public class AttendanceBookTest {
 
         //then
         assertThat(actual).isEqualTo(attends);
+    }
+
+    private static List<Attend> createExpelAttend() {
+        return List.of(
+                createAttendDateAndTime(2, 13, 5),
+                createAttendDateAndTime(3, 10, 5),
+                createAttendDateAndTime(4, 10, 5),
+                createAttendDateAndTime(5, 10, 31),
+                createAttendDateAndTime(6, 10, 31),
+                createAttendDateAndTime(9, 13, 31),
+                createAttendDateAndTime(10, 10, 31),
+                createAttendDateAndTime(11, 10, 31),
+                createAttendDateAndTime(12, 10, 31)
+        );
+    }
+
+    @Test
+    @DisplayName("대상 닉네임의 출석 위험을 판정한다 - 제적 대상")
+    void judgeAttendStatusEXPELL() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        attendanceBook.register(name);
+        List<Attend> attends = createExpelAttend();
+        for (Attend attend : attends) {
+            attendanceBook.addAttend(name, attend);
+        }
+
+        //when
+        WarningStatus actual = attendanceBook.judgeAttendStatus(name);
+
+        //then
+        assertThat(actual).isEqualTo(WarningStatus.EXPEL);
+    }
+
+    @Test
+    @DisplayName("대상 닉네임의 출석 위험을 판정한다 - 면담 대상")
+    void judgeAttendStatus() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        attendanceBook.register(name);
+        List<Attend> attends = createAttendUntilToday();
+        for (Attend attend : attends) {
+            attendanceBook.addAttend(name, attend);
+        }
+
+        //when
+        WarningStatus actual = attendanceBook.judgeAttendStatus(name);
+
+        //then
+        assertThat(actual).isEqualTo(WarningStatus.INTERVIEW);
+    }
+
+    private static List<Attend> createPassAttend() {
+        return List.of(
+                createAttendDateAndTime(2, 10, 0),
+                createAttendDateAndTime(3, 10, 0),
+                createAttendDateAndTime(4, 10, 0),
+                createAttendDateAndTime(5, 10, 0),
+                createAttendDateAndTime(6, 10, 0),
+                createAttendDateAndTime(9, 10, 0),
+                createAttendDateAndTime(10, 10, 0),
+                createAttendDateAndTime(11, 10, 0),
+                createAttendDateAndTime(12, 10, 0)
+        );
+    }
+
+    @Test
+    @DisplayName("대상 닉네임의 출석 위험을 판정한다 - 경고 대상")
+    void judgeAttendStatusWarning() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        attendanceBook.register(name);
+        List<Attend> attends = createAttendUntilToday();
+        for (Attend attend : attends) {
+            attendanceBook.addAttend(name, attend);
+        }
+        attendanceBook.edit(name, createAttendDateAndTime(12, 10, 0));
+        attendanceBook.edit(name, createAttendDateAndTime(11, 10, 0));
+
+        //when
+        WarningStatus actual = attendanceBook.judgeAttendStatus(name);
+
+        //then
+        assertThat(actual).isEqualTo(WarningStatus.WARNING);
+    }
+
+    @Test
+    @DisplayName("대상 닉네임의 출석 위험을 판정한다 - 위험 없음")
+    void judgeAttendStatusPASS() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        attendanceBook.register(name);
+        List<Attend> attends = createPassAttend();
+        for (Attend attend : attends) {
+            attendanceBook.addAttend(name, attend);
+        }
+
+        //when
+        WarningStatus actual = attendanceBook.judgeAttendStatus(name);
+
+        //then
+        assertThat(actual).isEqualTo(WarningStatus.PASS);
+    }
+
+    @Test
+    @DisplayName("대상 닉네임의 출석 상태 횟수를 계산한다")
+    void calculateAttendCount() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        attendanceBook.register(name);
+        List<Attend> attends = createAttendUntilToday();
+        for (Attend attend : attends) {
+            attendanceBook.addAttend(name, attend);
+        }
+
+        //when
+        AttendCount actual = attendanceBook.countAttend(name);
+
+        //then
+        AttendCount expected = new AttendCount(3, 3, 3);
+        assertThat(actual).isEqualTo(expected);
     }
 }

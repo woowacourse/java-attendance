@@ -75,6 +75,11 @@ public class AttendResult {
         return AttendCount.createCount(attendStatus);
     }
 
+    public WarningStatus judgeWarningStatus(int targetDay) {
+        AttendCount attendCount = countAttendStatus(targetDay);
+        return WarningStatus.judgeWarningStatus(attendCount);
+    }
+
     @Override
     public boolean equals(final Object object) {
         if (object == null || getClass() != object.getClass()) {
