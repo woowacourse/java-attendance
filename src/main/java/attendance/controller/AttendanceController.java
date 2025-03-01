@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.controller.dto.AttendanceRecordsDto;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceDateTime;
@@ -52,10 +53,16 @@ public class AttendanceController {
     ) {
         if (menuOption == MenuOption.CHECK) {
             handleCheckAttendance(currentDate);
+            return;
         }
 
         if (menuOption == MenuOption.MODIFY) {
             handleEditAttendance(currentDate);
+            return;
+        }
+
+        if (menuOption == MenuOption.RECORD) {
+            handleRecordAttendance(currentDate);
         }
     }
 
@@ -144,6 +151,15 @@ public class AttendanceController {
             modifiedAttendanceDateTime.getAttendanceTime(),
             modifiedAttendanceStatus
         );
+    }
+
+    private void handleRecordAttendance(final LocalDate currentDate) {
+        final AttendanceBook attendanceBook = findAttendanceBook(
+            inputView.readCrewNickNameForRecord());
+
+        final AttendanceRecordsDto attendanceRecordsDto = AttendanceRecordsDto.from(
+            attendanceBook, AttendanceDate.from(currentDate));
+        outputView.printAttendanceRecord(attendanceRecordsDto);
     }
 
     private AttendanceBook findAttendanceBook(final String crewNickName) {
