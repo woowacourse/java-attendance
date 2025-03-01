@@ -34,7 +34,7 @@ public class DateTimeUtil {
         }
     }
 
-    public static LocalDate convertToLocalDate(LocalDate date, int day) {
+    public static LocalDate convertDay(LocalDate date, int day) {
         try {
             return date.withDayOfMonth(day);
         } catch (DateTimeException e) {

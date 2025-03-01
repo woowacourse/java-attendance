@@ -12,7 +12,7 @@ public record ModifyAttendanceRequest(
 
     public static ModifyAttendanceRequest of(String nickname, LocalDate today, int day, String time) {
         return new ModifyAttendanceRequest(nickname,
-                DateTimeUtil.convertToLocalDate(today, day),
+                DateTimeUtil.convertDay(today, day),
                 DateTimeUtil.convertToLocalTime(time));
     }
 }
