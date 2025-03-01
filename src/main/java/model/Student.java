@@ -25,6 +25,10 @@ public class Student {
         return studentName.equals(name);
     }
 
+    public AttendanceTime findAttendanceTimeByAttendanceDate(AttendanceDate attendanceDate) {
+        return studentAttendanceHistory.findAttendanceTimeByAttendanceDate(attendanceDate);
+    }
+
     public StudentAttendanceHistory getStudentAttendanceHistory() {
         return studentAttendanceHistory;
     }

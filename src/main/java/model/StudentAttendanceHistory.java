@@ -30,6 +30,10 @@ public class StudentAttendanceHistory {
         return attendanceHistory.containsKey(attendanceDate);
     }
 
+    public AttendanceTime findAttendanceTimeByAttendanceDate(AttendanceDate attendanceDate) {
+        return attendanceHistory.get(attendanceDate);
+    }
+
     public Map<AttendanceDate, AttendanceTime> getAttendanceHistory() {
         return attendanceHistory;
     }
