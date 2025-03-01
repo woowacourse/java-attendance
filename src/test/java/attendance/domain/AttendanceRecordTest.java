@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,8 @@ class AttendanceRecordTest {
             attendanceRecord.addAttendanceDateTime(attendanceDateTime);
 
             // then
-            assertThat(attendanceRecord.getAttendanceDateTimes())
-                .containsEntry(attendanceDate, attendanceTime);
+            assertThat(attendanceRecord.findByDate(attendanceDate))
+                .isEqualTo(attendanceDateTime);
         }
 
         @Test
@@ -57,8 +58,8 @@ class AttendanceRecordTest {
                 modifiedAttendanceDateTime);
 
             // then
-            assertThat(attendanceRecord.getAttendanceDateTimes())
-                .containsEntry(attendanceDate, modifiedAttendanceTime);
+            assertThat(attendanceRecord.findByDate(attendanceDate))
+                .isEqualTo(modifiedAttendanceDateTime);
         }
 
         @Test
@@ -74,12 +75,58 @@ class AttendanceRecordTest {
                 attendanceDateTimes);
 
             // when
-            AttendanceDateTime attendanceDateTime = attendanceRecord.findAttendanceTimeByDate(
+            AttendanceDateTime attendanceDateTime = attendanceRecord.findByDate(
                 attendanceDate);
 
             // then
             assertThat(attendanceDateTime).isEqualTo(new AttendanceDateTime(
                 attendanceDate, attendanceTime));
+        }
+
+        @Test
+        void 출석일시를_특정날짜까지_전체조회한다() {
+            // given
+            Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
+
+            AttendanceDate firstAttendanceDate = new AttendanceDate(
+                2024, 12, 2);
+            AttendanceTime firstAttendanceTime = new AttendanceTime(
+                13, 0);
+            attendanceDateTimes.put(firstAttendanceDate, firstAttendanceTime);
+
+            AttendanceDate secondAttendanceDate = new AttendanceDate(
+                2024, 12, 4);
+            AttendanceTime secondAttendanceTime = new AttendanceTime(
+                10, 0);
+            attendanceDateTimes.put(secondAttendanceDate, secondAttendanceTime);
+
+            AttendanceDate thirdAttendanceDate = new AttendanceDate(
+                2024, 12, 6);
+            AttendanceTime thirdAttendanceTime = new AttendanceTime(
+                10, 0);
+            attendanceDateTimes.put(thirdAttendanceDate, thirdAttendanceTime);
+
+            AttendanceRecord attendanceRecord = new AttendanceRecord(
+                attendanceDateTimes);
+
+            AttendanceDate untilDate = new AttendanceDate(
+                2024, 12, 5);
+
+            // when
+            List<AttendanceDateTime> foundAttendanceTimes = attendanceRecord.findAllUntilDate(
+                untilDate);
+
+            // then
+            assertThat(foundAttendanceTimes).containsExactly(
+                new AttendanceDateTime(
+                    firstAttendanceDate, firstAttendanceTime),
+                new AttendanceDateTime(
+                    new AttendanceDate(2024, 12, 3), AttendanceTime.EMPTY),
+                new AttendanceDateTime(
+                    secondAttendanceDate, secondAttendanceTime),
+                new AttendanceDateTime(
+                    new AttendanceDate(2024, 12, 5), AttendanceTime.EMPTY)
+            );
         }
     }
 
@@ -164,7 +211,7 @@ class AttendanceRecordTest {
 
             // when & then
             assertThatThrownBy(
-                () -> attendanceRecord.findAttendanceTimeByDate(
+                () -> attendanceRecord.findByDate(
                     attendanceDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 날짜의 출석 시간이 기록되어 있지 않습니다.");

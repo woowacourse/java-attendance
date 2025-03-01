@@ -6,6 +6,9 @@ import java.util.Objects;
 
 public class AttendanceDate {
 
+    public static final AttendanceDate FIRST_DATE = new AttendanceDate(
+        2024, 12, 2);
+
     private final int year;
     private final int month;
     private final int day;
@@ -90,6 +93,23 @@ public class AttendanceDate {
         );
     }
 
+    public AttendanceDate plusDay() {
+        LocalDate localDate = LocalDate.of(year, month, day)
+            .plusDays(1);
+
+        while (isHoliday(localDate.getYear(), localDate.getMonthValue(),
+            localDate.getDayOfMonth())) {
+            localDate = localDate.plusDays(1);
+        }
+
+        return AttendanceDate.from(localDate);
+    }
+
+    public boolean isAfter(final AttendanceDate o) {
+        return LocalDate.of(year, month, day)
+            .isAfter(LocalDate.of(o.year, o.month, o.day));
+    }
+
     public AttendanceDayOfWeek getAttendanceDayOfWeekDayOfWeek() {
         return AttendanceDayOfWeek.from(LocalDate.of(year, month, day));
     }
@@ -113,7 +133,7 @@ public class AttendanceDate {
         }
 
         final AttendanceDate that = (AttendanceDate) o;
-        
+
         return year == that.year && month == that.month && day == that.day;
     }
 
