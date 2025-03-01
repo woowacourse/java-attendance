@@ -28,7 +28,7 @@ class CalenderTest {
         LocalDate localDate = LocalDate.of(2024, 12, 14);
 
         //when //then
-        assertThatThrownBy(() -> Calender.isHolyDay(localDate))
+        assertThatThrownBy(() -> Calender.validateHolyDay(localDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("%02d월 %02d일 %s은 등교일이 아닙니다.", localDate.getMonth().getValue(), localDate.getDayOfMonth(),
                         "토요일");
@@ -41,7 +41,7 @@ class CalenderTest {
         LocalDate localDate = LocalDate.of(2024, 12, 2);
 
         //when //then
-        assertThatCode(() -> Calender.isHolyDay(localDate))
+        assertThatCode(() -> Calender.validateHolyDay(localDate))
                 .doesNotThrowAnyException();
     }
 
@@ -52,7 +52,7 @@ class CalenderTest {
         LocalDate localDate = LocalDate.of(2024, 12, 25);
 
         //when //then
-        assertThatThrownBy(() -> Calender.isHolyDay(localDate))
+        assertThatThrownBy(() -> Calender.validateHolyDay(localDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("%02d월 %02d일 %s은 등교일이 아닙니다.", localDate.getMonth().getValue(), localDate.getDayOfMonth(),
                         "수요일");
