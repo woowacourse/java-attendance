@@ -57,24 +57,31 @@ public class CrewAttendanceStorage {
         return storage.getStatisticByDateRange(startDate, endDate);
     }
 
+    public Map<String, AttendanceStatistic> findRiskCrewStatistics(LocalDate startDate, LocalDate endDate) {
+        Map<String, AttendanceStatistic> result = new HashMap<>();
+        List<String> crews = getExpulsionRiskCrews(startDate, endDate);
+        for (String crew : crews) {
+            AttendanceStorage storage = storages.get(crew);
+            AttendanceStatistic statistic = storage.getStatisticByDateRange(startDate, endDate);
+            result.put(crew, statistic);
+        }
+        return result;
+    }
+
+    private List<String> getExpulsionRiskCrews(LocalDate startDate, LocalDate endDate) {
+        return storages.keySet().stream()
+                .filter(crew -> {
+                    AttendanceStatistic statistic = storages.get(crew).getStatisticByDateRange(startDate, endDate);
+                    ExpulsionRiskStatus status = statistic.getExpulsionRiskStatus();
+                    return status != ExpulsionRiskStatus.NORMAL;
+                })
+                .toList();
+    }
+
     private AttendanceStorage findAttendanceStorageByCrew(String crew) {
         if (!storages.containsKey(crew)) {
             throw new CrewNotExistException();
         }
         return storages.get(crew);
-    }
-
-    public Map<String, AttendanceStatistic> findRiskCrewStatistics(LocalDate startDate, LocalDate endDate) {
-        Map<String, AttendanceStatistic> result = new HashMap<>();
-        for (Map.Entry<String, AttendanceStorage> entry : storages.entrySet()) {
-            String crew = entry.getKey();
-            AttendanceStorage storage = entry.getValue();
-            AttendanceStatistic statistic = storage.getStatisticByDateRange(startDate, endDate);
-            ExpulsionRiskStatus status = statistic.getExpulsionRiskStatus();
-            if (status != ExpulsionRiskStatus.NORMAL) {
-                result.put(crew, statistic);
-            }
-        }
-        return result;
     }
 }
