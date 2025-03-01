@@ -7,6 +7,8 @@ import java.util.Objects;
 public class AttendanceDate {
     private final LocalDate attendanceDate;
     private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
+    private static final LocalDate DECEMBER_START_DATE = LocalDate.of(2024, 12, 1);
+    private static final LocalDate DECEMBER_END_DATE = LocalDate.of(2024, 12, 31);
 
     public AttendanceDate(LocalDate attendanceDate) {
         this.attendanceDate = attendanceDate;
@@ -30,6 +32,10 @@ public class AttendanceDate {
 
     public boolean isMonday() {
         return attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY);
+    }
+
+    public boolean isDecemberDay() {
+        return (attendanceDate.isAfter(DECEMBER_START_DATE) && attendanceDate.isBefore(DECEMBER_END_DATE));
     }
 
     @Override
