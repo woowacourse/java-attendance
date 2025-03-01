@@ -9,6 +9,7 @@ public enum PenaltyType {
     NONE("", 0),
     ;
 
+    public static final int LATE_TO_ABSENCE_THRESHOLD = 3;
     private final String name;
     private final int requiredAbsenceCount;
 
@@ -23,7 +24,7 @@ public enum PenaltyType {
 
     public static PenaltyType getFrom(Map<AttendanceType, Integer> attendanceTypeCount) {
         int totalAbsenceCount = attendanceTypeCount.getOrDefault(AttendanceType.ABSENCE, 0) +
-                attendanceTypeCount.getOrDefault(AttendanceType.LATE, 0) / 3;
+                attendanceTypeCount.getOrDefault(AttendanceType.LATE, 0) / LATE_TO_ABSENCE_THRESHOLD;
 
         for (PenaltyType value : PenaltyType.values()) {
             if (totalAbsenceCount >= value.requiredAbsenceCount) {

@@ -16,6 +16,8 @@ import java.util.Map.Entry;
 import java.util.Objects;
 
 public class OutputView {
+    public static final String SHOWING_TEXT_WHEN_NOT_RECORDED = "--";
+
     public static void printToday(LocalDate currentDate) {
         String date = currentDate.format(DateTimeFormatter.ofPattern("M월 d일"));
         String dayOfWeek = currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
@@ -23,7 +25,7 @@ public class OutputView {
     }
 
     public static void printAttendanceStatus(AttendanceStatusDto dto) {
-        if (Objects.equals(dto.hour(), "--") || Objects.equals(dto.minute(), "--")) {
+        if (Objects.equals(dto.hour(), SHOWING_TEXT_WHEN_NOT_RECORDED) || Objects.equals(dto.minute(), SHOWING_TEXT_WHEN_NOT_RECORDED)) {
             System.out.printf("%02d월 %02d일 %s %s:%s (%s)%n",
                     dto.month(),
                     dto.day(),

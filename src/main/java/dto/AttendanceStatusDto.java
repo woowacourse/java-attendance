@@ -3,6 +3,7 @@ package dto;
 import domain.AttendanceType;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import view.OutputView;
 
 public record AttendanceStatusDto(
         int month,
@@ -28,8 +29,8 @@ public record AttendanceStatusDto(
                 localDateTime.getMonthValue(),
                 localDateTime.getDayOfMonth(),
                 localDateTime.getDayOfWeek(),
-                "--",
-                "--",
+                OutputView.SHOWING_TEXT_WHEN_NOT_RECORDED,
+                OutputView.SHOWING_TEXT_WHEN_NOT_RECORDED,
                 AttendanceType.ABSENCE
         );
     }
