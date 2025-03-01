@@ -26,7 +26,7 @@ public class Crew {
 
     public void attendance(LocalDate date, LocalTime time) {
         validateAttendanceDate(date);
-        validateAttendanceTime(time);
+        validateCampusTime(time);
         attendanceRecords.put(date, time);
     }
 
@@ -39,7 +39,7 @@ public class Crew {
         }
     }
 
-    private void validateAttendanceTime(LocalTime time) {
+    private void validateCampusTime(LocalTime time) {
         if (time.isBefore(CAMPUS_OPEN_TIME) ||
             time.isAfter(CAMPUS_CLOSE_TIME)) {
             throw new IllegalArgumentException(String.format("캠퍼스 운영시간(%s ~ %s) 내에만 출석할 수 있습니다.",
@@ -51,6 +51,7 @@ public class Crew {
 
     public void modifyAttendance(LocalDate date, LocalTime time) {
         validateModifyAttendanceDate(date);
+        validateCampusTime(time);
         attendanceRecords.put(date, time);
     }
 
