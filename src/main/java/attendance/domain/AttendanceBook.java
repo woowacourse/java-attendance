@@ -26,8 +26,10 @@ public class AttendanceBook {
     }
 
     //3. 출석 확인
-    public List<Attendance> checkAttendancesRecord(Crew inputCrew) {
-        return null;
+    public List<Attendance> checkAttendancesRecord(Crew crew) {
+        validateCrewExistance(crew);
+        AttendanceLog attendanceLog = attendanceRecord.get(crew);
+        return attendanceLog.checkAttendancesRecord();
     }
 
     //4. 제적 위험자 확인

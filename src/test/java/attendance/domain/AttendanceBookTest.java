@@ -37,6 +37,10 @@ public class AttendanceBookTest {
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)));
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 12, 10, 10)));
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 13, 9, 30)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 26, 8, 30)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12,  27,13, 30)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 30, 12, 30)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 31, 9, 45)));
         attendanceLog = new AttendanceLog(sampleAttendances);
         attendanceRecord = new HashMap<>();
         attendanceRecord.put(crew, attendanceLog);
@@ -102,7 +106,14 @@ public class AttendanceBookTest {
     @Test
     @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 기록을 확인할 수 있다")
     void checkAttendancesRecord() {
+        //given
         Crew inputCrew = new Crew("Lemon");
         List<Attendance> attendances = attendanceBook.checkAttendancesRecord(inputCrew);
+        LocalDate nowDate = LocalDate.of(2024,12,14).minusDays(1);
+        // expected
+        Assertions.assertThat(attendances)
+            .isNotEmpty(); // 리스트가 비어있지 않은지 검증
+        //expected
+        Assertions.assertThat(attendances.getLast().getAttendanceDate()).isEqualTo(nowDate);
     }
 }

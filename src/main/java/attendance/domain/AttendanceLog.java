@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,13 @@ public class AttendanceLog {
         attendanceLog.add(modifyNewAttendance);
 
         return List.of(modifyOldAttendance, modifyNewAttendance);
+    }
+
+    public List<Attendance> checkAttendancesRecord() {
+        int localDate = LocalDate.now().getDayOfMonth();
+        return attendanceLog.stream()
+            .filter(attendance -> attendance.getAttendanceDate().isBefore(LocalDate.of(2024, 12, 14)))
+            .toList();
     }
 
     public int countAttendanceStatus(Subject subject) {
