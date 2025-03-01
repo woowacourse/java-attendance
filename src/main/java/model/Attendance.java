@@ -11,8 +11,8 @@ import util.InputParser;
 public class Attendance {
 
     private final LocalDate checkInDate;
-    private final LocalTime checkInTime;
-    private final AttendanceType attendanceType;
+    private LocalTime checkInTime;
+    private AttendanceType attendanceType;
 
     private Attendance(LocalDate checkInDate, LocalTime checkInTime, AttendanceType attendanceType) {
         this.checkInDate = checkInDate;
@@ -41,8 +41,17 @@ public class Attendance {
         return new Attendance(checkInDate, null, AttendanceType.ABSENCE);
     }
 
+    public void update(LocalTime updateTime) {
+        this.checkInTime = updateTime;
+        this.attendanceType = AttendanceType.calculate(checkInDate, updateTime);
+    }
+
     public LocalDate getCheckInDate() {
         return checkInDate;
+    }
+
+    public LocalTime getCheckInTime() {
+        return checkInTime;
     }
 
     public AttendanceType getAttendanceType() {
