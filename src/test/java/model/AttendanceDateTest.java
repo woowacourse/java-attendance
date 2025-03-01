@@ -13,9 +13,9 @@ public class AttendanceDateTest {
         AttendanceDate saturdayAttendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 7));
         AttendanceDate sundayAttendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 8));
         AttendanceDate christmasAttendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 25));
-        Assertions.assertTrue(saturdayAttendanceDate.isWeekend());
-        Assertions.assertTrue(sundayAttendanceDate.isWeekend());
-        Assertions.assertTrue(christmasAttendanceDate.isChristmas());
+        Assertions.assertTrue(saturdayAttendanceDate.isHoliday());
+        Assertions.assertTrue(sundayAttendanceDate.isHoliday());
+        Assertions.assertTrue(christmasAttendanceDate.isHoliday());
     }
 
     @Test
@@ -51,6 +51,15 @@ public class AttendanceDateTest {
         AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 11, 30));
         Assertions.assertFalse(
                 attendanceDate.isDecemberDay()
+        );
+    }
+
+    @Test
+    @DisplayName("하루를 더해주는 메서드 리턴")
+    void test10() {
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 11, 30));
+        Assertions.assertEquals(
+                attendanceDate.plusOneDay(), new AttendanceDate(LocalDate.of(2024, 12, 1))
         );
     }
 
