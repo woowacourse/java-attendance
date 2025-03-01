@@ -108,7 +108,7 @@ public class AttendanceBookTest {
         assertThat(result.keySet()).hasSize(2);
     }
 
-    public static AttendanceBook generateAttendanceBook(String nickname, List<LocalDateTime> dateTimes) {
+    private static AttendanceBook generateAttendanceBook(String nickname, List<LocalDateTime> dateTimes) {
         Map<String, Attendances> crewAttendances = Map.of(nickname, generateAttendances(dateTimes));
         return new AttendanceBook(new HashMap<>(crewAttendances));
     }
