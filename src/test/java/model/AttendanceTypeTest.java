@@ -1,15 +1,37 @@
 package model;
 
 import static constant.ErrorMessage.CANNOT_CHECK_IN_ON_WEEKEND;
+import static constant.PathConstant.ATTENDANCE_FILE_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.EnumMap;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import util.DateTimeGenerator;
+import util.FileParser;
+import util.FixedDateTimeStrategy;
 
 class AttendanceTypeTest {
+
+    LocalDateTime fixedDateTime;
+    DateTimeGenerator dateTimeGenerator;
+    Attendances attendances;
+
+    @BeforeEach
+    void beforeEach() {
+        fixedDateTime = LocalDateTime.of(2024, 12, 13, 12, 0);
+        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDateTime);
+        dateTimeGenerator = new DateTimeGenerator(fixedDateTimeStrategy);
+
+        List<String> lines = FileParser.readLines(ATTENDANCE_FILE_PATH.getPath());
+        attendances = Attendances.from(lines, dateTimeGenerator);
+    }
 
     @Test
     @DisplayName("금요일 출석 타입을 반환한다.")
@@ -95,7 +117,6 @@ class AttendanceTypeTest {
         assertThat(result).isEqualTo(AttendanceType.ABSENCE);
     }
 
-
     @Test
     @DisplayName("주말은 출석을 할 수 없다.")
     void test7() {
@@ -107,5 +128,25 @@ class AttendanceTypeTest {
         assertThatThrownBy(() -> AttendanceType.find(localDate, localTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(CANNOT_CHECK_IN_ON_WEEKEND.getMessage());
+    }
+
+    @Test
+    @DisplayName("징계 총합을 반환한다.")
+    void test8() {
+        // given
+        Crew crew = Crew.of("미소");
+        List<Attendance> attendances = this.attendances.getAttendancesByCrew(crew);
+        for (Attendance attendance : attendances) {
+            System.out.println("attendance.getCheckInDate() = " + attendance.getCheckInDate());
+            System.out.println("attendance.getAttendanceType() = " + attendance.getAttendanceType());
+        }
+
+        // when
+        EnumMap<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(attendances);
+
+        // then
+        assertThat(attendanceTotal.get(AttendanceType.SUCCESS)).isEqualTo(3);
+        assertThat(attendanceTotal.get(AttendanceType.BE_LATE)).isEqualTo(2);
+        assertThat(attendanceTotal.get(AttendanceType.ABSENCE)).isEqualTo(4);
     }
 }
