@@ -5,7 +5,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AttendancesLoader {
 
@@ -15,13 +18,13 @@ public class AttendancesLoader {
         BufferedReader reader = new BufferedReader(fileReader);
         skipTitleLine(reader);
 
-        Attendances attendances = new Attendances(new HashMap<>());
+        Map<String, List<Attendance>> attendances = new HashMap<>();
         addAttendanceLog(reader, attendances);
 
-        return attendances;
+        return new Attendances(attendances);
     }
 
-    private void addAttendanceLog(BufferedReader reader, Attendances attendances) throws IOException {
+    private void addAttendanceLog(BufferedReader reader, Map<String, List<Attendance>> attendances) throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
             String[] nameAndDatetime = line.split(",");
@@ -29,7 +32,7 @@ public class AttendancesLoader {
             String datetime = nameAndDatetime[1];
             LocalDateTime localDateTime = LocalDateTime.parse(datetime, formatter);
 
-            attendances.addAttendanceLog(nickname, localDateTime);
+            attendances.computeIfAbsent(nickname, k -> new ArrayList<>()).add(new Attendance(localDateTime));
         }
     }
 
