@@ -24,6 +24,7 @@ public class AttendanceTime {
     }
 
     public AttendanceTime(final LocalDate date) {
+
         validateAttendDate(date);
         this.date = date;
         this.hour = ABSENT_VALUE;
@@ -61,7 +62,7 @@ public class AttendanceTime {
         return LocalTime.of(hour, minute).isBefore(localTime);
     }
 
-    public boolean isSameDay(LocalDate localDate) {
+    public boolean isSameDay(final LocalDate localDate) {
 
         return date.isEqual(localDate);
     }

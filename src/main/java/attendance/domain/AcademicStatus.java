@@ -13,7 +13,8 @@ public enum AcademicStatus {
     private static final int LIMIT_WARN = 2;
     private static final int LATE_PER_ABSENCE = 3;
 
-    AcademicStatus(String value) {
+    AcademicStatus(final String value) {
+
         this.value = value;
     }
 
@@ -33,6 +34,7 @@ public enum AcademicStatus {
     }
 
     public String getValue() {
+
         return value;
     }
 }

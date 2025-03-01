@@ -25,7 +25,8 @@ public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
 
-    public AttendanceController(InputView inputView, OutputView outputView) {
+    public AttendanceController(final InputView inputView, final OutputView outputView) {
+
         this.inputView = inputView;
         this.outputView = outputView;
     }
@@ -37,7 +38,7 @@ public class AttendanceController {
         runSystem(attendanceBook);
     }
 
-    private static void initAttendances(AttendanceBook attendanceBook) {
+    private static void initAttendances(final AttendanceBook attendanceBook) {
 
         AttendanceReader.initAttendances(attendanceBook);
         attendanceBook.initCrewsAbsence();
@@ -202,8 +203,8 @@ public class AttendanceController {
                 new CrewAttendanceDTO(crewName, attendances, attendanceStatusMap, academicStatus));
     }
 
-    private EnumMap<AttendanceStatus, Integer> getAttendanceStatusMap(int attend, int late,
-                                                                      int absent) {
+    private EnumMap<AttendanceStatus, Integer> getAttendanceStatusMap(final int attend, final int late,
+                                                                      final int absent) {
 
         EnumMap<AttendanceStatus, Integer> attendanceStatusMap = new EnumMap<>(AttendanceStatus.class);
         attendanceStatusMap.put(AttendanceStatus.ATTEND, attend);
@@ -218,7 +219,7 @@ public class AttendanceController {
         outputView.printExpulsionCandidates(expulsionCandidates);
     }
 
-    private <T> T retryInput(Supplier<T> supplier) {
+    private <T> T retryInput(final Supplier<T> supplier) {
 
         try {
             return supplier.get();

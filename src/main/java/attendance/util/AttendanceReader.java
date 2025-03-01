@@ -12,7 +12,7 @@ public class AttendanceReader {
     private static final String DELIMITER = ",";
     private static final DateTimeFormatter ATTENDANCE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static void initAttendances(AttendanceBook attendanceBook) {
+    public static void initAttendances(final AttendanceBook attendanceBook) {
 
         List<String> contents = Reader.getContents(ATTENDANCE_FILE_PATH);
         contents.removeFirst();
@@ -23,8 +23,8 @@ public class AttendanceReader {
         }
     }
 
-    private static void addAttendance(AttendanceBook attendanceBook, String[] split) {
-        
+    private static void addAttendance(final AttendanceBook attendanceBook, String[] split) {
+
         String crewName = split[0];
         LocalDateTime attendTime = LocalDateTime.parse(split[1], ATTENDANCE_TIME_FORMATTER);
         int hour = attendTime.getHour();

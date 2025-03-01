@@ -60,7 +60,7 @@ public class AttendanceBook {
         }
     }
 
-    private void judgeAbsence(String name, LocalDate attendDate) {
+    private void judgeAbsence(final String name, final LocalDate attendDate) {
 
         if (!AttendanceTime.isWeekend(attendDate.getDayOfWeek()) && !isAlreadyExists(name, attendDate)) {
             attendances.get(name).add(new AttendanceTime(attendDate));

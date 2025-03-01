@@ -59,7 +59,7 @@ public class OutputView {
         printLine();
     }
 
-    public void printExpulsionCandidates(List<ExpulsionCandidate> expulsionCandidates) {
+    public void printExpulsionCandidates(final List<ExpulsionCandidate> expulsionCandidates) {
 
         System.out.println("제적 위험자 조회 결과");
         for (ExpulsionCandidate candidate : expulsionCandidates) {
@@ -69,7 +69,7 @@ public class OutputView {
         printLine();
     }
 
-    private void printAttendances(CrewAttendanceDTO crewAttendanceDTO) {
+    private void printAttendances(final CrewAttendanceDTO crewAttendanceDTO) {
 
         for (AttendanceTime attendanceTime : crewAttendanceDTO.attendances()) {
             printAttendance(attendanceTime);
@@ -77,7 +77,7 @@ public class OutputView {
         }
     }
 
-    private void printCrewAttendanceStatus(CrewAttendanceDTO crewAttendanceDTO) {
+    private void printCrewAttendanceStatus(final CrewAttendanceDTO crewAttendanceDTO) {
 
         EnumMap<AttendanceStatus, Integer> statusCounts = crewAttendanceDTO.statusCount();
         for (AttendanceStatus attendanceStatus : statusCounts.keySet()) {

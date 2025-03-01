@@ -17,8 +17,8 @@ public final class Reader {
         }
     }
 
-    private static List<String> getContents(BufferedReader reader) throws IOException {
-        
+    private static List<String> getContents(final BufferedReader reader) throws IOException {
+
         List<String> contents = new ArrayList<>();
         String content;
         while ((content = reader.readLine()) != null) {

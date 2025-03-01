@@ -20,7 +20,7 @@ public enum AttendanceStatus {
         this.value = value;
     }
 
-    public static AttendanceStatus getAttendanceStatus(AttendanceTime attendanceTime) {
+    public static AttendanceStatus getAttendanceStatus(final AttendanceTime attendanceTime) {
 
         if (attendanceTime.isDefaultAbsent()) {
             return ABSENT;
@@ -31,8 +31,9 @@ public enum AttendanceStatus {
         return calculateAttendanceStatus(attendanceTime, OTHER_DAY_LATE, OTHER_DAY_ABSENT);
     }
 
-    private static AttendanceStatus calculateAttendanceStatus(AttendanceTime attendanceTime, LocalTime lateTime,
-                                                              LocalTime absentTime) {
+    private static AttendanceStatus calculateAttendanceStatus(final AttendanceTime attendanceTime,
+                                                              final LocalTime lateTime,
+                                                              final LocalTime absentTime) {
 
         if (attendanceTime.isBefore(lateTime)) {
             return ATTEND;

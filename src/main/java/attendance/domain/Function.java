@@ -12,7 +12,7 @@ public enum Function {
 
     private final String value;
 
-    Function(String value) {
+    Function(final String value) {
 
         this.value = value;
     }
