@@ -26,7 +26,7 @@ public class Controller {
             functionAttendanceModify(attendanceBook);
         }
         if (menuOption.equals(MenuOption.CREW_ATTENDANCE_CHECK)){
-
+            functionCrewAttendanceCheck(attendanceBook);
         }
         if (menuOption.equals(MenuOption.EXPULSION_RISK)){
 
@@ -35,6 +35,7 @@ public class Controller {
             return;
         }
     }
+
     private MenuOption chooseMenuOption(){
         try {
             return InputView.inputChooseFunctionOption();
@@ -43,6 +44,7 @@ public class Controller {
             return chooseMenuOption();
         }
     }
+
     private void functionAttendanceRegister(AttendanceBook attendanceBook){
         try{
             String nickName = requestNickName();
@@ -57,11 +59,6 @@ public class Controller {
         }
     }
 
-    private static String requestNickName() {
-        OutPutView.requestNickName();
-        return InputView.input();
-    }
-
     private void functionAttendanceModify(AttendanceBook attendanceBook) {
         try {
             String nickName = requestModifyNickName();
@@ -70,7 +67,20 @@ public class Controller {
             modifyAttendanceRecord(student, modifyDate);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            functionAttendanceModify(attendanceBook); // 재귀 호출
+            functionAttendanceModify(attendanceBook);
+        }
+    }
+
+    private void functionCrewAttendanceCheck(AttendanceBook attendanceBook){
+        try{
+            String nickName = requestNickName();
+            Student student = attendanceBook.findStudentByNickName(nickName);
+            OutPutView.displayTotalAttendanceRecord(student);
+            OutPutView.displayTotalAttendanceCount(student);
+            OutPutView.displayExpulsionRisk(student);
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            functionCrewAttendanceCheck(attendanceBook);
         }
     }
 
@@ -83,6 +93,11 @@ public class Controller {
 
         String afterRecord = AttendanceRecordFormatter.attendanceRecordFormatter(student, date);
         OutPutView.displayModifyAttendanceRecord(beforeRecord, afterRecord);
+    }
+
+    private static String requestNickName() {
+        OutPutView.requestNickName();
+        return InputView.input();
     }
 
     private String requestModifyNickName() {
