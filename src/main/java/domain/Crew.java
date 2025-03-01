@@ -1,5 +1,7 @@
 package domain;
 
+import static domain.DecemberCalendar.WORKING_DAY;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -39,7 +41,7 @@ public class Crew {
         for (int recordingDay = 1; recordingDay <= 31; recordingDay++) {
             LocalDate recordingDate = LocalDate.of(2024, 12, recordingDay);
 
-            if (!(DecemberCalendar.judgeWorkingDay(recordingDate).equals("근무일") ||
+            if (!(DecemberCalendar.judgeWorkingDay(recordingDate).equals(WORKING_DAY) ||
                     DecemberCalendar.judgeWorkingDay(recordingDate).equals("월요일"))) { // 근무일이 아닌 경우
                 continue;
             }

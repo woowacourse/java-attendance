@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class DecemberCalendar {
+    public static final String WORKING_DAY = "근무일";
+    public static final String HOLIDAY = "공휴일";
+
     private static final List<Integer> HOLIDAYS = List.of(25);
 
     public static String judgeWorkingDay(LocalDate date) {
@@ -20,8 +23,8 @@ public class DecemberCalendar {
             return DayOfWeek.MONDAY.getDisplayName(TextStyle.FULL, Locale.KOREAN);
         }
         if (HOLIDAYS.contains(date.getDayOfMonth())) {
-            return "공휴일";
+            return HOLIDAY;
         }
-        return "근무일";
+        return WORKING_DAY;
     }
 }

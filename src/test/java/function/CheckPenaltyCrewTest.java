@@ -1,6 +1,7 @@
 package function;
 
 import static constants.AttendanceCriteria.OPERATING_START;
+import static domain.DecemberCalendar.WORKING_DAY;
 import static domain.PenaltyStatus.EXPULSION_STATUS;
 import static domain.PenaltyStatus.INTERVIEW_STATUS;
 import static domain.PenaltyStatus.WARNING_STATUS;
@@ -24,7 +25,7 @@ public class CheckPenaltyCrewTest {
         attendanceBook = new AttendanceBook();
         for (int day = 1; day <= 31; day++) {
             String workingDay = DecemberCalendar.judgeWorkingDay(LocalDate.of(2024, 12, day));
-            if (!(workingDay.equals("근무일") || workingDay.equals("월요일"))) { // 근무일이 아닌 경우
+            if (!(workingDay.equals(WORKING_DAY) || workingDay.equals("월요일"))) { // 근무일이 아닌 경우
                 continue;
             }
 

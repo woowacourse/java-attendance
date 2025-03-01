@@ -6,6 +6,7 @@ import static constants.AttendanceCriteria.MONDAY_ATTEND;
 import static constants.AttendanceCriteria.MONDAY_LATE;
 import static constants.AttendanceCriteria.OPERATING_END;
 import static constants.AttendanceCriteria.OPERATING_START;
+import static domain.DecemberCalendar.WORKING_DAY;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,7 +26,7 @@ public class AttendanceStatus {
             return judgeAttendanceByTimeAtMonday(time);
         }
 
-        if (dayOfWeek.equals("근무일")) { // 월요일이 아닌 근무일의 경우
+        if (dayOfWeek.equals(WORKING_DAY)) { // 월요일이 아닌 근무일의 경우
             return judgeAttendanceByTimeExceptMonday(time);
         }
 
