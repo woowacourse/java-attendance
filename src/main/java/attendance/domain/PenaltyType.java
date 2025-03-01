@@ -14,10 +14,14 @@ public enum PenaltyType {
         this.penaltyCounts = penaltyCounts;
     }
 
-    public static PenaltyType fetchPenaltyType(final int crewPenaltyCounts) {
+    public static PenaltyType fetchPenaltyType(final int crewAbsenceCounts, final int crewLateCounts) {
         return Arrays.stream(PenaltyType.values())
-                .filter(count -> count.penaltyCounts <= crewPenaltyCounts)
+                .filter(count -> count.penaltyCounts <= calculateTotalPenaltyCounts(crewAbsenceCounts, crewLateCounts))
                 .findFirst()
                 .orElseThrow();
+    }
+
+    private static int calculateTotalPenaltyCounts(final int crewAbsenceCounts, final int crewLateCounts) {
+        return crewAbsenceCounts + (crewLateCounts / 3);
     }
 }

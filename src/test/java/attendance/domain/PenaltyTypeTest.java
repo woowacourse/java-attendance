@@ -7,9 +7,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 public class PenaltyTypeTest {
 
     @ParameterizedTest
-    @CsvSource(value = {"2, WARNING", "3, COUNSELING", "6, EXPULSION"})
-    public void 패널티_생성(int penaltyCount, PenaltyType penaltyType) {
+    @CsvSource(value = {"1,3, WARNING", "2,3, COUNSELING", "5,3, EXPULSION"})
+    public void 패널티_생성(int absenceCounts, int lateCount, PenaltyType penaltyType) {
         //when & then
-        Assertions.assertThat(PenaltyType.fetchPenaltyType(penaltyCount)).isEqualTo(penaltyType);
+        Assertions.assertThat(PenaltyType.fetchPenaltyType(absenceCounts, lateCount)).isEqualTo(penaltyType);
     }
 }
