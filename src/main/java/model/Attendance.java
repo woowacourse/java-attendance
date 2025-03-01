@@ -38,4 +38,8 @@ public class Attendance {
     public boolean isAttend() {
         return !isAbsent() && !isLate();
     }
+
+    public boolean isBefore(LocalDate date) {
+        return this.attendDate.isBefore(date);
+    }
 }

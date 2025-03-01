@@ -123,6 +123,7 @@ public class CrewAttendanceTest {
     @Test
     void calculate_late_count_by_nickname() {
         // given
+        LocalDate today = LocalDate.of(2024, 12, 5);
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
                 new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
                 new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 10))
@@ -130,7 +131,7 @@ public class CrewAttendanceTest {
         final var nickname = "율무";
 
         // when
-        final var lateCount = attendanceBook.calculateLateCountByNickname(nickname);
+        final var lateCount = attendanceBook.calculateLateCountByNicknameUntilDate(nickname, today);
 
         // then
         Assertions.assertThat(lateCount)
@@ -141,6 +142,7 @@ public class CrewAttendanceTest {
     @Test
     void calculate_attend_count_by_nickname() {
         // given
+        LocalDate today = LocalDate.of(2024, 12, 5);
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
                 new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
                 new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(9, 47))
@@ -148,7 +150,7 @@ public class CrewAttendanceTest {
         final var nickname = "율무";
 
         // when
-        final var attendCount = attendanceBook.calculateAttendCountByNickname(nickname);
+        final var attendCount = attendanceBook.calculateAttendCountByNicknameUntilDate(nickname, today);
 
         // then
         Assertions.assertThat(attendCount)

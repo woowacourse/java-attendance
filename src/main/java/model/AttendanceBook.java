@@ -71,7 +71,6 @@ public class AttendanceBook {
         int absentCount = 0;
         for (int day = 1; day < date.getDayOfMonth(); day++) {
             if (isWeekend(date.withDayOfMonth(day)) || isHoliday(date.withDayOfMonth(day))) {
-                System.out.println(day);
                 continue;
             }
 
@@ -79,6 +78,10 @@ public class AttendanceBook {
         }
 
         return absentCount;
+    }
+
+    private boolean isWeekend(LocalDate date) {
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 
     private boolean isHoliday(LocalDate date) {
@@ -98,18 +101,16 @@ public class AttendanceBook {
         return 1;
     }
 
-    private boolean isWeekend(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
-    }
-
-    public long calculateLateCountByNickname(String nickname) {
+    public long calculateLateCountByNicknameUntilDate(String nickname, LocalDate date) {
         return findCrewAttendance(nickname).stream()
+                .filter(attendance -> attendance.isBefore(date))
                 .filter(Attendance::isLate)
                 .count();
     }
 
-    public long calculateAttendCountByNickname(String nickname) {
+    public long calculateAttendCountByNicknameUntilDate(String nickname, LocalDate date) {
         return findCrewAttendance(nickname).stream()
+                .filter(attendance -> attendance.isBefore(date))
                 .filter(Attendance::isAttend)
                 .count();
     }
