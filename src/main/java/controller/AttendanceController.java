@@ -15,11 +15,12 @@ public class AttendanceController {
     private final CrewRegistrationService registration;
     private final FunctionService functionService;
 
-    public AttendanceController(InputView inputView, OutputView outputView, CrewRegistrationService registration) {
+    public AttendanceController(InputView inputView, OutputView outputView, CrewRegistrationService registration,
+                                FunctionService functionService) {
         this.outputView = outputView;
         this.inputView = inputView;
         this.registration = registration;
-        this.functionService = new FunctionService(outputView, inputView);
+        this.functionService = functionService;
     }
 
     public AttendanceBook init() {
