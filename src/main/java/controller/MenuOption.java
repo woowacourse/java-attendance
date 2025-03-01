@@ -35,6 +35,6 @@ public enum MenuOption {
     }
 
     public void process(AttendanceBook attendanceBook, LocalDate attendanceDate) {
-        this.optionOperator.process(attendanceBook, attendanceDate);
+            this.optionOperator.process(attendanceBook, attendanceDate);
     }
 }

@@ -22,11 +22,11 @@ public class AttendanceController {
         AttendanceBook attendanceBook = new AttendanceBook(AttendanceConvertor.convertToAttendances(AttendanceFileReader.readFile()));
         MenuOption option;
 
-        while (true) {
+        do {
             this.outputView.printWelcomeMessage();
             option = InputProcessor.processInputUntilSuccess(this::processOptionInput);
             option.process(attendanceBook, Constants.NOW_DATE);
-        }
+        } while (!option.equals(MenuOption.QUIT));
     }
 
     private MenuOption processOptionInput() {
