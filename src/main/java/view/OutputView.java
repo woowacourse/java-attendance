@@ -41,18 +41,26 @@ public class OutputView {
 
     public static void printUpdateAttendance(AttendanceUpdateResponse response) {
         if (response.previousTime() == null) {
-            println(String.format(ATTENDANCE_UPDATE_NULL_RESPONSE.getMessage(),
-                    response.date().getMonthValue(),
-                    response.date().getDayOfMonth(),
-                    response.date().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                    parseAttendanceType(response.previousAttendanceType()),
-                    response.updateTime().getHour(),
-                    response.updateTime().getMinute(),
-                    parseAttendanceType(response.updateAttendanceType())
-            ));
-            printNewLine();
+            printUpdateNullResponse(response);
             return;
         }
+        printUpdateResponse(response);
+    }
+
+    private static void printUpdateNullResponse(AttendanceUpdateResponse response) {
+        println(String.format(ATTENDANCE_UPDATE_NULL_RESPONSE.getMessage(),
+                response.date().getMonthValue(),
+                response.date().getDayOfMonth(),
+                response.date().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                parseAttendanceType(response.previousAttendanceType()),
+                response.updateTime().getHour(),
+                response.updateTime().getMinute(),
+                parseAttendanceType(response.updateAttendanceType())
+        ));
+        printNewLine();
+    }
+
+    private static void printUpdateResponse(AttendanceUpdateResponse response) {
         println(String.format(ATTENDANCE_UPDATE_RESPONSE.getMessage(),
                 response.date().getMonthValue(),
                 response.date().getDayOfMonth(),
@@ -70,25 +78,38 @@ public class OutputView {
     public static void printAttendanceHistory(AttendanceHistoryResponse response) {
         for (Attendance attendance : response.attendances()) {
             if (attendance.getCheckInTime() == null) {
-                println(String.format(ATTENDANCE_HISTORY_NULL_RESPONSE.getMessage(),
-                        attendance.getCheckInDate().getMonthValue(),
-                        attendance.getCheckInDate().getDayOfMonth(),
-                        attendance.getCheckInDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                        parseAttendanceType(attendance.getAttendanceType())
-                ));
+                printHistoryNullResponse(attendance);
                 continue;
             }
-            println(String.format(ATTENDANCE_HISTORY_RESPONSE.getMessage(),
-                    attendance.getCheckInDate().getMonthValue(),
-                    attendance.getCheckInDate().getDayOfMonth(),
-                    attendance.getCheckInDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                    attendance.getCheckInTime().getHour(),
-                    attendance.getCheckInTime().getMinute(),
-                    parseAttendanceType(attendance.getAttendanceType())
-            ));
+            printHistoryResponse(attendance);
         }
         printNewLine();
 
+        printAttendanceTotalResponse(response);
+        printPunishmentTypeResponse(response);
+    }
+
+    private static void printHistoryNullResponse(Attendance attendance) {
+        println(String.format(ATTENDANCE_HISTORY_NULL_RESPONSE.getMessage(),
+                attendance.getCheckInDate().getMonthValue(),
+                attendance.getCheckInDate().getDayOfMonth(),
+                attendance.getCheckInDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                parseAttendanceType(attendance.getAttendanceType())
+        ));
+    }
+
+    private static void printHistoryResponse(Attendance attendance) {
+        println(String.format(ATTENDANCE_HISTORY_RESPONSE.getMessage(),
+                attendance.getCheckInDate().getMonthValue(),
+                attendance.getCheckInDate().getDayOfMonth(),
+                attendance.getCheckInDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                attendance.getCheckInTime().getHour(),
+                attendance.getCheckInTime().getMinute(),
+                parseAttendanceType(attendance.getAttendanceType())
+        ));
+    }
+
+    private static void printAttendanceTotalResponse(AttendanceHistoryResponse response) {
         println(String.format(ATTENDANCE_SUCCESS_TYPE_RESPONSE.getMessage(),
                 response.attendanceTotal().get(AttendanceType.SUCCESS)));
         println(String.format(ATTENDANCE_BE_LATE_TYPE_RESPONSE.getMessage(),
@@ -96,7 +117,9 @@ public class OutputView {
         println(String.format(ATTENDANCE_ABSENCE_TYPE_RESPONSE.getMessage(),
                 response.attendanceTotal().get(AttendanceType.ABSENCE)));
         printNewLine();
+    }
 
+    private static void printPunishmentTypeResponse(AttendanceHistoryResponse response) {
         if (!response.punishmentType().equals(PunishmentType.NONE)) {
             println(String.format(ATTENDANCE_PUNISHMENT_TYPE_RESPONSE.getMessage(),
                     parsePunishmentType(response.punishmentType())));
