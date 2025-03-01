@@ -67,10 +67,6 @@ public class Student {
         attendanceStatusCount.updateAttendanceCount(attendanceStatusRecord);
     }
 
-    public Map<LocalDate, LocalTime> findAttendanceTimeRecordMap() {
-        return attendanceTimeRecord.getAttendanceTimeRecords();
-    }
-
     public long calculateAbsentCount() {
         updateAttendanceCount();
         return attendanceStatusCount.getAbsentCount() + convertTardiesToAbsence();
