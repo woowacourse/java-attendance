@@ -13,6 +13,9 @@ public class AttendanceBook {
     }
 
     public Attendance check(String nickname, LocalDate date, LocalTime time) {
+        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
+        checker.determine(date, time);
+
         Attendance attendance = new Attendance(nickname, date, time);
         if (isAlreadyAttend(attendance)) {
             throw new IllegalArgumentException();
