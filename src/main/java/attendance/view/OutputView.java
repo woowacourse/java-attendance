@@ -12,6 +12,8 @@ import java.util.Locale;
 
 public class OutputView {
 
+    private static final String DEFAULT_ABSENCE = "--:--";
+
     public void printErrorMessage(final String message) {
 
         System.out.println(message);
@@ -26,8 +28,8 @@ public class OutputView {
         final int minute = attendanceTime.getMinute();
 
         String time = String.format("%02d:%02d", hour, minute);
-        if (hour == -1 && minute == -1) {
-            time = "--:--";
+        if (attendanceTime.isDefaultAbsent()) {
+            time = DEFAULT_ABSENCE;
         }
         final String status = AttendanceStatus.getAttendanceStatus(attendanceTime).getValue();
 
