@@ -31,4 +31,8 @@ public class AttendanceBook {
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
     }
+
+    public Attendance update(String updateNickname, LocalDate updateDate, LocalTime updateTime) {
+        return null;
+    }
 }

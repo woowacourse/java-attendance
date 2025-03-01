@@ -29,11 +29,10 @@ public class AttendanceCheckTest {
     @Test
     void already_attend() {
         // given
-        List<Attendance> attendances = List.of(
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
                 new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
                 new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
-        );
-        AttendanceBook attendanceBook = new AttendanceBook(attendances);
+        ));
         String nickname = "율무";
         LocalDate date = LocalDate.of(2024, 12, 3);
         LocalTime time = LocalTime.of(10, 0);
