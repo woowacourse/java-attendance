@@ -1,5 +1,6 @@
 package attendacne.domain;
 
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.FileNotFoundException;
@@ -12,7 +13,7 @@ import attendance.domain.AttendanceReader;
 
 public class AttendanceReaderTest {
 
-    private static final String ATTENDANCE_CSV = "/attendances.csv";
+    private static final String ATTENDANCE_CSV = "attendances.csv";
 
     @Test
     @DisplayName("csv 정보를 불러온다.")
@@ -23,13 +24,15 @@ public class AttendanceReaderTest {
     }
 
     @Test
-    @DisplayName("csv 정보를 불러와, AttendanceBook으로 반환한다.")
+    @DisplayName("csv 정보를 불러와, AttendanceBook에 저장하여 반환한다.")
     void test_returnAttendanceBookFromCsv() throws FileNotFoundException {
         var attendanceReader = new AttendanceReader(ATTENDANCE_CSV);
-
         var loadedBook = attendanceReader.load();
-        var attendanceBook = new AttendanceBook();
-        assertSame(loadedBook, attendanceBook);
+        var attendanceBook = loadedBook.attendancesBook();
+        assertAll(
+            () -> assertThat(attendanceBook.keySet().size()).isEqualTo(5),
+            () -> assertThat(attendanceBook.containsKey("짱수")).isTrue()
+        );
     }
 
     @Test
@@ -43,13 +46,4 @@ public class AttendanceReaderTest {
             .hasMessageContaining("ErrorFile");
     }
 
-    @Test
-    @DisplayName("파일을 읽어올 수 없을 경우, 예외가 발생한다.")
-    void error_CantLoadingFile() {
-        var attendanceReader = new AttendanceReader("ErrorFile");
-
-        Assertions.assertThatThrownBy(attendanceReader::load)
-            .isInstanceOf(FileNotFoundException.class)
-            .hasMessageContaining("파일을 읽을 수 없습니다");
-    }
 }
