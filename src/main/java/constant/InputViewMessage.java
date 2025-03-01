@@ -26,10 +26,6 @@ public enum InputViewMessage {
     }
 
     public String getMessage() {
-        return String.format(message);
-    }
-
-    public String getMessage(int args1, int args2, String args3) {
-        return String.format(message, args1, args2, args3);
+        return message;
     }
 }

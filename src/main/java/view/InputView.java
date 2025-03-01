@@ -23,7 +23,7 @@ public class InputView {
     public static AttendanceOptionRequest readAttendanceOptionRequest(DateTimeGenerator dateTimeGenerator) {
         LocalDateTime now = dateTimeGenerator.now();
 
-        println(InputViewMessage.ATTENDANCE_OPTION_PROMPT.getMessage(
+        println(String.format(InputViewMessage.ATTENDANCE_OPTION_PROMPT.getMessage(),
                 now.getMonth().getValue(),
                 now.getDayOfMonth(),
                 now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
