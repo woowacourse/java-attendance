@@ -137,4 +137,16 @@ class AttendanceRecordsTest {
         // then
         assertThat(attendanceRecords.hasRecordOnDate(dateTime.toLocalDate())).isFalse();
     }
+
+    @DisplayName("기록이 없는 날짜의 출석 시간을 수정하려고 할 경우 예외가 발생한다.")
+    @Test
+    void updateExceptionTest() {
+        // given
+        AttendanceRecords attendanceRecords = new AttendanceRecords();
+        LocalDate date = LocalDate.of(2024, 12, 3);
+        LocalTime time = LocalTime.of(10, 0);
+
+        // then
+        assertThatThrownBy(() -> attendanceRecords.update(date, time)).isInstanceOf(IllegalArgumentException.class);
+    }
 }
