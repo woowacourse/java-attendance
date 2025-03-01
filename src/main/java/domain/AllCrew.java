@@ -69,4 +69,12 @@ public class AllCrew {
         return findCrewByName(crewName).getAbsentCount();
     }
 
+    public List<Crew> getPenaltyReceivedCrew() {
+        List<Crew> penaltyReceivedCrew = new ArrayList<>();
+        for (Crew crew : allCrew) {
+            if(crew.getPenalty()!=Penalty.NONE)
+                penaltyReceivedCrew.add(crew);
+        }
+        return penaltyReceivedCrew;
+    }
 }
