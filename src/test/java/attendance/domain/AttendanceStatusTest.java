@@ -1,5 +1,5 @@
-import attendance.domain.AttendanceStatus;
-import attendance.domain.AttendanceTime;
+package attendance.domain;
+
 import java.time.LocalDate;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;

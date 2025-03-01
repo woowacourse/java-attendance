@@ -1,8 +1,7 @@
+package attendance.domain;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import attendance.domain.AttendanceBook;
-import attendance.domain.AttendanceStatus;
-import attendance.domain.AttendanceTime;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;

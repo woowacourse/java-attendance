@@ -1,4 +1,5 @@
-import attendance.domain.AcademicStatus;
+package attendance.domain;
+
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,5 +32,4 @@ public class AcademicStatusTest {
                 Arguments.of(3, 5, AcademicStatus.EXPELLED)
         );
     }
-
 }

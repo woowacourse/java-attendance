@@ -1,4 +1,5 @@
-import attendance.domain.AttendanceTime;
+package attendance.domain;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;
@@ -115,6 +116,19 @@ public class AttendanceTimeTest {
         Assertions.assertThat(attendanceTime.getMinute()).isEqualTo(targetMinute);
     }
 
+    @ParameterizedTest
+    @MethodSource("attendanceTimeAndResult")
+    void 출석_시간이_기본_결석_날짜인지_확인한다(final AttendanceTime attendanceTime, final boolean expectedResult) {
+
+        // given
+
+        // when
+        final boolean result = attendanceTime.isDefaultAbsent();
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
     private static Stream<Arguments> dateAndResult() {
 
         return Stream.of(
@@ -128,6 +142,14 @@ public class AttendanceTimeTest {
         return Stream.of(
                 Arguments.of(LocalTime.of(10, 6), true),
                 Arguments.of(LocalTime.of(10, 4), false)
+        );
+    }
+
+    public static Stream<Arguments> attendanceTimeAndResult() {
+
+        return Stream.of(
+                Arguments.of(new AttendanceTime(LocalDate.of(2025, 2, 27)), true),
+                Arguments.of(new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 10), false)
         );
     }
 }
