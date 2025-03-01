@@ -24,6 +24,6 @@ public class AttendanceUpdateTest {
 
         // then
         Assertions.assertThat(updateAttendance)
-                .isEqualTo(new Attendance(updateNickname, updateDate, updateTime));
+                .isEqualTo(attendanceBook.findAttendance(updateNickname, updateDate, updateTime));
     }
 }

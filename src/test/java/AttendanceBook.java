@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceBook {
@@ -7,7 +8,7 @@ public class AttendanceBook {
     private final List<Attendance> crewsAttendanceRecords;
 
     public AttendanceBook(List<Attendance> crewsAttendanceRecords) {
-        this.crewsAttendanceRecords = crewsAttendanceRecords;
+        this.crewsAttendanceRecords = new ArrayList<>(crewsAttendanceRecords);
     }
 
     public Attendance check(String nickname, LocalDate date, LocalTime time) {
@@ -33,6 +34,9 @@ public class AttendanceBook {
     }
 
     public Attendance update(String updateNickname, LocalDate updateDate, LocalTime updateTime) {
-        return null;
+        Attendance attendance = new Attendance(updateNickname, updateDate, updateTime);
+        crewsAttendanceRecords.add(attendance);
+
+        return attendance;
     }
 }
