@@ -16,9 +16,14 @@ public class AttendanceTime {
         return new AttendanceTime(localtime);
     }
 
+
     private static void validateTime(final DayOfWeek dayOfWeek, final LocalTime localtime) {
         if (CampusTime.isNotOpenTime(dayOfWeek, localtime)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public LocalTime getLocaltime() {
+        return localtime;
     }
 }
