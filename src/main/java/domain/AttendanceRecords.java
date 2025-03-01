@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -54,6 +55,7 @@ public class AttendanceRecords {
 
     private List<AttendanceDateTime> concat(List<AttendanceDateTime> l1, List<AttendanceDateTime> l2) {
         return Stream.concat(l1.stream(), l2.stream())
+            .sorted(Comparator.comparing(AttendanceDateTime::getDate))
             .collect(Collectors.toList());
     }
 }
