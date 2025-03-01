@@ -121,7 +121,8 @@ class CrewAttendancesTest {
         Crew crew = new Crew("빙봉");
         crewAttendances.addAttendance(crew, attendance);
 
-        assertThat(crewAttendances.findAllCrewAttendanceUntilStandardDate(crew, standardDate)).hasSize(2);
+        assertThat(crewAttendances.findAllCrewAttendanceUntilStandardDate(crew, standardDate).getAttendances())
+                .hasSize(19);
     }
 
     @Test

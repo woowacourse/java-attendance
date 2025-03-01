@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.Attendances;
 import attendance.domain.Crew;
 import attendance.domain.CrewAttendances;
 import attendance.domain.Crews;
@@ -84,6 +86,9 @@ public class AttendanceManagementController {
             if (operationCommand.equals("2")) {
                 runAttendanceModificationOperation(crews, crewAttendances);
             }
+            if (operationCommand.equals("3")) {
+                runCrewAttendancesInquiryOperation(crews, crewAttendances);
+            }
         } catch (IllegalArgumentException e) {
             resultView.printErrorMessage(e.getMessage());
         }
@@ -124,6 +129,37 @@ public class AttendanceManagementController {
         resultView.printModificationAttendanceRecord(
                 modificationAttendance.getAttendanceLocalTime(), modificationAttendance.calculateStatus().getText()
         );
+    }
+
+    private void runCrewAttendancesInquiryOperation(final Crews crews, final CrewAttendances crewAttendances) {
+        Crew crew = crews.findCrewByNickname(inputView.readAttendanceConfirmNickname());
+        LocalDate yesterday = today.toLocalDate().minusDays(1L);
+        Attendances attendancesUntilYesterday = crewAttendances.findAllCrewAttendanceUntilStandardDate(crew, yesterday);
+        List<LocalDateTime> attendanceTimes = mapToLocalDateTimes(attendancesUntilYesterday.getAttendances());
+        List<Boolean> attendanceExistences = crewAttendances.findAttendanceExistsUntilStandardDate(crew, yesterday);
+        List<String> attendanceStatuses = getAttendanceStatuses(attendancesUntilYesterday);
+        resultView.printCrewAttendancesUntilYesterday(crew.getNickname(), attendanceTimes, attendanceExistences,
+                attendanceStatuses);
+        resultView.printAttendanceStatusCount(attendancesUntilYesterday.calculateAttendanceCount(yesterday),
+                attendancesUntilYesterday.calculateLateCount(yesterday),
+                attendancesUntilYesterday.calculateAttendanceCount(yesterday));
+        resultView.printExpulsionStatus(attendancesUntilYesterday.findExpulsionStatusUntilLastDate().getText());
+
+    }
+
+    private List<LocalDateTime> mapToLocalDateTimes(final List<Attendance> crewAttendancesUntilYesterday) {
+        return crewAttendancesUntilYesterday
+                .stream()
+                .map(attendance -> LocalDateTime.of(attendance.getAttendanceLocalDate(),
+                        attendance.getAttendanceLocalTime())
+                ).toList();
+    }
+
+    private List<String> getAttendanceStatuses(final Attendances attendancesUntilYesterday) {
+        return attendancesUntilYesterday.getAttendances().stream()
+                .map(Attendance::calculateStatus)
+                .map(AttendanceStatus::getText)
+                .toList();
     }
 
 }

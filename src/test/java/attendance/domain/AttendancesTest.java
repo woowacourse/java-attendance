@@ -87,7 +87,7 @@ class AttendancesTest {
         Attendance addedAttendance = new Attendance(LocalDateTime.of(2025, 2, 27, 9, 50));
         attendances.add(addedAttendance);
 
-        assertThat(attendances.findAllUntilStandardDate(LocalDate.of(2025, 2, 27))).hasSize(2);
+        assertThat(attendances.findAllUntilStandardDate(LocalDate.of(2025, 2, 27))).hasSize(19);
     }
 
     @Test

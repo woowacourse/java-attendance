@@ -3,6 +3,7 @@ package attendance.view;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 public class ResultView {
@@ -49,6 +50,49 @@ public class ResultView {
                 "", " -> ", TIME_FORMATTER.format(modificationAttendanceTime),
                 " (%s)%n"), modificationAttendanceStatus);
         System.out.println();
+    }
+
+    public void printCrewAttendancesUntilYesterday(
+            final String nickname, final List<LocalDateTime> attendanceDateTimes,
+            final List<Boolean> attendanceExistences, final List<String> attendanceStatuses
+    ) {
+        System.out.println();
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n", nickname);
+        System.out.println();
+        for (int index = 0; index < attendanceDateTimes.size(); index++) {
+            printAttendanceRecord(attendanceDateTimes, attendanceExistences, attendanceStatuses, index);
+        }
+    }
+
+    private void printAttendanceRecord(
+            final List<LocalDateTime> attendanceDateTimes, final List<Boolean> attendanceExistences,
+            final List<String> attendanceStatuses, final int index
+    ) {
+        boolean hasAttendanceRecord = attendanceExistences.get(index);
+        LocalDateTime attendanceDateTime = attendanceDateTimes.get(index);
+        if (hasAttendanceRecord) {
+            System.out.printf(String.join(" ",
+                    DATE_TIME_FORMATTER.format(attendanceDateTime),
+                    "(%s)%n"), attendanceStatuses.get(index));
+            return;
+        }
+        System.out.printf(String.join(" ",
+                DATE_FORMATTER_WITHOUT_TIME.format(attendanceDateTime),
+                "(%s)%n"), attendanceStatuses.get(index));
+    }
+
+    public void printAttendanceStatusCount(final int absentCount, final int lateCount, final int attendanceCount) {
+        System.out.println();
+        System.out.printf("""
+                출석 : %d
+                지각 : %d
+                결석 : %d
+                """, attendanceCount, lateCount, absentCount);
+        System.out.println();
+    }
+
+    public void printExpulsionStatus(final String expulsionStatus) {
+        System.out.printf("%s 대상자입니다.%n", expulsionStatus);
     }
 
 }

@@ -73,10 +73,10 @@ public class CrewAttendances {
         attendances.add(attendance);
     }
 
-    public List<Attendance> findAllCrewAttendanceUntilStandardDate(final Crew crew, final LocalDate standardDate) {
+    public Attendances findAllCrewAttendanceUntilStandardDate(final Crew crew, final LocalDate standardDate) {
         validateCrewExistence(crew);
         Attendances attendances = crewAttendances.get(crew);
-        return attendances.findAllUntilStandardDate(standardDate);
+        return new Attendances(attendances.findAllUntilStandardDate(standardDate));
     }
 
     public int calculateAttendanceCount(final Crew crew, final LocalDate standardDate) {
@@ -92,6 +92,11 @@ public class CrewAttendances {
     public int calculateAbsentCount(final Crew crew, final LocalDate standardDate) {
         Attendances attendances = crewAttendances.get(crew);
         return attendances.calculateAbsentCount(standardDate);
+    }
+
+    public List<Boolean> findAttendanceExistsUntilStandardDate(final Crew crew, final LocalDate standardDate) {
+        Attendances attendances = crewAttendances.get(crew);
+        return attendances.findAttendanceExistencesUntilStandardDate(standardDate);
     }
 
 }
