@@ -8,8 +8,8 @@ import java.time.format.DateTimeParseException;
 
 public class DateTimeConverter {
     private static final String TIME_FORMAT = "HH:mm";
-    private static final int START_DAY_OF_YEAR = 1;
-    private static final int LAST_DAY_OF_YEAR = 31;
+    private static final int START_DAY_OF_MONTH = 1;
+    private static final int LAST_DAY_OF_MONTH = 31;
 
     private DateTimeConverter() {
     }
@@ -32,7 +32,7 @@ public class DateTimeConverter {
     private static void validateDay(final String inputDay) {
         try {
             int day = Integer.parseInt(inputDay);
-            if (day < START_DAY_OF_YEAR || day > LAST_DAY_OF_YEAR) {
+            if (day < START_DAY_OF_MONTH || day > LAST_DAY_OF_MONTH) {
                 throw new IllegalArgumentException("[ERROR] 올바른 날짜를 입력해주세요.");
             }
         } catch (NumberFormatException e) {
