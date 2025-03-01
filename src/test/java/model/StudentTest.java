@@ -1,3 +1,5 @@
+package model;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import java.time.LocalDate;

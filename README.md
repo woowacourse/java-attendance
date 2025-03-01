@@ -1,7 +1,7 @@
 # java-attendance
 
 ## 기능 목록
-- [X] src/main/resources/attendances.csv 파일을 이용하여 필요한 정보를 가져와 저장한다.
+- [X] src/model.main/resources/attendances.csv 파일을 이용하여 필요한 정보를 가져와 저장한다.
 - [] 1번을 눌렀을 경우
     - [] 닉네임을 입력받는다.
     - [] 등교 시간을 입력받는다. (등교시간의 경우 오늘 등교를 하는 것이나 12월 이라는 조건으로 오늘을 2024.12.13 으로 설정하였습니다)
