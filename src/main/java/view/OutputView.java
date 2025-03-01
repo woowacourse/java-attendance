@@ -76,13 +76,13 @@ public class OutputView {
     }
 
     public static void printAttendanceHistory(AttendanceHistoryResponse response) {
-        for (Attendance attendance : response.attendances()) {
+        response.attendances().forEach(attendance -> {
             if (attendance.getCheckInTime() == null) {
                 printHistoryNullResponse(attendance);
-                continue;
+                return;
             }
             printHistoryResponse(attendance);
-        }
+        });
         printNewLine();
 
         printAttendanceTotalResponse(response);
