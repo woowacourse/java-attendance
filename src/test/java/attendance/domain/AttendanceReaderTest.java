@@ -1,4 +1,4 @@
-package attendacne.domain;
+package attendance.domain;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,9 +8,6 @@ import java.io.FileNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import attendance.domain.AttendanceReader;
-import attendance.domain.Nickname;
 
 public class AttendanceReaderTest {
 

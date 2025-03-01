@@ -10,6 +10,8 @@ import attendance.exception.AttendanceArgumentException;
 
 public record AttendanceBook(Map<Nickname, Attendances> attendancesBook) {
 
+    public static final String NOT_REGISTERED_NICKNAME = "등록되지 않은 닉네임입니다.";
+
     public AttendanceBook() {
         this(new HashMap<>());
     }
@@ -17,23 +19,30 @@ public record AttendanceBook(Map<Nickname, Attendances> attendancesBook) {
     public void put(String name, LocalDateTime dateTime) {
         var nickname = new Nickname(name);
         Optional<Attendances> attendances = Optional.ofNullable(attendancesBook.get(nickname));
-        if (attendances.isPresent()) {
-            attendances.get().put(dateTime);
-        } else {
-            var newAttendances = new Attendances();
-            newAttendances.put(dateTime);
-            attendancesBook.put(nickname, newAttendances);
-        }
+        attendances.ifPresentOrElse(
+            eixstAttendances -> eixstAttendances.add(dateTime),
+            () -> putNewAttendances(dateTime, nickname)
+        );
+    }
+
+    private void putNewAttendances(LocalDateTime dateTime, Nickname nickname) {
+        var newAttendances = new Attendances();
+        newAttendances.add(dateTime);
+        attendancesBook.put(nickname, newAttendances);
     }
 
     public void add(Nickname nickname, LocalDateTime dateTime) {
-        Attendances attendances = Optional.ofNullable(attendancesBook.get(nickname))
-            .orElseThrow(() -> new AttendanceArgumentException("등록되지 않은 닉네임입니다."));
+        var attendances = getAttendances(nickname);
         attendances.add(dateTime);
     }
 
     public Attendance getAttendance(Nickname nickname, LocalDate date) {
-        var attendances = attendancesBook.get(nickname);
+        var attendances = getAttendances(nickname);
         return attendances.get(date);
+    }
+
+    private Attendances getAttendances(Nickname nickname) {
+        return Optional.ofNullable(attendancesBook.get(nickname))
+            .orElseThrow(() -> new AttendanceArgumentException(NOT_REGISTERED_NICKNAME));
     }
 }

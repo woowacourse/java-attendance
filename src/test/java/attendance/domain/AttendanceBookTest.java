@@ -31,7 +31,7 @@ class AttendanceBookTest {
 
     @Test
     @DisplayName("등록되지 않은 닉네임으로 출석할 경우, 예외가 발생한다.")
-    void test_() {
+    void error_attendanceNotRegisteredNickname() {
         var nickname = new Nickname("때지");
         var dateTime = LocalDateTime.now();
         Assertions.assertThatThrownBy(() -> attendanceBook.add(nickname, dateTime))
