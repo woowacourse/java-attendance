@@ -90,8 +90,8 @@ public class Attendance {
     }
 
     private int getMissingAttendanceCount(){
-        return Math.toIntExact(IntStream.range(1,TODAY_DATE_NOW.getDayOfMonth())
-                .mapToObj(day -> LocalDate.of(2025,2,day))
+        return Math.toIntExact(IntStream.range(1,NOW_DAY)
+                .mapToObj(day -> LocalDate.of(NOW_YEAR,NOW_MONTH,day))
                 .filter(date -> !has(date) && isAttendanceDay(date))
                 .count());
     }
