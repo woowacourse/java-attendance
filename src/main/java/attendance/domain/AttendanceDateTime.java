@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import java.util.Objects;
+
 public class AttendanceDateTime {
 
     private final AttendanceDate attendanceDate;
@@ -30,5 +32,20 @@ public class AttendanceDateTime {
 
     public AttendanceTime getAttendanceTime() {
         return attendanceTime;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final AttendanceDateTime that = (AttendanceDateTime) o;
+        return Objects.equals(attendanceDate, that.attendanceDate)
+            && Objects.equals(attendanceTime, that.attendanceTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendanceDate, attendanceTime);
     }
 }

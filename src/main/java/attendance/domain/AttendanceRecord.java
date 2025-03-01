@@ -13,7 +13,7 @@ public class AttendanceRecord {
         this.attendanceDateTimes = new HashMap<>(attendanceDateTimes);
     }
 
-    private static void validateNotNull(final Map<AttendanceDate, AttendanceTime> attendanceRecord) {
+    private void validateNotNull(final Map<AttendanceDate, AttendanceTime> attendanceRecord) {
         if (attendanceRecord == null) {
             throw new IllegalArgumentException(
                 "출석 기록은 기록을 가지고 있어야 합니다.");
@@ -48,6 +48,13 @@ public class AttendanceRecord {
     private boolean isContainsKey(final AttendanceDateTime attendanceDateTime) {
         return attendanceDateTimes.containsKey(
             attendanceDateTime.getAttendanceDate());
+    }
+
+    public AttendanceDateTime findAttendanceTimeByDate(final AttendanceDate attendanceDate) {
+        final AttendanceTime attendanceTime = attendanceDateTimes.get(
+            attendanceDate);
+
+        return new AttendanceDateTime(attendanceDate, attendanceTime);
     }
 
     public Map<AttendanceDate, AttendanceTime> getAttendanceDateTimes() {

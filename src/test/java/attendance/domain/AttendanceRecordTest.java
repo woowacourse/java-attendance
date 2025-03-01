@@ -60,6 +60,27 @@ class AttendanceRecordTest {
             assertThat(attendanceRecord.getAttendanceDateTimes())
                 .containsEntry(attendanceDate, modifiedAttendanceTime);
         }
+
+        @Test
+        void 출석일시를_조회한다() {
+            // given
+            Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
+            AttendanceDate attendanceDate = new AttendanceDate(
+                2024, 12, 2);
+            AttendanceTime attendanceTime = new AttendanceTime(
+                13, 0);
+            attendanceDateTimes.put(attendanceDate, attendanceTime);
+            AttendanceRecord attendanceRecord = new AttendanceRecord(
+                attendanceDateTimes);
+
+            // when
+            AttendanceDateTime attendanceDateTime = attendanceRecord.findAttendanceTimeByDate(
+                attendanceDate);
+
+            // then
+            assertThat(attendanceDateTime).isEqualTo(new AttendanceDateTime(
+                attendanceDate, attendanceTime));
+        }
     }
 
     @Nested
