@@ -3,6 +3,8 @@ package attendance.view;
 import attendance.util.ErrorMessage;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
@@ -24,14 +26,29 @@ public class InputView {
         return validateInput(scanner.nextLine());
     }
 
-    public static String readNickname() {
-        System.out.println("닉네임을 입력해주세요.");
+    public static String readNicknameForRecord() {
+        System.out.println("닉네임을 입력해 주세요.");
         return validateInput(scanner.nextLine());
     }
 
-    public static String readAttendTime() {
+    public static String readAttendTimeForRecord() {
         System.out.println("등교 시간을 입력해 주세요.");
         return validateInput(scanner.nextLine());
+    }
+
+    public static String readNicknameForEdit() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return validateInput(scanner.nextLine());
+    }
+
+    public static int readAttendDay() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return parseInt(validateInput(scanner.nextLine()));
+    }
+
+    public static LocalTime readAttendTimeForEdit() {
+        System.out.println("언제로 변경하겠습니까?");
+        return parseTime(validateInput(scanner.nextLine()));
     }
 
     private static String validateInput(String input) {
@@ -40,5 +57,21 @@ public class InputView {
         }
 
         return input;
+    }
+
+    private static int parseInt(String input) {
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("[ERROR] 날짜는 숫자로 입력해주세요.");
+        }
+    }
+
+    private static LocalTime parseTime(String input) {
+        try {
+            return LocalTime.parse(input);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 시간은 10:00 형식으로 입력해주세요.");
+        }
     }
 }

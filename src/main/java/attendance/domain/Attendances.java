@@ -29,8 +29,8 @@ public class Attendances {
 
     public Attendance findByDate(LocalDate inputDate) {
         return attendances.stream()
-                .findFirst()
                 .filter(attendance -> attendance.isSameDate(inputDate))
+                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ATTENDANCE_NOT_EXIST_ERROR.getMessage()));
     }
 

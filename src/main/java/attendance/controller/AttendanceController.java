@@ -36,17 +36,37 @@ public class AttendanceController {
         if ("1".equals(function)) {
             recordAttendance();
         }
+
+        if ("2".equals(function)) {
+            editAttendance();
+        }
     }
 
     private void recordAttendance() {
-        String inputNickname = InputView.readNickname();
+        String inputNickname = InputView.readNicknameForRecord();
         Crew crew = new Crew(new Nickname(inputNickname));
         attendanceBook.validateCrew(crew);
 
-        String inputAttendTime = InputView.readAttendTime();
+        String inputAttendTime = InputView.readAttendTimeForRecord();
         Attendance attendance = new Attendance(systemDate, LocalTime.parse(inputAttendTime));
 
         attendanceBook.add(crew, attendance);
-        OutputView.printAttendanceResult(attendance);
+        OutputView.printRecordAttendanceResult(attendance);
+    }
+
+    private void editAttendance() {
+        String inputNickname = InputView.readNicknameForEdit();
+        Crew crew = new Crew(new Nickname(inputNickname));
+        attendanceBook.validateCrew(crew);
+
+        int inputDay = InputView.readAttendDay();
+        LocalDate attendDate = LocalDate.of(systemDate.getYear(), systemDate.getMonthValue(), inputDay);
+        LocalTime inputTime = InputView.readAttendTimeForEdit();
+
+        Attendance newAttendance = new Attendance(attendDate, inputTime);
+        Attendance oldAttendance = attendanceBook.findAttendanceByCrew(crew, attendDate);
+        attendanceBook.update(crew, oldAttendance, newAttendance);
+
+        OutputView.printEditAttendanceResult(oldAttendance, newAttendance);
     }
 }
