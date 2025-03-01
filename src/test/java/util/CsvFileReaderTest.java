@@ -18,6 +18,7 @@ class CsvFileReaderTest {
 
         // then
         assertThat(read).contains(new String[]{"차니", "2024-12-02 13:00"})
-                .contains(new String[]{"포비", "2024-12-02 13:06"});
+                .contains(new String[]{"포비", "2024-12-02 13:06"})
+                .hasSize(2);
     }
 }
