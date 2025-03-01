@@ -48,7 +48,7 @@ public class AttendanceController {
 
     public Attendances initialize() {
         List<String> lines = FileParser.readLines(ATTENDANCE_FILE_PATH.getPath());
-        return Attendances.from(lines);
+        return Attendances.from(lines, dateTimeGenerator);
     }
 
     private Option option() {
