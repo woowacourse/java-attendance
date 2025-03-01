@@ -23,10 +23,6 @@ public class Attend {
         return date.getDayOfMonth() == day;
     }
 
-    public boolean equalsDate(final Attend attend) {
-        return this.date.equals(attend.date);
-    }
-
     public AttendStatus checkStatus() {
         return AttendStatus.checkAttendStatus(this);
     }
@@ -45,7 +41,7 @@ public class Attend {
             return false;
         }
         Attend attend = (Attend) object;
-        return Objects.equals(date, attend.date) && Objects.equals(time, attend.time);
+        return Objects.equals(date, attend.date);
     }
 
     @Override

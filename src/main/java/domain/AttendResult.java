@@ -37,7 +37,7 @@ public class AttendResult {
 
     private boolean contains(Attend targetAttend) {
         return attendResult.stream()
-                .anyMatch(attend -> attend.equalsDate(targetAttend));
+                .anyMatch(attend -> attend.equals(targetAttend));
     }
 
     public Attend edit(final Attend targetAttend) {

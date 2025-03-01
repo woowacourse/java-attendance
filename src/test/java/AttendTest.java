@@ -72,7 +72,7 @@ public class AttendTest {
     @DisplayName("날짜를 기반으로 Attend가 같은지 판정하는 기능")
     void equalsUsingOnlyDateNotUseTime(Attend attend, Attend anotherAttend, boolean expected) {
         //when
-        boolean actual = attend.equalsDate(anotherAttend);
+        boolean actual = attend.equals(anotherAttend);
         //then
         assertThat(actual).isEqualTo(expected);
     }
