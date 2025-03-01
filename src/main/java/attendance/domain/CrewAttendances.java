@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +20,10 @@ public class CrewAttendances {
 
     public List<CrewAttendance> getCrewAttendances() {
         return Collections.unmodifiableList(crewAttendances);
+    }
+
+    public List<AttendanceResult> createAllAttendanceResult(LocalDate endDate) {
+        return null;
     }
 
     @Override

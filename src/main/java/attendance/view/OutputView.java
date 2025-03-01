@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 public class OutputView {
 
-
     public void printAttendance(Attendance attendance) {
         printEmptyLine();
         System.out.println(toAttendanceFullFormat(attendance));

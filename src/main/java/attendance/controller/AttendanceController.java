@@ -3,12 +3,14 @@ package attendance.controller;
 import static attendance.view.Command.ATTENDANCE;
 import static attendance.view.Command.ATTENDANCE_CHECK;
 import static attendance.view.Command.ATTENDANCE_UPDATE;
+import static attendance.view.Command.ATTENDANCE_WARNING_CHECK;
 
 import attendance.AttendanceBookInitializer;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceResult;
 import attendance.domain.CrewAttendance;
+import attendance.domain.CrewAttendances;
 import attendance.view.Command;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -40,6 +42,9 @@ public class AttendanceController {
         }
         if (command == ATTENDANCE_CHECK) {
             checkAttendances(today.minusDays(1), attendanceBook);
+        }
+        if (command == ATTENDANCE_WARNING_CHECK) {
+            checkAttendanceWarningCrews(today.minusDays(1), attendanceBook);
         }
     }
 
@@ -73,5 +78,10 @@ public class AttendanceController {
         CrewAttendance crewAttendance = attendanceBook.findAttendancesByNickname(nickname);
         AttendanceResult attendanceResult = crewAttendance.createAttendanceResult(checkEndDate);
         outputView.printAttendanceResult(crewAttendance.getAttendances(), attendanceResult, checkEndDate);
+    }
+
+    private void checkAttendanceWarningCrews(LocalDate checkEndDate, AttendanceBook attendanceBook) {
+        CrewAttendances crewAttendances = attendanceBook.createCrewAttendances();
+//        crewAttendances.
     }
 }
