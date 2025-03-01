@@ -22,6 +22,10 @@ public enum Current {
                 .toList();
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
     public int getYear() {
         return this.date.getYear();
     }
