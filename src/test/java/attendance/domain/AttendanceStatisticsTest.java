@@ -25,10 +25,10 @@ public class AttendanceStatisticsTest {
 
     @Test
     void 등교하지_않은_날은_결석으로_간주한다() {
-        int today = 6;
+        int today = 5;
         Attendances attendances = new Attendances();
 
-        Map<AttendanceStatus, Integer> result =  AttendanceStatistics.getTotalStatusCount(attendances, today);
+        Map<AttendanceStatus, Integer> result = AttendanceStatistics.getTotalStatusCount(attendances, today);
 
         assertThat(result).containsEntry(AttendanceStatus.ABSENCE, 2);
     }

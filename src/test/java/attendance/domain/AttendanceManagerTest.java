@@ -31,9 +31,9 @@ public class AttendanceManagerTest {
         Map<String, Attendances> crewAttendances = new HashMap<>();
 
         Arrays.stream(crewNames)
-                        .forEach(name -> {
-                            crewAttendances.put(name, new Attendances());
-                        });
+                .forEach(name -> {
+                    crewAttendances.put(name, new Attendances());
+                });
 
         assertThat(new AttendanceManager(crewAttendances))
                 .isInstanceOf(AttendanceManager.class);

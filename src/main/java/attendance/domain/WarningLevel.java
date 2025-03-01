@@ -16,8 +16,9 @@ public enum WarningLevel {
         this.condition = condition;
     }
 
-    public static WarningLevel of(Map<AttendanceStatus, Integer> statusCount){
-        int absenceCount = statusCount.get(AttendanceStatus.ABSENCE) + calculateTotalAbsenceCount(statusCount.get(AttendanceStatus.LATENESS));
+    public static WarningLevel from(Map<AttendanceStatus, Integer> statusCount) {
+        int absenceCount = statusCount.get(AttendanceStatus.ABSENCE) + calculateTotalAbsenceCount(
+                statusCount.get(AttendanceStatus.LATENESS));
 
         return Arrays.stream(values())
                 .filter(level -> level.condition.test(absenceCount))
@@ -25,7 +26,7 @@ public enum WarningLevel {
                 .orElseThrow(() -> new IllegalArgumentException("결석 횟수는 0보다 커야 합니다."));
     }
 
-    public static int calculateTotalAbsenceCount(int latenessCount){
+    public static int calculateTotalAbsenceCount(int latenessCount) {
         return latenessCount / 3;
     }
 }

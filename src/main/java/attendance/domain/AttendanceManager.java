@@ -12,8 +12,8 @@ public class AttendanceManager {
         this.crewAttendances = crewAttendances;
     }
 
-    public void validateExistCrew(String crewName){
-        if(!crewAttendances.containsKey(crewName)){
+    public void validateExistCrew(String crewName) {
+        if (!crewAttendances.containsKey(crewName)) {
             throw new IllegalArgumentException("존재하지 않는 크루 닉네임입니다.");
         }
     }
@@ -42,21 +42,15 @@ public class AttendanceManager {
         return prevAttendance;
     }
 
-
-
-    public WarningLevel calculateCrewWarningLevel(String crewName, int today){
+    public WarningLevel calculateCrewWarningLevel(String crewName, int today) {
         Attendances attendances = findAttendancesByName(crewName);
         Map<AttendanceStatus, Integer> statusCount = AttendanceStatistics.getTotalStatusCount(attendances, today);
 
-        return WarningLevel.of(statusCount);
+        return WarningLevel.from(statusCount);
     }
 
-
-
-    private Attendances findAttendancesByName(String crewName){
+    private Attendances findAttendancesByName(String crewName) {
         validateExistCrew(crewName);
         return crewAttendances.get(crewName);
     }
-
-
 }

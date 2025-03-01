@@ -35,6 +35,6 @@ public class WarningLevelTest {
         statusCount.put(AttendanceStatus.LATENESS, latenessCount);
         statusCount.put(AttendanceStatus.ABSENCE, absenceCount);
 
-        assertThat(WarningLevel.of(statusCount)).isEqualTo(expected);
+        assertThat(WarningLevel.from(statusCount)).isEqualTo(expected);
     }
 }
