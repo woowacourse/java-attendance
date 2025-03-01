@@ -1,7 +1,5 @@
 package domain;
 
-import java.sql.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,16 +16,20 @@ public class AttendanceBook {
         return new AttendanceBook(book);
     }
 
-    public void addCrew(Crew crew) {
+    public void addCrew(final Crew crew) {
         book.put(crew, AttendanceInfos.initInfos());
     }
 
-    public void addInfo(Crew crew, AttendanceInfo info) {
+    public void addInfo(final Crew crew, final AttendanceInfo info) {
         book.get(crew).addInfo(info);
     }
 
-    public void addInfoWithDate(Crew crew, CampusDate date, CampusTime time) {
+    public void addInfoWithDateAndTime(final Crew crew, final CampusDate date, final CampusTime time) {
         book.get(crew).addInfoByDateAndTime(date, time);
+    }
+
+    public AttendanceInfos modifyInfoWithDateAndTime(final Crew crew, final CampusDate date, final CampusTime time) {
+        return book.get(crew).modifyInfoByDateAndTime(date, time);
     }
 
     public Map<Crew, AttendanceInfos> getBook() {

@@ -58,9 +58,30 @@ class AttendanceBookTest {
         // when
         CampusDate campusDate = CampusDate.fromDate(LocalDate.of(2025, 2, 27));
         CampusTime campusTime = CampusTime.from("10:06");
-        attendanceBook.addInfoWithDate(crew, campusDate, campusTime);
+        attendanceBook.addInfoWithDateAndTime(crew, campusDate, campusTime);
 
         // then
         assertThat(attendanceBook.getBook().get(crew).getAttendanceInfos()).hasSize(1);
+    }
+
+    @Test
+    void 시간과_날짜_정보로_크루의_출석정보를_수정한다() {
+        // given
+        AttendanceBook attendanceBook = AttendanceBook.initBook();
+        Crew crew = Crew.fromName("제프리");
+        attendanceBook.addCrew(crew);
+        CampusDate campusDate = CampusDate.fromDate(LocalDate.of(2025, 2, 27));
+        CampusTime campusTime = CampusTime.from("10:06");
+        attendanceBook.addInfoWithDateAndTime(crew, campusDate, campusTime);
+
+        // when
+        CampusDate modifyDate = CampusDate.fromDate(LocalDate.of(2025, 2, 27));
+        CampusTime modifyTime = CampusTime.from("10:04");
+        AttendanceInfos modifiedInfos = attendanceBook.modifyInfoWithDateAndTime(crew, modifyDate, modifyTime);
+
+        // then
+        assertThat(modifiedInfos.getAttendanceInfos()).hasSize(1);
+        assertThat(modifiedInfos.getAttendanceInfos().getFirst().getHour()).isEqualTo(10);
+        assertThat(modifiedInfos.getAttendanceInfos().getFirst().getMinute()).isEqualTo(4);
     }
 }
