@@ -25,7 +25,7 @@ public enum Command {
         return Arrays.stream(values())
             .filter(command -> command.input.equalsIgnoreCase(input))
             .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("잘못된 메뉴입니다."));
+            .orElseThrow(() -> new IllegalArgumentException(String.format("{%s}는 잘못된 메뉴 번호입니다.", input)));
     }
 
     public void run(AttendanceController controller) {

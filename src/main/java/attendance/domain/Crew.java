@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import attendance.util.DateTimeUtil;
+
 public class Crew {
 
     private static final LocalTime CAMPUS_OPEN_TIME = LocalTime.of(8, 00);
@@ -40,7 +42,10 @@ public class Crew {
     private void validateAttendanceTime(LocalTime time) {
         if (time.isBefore(CAMPUS_OPEN_TIME) ||
             time.isAfter(CAMPUS_CLOSE_TIME)) {
-            throw new IllegalArgumentException("캠퍼스 운영시간 내에만 출석할 수 있습니다.");
+            throw new IllegalArgumentException(String.format("캠퍼스 운영시간(%s ~ %s) 내에만 출석할 수 있습니다.",
+                CAMPUS_OPEN_TIME.format(DateTimeUtil.TIME_FORMATTER),
+                CAMPUS_CLOSE_TIME.format(DateTimeUtil.TIME_FORMATTER)
+            ));
         }
     }
 
@@ -51,7 +56,8 @@ public class Crew {
 
     private void validateModifyAttendanceDate(LocalDate date) {
         if (!attendanceRecords.containsKey(date)) {
-            throw new IllegalArgumentException("출석 기록이 존재하지 않습니다.");
+            throw new IllegalArgumentException(String.format("%s에는 출석 기록이 존재하지 않습니다.",
+                date.format(DateTimeUtil.DATE_FORMATTER)));
         }
     }
 

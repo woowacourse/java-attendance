@@ -25,7 +25,7 @@ public class DateTimeUtil {
         try {
             return LocalTime.parse(time, DateTimeUtil.TIME_FORMATTER);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("잘못된 시간이 입력되었습니다.");
+            throw new IllegalArgumentException(String.format("{%s}는 잘못된 시간입니다.", time));
         }
     }
 
@@ -33,7 +33,7 @@ public class DateTimeUtil {
         try {
             return date.withDayOfMonth(day);
         } catch (DateTimeException e) {
-            throw new IllegalArgumentException("잘못된 날짜가 입력되었습니다.");
+            throw new IllegalArgumentException(String.format("{%d}는 잘못된 날짜입니다.", day));
         }
     }
 }

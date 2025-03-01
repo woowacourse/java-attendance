@@ -23,7 +23,7 @@ public record ModifyAttendanceRequest(
         try {
             return Integer.parseInt(day);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("잘못된 날짜가 입력되었습니다.");
+            throw new IllegalArgumentException(String.format("{%s}는 잘못된 날짜입니다.", day));
         }
     }
 }

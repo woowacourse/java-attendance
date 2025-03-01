@@ -26,7 +26,7 @@ public class Crews {
         return crews.stream()
             .filter(crew -> crew.getName().equals(name))
             .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
+            .orElseThrow(() -> new IllegalArgumentException(String.format("{%s}는 존재하지 않는 크루입니다.", name)));
     }
 
     public List<Crew> getRiskCrews(LocalDate date) {
