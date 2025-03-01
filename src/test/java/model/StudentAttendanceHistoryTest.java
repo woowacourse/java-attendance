@@ -59,4 +59,13 @@ public class StudentAttendanceHistoryTest {
         );
     }
 
+    @Test
+    @DisplayName("날짜를 입력 받고, 해당 날짜의 입실 시간 리턴하는 메서드 테스트")
+    void test4() {
+        Assertions.assertEquals(
+                studentAttendanceHistoryMap.findAttendanceTimeByAttendanceDate(new AttendanceDate(LocalDate.of(2024, 12, 12))),
+                new AttendanceTime(LocalTime.of(8, 0))
+        );
+    }
+
 }
