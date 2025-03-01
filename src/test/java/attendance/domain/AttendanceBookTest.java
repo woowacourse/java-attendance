@@ -118,6 +118,33 @@ public class AttendanceBookTest {
         Assertions.assertThat(result).isEqualTo(expectedResult);
     }
 
+    @Test
+    void 제적_위험자_목록을_조회한다() {
+
+        // given
+        final AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 2, 25)));
+        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 2, 26)));
+        attendanceBook.add("이름2", new AttendanceTime(LocalDate.of(2025, 2, 25)));
+        attendanceBook.add("이름2", new AttendanceTime(LocalDate.of(2025, 2, 26)));
+        attendanceBook.add("이름2", new AttendanceTime(LocalDate.of(2025, 2, 27)));
+        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 24)));
+        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 25)));
+        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 26)));
+        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 27)));
+        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 28)));
+
+        // when
+        final List<ExpulsionCandidate> result = attendanceBook.getExpulsionCandidates();
+
+        // then
+        org.junit.jupiter.api.Assertions.assertAll(() -> {
+            assertThat(result.get(0).name()).isEqualTo("이름1");
+            assertThat(result.get(1).name()).isEqualTo("이름2");
+            assertThat(result.get(2).name()).isEqualTo("이름3");
+        });
+    }
+
     public static Stream<Arguments> nameAndAttendanceStatus() {
 
         return Stream.of(
