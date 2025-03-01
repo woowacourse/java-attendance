@@ -12,6 +12,7 @@ import java.util.Locale;
 public class InputView {
     private static final String COMMAND_MESSAGE_HEADER_FORMAT = "오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.\n";
     private static final String COMMAND_PROMPT_FORMAT = "%s. %s\n";
+    private static final String NICK_NAME_PROMPT = "닉네임을 입력해 주세요.\n";
 
 
     private final BufferedReader bufferedReader;
@@ -42,6 +43,11 @@ public class InputView {
 
     private static String getDisplayName(LocalDate date) {
         return date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA);
+    }
+
+    public String inputCrewName() {
+        System.out.print(NICK_NAME_PROMPT);
+        return readLine();
     }
 
     private String readLine() {
