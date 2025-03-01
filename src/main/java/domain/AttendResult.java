@@ -41,30 +41,9 @@ public class AttendResult {
                 .anyMatch(attend -> attend.equals(targetAttend));
     }
 
-    public Attend edit(final Attend targetAttend) {
-        Attend before = findAttendByDay(targetAttend.getDate());
-        attendResult.remove(before);
-        attendResult.add(targetAttend);
-        return before;
-    }
-
-    public List<Attend> getAttendResult(final int targetDay) {
-        return IntStream.range(1, targetDay)
-                .filter(OperationTime::isOperationDate)
-                .mapToObj(this::findAttendByDay)
-                .toList();
-    }
-
-    private Attend findAttendByDay(LocalDate date) {
-        return attendResult.stream()
-                .filter(attend -> attend.getDate().equals(date))
-                .findAny()
-                .orElse(new Attend(date));
-    }
-
-    public Attend findAttendByDay(int day) {
-        LocalDate date = LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), day);
-        return findAttendByDay(date);
+    public WarningStatus judgeWarningStatus(int targetDay) {
+        AttendCount attendCount = countAttendStatus(targetDay);
+        return WarningStatus.judgeWarningStatus(attendCount);
     }
 
     public AttendCount countAttendStatus(final int targetDay) {
@@ -75,9 +54,30 @@ public class AttendResult {
         return AttendCount.createCount(attendStatus);
     }
 
-    public WarningStatus judgeWarningStatus(int targetDay) {
-        AttendCount attendCount = countAttendStatus(targetDay);
-        return WarningStatus.judgeWarningStatus(attendCount);
+    public List<Attend> getAttendResult(final int targetDay) {
+        return IntStream.range(1, targetDay)
+                .filter(OperationTime::isOperationDate)
+                .mapToObj(this::findAttendByDay)
+                .toList();
+    }
+
+    public Attend findAttendByDay(int day) {
+        LocalDate date = LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), day);
+        return findAttendByDay(date);
+    }
+
+    private Attend findAttendByDay(LocalDate date) {
+        return attendResult.stream()
+                .filter(attend -> attend.getDate().equals(date))
+                .findAny()
+                .orElse(new Attend(date));
+    }
+
+    public Attend edit(final Attend targetAttend) {
+        Attend before = findAttendByDay(targetAttend.getDate());
+        attendResult.remove(before);
+        attendResult.add(targetAttend);
+        return before;
     }
 
     @Override

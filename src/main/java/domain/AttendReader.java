@@ -37,6 +37,12 @@ public class AttendReader {
         attendanceBook.addAttend(name, attend);
     }
 
+    private static void isEmptyString(final String rawName) {
+        if (rawName == null || rawName.isBlank()) {
+            throw new IllegalArgumentException("빈 문자열 입니다.");
+        }
+    }
+
     private Attend createAttend(final String[] splitDateTime) {
         isNotMatchDateTimeRowFormat(splitDateTime);
         String rawDate = splitDateTime[0];
@@ -65,12 +71,6 @@ public class AttendReader {
             return LocalTime.parse(rawTime);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("잘못된 시간 형식입니다");
-        }
-    }
-
-    private static void isEmptyString(final String rawName) {
-        if (rawName == null || rawName.isBlank()) {
-            throw new IllegalArgumentException("빈 문자열 입니다.");
         }
     }
 }
