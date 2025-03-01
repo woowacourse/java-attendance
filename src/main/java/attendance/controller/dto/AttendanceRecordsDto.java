@@ -13,7 +13,7 @@ import java.util.Map;
 
 public record AttendanceRecordsDto(
     Crew crew,
-    List<AttendanceRecordDto> attendanceRecords,
+    List<AttendanceRecordDto> attendanceRecordDtos,
     int attendanceCount,
     int lateCount,
     int absenceCount,

@@ -61,7 +61,7 @@ public class OutputView {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n",
             attendanceRecordsDto.crew()
                 .getNickname());
-        printAttendanceRecordDtos(attendanceRecordsDto.attendanceRecords());
+        printAttendanceRecordDtos(attendanceRecordsDto.attendanceRecordDtos());
         printAttendanceStatus(
             attendanceRecordsDto.attendanceCount(),
             attendanceRecordsDto.lateCount(),
