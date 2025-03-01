@@ -45,4 +45,13 @@ public class AttendanceDateTest {
         );
     }
 
+    @Test
+    @DisplayName("12월인지 검사하는 메서드 테스트")
+    void test9() {
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 11, 30));
+        Assertions.assertFalse(
+                attendanceDate.isDecemberDay()
+        );
+    }
+
 }
