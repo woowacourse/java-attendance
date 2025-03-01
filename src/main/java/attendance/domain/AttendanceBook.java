@@ -59,6 +59,11 @@ public class AttendanceBook {
         return updatedAttendanceRecord.findAttendanceRecord(inputTime);
     }
 
+    public AttendanceRecord findAttendanceRecord(String inputCrewName) {
+        Crew crew = findRegisteredCrew(inputCrewName);
+        return attendanceBook.get(crew).getLast();
+    }
+
 
     private Crew findRegisteredCrew(String inputCrewName) {
         return attendanceBook.keySet()

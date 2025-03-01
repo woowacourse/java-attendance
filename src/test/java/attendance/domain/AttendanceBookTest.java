@@ -154,7 +154,7 @@ public class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
 
         //when & then
-        Assertions.assertThat(attendanceBook.findAttendanceRecord().size()).isEqualTo(19);
+        Assertions.assertThat(attendanceBook.findAttendanceRecord(crewName).getAttendanceRecord().size()).isEqualTo(19);
     }
 
 }
