@@ -92,7 +92,7 @@ class DateTimeUtilTest {
         @DisplayName("LocalDate을 원하는 날짜(일)로 변환한다")
         void convertDay_parse_test(LocalDate date, int day) {
             // when & then
-            Assertions.assertThat(DateTimeUtil.convertDay(date, day))
+            Assertions.assertThat(DateTimeUtil.changeDay(date, day))
                     .isEqualTo(date.withDayOfMonth(day));
         }
     }
@@ -146,7 +146,7 @@ class DateTimeUtilTest {
         @DisplayName("변환하려는 날짜(일)이 존재하는 날짜가 아니면 예외가 발생한다")
         void convertDay_parse_test_exception(LocalDate date, int day) {
             // when & then
-            Assertions.assertThatThrownBy(() -> DateTimeUtil.convertDay(date, day))
+            Assertions.assertThatThrownBy(() -> DateTimeUtil.changeDay(date, day))
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
