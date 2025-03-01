@@ -37,6 +37,6 @@ class AttendanceBookTest {
         var dateTime = systemDateTime.now();
         Assertions.assertThatThrownBy(() -> attendanceBook.attendance(nickname, dateTime))
             .isInstanceOf(AttendanceArgumentException.class)
-            .hasMessageContaining("등록되지 않은");
+            .hasMessageContaining("등록되지 않은 닉네임");
     }
 }
