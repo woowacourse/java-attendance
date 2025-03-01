@@ -88,7 +88,7 @@ class AttendanceServiceTest {
 
         @Test
         @DisplayName("특정 크루의 월단위 출석 통계를 조회한다")
-        void bringMonthAttendanceStatistics_test() {
+        void getMonthAttendanceStatistics_test() {
             // given
             String nickname = "시소";
             Crew crew = new Crew(nickname);
@@ -122,7 +122,7 @@ class AttendanceServiceTest {
 
         @Test
         @DisplayName("정렬된 제적 위험자 목록을 조회한다.")
-        void bringRiskCrews_test() {
+        void findRiskCrews_test() {
             // given
             Crew miso = new Crew("미소");
             Crew boogie = new Crew("부기");
@@ -151,7 +151,7 @@ class AttendanceServiceTest {
 
             // 제적 위험자 순서: 부기, 미소, 우가, 포스티
             // when & then
-            RiskCrewsResponse response = attendanceService.getRiskCrews(request);
+            RiskCrewsResponse response = attendanceService.findRiskCrews(request);
             SoftAssertions.assertSoftly(softAssertions -> {
                 softAssertions.assertThat(response.riskCrews().get(0).nickname())
                         .isEqualTo("부기");

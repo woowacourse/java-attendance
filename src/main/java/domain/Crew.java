@@ -1,6 +1,8 @@
 package domain;
 
+import java.util.Map;
 import java.util.Objects;
+import service.dto.RiskCrewsResponse.RiskCrew;
 
 public class Crew {
 
@@ -15,6 +17,13 @@ public class Crew {
         if (nickname.isBlank()) {
             throw new IllegalArgumentException("닉네임은 빈 값일 수 없습니다.");
         }
+    }
+
+    public RiskCrew convertToRiskCrew(Map<AttendanceStatus, Integer> statusCount) {
+        return new RiskCrew(nickname,
+                statusCount.getOrDefault(AttendanceStatus.LATE, 0),
+                statusCount.getOrDefault(AttendanceStatus.ABSENT, 0),
+                RiskRank.from(statusCount));
     }
 
     @Override

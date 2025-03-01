@@ -71,7 +71,7 @@ public class AttendanceController {
         LocalDate today = DateTimeUtil.nowDate();
 
         RiskCrewsRequest request = new RiskCrewsRequest(today);
-        RiskCrewsResponse response = attendanceService.getRiskCrews(request);
+        RiskCrewsResponse response = attendanceService.findRiskCrews(request);
 
         OutputView.printRiskCrews(response);
     }

@@ -8,7 +8,7 @@ public class EmptyAttendanceRecord extends AbstractAttendanceRecord {
         super(crew, date, AttendanceStatus.ABSENT);
     }
 
-    public static EmptyAttendanceRecord of(Crew crew, LocalDate date) {
+    public static AbstractAttendanceRecord of(Crew crew, LocalDate date) {
         return new EmptyAttendanceRecord(crew, date);
     }
 }
