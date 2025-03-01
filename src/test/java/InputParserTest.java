@@ -57,4 +57,21 @@ public class InputParserTest {
         // when & then
         assertThat(InputParser.parseAttendanceType(attendanceType)).isEqualTo(expected);
     }
+
+    private static Stream<Arguments> testCasesForParsePenaltyType() {
+        return Stream.of(
+                Arguments.of(PenaltyType.BAN, "제적"),
+                Arguments.of(PenaltyType.ONE_ON_ONE, "면담"),
+                Arguments.of(PenaltyType.WARNING, "경고")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCasesForParsePenaltyType")
+    @DisplayName("패널티 타입에 따라 적절한 문자열을 반환한다.")
+    void test3(PenaltyType penaltyType, String expected) {
+        // when & then
+        assertThat(InputParser.parsePenaltyType(penaltyType)).isEqualTo(expected);
+    }
+
 }

@@ -25,6 +25,13 @@ public class InputParser {
         return valueOfAttendanceTypes.get(attendanceType);
     }
 
+    public static String parsePenaltyType(PenaltyType penaltyType) {
+        Map<PenaltyType, String> valueOfPenaltyTypes = Map.of(PenaltyType.ONE_ON_ONE, "면담",
+                PenaltyType.BAN, "제적",
+                PenaltyType.WARNING, "경고");
+        return valueOfPenaltyTypes.get(penaltyType);
+    }
+
     private static String parseTimeToKorean(LocalDate date) {
         String datePart = date.format(DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN));
         String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
