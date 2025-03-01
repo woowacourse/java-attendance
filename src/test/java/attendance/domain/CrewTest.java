@@ -14,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import attendance.exception.ExceptionMessage;
 import attendance.fixture.CrewFixture;
 import attendance.fixture.CrewsFixture;
 import attendance.fixture.DateTimeFixture;
@@ -56,7 +57,9 @@ class CrewTest {
         });
 
         // then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable)
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
     }
 
     @ParameterizedTest
@@ -72,7 +75,10 @@ class CrewTest {
         });
 
         // then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable)
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(ExceptionMessage.NOT_CAMPUS_OPEN_TIME.getMessage(
+                Crew.CAMPUS_OPEN_TIME, Crew.CAMPUS_CLOSE_TIME));
     }
 
     @ParameterizedTest
@@ -88,7 +94,9 @@ class CrewTest {
         });
 
         // then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable)
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(ExceptionMessage.ATTENDANCE_ON_DAY_OFF.getMessage());
     }
 
     @Test
@@ -115,7 +123,10 @@ class CrewTest {
         });
 
         // then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable)
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(ExceptionMessage.NOT_FOUND_ATTENDANCE_DATA.getMessage(
+                DateTimeFixture.MONDAY));
     }
 
     @ParameterizedTest

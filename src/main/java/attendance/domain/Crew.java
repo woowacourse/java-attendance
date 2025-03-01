@@ -10,8 +10,8 @@ import attendance.exception.ExceptionMessage;
 
 public class Crew {
 
-    private static final LocalTime CAMPUS_OPEN_TIME = LocalTime.of(8, 00);
-    private static final LocalTime CAMPUS_CLOSE_TIME = LocalTime.of(23, 00);
+    public static final LocalTime CAMPUS_OPEN_TIME = LocalTime.of(8, 00);
+    public static final LocalTime CAMPUS_CLOSE_TIME = LocalTime.of(23, 00);
 
     private final String name;
     private final Map<LocalDate, LocalTime> attendanceRecords = new HashMap<>();
