@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -28,12 +29,12 @@ public enum OperationSchedule {
     }
 
     public static boolean isInOperationTime(LocalDateTime datetime) {
-        OperationSchedule schedule = findSchedule(datetime);
+        OperationSchedule schedule = findSchedule(datetime.toLocalDate());
         LocalTime time = datetime.toLocalTime();
         return !(time.isBefore(schedule.startTime) || time.isAfter(schedule.endTime));
     }
 
-    private static OperationSchedule findSchedule(LocalDateTime time) {
+    private static OperationSchedule findSchedule(LocalDate time) {
         for (OperationSchedule schedule : OperationSchedule.values()) {
             if (schedule.dayOfWeek.equals(time.getDayOfWeek())) {
                 return schedule;
@@ -42,8 +43,12 @@ public enum OperationSchedule {
         return NONE;
     }
 
-    public static long calculateDifferenceFromStartTime(LocalDateTime time) {
-        OperationSchedule schedule = findSchedule(time);
+    public static long calculateDifferenceFromAttendanceStandard(LocalDateTime time) {
+        OperationSchedule schedule = findSchedule(time.toLocalDate());
         return time.toLocalTime().toNanoOfDay() - schedule.attendanceStandard.toNanoOfDay();
+    }
+
+    public static LocalTime addMinutesToStartTime(LocalDate day, int standardTime) {
+        return findSchedule(day).attendanceStandard.plusMinutes(standardTime);
     }
 }
