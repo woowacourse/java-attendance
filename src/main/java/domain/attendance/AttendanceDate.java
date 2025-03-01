@@ -57,4 +57,8 @@ public class AttendanceDate {
     public AttendanceStatus getStatus() {
         return status;
     }
+
+    public LocalDateTime getAttendanceAt() {
+        return attendanceAt;
+    }
 }
