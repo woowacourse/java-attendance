@@ -11,8 +11,8 @@ import static java.util.stream.Collectors.toMap;
 
 import domain.policy.AbsentPolicy;
 import domain.policy.AttendanceState;
+import domain.policy.CampusTimePolicy;
 import domain.policy.ExpellState;
-import domain.policy.TimePolicy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,19 +24,19 @@ import java.util.stream.Collectors;
 public class AttendanceSheet {
 
 
-    private final TimePolicy timePolicy;
+    private final CampusTimePolicy campusTimePolicy;
     private final AbsentPolicy absentPolicy;
     private final List<Attendance> attendances;
 
-    public AttendanceSheet(TimePolicy timePolicy, AbsentPolicy absentPolicy, List<Attendance> attendances) {
-        this.timePolicy = timePolicy;
+    public AttendanceSheet(CampusTimePolicy campusTimePolicy, AbsentPolicy absentPolicy, List<Attendance> attendances) {
+        this.campusTimePolicy = campusTimePolicy;
         this.absentPolicy = absentPolicy;
         this.attendances = attendances;
     }
 
     public void add(String nickname, LocalDate date, LocalTime time) {
         validateIsAlreadyAttendance(nickname, date);
-        timePolicy.validateOperatingTime(time);
+        campusTimePolicy.validateOperatingTime(time);
         this.attendances.add(
                 new Attendance(nickname, date, time, absentPolicy.checkAttendanceStatus(LocalDateTime.of(date, time))));
     }

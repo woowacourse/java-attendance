@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import domain.policy.AbsentPolicy;
 import domain.policy.AttendanceState;
-import domain.policy.TimePolicy;
+import domain.policy.CampusTimePolicy;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class AttendanceSheetTest {
 
     @BeforeEach
     void setUp() {
-        attendanceSheet = new AttendanceSheet(new TimePolicy(), new AbsentPolicy(),
+        attendanceSheet = new AttendanceSheet(new CampusTimePolicy(), new AbsentPolicy(),
                 new ArrayList<>(
                         List.of(
                                 new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(13, 5), ATTENDANCE),

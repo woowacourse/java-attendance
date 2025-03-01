@@ -4,7 +4,7 @@ import controller.AttendanceController;
 import domain.Attendance;
 import domain.AttendanceSheet;
 import domain.policy.AbsentPolicy;
-import domain.policy.TimePolicy;
+import domain.policy.CampusTimePolicy;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -34,7 +34,7 @@ public enum AppConfig {
     }
 
     private AttendanceSheet createAttendanceSheet() {
-        ReadFile<Attendance, AttendanceSheet> readFile = new AttendanceSheetFactory(new TimePolicy(),
+        ReadFile<Attendance, AttendanceSheet> readFile = new AttendanceSheetFactory(new CampusTimePolicy(),
                 new AbsentPolicy());
         return readFile.loadFile(FILE_PATH);
     }

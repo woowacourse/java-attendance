@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import domain.Attendance;
 import domain.AttendanceSheet;
 import domain.policy.AbsentPolicy;
-import domain.policy.TimePolicy;
+import domain.policy.CampusTimePolicy;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,7 +22,7 @@ public class AttendanceSheetFactoryTest {
 
     @BeforeEach
     void setUp() {
-        readFile = new AttendanceSheetFactory(new TimePolicy(), new AbsentPolicy());
+        readFile = new AttendanceSheetFactory(new CampusTimePolicy(), new AbsentPolicy());
     }
 
     @Test

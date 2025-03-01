@@ -3,23 +3,23 @@ package config;
 import domain.Attendance;
 import domain.AttendanceSheet;
 import domain.policy.AbsentPolicy;
-import domain.policy.TimePolicy;
+import domain.policy.CampusTimePolicy;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-public class AttendanceSheetFactory extends ReadFile<Attendance,AttendanceSheet> {
+public class AttendanceSheetFactory extends ReadFile<Attendance, AttendanceSheet> {
 
     private static final String SPLIT_DELIMITER = ",";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final int LINE_SPLIT_COUNT = 2;
 
-    private final TimePolicy timePolicy;
+    private final CampusTimePolicy campusTimePolicy;
     private final AbsentPolicy absentPolicy;
 
-    public AttendanceSheetFactory(TimePolicy timePolicy, AbsentPolicy absentPolicy) {
-        this.timePolicy = timePolicy;
+    public AttendanceSheetFactory(CampusTimePolicy campusTimePolicy, AbsentPolicy absentPolicy) {
+        this.campusTimePolicy = campusTimePolicy;
         this.absentPolicy = absentPolicy;
     }
 
@@ -30,7 +30,8 @@ public class AttendanceSheetFactory extends ReadFile<Attendance,AttendanceSheet>
         String nickname = splitLine[0];
         LocalDateTime dateTime = parseAttendanceDateTime(splitLine[1]);
 
-        return new Attendance(nickname, dateTime.toLocalDate(), dateTime.toLocalTime(), absentPolicy.checkAttendanceStatus(dateTime));
+        return new Attendance(nickname, dateTime.toLocalDate(), dateTime.toLocalTime(),
+                absentPolicy.checkAttendanceStatus(dateTime));
     }
 
     private void validateSplitLineFormat(String[] splitLine) {
@@ -40,9 +41,9 @@ public class AttendanceSheetFactory extends ReadFile<Attendance,AttendanceSheet>
     }
 
     private LocalDateTime parseAttendanceDateTime(String dateTime) {
-        try{
+        try {
             return LocalDateTime.parse(dateTime, DATE_TIME_FORMATTER);
-        }catch (DateTimeParseException e){
+        } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("[ERROR] 날짜 형식이 잘못되었습니다");
         }
     }
@@ -54,6 +55,6 @@ public class AttendanceSheetFactory extends ReadFile<Attendance,AttendanceSheet>
 
     @Override
     protected AttendanceSheet createInstances(List<Attendance> instances) {
-        return new AttendanceSheet(timePolicy, absentPolicy, instances);
+        return new AttendanceSheet(campusTimePolicy, absentPolicy, instances);
     }
 }
