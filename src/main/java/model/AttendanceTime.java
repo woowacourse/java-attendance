@@ -33,7 +33,7 @@ public enum AttendanceTime {
         AttendanceTime attendanceTime = find(localDate);
 
         return localTime.isAfter(attendanceTime.educationStartTime.plusMinutes(beLateTime)) &&
-                localTime.isBefore(attendanceTime.educationStartTime.plusMinutes(absenceTime));
+                localTime.isBefore(attendanceTime.educationStartTime.plusMinutes(absenceTime + 1));
     }
 
     public static boolean isAbsence(LocalDate localDate, LocalTime localTime, int absenceTime) {
