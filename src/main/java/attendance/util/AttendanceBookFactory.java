@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class AttendanceBookFactory {
     private static final LocalTime DEFAULT_TIME = LocalTime.of(17, 59);
@@ -47,14 +49,21 @@ public class AttendanceBookFactory {
     private static List<Attendance> initAttendances(final LocalDate today) {
         List<Attendance> attendances = new ArrayList<>();
         for (int day = 1; day < today.getDayOfMonth(); day++) {
-            try {
-                AttendanceDate attendanceDate = AttendanceDate.from(today.withDayOfMonth(day));
-                AttendanceTime attendanceTime = AttendanceTime.from(DEFAULT_TIME);
-                Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
-                attendances.add(attendance);
-            } catch (Exception ignored) {
-            }
+            Attendance attendance = extracted(today, day);
+            attendances.add(attendance);
         }
-        return attendances;
+        return attendances.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private static Attendance extracted(LocalDate today, int day) {
+        try {
+            AttendanceDate attendanceDate = AttendanceDate.from(today.withDayOfMonth(day));
+            AttendanceTime attendanceTime = AttendanceTime.from(DEFAULT_TIME);
+            return Attendance.of(attendanceDate, attendanceTime);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }
