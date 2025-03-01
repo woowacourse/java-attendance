@@ -79,7 +79,7 @@ public class StudentAttendanceHistoryTest {
         );
 
         Assertions.assertEquals(
-                studentAttendanceHistory.findAttendanceTimeByAttendanceDate(new AttendanceDate(LocalDate.of(2024, 12, 12))),
+                studentAttendanceHistory.findAttendanceTimeByAttendanceDate(new AttendanceDate(LocalDate.of(2024, 12, 11))),
                 new AttendanceTime(LocalTime.of(0, 0))
         );
     }
