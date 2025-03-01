@@ -7,10 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 public class AllCrew {
     private final List<Crew> allCrew;
@@ -79,5 +76,10 @@ public class AllCrew {
                 penaltyReceivedCrew.add(crew);
         }
         return penaltyReceivedCrew;
+    }
+
+    public void sortPenaltyReceivedCrew(List<Crew> penaltyReceivedCrew) {
+        penaltyReceivedCrew.sort(Comparator.comparing(Crew::getPenaltyStandard).reversed()
+                .thenComparing(Crew::getName));
     }
 }

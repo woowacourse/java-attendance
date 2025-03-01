@@ -95,8 +95,12 @@ public class Crew {
                 .count();
     }
 
+    public int getPenaltyStandard() {
+        return getAbsentCount() + (getLateCount() / 3);
+    }
+
     public Penalty getPenalty() {
-        int penaltyStandard = getAbsentCount() + (getLateCount() / 3);
+        int penaltyStandard = getPenaltyStandard();
         if (penaltyStandard > EXPEL.getCount()) {
             return EXPEL;
         }

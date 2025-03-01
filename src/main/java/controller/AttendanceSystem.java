@@ -59,7 +59,9 @@ public class AttendanceSystem {
     }
 
     private void checkPenaltyReceivedCrew() {
-        OutputView.printPenaltyReceivedCrew(allCrew.getPenaltyReceivedCrew());
+        List<Crew> penaltyReceivedCrew = allCrew.getPenaltyReceivedCrew();
+        allCrew.sortPenaltyReceivedCrew(penaltyReceivedCrew);
+        OutputView.printPenaltyReceivedCrew(penaltyReceivedCrew);
     }
 
     private void checkCrewAttendanceHistory() {
