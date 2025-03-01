@@ -9,6 +9,7 @@ import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceTime;
 import attendance.domain.Crew;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class AttendanceBookRepositoryTest {
 
             AttendanceBookRepository attendanceBookRepository = new AttendanceBookRepository(
                 attendanceBooks);
-            
+
             // when
             AttendanceBook targetAttendanceBook = attendanceBookRepository
                 .findByCrewNickname(crew.getNickname())
@@ -40,6 +41,58 @@ class AttendanceBookRepositoryTest {
 
             // then
             assertThat(targetAttendanceBook).isEqualTo(attendanceBook);
+        }
+
+        @Test
+        void 패널티크루들을_정렬하여_반환한다() {
+            // given
+            Crew crewWithMostAbsences = new Crew("크루원1");
+            Crew crewWithFewerAbsences = new Crew("크루원2");
+            Crew crewWithSameAbsences = new Crew("크루원3");
+            Crew crewWithoutPenalty = new Crew("크루원4");
+
+            AttendanceBook attendanceBookWithMostAbsences = new AttendanceBook(
+                crewWithMostAbsences, new AttendanceRecord(Map.of(
+                new AttendanceDate(2024, 12, 2), new AttendanceTime(13, 31),
+                new AttendanceDate(2024, 12, 3), new AttendanceTime(10, 31))));
+
+            AttendanceBook attendanceBookWithFewerAbsences = new AttendanceBook(
+                crewWithFewerAbsences, new AttendanceRecord(Map.of(
+                new AttendanceDate(2024, 12, 2), new AttendanceTime(13, 0))));
+
+            AttendanceBook attendanceBookWithSameAbsences = new AttendanceBook(
+                crewWithSameAbsences, new AttendanceRecord(Map.of(
+                new AttendanceDate(2024, 12, 2), new AttendanceTime(13, 31),
+                new AttendanceDate(2024, 12, 3), new AttendanceTime(10, 31))));
+
+            AttendanceBook attendanceBookWithoutPenalty = new AttendanceBook(
+                crewWithoutPenalty, new AttendanceRecord(Map.of(
+                new AttendanceDate(2024, 12, 2), new AttendanceTime(13, 0),
+                new AttendanceDate(2024, 12, 3), new AttendanceTime(10, 0))));
+
+            AttendanceBookRepository attendanceBookRepository = new AttendanceBookRepository(
+                Map.of(
+                    crewWithMostAbsences.getNickname(),
+                    attendanceBookWithMostAbsences,
+                    crewWithFewerAbsences.getNickname(),
+                    attendanceBookWithFewerAbsences,
+                    crewWithSameAbsences.getNickname(),
+                    attendanceBookWithSameAbsences,
+                    crewWithoutPenalty.getNickname(),
+                    attendanceBookWithoutPenalty
+                ));
+
+            // when
+            List<AttendanceBook> attendanceBooks = attendanceBookRepository
+                .findAllPenaltyCrewUntilDateOrderByAbsenceCountAndCrewNickname(
+                    new AttendanceDate(2024, 12, 5));
+
+            // then
+            assertThat(attendanceBooks).containsExactly(
+                attendanceBookWithMostAbsences,
+                attendanceBookWithSameAbsences,
+                attendanceBookWithFewerAbsences
+            );
         }
     }
 
