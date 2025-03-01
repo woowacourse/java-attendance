@@ -1,17 +1,13 @@
 package domain;
 
-public class Attendance {
-
-
-    private final AttendanceDate attendanceDate;
-    private final AttendanceTime attendanceTime;
-    private final AttendanceStatus status;
-
-    public Attendance(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime,
-                      final AttendanceStatus status) {
-        this.attendanceDate = attendanceDate;
-        this.attendanceTime = attendanceTime;
-        this.status = status;
+public record Attendance(
+        AttendanceDate attendanceDate,
+        AttendanceTime attendanceTime,
+        AttendanceStatus status
+) {
+    public static Attendance of(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime) {
+        final AttendanceStatus status = AttendanceStatus.findByTime(attendanceDate.getDayOfWeek(),
+                attendanceTime.getLocaltime());
+        return new Attendance(attendanceDate, attendanceTime, status);
     }
-
 }
