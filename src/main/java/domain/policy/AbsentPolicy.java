@@ -27,13 +27,13 @@ public class AbsentPolicy {
         return !date.equals(CHRISTMAS);
     }
 
-    public void validateIsWeekend(DayOfWeek attendanceDayOfWeek) {
+    private void validateIsWeekend(DayOfWeek attendanceDayOfWeek) {
         if (attendanceDayOfWeek == DayOfWeek.SATURDAY || attendanceDayOfWeek == DayOfWeek.SUNDAY) {
             throw new IllegalArgumentException("[ERROR] 주말에는 출석할 수 없습니다");
         }
     }
 
-    public void validateIsHoliday(LocalDate attendanceDate) {
+    private void validateIsHoliday(LocalDate attendanceDate) {
         if (attendanceDate.equals(CHRISTMAS)) {
             throw new IllegalArgumentException("[ERROR] 공휴일에는 출석할 수 없습니다");
         }

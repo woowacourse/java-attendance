@@ -74,13 +74,14 @@ public class AttendanceSheetTest {
 
     @Test
     @DisplayName("이미 출석한 경우 다시 출석할 수 없으며 수정 기능을 이용하도록 안내하는 예외가 발생한다")
-    public void alreadyAttendTest() {
+    public void alreadyAttendTest2() {
         //given
         String nickname = "링크";
         LocalDate date = LocalDate.of(2024, 12, 10);
+        LocalTime time = LocalTime.of(10, 0);
 
         //when-then
-        assertThatThrownBy(() -> attendanceSheet.validateIsAlreadyAttendance(nickname, date))
+        assertThatThrownBy(() -> attendanceSheet.add(nickname, date, time))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

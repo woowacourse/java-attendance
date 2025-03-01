@@ -1,5 +1,7 @@
 package domain;
 
+import static config.AppConfig.ATTENDANCE_MONTH;
+import static config.AppConfig.ATTENDANCE_YEAR;
 import static config.AppConfig.TODAY;
 import static domain.policy.AttendanceState.ABSENT;
 import static domain.policy.AttendanceState.LATE;
@@ -21,8 +23,6 @@ import java.util.stream.Collectors;
 
 public class AttendanceSheet {
 
-    public static final int ATTENDANCE_YEAR = 2024;
-    public static final int ATTENDANCE_MONTH = 12;
 
     private final TimePolicy timePolicy;
     private final AbsentPolicy absentPolicy;
@@ -41,7 +41,7 @@ public class AttendanceSheet {
                 new Attendance(nickname, date, time, absentPolicy.checkAttendanceStatus(LocalDateTime.of(date, time))));
     }
 
-    public void validateIsAlreadyAttendance(String nickname, LocalDate date) {
+    private void validateIsAlreadyAttendance(String nickname, LocalDate date) {
         if (isAttendanceExist(nickname, date)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다. 수정 기능을 이용하세요");
         }
