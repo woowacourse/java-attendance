@@ -1,8 +1,9 @@
 package view;
 
+import domain.Current;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class InputView {
@@ -31,8 +32,24 @@ public class InputView {
         return input;
     }
 
+    public LocalDate inputDate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        String input = inputString();
+        try {
+            int day = Integer.parseInt(input);
+            return LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), day);
+        } catch (NumberFormatException | DateTimeException e) {
+            throw new IllegalArgumentException("잘못된 날짜 입력입니다");
+        }
+    }
+
     public LocalTime inputAttendTime() {
         System.out.println("등교 시간을 입력해 주세요.");
+        return inputTime();
+    }
+
+    public LocalTime inputChangeTime() {
+        System.out.println("언제로 변경하겠습니까?");
         return inputTime();
     }
 

@@ -6,6 +6,7 @@ import domain.AttendStatus;
 import domain.AttendanceBook;
 import domain.Command;
 import domain.Current;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 import view.InputView;
@@ -43,6 +44,14 @@ public class AttendController {
     }
 
     private void edit() {
+        String name = inputView.inputName();
+        LocalDate editDate = inputView.inputDate();
+        LocalTime editTime = inputView.inputChangeTime();
+        Attend after = new Attend(editDate, editTime);
+        Attend before = attendanceBook.edit(name, after);
+        AttendStatus beforeStatus = before.checkStatus();
+        AttendStatus afterStatus = after.checkStatus();
+        outputView.printEditResult(before, beforeStatus, after, afterStatus);
     }
 
     private void searchAttend() {

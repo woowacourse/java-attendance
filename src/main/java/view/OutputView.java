@@ -12,6 +12,17 @@ public class OutputView {
         System.out.printf("%s %s (%s)%n%n", dateFormat, timeFormat, attendStatusFormat);
     }
 
+    public void printEditResult(final Attend before, final AttendStatus beforeStatus,
+                                final Attend after, final AttendStatus afterStatus) {
+        String date = DateTimeFormat.DATE.formatDate(before.getDate());
+        String beforeTime = formatAttendTime(before);
+        String afterTime = formatAttendTime(after);
+        String beforeStatusFormat = AttendStatusFormat.findStatusFormat(beforeStatus);
+        String afterStatusFormat = AttendStatusFormat.findStatusFormat(afterStatus);
+        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n%n",
+                date, beforeTime, beforeStatusFormat, afterTime, afterStatusFormat);
+    }
+
     private String formatAttendTime(Attend attend) {
         String result = "--:--";
         if (attend.checkTimeNull()) {
