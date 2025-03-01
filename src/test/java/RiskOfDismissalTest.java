@@ -17,15 +17,16 @@ public class RiskOfDismissalTest {
                 List.of(
                         new Attendance(LocalDate.of(2024, 12, 2), LocalTime.of(10, 6)),
                         new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 3)),
-                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 4)),
+                        new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 10))
                 )
         );
 
         // when
-        final var sum = crewAttendances.attendPolicyCountSum(LocalDate.of(2024, 12, 5));
+        final var sum = crewAttendances.attendPolicyCountSum(LocalDate.of(2024, 12, 6));
 
         // then
         Assertions.assertThat(sum)
-                .isEqualTo(1);
+                .isEqualTo(2);
     }
 }
