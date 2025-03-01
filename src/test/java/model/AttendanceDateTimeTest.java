@@ -2,7 +2,6 @@ package model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,13 +49,8 @@ public class AttendanceDateTimeTest {
     void test8() {
         AttendanceDateTime monday = new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 12, 12));
         AttendanceDateTime notMonday = new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 12, 12));
-        Assertions.assertTrue(
-                monday.isMonday()
-        );
-        Assertions.assertFalse(
-                notMonday.isMonday()
-        );
-
+        Assertions.assertTrue(monday.isMonday());
+        Assertions.assertFalse(notMonday.isMonday());
     }
 
 }
