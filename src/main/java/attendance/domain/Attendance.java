@@ -47,6 +47,11 @@ public class Attendance {
         return attendDate.isEqual(inputDate);
     }
 
+    public boolean isSameYearAndMonth(LocalDate inputDate) {
+        return attendDate.getYear() == inputDate.getYear()
+                && attendDate.getMonthValue() == inputDate.getMonthValue();
+    }
+
     public LocalDate getAttendDate() {
         return attendDate;
     }
