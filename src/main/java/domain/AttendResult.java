@@ -48,8 +48,11 @@ public class AttendResult {
         return new Attend(targetAttend.getDate());
     }
 
-    public List<Attend> getAttendResult() {
-        return attendResult;
+    public List<Attend> getAttendResult(final int targetDay) {
+        return IntStream.range(1, targetDay)
+                .filter(OperationTime::isOperationDate)
+                .mapToObj(this::findAttendByDay)
+                .toList();
     }
 
     private Attend findAttendByDay(LocalDate date) {
@@ -62,13 +65,6 @@ public class AttendResult {
     public Attend findAttendByDay(int day) {
         LocalDate date = LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), day);
         return findAttendByDay(date);
-    }
-
-    public List<Attend> getAttendResult(final int targetDay) {
-        return IntStream.range(1, targetDay)
-                .filter(OperationTime::isOperationDate)
-                .mapToObj(this::findAttendByDay)
-                .toList();
     }
 
     @Override
