@@ -16,15 +16,12 @@ public enum AttendanceStatusEvaluator {
 
     public static AttendanceStatus calculateAttendanceStatus(AttendanceDateTime attendanceDateTime, AttendanceTime attendanceTime) {
         if (attendanceDateTime.isMonday()) {
-            if (attendanceTime.isAfter(MONDAY.absentTime)) {
-                return AttendanceStatus.ABSENT;
-            }
-            if (attendanceTime.isAfter(MONDAY.lateTime)) {
-                return AttendanceStatus.LATE;
-            }
-            return AttendanceStatus.ATTENDANCE;
+            return evaluateMondayAttendance(attendanceDateTime, attendanceTime);
         }
+        return evaluateNotMondayAttendance(attendanceTime);
+    }
 
+    private static AttendanceStatus evaluateNotMondayAttendance(AttendanceTime attendanceTime) {
         if (attendanceTime.isAfter(TUESDAY_TO_FRIDAY.absentTime)) {
             return AttendanceStatus.ABSENT;
         }
@@ -34,4 +31,14 @@ public enum AttendanceStatusEvaluator {
         return AttendanceStatus.ATTENDANCE;
     }
 
+    private static AttendanceStatus evaluateMondayAttendance(AttendanceDateTime attendanceDateTime, AttendanceTime attendanceTime) {
+        if (attendanceTime.isAfter(MONDAY.absentTime)) {
+            return AttendanceStatus.ABSENT;
+        }
+        if (attendanceTime.isAfter(MONDAY.lateTime)) {
+            return AttendanceStatus.LATE;
+        }
+        return AttendanceStatus.ATTENDANCE;
+
+    }
 }
