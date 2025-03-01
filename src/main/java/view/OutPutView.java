@@ -3,6 +3,7 @@ package view;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import model.AttendancePenalty;
@@ -26,6 +27,10 @@ public class OutPutView {
 
     public static void requestNickName(){
         System.out.println("닉네임을 입력해 주세요.");
+    }
+
+    public static void requestAttendanceTime(){
+        System.out.println("등교 시간을 입력해 주세요.");
     }
 
     public static void requestModifyNickName(){
@@ -64,11 +69,17 @@ public class OutPutView {
         }
     }
 
-    public static void displayExpulsionRisk(Student student){
-        long expulsionCount = student.calculateAbsentCount();
+    public static void displayCounselingCandidate(Student student){
+        long expulsionCount = student.calculateTotalAbsentCount();
         AttendancePenalty attendancePenalty = AttendancePenalty.findPenaltyByAbsentCount(expulsionCount);
         if (attendancePenalty.getPenalty() != null){
             System.out.println( attendancePenalty.getPenalty() + "대상자 입니다.");
+        }
+    }
+
+    public static void displayExpulsionRiskStudents(List<Student> students){
+        for (Student student : students){
+            System.out.println(AttendanceRecordFormatter.expulsionRiskRecordFormatter(student));
         }
     }
 }
