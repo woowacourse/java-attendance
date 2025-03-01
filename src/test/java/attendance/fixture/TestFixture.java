@@ -14,4 +14,8 @@ public class TestFixture {
     public static CrewHistory makeCrewHistory(final LocalDateTime attendanceTime) {
         return new CrewHistory(Map.of(LocalDate.from(attendanceTime), attendanceTime));
     }
+
+    public static LocalDate makeDecemberDate(final int day) {
+        return LocalDate.of(2024, 12, day);
+    }
 }
