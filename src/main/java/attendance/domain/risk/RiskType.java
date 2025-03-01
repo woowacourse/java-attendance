@@ -1,26 +1,27 @@
 package attendance.domain.risk;
 
-import java.util.Arrays;
+import java.util.List;
 
 public enum RiskType {
-    WITHDRAWAL("제적", 6),
-    COUNSELING("면담", 3),
-    WARNING("경고", 2),
-    NONE("해당없음", 0);
+    EXPULSION(5, "제적"),
+    COUNSELING(3, "면담"),
+    WARNING(2, "경고"),
+    NONE(0, "");
 
+    private final int absenceScore;
     private final String name;
-    private final int score;
 
-    RiskType(String name, int score) {
+    RiskType(int absenceScore, String name) {
+        this.absenceScore = absenceScore;
         this.name = name;
-        this.score = score;
     }
 
-    public static RiskType find(final int expulsionCount, final int lateCount) {
-        int allScore = expulsionCount + (lateCount / 3);
-        return Arrays.stream(RiskType.values())
-                .filter(type -> type.score <= allScore)
-                .findAny()
+    public static RiskType parse(int absenceCount, int lateCount) {
+        int currentAbsenceScore = absenceCount + lateCount / 3;
+        List<RiskType> types = List.of(RiskType.values());
+        return types.stream()
+                .filter(type -> currentAbsenceScore >= type.absenceScore)
+                .findFirst()
                 .orElse(NONE);
     }
 

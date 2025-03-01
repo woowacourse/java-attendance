@@ -1,44 +1,65 @@
 package attendance.view;
 
-import static attendance.view.validator.InputValidator.validateIsNumeric;
-
-import attendance.utility.DateTimeParser;
+import attendance.controller.MenuCommand;
+import attendance.utility.DateTimeUtility;
 import attendance.view.message.InputMessage;
+import attendance.view.processor.InputPreprocessor;
+import attendance.view.validator.InputValidator;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Scanner;
 
 public class InputView {
 
-    private static final Scanner console = new Scanner(System.in);
+    private final Scanner scanner;
 
-    public String readMenuCommand() {
-        return console.nextLine();
+    public InputView(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
+    public MenuCommand readMenuCommand(LocalDateTime now) {
+        String dateContent = DateTimeUtility.formatDateTime(now);
+        String menuContent = String.format(InputMessage.MENU.getContent(), dateContent);
+        System.out.println(menuContent);
+        String input = readInput();
+        return MenuCommand.parse(input);
     }
 
     public String readNickname() {
-        System.out.println(InputMessage.NICK_NAME.getContent());
-        return console.nextLine();
+        System.out.println(InputMessage.NICKNAME.getContent());
+        return readInput();
     }
 
     public LocalTime readArrivalTime() {
         System.out.println(InputMessage.ARRIVAL_TIME.getContent());
-        return DateTimeParser.parseTime(console.nextLine());
+        String input = readInput();
+        return DateTimeUtility.parseTimeByDefault(input);
     }
 
     public String readNicknameForUpdate() {
-        System.out.println(InputMessage.NICK_NAME_FOR_UPDATE.getContent());
-        return console.nextLine();
+        System.out.println(InputMessage.NICKNAME_FOR_UPDATE.getContent());
+        return readInput();
+    }
+
+    public int readDayForUpdate() {
+        System.out.println(InputMessage.DAY_FOR_UPDATE.getContent());
+        String input = readInput();
+        InputValidator.validateNonNumeric(input);
+        int day = Integer.parseInt(input);
+        InputValidator.validateIsInMonth(LocalDate.now().getYear(), LocalDate.now().getMonth(), day);
+        return day;
     }
 
     public LocalTime readArrivalTimeForUpdate() {
-        System.out.println(InputMessage.ARRIVAL_TIME_FOR_UPDATE.getContent());
-        return DateTimeParser.parseTime(console.nextLine());
+        System.out.println(InputMessage.TIME_FOR_UPDATE.getContent());
+        String input = readInput();
+        return DateTimeUtility.parseTimeByDefault(input);
     }
 
-    public int readDateForUpdate() {
-        System.out.println(InputMessage.DATE_FOR_UPDATE.getContent());
-        String input = console.nextLine();
-        validateIsNumeric(input);
-        return Integer.parseInt(input);
+    private String readInput() {
+        String input = scanner.nextLine();
+        InputValidator.validateBlank(input);
+        return InputPreprocessor.removeSideSpace(input);
     }
 }

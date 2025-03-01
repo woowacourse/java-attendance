@@ -1,11 +1,13 @@
 package attendance.controller;
 
-import attendance.config.AppConfig;
+import attendance.configuration.ApplicationConfiguration;
 import attendance.domain.AttendanceSystem;
-import attendance.domain.intializer.AttendanceSystemInitializer;
+import attendance.domain.initializer.AttendanceSystemInitializer;
 import attendance.domain.record.AttendanceRecord;
-import attendance.domain.risk.RiskStatistic;
-import attendance.dto.UpdateResult;
+import attendance.dto.AttendanceState;
+import attendance.dto.RecordUpdateResult;
+import attendance.exception.AttendanceException;
+import attendance.exception.ExceptionMessage;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -15,100 +17,82 @@ import java.util.List;
 
 public class AttendanceController {
 
-    private final InputView inputView;
-    private final OutputView outputView;
     private final AttendanceSystem attendanceSystem;
     private final AttendanceSystemInitializer initializer;
+    private final InputView inputView;
+    private final OutputView outputView;
 
-    public AttendanceController(AppConfig appConfig) {
-        this.inputView = appConfig.getInputView();
-        this.outputView = appConfig.getOutputView();
-        this.attendanceSystem = appConfig.getAttendanceSystem();
-        this.initializer = appConfig.getInitializer();
+    public AttendanceController(ApplicationConfiguration configuration) {
+        attendanceSystem = configuration.getAttendanceSystem();
+        inputView = configuration.getInputView();
+        outputView = configuration.getOutputView();
+        initializer = configuration.getInitializer();
         initializer.initialize();
     }
 
     public void run() {
         while (true) {
-            LocalDate nowDate = LocalDate.now();
-            AttendanceMenu menu = selectMenu(nowDate);
-            if (menu == AttendanceMenu.ADD) {
-                saveAttendanceRecord(nowDate);
-            }
-            if (menu == AttendanceMenu.UPDATE) {
-                updateAttendanceRecord(nowDate);
-            }
-            if (menu == AttendanceMenu.SEARCH) {
-                searchAttendanceRecordsByCrew(nowDate);
-            }
-            if (menu == AttendanceMenu.RISK) {
-                searchRiskStatistics(nowDate);
-            }
-            if (menu == AttendanceMenu.QUIT) {
-                return;
-            }
-        }
-    }
-
-    private AttendanceMenu selectMenu(LocalDate nowDate) {
-        while (true) {
             try {
-                outputView.printMenu(nowDate);
-                return AttendanceMenu.parse(inputView.readMenuCommand());
-            } catch (IllegalArgumentException e) {
-                outputView.printErrorMessage(e.getMessage());
+                LocalDateTime now = LocalDateTime.now();
+                MenuCommand menuCommand = inputView.readMenuCommand(now);
+                if (menuCommand == MenuCommand.FIRST) {
+                    addAttendanceRecord(now);
+                }
+                if (menuCommand == MenuCommand.SECOND) {
+                    updateAttendanceRecord(now);
+                }
+                if (menuCommand == MenuCommand.THIRD) {
+                    findRecordsInMonth(now);
+                }
+                if (menuCommand == MenuCommand.FOURTH) {
+                    findRiskCrew(now);
+                }
+                if (menuCommand == MenuCommand.QUIT) {
+                    return;
+                }
+            } catch (IllegalArgumentException exception) {
+                System.out.println(exception.getMessage());
             }
         }
     }
 
-    private void saveAttendanceRecord(LocalDate nowDate) {
-        try {
-            String nickname = inputView.readNickname();
-            LocalTime arrivalTime = inputView.readArrivalTime();
-            LocalDateTime arrivalDateTime = LocalDateTime.of(nowDate, arrivalTime);
-            AttendanceRecord savedRecord = attendanceSystem.saveAttendanceRecord(nickname, arrivalDateTime);
-            outputView.printAttendanceRecord(savedRecord);
-        } catch (IllegalArgumentException e) {
-            outputView.printErrorMessage(e.getMessage());
-        }
+    private void addAttendanceRecord(LocalDateTime now) {
+        String nickname = inputView.readNickname();
+        validateRegisteredCrew(nickname);
+        LocalTime arrivalTime = inputView.readArrivalTime();
+        LocalDateTime arrivalDateTime = LocalDateTime.of(now.toLocalDate(), arrivalTime);
+        AttendanceRecord record = attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime);
+        outputView.printRecord(record);
     }
 
-    private void updateAttendanceRecord(LocalDate nowDate) {
-        try {
-            String nickname = inputView.readNicknameForUpdate();
-            LocalDate date = nowDate.withDayOfMonth(inputView.readDateForUpdate());
-            LocalTime newArrivalTime = inputView.readArrivalTimeForUpdate();
-            UpdateResult updateResult = attendanceSystem.updateAttendanceRecord(nickname, date, newArrivalTime);
-            outputView.printAttendUpdateResult(updateResult);
-        } catch (IllegalArgumentException e) {
-            outputView.printErrorMessage(e.getMessage());
-        }
+    private void updateAttendanceRecord(LocalDateTime now) {
+        String nickname = inputView.readNicknameForUpdate();
+        validateRegisteredCrew(nickname);
+        int dayForUpdate = inputView.readDayForUpdate();
+        LocalTime newTime = inputView.readArrivalTimeForUpdate();
+        LocalDate dateForUpdate = now.withDayOfMonth(dayForUpdate).toLocalDate();
+        RecordUpdateResult updateResult = attendanceSystem.updateAttendance(nickname, dateForUpdate, newTime);
+        outputView.printRecordUpdateResult(updateResult);
     }
 
-    private void searchAttendanceRecordsByCrew(LocalDate nowDate) {
-        try {
-            String nickname = inputView.readNickname();
-            List<AttendanceRecord> records = attendanceSystem.searchAttendanceRecordsByCrew(nickname, nowDate);
-            RiskStatistic state = attendanceSystem.searchRiskStatistic(
-                    nickname, makeFistDateInMonth(nowDate), nowDate);
-            outputView.printRecordsInMonth(records);
-            outputView.printAttendanceState(state);
-        } catch (IllegalArgumentException e) {
-            outputView.printErrorMessage(e.getMessage());
-        }
+    private void findRecordsInMonth(LocalDateTime now) {
+        String nickname = inputView.readNickname();
+        validateRegisteredCrew(nickname);
+        List<AttendanceRecord> records = attendanceSystem.findRecordsInMonth(nickname, now.toLocalDate());
+        AttendanceState state = attendanceSystem.calculateAttendanceStateInMonth(nickname, now.toLocalDate());
+        outputView.printRecordSearchResult(records);
+        outputView.printAttendanceState(state);
     }
 
-    private void searchRiskStatistics(LocalDate nowDate) {
-        try {
-            List<RiskStatistic> riskStatistics =
-                    attendanceSystem.searchRiskStatistics(makeFistDateInMonth(nowDate), nowDate);
-            outputView.printRiskStatistics(riskStatistics);
-        } catch (IllegalArgumentException e) {
-            outputView.printErrorMessage(e.getMessage());
-        }
+    private void findRiskCrew(LocalDateTime now) {
+        List<AttendanceState> states = attendanceSystem.findRiskCrew(now.toLocalDate());
+        outputView.printRiskCrews(states);
     }
 
-    private LocalDate makeFistDateInMonth(LocalDate nowDate) {
-        return nowDate.withDayOfMonth(1);
+    private void validateRegisteredCrew(String nickname) {
+        boolean isNotRegistered = !attendanceSystem.checkRegisteredCrew(nickname);
+        if (isNotRegistered) {
+            throw new AttendanceException(ExceptionMessage.INVALID_CREW.getMessage());
+        }
     }
 }

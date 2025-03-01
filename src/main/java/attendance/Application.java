@@ -1,13 +1,13 @@
 package attendance;
 
-import attendance.config.AppConfig;
+import attendance.configuration.ApplicationConfiguration;
 import attendance.controller.AttendanceController;
 
-class Application {
+public class Application {
 
     public static void main(String[] args) {
-        AppConfig config = new AppConfig();
-        AttendanceController controller = new AttendanceController(config);
+        ApplicationConfiguration configuration = new ApplicationConfiguration();
+        AttendanceController controller = new AttendanceController(configuration);
         controller.run();
     }
 }

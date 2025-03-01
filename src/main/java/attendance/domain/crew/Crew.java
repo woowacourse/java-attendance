@@ -1,21 +1,24 @@
 package attendance.domain.crew;
 
+import attendance.exception.AttendanceException;
+import attendance.exception.ExceptionMessage;
 import java.util.Objects;
 
-public class Crew {
+public final class Crew {
 
-    private final String name;
+    private final String nickname;
 
-    public Crew(String name) {
-        this.name = removeSpaceInName(name);
+    public Crew(String nickname) {
+        validateBlankNickname(nickname);
+        this.nickname = removeSideSpace(nickname);
     }
 
-    private String removeSpaceInName(String name) {
-        return name.replace(" ", "");
+    public boolean isSameNickname(String nickname) {
+        return this.nickname.equals(nickname);
     }
 
-    public boolean isSameName(String name) {
-        return this.name.equals(name);
+    public String getNickname() {
+        return nickname;
     }
 
     @Override
@@ -27,15 +30,21 @@ public class Crew {
             return false;
         }
         Crew crew = (Crew) object;
-        return Objects.equals(name, crew.name);
+        return Objects.equals(nickname, crew.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(nickname);
     }
 
-    public String getName() {
-        return name;
+    private String removeSideSpace(String nickname) {
+        return nickname.strip();
+    }
+
+    private void validateBlankNickname(String nickname) {
+        if (nickname == null || nickname.isBlank()) {
+            throw new AttendanceException(ExceptionMessage.BLANK_NICKNAME.getMessage());
+        }
     }
 }

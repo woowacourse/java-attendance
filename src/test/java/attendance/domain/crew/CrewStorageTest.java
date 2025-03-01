@@ -2,66 +2,55 @@ package attendance.domain.crew;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CrewStorageTest {
 
-    CrewStorage crewStorage;
+    CrewStorage crewStorage = new CrewStorage();
 
-    @BeforeEach
-    void beforeEach() {
-        crewStorage = new CrewStorage();
+    @DisplayName("새로운 크루를 추가할 수 있다")
+    @Test
+    void 새로운_크루를_추가할_수_있다() {
+        String nickname = "쿠키";
+        crewStorage.add(nickname);
+
+        assertThat(crewStorage.checkIsNotContained(nickname)).isFalse();
     }
 
-    @DisplayName("크루를 추가할 수 있다.")
+    @DisplayName("모든 크루의 닉네임을 조회할 수 있다")
     @Test
-    void 크루를_추가할_수_있다() {
-        Crew newCrew = new Crew("쿠키");
+    void 모든_크루의_닉네임을_조회할_수_있다() {
+        List<String> nicknames = List.of("쿠키", "빙봉", "이든", "인트");
+        nicknames.forEach(nickname -> crewStorage.add(nickname));
 
-        crewStorage.add(newCrew);
-
-        boolean isContained = crewStorage.isContained(newCrew.getName());
-        assertThat(isContained).isTrue();
+        Set<String> savedCrewNicknames = crewStorage.findAllNicknames();
+        assertThat(savedCrewNicknames).containsExactlyInAnyOrderElementsOf(nicknames);
     }
 
-    @DisplayName("이름을 통해 크루가 등록된 크루인지 확인할 수 있다")
+    @DisplayName("해당 이름의 크루가 존재하지 않는 것을 검증할 수 있다")
     @Test
-    void 이름을_통해_크루가_등록된_크루인지_확인할_수_있다() {
-        String isContainedName = "쿠키";
-        String isNotContainedName = "빙봉";
-        crewStorage.add(new Crew(isContainedName));
+    void 해당_이름의_크루가_존재하지_않는_것을_검증할_수_있다() {
+        crewStorage.add("쿠키");
 
-        assertThat(crewStorage.isContained(isContainedName)).isTrue();
-        assertThat(crewStorage.isContained(isNotContainedName)).isFalse();
-    }
-
-    @DisplayName("모든 크루를 조회할 수 있다.")
-    @Test
-    void 모든_크루를_조회할_수_있다() {
-        List<String> nicknames = List.of("쿠키1", "쿠키2", "쿠키3");
-        nicknames.forEach(nickname -> crewStorage.add(new Crew(nickname)));
-
-        List<Crew> allCrew = crewStorage.findAll();
-        assertThat(allCrew)
-                .extracting(Crew::getName)
-                .containsExactlyInAnyOrder("쿠키1", "쿠키2", "쿠키3");
-    }
-
-    @DisplayName("등록된 크루인지 검증할 수 있다.")
-    @Test
-    void 등록된_크루인지_검증할_수_있다() {
-        crewStorage.add(new Crew("쿠키"));
-
-        assertThatCode(() -> crewStorage.validateCrew("쿠키"))
+        assertThatCode(() -> crewStorage.validateIsNotContained("쿠키"))
                 .doesNotThrowAnyException();
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> crewStorage.validateCrew("빙봉"))
-                .withMessage(ExceptionMessage.NOT_FOUND_CREW.getContent());
+        assertThatThrownBy(() -> crewStorage.validateIsNotContained("빙봉"))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(ExceptionMessage.INVALID_CREW.getMessage());
+    }
+
+    @DisplayName("해당 이름의 크루가 존재하는지 체크할 수 있다")
+    @Test
+    void 해당_이름의_크루가_존재하는지_체크할_수_있다() {
+        crewStorage.add("쿠키");
+        assertThat(crewStorage.checkIsNotContained("쿠키")).isFalse();
+        assertThat(crewStorage.checkIsNotContained("빙봉")).isTrue();
     }
 }
