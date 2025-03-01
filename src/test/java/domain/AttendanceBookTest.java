@@ -1,17 +1,17 @@
 package domain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
+
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
 
 public class AttendanceBookTest {
 
@@ -403,7 +403,7 @@ public class AttendanceBookTest {
             sut.attend("dompoo", LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
             
             //when
-            var result = sut.getAllAttendnaces(nickname);
+            var result = sut.getAllAttendances(nickname);
 
             //then
             assertThat(result).extracting(
@@ -425,7 +425,7 @@ public class AttendanceBookTest {
             var nickname = "dompoo";
             
             //when
-            var result = sut.getAllAttendnaces(nickname);
+            var result = sut.getAllAttendances(nickname);
 
             //then
             assertThat(result).extracting(
@@ -443,7 +443,7 @@ public class AttendanceBookTest {
             var nickname = "dompoo";
             
             //when
-            var result = sut.getAllAttendnaces(nickname);
+            var result = sut.getAllAttendances(nickname);
 
             //then
             assertThat(result).extracting(
@@ -459,7 +459,7 @@ public class AttendanceBookTest {
             var nickname = "brown";
             
             //expected
-            assertThatThrownBy(() -> sut.getAllAttendnaces(nickname))
+            assertThatThrownBy(() -> sut.getAllAttendances(nickname))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("등록되지 않은 닉네임입니다.");
         }

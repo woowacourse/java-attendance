@@ -1,5 +1,9 @@
 package controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import domain.AttendanceBook;
 import domain.AttendanceStatus;
 import io.dto.ExpelWarningCrewResponse;
@@ -8,10 +12,6 @@ import io.view.InputView;
 import io.view.OutputView;
 import service.attendanceBookFactory.AttendanceBookFactory;
 import service.todayProvider.TodayProvider;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AttendanceControllerImpl implements AttendanceController {
     
@@ -83,7 +83,7 @@ public class AttendanceControllerImpl implements AttendanceController {
             final AttendanceBook attendanceBook
     ) {
         var nickname = inputView.getRecordFindNickname();
-        var attendances = attendanceBook.getAllAttendnaces(nickname);
+        var attendances = attendanceBook.getAllAttendances(nickname);
         
         outputView.outputAttendanceRecords(
                 nickname,

@@ -57,7 +57,7 @@ public class AttendanceBook {
         crewAttendances.get(nickname).modify(targetDate, newTime);
     }
     
-    public Set<Attendance> getAllAttendnaces(final String nickname) {
+    public Set<Attendance> getAllAttendances(final String nickname) {
         validateNicknameExist(nickname);
         
         return crewAttendances.get(nickname).getAllAttendances();
