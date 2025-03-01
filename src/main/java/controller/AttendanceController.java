@@ -75,7 +75,7 @@ public class AttendanceController {
 
     private void findAttendanceHistoryByCrew(Attendances attendances) {
         AttendanceHistoryRequest request = InputView.readAttendanceHistoryRequest();
-        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request);
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request, dateTimeGenerator);
         OutputView.printAttendanceHistory(response);
     }
 

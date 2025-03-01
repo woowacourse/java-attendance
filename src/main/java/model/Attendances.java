@@ -83,13 +83,16 @@ public class Attendances {
         );
     }
 
-    public AttendanceHistoryResponse findHistoryByCrew(AttendanceHistoryRequest request) {
+    public AttendanceHistoryResponse findHistoryByCrew(AttendanceHistoryRequest request,
+                                                       DateTimeGenerator dateTimeGenerator) {
         Crew crew = Crew.of(request.nickname());
-        List<Attendance> attendances = getAttendancesByCrew(crew);
-        EnumMap<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(attendances);
+        List<Attendance> filteredAttendances = getAttendancesByCrew(crew).stream()
+                .filter(attendance -> attendance.getCheckInDate().isBefore(dateTimeGenerator.now()))
+                .toList();
+        EnumMap<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(filteredAttendances);
         PunishmentType punishmentType = PunishmentType.find(attendanceTotal);
 
-        return new AttendanceHistoryResponse(crew.getNickname(), attendances, attendanceTotal, punishmentType);
+        return new AttendanceHistoryResponse(crew.getNickname(), filteredAttendances, attendanceTotal, punishmentType);
     }
 
     public AttendanceRiskCrewsResponse findRiskCrews() {

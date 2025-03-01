@@ -172,7 +172,7 @@ class AttendancesTest {
         AttendanceHistoryRequest request = new AttendanceHistoryRequest(nickname);
 
         // when
-        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request);
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request, dateTimeGenerator);
 
         // then
         assertThat(response.nickname()).isEqualTo(nickname);
