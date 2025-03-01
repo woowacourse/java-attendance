@@ -22,7 +22,8 @@ public class AttendanceStatusChecker {
         LATE,
         ABSENT;
     }
-    public static AttendanceStatus checkStatus(AttendanceDateTime attendanceDateTime) {
+
+    public static AttendanceStatus checkStatus(final AttendanceDateTime attendanceDateTime) {
         if (attendanceDateTime.getLocalDateTime().toLocalTime().equals(AttendanceDateTime.ABSENT_TIME)) {
             return AttendanceStatus.ABSENT;
         }
@@ -34,7 +35,7 @@ public class AttendanceStatusChecker {
         return findAttendanceStatusByMinuteDifference(minuteDifference);
     }
 
-    private static AttendanceStatus findAttendanceStatusByMinuteDifference(int minuteDifference) {
+    private static AttendanceStatus findAttendanceStatusByMinuteDifference(final int minuteDifference) {
         if (minuteDifference > LATE_DEADLINE_MINUTE) {
             return AttendanceStatus.ABSENT;
         }
@@ -44,7 +45,7 @@ public class AttendanceStatusChecker {
         return AttendanceStatus.ATTENDANCE;
     }
 
-    public static Map<AttendanceStatus, Long> checkStatuses(List<AttendanceDateTime> attendanceDateTimes) {
+    public static Map<AttendanceStatus, Long> checkStatuses(final List<AttendanceDateTime> attendanceDateTimes) {
         Map<AttendanceStatus, Long> attendanceStatuses = Arrays.stream(AttendanceStatus.values())
                 .collect(Collectors.toMap(status -> status, status -> 0L));
         attendanceDateTimes.stream()
@@ -54,10 +55,10 @@ public class AttendanceStatusChecker {
         return attendanceStatuses;
     }
 
-    public static long calculateAllAbsent(List<AttendanceDateTime> attendanceDateTimes) {
+    public static long calculateAllAbsent(final List<AttendanceDateTime> attendanceDateTimes) {
         Map<AttendanceStatus, Long> attendanceStatuses = checkStatuses(attendanceDateTimes);
-        long absentCount = attendanceStatuses.getOrDefault(AttendanceStatus.ABSENT, 0L);
-        absentCount += attendanceStatuses.getOrDefault(AttendanceStatus.LATE, 0L) / LATE_COUNT_PER_ABSENT;
+        long absentCount = attendanceStatuses.get(AttendanceStatus.ABSENT);
+        absentCount += attendanceStatuses.get(AttendanceStatus.LATE) / LATE_COUNT_PER_ABSENT;
         return absentCount;
     }
 }
