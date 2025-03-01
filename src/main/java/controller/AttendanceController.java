@@ -30,9 +30,11 @@ public class AttendanceController {
             Crews crews = converter.convertToCrews(rawAttendances);
             Attendances attendances = setUpAttendances(crews, rawAttendances);
 
-            while (true) {
-                Command command = readCommand();
-            }
+            Command command;
+            do {
+                command = readCommand();
+                process(command, crews, attendances);
+            } while (command != Command.QUIT);
         } catch (RuntimeException e) {
             outputView.printErrorMessage(e);
         }
@@ -51,5 +53,24 @@ public class AttendanceController {
     private Command readCommand() {
         LocalDate today = LocalDate.now();
         return Command.find(inputView.readCommand(today));
+    }
+
+    private void process(Command command, Crews crews, Attendances attendances) {
+        if (command.isOne()) {
+            checkIn(crews, attendances);
+        }
+    }
+
+    private void checkIn(Crews crews, Attendances attendances) {
+        LocalDate today = LocalDate.now();
+        String rawNickname = inputView.readNickname();
+        String rawCheckInTime = inputView.readCheckInTime();
+
+        Crew crew = crews.findByNickname(rawNickname);
+
+        Attendance attendance = converter.convertToAttendance(crew, rawCheckInTime, today);
+        attendances.add(attendance);
+
+        outputView.printCheckInResult(attendance);
     }
 }

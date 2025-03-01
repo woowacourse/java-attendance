@@ -38,6 +38,10 @@ public class Attendance {
         return AttendanceType.calculateType(attendanceTime);
     }
 
+    public AttendanceTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

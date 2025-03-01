@@ -52,6 +52,10 @@ public class AttendanceTime {
         return OperationSchedule.calculateDifferenceFromAttendanceStandard(time);
     }
 
+    public LocalDateTime getTime() {
+        return time;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

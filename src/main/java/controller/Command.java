@@ -23,4 +23,8 @@ public enum Command {
         }
         throw new IllegalArgumentException("옵션이 존재하지 않습니다.");
     }
+
+    public boolean isOne() {
+        return this == ONE;
+    }
 }

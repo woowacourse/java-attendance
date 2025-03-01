@@ -4,7 +4,9 @@ import domain.Attendance;
 import domain.AttendanceTime;
 import domain.Crew;
 import domain.Crews;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +31,21 @@ public class StringConverter {
     public Attendance convertToAttendance(String rawCheckInDateTime, Crew crew) {
         LocalDateTime checkInTime = convertToLocalDateTime(rawCheckInDateTime);
         return Attendance.of(crew, AttendanceTime.of(checkInTime));
+    }
+
+    public Attendance convertToAttendance(Crew crew, String rawCheckInTime, LocalDate today) {
+        validateNullOrBlank(rawCheckInTime);
+        validateTimeFormat(rawCheckInTime);
+        LocalDateTime checkInTime = LocalDateTime.of(today, LocalTime.parse(rawCheckInTime));
+
+        return Attendance.of(crew, new AttendanceTime(checkInTime));
+    }
+
+    private void validateTimeFormat(String time) {
+        String regExpression = "^\\d{2}:\\d{2}$";
+        if (!time.matches(regExpression)) {
+            throw new IllegalArgumentException("시간 형식이 올바르지 않습니다.");
+        }
     }
 
     public LocalDateTime convertToLocalDateTime(String rawDateTime) {
