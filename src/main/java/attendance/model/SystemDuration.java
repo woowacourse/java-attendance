@@ -9,4 +9,8 @@ public class SystemDuration {
     public static boolean isSystemDuration(LocalDate now) {
         return !(now.isBefore(startDate) || now.isAfter(endDate));
     }
+
+    public static LocalDate computeLastAttendanceDate(LocalDate now) {
+        return now;
+    }
 }

@@ -31,4 +31,17 @@ class SystemDurationTest {
         // then
         assertThat(isDuration).isTrue();
     }
+
+    @Test
+    void 출석_가능한_가장_마지막_날짜를_확인한다() {
+        // given
+        LocalDate now = LocalDate.of(2025, 1, 1);
+
+        // when
+        LocalDate actual = SystemDuration.computeLastAttendanceDate(now);
+        LocalDate expected = LocalDate.of(2024, 12, 31);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
+    }
 }
