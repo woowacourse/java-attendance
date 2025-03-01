@@ -3,6 +3,7 @@ package attendance.controller;
 import attendance.CurrentDate;
 import attendance.domain.AttendanceHistory;
 import attendance.view.InputView;
+import java.time.LocalDate;
 
 public class AttendanceController {
 
@@ -19,6 +20,8 @@ public class AttendanceController {
     public void start() {
         String inputNickname = inputView.inputNickname();
         attendanceHistory.isValidCrew(inputNickname);
+        LocalDate nowDate = currentDate.now();
+
     }
 
 
