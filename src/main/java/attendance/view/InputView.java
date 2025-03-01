@@ -16,6 +16,9 @@ public class InputView {
     private static final String COMMAND_PROMPT_FORMAT = "%s. %s\n";
     private static final String NICK_NAME_PROMPT = "닉네임을 입력해 주세요.\n";
     private static final String ENTER_ATTENDANCE_TIME_PROMPT = "등교 시간을 입력해 주세요.\n";
+    private static final String MODIFY_NICK_NAME_PROMPT = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.\n";
+    private static final String MODIFY_DATE_PROMPT = "수정하려는 날짜(일)를 입력해 주세요.\n";
+    private static final String MODIFY_TIME_PROMPT = "언제로 변경하겠습니까?\n";
 
 
     private final BufferedReader bufferedReader;
@@ -40,7 +43,6 @@ public class InputView {
                     builder.append(
                             String.format(COMMAND_PROMPT_FORMAT, command.getCommand(), command.getDescription()));
                 });
-
         return builder.toString();
     }
 
@@ -50,6 +52,11 @@ public class InputView {
 
     public String inputCrewName() {
         System.out.print(NICK_NAME_PROMPT);
+        return readLine();
+    }
+
+    public String inputModifyCrewName() {
+        System.out.println(MODIFY_NICK_NAME_PROMPT);
         return readLine();
     }
 
@@ -63,12 +70,45 @@ public class InputView {
         }
     }
 
+    public LocalTime inputModifyTime() {
+        try {
+            System.out.print(MODIFY_TIME_PROMPT);
+            return parseTime();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return inputEnterTime();
+        }
+    }
+
     private LocalTime parseTime() {
         try {
             String inputTime = readLine();
             return LocalTime.parse(inputTime);
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("[ERROR] 입력 형식이 올바르지 않습니다. HH:mm 형식으로 입력해주세요.\n");
+        }
+    }
+
+    public LocalDate inputModifyDate() {
+        try {
+            System.out.println(MODIFY_DATE_PROMPT);
+            LocalDate now = LocalDate.now();
+            return LocalDate.of(now.getYear(), now.getMonthValue(), parseInt());
+        } catch (DateTimeException e) {
+            System.out.println("[ERROR] 날짜가 올바르지 않습니다. 다시 입력해 주세요.");
+            return inputModifyDate();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return inputModifyDate();
+        }
+    }
+
+    public Integer parseInt() {
+        try {
+            String inputTime = readLine();
+            return Integer.parseInt(inputTime);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("[ERROR] 입력이 올바르지 않습니다. 날짜(일)만 입력해주세요.\n");
         }
     }
 
