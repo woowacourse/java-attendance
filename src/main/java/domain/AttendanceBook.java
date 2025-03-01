@@ -30,39 +30,49 @@ public class AttendanceBook {
         records.add(attendDateTime);
     }
 
-    public AttendanceRecords getRecordsOfCrew(Crew crew) {
-        return crewRecords.getOrDefault(crew, new AttendanceRecords());
+    public List<AttendanceDateTime> findAllRecordsByCrew(Crew crew) {
+        AttendanceRecords records = crewRecords.getOrDefault(crew, new AttendanceRecords());
+        return records.getRecords();
     }
 
-    public List<AttendanceDateTime> listAttendancesOfCrew(Crew crew, LocalDate fromInclusive,
-        LocalDate endInclusive) {
+    public List<AttendanceDateTime> listAttendancesOfCrew(Crew crew, LocalDate fromInclusive, LocalDate endInclusive) {
         AttendanceRecords records = crewRecords.getOrDefault(crew, new AttendanceRecords());
         return records.getRecordsWithMissingDatesBetween(fromInclusive, endInclusive);
     }
 
     public Optional<AttendanceDateTime> findRecordByCrewAndDate(Crew crew, LocalDate date) {
-        return getRecordsOfCrew(crew).getRecords()
+        return findAllRecordsByCrew(crew)
             .stream()
             .filter(adt -> adt.isSameDate(date))
             .findAny();
     }
 
     public void modify(Crew crew, LocalDate dateToModify, AttendanceDateTime newRecord) {
-        AttendanceRecords records = getRecordsOfCrew(crew);
+        AttendanceRecords records = crewRecords.get(crew);
         records.removeIfAttendedOnDate(dateToModify);
         records.add(newRecord);
     }
 
     public Map<AttendanceStatus, Integer> countAttendanceStatuses(
         Crew crew, LocalDate fromInclusive, LocalDate endInclusive) {
+        Map<AttendanceStatus, Integer> counts = initializeZeroCountMap();
+
+        List<AttendanceDateTime> attendances = listAttendancesOfCrew(crew, fromInclusive, endInclusive);
+        applyCountsToMap(attendances, counts);
+        return counts;
+    }
+
+    private Map<AttendanceStatus, Integer> initializeZeroCountMap() {
         Map<AttendanceStatus, Integer> counts = new EnumMap<>(AttendanceStatus.class);
         Arrays.stream(AttendanceStatus.values())
             .forEach(status -> counts.put(status, 0));
+        return counts;
+    }
 
-        List<AttendanceDateTime> attendances = listAttendancesOfCrew(crew, fromInclusive, endInclusive);
+    private void applyCountsToMap(List<AttendanceDateTime> attendances,
+        Map<AttendanceStatus, Integer> counts) {
         attendances.stream()
             .map(AttendanceDateTime::getAttendanceStatus)
             .forEach(status -> counts.compute(status, (key, val) -> val + 1));
-        return counts;
     }
 }

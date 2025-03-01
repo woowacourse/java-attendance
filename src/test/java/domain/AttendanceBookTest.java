@@ -60,8 +60,8 @@ public class AttendanceBookTest {
     void 크루와_출석일시를_통해_해당_크루의_출석_기록에_출석일시를_추가할_수_있다() {
         book.attend(crew, dateTime);
 
-        var records = book.getRecordsOfCrew(crew);
-        assertThat(records.getRecords()).contains(dateTime);
+        var records = book.findAllRecordsByCrew(crew);
+        assertThat(records).contains(dateTime);
     }
 
     @Test
@@ -79,15 +79,15 @@ public class AttendanceBookTest {
         book.attend(crew, dateTime1);
         book.attend(crew, dateTime2);
 
-        var records = book.getRecordsOfCrew(crew);
+        var records = book.findAllRecordsByCrew(crew);
 
-        assertThat(records.getRecords()).contains(dateTime1, dateTime2);
+        assertThat(records).contains(dateTime1, dateTime2);
     }
 
     @Test
     void 크루가_출석한_적이_없으면_출석기록은_비어있다() {
-        var records = book.getRecordsOfCrew(crew);
-        assertThat(records.getRecords()).isEmpty();
+        var records = book.findAllRecordsByCrew(crew);
+        assertThat(records).isEmpty();
     }
 
     @Test

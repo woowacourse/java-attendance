@@ -3,8 +3,9 @@ package file;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.AttendanceBook;
-import domain.AttendanceRecords;
+import domain.AttendanceDateTime;
 import domain.Crew;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -27,7 +28,7 @@ public class AttendancesFileReaderTest {
         AttendanceBook book = AttendanceBookFileReader.read("src/test/resources/test.csv");
         Crew crew = book.findCrewByName("포포").orElseThrow();
 
-        AttendanceRecords records = book.getRecordsOfCrew(crew);
-        assertThat(records.getRecords()).hasSize(3);
+        List<AttendanceDateTime> records = book.findAllRecordsByCrew(crew);
+        assertThat(records).hasSize(3);
     }
 }
