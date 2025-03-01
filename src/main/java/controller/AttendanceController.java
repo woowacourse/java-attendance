@@ -56,11 +56,13 @@ public class AttendanceController {
 
     private void editRecord() {
         String nickname = inputView.readEditNickname();
-        String date = inputView.readEditDate();
+        String dateOfMonth = inputView.readEditDate();
+        String time = inputView.readEditTime();
 
         Crew crew = new Crew(nickname);
-        CrewRecords crewRecords = new CrewRecords();
         crewRecords.validateCrew(crew);
+        LocalDate date = LocalDate.of(2024, 12, Integer.parseInt(dateOfMonth));
+        crewRecords.editRecord(crew, date, LocalTime.parse(time));
     }
 
     private void validateMenu(String input) {

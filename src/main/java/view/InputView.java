@@ -44,7 +44,7 @@ public class InputView {
     }
 
     public String readEditTime() {
-        System.out.println("언제로 변경하겠습니까?" + System.lineSeparator());
+        System.out.println("언제로 변경하겠습니까?");
         String input = scanner.nextLine();
         validateTime(input);
         return input;
