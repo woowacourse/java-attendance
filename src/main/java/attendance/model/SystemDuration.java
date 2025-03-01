@@ -11,6 +11,9 @@ public class SystemDuration {
     }
 
     public static LocalDate computeLastAttendanceDate(LocalDate now) {
-        return now;
+        if (now.isBefore(SystemDuration.endDate)) {
+            return now;
+        }
+        return SystemDuration.endDate;
     }
 }
