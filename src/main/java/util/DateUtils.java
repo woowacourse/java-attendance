@@ -6,6 +6,10 @@ import java.time.LocalDate;
 
 public class DateUtils {
 
+    public static boolean isDayOff(LocalDate date) {
+        return !isWorkingDay(date);
+    }
+
     public static boolean isWorkingDay(LocalDate date) {
         return !isWeekend(date) && !Holiday.isHoliday(date);
     }
