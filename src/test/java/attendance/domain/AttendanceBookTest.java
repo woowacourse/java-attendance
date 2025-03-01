@@ -58,6 +58,29 @@ class AttendanceBookTest {
             assertThat(attendanceBook.retrieveByDate(attendanceDate)).isEqualTo(
                 modifiedAttendanceDateTime);
         }
+
+        @Test
+        void 출석일시를_찾는다() {
+            // given
+            Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
+            AttendanceDate attendanceDate = new AttendanceDate(2024, 12, 3);
+            AttendanceTime attendanceTime = new AttendanceTime(10, 0);
+            attendanceDateTimes.put(attendanceDate, attendanceTime);
+
+            AttendanceRecord attendanceRecord = new AttendanceRecord(
+                attendanceDateTimes);
+            AttendanceBook attendanceBook = new AttendanceBook(new Crew("머피"),
+                attendanceRecord);
+
+            // when
+            AttendanceDateTime foundAttendanceDateTime = attendanceBook.retrieveByDate(
+                attendanceDate);
+
+            // then
+            assertThat(foundAttendanceDateTime).isEqualTo(
+                new AttendanceDateTime(attendanceDate, attendanceTime));
+        }
+
         @Test
         void 출석일시를_오름차순_정렬하여_반환한다() {
             // given
