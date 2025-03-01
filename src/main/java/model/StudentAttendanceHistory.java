@@ -29,6 +29,7 @@ public class StudentAttendanceHistory {
     public void modifyAttendance(AttendanceDateTime wantToAddAttendanceDateTime) {
         try {
             attendanceHistory.remove(findSameAttendanceDate(wantToAddAttendanceDateTime));
+            addAttendanceDateTime(wantToAddAttendanceDateTime);
             }
             catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
