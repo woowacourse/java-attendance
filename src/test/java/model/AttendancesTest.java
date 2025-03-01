@@ -126,7 +126,7 @@ class AttendancesTest {
     void test6() {
         // given
         String nickname = "미소";
-        String day = "3";
+        String day = "6";
         String updateTime = "10:00";
         AttendanceUpdateRequest request = new AttendanceUpdateRequest(nickname, day, updateTime);
 
@@ -134,8 +134,8 @@ class AttendancesTest {
         AttendanceUpdateResponse response = attendances.update(request, dateTimeGenerator);
 
         // then
-        assertThat(response.date()).isEqualTo(LocalDate.of(2024, 12, 3));
-        assertThat(response.previousTime()).isEqualTo(LocalTime.of(10, 8));
+        assertThat(response.date()).isEqualTo(LocalDate.of(2024, 12, 6));
+        assertThat(response.previousTime()).isEqualTo(LocalTime.of(10, 30));
         assertThat(response.previousAttendanceType()).isEqualTo(AttendanceType.BE_LATE);
         assertThat(response.updateTime()).isEqualTo(LocalTime.of(10, 0));
         assertThat(response.updateAttendanceType()).isEqualTo(AttendanceType.SUCCESS);
