@@ -48,4 +48,8 @@ public enum AttendanceStatus {
         return getAttendanceStatus(hour, minute, MONDAY_HOUR_LIMIT);
     }
 
+    public String getName() {
+        return name;
+    }
+    
 }
