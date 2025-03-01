@@ -31,28 +31,28 @@ class FileInputTest {
     @Test
     @DisplayName("파일 읽는 메서드 테스트")
     void test3() {
-        Map<String, StudentAttendanceHistory> studentInformationInFil = FileInput.readFileAndMakeStudentInformation();
+        Map<String, StudentAttendanceHistory> studentInfFormationInFile = FileInput.readFileAndMakeStudentInformation();
 
-        Assertions.assertTrue(studentInformationInFil.containsKey("이든"));
-        Assertions.assertTrue(studentInformationInFil.containsKey("짱수"));
-        Assertions.assertTrue(studentInformationInFil.containsKey("빙봉"));
-        Assertions.assertTrue(studentInformationInFil.containsKey("빙티"));
-        Assertions.assertTrue(studentInformationInFil.containsKey("쿠키"));
-        Assertions.assertTrue(studentInformationInFil.get("쿠키").isExistSameAttendanceDateTime(new AttendanceDateTime(
+        Assertions.assertTrue(studentInfFormationInFile.containsKey("이든"));
+        Assertions.assertTrue(studentInfFormationInFile.containsKey("짱수"));
+        Assertions.assertTrue(studentInfFormationInFile.containsKey("빙봉"));
+        Assertions.assertTrue(studentInfFormationInFile.containsKey("빙티"));
+        Assertions.assertTrue(studentInfFormationInFile.containsKey("쿠키"));
+        Assertions.assertTrue(studentInfFormationInFile.get("쿠키").isExistSameAttendanceDateTime(new AttendanceDateTime(
                 LocalDateTime.of(2024, 12, 2, 13, 1))));
-        Assertions.assertTrue(studentInformationInFil.get("쿠키").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 6))));
+        Assertions.assertTrue(studentInfFormationInFile.get("쿠키").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 6))));
 
-        Assertions.assertTrue(studentInformationInFil.get("빙티").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 7))));
-        Assertions.assertTrue(studentInformationInFil.get("빙티").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 0))));
+        Assertions.assertTrue(studentInfFormationInFile.get("빙티").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 7))));
+        Assertions.assertTrue(studentInfFormationInFile.get("빙티").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 0))));
 
-        Assertions.assertTrue(studentInformationInFil.get("이든").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 2))));
-        Assertions.assertTrue(studentInformationInFil.get("이든").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 6))));
+        Assertions.assertTrue(studentInfFormationInFile.get("이든").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 2))));
+        Assertions.assertTrue(studentInfFormationInFile.get("이든").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 6))));
 
-        Assertions.assertTrue(studentInformationInFil.get("빙봉").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 6))));
-        Assertions.assertTrue(studentInformationInFil.get("빙봉").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 3))));
+        Assertions.assertTrue(studentInfFormationInFile.get("빙봉").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 6))));
+        Assertions.assertTrue(studentInfFormationInFile.get("빙봉").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 3))));
 
-        Assertions.assertTrue(studentInformationInFil.get("짱수").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 0))));
-        Assertions.assertTrue(studentInformationInFil.get("짱수").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 0))));
+        Assertions.assertTrue(studentInfFormationInFile.get("짱수").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 0))));
+        Assertions.assertTrue(studentInfFormationInFile.get("짱수").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 0))));
 
     }
 }
