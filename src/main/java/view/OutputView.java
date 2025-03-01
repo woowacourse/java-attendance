@@ -77,20 +77,23 @@ public class OutputView {
 
     public static void printDangerCrews(List<DangerCrew> vos) {
         System.out.println("제적 위험자 조회 결과");
-        vos.sort(
-            Comparator.comparing(DangerCrew::penalty)
-                .thenComparing((vo1, vo2) -> {
-                    int left = vo1.absence() + (vo1.late() / 3);
-                    int right = vo2.absence() + (vo2.late() / 3);
-                    return Integer.compare(left, right);
-                })
-                .thenComparing(DangerCrew -> DangerCrew.crew().getName())
-        );
 
+        vos.sort(dangerCrewComparator());
         for (DangerCrew vo : vos) {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
                 vo.crew().getName(), vo.absence(), vo.late(), vo.penalty().description());
         }
         blankLine();
+    }
+
+    private static Comparator<DangerCrew> dangerCrewComparator() {
+        return Comparator
+            .comparing(DangerCrew::penalty)
+            .thenComparing((vo1, vo2) -> {
+                int left = vo1.absence() + (vo1.late() / Penalty.LATE_TO_ABSENCE_RATE);
+                int right = vo2.absence() + (vo2.late() / Penalty.LATE_TO_ABSENCE_RATE);
+                return -1 * Integer.compare(left, right);
+            })
+            .thenComparing(DangerCrew -> DangerCrew.crew().getName());
     }
 }
