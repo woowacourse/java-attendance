@@ -1,9 +1,10 @@
 package util;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Map;
-import model.AttendanceDateTime;
+import model.AttendanceDate;
+import model.AttendanceTime;
 import model.StudentAttendanceHistory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -17,8 +18,8 @@ class FileInputTest {
     void test1() {
         String information = "쿠키,,2024-12-02 13:01";
         org.assertj.core.api.Assertions.assertThatThrownBy(() -> information.matches(regex))
-                        .isInstanceOf(IllegalArgumentException.class)
-                                .hasMessage("[ERROR] 파일 자료 형식에 맞지 않습니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 파일 자료 형식에 맞지 않습니다.");
     }
 
     @Test
@@ -38,21 +39,47 @@ class FileInputTest {
         Assertions.assertTrue(studentInfFormationInFile.containsKey("빙봉"));
         Assertions.assertTrue(studentInfFormationInFile.containsKey("빙티"));
         Assertions.assertTrue(studentInfFormationInFile.containsKey("쿠키"));
-        Assertions.assertTrue(studentInfFormationInFile.get("쿠키").isExistSameAttendanceDateTime(new AttendanceDateTime(
-                LocalDateTime.of(2024, 12, 2, 13, 1))));
-        Assertions.assertTrue(studentInfFormationInFile.get("쿠키").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 6))));
 
-        Assertions.assertTrue(studentInfFormationInFile.get("빙티").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 7))));
-        Assertions.assertTrue(studentInfFormationInFile.get("빙티").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 0))));
+        Assertions.assertEquals(studentInfFormationInFile.get("쿠키").getAttendanceHistory().get(
+                new AttendanceDate(LocalDate.of(2024, 12, 3))
+        ), new AttendanceTime(LocalTime.of(10, 6)));
 
-        Assertions.assertTrue(studentInfFormationInFile.get("이든").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 2))));
-        Assertions.assertTrue(studentInfFormationInFile.get("이든").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 6))));
+        Assertions.assertEquals(studentInfFormationInFile.get("쿠키").getAttendanceHistory().get(
+                new AttendanceDate(LocalDate.of(2024, 12, 2))
+        ), new AttendanceTime(LocalTime.of(13, 1)));
 
-        Assertions.assertTrue(studentInfFormationInFile.get("빙봉").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 6))));
-        Assertions.assertTrue(studentInfFormationInFile.get("빙봉").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 3))));
+        Assertions.assertEquals(studentInfFormationInFile.get("빙티").getAttendanceHistory().get(
+                new AttendanceDate(LocalDate.of(2024, 12, 2))
+        ), new AttendanceTime(LocalTime.of(13, 0)));
 
-        Assertions.assertTrue(studentInfFormationInFile.get("짱수").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 0))));
-        Assertions.assertTrue(studentInfFormationInFile.get("짱수").isExistSameAttendanceDateTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 10, 0))));
+        Assertions.assertEquals(studentInfFormationInFile.get("빙티").getAttendanceHistory().get(
+                new AttendanceDate(LocalDate.of(2024, 12, 3))
+        ), new AttendanceTime(LocalTime.of(10, 7)));
+
+        Assertions.assertEquals(studentInfFormationInFile.get("이든").getAttendanceHistory().get(
+                new AttendanceDate(LocalDate.of(2024, 12, 2))
+        ), new AttendanceTime(LocalTime.of(13, 2)));
+
+        Assertions.assertEquals(studentInfFormationInFile.get("이든").getAttendanceHistory().get(
+                new AttendanceDate(LocalDate.of(2024, 12, 3))
+        ), new AttendanceTime(LocalTime.of(10, 6)));
+
+        Assertions.assertEquals(studentInfFormationInFile.get("빙봉").getAttendanceHistory().get(
+                new AttendanceDate(LocalDate.of(2024, 12, 2))
+        ), new AttendanceTime(LocalTime.of(13, 6)));
+
+        Assertions.assertEquals(studentInfFormationInFile.get("빙봉").getAttendanceHistory().get(
+                new AttendanceDate(LocalDate.of(2024, 12, 3))
+        ), new AttendanceTime(LocalTime.of(10, 3)));
+
+
+        Assertions.assertEquals(studentInfFormationInFile.get("짱수").getAttendanceHistory().get(
+                new AttendanceDate(LocalDate.of(2024, 12, 2))
+        ), new AttendanceTime(LocalTime.of(13, 0)));
+
+        Assertions.assertEquals(studentInfFormationInFile.get("짱수").getAttendanceHistory().get(
+                new AttendanceDate(LocalDate.of(2024, 12, 3))
+        ), new AttendanceTime(LocalTime.of(10, 0)));
 
     }
 }
