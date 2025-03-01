@@ -13,6 +13,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,6 +57,23 @@ public class OutputView {
         printEmptyLine();
         printWarningLevel(attendanceResult.getWarningLevel());
     }
+
+    public void printAttendanceResults(List<AttendanceResult> attendanceResults) {
+        System.out.println("제적 위험자 조회 결과");
+        Collections.sort(attendanceResults);
+        for (AttendanceResult attendanceResult : attendanceResults) {
+            if (attendanceResult.getWarningLevel() == WarningLevel.NONE) {
+                continue;
+            }
+            Map<AttendanceStatus, Integer> attendanceStatus = attendanceResult.getAttendanceStatus();
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                    attendanceResult.getNickname(),
+                    attendanceStatus.getOrDefault(ABSENT, 0),
+                    attendanceStatus.getOrDefault(LATE, 0),
+                    toKoreaWarningLevel(attendanceResult.getWarningLevel()));
+        }
+    }
+
 
     private void printAttendanceStatus(AttendanceResult attendanceResult) {
         Map<AttendanceStatus, Integer> attendanceStatus = attendanceResult.getAttendanceStatus();

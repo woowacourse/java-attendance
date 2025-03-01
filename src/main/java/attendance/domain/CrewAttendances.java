@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class CrewAttendances {
 
@@ -25,7 +26,7 @@ public class CrewAttendances {
     public List<AttendanceResult> createAllAttendanceResult(LocalDate endDate) {
         return crewAttendances.stream()
                 .map(crewAttendance -> crewAttendance.createAttendanceResult(endDate))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override

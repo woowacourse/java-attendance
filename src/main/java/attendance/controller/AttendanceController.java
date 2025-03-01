@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 
 public class AttendanceController {
@@ -82,6 +83,7 @@ public class AttendanceController {
 
     private void checkAttendanceWarningCrews(LocalDate checkEndDate, AttendanceBook attendanceBook) {
         CrewAttendances crewAttendances = attendanceBook.createCrewAttendances();
-//        crewAttendances.
+        List<AttendanceResult> attendanceResults = crewAttendances.createAllAttendanceResult(checkEndDate);
+        outputView.printAttendanceResults(attendanceResults);
     }
 }
