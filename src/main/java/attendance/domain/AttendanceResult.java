@@ -28,14 +28,8 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
         while (currentDate.isBeforeAndEqual(attendanceEndDate)) {
             findAttendanceByDate(nickname, attendances, currentDate)
                     .ifPresentOrElse(
-                            attendance -> attendanceMap.put(
-                                    attendance.getAttendanceStatus(),
-                                    attendanceMap.getOrDefault(attendance.getAttendanceStatus(), 0) + 1
-                            ),
-                            () -> attendanceMap.put(
-                                    AttendanceStatus.ABSENT,
-                                    attendanceMap.getOrDefault(AttendanceStatus.ABSENT, 0) + 1
-                            )
+                            attendance -> putAttendance(attendance, attendanceMap),
+                            () -> putAbsentAttendance(attendanceMap)
                     );
             currentDate = currentDate.nextDate();
         }
@@ -48,6 +42,20 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
         return attendances.stream()
                 .filter(attendance -> attendance.isAlreadyAttend(nickname, attendanceDate))
                 .findFirst();
+    }
+
+    private static void putAttendance(Attendance attendance, Map<AttendanceStatus, Integer> attendanceMap) {
+        attendanceMap.put(
+                attendance.getAttendanceStatus(),
+                attendanceMap.getOrDefault(attendance.getAttendanceStatus(), 0) + 1
+        );
+    }
+
+    private static void putAbsentAttendance(Map<AttendanceStatus, Integer> attendanceMap) {
+        attendanceMap.put(
+                AttendanceStatus.ABSENT,
+                attendanceMap.getOrDefault(AttendanceStatus.ABSENT, 0) + 1
+        );
     }
 
     public WarningLevel getWarningLevel() {
