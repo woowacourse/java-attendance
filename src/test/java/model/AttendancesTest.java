@@ -5,6 +5,7 @@ import static constant.PathConstant.ATTENDANCE_FILE_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import dto.AttendanceCheckInRequest;
 import dto.AttendanceCheckInResponse;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -56,9 +57,10 @@ class AttendancesTest {
         // given
         String nickname = "미소";
         String checkInTime = "10:00";
+        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(nickname, checkInTime, dateTimeGenerator);
+        AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
 
         // then
         assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now().toLocalDate());
@@ -72,9 +74,10 @@ class AttendancesTest {
         // given
         String nickname = "미소";
         String checkInTime = "10:06";
+        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(nickname, checkInTime, dateTimeGenerator);
+        AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
 
         // then
         assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now().toLocalDate());
@@ -88,9 +91,10 @@ class AttendancesTest {
         // given
         String nickname = "미소";
         String checkInTime = "10:31";
+        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(nickname, checkInTime, dateTimeGenerator);
+        AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
 
         // then
         assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now().toLocalDate());
@@ -104,9 +108,10 @@ class AttendancesTest {
         // given
         String nickname = "헤일러";
         String checkInTime = "10:00";
+        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(nickname, checkInTime, dateTimeGenerator))
+        assertThatThrownBy(() -> attendances.add(request, dateTimeGenerator))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(NOT_FOUND_CREW.getMessage());
     }
