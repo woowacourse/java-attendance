@@ -22,16 +22,20 @@ public class CheckInDate implements Comparable<CheckInDate> {
     }
 
     private void validateSchoolDay(LocalDate checkInDate) {
-        if (!isNotWeekend(checkInDate)) {
+        if (isWeekend(checkInDate)) {
             throw new AppException("주말에는 출석할 수 없습니다.");
         }
-        if (!Holidays.isNotHoliday(checkInDate)) {
+        if (Holidays.isHoliday(checkInDate)) {
             throw new AppException("공휴일에는 출석할 수 없습니다.");
         }
     }
 
-    public static boolean isNotWeekend(LocalDate date) {
-        return !(date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY);
+    public static boolean isWeekend(LocalDate checkInDate) {
+        return checkInDate.getDayOfWeek() == DayOfWeek.SATURDAY || checkInDate.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
+    public static boolean isNotWeekend(LocalDate checkInDate) {
+        return !isWeekend(checkInDate);
     }
 
     @Override
