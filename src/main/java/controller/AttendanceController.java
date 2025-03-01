@@ -2,10 +2,10 @@ package controller;
 
 import controller.command.AttendCommand;
 import controller.command.ControllerCommand;
+import controller.command.GetRecordsCommand;
 import controller.command.ModifyCommand;
 import domain.AttendanceBook;
 import java.time.DateTimeException;
-import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +19,7 @@ public class AttendanceController {
     static {
         commands.put(Selection.ATTEND, new AttendCommand());
         commands.put(Selection.MODIFY, new ModifyCommand());
+        commands.put(Selection.GET_RECORDS, new GetRecordsCommand());
     }
 
     public static void run(AttendanceBook book) {
@@ -37,7 +38,8 @@ public class AttendanceController {
         }
     }
 
-    private static void executeCommand(Selection selection, AttendanceBook book) throws QuitException {
+    private static void executeCommand(Selection selection, AttendanceBook book)
+        throws QuitException {
         if (selection == Selection.QUIT) {
             throw new QuitException();
         }

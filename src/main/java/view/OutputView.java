@@ -2,10 +2,13 @@ package view;
 
 import domain.AttendanceDateTime;
 import domain.AttendanceStatus;
+import domain.Crew;
+import domain.Penalty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class OutputView {
 
@@ -32,6 +35,16 @@ public class OutputView {
         blankLine();
     }
 
+    public static void printAttendanceList(Crew crew, List<AttendanceDateTime> attendanceList) {
+        System.out.println("이번 달 " + crew.getName() + "의 출석 기록입니다.");
+        blankLine();
+
+        attendanceList.stream()
+            .map(OutputView::formatAttendanceDateTime)
+            .forEach(System.out::println);
+        blankLine();
+    }
+
     private static String formatAttendanceDateTime(AttendanceDateTime attendanceDateTime) {
         AttendanceStatus status = attendanceDateTime.getAttendanceStatus();
         LocalDate date = attendanceDateTime.getDate();
@@ -46,5 +59,17 @@ public class OutputView {
 
     private static void blankLine() {
         System.out.println();
+    }
+
+    public static void printCountAndPenalty(int onTime, int late, int absence, Penalty penalty) {
+        System.out.println("출석: " + onTime);
+        System.out.println("지각: " + late);
+        System.out.println("결석: " + absence);
+        blankLine();
+
+        if (penalty != Penalty.NONE) {
+            System.out.println(penalty.description() + "대상자입니다.");
+            blankLine();
+        }
     }
 }

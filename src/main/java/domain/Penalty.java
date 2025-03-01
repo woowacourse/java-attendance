@@ -12,6 +12,10 @@ public enum Penalty {
         this.description = description;
     }
 
+    public String description() {
+        return description;
+    }
+
     public static Penalty determine(int late, int absence) {
         int totalAbsence = absence + (late / 3);
         if (totalAbsence > 5) {
