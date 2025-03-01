@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class Attendances {
             AttendanceType type = attendance.judgeType();
             counts.put(type, counts.getOrDefault(type, 0) + 1);
         }
-        return counts;
+        return Collections.unmodifiableMap(counts);
     }
 
     @Override
