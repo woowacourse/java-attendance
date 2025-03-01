@@ -6,11 +6,21 @@ public class Nickname implements Comparable {
     final String nickname;
 
     public Nickname(final String nickname) {
+        validate(nickname);
         this.nickname = nickname;
     }
 
     public String getNickname() {
         return nickname;
+    }
+
+    private void validate(final String nickname) {
+        if (nickname == null ||
+                nickname.isBlank() ||
+                nickname.trim().length() != nickname.length() ||
+                nickname.split(" ").length != 1) {
+            throw new IllegalArgumentException("닉네임은 1글자 이상 필수이며 공백을 포함할 수 없습니다.");
+        }
     }
 
     @Override
