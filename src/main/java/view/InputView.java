@@ -1,5 +1,6 @@
 package view;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
@@ -40,7 +41,9 @@ public class InputView {
 
     public String readUpdateDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return scanner.nextLine();
+        String input = scanner.nextLine();
+        validateDate(input);
+        return input;
     }
 
     public String readUpdateTime() {
@@ -48,6 +51,14 @@ public class InputView {
         String input = scanner.nextLine();
         validateTime(input);
         return input;
+    }
+
+    private void validateDate(String input) {
+        try {
+            LocalDate.parse(input);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 유효한 날짜를 입력해 주세요." + System.lineSeparator());
+        }
     }
 
     private void validateTime(String input) {
