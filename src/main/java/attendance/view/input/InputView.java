@@ -2,6 +2,9 @@ package attendance.view.input;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -31,6 +34,11 @@ public class InputView {
                     menuOption.getCode() + ". " + menuOption.getTitle()));
 
         return MenuOption.from(readInput());
+    }
+
+    public String readCrewNickName() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return readInput();
     }
 
     private String readInput() {
