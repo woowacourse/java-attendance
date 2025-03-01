@@ -38,7 +38,7 @@ public class InputView {
             LocalTime time = LocalTime.parse(input, dateTimeFormatter);
             return LocalDateTime.of(TODAY_DATE_NOW,time);
         } catch (DateTimeParseException e){
-            throw new IllegalArgumentException("[ERROR] 입력 시간의 형식이 옳바르지 않습니다.");
+            throw new IllegalArgumentException("입력 시간의 형식이 옳바르지 않습니다.");
         }
     }
 
@@ -55,9 +55,9 @@ public class InputView {
             LocalDate editDate = LocalDate.of(NOW_YEAR,NOW_MONTH,editDay);
             return LocalDateTime.of(editDate,time);
         } catch (DateTimeParseException e ){
-            throw new IllegalArgumentException("[ERROR] 입력 시간의 형식이 옳바르지 않습니다.");
+            throw new IllegalArgumentException("입력 시간의 형식이 옳바르지 않습니다.");
         } catch (NumberFormatException e){
-            throw new IllegalArgumentException("[ERROR] 입력한 날짜(일)이 옳바르지 않습니다.");
+            throw new IllegalArgumentException("입력한 날짜(일)이 옳바르지 않습니다.");
         }
     }
 
@@ -76,7 +76,7 @@ public class InputView {
 
     private static void validateEditDay(int day){
         if(day < 1 || day > 31){
-            throw new IllegalArgumentException("[ERROR] 입력한 날짜(일)이 옳바르지 않습니다.");
+            throw new IllegalArgumentException("입력한 날짜(일)이 옳바르지 않습니다.");
         }
     }
 }

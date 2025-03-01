@@ -20,7 +20,7 @@ public class AttendanceDate {
         return Arrays.stream(DayOfWeek.values())
                 .filter(dayOfWeek -> dayOfWeek.getValue() == attendanceAt.getDayOfWeek().getValue())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 요일을 찾을 수 없음"));
+                .orElseThrow(() -> new IllegalArgumentException("해당 요일을 찾을 수 없음"));
     }
 
     public void editLocalDate(LocalDateTime editLocalDateTime){

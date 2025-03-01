@@ -17,6 +17,10 @@ import static util.DateTimeUtils.*;
 public class OutputView {
     private static final String newLine = "\n";
 
+    public static void printErrorMessage(String errorMessage){
+        System.out.println("[ERROR]" + errorMessage);
+    }
+
     public static void printWelcomeMessage() {
         String welcomeMessage = "오늘은 " +
                 convertToLocalDayFormat(TODAY_DATE_TIME_NOW) +

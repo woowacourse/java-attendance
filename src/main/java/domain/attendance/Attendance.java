@@ -25,7 +25,7 @@ public class Attendance {
     public void editAttendance(LocalDateTime editLocalDateTime){
         LocalDate editDate = LocalDate.from(editLocalDateTime);
         if(!has(editDate)){
-            throw new IllegalArgumentException("[ERROR] 수정하려는 날짜가 존재하지 않습니다.");
+            throw new IllegalArgumentException("수정하려는 날짜가 존재하지 않습니다.");
         }
         findByLocalDate(editDate).editLocalDate(editLocalDateTime);
     }
@@ -42,16 +42,16 @@ public class Attendance {
     private void validateAttendanceTime(LocalDateTime attendanceDateTime){
         LocalDate attendanceDate = LocalDate.from(attendanceDateTime);
         if(has(attendanceDate)){
-            throw new IllegalArgumentException("[ERROR] 출석 기록이 이미 존재합니다.");
+            throw new IllegalArgumentException("출석 기록이 이미 존재합니다.");
         }
         if(attendanceDateTime.isAfter(TODAY_DATE_TIME_NOW)){
-            throw new IllegalArgumentException("[ERROR] 출석 시간이 옳바르지 않습니다.");
+            throw new IllegalArgumentException("출석 시간이 옳바르지 않습니다.");
         }
     }
 
     public AttendanceDate findByLocalDate(LocalDate findLocalDate) {
         if(!has(findLocalDate)){
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 LocalDate 입니다.");
+            throw new IllegalArgumentException("존재하지 않는 LocalDate 입니다.");
         }
         return attendanceDates.get(findLocalDate);
     }

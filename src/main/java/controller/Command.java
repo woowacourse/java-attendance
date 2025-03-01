@@ -19,7 +19,7 @@ public enum Command {
         return Arrays.stream(values())
                 .filter(command -> command.getControlCommand().equals(commandLine.toUpperCase()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 옳바르지 않은 명령어 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("옳바르지 않은 명령어 입니다."));
     }
 
     public String getControlCommand() {
