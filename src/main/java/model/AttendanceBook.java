@@ -21,6 +21,11 @@ public class AttendanceBook {
                 .collect(Collectors.toList());
     }
 
+    public void updateNonExistentAttendanceRecords(LocalDate today){
+        for (Student student : attendanceBook){
+            student.updateNonAttendanceRecordStatusIsAbsent(today);
+        }
+    }
 
     public LocalTime findStudentAttendanceTimeRecord(String name, LocalDate localDate) {
         Student student = findStudentByNickName(name);
@@ -31,8 +36,7 @@ public class AttendanceBook {
         return student.findAttendanceStatusByLocalDate(localDate);
     }
 
-
-    private Student findStudentByNickName(String name){
+    public Student findStudentByNickName(String name){
         return attendanceBook.stream()
                 .filter(stu -> stu.getName().equals(name))
                 .findFirst()
@@ -41,8 +45,8 @@ public class AttendanceBook {
 
     public List<Student> findExpulsionRiskStudents() {
         return attendanceBook.stream()
-                .filter(student -> student.calculateAbsentCount() >= 3)
-                .sorted(Comparator.comparing(Student::calculateAbsentCount))
+                .filter(student -> student.calculateTotalAbsentCount() >= 3)
+                .sorted(Comparator.comparing(Student::calculateTotalAbsentCount))
                 .collect(Collectors.toList());
     }
 }
