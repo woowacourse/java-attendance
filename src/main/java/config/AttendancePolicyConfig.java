@@ -6,10 +6,10 @@ import domain.policy.attend.time.AttendanceTimePolicy;
 
 public class AttendancePolicyConfig {
 
+    private static AttendancePolicy attendancePolicy;
+
     private AttendancePolicyConfig() {
     }
-
-    private static AttendancePolicy attendancePolicy;
 
     public static AttendancePolicy getInstance() {
         if (attendancePolicy == null) {

@@ -50,7 +50,5 @@ class RawAttendancesTest {
                 () -> assertThat(dateToTime_three.get(LocalDate.of(2024, 12, 2)))
                         .isEqualTo(LocalTime.of(12, 0))
         );
-
     }
-
 }

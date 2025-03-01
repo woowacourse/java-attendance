@@ -55,5 +55,4 @@ class AttendanceStatisticsTest {
                 () -> assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(3).getNickname().value()).isEqualTo("림엠제이")
         );
     }
-
 }
