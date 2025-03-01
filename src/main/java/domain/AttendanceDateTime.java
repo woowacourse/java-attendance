@@ -9,7 +9,7 @@ public abstract class AttendanceDateTime {
 
     protected final LocalDate date;
 
-    public AttendanceDateTime(LocalDate date) {
+    protected AttendanceDateTime(LocalDate date) {
         AttendanceDateTimeValidator.validateDate(date);
         this.date = date;
     }
