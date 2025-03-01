@@ -51,7 +51,9 @@ public class StudentsTest {
         String studentName = "이든";
         AttendanceDate today = new AttendanceDate(LocalDate.of(2024, 12, 12));
 
-        students.updateMissingAttendanceRecords(studentName, today);
+        AttendanceDate start = new AttendanceDate(LocalDate.of(2024, 12, 1));
+
+        students.updateMissingAttendanceRecords(start, today);
 
         Assertions.assertTrue(
                 students.findStudentByName(studentName).isExistAttendanceDate(

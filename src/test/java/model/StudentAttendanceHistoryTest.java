@@ -71,7 +71,9 @@ public class StudentAttendanceHistoryTest {
     @Test
     @DisplayName("파일에 있지 않은 정보들을 업데이트 하는 메서드 테스트")
     void test5() {
-        studentAttendanceHistory.updateMissingAttendanceRecords(new AttendanceDate(LocalDate.of(2024, 12, 12)));
+        AttendanceDate start = new AttendanceDate(LocalDate.of(2024, 12, 1));
+
+        studentAttendanceHistory.updateMissingAttendanceRecords(start, new AttendanceDate(LocalDate.of(2024, 12, 12)));
         Assertions.assertTrue(
                 studentAttendanceHistory.isExistSameAttendanceDate(new AttendanceDate(LocalDate.of(2024, 12, 12)))
         );

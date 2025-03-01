@@ -82,7 +82,9 @@ public class StudentTest {
     @Test
     @DisplayName("파일에 있지 않은 정보들을 업데이트 하는 메서드 구현")
     void test7() {
-        student.updateMissingAttendanceRecords(new AttendanceDate(LocalDate.of(2024, 12, 12)));
+        AttendanceDate start = new AttendanceDate(LocalDate.of(2024, 12, 1));
+
+        student.updateMissingAttendanceRecords(start, new AttendanceDate(LocalDate.of(2024, 12, 12)));
 
         Assertions.assertTrue(
                 student.isExistAttendanceDate(new AttendanceDate(LocalDate.of(2024, 12, 4)))
