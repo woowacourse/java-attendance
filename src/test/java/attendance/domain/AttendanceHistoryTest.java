@@ -106,4 +106,5 @@ public class AttendanceHistoryTest {
             LocalTime.of(10, 0));
         assertThat(attendanceTimeByDate.getAttendanceDateTime()).isEqualTo(modifyTime);
     }
+
 }
