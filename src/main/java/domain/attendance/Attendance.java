@@ -3,7 +3,9 @@ package domain.attendance;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -48,6 +50,13 @@ public class Attendance {
             throw new IllegalArgumentException("[ERROR] 존재하지 않는 LocalDate 입니다.");
         }
         return attendanceDates.get(findLocalDate);
+    }
+
+    public List<AttendanceDate> getSortedAttendanceResult(){
+        return attendanceDates.entrySet().stream()
+                .sorted(Comparator.comparingInt(value -> value.getKey().getDayOfMonth()))
+                .map(Map.Entry::getValue)
+                .toList();
     }
 
     public boolean has(LocalDate findDate){

@@ -118,6 +118,22 @@ class AttendanceTest {
                 attendance.addAttendance(absenceTime);
                 assertThat(attendance.findByLocalDate(LocalDate.from(absenceTime)).isAttendance()).isTrue();
             }
+
+            @DisplayName("출석기록 리스트로 가져오기")
+            @Test
+            void attendanceResultList(){
+                LocalDateTime absenceMondayTime1 = LocalDateTime.of(2025,2,3,11,0);
+                LocalDateTime absenceMondayTime2 = LocalDateTime.of(2025,2,5,11,0);
+                LocalDateTime absenceMondayTime3 = LocalDateTime.of(2025,2,6,11,0);
+                LocalDateTime absenceMondayTime4 = LocalDateTime.of(2025,2,7,11,0);
+
+                attendance.addAttendance(absenceMondayTime1);
+                attendance.addAttendance(absenceMondayTime2);
+                attendance.addAttendance(absenceMondayTime3);
+                attendance.addAttendance(absenceMondayTime4);
+
+                assertThat(attendance.getSortedAttendanceResult().size()).isEqualTo(4);
+            }
         }
     }
 
