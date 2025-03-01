@@ -10,6 +10,10 @@ public class Crew {
         this.nickname = nickname;
     }
 
+    public boolean isSameNickname(String nickname) {
+        return this.nickname.equals(nickname);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
