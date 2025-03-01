@@ -2,6 +2,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import model.AttendanceDateTimeChecker;
 
 public class AttendanceBook {
 
@@ -34,6 +35,9 @@ public class AttendanceBook {
     }
 
     public Attendance update(String updateNickname, LocalDate updateDate, LocalTime updateTime) {
+        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
+        checker.determine(updateDate, updateTime);
+
         Attendance findAttendance = findAttendance(updateNickname, updateDate);
         findAttendance.updateTime(updateTime);
 
