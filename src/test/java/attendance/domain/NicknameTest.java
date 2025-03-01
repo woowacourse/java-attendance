@@ -1,10 +1,14 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class NicknameTest {
     @DisplayName("닉네임이_같으면_동일한_객체_이다")
@@ -19,5 +23,18 @@ class NicknameTest {
 
         //then
         assertThat(result).isEqualTo(expected);
+    }
+
+    @DisplayName("null_또는_공백을_포함하면_예외를_던진다")
+    @NullAndEmptySource
+    @EmptySource
+    @ValueSource(strings = {" ", "레오 ", " 레오", "레 오"})
+    @ParameterizedTest
+    void should_ThrowException_WhenNicknameIsNullOrEmpty(String nickname) {
+        //when
+        //then
+        assertThatThrownBy(() -> new Nickname(nickname))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("닉네임은 1글자 이상 필수이며 공백을 포함할 수 없습니다.");
     }
 }
