@@ -11,6 +11,7 @@ import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class Controller {
@@ -39,16 +40,14 @@ public class Controller {
 
     private void addAttendance() {
         AttendanceDate attendanceDate = new AttendanceDate(LocalDate.now());
-        AttendanceRecord attendanceRecord = attendanceRegister.findAttendanceRecordByCrewName(
-                inputView.inputCrewName());
+        AttendanceRecord attendanceRecord = attendanceRegister.findAttendanceRecordByName(inputView.inputCrewName());
         LocalTime time = LocalTime.now();
         attendanceRecord.attend(attendanceDate, time);
         outputView.printAttendanceDetail(AttendanceDetailDto.fromArriveAttendance(attendanceDate, time));
     }
 
     private void modifyAttendance() {
-        AttendanceRecord attendanceRecord = attendanceRegister.findAttendanceRecordByCrewName(
-                inputView.inputCrewName());
+        AttendanceRecord attendanceRecord = attendanceRegister.findAttendanceRecordByName(inputView.inputCrewName());
         AttendanceDate modifyDate = new AttendanceDate(parseLocalDateByDay(inputView.inputModifyAttendanceDate()));
         AttendanceDateTime attendanceDateTime = attendanceRecord.findAttendanceByDate(modifyDate);
         AttendanceDetailDto beforeModifyDto = AttendanceDetailDto.fromArriveAttendance(attendanceDateTime);
@@ -58,7 +57,7 @@ public class Controller {
 
     private void displayAttendanceHistory() {
         String crewName = inputView.inputCrewName();
-        AttendanceRecord attendanceRecord = attendanceRegister.findAttendanceRecordByCrewName(crewName);
+        AttendanceRecord attendanceRecord = attendanceRegister.findAttendanceRecordByName(crewName);
         outputView.printAttendanceHistory(AttendanceDto.from(crewName, attendanceRecord));
     }
 
@@ -67,15 +66,15 @@ public class Controller {
     }
 
     private LocalDate parseLocalDateByDay(String day) {
-        return LocalDate.parse(String.format("2024-12-%s", day));
+        return LocalDate.parse(String.format("2024-12-%s", day), DateTimeFormatter.ofPattern("yyyy-MM-d"));
     }
 
     private void process(Runnable runnable) {
         try {
             runnable.run();
-            run();
         } catch (IllegalArgumentException exception) {
             outputView.printError(exception.getMessage());
+            run();
         }
     }
 }
