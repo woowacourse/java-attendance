@@ -70,7 +70,8 @@ public class AttendanceBook {
     public long calculateAbsentCountByNicknameUntilDate(String nickname, LocalDate date) {
         int absentCount = 0;
         for (int day = 1; day < date.getDayOfMonth(); day++) {
-            if (isWeekend(date.withDayOfMonth(day))) {
+            if (isWeekend(date.withDayOfMonth(day)) || isHoliday(date.withDayOfMonth(day))) {
+                System.out.println(day);
                 continue;
             }
 
@@ -80,18 +81,21 @@ public class AttendanceBook {
         return absentCount;
     }
 
+    private boolean isHoliday(LocalDate date) {
+        return date.isEqual(LocalDate.of(2024, 12, 25));
+    }
+
     private int increaseAbsentCountByNickname(String nickname, LocalDate date) {
         for (Attendance crewsAttendanceRecord : crewsAttendanceRecords) {
-            if (crewsAttendanceRecord.isSameDate(nickname, date) && crewsAttendanceRecord.isAbsent()) {
-                return 1;
+            if (crewsAttendanceRecord.isSameDate(nickname, date)) {
+                if (crewsAttendanceRecord.isAbsent()) {
+                    return 1;
+                }
+                return 0;
             }
         }
 
-        if (!isWeekend(date)) {
-            return 1;
-        }
-
-        return 0;
+        return 1;
     }
 
     private boolean isWeekend(LocalDate date) {
