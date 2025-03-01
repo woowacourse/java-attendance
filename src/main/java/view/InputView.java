@@ -9,15 +9,15 @@ import java.util.Scanner;
 public class InputView {
     static Scanner SCANNER = new Scanner(System.in);
 
-    public static MenuOption inputChooseFunctionOption(){
-       return MenuOption.validateSelectMenuOption(SCANNER.nextLine());
+    public static MenuOption inputChooseFunctionOption() {
+        return MenuOption.validateSelectMenuOption(SCANNER.nextLine());
     }
 
-    public static String input(){
+    public static String input() {
         return SCANNER.nextLine();
     }
 
-    public static LocalTime inputAttendanceTime(){
+    public static LocalTime inputAttendanceTime() {
         String input = SCANNER.nextLine();
         return validateTimeFormat(input);
     }
@@ -34,11 +34,11 @@ public class InputView {
     public static int validateDateFormat(String input) {
         try {
             int a = Integer.parseInt(input);
-            if (a < 1 || a > 31){
+            if (a < 1 || a > 31) {
                 throw new IllegalArgumentException("[ERROR] 날짜 입력은 1이상 31이하 숫자만 입력 가능합니다");
             }
             return a;
-        }catch (NumberFormatException n){
+        } catch (NumberFormatException n) {
             throw new IllegalArgumentException("[ERROR] 날짜 입력은 1이상 31이하 숫자만 입력 가능합니다");
         }
     }

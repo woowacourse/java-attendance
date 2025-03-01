@@ -146,7 +146,7 @@ public class StudentTest {
         LocalDate today = LocalDate.of(2024, 12, 13);
         AttendanceStatus expect = AttendanceStatus.ABSENT;
         student.updateNonAttendanceRecordStatusIsAbsent(today);
-        AttendanceStatus result = student.findAttendanceStatusByLocalDate(today);
+        AttendanceStatus result = student.findAttendanceStatusByLocalDate(LocalDate.of(2024,12,12));
         Assertions.assertEquals(expect, result);
     }
 

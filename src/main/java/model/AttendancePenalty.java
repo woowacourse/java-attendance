@@ -13,14 +13,14 @@ public enum AttendancePenalty {
         this.penaltyCount = penaltyCount;
     }
 
-    public static AttendancePenalty findPenaltyByAbsentCount(long count){
-        if (count > AttendancePenalty.EXPULSION.penaltyCount){
+    public static AttendancePenalty findPenaltyByAbsentCount(long count) {
+        if (count > AttendancePenalty.EXPULSION.penaltyCount) {
             return AttendancePenalty.EXPULSION;
         }
-        if (count >= AttendancePenalty.COUNSELING.penaltyCount){
+        if (count >= AttendancePenalty.COUNSELING.penaltyCount) {
             return AttendancePenalty.COUNSELING;
         }
-        if (count >= AttendancePenalty.WARNING.penaltyCount){
+        if (count >= AttendancePenalty.WARNING.penaltyCount) {
             return AttendancePenalty.WARNING;
         }
         return null;

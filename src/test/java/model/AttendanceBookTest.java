@@ -19,8 +19,8 @@ public class AttendanceBookTest {
         String name = "빙티";
         FileInformationProvider fileProvider = new FileInformationProvider();
         AttendanceBook attendanceBook = new AttendanceBook(fileProvider.loadStudentAttendance());
-        LocalTime result = attendanceBook.findStudentAttendanceTimeRecord(name, LocalDate.of(2024,12,2));
-        LocalTime expect = LocalTime.of(13,0);
+        LocalTime result = attendanceBook.findStudentAttendanceTimeRecord(name, LocalDate.of(2024, 12, 2));
+        LocalTime expect = LocalTime.of(13, 0);
         assertThat(expect).isEqualTo(result);
     }
 
@@ -30,7 +30,7 @@ public class AttendanceBookTest {
         String name = "빙티";
         FileInformationProvider fileProvider = new FileInformationProvider();
         AttendanceBook attendanceBook = new AttendanceBook(fileProvider.loadStudentAttendance());
-        AttendanceStatus result = attendanceBook.findStudentAttendanceStatusRecord(name, LocalDate.of(2024,12,2));
+        AttendanceStatus result = attendanceBook.findStudentAttendanceStatusRecord(name, LocalDate.of(2024, 12, 2));
         AttendanceStatus expect = AttendanceStatus.ATTENDANCE;
         assertThat(expect).isEqualTo(result);
     }

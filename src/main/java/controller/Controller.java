@@ -13,13 +13,13 @@ import view.InputView;
 import view.OutPutView;
 
 public class Controller {
-    private static final LocalDate TODAY = LocalDate.of(2024,12,13);
+    private static final LocalDate TODAY = LocalDate.of(2024, 12, 13);
 
 
     public void run() throws IOException {
         AttendanceBook attendanceBook = new AttendanceBook(FileInformationProvider.loadStudentAttendance());
         attendanceBook.updateNonExistentAttendanceRecords(TODAY);
-        while (true){
+        while (true) {
             if (handleMenuChoice(attendanceBook)) {
                 return;
             }
@@ -29,42 +29,42 @@ public class Controller {
     private boolean handleMenuChoice(AttendanceBook attendanceBook) {
         OutPutView.displayAttendanceMenu(TODAY);
         MenuOption menuOption = chooseMenuOption();
-        if (menuOption.equals(MenuOption.ATTENDANCE_REGISTER)){
+        if (menuOption.equals(MenuOption.ATTENDANCE_REGISTER)) {
             functionAttendanceRegister(attendanceBook);
         }
-        if (menuOption.equals(MenuOption.ATTENDANCE_MODIFY)){
+        if (menuOption.equals(MenuOption.ATTENDANCE_MODIFY)) {
             functionAttendanceModify(attendanceBook);
         }
-        if (menuOption.equals(MenuOption.CREW_ATTENDANCE_CHECK)){
+        if (menuOption.equals(MenuOption.CREW_ATTENDANCE_CHECK)) {
             functionCrewAttendanceCheck(attendanceBook);
         }
-        if (menuOption.equals(MenuOption.EXPULSION_RISK)){
+        if (menuOption.equals(MenuOption.EXPULSION_RISK)) {
             functionExpulsionRisk(attendanceBook);
         }
-        if (menuOption.equals(MenuOption.QUIT)){
+        if (menuOption.equals(MenuOption.QUIT)) {
             return true;
         }
         return false;
     }
 
-    private MenuOption chooseMenuOption(){
+    private MenuOption chooseMenuOption() {
         try {
             return InputView.inputChooseFunctionOption();
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return chooseMenuOption();
         }
     }
 
-    private void functionAttendanceRegister(AttendanceBook attendanceBook){
-        try{
+    private void functionAttendanceRegister(AttendanceBook attendanceBook) {
+        try {
             String nickName = requestNickName();
             LocalTime attendanceTime = requestAttendanceTime();
             Student student = attendanceBook.findStudentByNickName(nickName);
             student.registerAttendanceRecord(TODAY, attendanceTime);
             OutPutView.displayRegisterAttendanceRecord(AttendanceRecordFormatter.attendanceRecordFormatter(
                     student, TODAY));
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             functionAttendanceRegister(attendanceBook);
         }
@@ -88,20 +88,20 @@ public class Controller {
         }
     }
 
-    private void functionCrewAttendanceCheck(AttendanceBook attendanceBook){
-        try{
+    private void functionCrewAttendanceCheck(AttendanceBook attendanceBook) {
+        try {
             String nickName = requestNickName();
             Student student = attendanceBook.findStudentByNickName(nickName);
             OutPutView.displayTotalAttendanceRecord(student);
             OutPutView.displayTotalAttendanceCount(student);
             OutPutView.displayCounselingCandidate(student);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             functionCrewAttendanceCheck(attendanceBook);
         }
     }
 
-    private void functionExpulsionRisk(AttendanceBook attendanceBook){
+    private void functionExpulsionRisk(AttendanceBook attendanceBook) {
         List<Student> expulsionRiskStudents = attendanceBook.findExpulsionRiskStudents();
         OutPutView.displayExpulsionRiskStudents(expulsionRiskStudents);
     }

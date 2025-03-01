@@ -21,7 +21,7 @@ public class AttendanceRecordFormatter {
                 " (" + attendanceStatus.getAttendanceStatus() + ")";
     }
 
-    public static String expulsionRiskRecordFormatter(Student student){
+    public static String expulsionRiskRecordFormatter(Student student) {
         long absent = student.calculateAbsentCount();
         long late = student.calculateLateCount();
         long totalAbsent = student.calculateTotalAbsentCount();
@@ -33,9 +33,9 @@ public class AttendanceRecordFormatter {
                 attendancePenalty.getPenalty());
     }
 
-    private static String localTimeFormatter(LocalTime localTime){
+    private static String localTimeFormatter(LocalTime localTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        if (localTime == null){
+        if (localTime == null) {
             return "--:--";
         }
         return localTime.format(formatter);
