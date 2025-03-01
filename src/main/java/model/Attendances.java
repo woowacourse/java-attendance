@@ -8,6 +8,7 @@ import dto.AttendanceCheckInRequest;
 import dto.AttendanceCheckInResponse;
 import dto.AttendanceHistoryRequest;
 import dto.AttendanceHistoryResponse;
+import dto.AttendanceRiskCrewsResponse;
 import dto.AttendanceUpdateRequest;
 import dto.AttendanceUpdateResponse;
 import java.time.DayOfWeek;
@@ -91,6 +92,29 @@ public class Attendances {
                 attendanceTotal,
                 punishmentType
         );
+    }
+
+    public AttendanceRiskCrewsResponse findRiskCrews() {
+        List<AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse> sortedRiskCrews = attendances.keySet().stream()
+                .map(crew -> {
+                    EnumMap<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(
+                            getAttendancesByCrew(crew));
+                    PunishmentType punishmentType = PunishmentType.find(attendanceTotal);
+                    return new AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse(crew, attendanceTotal,
+                            punishmentType);
+                })
+                .sorted(Comparator
+                        .comparing(AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse::punishmentType)
+                        .reversed()
+                        .thenComparing(response -> response.attendanceTotal().getOrDefault(AttendanceType.ABSENCE, 0))
+                        .reversed()
+                        .thenComparing(response -> response.attendanceTotal().getOrDefault(AttendanceType.BE_LATE, 0))
+                        .reversed()
+                        .thenComparing(response -> response.crew().getNickname())
+                )
+                .toList();
+
+        return new AttendanceRiskCrewsResponse(sortedRiskCrews);
     }
 
     private static Map<Crew, List<Attendance>> parseAttendances(List<String> inputs) {

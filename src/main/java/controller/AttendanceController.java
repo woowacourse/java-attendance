@@ -7,6 +7,7 @@ import dto.AttendanceCheckInResponse;
 import dto.AttendanceHistoryRequest;
 import dto.AttendanceHistoryResponse;
 import dto.AttendanceOptionRequest;
+import dto.AttendanceRiskCrewsResponse;
 import dto.AttendanceUpdateRequest;
 import dto.AttendanceUpdateResponse;
 import java.util.List;
@@ -79,7 +80,8 @@ public class AttendanceController {
     }
 
     private void findRiskCrews(Attendances attendances) {
-
+        AttendanceRiskCrewsResponse response = attendances.findRiskCrews();
+        OutputView.printRiskCrews(response);
     }
 
     private <T> T processWithRetry(Supplier<T> supplier) {
