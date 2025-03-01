@@ -50,6 +50,11 @@ public class InputView {
 
     private String readInput() {
         return scanner.nextLine();
+    public String readUpdateNickName() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return readInput();
+    }
+
     }
 
     private LocalTime parseLocalTime(final String time) {
