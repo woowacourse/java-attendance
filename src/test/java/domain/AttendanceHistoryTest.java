@@ -164,7 +164,8 @@ public class AttendanceHistoryTest {
         @DisplayName("제적 위험 상태를 반환한다.")
         @ParameterizedTest
         @MethodSource("provideDayOfMonthAndRiskOfExpulsion")
-        public void calculateRiskOfExpulsion(final int dayOfMonth, final RiskOfExpulsionStatus expected) throws Exception {
+        public void calculateRiskOfExpulsion(final int dayOfMonth, final RiskOfExpulsionStatus expected)
+                throws Exception {
             // given
             final Crew owner = new Crew("owner");
             final var attendanceHistory = new AttendanceHistory(owner);
@@ -185,6 +186,25 @@ public class AttendanceHistoryTest {
                     Arguments.of(7, RiskOfExpulsionStatus.INTERVIEW),
                     Arguments.of(10, RiskOfExpulsionStatus.EXPULSION)
             );
+        }
+
+        @DisplayName("출석이 존재하는 경우 true 아니라면 false를 반환한다.")
+        @Test
+        public void isAlreadyAttendance() throws Exception {
+            // given
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
+            final LocalDateTime date = LocalDateTime.of(2024, 12, 2, 10, 5);
+            attendanceHistory.attendance(date);
+            final LocalDate targetDate = LocalDate.of(2024, 12, 3);
+
+            // when
+            final boolean trueActual = attendanceHistory.isAlreadyAttendance(date.toLocalDate());
+            final boolean falseActual = attendanceHistory.isAlreadyAttendance(targetDate);
+
+            // then
+            assertThat(trueActual).isTrue();
+            assertThat(falseActual).isFalse();
         }
     }
 
