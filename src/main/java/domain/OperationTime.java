@@ -17,7 +17,7 @@ public class OperationTime {
     }
 
     public static boolean isOperationDate(final LocalDate targetDate) {
-        return !(isWeekend(targetDate) || isHoliday(targetDate));
+        return !(isWeekend(targetDate) || Holiday.isHoliday(targetDate));
     }
 
     public static boolean isOperationDate(final int targetDay) {
@@ -27,9 +27,5 @@ public class OperationTime {
 
     private static boolean isWeekend(final LocalDate targetDate) {
         return targetDate.getDayOfWeek() == DayOfWeek.SUNDAY || targetDate.getDayOfWeek() == DayOfWeek.SATURDAY;
-    }
-
-    private static boolean isHoliday(final LocalDate targetDate) {
-        return targetDate.isEqual(LocalDate.of(2024, 12, 25));
     }
 }
