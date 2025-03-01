@@ -4,6 +4,7 @@ public enum OutputViewMessage {
 
     ATTENDANCE_CHECK_IN_RESPONSE("%02d월 %02d일 %s %02d:%02d (%s)"),
     ATTENDANCE_UPDATE_RESPONSE("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!"),
+    ATTENDANCE_UPDATE_NULL_RESPONSE("%02d월 %02d일 %s --:-- (%s) -> %02d:%02d (%s) 수정 완료!"),
     ATTENDANCE_HISTORY_RESPONSE("%02d월 %02d일 %s %02d:%02d (%s)"),
     ATTENDANCE_HISTORY_NULL_RESPONSE("%02d월 %02d일 %s --:-- (%s)"),
     ATTENDANCE_SUCCESS_TYPE_RESPONSE("출석: %d회%n"),
