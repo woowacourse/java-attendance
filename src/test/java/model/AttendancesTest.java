@@ -7,6 +7,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import dto.AttendanceCheckInRequest;
 import dto.AttendanceCheckInResponse;
+import dto.AttendanceUpdateRequest;
+import dto.AttendanceUpdateResponse;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -114,5 +117,45 @@ class AttendancesTest {
         assertThatThrownBy(() -> attendances.add(request, dateTimeGenerator))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(NOT_FOUND_CREW.getMessage());
+    }
+
+    @Test
+    @DisplayName("출석을 수정한다. (지각)")
+    void test6() {
+        // given
+        String nickname = "미소";
+        String day = "3";
+        String updateTime = "10:00";
+        AttendanceUpdateRequest request = new AttendanceUpdateRequest(nickname, day, updateTime);
+
+        // when
+        AttendanceUpdateResponse response = attendances.update(request, dateTimeGenerator);
+
+        // then
+        assertThat(response.date()).isEqualTo(LocalDate.of(2024, 12, 3));
+        assertThat(response.previousTime()).isEqualTo(LocalTime.of(10, 8));
+        assertThat(response.previousAttendanceType()).isEqualTo(AttendanceType.BE_LATE);
+        assertThat(response.updateTime()).isEqualTo(LocalTime.of(10, 0));
+        assertThat(response.updateAttendanceType()).isEqualTo(AttendanceType.SUCCESS);
+    }
+
+    @Test
+    @DisplayName("출석을 수정한다. (결석)")
+    void test7() {
+        // given
+        String nickname = "미소";
+        String day = "4";
+        String updateTime = "10:00";
+        AttendanceUpdateRequest request = new AttendanceUpdateRequest(nickname, day, updateTime);
+
+        // when
+        AttendanceUpdateResponse response = attendances.update(request, dateTimeGenerator);
+
+        // then
+        assertThat(response.date()).isEqualTo(LocalDate.of(2024, 12, 4));
+        assertThat(response.previousTime()).isNull();
+        assertThat(response.previousAttendanceType()).isEqualTo(AttendanceType.ABSENCE);
+        assertThat(response.updateTime()).isEqualTo(LocalTime.of(10, 0));
+        assertThat(response.updateAttendanceType()).isEqualTo(AttendanceType.SUCCESS);
     }
 }
