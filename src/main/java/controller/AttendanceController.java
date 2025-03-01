@@ -25,53 +25,76 @@ public class AttendanceController {
     }
 
     public void run() {
-        LocalDate now = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-        String commandCode = inputView.readCommandCode(now);
-        if (commandCode.equals("Q")) {
-            System.out.println("프로그램을 종료합니다.");
-            return;
+        while (true) {
+            LocalDate today = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
+            String commandCode = inputView.readCommandCode(today);
+            if (commandCode.equals("Q")) {
+                return;
+            }
+            runCommand(commandCode, today);
         }
+    }
+
+    public void runCommand(String commandCode, LocalDate today) {
         if (commandCode.equals("1")) {
-            String crewName = inputView.readNickname();
-            Crew crew = Crew.of(crewName);
-            CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
-            String rawTime = inputView.readTime();
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-            LocalTime time = LocalTime.parse(rawTime, timeFormatter);
-            LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-            AttendanceTime attendanceTime = AttendanceTime.of(date, time);
-            crewAttendance.attend(attendanceTime);
-            outputView.attendPage(attendanceTime);
-            return;
+            attend(today);
         }
         if (commandCode.equals("2")) {
-            String crewName = inputView.readNicknameForModify();
-            Crew crew = Crew.of(crewName);
-            CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
-            String rawDay = inputView.readModifyDay();
-            int dayOfMonth = Integer.parseInt(rawDay);
-            LocalDate date = LocalDate.of(2024, 12, dayOfMonth);
-            String rawTime = inputView.readModifyTime();
-            LocalTime time = LocalTime.parse(rawTime, DateTimeFormatter.ISO_LOCAL_TIME);
-            AttendanceTime attendanceTime = AttendanceTime.of(date, time);
-            Optional<AttendanceTime> previous = crewAttendance.modify(attendanceTime);
-            outputView.modifyPage(previous, attendanceTime);
-            return;
+            modifyAttendanceTime();
         }
         if (commandCode.equals("3")) {
-            String crewName = inputView.readNickname();
-            Crew crew = Crew.of(crewName);
-            CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
-            LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-            List<AttendanceTime> localDateTimes = crewAttendance.readAttendanceTimesBefore(date);
-            outputView.attendanceLogPage(localDateTimes);
-            return;
+            readAttendanceLogs(today);
         }
         if (commandCode.equals("4")) {
-            LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-            List<CrewAttendance> disciplinaryCrews = attendanceBook.findDisciplinaryCrews(date);
-            outputView.disciplinaryCrewsPage(disciplinaryCrews, now);
-            return;
+            readDisciplinaryCrews(today);
         }
+    }
+
+    private void attend(LocalDate today) {
+        String crewName = inputView.readNickname();
+        Crew crew = Crew.of(crewName);
+        CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        String rawTime = inputView.readTime();
+        LocalTime time = LocalTime.parse(rawTime, timeFormatter);
+
+        AttendanceTime attendanceTime = AttendanceTime.of(today, time);
+        crewAttendance.attend(attendanceTime);
+
+        outputView.attendPage(attendanceTime);
+    }
+
+    private void modifyAttendanceTime() {
+        String crewName = inputView.readNicknameForModify();
+        Crew crew = Crew.of(crewName);
+        CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
+
+        String rawDay = inputView.readModifyDay();
+        int dayOfMonth = Integer.parseInt(rawDay);
+        LocalDate date = LocalDate.of(2024, 12, dayOfMonth);
+
+        String rawTime = inputView.readModifyTime();
+        LocalTime time = LocalTime.parse(rawTime, DateTimeFormatter.ISO_LOCAL_TIME);
+
+        AttendanceTime attendanceTime = AttendanceTime.of(date, time);
+        Optional<AttendanceTime> previous = crewAttendance.modify(attendanceTime);
+
+        outputView.modifyPage(previous, attendanceTime);
+    }
+
+    private void readAttendanceLogs(LocalDate today) {
+        String crewName = inputView.readNickname();
+        Crew crew = Crew.of(crewName);
+
+        CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
+        List<AttendanceTime> localDateTimes = crewAttendance.readAttendanceTimesBefore(today);
+
+        outputView.attendanceLogPage(localDateTimes);
+    }
+
+    private void readDisciplinaryCrews(LocalDate today) {
+        List<CrewAttendance> disciplinaryCrews = attendanceBook.findDisciplinaryCrews(today);
+        outputView.disciplinaryCrewsPage(disciplinaryCrews, today);
     }
 }
