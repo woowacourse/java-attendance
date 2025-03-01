@@ -27,6 +27,9 @@ public class AttendanceTime implements Comparable<AttendanceTime> {
     }
 
     private void validateCampusOpen(LocalTime time) {
+        if (time == null) {
+            return;
+        }
         if (time.isBefore(openTime) || time.isAfter(closeTime)) {
             throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
         }
