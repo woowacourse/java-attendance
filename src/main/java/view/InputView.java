@@ -41,4 +41,42 @@ public class InputView {
             throw new IllegalArgumentException("[ERROR] 입력 시간의 형식이 옳바르지 않습니다.");
         }
     }
+
+    public static String getEditCrewName(){
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+
+        return scanner.nextLine();
+    }
+
+    public static LocalDateTime getEditTime(){
+        try{
+            int editDay = inputValidateEditDay();
+            LocalTime time = inputValidateEditTime();
+            LocalDate editDate = LocalDate.of(NOW_YEAR,NOW_MONTH,editDay);
+            return LocalDateTime.of(editDate,time);
+        } catch (DateTimeParseException e ){
+            throw new IllegalArgumentException("[ERROR] 입력 시간의 형식이 옳바르지 않습니다.");
+        } catch (NumberFormatException e){
+            throw new IllegalArgumentException("[ERROR] 입력한 날짜(일)이 옳바르지 않습니다.");
+        }
+    }
+
+    private static int inputValidateEditDay(){
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        String inputName = scanner.nextLine();
+        int editDay = Integer.parseInt(inputName);
+        validateEditDay(editDay);
+        return editDay;
+    }
+
+    private static LocalTime inputValidateEditTime(){
+        String inputTime = scanner.nextLine();
+        return LocalTime.parse(inputTime, dateTimeFormatter);
+    }
+
+    private static void validateEditDay(int day){
+        if(day < 1 || day > 31){
+            throw new IllegalArgumentException("[ERROR] 입력한 날짜(일)이 옳바르지 않습니다.");
+        }
+    }
 }

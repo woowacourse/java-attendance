@@ -6,7 +6,6 @@ import domain.attendance.Attendance;
 import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceStatus;
 import domain.attendance.TimeTable;
-import util.DateTimeUtils;
 import view.FileInputView;
 import view.InputView;
 import view.OutputView;
@@ -14,6 +13,7 @@ import view.OutputView;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +42,6 @@ public class AttendanceController {
     private void operateCommand(){
         try{
             if(currentCommand == ATTEND){
-                validateAttendTime();
                 attendCommand();
             }
             if(currentCommand == EDIT){
@@ -59,7 +58,7 @@ public class AttendanceController {
         }
     }
 
-    private void validateAttendTime(){
+    private void validateAttendDate(){
         if(!isAttendanceDay(TODAY_DATE_NOW)){
             throw new IllegalArgumentException("[ERROR] " + TODAY_DATE_NOW.format(localDayFormatter)
                     + TODAY_DATE_NOW.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + "은 등교일이 아닙니다.");
@@ -67,14 +66,24 @@ public class AttendanceController {
     }
 
     private void attendCommand(){
+        validateAttendDate();
+
         String attendCrewName = InputView.getCrewName();
         Crew findCrew = crews.findByName(attendCrewName);
 
         LocalDateTime attendTime = InputView.getAttendTime();
+        validateAttendTime(attendTime);
+
         Attendance crewAttendance = findCrew.getAttendanceRecord();
         crewAttendance.addAttendance(attendTime);
         AttendanceStatus status = crewAttendance.findByLocalDate(LocalDate.from(attendTime)).getStatus();
         OutputView.printAddAttendance(attendTime,status);
+    }
+
+    private void validateAttendTime(LocalDateTime attendTime){
+        if(!isOnCampusOperatingTime(LocalTime.from(attendTime))){
+            throw new IllegalArgumentException("[ERROR] " + attendTime.getHour() + "시 " + attendTime.getMinute() + "분은 캠퍼스 운영시간이 아닙니다.");
+        }
     }
 
     private void findCrewCommand(){
@@ -85,11 +94,11 @@ public class AttendanceController {
     }
 
     private void editCrewAttendance(){
-        String findCrewName = InputView.getCrewName();
+        String findCrewName = InputView.getEditCrewName();
         Crew findCrew = crews.findByName(findCrewName);
         Attendance crewRecord = findCrew.getAttendanceRecord();
 
-        LocalDateTime editTime = InputView.getAttendTime();
+        LocalDateTime editTime = InputView.getEditTime();
 
         AttendanceDate oldRecord = crewRecord.findByLocalDate(LocalDate.from(editTime));
         crewRecord.editAttendance(editTime);
