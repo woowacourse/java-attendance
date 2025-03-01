@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,12 +21,15 @@ public class AttendanceHistoriesTest {
     private final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
     private final LocalDate TUESDAY_DATE = LocalDate.of(2025, 2, 25);
 
-    private AttendanceHistories attendanceHistories;
+    private final AttendanceHistories attendanceHistories;
 
     {
         Crew crew = new Crew("노랑");
-        Map<Crew, LocalDate> attendanceHistoryData = new HashMap<>();
-        attendanceHistoryData.put(crew, LocalDate.of(2025, 2, 21));
+        Map<Crew, AttendanceDateTimes> attendanceHistoryData = new HashMap<>();
+        List<LocalDateTime> localDateTimes = new ArrayList<>();
+        localDateTimes.add(LocalDateTime.of(2025, 2, 21, 10, 0));
+        AttendanceDateTimes attendanceDateTimes = new AttendanceDateTimes(localDateTimes);
+        attendanceHistoryData.put(crew, attendanceDateTimes);
         attendanceHistories = new AttendanceHistories(attendanceHistoryData);
     }
 
@@ -129,10 +134,6 @@ public class AttendanceHistoriesTest {
     @DisplayName("1.3 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
     void testValidateCrew() {
         // given
-        Crew crew = new Crew("노랑");
-        Map<Crew, LocalDate> attendanceHistoryData = new HashMap<>();
-        attendanceHistoryData.put(crew, MONDAY_DATE);
-        AttendanceHistories attendanceHistories = new AttendanceHistories(attendanceHistoryData);
         // when
         Crew invalidCrew = new Crew("포비");
         LocalDateTime dateTime = MONDAY_DATE.atTime(10, 0);

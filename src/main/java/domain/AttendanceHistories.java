@@ -8,9 +8,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class AttendanceHistories {
-    private final Map<Crew, LocalDate> attendanceHistories;
+    private final Map<Crew, AttendanceDateTimes> attendanceHistories;
 
-    public AttendanceHistories(Map<Crew, LocalDate> attendanceHistoryData) {
+    public AttendanceHistories(Map<Crew, AttendanceDateTimes> attendanceHistoryData) {
         this.attendanceHistories = attendanceHistoryData;
     }
 
@@ -18,10 +18,11 @@ public class AttendanceHistories {
         LocalDate attendanceDate = attendanceDateTime.toLocalDate();
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
         validateCrew(crew);
-        validateDuplicateAttendance(crew, attendanceDate);
+        AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
+        validateDuplicateAttendance(attendanceDateTimes, attendanceDate);
         validateDayOff(attendanceDate);
         validateOperatingTime(attendanceTime);
-        attendanceHistories.put(crew, attendanceDate);
+        attendanceHistories.put(crew, attendanceHistories.get(crew).add(attendanceDateTime));
         return AttendanceStatus.of(attendanceDateTime);
     }
 
@@ -31,8 +32,8 @@ public class AttendanceHistories {
         }
     }
 
-    private void validateDuplicateAttendance(Crew crew, LocalDate attendanceDateTime) {
-        if (attendanceHistories.containsKey(crew) && attendanceHistories.get(crew).isEqual(attendanceDateTime)) {
+    private void validateDuplicateAttendance(AttendanceDateTimes attendanceDateTimes, LocalDate attendanceDate) {
+        if (attendanceDateTimes.contains(attendanceDate)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
         }
     }
