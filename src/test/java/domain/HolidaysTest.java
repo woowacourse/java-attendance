@@ -1,17 +1,26 @@
 package domain;
 
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class HolidayTest {
+import domain.holiday.Holidays;
+import domain.holiday.KoreanHoliday;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import service.dateconvertor.KoreanLunarDateConvertor;
+
+class HolidaysTest {
     
     @Nested
     class 공휴일_판단_테스트 {
+        
+        private final Holidays sut = new Holidays(
+                new KoreanLunarDateConvertor(),
+                List.of(KoreanHoliday.values())
+        );
         
         @ParameterizedTest
         @CsvSource({
@@ -26,7 +35,7 @@ class HolidayTest {
             var date = LocalDate.parse(dateValue);
             
             //when
-            var result = Holiday.isHoliday(date);
+            var result = sut.isHoliday(date);
             
             //then
             assertThat(result).isTrue();
@@ -43,7 +52,7 @@ class HolidayTest {
             var date = LocalDate.parse(dateValue);
             
             //when
-            var result = Holiday.isHoliday(date);
+            var result = sut.isHoliday(date);
             
             //then
             assertThat(result).isTrue();
