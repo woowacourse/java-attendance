@@ -75,7 +75,7 @@ public class CrewAttendanceTest {
 
         // then
         Assertions.assertThat(absentCount)
-                .isEqualTo(3);
+                .isEqualTo(4);
     }
 
     @DisplayName("주말은 결석 횟수 계산에서 제외한다.")
@@ -93,6 +93,6 @@ public class CrewAttendanceTest {
 
         // then
         Assertions.assertThat(absentCount)
-                .isEqualTo(4);
+                .isEqualTo(5);
     }
 }

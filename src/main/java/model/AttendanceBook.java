@@ -1,5 +1,6 @@
 package model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -69,7 +70,11 @@ public class AttendanceBook {
 
     public long calculateAbsentCountByNicknameUntilDate(String nickname, LocalDate date) {
         int absentCount = 0;
-        for (int day = 3; day < date.getDayOfMonth(); day++) {
+        for (int day = 1; day < date.getDayOfMonth(); day++) {
+            if (isWeekend(date.withDayOfMonth(day))) {
+                continue;
+            }
+
             boolean flag = false;
             for (int idx = 0; idx < crewsAttendanceRecords.size(); idx++) {
                 if (crewsAttendanceRecords.get(idx).isSameDate(nickname, date.withDayOfMonth(day))) {
@@ -87,5 +92,9 @@ public class AttendanceBook {
         }
 
         return absentCount;
+    }
+
+    private boolean isWeekend(LocalDate date) {
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 }
