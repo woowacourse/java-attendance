@@ -11,7 +11,7 @@ public class InputValidator {
         }
     }
 
-    static void validateHour(String rawTime) {
+    private static void validateHour(String rawTime) {
         String[] splittedTime = rawTime.split(":");
         int hour = Integer.parseInt(splittedTime[0]);
         if (hour >= 24 || hour < 0) {
@@ -19,11 +19,24 @@ public class InputValidator {
         }
     }
 
-    static void validateMinute(String rawTime) {
+    private static void validateMinute(String rawTime) {
         String[] splittedTime = rawTime.split(":");
         int minute = Integer.parseInt(splittedTime[1]);
         if (minute >= 60 || minute < 0) {
             throw new IllegalArgumentException("분은 00 ~ 59 사이여야합니다.");
+        }
+    }
+
+    static void validateTime(String rawTime) {
+        validateHour(rawTime);
+        validateMinute(rawTime);
+    }
+
+    static void validateInteger(String rawInput) {
+        try {
+            Integer.parseInt(rawInput);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("숫자가 아닙니다.");
         }
     }
 }
