@@ -16,6 +16,11 @@ public class CsvReader {
     public static List<String> readFile(String filePath) {
         URL fileURL = createURL(filePath);
         isExistFileURL(fileURL);
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(fileURL.toURI()))) {
+            return removeFirstRow(reader);
+        } catch (IOException | URISyntaxException e) {
+            throw new IllegalStateException("파일 경로가 잘못되었습니다: " + fileURL.getPath());
+        }
     }
 
     private static URL createURL(String path) {
@@ -26,5 +31,9 @@ public class CsvReader {
         if (fileURL == null) {
             throw new IllegalStateException("파일 경로가 잘못되었습니다");
         }
+    }
+
+    private static List<String> removeFirstRow(BufferedReader reader) {
+        return reader.lines().skip(1).toList();
     }
 }
