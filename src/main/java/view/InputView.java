@@ -32,7 +32,7 @@ public class InputView {
         try {
             return LocalTime.parse(sc.nextLine(), TIME_FORMATTER);
         } catch (final DateTimeParseException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("시간 형식이 잘못되었습니다. HH:mm을 지켜주세요");
         }
     }
 
@@ -46,7 +46,7 @@ public class InputView {
         try {
             return Integer.parseInt(sc.nextLine());
         } catch (final NumberFormatException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("올바른 날짜 형식이 아닙니다.");
         }
     }
 
@@ -55,7 +55,7 @@ public class InputView {
         try {
             return LocalTime.parse(sc.nextLine(), TIME_FORMATTER);
         } catch (final DateTimeParseException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("시간 형식이 잘못되었습니다. HH:mm을 지켜주세요");
         }
     }
 

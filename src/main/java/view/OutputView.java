@@ -89,4 +89,8 @@ public class OutputView {
                 riskOfExpulsionCrewDto.lateCount(), riskOfExpulsionCrewDto.expulsionStatus());
     }
 
+    public void printExceptionMessage(final String message) {
+        System.out.println("[ERROR] "+ message);
+    }
+
 }

@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import utils.RetryHandler;
 import view.InputView;
 import view.OutputView;
 import view.UserCommand;
@@ -58,8 +59,10 @@ public class AttendanceController {
     }
 
     private void attendance(final AttendanceBook attendanceBook, final Crews crews) {
-        final Crew crew = inputCrew(crews);
-        final LocalTime attendanceTime = inputView.readAttendanceTime();
+        final Crew crew = RetryHandler.retryUntilNotException(this::inputCrew, crews,
+                outputView::printExceptionMessage);
+        final LocalTime attendanceTime = RetryHandler.retryUntilNotException(inputView::readAttendanceTime,
+                outputView::printExceptionMessage);
 
         final AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
         final AttendanceRecord attendanceRecord = attendanceHistory.attendance(LocalDateTime.of(now(), attendanceTime));
@@ -68,9 +71,12 @@ public class AttendanceController {
     }
 
     private void updateAttendance(final AttendanceBook attendanceBook, final Crews crews) {
-        final Crew crew = crews.findByName(inputView.readUpdateCrewName());
-        final int updateMonthOfDay = inputView.readUpdateMonthOfDay();
-        final LocalTime updateTime = inputView.readUpdateTime();
+        final Crew crew = RetryHandler.retryUntilNotException(this::inputUpdateCrew, crews,
+                outputView::printExceptionMessage);
+        final int updateMonthOfDay = RetryHandler.retryUntilNotException(inputView::readUpdateMonthOfDay,
+                outputView::printExceptionMessage);
+        final LocalTime updateTime = RetryHandler.retryUntilNotException(inputView::readUpdateTime,
+                outputView::printExceptionMessage);
 
         final AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
         final AttendanceRecord beforeAttendanceRecord = attendanceHistory.updateTimeByDate(
@@ -84,7 +90,8 @@ public class AttendanceController {
     }
 
     private void checkAttendanceForEachCrew(final AttendanceBook attendanceBook, final Crews crews) {
-        final Crew crew = inputCrew(crews);
+        final Crew crew = RetryHandler.retryUntilNotException(this::inputCrew, crews,
+                outputView::printExceptionMessage);
         outputView.printIntroduceAttendanceRecords(crew.getName());
         final AttendanceHistory attendanceHistory = outputAttendanceRecord(attendanceBook, crew);
         outputAttendanceStatistics(attendanceHistory);
@@ -124,6 +131,11 @@ public class AttendanceController {
 
     private Crew inputCrew(final Crews crews) {
         final String crewName = inputView.readCrewName();
+        return crews.findByName(crewName);
+    }
+
+    private Crew inputUpdateCrew(final Crews crews){
+        final String crewName = inputView.readUpdateCrewName();
         return crews.findByName(crewName);
     }
 

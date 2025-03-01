@@ -13,6 +13,6 @@ public class Crews {
         return crews.stream()
                 .filter(crew -> crew.matchName(crewName))
                 .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
     }
 }
