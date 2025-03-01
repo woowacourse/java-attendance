@@ -94,7 +94,7 @@ public class AttendanceController {
     }
 
     public void checkPenalty() {
-        Map<Crew, StatusStatistics> crewsAndStatistics = attendanceBook.getCrewsAndStatistics(systemDate);
+        Map<Crew, StatusStatistics> crewsAndStatistics = attendanceBook.getSortedCrewsAndStatistics(systemDate);
         OutputView.printPenaltyCrews(crewsAndStatistics);
     }
 }

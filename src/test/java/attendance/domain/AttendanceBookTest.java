@@ -89,6 +89,6 @@ public class AttendanceBookTest {
         attendanceBook.add(brown, attendanceOfBrown);
 
         LocalDate today = LocalDate.of(2024, 12, 13);
-        assertThat(attendanceBook.getCrewsAndStatistics(today)).hasSize(2);
+        assertThat(attendanceBook.getSortedCrewsAndStatistics(today)).hasSize(2);
     }
 }
