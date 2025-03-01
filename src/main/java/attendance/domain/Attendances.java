@@ -49,4 +49,10 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
     public Optional<Attendance> getOptionalAttendance(LocalDate date) {
         return Optional.ofNullable(attendances.get(date));
     }
+
+    public void put(LocalDateTime dateTime) {
+        LocalDate date = dateTime.toLocalDate();
+        isValidateSchedule(date);
+        attendances.put(date, new Attendance(dateTime));
+    }
 }

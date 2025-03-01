@@ -44,4 +44,9 @@ public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemD
         return Optional.ofNullable(attendancesBook.get(nickname))
             .orElseThrow(() -> new AttendanceArgumentException(NOT_REGISTERED_NICKNAME));
     }
+
+    public void modify(Nickname nickname, LocalDateTime dateTime) {
+        var attendances = getAttendances(nickname);
+        attendances.put(dateTime);
+    }
 }
