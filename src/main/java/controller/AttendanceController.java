@@ -25,11 +25,11 @@ public class AttendanceController {
     }
 
     public void run() {
-        Command command;
+        Command command = Command.NONE;
         do {
             LocalDate today = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-            command = Command.from(inputView.readCommandCode(today));
             try {
+                command = Command.from(inputView.readCommandCode(today));
                 runCommand(command, today);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());

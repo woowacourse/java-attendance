@@ -8,7 +8,7 @@ public enum Command {
     READ_ATTENDANCE_LOG("3"),
     READ_DISCIPLINARY_CREWS("4"),
     QUIT("Q"),
-    ;
+    NONE("");
 
     private final String code;
 
@@ -20,6 +20,7 @@ public enum Command {
         return Arrays.stream(Command.values())
                 .filter(command -> command.code.equals(code))
                 .findAny()
+                .filter(command -> command != NONE)
                 .orElseThrow(() -> new IllegalArgumentException("1, 2, 3, 4, Q 중 하나를 입력해주세요."));
     }
 }
