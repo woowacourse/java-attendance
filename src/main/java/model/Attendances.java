@@ -21,10 +21,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -49,48 +49,38 @@ public class Attendances {
 
     public AttendanceCheckInResponse add(AttendanceCheckInRequest request, DateTimeGenerator dateTimeGenerator) {
         Crew crew = Crew.of(request.nickname());
+        validateCrewExists(crew);
+        validateHoliday(dateTimeGenerator.now());
+        validateOperationTime(request.checkInTime(), dateTimeGenerator.now());
+        validateAlreadyCheckedIn(crew, dateTimeGenerator.now());
+
         Attendance attendance = Attendance.of(dateTimeGenerator, request.checkInTime());
-
-        validateExistCrew(crew);
-        validateOperationTime(request, dateTimeGenerator);
-        validateHoliday(dateTimeGenerator);
-        validateAlreadyCheckIn(dateTimeGenerator, crew);
-
         attendances.get(crew).add(attendance);
 
         return new AttendanceCheckInResponse(
                 dateTimeGenerator.now(),
                 LocalTime.parse(request.checkInTime()),
-                attendance.getAttendanceType());
+                attendance.getAttendanceType()
+        );
     }
 
     public AttendanceUpdateResponse update(AttendanceUpdateRequest request, DateTimeGenerator dateTimeGenerator) {
         Crew crew = Crew.of(request.nickname());
-        LocalDate date = LocalDate.of(
-                dateTimeGenerator.now().getYear(),
-                dateTimeGenerator.now().getMonthValue(),
-                Integer.parseInt(request.day()));
-        Optional<Attendance> attendance = find(crew, date);
-        validateAttendance(attendance);
+        LocalDate date = dateTimeGenerator.now().withDayOfMonth(Integer.parseInt(request.day()));
 
-        LocalTime previousTime = attendance.get().getCheckInTime();
-        AttendanceType previousAttendanceType = attendance.get().getAttendanceType();
+        Attendance attendance = find(crew, date);
+        LocalTime previousTime = attendance.getCheckInTime();
+        AttendanceType previousAttendanceType = attendance.getAttendanceType();
 
-        attendance.get().update(LocalTime.parse(request.updateTime()));
+        attendance.update(LocalTime.parse(request.updateTime()));
 
         return new AttendanceUpdateResponse(
                 date,
                 previousTime,
                 previousAttendanceType,
-                attendance.get().getCheckInTime(),
-                attendance.get().getAttendanceType()
+                attendance.getCheckInTime(),
+                attendance.getAttendanceType()
         );
-    }
-
-    private static void validateAttendance(Optional<Attendance> attendance) {
-        if (attendance.isEmpty()) {
-            throw new IllegalArgumentException(NOT_FOUND_ATTENDANCE.getMessage());
-        }
     }
 
     public AttendanceHistoryResponse findHistoryByCrew(AttendanceHistoryRequest request) {
@@ -99,23 +89,16 @@ public class Attendances {
         EnumMap<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(attendances);
         PunishmentType punishmentType = PunishmentType.find(attendanceTotal);
 
-        return new AttendanceHistoryResponse(
-                crew.getNickname(),
-                attendances,
-                attendanceTotal,
-                punishmentType
-        );
+        return new AttendanceHistoryResponse(crew.getNickname(), attendances, attendanceTotal, punishmentType);
     }
 
     public AttendanceRiskCrewsResponse findRiskCrews() {
         List<AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse> sortedRiskCrews = attendances.keySet().stream()
-                .map(crew -> {
-                    EnumMap<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(
-                            getAttendancesByCrew(crew));
-                    PunishmentType punishmentType = PunishmentType.find(attendanceTotal);
-                    return new AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse(crew, attendanceTotal,
-                            punishmentType);
-                })
+                .map(crew -> new AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse(
+                        crew,
+                        AttendanceType.calculateTotal(getAttendancesByCrew(crew)),
+                        PunishmentType.find(AttendanceType.calculateTotal(getAttendancesByCrew(crew)))
+                ))
                 .sorted(Comparator
                         .comparing(AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse::punishmentType)
                         .reversed()
@@ -146,11 +129,9 @@ public class Attendances {
 
     private static List<LocalDate> generateDateRange(DateTimeGenerator dateTimeGenerator) {
         LocalDate now = dateTimeGenerator.now();
-
         return IntStream.rangeClosed(1, now.getDayOfMonth() - 1)
                 .mapToObj(now::withDayOfMonth)
-                .filter(date -> !date.getDayOfWeek().equals(DayOfWeek.SATURDAY))
-                .filter(date -> !date.getDayOfWeek().equals(DayOfWeek.SUNDAY))
+                .filter(date -> !EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(date.getDayOfWeek()))
                 .filter(date -> !Holiday.isHoliday(date))
                 .toList();
     }
@@ -170,35 +151,36 @@ public class Attendances {
         });
     }
 
-    private void validateExistCrew(Crew crew) {
+    private void validateCrewExists(Crew crew) {
         if (!attendances.containsKey(crew)) {
             throw new IllegalArgumentException(NOT_FOUND_CREW.getMessage());
         }
     }
 
-    private void validateOperationTime(AttendanceCheckInRequest request, DateTimeGenerator dateTimeGenerator) {
-        if (!AttendanceTime.isInOperationTime(dateTimeGenerator.now(),
-                LocalTime.parse(request.checkInTime()))) {
+    private void validateOperationTime(String checkInTime, LocalDate now) {
+        if (!AttendanceTime.isInOperationTime(now, LocalTime.parse(checkInTime))) {
             throw new IllegalArgumentException(OUT_OF_OPERATION_HOURS.getMessage());
         }
     }
 
-    private void validateHoliday(DateTimeGenerator dateTimeGenerator) {
-        if (Holiday.isHoliday(dateTimeGenerator.now())) {
+    private void validateHoliday(LocalDate date) {
+        if (Holiday.isHoliday(date)) {
             throw new IllegalArgumentException(CANNOT_CHECK_IN_ON_HOLIDAY.getMessage());
         }
     }
 
-    private void validateAlreadyCheckIn(DateTimeGenerator dateTimeGenerator, Crew crew) {
-        if (find(crew, dateTimeGenerator.now()).isPresent()) {
+    private void validateAlreadyCheckedIn(Crew crew, LocalDate date) {
+        if (attendances.getOrDefault(crew, Collections.emptyList()).stream()
+                .anyMatch(attendance -> attendance.getCheckInDate().equals(date))) {
             throw new IllegalArgumentException(ALREADY_CHECK_IN.getMessage());
         }
     }
 
-    private Optional<Attendance> find(Crew crew, LocalDate localDate) {
-        return attendances.get(crew).stream()
+    private Attendance find(Crew crew, LocalDate localDate) {
+        return attendances.getOrDefault(crew, Collections.emptyList()).stream()
                 .filter(attendance -> attendance.getCheckInDate().equals(localDate))
-                .findAny();
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_ATTENDANCE.getMessage()));
     }
 
     public List<Attendance> getAttendancesByCrew(Crew crew) {
