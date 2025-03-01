@@ -4,18 +4,13 @@ import java.util.function.Supplier;
 
 
 public class ExceptionHandler {
-    
+
     public static <T> T retryUntilSuccessWithReturn(Supplier<T> supplier) {
         ExecuteResult executeResult;
         do {
             executeResult = executeGivenMethod(supplier);
         } while (!executeResult.isSuccess());
         return (T) executeResult.result();
-    }
-
-    public static void retryUntilSuccess(Runnable runnable) {
-        while (!executeGivenMethod(runnable))
-            ;
     }
 
     private static <T> ExecuteResult executeGivenMethod(Supplier<T> supplier) {
