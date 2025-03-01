@@ -1,5 +1,8 @@
 package util;
 
+import static constant.ErrorMessage.FILE_READ_ERROR;
+import static constant.ErrorMessage.NOT_FOUND_FILE;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,7 +14,7 @@ public class FileParser {
         InputStream inputStream = FileParser.class.getClassLoader().getResourceAsStream(resourcePath);
 
         if (inputStream == null) {
-            throw new IllegalArgumentException("파일을 찾을 수 없습니다.");
+            throw new IllegalArgumentException(NOT_FOUND_FILE.getMessage());
         }
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -19,7 +22,7 @@ public class FileParser {
                     .skip(1)
                     .toList();
         } catch (Exception e) {
-            throw new IllegalArgumentException("파일을 읽는 중 오류가 발생했습니다.");
+            throw new IllegalArgumentException(FILE_READ_ERROR.getMessage());
         }
     }
 }

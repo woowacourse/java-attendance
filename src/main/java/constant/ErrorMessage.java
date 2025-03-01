@@ -2,6 +2,9 @@ package constant;
 
 public enum ErrorMessage {
 
+    NOT_FOUND_FILE("파일을 찾을 수 없습니다."),
+    FILE_READ_ERROR("파일을 읽는 중 오류가 발생했습니다."),
+
     INVALID_INPUT_NULL_OR_BLANK("입력 값은 null이거나 공백일 수 없습니다."),
     INVALID_INTEGER_FORMAT("해당 입력 값은 정수이어야 합니다."),
     INVALID_TIME_FORMAT("해당 입력 값은 시간 형식이어야 합니다. (ex. 09:24)"),
