@@ -1,5 +1,6 @@
 package model;
 
+import static constant.ErrorMessage.CANNOT_CHECK_IN_ON_HOLIDAY;
 import static constant.ErrorMessage.NOT_FOUND_CREW;
 import static constant.ErrorMessage.OUT_OF_OPERATION_HOURS;
 import static constant.PathConstant.ATTENDANCE_FILE_PATH;
@@ -205,7 +206,6 @@ class AttendancesTest {
         assertThat(response.riskCrewResponses().get(2).punishmentType()).isEqualTo(PunishmentType.MEETING);
     }
 
-
     @Test
     @DisplayName("공휴일에 출석을 시도하는 경우 예외가 발생한다.")
     void test10() {
@@ -215,6 +215,19 @@ class AttendancesTest {
 
         String nickname = "미소";
         String checkInTime = "10:00";
+        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
+
+        // when & then
+        assertThatThrownBy(() -> attendances.add(request, dateTimeGenerator))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(CANNOT_CHECK_IN_ON_HOLIDAY.getMessage());
+    }
+
+    @Test
+    @DisplayName("운영 시간이 아닐 때 출석을 시도하는 경우 예외가 발생한다.")
+    void test11() {
+        String nickname = "미소";
+        String checkInTime = "07:00";
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when & then
