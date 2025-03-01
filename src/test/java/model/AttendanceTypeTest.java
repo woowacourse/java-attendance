@@ -1,6 +1,8 @@
 package model;
 
+import static constant.ErrorMessage.CANNOT_CHECK_IN_ON_WEEKEND;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -91,5 +93,19 @@ class AttendanceTypeTest {
 
         // then
         assertThat(result).isEqualTo(AttendanceType.ABSENCE);
+    }
+
+
+    @Test
+    @DisplayName("주말은 출석을 할 수 없다.")
+    void test7() {
+        // given
+        LocalDate localDate = LocalDate.of(2025, 3, 1);
+        LocalTime localTime = LocalTime.of(10, 0);
+
+        // when & then
+        assertThatThrownBy(() -> AttendanceType.calculate(localDate, localTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(CANNOT_CHECK_IN_ON_WEEKEND.getMessage());
     }
 }
