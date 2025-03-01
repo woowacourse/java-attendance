@@ -58,6 +58,6 @@ public record AttendanceRecord(
     }
 
     public void attend(AttendanceDate attendanceDate, LocalTime attendanceTime) {
-
+        attendanceDateTimes.add(new AttendanceDateTime(attendanceDate, attendanceTime));
     }
 }
