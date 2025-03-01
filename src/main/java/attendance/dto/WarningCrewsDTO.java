@@ -23,12 +23,13 @@ public record WarningCrewsDto(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
             String warningType
     ) {
         public static WarningCrewDetailDTO of(String crewName, AttendanceRecord attendanceRecord) {
+            LocalDate now = LocalDate.of(2024, 12, 31);
             return new WarningCrewDetailDTO(
                     crewName,
-                    attendanceRecord.computeAbsencesUntil(LocalDate.now()),
+                    attendanceRecord.computeAbsencesUntil(now),
                     attendanceRecord.computeLateCount(),
                     2,
-                    attendanceRecord.computePanaltyUntil(LocalDate.now()).name()
+                    attendanceRecord.computePanaltyUntil(now).name()
             );
         }
     }

@@ -24,6 +24,7 @@ public record AttendanceDto(
     public static final int LAST_DAY = 31;
 
     public static AttendanceDto from(String crewName, AttendanceRecord attendanceRecord) {
+        LocalDate now = LocalDate.of(2024, 12, 31);
         return new AttendanceDto(
                 crewName,
                 IntStream.range(1, computeLastAttendanceDate())
@@ -31,10 +32,10 @@ public record AttendanceDto(
                         .mapToObj(day -> new AttendanceDate(LocalDate.of(2024, 12, day)))
                         .map(attendanceDate -> generateAttendanceDetailDTO(attendanceRecord, attendanceDate))
                         .toList(),
-                attendanceRecord.computePanaltyUntil(LocalDate.now()).name(),
+                attendanceRecord.computePanaltyUntil(now).name(),
                 attendanceRecord.computeAttendanceCount(),
                 attendanceRecord.computeLateCount(),
-                attendanceRecord.computeAbsencesUntil(LocalDate.now())
+                attendanceRecord.computeAbsencesUntil(LocalDate.of(2024, 12, 31))
         );
     }
 
@@ -43,8 +44,10 @@ public record AttendanceDto(
             AttendanceDate attendanceDate
     ) {
         if (attendanceRecord.containsAttendanceDateTimeByDate(attendanceDate)) {
+            AttendanceDateTime attendanceDateTime = attendanceRecord.findAttendanceByDate(attendanceDate);
             return AttendanceDetailDto.fromArriveAttendance(
-                    attendanceRecord.findAttendanceByDate(attendanceDate)
+                    attendanceDateTime.getAttendanceDate(),
+                    attendanceDateTime.getAttendanceTime()
             );
         }
         return AttendanceDetailDto.fromNonArriveAttendance(attendanceDate.date());
@@ -67,15 +70,20 @@ public record AttendanceDto(
             LocalTime attendanceTime,
             String attendanceType
     ) {
-        public static AttendanceDetailDto fromArriveAttendance(AttendanceDateTime attendanceDateTime) {
+        public static AttendanceDetailDto fromArriveAttendance(AttendanceDate attendanceDate,
+                                                               LocalTime attendanceTime) {
             return new AttendanceDetailDto(
-                    attendanceDateTime.getAttendanceDate().date(),
-                    attendanceDateTime.getAttendanceTime(),
+                    attendanceDate.date(),
+                    attendanceTime,
                     AttendanceStatus.from(
-                            attendanceDateTime.getAttendanceTime(),
-                            EducationSchedule.from(attendanceDateTime.getAttendanceDate().date())
+                            attendanceTime,
+                            EducationSchedule.from(attendanceDate.date())
                     ).name()
             );
+        }
+
+        public static AttendanceDetailDto fromArriveAttendance(AttendanceDateTime attendanceDateTime) {
+            return fromArriveAttendance(attendanceDateTime.getAttendanceDate(), attendanceDateTime.getAttendanceTime());
         }
 
         public static AttendanceDetailDto fromNonArriveAttendance(LocalDate localDate) {
