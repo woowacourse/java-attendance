@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,15 @@ public class StudentAttendanceHistory {
 
     public AttendanceTime findAttendanceTimeByAttendanceDate(AttendanceDate attendanceDate) {
         return attendanceHistory.get(attendanceDate);
+    }
+
+    public void updateMissingAttendanceRecords(AttendanceDate attendanceStartDate, AttendanceDate today) {
+        while(!attendanceStartDate.equals(today)) {
+            if (!isExistSameAttendanceDate(attendanceStartDate) && !attendanceStartDate.isHoliday()) {
+                this.addStudentAttendanceHistory(attendanceStartDate, new AttendanceTime(LocalTime.of(0, 0)));
+            }
+            attendanceStartDate = attendanceStartDate.plusOneDay();
+        }
     }
 
     public Map<AttendanceDate, AttendanceTime> getAttendanceHistory() {

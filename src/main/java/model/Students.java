@@ -21,4 +21,10 @@ public class Students {
         return students.stream()
                 .anyMatch(student -> student.isSameName(studentName));
     }
+
+    public void updateMissingAttendanceRecords(AttendanceDate attendanceStartDate, AttendanceDate todayDate) {
+        for (Student student : students) {
+            student.updateMissingAttendanceRecords(attendanceStartDate, todayDate);
+        }
+    }
 }

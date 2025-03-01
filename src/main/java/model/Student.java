@@ -29,6 +29,9 @@ public class Student {
         return studentAttendanceHistory.findAttendanceTimeByAttendanceDate(attendanceDate);
     }
 
+    public void updateMissingAttendanceRecords(AttendanceDate attendanceStartDate, AttendanceDate today) {
+        studentAttendanceHistory.updateMissingAttendanceRecords(attendanceStartDate, today);
+    }
     public StudentAttendanceHistory getStudentAttendanceHistory() {
         return studentAttendanceHistory;
     }
