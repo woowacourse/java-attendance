@@ -49,12 +49,12 @@ public class AttendanceController {
 
     private void initFunctionMap() {
         functionMap.put("1", this::attendConfirm);
-        functionMap.put("2", this::edit);
+        functionMap.put("2", this::modifyAttendance);
         functionMap.put("3", this::confirm);
         functionMap.put("4", this::warning);
     }
 
-    private void attendConfirm(){
+    private void attendConfirm() {
         String inputNickname = inputView.inputNickname();
         attendanceHistory.isValidCrew(inputNickname);
         LocalTime nowTime = inputView.inputAttendanceTime();
@@ -65,7 +65,18 @@ public class AttendanceController {
         );
     }
 
-    private void edit(){};
+    private void modifyAttendance() {
+        String inputNickname = inputView.inputModifyNickname();
+        attendanceHistory.isValidCrew(inputNickname);
+        int modifyDate = inputView.inputModifyAttendanceDate();
+        AttendanceTime attendanceTime = attendanceHistory.getAttendanceTimeByDate(
+            inputNickname, modifyDate);
+        LocalTime modifyTime = inputView.inputAttendanceTime();
+        AttendanceTime modifyAttendanceTime = attendanceHistory.modifyAttendance(inputNickname,
+            attendanceTime, LocalDateTime.of(currentDate.now(), modifyTime));
+        outputView.printModifyAttendaneTimeResult(attendanceTime, modifyAttendanceTime);
+    }
+
     private void confirm(){};
     private void warning(){};
 

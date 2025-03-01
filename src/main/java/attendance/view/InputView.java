@@ -13,6 +13,9 @@ public class InputView {
     private static final String NICKNAME_INPUT_MESSAGE = "닉네임을 입력해 주세요.";
     private static final String ATTENDANCE_TIME_INPUT_MESSAGE = "등교시간을 입력해주세요.";
     private static final String TODAY_DATE_MESSAGE = "오늘은 %s월 %s일 %s입니다. 기능을 선택해 주세요.";
+    private static final String MODIFY_CREW_MESSAGE = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
+    private static final String MODIFY_ATTENDANCE_DATE_MESSAGE = "수정하려는 날짜(일)를 입력해 주세요.";
+    private static final String MODIFY_ATTENDANCE_TIME_MESSAGE = "언제로 변경하겠습니까?";
     private static final String CHOOSE_FUNCTION_MESSAGE = "1. 출석 확인\n"
         + "2. 출석 수정\n"
         + "3. 크루별 출석 기록 확인\n"
@@ -32,14 +35,34 @@ public class InputView {
         return userInput();
     }
 
+    public String inputModifyNickname() {
+        printMessage(MODIFY_CREW_MESSAGE);
+        return userInput();
+    }
+
+    public int inputModifyAttendanceDate() {
+        System.out.println(MODIFY_ATTENDANCE_DATE_MESSAGE);
+        return Integer.parseInt(userInput());
+    }
+
     public String inputFunction() {
         System.out.println(CHOOSE_FUNCTION_MESSAGE);
         return userInput();
     }
 
+    public LocalTime inputModifyTime() {
+        System.out.println(MODIFY_ATTENDANCE_TIME_MESSAGE);
+        String userInput = userInput();
+        return convertToLocalTime(userInput);
+    }
+
     public LocalTime inputAttendanceTime() {
         printMessage(ATTENDANCE_TIME_INPUT_MESSAGE);
         String userInput = userInput();
+        return convertToLocalTime(userInput);
+    }
+
+    private LocalTime convertToLocalTime(String userInput) {
         LocalTime attendanceTime;
         try {
             attendanceTime = LocalTime.parse(userInput, DateTimeFormatter.ofPattern("HH:mm"));
