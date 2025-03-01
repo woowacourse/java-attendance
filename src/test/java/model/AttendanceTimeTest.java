@@ -14,15 +14,18 @@ class AttendanceTimeTest {
     void test1() {
         // given
         LocalDate localDate = LocalDate.of(2025, 2, 28);
-        LocalTime localTime = LocalTime.of(10, 6);
+        LocalTime localTime1 = LocalTime.of(10, 6);
+        LocalTime localTime2 = LocalTime.of(10, 30);
         int beLateTime = 5;
         int absenceTime = 30;
 
         // when
-        boolean result = AttendanceTime.isLate(localDate, localTime, beLateTime, absenceTime);
+        boolean result1 = AttendanceTime.isLate(localDate, localTime1, beLateTime, absenceTime);
+        boolean result2 = AttendanceTime.isLate(localDate, localTime2, beLateTime, absenceTime);
 
         // then
-        assertThat(result).isTrue();
+        assertThat(result1).isTrue();
+        assertThat(result2).isTrue();
     }
 
     @Test
@@ -30,7 +33,7 @@ class AttendanceTimeTest {
     void test2() {
         // given
         LocalDate localDate = LocalDate.of(2025, 2, 28);
-        LocalTime localTime1 = LocalTime.of(10, 4);
+        LocalTime localTime1 = LocalTime.of(10, 5);
         LocalTime localTime2 = LocalTime.of(10, 31);
         int beLateTime = 5;
         int absenceTime = 30;
@@ -60,12 +63,12 @@ class AttendanceTimeTest {
     }
 
     @Test
-    @DisplayName("지각이 아니면 false를 반환한다.")
+    @DisplayName("결석이 아니면 false를 반환한다.")
     void test4() {
         // given
         LocalDate localDate = LocalDate.of(2025, 2, 28);
         LocalTime localTime1 = LocalTime.of(10, 0);
-        LocalTime localTime2 = LocalTime.of(10, 5);
+        LocalTime localTime2 = LocalTime.of(10, 30);
         int absenceTime = 30;
 
         // when
