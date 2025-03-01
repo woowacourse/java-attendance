@@ -86,4 +86,26 @@ public class AllCrewTest {
                 () -> assertThat(allCrew.getAbsentCountWithCrewName("강산")).isEqualTo(1)
         );
     }
+
+    @DisplayName("제적 위험자 크루 탐색")
+    @Test
+    void test5() {
+        // given
+        AllCrew allCrew = new AllCrew();
+        allCrew.addCrewInfoWithNameAndAttendance("띠용", new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)));
+        allCrew.addCrewInfoWithNameAndAttendance("띠용", new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
+        // 띠용 3, 4일 결석
+        allCrew.addCrewInfoWithNameAndAttendance("강산", new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)));
+        allCrew.addCrewInfoWithNameAndAttendance("강산", new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
+        allCrew.addCrewInfoWithNameAndAttendance("강산", new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
+        // 강산 5일 결석
+        allCrew.addCrewInfoWithNameAndAttendance("율무", new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
+        // 율무 2, 3, 5일 결석
+
+        // when
+        allCrew.fillAllCrewsEmptyDateWithAbsent(LocalDate.of(2024,12,5));
+
+        // then
+        assertThat(allCrew.getPenaltyReceivedCrew()).extracting("name").contains("띠용", "율무");
+    }
 }
