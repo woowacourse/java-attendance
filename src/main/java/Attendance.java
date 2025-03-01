@@ -1,5 +1,4 @@
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -19,8 +18,8 @@ public class Attendance {
         return date.equals(new AttendanceDate(targetDate));
     }
 
-    public LocalDateTime getDateTime() {
-        return LocalDateTime.of(date.getValue(), time.getValue());
+    public LocalTime getTime() {
+        return time.getValue();
     }
 
     public AttendanceStatus getStatus() {

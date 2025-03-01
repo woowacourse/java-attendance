@@ -90,7 +90,7 @@ public class CrewAttendanceStorageTest {
         // then
         assertAll(
                 () -> assertThat(attendance.isAttendedOn(date)).isTrue(),
-                () -> assertThat(attendance.getDateTime()).isEqualTo(LocalDateTime.of(date, time))
+                () -> assertThat(attendance.getTime()).isEqualTo(time)
         );
     }
 
@@ -115,7 +115,7 @@ public class CrewAttendanceStorageTest {
         // then
         assertAll(
                 () -> assertThat(attendance.isPresent()).isTrue(),
-                () -> assertThat(attendance.get().getDateTime()).isEqualTo(LocalDateTime.of(date, modifiedTime)),
+                () -> assertThat(attendance.get().getTime()).isEqualTo(modifiedTime),
                 () -> assertThat(attendance.get().getStatus()).isSameAs(AttendanceStatus.LATE)
         );
     }

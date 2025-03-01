@@ -149,7 +149,7 @@ public class AttendanceStorageTest {
 
         // then
         assertThat(attendance.isPresent()).isTrue();
-        assertThat(attendance.get().getDateTime()).isEqualTo(LocalDateTime.of(date, enterTime));
+        assertThat(attendance.get().getTime()).isEqualTo(enterTime);
     }
 
     @DisplayName("출석 기록이 존재하지 않는 날짜의 출석 기록을 수정하고, 이를 조회할 수 있다.")
@@ -167,7 +167,7 @@ public class AttendanceStorageTest {
         // then
         assertAll(
                 () -> assertThat(attendance.isPresent()).isTrue(),
-                () -> assertThat(attendance.get().getDateTime()).isEqualTo(LocalDateTime.of(date, modifyTime))
+                () -> assertThat(attendance.get().getTime()).isEqualTo(modifyTime)
         );
     }
 
@@ -188,7 +188,7 @@ public class AttendanceStorageTest {
         // then
         assertAll(
                 () -> assertThat(attendance.isPresent()).isTrue(),
-                () -> assertThat(attendance.get().getDateTime()).isEqualTo(LocalDateTime.of(date, modifiedTime))
+                () -> assertThat(attendance.get().getTime()).isEqualTo(modifiedTime)
         );
     }
 }
