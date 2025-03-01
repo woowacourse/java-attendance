@@ -30,8 +30,12 @@ public class AttendanceBook {
         attendanceRecord.addAttendanceDateTime(attendanceDateTime);
     }
 
-    public AttendanceDateTime retrieveByDate(final AttendanceDate date) {
-        return attendanceRecord.findByDate(date);
+    public void modify(final AttendanceDateTime attendanceDateTime) {
+        attendanceRecord.modifyAttendanceDateTime(attendanceDateTime);
+    }
+
+    public AttendanceDateTime retrieveByDate(final AttendanceDate attendanceDate) {
+        return attendanceRecord.findByDate(attendanceDate);
     }
 
     public List<AttendanceDateTime> retrieveOrderByDateTimeUntilDate(final AttendanceDate untilDate) {

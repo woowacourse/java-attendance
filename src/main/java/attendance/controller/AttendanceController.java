@@ -53,6 +53,10 @@ public class AttendanceController {
         if (menuOption == MenuOption.CHECK) {
             handleCheckAttendance(currentDate);
         }
+
+        if (menuOption == MenuOption.EDIT) {
+            handleEditAttendance(currentDate);
+        }
     }
 
     private void handleCheckAttendance(final LocalDate currentDate) {
@@ -62,7 +66,7 @@ public class AttendanceController {
         final AttendanceDate attendanceDate = AttendanceDate.from(
             currentDate);
         final AttendanceTime attendanceTime = AttendanceTime.from(
-            inputView.readAttendanceDate());
+            inputView.readAttendanceTime());
 
         final AttendanceDateTime attendanceDateTime = saveAttendanceDateTime(
             attendanceBook, attendanceDate, attendanceTime);
@@ -82,6 +86,57 @@ public class AttendanceController {
             attendanceDate, attendanceTime));
         return attendanceBook.retrieveByDate(
             attendanceDate);
+    }
+
+    private void handleEditAttendance(final LocalDate currentDate) {
+        final AttendanceBook attendanceBook = findAttendanceBook(
+            inputView.readUpdateNickName());
+
+        final AttendanceDate attendanceDate = new AttendanceDate(
+            currentDate.getYear(),
+            currentDate.getMonthValue(),
+            inputView.readModifyAttendanceDate());
+
+        final AttendanceDateTime originalAttendanceDateTime = attendanceBook.retrieveByDate(
+            attendanceDate);
+
+        final AttendanceDateTime modifiedAttendanceDateTime = modifyAttendance(
+            attendanceBook, attendanceDate);
+
+        printAttendanceModification(
+            attendanceDate,
+            originalAttendanceDateTime, modifiedAttendanceDateTime);
+    }
+
+    private AttendanceDateTime modifyAttendance(
+        final AttendanceBook attendanceBook,
+        final AttendanceDate attendanceDate
+    ) {
+        final AttendanceTime modifyAttendanceTime = AttendanceTime.from(
+            inputView.readModifyAttendanceTime());
+        attendanceBook.modify(new AttendanceDateTime(
+            attendanceDate, modifyAttendanceTime));
+        return attendanceBook.retrieveByDate(
+            attendanceDate);
+    }
+
+    private void printAttendanceModification(
+        final AttendanceDate attendanceDate,
+        final AttendanceDateTime originalAttendanceDateTime,
+        final AttendanceDateTime modifiedAttendanceDateTime
+    ) {
+        final AttendanceStatus originalAttendanceStatus = AttendanceStatus.from(
+            originalAttendanceDateTime);
+        final AttendanceStatus modifiedAttendanceStatus = AttendanceStatus.from(
+            modifiedAttendanceDateTime);
+
+        outputView.printModifyAttendanceDateTime(
+            attendanceDate,
+            originalAttendanceDateTime.getAttendanceTime(),
+            originalAttendanceStatus,
+            modifiedAttendanceDateTime.getAttendanceTime(),
+            modifiedAttendanceStatus
+        );
     }
 
     private AttendanceBook findAttendanceBook(final String crewNickName) {
