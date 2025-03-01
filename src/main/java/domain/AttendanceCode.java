@@ -13,4 +13,12 @@ public enum AttendanceCode {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
     }
+
+    public int getLowerBound() {
+        return lowerBound;
+    }
+
+    public int getUpperBound() {
+        return upperBound;
+    }
 }

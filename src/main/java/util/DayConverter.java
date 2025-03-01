@@ -14,7 +14,7 @@ public class DayConverter {
         return dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 
-    public static LocalDateTime combineTimeAndDate(Time time, LocalDateTime today) {
-        return LocalDateTime.of(today.toLocalDate(), time.convertTime());
+    public static LocalDateTime combineTimeAndDate(Time time, LocalDate today) {
+        return LocalDateTime.of(today, time.convertTime());
     }
 }

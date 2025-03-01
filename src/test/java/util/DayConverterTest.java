@@ -24,7 +24,7 @@ class DayConverterTest {
     @DisplayName("시간을 받아 오늘 날짜와 결합합니다.")
     void combineTimeAndDateTest() {
         Time time = new Time("12:00");
-        LocalDateTime today = LocalDateTime.of(2024, 12, 2, 10, 0);
+        LocalDate today = LocalDate.of(2024, 12, 2);
 
         Assertions.assertEquals(LocalDateTime.of(2024, 12, 2, 12, 0), DayConverter.combineTimeAndDate(time, today));
     }
