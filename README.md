@@ -4,8 +4,8 @@
 
 ### 0. 프로그램 실행 기능
 
-- [ ] 프로그램을 시작하면 src/main/resources/attendances.csv를 통해 저장된 출석 데이터를 조회한다.
-  - [ ] 출석 시스템에 등록된 크루의 출석 기록은 제공된 파일(attendances.csv)에서 확인할 수 있다.
+- [X] 프로그램을 시작하면 src/main/resources/attendances.csv를 통해 저장된 출석 데이터를 조회한다.
+  - [X] 출석 시스템에 등록된 크루의 출석 기록은 제공된 파일(attendances.csv)에서 확인할 수 있다.
 
 - [ ] 실행 가능한 기능 선택 목록을 출력한다.
 ```
