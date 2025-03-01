@@ -67,6 +67,14 @@ public class AttendResult {
         return findAttendByDay(date);
     }
 
+    public AttendCount countAttendStatus(final int targetDay) {
+        List<Attend> attends = getAttendResult(targetDay);
+        List<AttendStatus> attendStatus = attends.stream()
+                .map(Attend::checkStatus)
+                .toList();
+        return AttendCount.createCount(attendStatus);
+    }
+
     @Override
     public boolean equals(final Object object) {
         if (object == null || getClass() != object.getClass()) {

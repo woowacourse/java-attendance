@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import domain.Attend;
+import domain.AttendCount;
 import domain.AttendResult;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -134,7 +135,7 @@ public class AttendResultTest {
         List<Attend> expected = createAttends();
         assertThat(actual).containsExactlyElementsOf(expected);
     }
-    
+
     @Test
     @DisplayName("대상 날짜 직전까지의 출석 결과를 누락된 날짜의 출석도 포함하여 반환한다")
     void getAttendsUntilDayContainAbsence() {
@@ -150,5 +151,26 @@ public class AttendResultTest {
         List<Attend> expected = createAttends();
         expected.add(new Attend(LocalDate.of(2024, 12, 5)));
         assertThat(actual).containsExactlyElementsOf(expected);
+    }
+
+    @Test
+    @DisplayName("특정 날짜까지의 출석, 지각, 결석 횟수를 계산한다")
+    void countAttendStatus() {
+        //given
+        List<Attend> attend = List.of(
+                new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(13, 5)),
+                new Attend(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
+                new Attend(LocalDate.of(2024, 12, 4), LocalTime.of(10, 31)),
+                new Attend(LocalDate.of(2024, 12, 5))
+        );
+        AttendResult attendResult = new AttendResult(attend);
+        int targetDay = 6;
+
+        //when
+        AttendCount actual = attendResult.countAttendStatus(targetDay);
+
+        //then
+        AttendCount expected = new AttendCount(1, 1, 2);
+        assertThat(actual).isEqualTo(expected);
     }
 }
