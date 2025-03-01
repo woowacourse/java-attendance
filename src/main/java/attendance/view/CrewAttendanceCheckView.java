@@ -17,16 +17,15 @@ public class CrewAttendanceCheckView {
         return readOneLine();
     }
 
-    public void printCrewAttendances(Crew crew, List<AttendanceDateTime> crewAttendanceDateTimes) {
-        System.out.println("이번 달 %s의 출석 기록입니다.".formatted(crew.getNickname()));
-        System.out.println();
+    public void printCrewAttendances(final Crew crew, final List<AttendanceDateTime> crewAttendanceDateTimes) {
+        AttendanceStatusTextMaker attendanceStatusTextMaker = new AttendanceStatusTextMaker();
+        System.out.println("이번 달 %s의 출석 기록입니다.\n".formatted(crew.getNickname()));
         for (AttendanceDateTime crewAttendanceDateTime : crewAttendanceDateTimes) {
             LocalDateTime dateTime = crewAttendanceDateTime.getLocalDateTime();
             if (dateTime.toLocalTime().equals(AttendanceDateTime.ABSENT_TIME)) {
                 System.out.println(DATE_FORMATTER.format(dateTime) + " --:-- (결석)");
                 continue;
             }
-            AttendanceStatusTextMaker attendanceStatusTextMaker = new AttendanceStatusTextMaker();
             AttendanceStatus attendanceStatus = checkStatus(crewAttendanceDateTime);
             System.out.println(DATE_TIME_FORMATTER.format(dateTime)
                     + " (%s)".formatted(attendanceStatusTextMaker.make(attendanceStatus)));
@@ -34,21 +33,17 @@ public class CrewAttendanceCheckView {
         System.out.println();
     }
 
-    public void printAttendanceStatuses(Map<AttendanceStatus, Long> attendanceStatuses) {
+    public void printAttendanceStatuses(final Map<AttendanceStatus, Long> attendanceStatuses) {
         AttendanceStatusTextMaker attendanceStatusTextMaker = new AttendanceStatusTextMaker();
-        Arrays.stream(AttendanceStatus.values())
-                .forEach(attendanceStatus -> {
-                    String attendanceStatusText = attendanceStatusTextMaker.make(attendanceStatus);
-                    Long statusCount = attendanceStatuses.get(attendanceStatus);
-                    if (statusCount == null) {
-                        statusCount = 0L;
-                    }
-                    System.out.println("%s: %d회".formatted(attendanceStatusText, statusCount));
-                });
+        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
+            String attendanceStatusText = attendanceStatusTextMaker.make(attendanceStatus);
+            Long statusCount = attendanceStatuses.get(attendanceStatus);
+            System.out.println("%s: %d회".formatted(attendanceStatusText, statusCount));
+        }
         System.out.println();
     }
 
-    public void printExpulsionStatus(ExpulsionStatus expulsionStatus) {
+    public void printExpulsionStatus(final ExpulsionStatus expulsionStatus) {
         ExpulsionStatusTextMaker expulsionStatusTextMaker = new ExpulsionStatusTextMaker();
         if (expulsionStatus.equals(ExpulsionStatus.NONE)) {
             return;

@@ -33,10 +33,10 @@ public class AttendanceModifyView {
         }
     }
 
-    public void printAttendanceModifyResult(AttendanceDateTime originalDateTime,
-                                            AttendanceStatusChecker.AttendanceStatus originalAttendanceStatus,
-                                            AttendanceDateTime newDateTime,
-                                            AttendanceStatusChecker.AttendanceStatus newAttendanceStatus) {
+    public void printAttendanceModifyResult(final AttendanceDateTime originalDateTime,
+                                            final AttendanceStatusChecker.AttendanceStatus originalAttendanceStatus,
+                                            final AttendanceDateTime newDateTime,
+                                            final AttendanceStatusChecker.AttendanceStatus newAttendanceStatus) {
         AttendanceStatusTextMaker attendanceStatusTextMaker = new AttendanceStatusTextMaker();
         LocalDateTime originalLocalDateTime = originalDateTime.getLocalDateTime();
         String originalAttendanceStatusText = attendanceStatusTextMaker.make(originalAttendanceStatus);
