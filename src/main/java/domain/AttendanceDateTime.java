@@ -1,7 +1,9 @@
 package domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AttendanceDateTime {
     private final LocalDateTime dateTime;
@@ -18,6 +20,10 @@ public class AttendanceDateTime {
 
     public static AttendanceDateTime from(LocalDateTime localDateTime) {
         return new AttendanceDateTime(localDateTime, true);
+    }
+
+    public static AttendanceDateTime generateWithoutTimeFrom(LocalDate localDate) {
+        return new AttendanceDateTime(LocalDateTime.of(localDate, LocalTime.now()), true);
     }
 
     public static AttendanceDateTime generateNotRecordedAttendanceOf(int year, int month, int day) {

@@ -20,6 +20,7 @@ import view.OutputView;
 
 public class AttendanceController {
     private final AttendanceService attendanceService;
+    private LocalDate currentDate;
 
     public AttendanceController(AttendanceService attendanceService) {
         this.attendanceService = attendanceService;
@@ -36,8 +37,9 @@ public class AttendanceController {
         return featureType != FeatureType.QUIT;
     }
 
-    private static FeatureType getFeature() {
-        OutputView.printToday();
+    private FeatureType getFeature() {
+        currentDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        OutputView.printToday(currentDate);
         return InputView.askFeature();
     }
 
@@ -73,7 +75,7 @@ public class AttendanceController {
         validateNicknameRegistered(nickname);
 
         LocalTime localTime = InputView.askAttendanceTime(false);
-        LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(ZoneId.of("Asia/Seoul")), localTime);
+        LocalDateTime dateTime = LocalDateTime.of(currentDate, localTime);
 
         Crew crew = Crew.from(nickname);
         validateHistoryNotAlreadyExists(crew, dateTime);
@@ -100,7 +102,7 @@ public class AttendanceController {
     }
 
     private void runCheckAttendanceOfCrew() {
-        int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
+        int currentDay = currentDate.getDayOfMonth();
         String nickname = InputView.askNickname(false);
         validateNicknameRegistered(nickname);
         AttendanceStatusesOfCrewDto statusesDto = attendanceService.getHistoriesDtoFrom(Crew.from(nickname), currentDay);
@@ -108,18 +110,17 @@ public class AttendanceController {
     }
 
     private void runCheckCrewOfBanRisk() {
-        int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
+        int currentDay = currentDate.getDayOfMonth();
         Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = attendanceService.getAllAttendanceTypeCountOfCrew(currentDay);
         OutputView.printCrewOfBanRisk(attendanceTypeCountOfCrew);
     }
 
     private void validateIsSchoolDay() {
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        if (AttendanceDateTime.from(now).isRestDay()) {
+        if (AttendanceDateTime.generateWithoutTimeFrom(currentDate).isRestDay()) {
             OutputView.printErrorMessage(String.format("%d월 %d일 %s은 등교일이 아닙니다.",
-                    now.getMonthValue(),
-                    now.getDayOfMonth(),
-                    now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+                    currentDate.getMonthValue(),
+                    currentDate.getDayOfMonth(),
+                    currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
 
             throw new IllegalArgumentException("");
         }
