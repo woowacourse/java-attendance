@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import static attendance.fixture.TestFixture.makeAttendanceTime;
 import static attendance.fixture.TestFixture.makeCrewHistory;
 import static attendance.fixture.TestFixture.makeDecemberDate;
 import static attendance.fixture.TestFixture.makeDefaultAttendanceTime;
@@ -8,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.fixture.TestFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ class CrewHistoriesTest {
         LocalDateTime yesterdayAttendanceTime = makeDefaultAttendanceTime();
         crewHistories.addHistory(nickname, yesterdayAttendanceTime);
 
-        LocalDateTime todayAttendanceTime = makeAttendanceTime(4, 10, 0);
+        LocalDateTime todayAttendanceTime = TestFixture.makeAttendanceDateTime(4, 10, 0);
 
         // When
         crewHistories.addHistory(nickname, todayAttendanceTime);

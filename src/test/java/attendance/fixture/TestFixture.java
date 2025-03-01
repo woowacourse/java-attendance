@@ -3,6 +3,7 @@ package attendance.fixture;
 import attendance.domain.CrewHistory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ public class TestFixture {
         return LocalDateTime.of(2024, 12, 3, 10, 0);
     }
 
-    public static LocalDateTime makeAttendanceTime(int day, int hour, int minute) {
+    public static LocalDateTime makeAttendanceDateTime(int day, int hour, int minute) {
         return LocalDateTime.of(2024, 12, day, hour, minute);
     }
 
@@ -26,5 +27,9 @@ public class TestFixture {
 
     public static LocalDate makeDecemberDate(final int day) {
         return LocalDate.of(2024, 12, day);
+    }
+
+    public static LocalTime makeAttendanceTime(final int hour, final int minute) {
+        return LocalTime.of(hour, minute);
     }
 }
