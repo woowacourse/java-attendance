@@ -2,7 +2,6 @@ package domain;
 
 import domain.attendance.StudentStatus;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ public class CrewGroup {
         return crews.get(crewName);
     }
 
-    private boolean has(String crewName){
+    public boolean has(String crewName){
         return crews.containsKey(crewName);
     }
 
