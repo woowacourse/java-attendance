@@ -5,7 +5,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
-import java.util.Map;
 import model.AttendanceStatus;
 
 public class OutPutView {
@@ -26,14 +25,23 @@ public class OutPutView {
         System.out.println("닉네임을 입력해 주세요.");
     }
 
-    public static void displayAttendanceRecord(LocalTime localTime, AttendanceStatus attendanceStatus, LocalDate today){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        String attendanceTime = localTime.format(formatter);
-        System.out.printf("%d월 %d일 %s %s (%s)\n",
-                today.getMonthValue(),
-                today.getDayOfMonth(),
-                today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
-                attendanceTime,
-                attendanceStatus.getAttendanceStatus());
+    public static void requestModifyNickName(){
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+    }
+
+    public static void requestModifyDate(){
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+    }
+
+    public static void askForNewAttendanceTime(){
+        System.out.println("언제로 변경하겠습니까?");
+    }
+
+    public static void displayModifyAttendanceRecord(String beforeRecord, String modifyRecord){
+        System.out.println(beforeRecord + "->" + modifyRecord + "수정 완료!");
+    }
+
+    public static void displayAttendanceRecord(String record){
+        System.out.println(record);
     }
 }
