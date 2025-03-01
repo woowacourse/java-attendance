@@ -68,4 +68,14 @@ public class StudentTest {
                 student.isSameName("이든")
         );
     }
+
+    @Test
+    @DisplayName("날짜를 통해 해달 날짜의 입실한 시간 찾는 메서드 테스트")
+    void test6() {
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 2));
+        Assertions.assertEquals(
+                attendanceDate.findAttendanceTimeByAttendanceDate(attendanceDate),
+                new AttendanceTime(LocalTime.of(13, 2))
+        );
+    }
 }
