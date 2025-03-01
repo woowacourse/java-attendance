@@ -5,8 +5,11 @@ import domain.Attendance;
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class AllCrewTest {
@@ -87,25 +90,52 @@ public class AllCrewTest {
         );
     }
 
-    @DisplayName("제적 위험자 크루 탐색")
-    @Test
-    void test5() {
-        // given
-        AllCrew allCrew = new AllCrew();
-        allCrew.addCrewInfoWithNameAndAttendance("띠용", new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)));
-        allCrew.addCrewInfoWithNameAndAttendance("띠용", new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
-        // 띠용 3, 4일 결석
-        allCrew.addCrewInfoWithNameAndAttendance("강산", new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)));
-        allCrew.addCrewInfoWithNameAndAttendance("강산", new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
-        allCrew.addCrewInfoWithNameAndAttendance("강산", new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
-        // 강산 5일 결석
-        allCrew.addCrewInfoWithNameAndAttendance("율무", new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
-        // 율무 2, 3, 5일 결석
+    @Nested
+    @DisplayName("제적 위험자 크루 테스트")
+    class PenaltyReceivedCrewTest {
+        @DisplayName("제적 위험자 크루 탐색")
+        @Test
+        void test5() {
+            // given
+            AllCrew allCrew = new AllCrew();
+            allCrew.addCrewInfoWithNameAndAttendance("띠용", new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)));
+            allCrew.addCrewInfoWithNameAndAttendance("띠용", new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
+            // 띠용 3, 4일 결석
+            allCrew.addCrewInfoWithNameAndAttendance("강산", new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)));
+            allCrew.addCrewInfoWithNameAndAttendance("강산", new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
+            allCrew.addCrewInfoWithNameAndAttendance("강산", new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
+            // 강산 5일 결석
+            allCrew.addCrewInfoWithNameAndAttendance("율무", new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
+            // 율무 2, 3, 5일 결석
 
-        // when
-        allCrew.fillAllCrewsEmptyDateWithAbsent(LocalDate.of(2024,12,5));
+            // when
+            allCrew.fillAllCrewsEmptyDateWithAbsent(LocalDate.of(2024,12,5));
 
-        // then
-        assertThat(allCrew.getPenaltyReceivedCrew()).extracting("name").contains("띠용", "율무");
+            // then
+            assertThat(allCrew.getPenaltyReceivedCrew()).extracting("name").contains("띠용", "율무");
+        }
+
+        @DisplayName("제적 위험자 크루 정렬 테스트")
+        @Test
+        void test6() {
+            // given
+            AllCrew allCrew = new AllCrew();
+            allCrew.addCrewInfoWithNameAndAttendance("띠용", new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)));
+            allCrew.addCrewInfoWithNameAndAttendance("띠용", new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
+            // 띠용 3, 4일 결석
+            allCrew.addCrewInfoWithNameAndAttendance("강산", new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)));
+            allCrew.addCrewInfoWithNameAndAttendance("강산", new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
+            // 강산 4, 5일 결석
+            allCrew.addCrewInfoWithNameAndAttendance("율무", new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
+            // 율무 2, 3, 5일 결석
+
+            // when
+            allCrew.fillAllCrewsEmptyDateWithAbsent(LocalDate.of(2024,12,5));
+            List<Crew> penaltyReceivedCrew = allCrew.getPenaltyReceivedCrew();
+            allCrew.sortPenaltyReceivedCrew(penaltyReceivedCrew);
+
+            // then
+            assertThat(penaltyReceivedCrew).extracting("name").containsExactly("율무", "강산", "띠용");
+        }
     }
 }
