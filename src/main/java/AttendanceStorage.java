@@ -3,7 +3,6 @@ import exception.DuplicateAttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 public class AttendanceStorage {
@@ -14,22 +13,23 @@ public class AttendanceStorage {
     }
 
     public boolean register(LocalDate date, LocalTime time) {
-        Attendance attendance = new Attendance(date, time);
+        ExistAttendance attendance = new ExistAttendance(date, time);
         if (attendances.contains(attendance)) {
             throw new DuplicateAttendanceException();
         }
         return attendances.add(attendance);
     }
 
-    public Optional<Attendance> findByDate(LocalDate date) {
+    public Attendance findByDate(LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isAttendedOn(date))
-                .findFirst();
+                .findFirst()
+                .orElse(EmptyAttendance.of(date));
     }
 
     public boolean modify(LocalDate date, LocalTime modifyTime) {
-        Optional<Attendance> attendance = findByDate(date);
-        attendance.ifPresent(attendances::remove);
-        return attendances.add(new Attendance(date, modifyTime));
+        Attendance attendance = findByDate(date);
+        attendances.remove(attendance);
+        return attendances.add(new ExistAttendance(date, modifyTime));
     }
 }

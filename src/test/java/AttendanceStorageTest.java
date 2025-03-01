@@ -7,9 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -145,11 +143,11 @@ public class AttendanceStorageTest {
 
         // when
         attendanceStorage.register(date, enterTime);
-        Optional<Attendance> attendance = attendanceStorage.findByDate(date);
+        Attendance attendance = attendanceStorage.findByDate(date);
 
         // then
-        assertThat(attendance.isPresent()).isTrue();
-        assertThat(attendance.get().getTime()).isEqualTo(enterTime);
+        assertThat(attendance.isTimeRecorded()).isTrue();
+        assertThat(attendance.getTime()).isEqualTo(enterTime);
     }
 
     @DisplayName("출석 기록이 존재하지 않는 날짜의 출석 기록을 수정하고, 이를 조회할 수 있다.")
@@ -162,12 +160,12 @@ public class AttendanceStorageTest {
 
         // when
         attendanceStorage.modify(date, modifyTime);
-        Optional<Attendance> attendance = attendanceStorage.findByDate(date);
+        Attendance attendance = attendanceStorage.findByDate(date);
 
         // then
         assertAll(
-                () -> assertThat(attendance.isPresent()).isTrue(),
-                () -> assertThat(attendance.get().getTime()).isEqualTo(modifyTime)
+                () -> assertThat(attendance.isTimeRecorded()).isTrue(),
+                () -> assertThat(attendance.getTime()).isEqualTo(modifyTime)
         );
     }
 
@@ -183,12 +181,12 @@ public class AttendanceStorageTest {
 
         // when
         attendanceStorage.modify(date, modifiedTime);
-        Optional<Attendance> attendance = attendanceStorage.findByDate(date);
+        Attendance attendance = attendanceStorage.findByDate(date);
 
         // then
         assertAll(
-                () -> assertThat(attendance.isPresent()).isTrue(),
-                () -> assertThat(attendance.get().getTime()).isEqualTo(modifiedTime)
+                () -> assertThat(attendance.isTimeRecorded()).isTrue(),
+                () -> assertThat(attendance.getTime()).isEqualTo(modifiedTime)
         );
     }
 }

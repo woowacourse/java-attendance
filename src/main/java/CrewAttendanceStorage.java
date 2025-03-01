@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class CrewAttendanceStorage {
     private final Map<String, AttendanceStorage> storages;
@@ -39,14 +38,9 @@ public class CrewAttendanceStorage {
         return storage.register(date, time);
     }
 
-    public Optional<Attendance> findAttendance(String crew, LocalDate date) {
+    public Attendance findAttendance(String crew, LocalDate date) {
         AttendanceStorage storage = findAttendanceStorageByCrew(crew);
-        Optional<Attendance> found = storage.findByDate(date);
-        if (found.isPresent()) {
-            return found;
-        }
-        // TODO: 실제로 출석을 '캠퍼스 종료 시간'에 기록한 것인지, 아예 기록하지 않은 것인지 구별이 안 됨 (-> null 없이 쓰는 방법 고민)
-        return Optional.of(new Attendance(date, EducationTime.endOf(date.getDayOfWeek())));
+        return storage.findByDate(date);
     }
 
     private AttendanceStorage findAttendanceStorageByCrew(String crew) {

@@ -3,10 +3,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -85,7 +83,7 @@ public class CrewAttendanceStorageTest {
 
         // when
         crewAttendanceStorage.register(crew, date, time);
-        Attendance attendance = crewAttendanceStorage.findAttendance(crew, date).get();
+        Attendance attendance = crewAttendanceStorage.findAttendance(crew, date);
 
         // then
         assertAll(
@@ -110,13 +108,13 @@ public class CrewAttendanceStorageTest {
 
         // when
         crewAttendanceStorage.modify(crew, date, modifiedTime);
-        Optional<Attendance> attendance = crewAttendanceStorage.findAttendance(crew, date);
+        Attendance attendance = crewAttendanceStorage.findAttendance(crew, date);
 
         // then
         assertAll(
-                () -> assertThat(attendance.isPresent()).isTrue(),
-                () -> assertThat(attendance.get().getTime()).isEqualTo(modifiedTime),
-                () -> assertThat(attendance.get().getStatus()).isSameAs(AttendanceStatus.LATE)
+                () -> assertThat(attendance.isTimeRecorded()).isTrue(),
+                () -> assertThat(attendance.getTime()).isEqualTo(modifiedTime),
+                () -> assertThat(attendance.getStatus()).isSameAs(AttendanceStatus.LATE)
         );
     }
 
@@ -131,12 +129,12 @@ public class CrewAttendanceStorageTest {
         LocalDate date = LocalDate.of(2025, 2, 28);
 
         // when
-        Optional<Attendance> attendance = crewAttendanceStorage.findAttendance(crew, date);
+        Attendance attendance = crewAttendanceStorage.findAttendance(crew, date);
 
         // then
         assertAll(
-                () -> assertThat(attendance.isPresent()).isTrue(),
-                () -> assertThat(attendance.get().getStatus()).isSameAs(AttendanceStatus.ABSENCE)
+                () -> assertThat(attendance.isTimeRecorded()).isFalse(),
+                () -> assertThat(attendance.getStatus()).isSameAs(AttendanceStatus.ABSENCE)
         );
     }
 }
