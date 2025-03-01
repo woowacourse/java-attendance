@@ -1,6 +1,7 @@
 package model;
 
 import attendance.model.AttendanceDate;
+import java.time.LocalDate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +31,16 @@ class AttendanceDateTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> new AttendanceDate(2024, 12, 15))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void LocalDate를_생성자로_일요일을_출석_날짜로_설정하면_예외가_발생한다() {
+        // given
+        LocalDate now = LocalDate.of(2024, 12, 15);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> new AttendanceDate(now))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

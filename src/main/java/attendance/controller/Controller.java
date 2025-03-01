@@ -47,11 +47,7 @@ public class Controller {
         String crewName = inputView.inputCrewName();
         attendanceRegister.validateContainsCrewName(crewName);
         LocalTime time = LocalTime.now();
-        attendanceRegister.attend(
-                crewName,
-                attendanceDate,
-                time
-        );
+        attendanceRegister.attend(crewName, attendanceDate, time);
         outputView.printAttendanceDetail(AttendanceDetailDto.fromArriveAttendance(new AttendanceDateTime(
                 attendanceDate,
                 time
