@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -159,6 +160,20 @@ public class AttendanceBookTest {
             () -> assertThat(map.get(AttendanceStatus.ON_TIME)).isEqualTo(1),
             () -> assertThat(map.get(AttendanceStatus.LATE)).isEqualTo(1),
             () -> assertThat(map.get(AttendanceStatus.ABSENCE)).isEqualTo(3)
+        );
+    }
+
+    @Test
+    void 날짜범위_내_해당하는_출석상태가_없는경우_null이_아닌_0이다() {
+        var fromMonday = LocalDate.of(2025, 2, 17);
+        var toFriday = LocalDate.of(2025, 2, 21);
+        Map<AttendanceStatus, Integer> map = book.countAttendanceStatuses(crew, fromMonday, toFriday);
+
+        assertAll(
+            () -> assertThat(map.containsKey(AttendanceStatus.ON_TIME)).isTrue(),
+            () -> assertThat(map.get(AttendanceStatus.ON_TIME)).isEqualTo(0),
+            () -> assertThat(map.containsKey(AttendanceStatus.LATE)).isTrue(),
+            () -> assertThat(map.get(AttendanceStatus.LATE)).isEqualTo(0)
         );
     }
 }

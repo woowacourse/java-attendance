@@ -2,14 +2,19 @@ package domain;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.flatMapping;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
 
@@ -53,10 +58,15 @@ public class AttendanceBook {
 
     public Map<AttendanceStatus, Integer> countAttendanceStatuses(
         Crew crew, LocalDate fromInclusive, LocalDate endInclusive) {
-        return listAttendancesOfCrew(crew, fromInclusive, endInclusive)
-            .stream()
+        Map<AttendanceStatus, Integer> counts = new EnumMap<>(AttendanceStatus.class);
+        Arrays.stream(AttendanceStatus.values())
+            .forEach(status -> counts.put(status, 0));
+
+        List<AttendanceDateTime> attendances = listAttendancesOfCrew(crew, fromInclusive, endInclusive);
+        attendances.stream()
             .map(AttendanceDateTime::getAttendanceStatus)
-            .collect(groupingBy(Function.identity(),
-                collectingAndThen(counting(), Long::intValue)));
+            .peek(System.out::println)
+            .forEach(status -> counts.compute(status, (key, val) -> val + 1));
+        return counts;
     }
 }
