@@ -26,5 +26,10 @@ public class AttendanceBook {
     public void register(final String name) {
         attendBook.putIfAbsent(name, new AttendResult());
     }
+
+    public Attend edit(final String name, final Attend afterAttend) {
+        checkContainsName(name);
+        AttendResult attendResult = attendBook.get(name);
+        return attendResult.edit(afterAttend);
     }
 }
