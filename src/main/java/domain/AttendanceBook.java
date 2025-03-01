@@ -12,11 +12,15 @@ public class AttendanceBook {
     }
 
     public void addAttend(final String name, final Attend attend) {
+        checkContainsName(name);
+        AttendResult attendResult = attendBook.get(name);
+        attendResult.addAttend(attend);
+    }
+
+    private void checkContainsName(final String name) {
         if (!attendBook.containsKey(name)) {
             throw new IllegalArgumentException("존재하지 않는 닉네임입니다.");
         }
-        AttendResult attendResult = attendBook.get(name);
-        attendResult.addAttend(attend);
     }
 
     public void register(final String name) {
