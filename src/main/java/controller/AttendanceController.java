@@ -2,6 +2,7 @@ package controller;
 
 import domain.AttendanceBook;
 import domain.AttendanceTime;
+import domain.Command;
 import domain.Crew;
 import domain.CrewAttendance;
 import java.time.LocalDate;
@@ -25,33 +26,34 @@ public class AttendanceController {
     }
 
     public void run() {
-        while (true) {
+        Command command;
+        do {
 //            LocalDate today = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
             LocalDate today = LocalDate.of(2024, 12, 14); // TODO: 작동확인을 위한 코드, 추후 삭제
-            String commandCode = inputView.readCommandCode(today);
-            if (commandCode.equals("Q")) {
-                return;
-            }
+            command = Command.from(inputView.readCommandCode(today));
             try {
-                runCommand(commandCode, today);
+                runCommand(command, today);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
-        }
+        } while (command == Command.QUIT);
     }
 
-    public void runCommand(String commandCode, LocalDate today) {
-        if (commandCode.equals("1")) {
+    public void runCommand(Command command, LocalDate today) {
+        if (command == Command.ATTEND) {
             attend(today);
         }
-        if (commandCode.equals("2")) {
+        if (command == Command.MODIFY_ATTENDANCE) {
             modifyAttendanceTime();
         }
-        if (commandCode.equals("3")) {
+        if (command == Command.READ_ATTENDANCE_LOG) {
             readAttendanceLogs(today);
         }
-        if (commandCode.equals("4")) {
+        if (command == Command.READ_DISCIPLINARY_CREWS) {
             readDisciplinaryCrews(today);
+        }
+        if (command == Command.QUIT) {
+            quit();
         }
     }
 
@@ -68,6 +70,10 @@ public class AttendanceController {
         crewAttendance.attend(attendanceTime);
 
         outputView.attendPage(attendanceTime);
+    }
+
+    public void quit() {
+        System.out.println("프로그램을 종료합니다.");
     }
 
     private void modifyAttendanceTime() {
