@@ -37,7 +37,7 @@ class AttendanceBookTest {
         //given
         String name = "조로";
         //when
-        CheckInHistory foundHistory = attendanceBook.findByName(name);
+        CheckInHistory foundHistory = attendanceBook.findHistoryByName(name);
         //then
         assertThat(foundHistory).isNotNull();
         assertThat(foundHistory.getCheckInCount()).isEqualTo(1);
@@ -50,7 +50,7 @@ class AttendanceBookTest {
         String name = "차니";
         //when
         //then
-        assertThatThrownBy(() -> attendanceBook.findByName(name))
+        assertThatThrownBy(() -> attendanceBook.findHistoryByName(name))
                 .isInstanceOf(AppException.class)
                 .hasMessageContaining(AppException.PREFIX);
     }

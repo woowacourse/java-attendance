@@ -3,6 +3,7 @@ package domain;
 import exception.AppException;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class AttendanceBook {
     Map<Crew, CheckInHistory> book;
@@ -15,12 +16,8 @@ public class AttendanceBook {
         return new AttendanceBook(book);
     }
 
-    public CheckInHistory findByName(String name) {
-        Crew targetCrew = Crew.of(name);
-        CheckInHistory foundHistory = book.get(targetCrew);
-        if (foundHistory == null) {
-            throw new AppException("해당 이름이 출석부에 존재하지 않습니다.");
-        }
-        return foundHistory;
+    public CheckInHistory findHistoryByName(String name) {
+        return Optional.ofNullable(book.get(Crew.of(name)))
+                .orElseThrow(() -> new AppException("해당 이름이 출석부에 존재하지 않습니다."));
     }
 }
