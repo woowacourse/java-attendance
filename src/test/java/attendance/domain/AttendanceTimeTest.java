@@ -129,6 +129,20 @@ public class AttendanceTimeTest {
         Assertions.assertThat(result).isEqualTo(expectedResult);
     }
 
+    @ParameterizedTest
+    @MethodSource("localTimeAndResult")
+    void 입력_받은_시간이_출석_시간보다_이전인지_판단한다(final LocalTime localTime, final boolean expectResult) {
+
+        // given
+        final AttendanceTime attendanceTime = new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 10);
+
+        // when
+        final boolean result = attendanceTime.isBefore(localTime);
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectResult);
+    }
+
     private static Stream<Arguments> dateAndResult() {
 
         return Stream.of(
@@ -150,6 +164,14 @@ public class AttendanceTimeTest {
         return Stream.of(
                 Arguments.of(new AttendanceTime(LocalDate.of(2025, 2, 27)), true),
                 Arguments.of(new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 10), false)
+        );
+    }
+
+    public static Stream<Arguments> localTimeAndResult() {
+
+        return Stream.of(
+                Arguments.of(LocalTime.of(10, 9), false),
+                Arguments.of(LocalTime.of(10, 11), true)
         );
     }
 }
