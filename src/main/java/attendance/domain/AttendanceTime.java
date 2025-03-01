@@ -4,7 +4,9 @@ import java.time.LocalTime;
 import java.util.Objects;
 import java.util.Optional;
 
-public class AttendanceTime {
+public class AttendanceTime implements Comparable<AttendanceTime> {
+
+    public static final AttendanceTime EMPTY = new AttendanceTime(null, null);
 
     private final Integer hour;
     private final Integer minute;
@@ -62,7 +64,7 @@ public class AttendanceTime {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        
+
         final AttendanceTime that = (AttendanceTime) o;
 
         return Objects.equals(hour, that.hour)
@@ -72,5 +74,40 @@ public class AttendanceTime {
     @Override
     public int hashCode() {
         return Objects.hash(hour, minute);
+    }
+
+    @Override
+    public int compareTo(final AttendanceTime o) {
+        int hourComparison = compareHours(o);
+        if (hourComparison != 0) {
+            return hourComparison;
+        }
+        return compareMinutes(o);
+    }
+
+    private int compareHours(final AttendanceTime o) {
+        if (this.hour == null && o.hour == null) {
+            return 0;
+        }
+        if (this.hour == null) {
+            return -1;
+        }
+        if (o.hour == null) {
+            return 1;
+        }
+        return Integer.compare(this.hour, o.hour);
+    }
+
+    private int compareMinutes(final AttendanceTime o) {
+        if (this.minute == null && o.minute == null) {
+            return 0;
+        }
+        if (this.minute == null) {
+            return -1;
+        }
+        if (o.minute == null) {
+            return 1;
+        }
+        return Integer.compare(this.minute, o.minute);
     }
 }
