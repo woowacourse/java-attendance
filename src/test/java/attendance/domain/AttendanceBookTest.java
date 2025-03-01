@@ -77,4 +77,18 @@ public class AttendanceBookTest {
         LocalDate today = LocalDate.of(2024, 12, 13);
         assertThat(attendanceBook.getRecordOfCrew(today, crew)).hasSize(2);
     }
+
+    @Test
+    void 출석부에서_크루와_출석통계를_반환한다() {
+        AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
+        Crew duei = new Crew(new Nickname("듀이"));
+        Crew brown = new Crew(new Nickname("브라운"));
+        Attendance attendanceOfDuei = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
+        Attendance attendanceOfBrown = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
+        attendanceBook.add(duei, attendanceOfDuei);
+        attendanceBook.add(brown, attendanceOfBrown);
+
+        LocalDate today = LocalDate.of(2024, 12, 13);
+        assertThat(attendanceBook.getCrewsAndStatistics(today)).hasSize(2);
+    }
 }
