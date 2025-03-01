@@ -1,8 +1,8 @@
 package attendance.util;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+import attendance.controller.util.CrewAttendancesDataParser;
 import java.time.LocalDateTime;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.jupiter.api.Test;
 
 public class CrewAttendancesDataParserTest {

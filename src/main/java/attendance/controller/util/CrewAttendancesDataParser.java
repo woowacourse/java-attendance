@@ -1,4 +1,4 @@
-package attendance.util;
+package attendance.controller.util;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

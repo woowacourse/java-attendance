@@ -1,4 +1,4 @@
-package attendance.util;
+package attendance.controller.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,7 +15,7 @@ public class AttendancesFileReader {
             String title = bufferedReader.readLine();
             StringBuilder sb = new StringBuilder();
             String line;
-            while ((line = bufferedReader.readLine())!= null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
                 sb.append("\n");
             }

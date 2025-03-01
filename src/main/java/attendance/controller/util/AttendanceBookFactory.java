@@ -1,4 +1,4 @@
-package attendance.util;
+package attendance.controller.util;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
