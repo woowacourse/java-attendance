@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import domain.AttendanceBook;
 import domain.AttendanceHistoryLoader;
+import domain.Crew;
 import java.io.FileReader;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,9 @@ class PenaltyCheckTest {
 
         final var penaltyCrews = attendanceBook.getPenaltyHistory();
 
-        assertTrue(penaltyCrews.containsKey("짱수"));
-        assertTrue(penaltyCrews.containsKey("빙봉"));
-        assertTrue(penaltyCrews.containsKey("빙티"));
-        assertFalse(penaltyCrews.containsKey("이든"));
+        assertTrue(penaltyCrews.containsKey(new Crew("짱수")));
+        assertTrue(penaltyCrews.containsKey(new Crew("빙봉")));
+        assertTrue(penaltyCrews.containsKey(new Crew("빙티")));
+        assertFalse(penaltyCrews.containsKey(new Crew("이든")));
     }
 }

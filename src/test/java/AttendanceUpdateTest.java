@@ -2,6 +2,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import domain.Attendance;
 import domain.AttendanceBook;
+import domain.Crew;
 import domain.Day;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,12 +23,12 @@ class AttendanceUpdateTest {
 
     @Test
     void 닉네임_수정날짜_등교시간을_입력하여_기록을_수정한다() {
-        final var nickname = "에드";
+        final var crew = new Crew("에드");
         final var day = new Day(LocalDate.of(2025, 2, 27));
         final var originTime = LocalTime.of(10, 0);
         final var attendance = new Attendance(day, originTime);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.recordAttendance(nickname, attendance);
+        attendanceBook.recordAttendance(crew, attendance);
 
         final var modifiedTime = LocalTime.of(10, 5);
         attendance.modifyTimeTo(modifiedTime);
@@ -42,8 +43,9 @@ class AttendanceUpdateTest {
                                    Boolean isAbsentExpected) {
         final var day = new Day(LocalDate.of(2025, 2, 27));
         final var attendance = new Attendance(day, originTime);
+        Crew crew = new Crew(nickname);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.recordAttendance(nickname, attendance);
+        attendanceBook.recordAttendance(crew, attendance);
 
         attendance.modifyTimeTo(modifiedTime);
 

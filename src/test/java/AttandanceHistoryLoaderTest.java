@@ -3,6 +3,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import domain.AttendanceBook;
 import domain.AttendanceHistoryLoader;
+import domain.Crew;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,8 +32,8 @@ class AttandanceHistoryLoaderTest {
         AttendanceHistoryLoader loader = new AttendanceHistoryLoader();
         AttendanceBook attendanceBook = loader.initializeAttendanceWith(new FileReader(file.getPath()));
 
-        assertThat(attendanceBook.getAttendances("에드")).isNotInstanceOf(Exception.class);
-        assertThat(attendanceBook.getAttendances("제프")).isNotInstanceOf(Exception.class);
+        assertThat(attendanceBook.getAttendances(new Crew("에드"))).isNotInstanceOf(Exception.class);
+        assertThat(attendanceBook.getAttendances(new Crew("제프"))).isNotInstanceOf(Exception.class);
     }
 
     @ParameterizedTest

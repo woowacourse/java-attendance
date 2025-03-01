@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import domain.Attendance;
 import domain.AttendanceBook;
+import domain.Crew;
 import domain.Day;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -39,13 +40,13 @@ public class AttendanceCheckTest {
 
     @Test
     void 닉네임과_등교_시간을_입력하면_출석할_수_있다() {
-        final var nickname = "에드";
+        final var crew = new Crew("에드");
         final var attendanceTime = LocalTime.of(9, 59);
 
         Attendance attendance = new Attendance(today, attendanceTime);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.recordAttendance(nickname, attendance);
-        final var attendances = attendanceBook.getAttendances(nickname);
+        attendanceBook.recordAttendance(crew, attendance);
+        final var attendances = attendanceBook.getAttendances(crew);
 
         assertDoesNotThrow(() -> attendances.findByDay(today));
     }
@@ -56,9 +57,10 @@ public class AttendanceCheckTest {
                                    Boolean isAbsentExpected) {
         Attendance attendance = new Attendance(today, attendanceTime);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.recordAttendance(nickname, attendance);
+        Crew crew = new Crew(nickname);
+        attendanceBook.recordAttendance(crew, attendance);
 
-        final var attendances = attendanceBook.getAttendances(nickname);
+        final var attendances = attendanceBook.getAttendances(crew);
         final var attendanceRecord = attendances.findByDay(today);
         final var attendanceTimeRecord = attendanceRecord.getTime();
         final var isLate = attendanceRecord.isLate();
@@ -70,13 +72,13 @@ public class AttendanceCheckTest {
 
     @Test
     void 이미_출석한_상태에서_출석을_시도하면_예외처리() {
-        final var nickname = "에드";
+        final var crew = new Crew("에드");
         final var attendanceTime = LocalTime.of(9, 59);
         Attendance attendance = new Attendance(today, attendanceTime);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.recordAttendance(nickname, attendance);
+        attendanceBook.recordAttendance(crew, attendance);
 
-        assertThatThrownBy(() -> attendanceBook.recordAttendance(nickname, new Attendance(today, attendanceTime)))
+        assertThatThrownBy(() -> attendanceBook.recordAttendance(crew, new Attendance(today, attendanceTime)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("[ERROR] 이미 출석이 완료되었습니다. 수정 기능을 이용하세요.");
     }
@@ -88,9 +90,10 @@ public class AttendanceCheckTest {
                                Boolean isAbsentExpected) {
         Attendance attendance = new Attendance(today, attendanceTime);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.recordAttendance(nickname, attendance);
+        Crew crew = new Crew(nickname);
+        attendanceBook.recordAttendance(crew, attendance);
 
-        final var attendances = attendanceBook.getAttendances(nickname);
+        final var attendances = attendanceBook.getAttendances(crew);
         final var attendanceRecord = attendances.findByDay(today);
 
         final var isLate = attendanceRecord.isLate();
