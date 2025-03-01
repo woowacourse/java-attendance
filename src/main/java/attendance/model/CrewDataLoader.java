@@ -25,10 +25,9 @@ public class CrewDataLoader {
             String[] parsed = parseRow(row);
             String crewName = parsed[CREW_NAME_COLUMN_INDEX];
             LocalDateTime dateTime = parseLocalDateTime(parsed[ATTENDANCE_DATE_TIME_COLUMN_INDEX]);
-            register.attend(crewName,
-                    new AttendanceDate(dateTime.toLocalDate()),
-                    dateTime.toLocalTime()
-            );
+            register.addNewCrew(crewName);
+            AttendanceRecord attendanceRecord = new AttendanceRecord();
+            attendanceRecord.attend(new AttendanceDate(dateTime.toLocalDate()), dateTime.toLocalTime());
         });
     }
 
