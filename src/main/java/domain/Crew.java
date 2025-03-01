@@ -1,6 +1,7 @@
 package domain;
 
 import static domain.AttendanceStatus.isWeekendOrChristmas;
+import static domain.ERROR_MESSAGE.*;
 import static domain.Penalty.COUNSELLING;
 import static domain.Penalty.EXPEL;
 import static domain.Penalty.NONE;
@@ -29,7 +30,7 @@ public class Crew {
 
     public ModifyResult modifyAttendedTime(int date, LocalTime localTime) {
         if (isEmptyDay(date)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE.EMPTY_DATE.getMessage());
+            throw new IllegalArgumentException(EMPTY_DATE.getMessage());
         }
         return attendanceHistory.stream().filter(attendance -> attendance.getDayOfMonth() == date).findFirst()
                 .map(attendance -> attendance.changeTimeTo(localTime)).orElse(null);
@@ -49,7 +50,7 @@ public class Crew {
 
     public void addAttendance(Attendance attendance) {
         if (isAlreadyAttendedDay(attendance)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE.ALREADY_ATTENDED.getMessage());
+            throw new IllegalArgumentException(ALREADY_ATTENDED.getMessage());
         }
         attendanceHistory.add(attendance);
     }

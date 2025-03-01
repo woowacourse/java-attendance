@@ -76,7 +76,7 @@ public class OutputView {
     public static void printPenaltyReceivedCrew(List<Crew> penaltyReceivedCrew) {
         System.out.println("제적 위험자 조회 결과");
         StringBuilder formattedPenaltyReceivedCrew = new StringBuilder();
-        for(Crew crew:penaltyReceivedCrew){
+        for (Crew crew : penaltyReceivedCrew) {
             formattedPenaltyReceivedCrew.append("- ")
                     .append(crew.getName())
                     .append(": 결석 ")

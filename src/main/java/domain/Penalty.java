@@ -5,8 +5,7 @@ public enum Penalty {
     COUNSELLING("면담", 3),
     EXPEL("제적", 5),
 
-    NONE("", 0)
-    ;
+    NONE("", 0);
 
     private final String status;
     private final int count;
@@ -19,6 +18,7 @@ public enum Penalty {
     public String getStatus() {
         return status;
     }
+
     public int getCount() {
         return count;
     }
