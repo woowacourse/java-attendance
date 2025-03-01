@@ -20,6 +20,10 @@ public class Crew implements Comparable<Crew> {
         }
     }
 
+    public String getNickName() {
+        return nickName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Crew crew)) {

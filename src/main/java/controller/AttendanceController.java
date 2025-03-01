@@ -10,15 +10,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
 
     private final AttendanceBook attendanceBook;
     private final InputView inputView;
+    private final OutputView outputView;
 
-    public AttendanceController(AttendanceBook attendanceBook, InputView inputView) {
+    public AttendanceController(AttendanceBook attendanceBook, InputView inputView, OutputView outputView) {
         this.attendanceBook = attendanceBook;
         this.inputView = inputView;
+        this.outputView = outputView;
     }
 
     public void run() {
@@ -38,6 +41,7 @@ public class AttendanceController {
             LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
             AttendanceTime attendanceTime = AttendanceTime.of(date, time);
             crewAttendance.attend(attendanceTime);
+            outputView.attendPage(attendanceTime);
             return;
         }
         if (commandCode.equals("2")) {
@@ -51,6 +55,7 @@ public class AttendanceController {
             LocalTime time = LocalTime.parse(rawTime, DateTimeFormatter.ISO_LOCAL_TIME);
             AttendanceTime attendanceTime = AttendanceTime.of(date, time);
             Optional<AttendanceTime> previous = crewAttendance.modify(attendanceTime);
+            outputView.modifyPage(previous, attendanceTime);
             return;
         }
         if (commandCode.equals("3")) {
@@ -59,11 +64,13 @@ public class AttendanceController {
             CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
             LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
             List<AttendanceTime> localDateTimes = crewAttendance.readAttendanceTimesBefore(date);
+            outputView.attendanceLogPage(localDateTimes);
             return;
         }
         if (commandCode.equals("4")) {
             LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
             List<CrewAttendance> disciplinaryCrews = attendanceBook.findDisciplinaryCrews(date);
+            outputView.disciplinaryCrewsPage(disciplinaryCrews, now);
             return;
         }
     }

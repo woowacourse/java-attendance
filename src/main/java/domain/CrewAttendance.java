@@ -48,6 +48,10 @@ public class CrewAttendance {
         return attendanceTimes.countAbsenceBeforeDate(date);
     }
 
+    public String getCrewNickname() {
+        return crew.getNickName();
+    }
+
     public boolean belongsTo(Crew crew) {
         return this.crew.equals(crew);
     }
