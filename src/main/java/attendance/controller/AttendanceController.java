@@ -3,6 +3,7 @@ package attendance.controller;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceTime;
+import attendance.domain.RiskCrew;
 import attendance.exception.CustomException;
 import attendance.utils.AttendanceBookParser;
 import attendance.utils.FileLoader;
@@ -11,6 +12,7 @@ import attendance.view.OutputView;
 import attendance.view.constant.CommandOption;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class AttendanceController {
@@ -37,7 +39,10 @@ public class AttendanceController {
                 modifyAttendance(attendanceBook, currentDateTime);
             }
             if (commandOption.equals(CommandOption.ATTENDANCE_RECORD_CHECK)) {
-                checkAttendance(attendanceBook, currentDateTime);
+                checkAttendance(attendanceBook);
+            }
+            if (commandOption.equals(CommandOption.PENALTY_CREWS_CHECK)) {
+                checkPenaltyCrews(attendanceBook);
             }
             commandOption = inputView.readCommandOption(currentDateTime);
         }
@@ -51,8 +56,8 @@ public class AttendanceController {
         });
     }
 
-
     //TODO : now가 주말이면 출석확인 버튼 누르면 처리해줘야함 예외
+
     private void registerAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime) {
         String inputCrewName = readCrewName();
         LocalDateTime attendanceTime = readAttendanceTime(currentDateTime);
@@ -70,10 +75,15 @@ public class AttendanceController {
         outputView.writeAttendanceModify(beforeTime, updateTime);
     }
 
-    private void checkAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime) {
+    private void checkAttendance(AttendanceBook attendanceBook) {
         String inputCrewName = readCrewName();
         AttendanceRecord attendanceRecord = attendanceBook.findAttendanceRecord(inputCrewName);
         outputView.writeAttendanceCheck(inputCrewName, attendanceRecord);
+    }
+
+    private void checkPenaltyCrews(AttendanceBook attendanceBook) {
+        List<RiskCrew> riskCrews = attendanceBook.findPenaltyCrews();
+        outputView.writeRiskCrews(riskCrews);
     }
 
     private String readModifyCrewName() {

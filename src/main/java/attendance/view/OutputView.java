@@ -4,8 +4,10 @@ import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceTime;
 import attendance.domain.PenaltyType;
+import attendance.domain.RiskCrew;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
@@ -51,29 +53,26 @@ public class OutputView {
         writeAttendanceRecord(attendanceRecord);
     }
 
-    private static void writeAttendanceRecord(AttendanceRecord attendanceRecord) {
+    private void writeAttendanceRecord(AttendanceRecord attendanceRecord) {
         System.out.println();
         System.out.println("출석: " + attendanceRecord.checkAttendanceCounts() + "회");
         System.out.println("지각: " + attendanceRecord.checkLateCounts() + "회");
         System.out.println("결석: " + attendanceRecord.checkAbsenceCounts() + "회");
         System.out.println();
-        writePenaltyStatus(attendanceRecord.checkPenaltyStatus());
+        System.out.println(writePenaltyStatus(attendanceRecord.checkPenaltyStatus()) + " 대상자입니다.");
     }
 
-    private static void writePenaltyStatus(PenaltyType penaltyType) {
+    private String writePenaltyStatus(PenaltyType penaltyType) {
         if (penaltyType.equals(PenaltyType.EXPULSION)) {
-            System.out.println("제적 대상자입니다.");
-            return;
+            return "제적";
         }
         if (penaltyType.equals(PenaltyType.COUNSELING)) {
-            System.out.println("면담 대상자입니다.");
-            return;
+            return "면담";
         }
         if (penaltyType.equals(PenaltyType.WARNING)) {
-            System.out.println("경고 대상자입니다.");
-            return;
+            return "경고";
         }
-        System.out.println("성실하게 출석 하셨습니다.");
+        return "성실";
     }
 
     private void writeDefaultHyphen(LocalDateTime localDateTime, AttendanceStatus status) {
@@ -82,5 +81,17 @@ public class OutputView {
             return;
         }
         System.out.println(localDateTime.format(dateTimeFormatter) + " (" + status.getName() + ")");
+    }
+
+    public void writeRiskCrews(List<RiskCrew> riskCrews) {
+        System.out.println("제적 위험자 조회 결과");
+        for (RiskCrew riskCrew : riskCrews) {
+            String riskCrewName = riskCrew.getName();
+            int absenceCounts = riskCrew.getAbsenceCount();
+            int lateCounts = riskCrew.getLateCount();
+            PenaltyType penaltyType = riskCrew.getPenaltyType();
+            System.out.println("- " + riskCrewName + ": " + "결석 " + absenceCounts + "회, 지각 "
+                    + lateCounts + "회 (" + writePenaltyStatus(penaltyType) + ")");
+        }
     }
 }
