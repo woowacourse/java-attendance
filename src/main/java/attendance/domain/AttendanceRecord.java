@@ -46,6 +46,14 @@ public class AttendanceRecord {
         }
     }
 
+    public LocalDateTime findAttendanceRecord(LocalDateTime inputTime) {
+        return attendanceRecord.stream()
+                .filter(attendanceTime -> attendanceTime.isSameDateTime(inputTime))
+                .map(AttendanceTime::getAttendanceTime)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 없습니다."));
+    }
+
     public List<AttendanceTime> getAttendanceRecord() {
         return Collections.unmodifiableList(attendanceRecord);
     }

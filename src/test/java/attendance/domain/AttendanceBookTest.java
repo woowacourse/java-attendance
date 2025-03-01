@@ -80,12 +80,6 @@ public class AttendanceBookTest {
 
     //출석부한테 출석 수정 하기 위해 펼쳐봄
     //출석부가 크루 확인을함
-    //출석부가 출석 기록에게 (이 날)을 메시지로 보내서 기록 있냐고 요청하고 있으면 달라고 함
-    //출석 기록이 있다고 반환함 -> 이전값 -> new AttendanceTime으로 해야할 듯(출석부에서) , 주소가 같으니까 바뀌어버리니까
-    //출석부가 출석 기록에게 수정해달라고 요청함 -> 현재 값
-    //출석 기록이 출석 시간에게 이 시간으로 바꿔달라고 요청함
-    //출석 시간이 반환 했다고 true 반환 ->
-    //출석 기록이 true받으면 출석부에게 반환된 시간을 전달함
 
     @Test
     void 출석_수정_크루_없으면_예외_발생() {
@@ -99,8 +93,32 @@ public class AttendanceBookTest {
         LocalDateTime modifyDateTime = currentDateTime.withDayOfMonth(24).withHour(12).withMinute(59);
 
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
-        Assertions.assertThatThrownBy(() -> attendanceBook.modifyAttendance(invalidCrewName, modifyDateTime))
+        Assertions.assertThatThrownBy(() -> attendanceBook.findBeforeAttendanceRecord(invalidCrewName, modifyDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 크루를 찾을 수 없습니다.");
     }
+
+    //출석부가 출석 기록에게 (이 날)을 메시지로 보내서 기록 있냐고 요청하고 있으면 달라고 함
+    //출석 기록이 있다고 반환함 -> 이전값 -> new AttendanceTime으로 해야할 듯(출석부에서) , 주소가 같으니까 바뀌어버리니까
+    //출석부가 출석 기록에게 수정해달라고 요청함 -> 현재 값
+    //출석 기록이 출석 시간에게 이 시간으로 바꿔달라고 요청함
+    //출석 시간이 반환 했다고 true 반환 ->
+    //출석 기록이 true받으면 출석부에게 반환된 시간을 전달함
+    //출석부는 이전 시간이랑 새로운 시간을 보내줘야함
+    @Test
+    void 출석_수정_이전_기록_가져오기() {
+        //given
+        String crewName = "우가";
+        Crew crew = new Crew(crewName);
+        Crews crews = new Crews(Set.of(crew));
+
+        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 28, 9, 59);
+        LocalDateTime modifyDateTime = currentDateTime.withDayOfMonth(24).withHour(12).withMinute(59);
+
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+
+        Assertions.assertThat(attendanceBook.findBeforeAttendanceRecord(crewName, modifyDateTime)
+                .getAttendanceTime().getDayOfMonth()).isEqualTo(24);
+    }
+
 }

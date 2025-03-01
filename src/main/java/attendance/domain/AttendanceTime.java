@@ -15,14 +15,6 @@ public class AttendanceTime {
         return attendanceTime.getDayOfMonth() == inputTime.getDayOfMonth();
     }
 
-    public boolean isAttendance() {
-        return this.attendanceStatus.equals(AttendanceStatus.ATTENDANCE);
-    }
-
-    public boolean isLate() {
-        return this.attendanceStatus.equals(AttendanceStatus.LATE);
-    }
-
     public boolean isAbsence() {
         return this.attendanceStatus.equals(AttendanceStatus.ABSENCE);
     }
@@ -30,4 +22,9 @@ public class AttendanceTime {
     public AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
     }
+
+    public LocalDateTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
 }

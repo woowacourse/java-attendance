@@ -43,8 +43,11 @@ public class AttendanceBook {
         return attendanceRecord.registerAttendance(inputTime);
     }
 
-    public void modifyAttendance(String inputCrewName, LocalDateTime inputTime) {
+    public AttendanceTime findBeforeAttendanceRecord(String inputCrewName, LocalDateTime inputTime) {
         Crew crew = findRegisteredCrew(inputCrewName);
+        AttendanceRecord attendanceRecord = attendanceBook.get(crew);
+        LocalDateTime beforeAttendanceTime = attendanceRecord.findAttendanceRecord(inputTime);
+        return new AttendanceTime(beforeAttendanceTime);
     }
 
     private Crew findRegisteredCrew(String inputCrewName) {
