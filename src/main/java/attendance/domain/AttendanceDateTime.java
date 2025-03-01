@@ -12,31 +12,30 @@ public class AttendanceDateTime {
     public static final LocalTime ABSENT_TIME = LocalTime.of(0, 0);
     private final LocalDateTime dateTime;
 
-    private AttendanceDateTime(LocalDate absentDate) {
+    private AttendanceDateTime(final LocalDate absentDate) {
         LocalDateTime absentDateTime = LocalDateTime.of(absentDate, ABSENT_TIME);
         this.dateTime = absentDateTime;
     }
 
-    public AttendanceDateTime(LocalDateTime attendanceDateTime) {
+    public AttendanceDateTime(final LocalDateTime attendanceDateTime) {
         validate(attendanceDateTime);
         this.dateTime = attendanceDateTime;
     }
 
-    private void validate(LocalDateTime attendanceDateTime) {
+    private void validate(final LocalDateTime attendanceDateTime) {
         validateFuture(attendanceDateTime);
-        validateHoliday(attendanceDateTime);
-        validateWeekend(attendanceDateTime);
-        validateOperationTime(attendanceDateTime);
+        validateDate(attendanceDateTime);
+        validateTime(attendanceDateTime);
     }
 
-    private void validateFuture(LocalDateTime attendanceDateTime) {
+    private void validateFuture(final LocalDateTime attendanceDateTime) {
         if (attendanceDateTime.isAfter(LocalDateTime.now())) {
             throw new IllegalArgumentException("미래의 시간으로는 출석할 수 없습니다.");
         }
     }
 
-    private void validateHoliday(LocalDateTime attendanceDateTime) {
-        if (Holiday.isHoliday(attendanceDateTime)) {
+    private void validateDate(final LocalDateTime attendanceDateTime) {
+        if (isWeekend(attendanceDateTime) || Holiday.isHoliday(attendanceDateTime)) {
             throw new IllegalArgumentException("%d월 %d일 %s은 등교일이 아닙니다.".formatted(
                     attendanceDateTime.getMonthValue(),
                     attendanceDateTime.getDayOfMonth(),
@@ -45,17 +44,15 @@ public class AttendanceDateTime {
         }
     }
 
-    private void validateWeekend(LocalDateTime attendanceDateTime) {
-        if (isWeekend(attendanceDateTime)) {
-            throw new IllegalArgumentException("%d월 %d일 %s은 등교일이 아닙니다.".formatted(
-                    attendanceDateTime.getMonthValue(),
-                    attendanceDateTime.getDayOfMonth(),
-                    attendanceDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
-            ));
+    public static boolean isWeekend(final LocalDateTime dateTime) {
+        DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+        if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
+            return true;
         }
+        return false;
     }
 
-    private void validateOperationTime(LocalDateTime attendanceDateTime) {
+    private void validateTime(final LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
         if (attendanceTime.isBefore(CAMPUS_OPEN_TIME) || attendanceTime.isAfter(CAMPUS_CLOSE_TIME)) {
             throw new IllegalArgumentException("%d시 %d분은 캠퍼스 운영 시간이 아닙니다.".formatted(
@@ -74,17 +71,13 @@ public class AttendanceDateTime {
                 .toMinutes();
     }
 
-    public LocalDateTime getLocalDateTime() {
-        return dateTime;
-    }
-
-    public boolean isSameDate(AttendanceDateTime otherDateTime) {
+    public boolean isSameDate(final AttendanceDateTime otherDateTime) {
         LocalDate attendanceDate = this.dateTime.toLocalDate();
         LocalDate otherDate = otherDateTime.getLocalDateTime().toLocalDate();
         return attendanceDate.equals(otherDate);
     }
 
-    public boolean isThisDayInCurrentMonth(final int day) {
+    public boolean isDayInCurrentMonth(final int day) {
         int attendanceMonth = this.dateTime.getMonthValue();
         int attendanceDay = this.dateTime.getDayOfMonth();
         if (attendanceMonth == LocalDate.now().getMonthValue() && attendanceDay == day) {
@@ -93,21 +86,17 @@ public class AttendanceDateTime {
         return false;
     }
 
-    public AttendanceDateTime changeTime(LocalTime newTime) {
+    public AttendanceDateTime changeTime(final LocalTime newTime) {
         LocalDateTime newDateTime = LocalDateTime.of(this.dateTime.toLocalDate(), newTime);
         return new AttendanceDateTime(newDateTime);
     }
 
-    public static boolean isWeekend(LocalDateTime dateTime) {
-        DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
-        if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
-            return true;
-        }
-        return false;
+    public static AttendanceDateTime createAbsentDateTime(final LocalDate absentDate) {
+        return new AttendanceDateTime(absentDate);
     }
 
-    public static AttendanceDateTime createAbsentDateTime(LocalDate absentDate) {
-        return new AttendanceDateTime(absentDate);
+    public LocalDateTime getLocalDateTime() {
+        return dateTime;
     }
 
     @Override

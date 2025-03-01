@@ -107,7 +107,7 @@ public class AttendanceDateTimeTest {
         AttendanceDateTime attendanceDateTime = new AttendanceDateTime(localDateTime);
 
         // When & Then
-        assertThat(attendanceDateTime.isThisDayInCurrentMonth(day))
+        assertThat(attendanceDateTime.isDayInCurrentMonth(day))
                 .isEqualTo(expected);
     }
 
