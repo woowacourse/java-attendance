@@ -13,9 +13,11 @@ public class AttendanceReader {
     private static final String CANT_FIND_FILE = "[ERROR] 파일을 찾을 수 없습니다: ";
     private static final String CANT_READ_FILE = "[ERROR] 파일을 읽는 과정에서 예상치 못한 오류가 발생했습니다: ";
     private final String fileName;
+    private final SystemDateTime systemDateTime;
 
-    public AttendanceReader(String fileName) {
+    public AttendanceReader(String fileName, SystemDateTime systemDateTime) {
         this.fileName = fileName;
+        this.systemDateTime = systemDateTime;
     }
 
     public AttendanceBook load() throws FileNotFoundException {
@@ -33,7 +35,7 @@ public class AttendanceReader {
 
     private AttendanceBook getAttendanceBook(BufferedReader bufferedReader) {
         var lines = readLines(bufferedReader);
-        var attendanceBook = new AttendanceBook(new AttendanceDateTime());
+        var attendanceBook = new AttendanceBook(systemDateTime);
         for (String line : lines) {
             var parts = line.split(",");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");

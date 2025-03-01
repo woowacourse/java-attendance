@@ -12,7 +12,7 @@ import attendance.exception.AttendanceArgumentException;
 
 class AttendanceBookTest {
     private final SystemDateTime systemDateTime = new AttendanceDateTime();
-    private final AttendanceReader attendanceReader = new AttendanceReader("attendances.csv");
+    private final AttendanceReader attendanceReader = new AttendanceReader("attendances.csv", systemDateTime);
     private final AttendanceBook attendanceBook = attendanceReader.load();
 
     AttendanceBookTest() throws FileNotFoundException {
@@ -23,7 +23,7 @@ class AttendanceBookTest {
     void test_SaveAttendanceWhenEnterNickname() {
         var nickname = new Nickname("이든");
         var dateTime = systemDateTime.now();
-        attendanceBook.add(nickname, dateTime);
+        attendanceBook.attendance(nickname, dateTime);
 
         var attendance = new Attendance(dateTime);
         assertThat(attendanceBook.getAttendance(nickname, dateTime.toLocalDate())).isEqualTo(attendance);
@@ -34,7 +34,7 @@ class AttendanceBookTest {
     void error_attendanceNotRegisteredNickname() {
         var nickname = new Nickname("때지");
         var dateTime = systemDateTime.now();
-        Assertions.assertThatThrownBy(() -> attendanceBook.add(nickname, dateTime))
+        Assertions.assertThatThrownBy(() -> attendanceBook.attendance(nickname, dateTime))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("등록되지 않은");
     }
