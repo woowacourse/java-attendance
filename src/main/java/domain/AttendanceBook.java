@@ -26,9 +26,8 @@ public class AttendanceBook {
 
         Map<String, Map<LocalDate, LocalTime>> rawAttendances = attendanceFileReader.read(filePath).parseData();
 
-        Map<Nickname, Attendances> nicknameToAttendances = new HashMap<>();
-        writeNickname(rawAttendances, nicknameToAttendances);
-        writeAttendances(rawAttendances, nicknameToAttendances);
+        writeNickname(rawAttendances);
+        writeAttendances(rawAttendances);
     }
 
     public Attendances findByNickname(Nickname nickname) {
@@ -55,15 +54,13 @@ public class AttendanceBook {
                 .toList());
     }
 
-    private void writeNickname(Map<String, Map<LocalDate, LocalTime>> rawAttendances,
-                               Map<Nickname, Attendances> nicknameToAttendances) {
+    private void writeNickname(Map<String, Map<LocalDate, LocalTime>> rawAttendances) {
         rawAttendances.keySet().stream()
                 .map(Nickname::from)
                 .forEach(nickname -> nicknameToAttendances.put(nickname, Attendances.initialize()));
     }
 
-    private void writeAttendances(Map<String, Map<LocalDate, LocalTime>> rawAttendances,
-                                  Map<Nickname, Attendances> nicknameToAttendances) {
+    private void writeAttendances(Map<String, Map<LocalDate, LocalTime>> rawAttendances) {
         rawAttendances.forEach((nickname, dateTime) ->
                 writeAttendance(nicknameToAttendances, nickname, dateTime)
         );
