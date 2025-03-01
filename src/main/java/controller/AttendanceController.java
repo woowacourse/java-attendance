@@ -1,12 +1,17 @@
 package controller;
 
+import static constant.PathConstant.ATTENDANCE_FILE_PATH;
+
 import dto.AttendanceCheckInRequest;
 import dto.AttendanceHistoryRequest;
 import dto.AttendanceOptionRequest;
 import dto.AttendanceUpdateRequest;
+import java.util.List;
 import java.util.function.Supplier;
+import model.Attendances;
 import model.Option;
 import util.DateTimeGenerator;
+import util.FileParser;
 import view.InputView;
 
 public class AttendanceController {
@@ -18,10 +23,11 @@ public class AttendanceController {
     }
 
     public void run() {
+        Attendances attendances = initialize();
 
         while (true) {
             Option option = processWithRetry(this::option);
-            
+
             if (option.equals(Option.ONE)) {
                 processWithRetry(this::checkIn);
             }
@@ -38,6 +44,11 @@ public class AttendanceController {
                 break;
             }
         }
+    }
+
+    public Attendances initialize() {
+        List<String> lines = FileParser.readLines(ATTENDANCE_FILE_PATH.getPath());
+        return Attendances.from(lines);
     }
 
     private Option option() {
