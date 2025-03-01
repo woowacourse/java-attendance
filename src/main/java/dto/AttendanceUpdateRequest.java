@@ -2,7 +2,7 @@ package dto;
 
 public record AttendanceUpdateRequest(
         String nickname,
-        String day,
-        String time
+        String updateDay,
+        String updateTime
 ) {
 }
