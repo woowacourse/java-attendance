@@ -1,0 +1,60 @@
+package controller;
+
+import constant.MenuOption;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import model.AttendanceBook;
+import model.Student;
+import util.AttendanceRecordFormatter;
+import util.FileInformationProvider;
+import view.InputView;
+import view.OutPutView;
+
+public class Controller {
+    private static final LocalDate TODAY = LocalDate.of(2024,12,13);
+
+
+    public void run() throws IOException {
+        AttendanceBook attendanceBook = new AttendanceBook(FileInformationProvider.loadStudentAttendance());
+        OutPutView.displayAttendanceMenu(TODAY);
+        MenuOption menuOption = chooseMenuOption();
+        if (menuOption.equals(MenuOption.ATTENDANCE_REGISTER)){
+            functionAttendanceRegister(attendanceBook);
+        }
+        if (menuOption.equals(MenuOption.ATTENDANCE_MODIFY)){
+
+        }
+        if (menuOption.equals(MenuOption.CREW_ATTENDANCE_CHECK)){
+
+        }
+        if (menuOption.equals(MenuOption.EXPULSION_RISK)){
+
+        }
+        if (menuOption.equals(MenuOption.QUIT)){
+            return;
+        }
+    }
+    private MenuOption chooseMenuOption(){
+        try {
+            return InputView.inputChooseFunctionOption();
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            return chooseMenuOption();
+        }
+    }
+    private void functionAttendanceRegister(AttendanceBook attendanceBook){
+        try{
+            OutPutView.requestNickName();
+            String nickName = InputView.input();
+            LocalTime attendanceTime = InputView.inputAttendanceTime();
+            Student student = attendanceBook.findStudentByNickName(nickName);
+            student.registerAttendanceRecord(TODAY, attendanceTime);
+            OutPutView.displayRegisterAttendanceRecord(AttendanceRecordFormatter.attendanceRecordFormatter(
+                    attendanceTime,student.findAttendanceStatusByLocalDate(TODAY), TODAY));
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            functionAttendanceRegister(attendanceBook);
+        }
+    }
+}
