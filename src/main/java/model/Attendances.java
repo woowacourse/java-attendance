@@ -1,9 +1,13 @@
 package model;
 
 import static constant.AttendanceConstant.COMMA_SEPARATOR;
+import static constant.ErrorMessage.NOT_FOUND_ATTENDANCE;
 import static constant.ErrorMessage.NOT_FOUND_CREW;
 
+import dto.AttendanceCheckInRequest;
 import dto.AttendanceCheckInResponse;
+import dto.AttendanceUpdateRequest;
+import dto.AttendanceUpdateResponse;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -35,9 +39,9 @@ public class Attendances {
         return new Attendances(attendances);
     }
 
-    public AttendanceCheckInResponse add(String nickname, String checkInTime, DateTimeGenerator dateTimeGenerator) {
-        Crew crew = Crew.of(nickname);
-        Attendance attendance = Attendance.of(dateTimeGenerator, checkInTime);
+    public AttendanceCheckInResponse add(AttendanceCheckInRequest request, DateTimeGenerator dateTimeGenerator) {
+        Crew crew = Crew.of(request.nickname());
+        Attendance attendance = Attendance.of(dateTimeGenerator, request.checkInTime());
 
         if (!attendances.containsKey(crew)) {
             throw new IllegalArgumentException(NOT_FOUND_CREW.getMessage());
@@ -47,8 +51,29 @@ public class Attendances {
 
         return new AttendanceCheckInResponse(
                 dateTimeGenerator.now().toLocalDate(),
-                LocalTime.parse(checkInTime),
+                LocalTime.parse(request.checkInTime()),
                 attendance.getAttendanceType());
+    }
+
+    public AttendanceUpdateResponse update(AttendanceUpdateRequest request, DateTimeGenerator dateTimeGenerator) {
+        Crew crew = Crew.of(request.nickname());
+        LocalDate date = LocalDate.of(
+                dateTimeGenerator.now().getYear(),
+                dateTimeGenerator.now().getMonthValue(),
+                Integer.parseInt(request.day()));
+        Attendance attendance = find(crew, date);
+        LocalTime previousTime = attendance.getCheckInTime();
+        AttendanceType previousAttendanceType = attendance.getAttendanceType();
+
+        attendance.update(LocalTime.parse(request.updateTime()));
+
+        return new AttendanceUpdateResponse(
+                date,
+                previousTime,
+                previousAttendanceType,
+                attendance.getCheckInTime(),
+                attendance.getAttendanceType()
+        );
     }
 
     private static Map<Crew, List<Attendance>> parseAttendances(List<String> inputs) {
@@ -89,6 +114,13 @@ public class Attendances {
 
             attendanceList.sort(Comparator.comparing(Attendance::getCheckInDate));
         });
+    }
+
+    private Attendance find(Crew crew, LocalDate localDate) {
+        return attendances.get(crew).stream()
+                .filter(attendance -> attendance.getCheckInDate().equals(localDate))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_ATTENDANCE.getMessage()));
     }
 
     public List<Attendance> getAttendancesByCrew(Crew crew) {

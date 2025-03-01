@@ -7,6 +7,7 @@ import dto.AttendanceCheckInResponse;
 import dto.AttendanceHistoryRequest;
 import dto.AttendanceOptionRequest;
 import dto.AttendanceUpdateRequest;
+import dto.AttendanceUpdateResponse;
 import java.util.List;
 import java.util.function.Supplier;
 import model.Attendances;
@@ -31,10 +32,10 @@ public class AttendanceController {
             Option option = processWithRetry(this::option);
 
             if (option.equals(Option.ONE)) {
-                processWithRetry(() -> recordAttendance(attendances));
+                processWithRetry(() -> checkInAttendance(attendances));
             }
             if (option.equals(Option.TWO)) {
-                processWithRetry(this::updateAttendance);
+                processWithRetry(() -> updateAttendance(attendances));
             }
             if (option.equals(Option.THREE)) {
                 processWithRetry(this::getAttendanceHistoryByCrew);
@@ -58,18 +59,16 @@ public class AttendanceController {
         return Option.find(request.option());
     }
 
-    private void recordAttendance(Attendances attendances) {
+    private void checkInAttendance(Attendances attendances) {
         AttendanceCheckInRequest request = InputView.readAttendanceCheckInRequest();
-
-        AttendanceCheckInResponse response =
-                attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator);
-
-        OutputView.printCheckIn(response);
+        AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
+        OutputView.printCheckInAttendance(response);
     }
 
-    private void updateAttendance() {
+    private void updateAttendance(Attendances attendances) {
         AttendanceUpdateRequest request = InputView.readAttendanceUpdateRequest(dateTimeGenerator);
-
+        AttendanceUpdateResponse response = attendances.update(request, dateTimeGenerator);
+        OutputView.printUpdateAttendance(response);
     }
 
     private void getAttendanceHistoryByCrew() {
