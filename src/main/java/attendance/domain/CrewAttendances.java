@@ -23,7 +23,9 @@ public class CrewAttendances {
     }
 
     public List<AttendanceResult> createAllAttendanceResult(LocalDate endDate) {
-        return null;
+        return crewAttendances.stream()
+                .map(crewAttendance -> crewAttendance.createAttendanceResult(endDate))
+                .toList();
     }
 
     @Override

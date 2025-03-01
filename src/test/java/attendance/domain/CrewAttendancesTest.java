@@ -15,7 +15,7 @@ class CrewAttendancesTest {
         CrewAttendances crewAttendances = new CrewAttendances(
                 new CrewAttendance(
                         "pobi",
-                        new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 11, 1))
+                        new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 14, 1))
                 ),
                 new CrewAttendance(
                         "neo",
