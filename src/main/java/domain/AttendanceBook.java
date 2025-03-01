@@ -16,6 +16,10 @@ public class AttendanceBook {
         attendanceBook = new HashMap<>();
     }
 
+    public AttendanceBook(Map<LocalDate, LocalTime> attendanceBook) {
+        this.attendanceBook = attendanceBook;
+    }
+
     public LocalTime getAttendanceTimeByDate(LocalDate date) {
         return attendanceBook.getOrDefault(date, Dates.DEFAULT_TIME);
     }

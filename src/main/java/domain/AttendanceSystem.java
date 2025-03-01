@@ -59,13 +59,13 @@ public class AttendanceSystem {
                 .filter(entry -> !entry.getValue().getRiskStatus(TODAY).equals(RiskStatus.NONE))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        Map.Entry::getValue
+                        entry -> new AttendanceBook(entry.getValue().getAttendanceBook())
                 ));
     }
 
     public AttendanceBook findByName(String name) {
         if(hasNoName(name)) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 이름입니다.");
+            throw new IllegalArgumentException("존재하지 않는 이름입니다.");
         }
         return attendanceBooks.get(name);
     }

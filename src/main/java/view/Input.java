@@ -15,7 +15,12 @@ public class Input {
     public String getMenuInput(LocalDate today) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("오늘은 MM월 dd일 EEEE입니다", Locale.KOREAN);
         String formattedDate = today.format(formatter);
-        System.out.printf("""
+        System.out.println(getMenuMessage(formattedDate));
+        return scanner.nextLine();
+    }
+
+    private String getMenuMessage(String formattedDate) {
+        return String.format("""
                 %s. 기능을 선택해 주세요.
                 1. 출석 확인
                 2. 출석 수정
@@ -24,7 +29,6 @@ public class Input {
                 Q. 종료
                 """,
                 formattedDate);
-        return scanner.nextLine();
     }
 
     public String getNameInput() {

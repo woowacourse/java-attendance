@@ -16,6 +16,16 @@ import java.util.Map;
 import static util.Parser.localDateToDateMessage;
 
 public class Output {
+    private static final Map<RiskStatus, String> RISK_STATUS_MESSAGE = Map.of(
+            RiskStatus.EXPULSION, "제적",
+            RiskStatus.COUNSELING, "면담",
+            RiskStatus.WARNING, "경고"
+    );
+    private static final Map<AttendanceStatus, String> ATTENDANCE_STATUS_MESSAGE = Map.of(
+            AttendanceStatus.ABSENCE, "결석",
+            AttendanceStatus.TARDY, "지각",
+            AttendanceStatus.ATTEND, "출석"
+    );
     public String getAttendanceMessage(AttendanceResultDto attendanceResultDto) {
         if (attendanceResultDto.attendanceStatus().equals(AttendanceStatus.ABSENCE)) {
             return getAbsenceMessage(attendanceResultDto);
@@ -72,25 +82,14 @@ public class Output {
     }
 
     private String getRiskStatusMessage(RiskStatus riskStatus) {
-        if(riskStatus.equals(RiskStatus.EXPULSION)) {
-            return "제적";
-        }
-        if(riskStatus.equals(RiskStatus.COUNSELING)) {
-            return "면담";
-        }
-        if(riskStatus.equals(RiskStatus.WARNING)) {
-            return "경고";
-        }
-        return "없음";
+        return RISK_STATUS_MESSAGE.getOrDefault(riskStatus, "없음");
     }
 
     private String getAttendanceStatusMessage(AttendanceStatus attendanceStatus) {
-        if(attendanceStatus.equals(AttendanceStatus.ABSENCE)) {
-            return "결석";
-        }
-        if(attendanceStatus.equals(AttendanceStatus.TARDY)) {
-            return "지각";
-        }
-        return "출석";
+        return ATTENDANCE_STATUS_MESSAGE.getOrDefault(attendanceStatus, "출석");
+    }
+
+    public void printError(String message) {
+        System.out.println("[ERROR]" + message);
     }
 }

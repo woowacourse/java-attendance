@@ -4,12 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static util.Dates.TODAY;
 
 public class AttendanceSystemTest {
     private final AttendanceSystem attendanceSystem = new AttendanceSystem();
@@ -19,8 +19,8 @@ public class AttendanceSystemTest {
     void attendance_with_name() {
         String name = "두리";
         LocalTime time = LocalTime.of(10, 0);
-        attendanceSystem.attendance(name, time);
-        assertThat(attendanceSystem.getAttendanceRecord(name, attendanceSystem.TODAY)).isEqualTo(LocalDateTime.of(attendanceSystem.TODAY, time));
+        attendanceSystem.editAttendance(name, TODAY, time);
+        assertThat(attendanceSystem.getAttendanceRecord(name, TODAY)).isEqualTo(time);
     }
 
     @DisplayName("이름과 등교시간을 입력하면 오늘 날짜로 출석할 수 있다2")
@@ -28,8 +28,8 @@ public class AttendanceSystemTest {
     void attendance_with_name2() {
         String name = "두리";
         LocalTime time = LocalTime.of(10, 30);
-        attendanceSystem.attendance(name, time);
-        assertThat(attendanceSystem.getAttendanceRecord(name, attendanceSystem.TODAY)).isEqualTo(LocalDateTime.of(attendanceSystem.TODAY, time));
+        attendanceSystem.editAttendance(name, TODAY, time);
+        assertThat(attendanceSystem.getAttendanceRecord(name, TODAY)).isEqualTo(time);
     }
 
     @DisplayName("이미 출석한 경우 다시 출석할 수 없다")
@@ -37,7 +37,7 @@ public class AttendanceSystemTest {
     void cannot_attend_if_already_attend() {
         String name = "두리";
         LocalTime time = LocalTime.of(10, 0);
-        attendanceSystem.attendance(name, time);
+        attendanceSystem.editAttendance(name, TODAY, time);
         assertThatThrownBy(() -> {
             attendanceSystem.attendance(name, time);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -49,7 +49,7 @@ public class AttendanceSystemTest {
         String name = "두리";
         LocalTime time = LocalTime.of(7, 0);
         assertThatThrownBy(() -> {
-            attendanceSystem.attendance(name, time);
+            attendanceSystem.editAttendance(name, TODAY, time);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -59,7 +59,7 @@ public class AttendanceSystemTest {
         String name = "두리";
         LocalTime time = LocalTime.of(23, 1);
         assertThatThrownBy(() -> {
-            attendanceSystem.attendance(name, time);
+            attendanceSystem.editAttendance(name, TODAY, time);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -67,19 +67,19 @@ public class AttendanceSystemTest {
     @Test
     void edit_attendance() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 30));
-        attendanceSystem.editAttendance(name, attendanceSystem.TODAY, LocalTime.of(10, 0));
-        assertThat(attendanceSystem.getAttendanceRecord(name, attendanceSystem.TODAY))
-                .isEqualTo(LocalDateTime.of(attendanceSystem.TODAY, LocalTime.of(10, 0)));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 30));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 0));
+        assertThat(attendanceSystem.getAttendanceRecord(name, TODAY))
+                .isEqualTo(LocalTime.of(10, 0));
     }
 
     @DisplayName("수정하려는 시간이 캠퍼스 운영 시간이 아닌 경우 예외를 던진다")
     @Test
     void edit_attendance_in_non_operating_hour() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 30));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 30));
         assertThatThrownBy(() ->
-                attendanceSystem.editAttendance(name, attendanceSystem.TODAY, LocalTime.of(23, 55))
+                attendanceSystem.editAttendance(name, TODAY, LocalTime.of(23, 55))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -87,7 +87,7 @@ public class AttendanceSystemTest {
     @Test
     void edit_attendance_in_holiday() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 0));
         assertThatThrownBy(() ->
                 attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 1), LocalTime.of(10, 0)
                 )).isInstanceOf(IllegalArgumentException.class);
@@ -97,7 +97,7 @@ public class AttendanceSystemTest {
     @Test
     void edit_attendance_in_christmas() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 0));
         assertThatThrownBy(() ->
                 attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 25), LocalTime.of(10, 0)
                 )).isInstanceOf(IllegalArgumentException.class);
@@ -107,7 +107,7 @@ public class AttendanceSystemTest {
     @Test
     void get_absence_record() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 0));
         assertThat(attendanceSystem.getAbsenceCount(name)).isEqualTo(11);
     }
 
@@ -115,7 +115,7 @@ public class AttendanceSystemTest {
     @Test
     void get_absence_record2() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 31));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 31));
         assertThat(attendanceSystem.getAbsenceCount(name)).isEqualTo(12);
     }
 
@@ -123,7 +123,7 @@ public class AttendanceSystemTest {
     @Test
     void get_absence_record3() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 7));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 7));
         assertThat(attendanceSystem.getAbsenceCount(name)).isEqualTo(11);
     }
 
@@ -131,7 +131,7 @@ public class AttendanceSystemTest {
     @Test
     void get_absence_record_monday() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 31));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 31));
         attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 2), LocalTime.of(10, 31));
         assertThat(attendanceSystem.getAbsenceCount(name)).isEqualTo(11);
     }
@@ -140,7 +140,7 @@ public class AttendanceSystemTest {
     @Test
     void get_tardy_record() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 7));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 7));
         assertThat(attendanceSystem.getTardyCount(name)).isEqualTo(1);
     }
 
@@ -148,7 +148,7 @@ public class AttendanceSystemTest {
     @Test
     void get_tardy_record2() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 7));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 7));
         attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 3), LocalTime.of(10, 7));
         assertThat(attendanceSystem.getTardyCount(name)).isEqualTo(2);
     }
@@ -157,7 +157,7 @@ public class AttendanceSystemTest {
     @Test
     void get_tardy_record_monday() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 7));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 7));
         attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 2), LocalTime.of(10, 7));
         assertThat(attendanceSystem.getTardyCount(name)).isEqualTo(1);
     }
@@ -166,7 +166,7 @@ public class AttendanceSystemTest {
     @Test
     void get_tardy_record_monday2() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 7));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 7));
         attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 2), LocalTime.of(13, 7));
         assertThat(attendanceSystem.getTardyCount(name)).isEqualTo(2);
     }
@@ -175,7 +175,7 @@ public class AttendanceSystemTest {
     @Test
     void get_attend_record() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 5));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 5));
         assertThat(attendanceSystem.getAttendCount(name)).isEqualTo(1);
     }
 
@@ -183,7 +183,7 @@ public class AttendanceSystemTest {
     @Test
     void get_attend_record_monday() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 5));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 5));
         attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 2), LocalTime.of(13, 5));
         assertThat(attendanceSystem.getAttendCount(name)).isEqualTo(2);
     }
@@ -192,7 +192,7 @@ public class AttendanceSystemTest {
     @Test
     void get_attend_record2() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 5));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 5));
         attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 2), LocalTime.of(13, 7));
         assertThat(attendanceSystem.getAttendCount(name)).isEqualTo(1);
     }
@@ -201,7 +201,7 @@ public class AttendanceSystemTest {
     @Test
     void expulsion_test() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 0));
         assertThat(attendanceSystem.getAbsenceCount(name) + attendanceSystem.getTardyCount(name) / 3).isEqualTo(11);
         assertThat(attendanceSystem.getRisk(name)).isEqualTo(RiskStatus.EXPULSION);
     }
@@ -210,9 +210,9 @@ public class AttendanceSystemTest {
     @Test
     void counseling_test() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 0));
         for (LocalDate date = LocalDate.of(2024, 12, 1);
-             date.isBefore(attendanceSystem.TODAY.minusDays(5));
+             date.isBefore(TODAY.minusDays(5));
              date = date.plusDays(1)) {
             try {
                 attendanceSystem.editAttendance(name, date, LocalTime.of(10, 0));
@@ -230,9 +230,9 @@ public class AttendanceSystemTest {
     @Test
     void warning_test() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 0));
         for (LocalDate date = LocalDate.of(2024, 12, 1);
-             date.isBefore(attendanceSystem.TODAY.minusDays(4));
+             date.isBefore(TODAY.minusDays(4));
              date = date.plusDays(1)) {
             try {
                 attendanceSystem.editAttendance(name, date, LocalTime.of(10, 0));
@@ -250,9 +250,9 @@ public class AttendanceSystemTest {
     @Test
     void none_test() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 0));
         for (LocalDate date = LocalDate.of(2024, 12, 1);
-             date.isBefore(attendanceSystem.TODAY);
+             date.isBefore(TODAY);
              date = date.plusDays(1)) {
             try {
                 attendanceSystem.editAttendance(name, date, LocalTime.of(10, 0));
@@ -270,9 +270,9 @@ public class AttendanceSystemTest {
     @Test
     void none_test2() {
         String name = "두리";
-        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 0));
         for (LocalDate date = LocalDate.of(2024, 12, 1);
-             date.isBefore(attendanceSystem.TODAY.minusDays(1));
+             date.isBefore(TODAY.minusDays(1));
              date = date.plusDays(1)) {
             try {
                 attendanceSystem.editAttendance(name, date, LocalTime.of(10, 0));

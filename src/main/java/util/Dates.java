@@ -8,7 +8,7 @@ import java.util.Objects;
 public class Dates {
     private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
     public static LocalTime DEFAULT_TIME = LocalTime.of(23, 59);
-    public static LocalDate TODAY = LocalDate.of(2024, 12, 14);
+    public static LocalDate TODAY = LocalDate.of(2024, 12, 17);
 
 
     public static boolean isHoliday(LocalDate date) {

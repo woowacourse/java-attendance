@@ -14,6 +14,7 @@ import view.Output;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import static util.Dates.TODAY;
 
@@ -22,6 +23,12 @@ public class AttendanceController {
     private final AttendanceSystem attendanceSystem;
     private final Input input;
     private final Output output;
+    private final Map<String, Runnable> menuOperations = Map.of(
+            "1", this::attend,
+            "2", this::editAttendance,
+            "3", this::checkAttendanceRecord,
+            "4", this::checkRiskCrews
+    );
 
     public AttendanceController(FileInput fileInput, Input input, Output output) {
         this.fileInput = fileInput;
@@ -43,27 +50,24 @@ public class AttendanceController {
     }
 
     private boolean handleMenuSelection() {
+        try {
+            return operateMenu();
+        } catch (IllegalArgumentException e) {
+            output.printError(e.getMessage());
+            return true;
+        }
+    }
+
+    private boolean operateMenu() {
         String menuSelection = input.getMenuInput(TODAY);
-        if (menuSelection.equals("1")) {
-            attend();
-            return true;
-        }
-        if (menuSelection.equals("2")) {
-            editAttendance();
-            return true;
-        }
-        if (menuSelection.equals("3")) {
-            checkAttendanceRecord();
-            return true;
-        }
-        if (menuSelection.equals("4")) {
-            checkRiskCrews();
-            return true;
-        }
-        if(menuSelection.equals("Q")) {
+        if (menuSelection.equals("Q")) {
             return false;
         }
-        throw new IllegalArgumentException("[ERROR] 1, 2, 3, 4, Q만 입력 가능합니다.");
+        if(menuOperations.containsKey(menuSelection)) {
+            menuOperations.get(menuSelection).run();
+            return true;
+        }
+        throw new IllegalArgumentException("1, 2, 3, 4, Q만 입력 가능합니다.");
     }
 
     private void checkRiskCrews() {
@@ -73,8 +77,7 @@ public class AttendanceController {
                         entry.getValue().getAbsenceCount(TODAY),
                         entry.getValue().getTardyCount(TODAY),
                         entry.getValue().getRiskStatus(TODAY)
-                ))
-                .toList();
+                )).toList();
         output.printRiskCrews(riskCrews);
 
     }
@@ -93,38 +96,42 @@ public class AttendanceController {
     private void editAttendance() {
         String name = input.getNameInput();
         AttendanceBook attendanceBook = attendanceSystem.findByName(name);
-        LocalDate date = LocalDate.of(2024,
-                12,
-                Integer.parseInt(input.getEditDateInput()));
-        AttendanceResultDto beforeAttendanceResult = new AttendanceResultDto(
-                date,
-                attendanceBook.getAttendanceTimeByDate(date),
-                attendanceBook.getAttendanceStatus(date)
-        );
+        LocalDate date = getEditDate();
+        AttendanceResultDto beforeAttendanceResult = getAttendanceResult(date, attendanceBook);
         LocalTime time = Parser.stringToLocalTime(input.getEditTimeInput());
         attendanceBook.attendance(date, time);
-        AttendanceResultDto afterAttendanceResult = new AttendanceResultDto(
+        AttendanceResultDto afterAttendanceResult = getAttendanceResult(date, attendanceBook);
+        output.printEditAttendanceResult(beforeAttendanceResult, afterAttendanceResult);
+    }
+
+    private LocalDate getEditDate() {
+        return LocalDate.of(TODAY.getYear(),
+                TODAY.getMonth(),
+                Integer.parseInt(input.getEditDateInput()));
+    }
+
+    private AttendanceResultDto getAttendanceResult(LocalDate date, AttendanceBook attendanceBook) {
+        return new AttendanceResultDto(
                 date,
                 attendanceBook.getAttendanceTimeByDate(date),
                 attendanceBook.getAttendanceStatus(date)
         );
-        output.printEditAttendanceResult(beforeAttendanceResult, afterAttendanceResult);
-
     }
 
     private void attend() {
-        if(Dates.isHoliday(TODAY)) {
-            throw new IllegalArgumentException("");
-        }
+        validateTodayIsHoliday();
         String name = input.getNameInput();
         AttendanceBook attendanceBook = attendanceSystem.findByName(name);
         LocalTime time = Parser.stringToLocalTime(input.getTimeInput());
         attendanceBook.attendance(TODAY, time);
-        AttendanceResultDto attendanceResultDto = new AttendanceResultDto(
-                TODAY,
-                attendanceBook.getAttendanceTimeByDate(TODAY),
-                attendanceBook.getAttendanceStatus(TODAY));
+        AttendanceResultDto attendanceResultDto = getAttendanceResult(TODAY, attendanceBook);
         output.printAttendResult(attendanceResultDto);
+    }
+
+    private static void validateTodayIsHoliday() {
+        if (Dates.isHoliday(TODAY)) {
+            throw new IllegalArgumentException(String.format("%s는 등교일이 아닙니다", Parser.localDateToDateMessage(TODAY)));
+        }
     }
 
     private void initCrew() {

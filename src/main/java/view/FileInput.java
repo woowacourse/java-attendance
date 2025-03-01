@@ -17,18 +17,25 @@ public class FileInput {
     private static final String DELIMITER = ",";
 
     public List<AttendanceRecordDto> getFileInit() {
-        List<AttendanceRecordDto> attendances = new ArrayList<>();
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FILE_PATH);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            String line;
-            reader.readLine();
-            while ((line = reader.readLine()) != null) {
-                String[] split = line.split(DELIMITER);
-                attendances.add(new AttendanceRecordDto(split[0], Parser.stringToLocalDateTime(split[1])));
-            }
+        try (BufferedReader reader = createBufferedReader()) {
+            return getAttendanceRecords(reader);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private BufferedReader createBufferedReader() {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FILE_PATH);
+        return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+    }
+
+    private List<AttendanceRecordDto> getAttendanceRecords(BufferedReader reader) throws IOException {
+        List<AttendanceRecordDto> attendances = new ArrayList<>();
+        String line;
+        reader.readLine();
+        while ((line = reader.readLine()) != null) {
+            String[] split = line.split(DELIMITER);
+            attendances.add(new AttendanceRecordDto(split[0], Parser.stringToLocalDateTime(split[1])));
         }
         return attendances;
     }
