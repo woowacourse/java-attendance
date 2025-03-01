@@ -1,7 +1,9 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -44,6 +46,15 @@ public class Attendances {
                 .collect(Collectors.toList());
 
         return new Attendances(monthlyAttendances);
+    }
+
+    public Map<AttendanceType, Integer> countAttendanceType() {
+        Map<AttendanceType, Integer> counts = new HashMap<>();
+        for (Attendance attendance : attendances) {
+            AttendanceType type = attendance.judgeType();
+            counts.put(type, counts.getOrDefault(type, 0) + 1);
+        }
+        return counts;
     }
 
     @Override
