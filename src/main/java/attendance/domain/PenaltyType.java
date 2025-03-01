@@ -25,7 +25,4 @@ public enum PenaltyType {
         return crewAbsenceCounts + (crewLateCounts / 3);
     }
 
-    public int getPenaltyCounts() {
-        return penaltyCounts;
-    }
 }

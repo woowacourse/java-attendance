@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import attendance.exception.CustomException;
+import attendance.exception.ErrorMessage;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +33,7 @@ public class AttendanceRecord {
 
     private void checkSameDateTime(LocalDateTime inputTime, AttendanceTime attendanceTime) {
         if (attendanceTime.isSameDateTime(inputTime)) {
-            throw new IllegalArgumentException("이미 출석 기록이 있습니다.");
+            throw CustomException.from(ErrorMessage.ALREDAY_PRESENCE_ATTENDANCE_RECORD);
         }
     }
 
@@ -39,7 +41,7 @@ public class AttendanceRecord {
         return attendanceRecord.stream()
                 .filter(attendanceTime -> attendanceTime.isSameDateTime(inputTime))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 없습니다."));
+                .orElseThrow(() -> CustomException.from(ErrorMessage.NOT_ATTENDANCE_RECORD));
     }
 
     public AttendanceRecord modifyAttendanceTime(LocalDateTime inputTime) {

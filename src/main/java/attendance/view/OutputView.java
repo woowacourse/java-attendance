@@ -3,6 +3,7 @@ package attendance.view;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceTime;
+import attendance.domain.Crew;
 import attendance.domain.PenaltyType;
 import attendance.domain.RiskCrew;
 import java.time.LocalDateTime;
@@ -41,8 +42,8 @@ public class OutputView {
                 updateFormat + " (" + updateAttendanceStatus.getName() + ") 수정 완료!");
     }
 
-    public void writeAttendanceCheck(String crewName, AttendanceRecord attendanceRecord) {
-        System.out.println("이번 달 " + crewName + "의 출석 기록입니다.");
+    public void writeAttendanceCheck(Crew crewName, AttendanceRecord attendanceRecord) {
+        System.out.println("이번 달 " + crewName.getName() + "의 출석 기록입니다.");
         System.out.println();
 
         for (AttendanceTime attendanceTime : attendanceRecord.getAttendanceRecord()) {

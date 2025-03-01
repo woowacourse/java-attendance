@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import attendance.exception.CustomException;
+import attendance.exception.ErrorMessage;
 import java.util.HashSet;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
@@ -64,6 +66,21 @@ public class CrewsTest {
 
         //when & then
         Assertions.assertThat(crews.findCrew("우가")).isEqualTo(crew);
+    }
+
+    @Test
+    void 존재하지_않는_크루_입력시_예외_발생() {
+        //given
+        Set<Crew> originalCrews = new HashSet<>();
+        Crew crew = new Crew("우가");
+        originalCrews.add(crew);
+
+        Crews crews = new Crews(originalCrews);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> crews.findCrew("부기"))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorMessage.NOT_FIND_CREW.getMessage());
     }
 
 }

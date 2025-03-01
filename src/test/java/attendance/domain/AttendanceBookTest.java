@@ -48,6 +48,7 @@ public class AttendanceBookTest {
         String invalidCrewName = "부기";
         String crewName = "우가";
         Crew crew = new Crew(crewName);
+        Crew crew1 = new Crew(invalidCrewName);
 
         Crews crews = new Crews(Set.of(crew));
 
@@ -55,7 +56,7 @@ public class AttendanceBookTest {
         LocalDateTime currentTime = LocalDateTime.of(2025, 2, 21, 9, 59);
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentTime);
 
-        Assertions.assertThatThrownBy(() -> attendanceBook.registerAttendance(invalidCrewName, inputTime))
+        Assertions.assertThatThrownBy(() -> attendanceBook.registerAttendance(crew1, inputTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 해당 크루를 찾을 수 없습니다.");
     }
@@ -78,7 +79,7 @@ public class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentTime);
 
         LocalDateTime inputTime = LocalDateTime.of(year, month, day, hour, minute);
-        Assertions.assertThat(attendanceBook.registerAttendance(crewName, inputTime).getAttendanceStatus())
+        Assertions.assertThat(attendanceBook.registerAttendance(crew, inputTime).getAttendanceStatus())
                 .isEqualTo(attendanceStatus);
     }
 
@@ -91,13 +92,14 @@ public class AttendanceBookTest {
         String invalidCrewName = "부기";
         String crewName = "우가";
         Crew crew = new Crew(crewName);
+        Crew crew1 = new Crew(invalidCrewName);
         Crews crews = new Crews(Set.of(crew));
 
         LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 28, 9, 59);
         LocalDateTime modifyDateTime = currentDateTime.withDayOfMonth(24).withHour(12).withMinute(59);
 
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
-        Assertions.assertThatThrownBy(() -> attendanceBook.findBeforeAttendanceRecord(invalidCrewName, modifyDateTime))
+        Assertions.assertThatThrownBy(() -> attendanceBook.findBeforeAttendanceRecord(crew1, modifyDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 해당 크루를 찾을 수 없습니다.");
     }
@@ -116,7 +118,7 @@ public class AttendanceBookTest {
 
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
 
-        Assertions.assertThat(attendanceBook.findBeforeAttendanceRecord(crewName, modifyDateTime)
+        Assertions.assertThat(attendanceBook.findBeforeAttendanceRecord(crew, modifyDateTime)
                 .getAttendanceTime().getDayOfMonth()).isEqualTo(24);
     }
 
@@ -139,7 +141,7 @@ public class AttendanceBookTest {
 
         //when
         LocalDateTime modifyTime = LocalDateTime.of(year, month, day, hour, minute);
-        AttendanceTime modifiedAttendanceTime = attendanceBook.modifyAttendance(crewName, modifyTime);
+        AttendanceTime modifiedAttendanceTime = attendanceBook.modifyAttendance(crew, modifyTime);
 
         //then
         Assertions.assertThat(modifiedAttendanceTime.getAttendanceStatus()).isEqualTo(attendanceStatus);
@@ -157,7 +159,7 @@ public class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
 
         //when & then
-        Assertions.assertThat(attendanceBook.findAttendanceRecord(crewName).getAttendanceRecord().size()).isEqualTo(19);
+        Assertions.assertThat(attendanceBook.findAttendanceRecord(crew).getAttendanceRecord().size()).isEqualTo(19);
     }
 
     @Test
@@ -176,14 +178,14 @@ public class AttendanceBookTest {
         LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
 
-        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 25, 10, 31));
-        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 24, 13, 6));
+        attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 24, 13, 6));
 
-        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 26, 10, 6));
-        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 28, 10, 31));
+        attendanceBook.registerAttendance(crew2, LocalDateTime.of(2025, 2, 26, 10, 6));
+        attendanceBook.registerAttendance(crew2, LocalDateTime.of(2025, 2, 28, 10, 31));
 
-        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 27, 10, 6));
-        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 28, 10, 31));
+        attendanceBook.registerAttendance(crew3, LocalDateTime.of(2025, 2, 27, 10, 6));
+        attendanceBook.registerAttendance(crew3, LocalDateTime.of(2025, 2, 28, 10, 31));
 
         //when & then
         Assertions.assertThat(attendanceBook.findPenaltyCrews().size()).isEqualTo(3);
@@ -205,14 +207,14 @@ public class AttendanceBookTest {
         LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
 
-        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 25, 10, 31));
-        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 24, 13, 6));
+        attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 24, 13, 6));
 
-        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 26, 10, 6));
-        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 28, 10, 31));
+        attendanceBook.registerAttendance(crew2, LocalDateTime.of(2025, 2, 26, 10, 6));
+        attendanceBook.registerAttendance(crew2, LocalDateTime.of(2025, 2, 28, 10, 31));
 
-        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 27, 10, 6));
-        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 28, 10, 31));
+        attendanceBook.registerAttendance(crew3, LocalDateTime.of(2025, 2, 27, 10, 6));
+        attendanceBook.registerAttendance(crew3, LocalDateTime.of(2025, 2, 28, 10, 31));
 
         //when
         List<RiskCrew> penaltyCrews = attendanceBook.findPenaltyCrews();
@@ -241,15 +243,15 @@ public class AttendanceBookTest {
         LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
 
-        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 24, 13, 31));
-        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 25, 10, 31));
-        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 26, 10, 31));
+        attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 24, 13, 31));
+        attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 26, 10, 31));
 
-        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 24, 13, 31));
-        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crew2, LocalDateTime.of(2025, 2, 24, 13, 31));
+        attendanceBook.registerAttendance(crew2, LocalDateTime.of(2025, 2, 25, 10, 31));
 
-        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 24, 12, 59));
-        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crew3, LocalDateTime.of(2025, 2, 24, 12, 59));
+        attendanceBook.registerAttendance(crew3, LocalDateTime.of(2025, 2, 25, 10, 31));
 
         //when
         List<RiskCrew> penaltyCrews = attendanceBook.findPenaltyCrews();
@@ -278,15 +280,15 @@ public class AttendanceBookTest {
         LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
 
-        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 24, 13, 31));
-        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crew2, LocalDateTime.of(2025, 2, 24, 13, 31));
+        attendanceBook.registerAttendance(crew2, LocalDateTime.of(2025, 2, 25, 10, 31));
 
-        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 24, 13, 31));
-        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 25, 10, 31));
-        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 26, 10, 30));
+        attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 24, 13, 31));
+        attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 26, 10, 30));
 
-        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 24, 12, 59));
-        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crew3, LocalDateTime.of(2025, 2, 24, 12, 59));
+        attendanceBook.registerAttendance(crew3, LocalDateTime.of(2025, 2, 25, 10, 31));
 
         //when
         List<RiskCrew> penaltyCrews = attendanceBook.findPenaltyCrews();

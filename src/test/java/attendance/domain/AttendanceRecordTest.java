@@ -140,6 +140,39 @@ public class AttendanceRecordTest {
         Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.EXPULSION);
     }
 
+    @Test
+    void 출석_횟수_반환() {
+        //given
+        AttendanceRecord attendanceRecord = new AttendanceRecord(
+                List.of(new AttendanceTime(LocalDateTime.of(2025, 2, 28, 9, 31)))
+        );
+
+        //when & then
+        Assertions.assertThat(attendanceRecord.checkAttendanceCounts()).isEqualTo(1);
+    }
+
+    @Test
+    void 지각_횟수_반환() {
+        //given
+        AttendanceRecord attendanceRecord = new AttendanceRecord(
+                List.of(new AttendanceTime(LocalDateTime.of(2025, 2, 28, 10, 24)))
+        );
+
+        //when & then
+        Assertions.assertThat(attendanceRecord.checkLateCounts()).isEqualTo(1);
+    }
+
+    @Test
+    void 결석_횟수_반환() {
+        //given
+        AttendanceRecord attendanceRecord = new AttendanceRecord(
+                List.of(new AttendanceTime(LocalDateTime.of(2025, 2, 28, 10, 31)))
+        );
+
+        //when & then
+        Assertions.assertThat(attendanceRecord.checkAbsenceCounts()).isEqualTo(1);
+    }
+
     @DisplayName("출석 등록할 때")
     @Test
     void 출석_기록이_있으면_예외_발생() {
@@ -153,7 +186,7 @@ public class AttendanceRecordTest {
         //when & then
         Assertions.assertThatThrownBy(() -> attendanceRecord.registerAttendance(inputTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 출석 기록이 있습니다.");
+                .hasMessage("[ERROR] 이미 출석 기록이 있습니다.");
     }
 
     @DisplayName("출석 수정할 때")
@@ -169,6 +202,6 @@ public class AttendanceRecordTest {
         //when & then
         Assertions.assertThatThrownBy(() -> attendanceRecord.findAttendanceRecord(inputTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("출석 기록이 없습니다.");
+                .hasMessage("[ERROR] 출석 기록이 없습니다.");
     }
 }

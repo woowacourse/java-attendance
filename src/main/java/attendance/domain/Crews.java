@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import attendance.exception.CustomException;
+import attendance.exception.ErrorMessage;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +17,7 @@ public class Crews {
         return crews.stream()
                 .filter(crew -> crew.getName().equals(inputCrewName))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> CustomException.from(ErrorMessage.NOT_FIND_CREW));
     }
 
     public Set<Crew> getCrews() {

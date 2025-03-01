@@ -41,28 +41,28 @@ public class AttendanceBook {
         }
     }
 
-    public AttendanceTime registerAttendance(String inputCrewName, LocalDateTime inputTime) {
-        Crew crew = findRegisteredCrew(inputCrewName);
+    public AttendanceTime registerAttendance(Crew inputCrewName, LocalDateTime inputTime) {
+        Crew crew = findRegisteredCrew(inputCrewName.getName());
         AttendanceRecord attendanceRecord = attendanceBook.get(crew).getLast();
         return attendanceRecord.registerAttendance(inputTime);
     }
 
-    public AttendanceTime findBeforeAttendanceRecord(String inputCrewName, LocalDateTime inputTime) {
-        Crew crew = findRegisteredCrew(inputCrewName);
+    public AttendanceTime findBeforeAttendanceRecord(Crew inputCrewName, LocalDateTime inputTime) {
+        Crew crew = findRegisteredCrew(inputCrewName.getName());
         AttendanceRecord attendanceRecord = attendanceBook.get(crew).getLast();
         return attendanceRecord.findAttendanceRecord(inputTime);
     }
 
-    public AttendanceTime modifyAttendance(String inputCrewName, LocalDateTime inputTime) {
-        Crew crew = findRegisteredCrew(inputCrewName);
+    public AttendanceTime modifyAttendance(Crew inputCrewName, LocalDateTime inputTime) {
+        Crew crew = findRegisteredCrew(inputCrewName.getName());
         AttendanceRecord attendanceRecord = attendanceBook.get(crew).getLast();
         AttendanceRecord updatedAttendanceRecord = attendanceRecord.modifyAttendanceTime(inputTime);
         attendanceBook.put(crew, List.of(updatedAttendanceRecord));
         return updatedAttendanceRecord.findAttendanceRecord(inputTime);
     }
 
-    public AttendanceRecord findAttendanceRecord(String inputCrewName) {
-        Crew crew = findRegisteredCrew(inputCrewName);
+    public AttendanceRecord findAttendanceRecord(Crew inputCrewName) {
+        Crew crew = findRegisteredCrew(inputCrewName.getName());
         return attendanceBook.get(crew).getLast();
     }
 
