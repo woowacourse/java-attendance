@@ -35,9 +35,8 @@ public class InputView {
         try{
             System.out.println("등교 시간을 입력해 주세요.");
             String input = scanner.nextLine();
-            LocalDate today = LocalDate.now();
             LocalTime time = LocalTime.parse(input, dateTimeFormatter);
-            return LocalDateTime.of(today,time);
+            return LocalDateTime.of(TODAY_DATE_NOW,time);
         } catch (DateTimeParseException e){
             throw new IllegalArgumentException("[ERROR] 입력 시간의 형식이 옳바르지 않습니다.");
         }

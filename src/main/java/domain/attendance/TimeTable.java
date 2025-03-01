@@ -22,7 +22,6 @@ public enum TimeTable {
 
     public static final int MON_ATTENDANCE_START_HOUR = 13;
     public static final int WEEKDAYS_EXCEPT_MON_ATTENDANCE_START_HOUR = 10;
-    public static final int WEEKDAYS_ATTENDANCE_END_HOUR = 18;
     public static final int CAMPUS_OPERATING_OPENING_HOUR = 8;
     public static final int CAMPUS_OPERATING_CLOSING_HOUR = 23;
     public static final int OPERATING_MINUTE = 0;
@@ -33,10 +32,6 @@ public enum TimeTable {
     );
     public static final LocalTime WEEKDAYS_EXCEPT_MON_ATTENDANCE_START = LocalTime.of(
             WEEKDAYS_EXCEPT_MON_ATTENDANCE_START_HOUR,
-            OPERATING_MINUTE
-    );
-    public static final LocalTime WEEKDAYS_ATTENDANCE_END = LocalTime.of(
-            WEEKDAYS_ATTENDANCE_END_HOUR,
             OPERATING_MINUTE
     );
     public static final LocalTime CAMPUS_OPERATING_START = LocalTime.of(
@@ -98,17 +93,5 @@ public enum TimeTable {
 
     public static boolean isAttendanceDay(LocalDate date){
         return date.getDayOfWeek() != SATURDAY && date.getDayOfWeek() != SUNDAY;
-    }
-
-    public Set<DayOfWeek> getDays() {
-        return days;
-    }
-
-    public LocalTime getOpeningTime() {
-        return openingTime;
-    }
-
-    public LocalTime getClosingTime() {
-        return closingTime;
     }
 }

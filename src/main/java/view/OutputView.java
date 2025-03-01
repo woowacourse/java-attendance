@@ -18,8 +18,8 @@ public class OutputView {
 
     public static void printWelcomeMessage() {
         String welcomeMessage = "오늘은 " +
-                convertToLocalDayFormat(LocalDateTime.now()) +
-                convertToDayOfWeekKorean(LocalDateTime.now()) +
+                convertToLocalDayFormat(TODAY_DATE_TIME_NOW) +
+                convertToDayOfWeekKorean(TODAY_DATE_TIME_NOW) +
                 "입니다. 기능을 선택해 주세요.";
         System.out.println(welcomeMessage);
     }
@@ -38,8 +38,9 @@ public class OutputView {
         List<AttendanceDate> sortedRecord = crewAttendanceResult.getSortedAttendanceResult();
         attendResult.append("이번 달 ").append(crewName).append("의 출석 기록입니다.").append(doubleNewLine);
         sortedRecord.forEach(attendanceDate -> attendResult
-                        .append(convertToLocalDayFormat(attendanceDate.getAttendanceAt()))
-                        .append(convertToDateTimeFormat(attendanceDate.getAttendanceAt())));
+                .append(convertToLocalDayFormat(attendanceDate.getAttendanceAt()))
+                .append(convertToDateTimeFormat(attendanceDate.getAttendanceAt()))
+                .append("\n"));
         attendResult.append(doubleNewLine);
 
         attendResult.append("출석: ").append(crewAttendanceResult.getAttendanceCount()).append("회\n")

@@ -1,5 +1,7 @@
 package domain.attendance;
 
+import util.DateTimeUtils;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,6 +13,7 @@ import java.util.stream.IntStream;
 
 import static domain.attendance.StudentStatus.*;
 import static domain.attendance.TimeTable.*;
+import static util.DateTimeUtils.*;
 
 public class Attendance {
     private final Map<LocalDate, AttendanceDate> attendanceDates;
@@ -41,7 +44,7 @@ public class Attendance {
         if(has(attendanceDate)){
             throw new IllegalArgumentException("[ERROR] 출석 기록이 이미 존재합니다.");
         }
-        if(attendanceDateTime.isAfter(LocalDateTime.now())){
+        if(attendanceDateTime.isAfter(TODAY_DATE_TIME_NOW)){
             throw new IllegalArgumentException("[ERROR] 출석 시간이 옳바르지 않습니다.");
         }
     }
@@ -87,7 +90,7 @@ public class Attendance {
     }
 
     private int getMissingAttendanceCount(){
-        return Math.toIntExact(IntStream.range(1,LocalDate.now().getDayOfMonth())
+        return Math.toIntExact(IntStream.range(1,TODAY_DATE_NOW.getDayOfMonth())
                 .mapToObj(day -> LocalDate.of(2025,2,day))
                 .filter(date -> !has(date) && isAttendanceDay(date))
                 .count());
