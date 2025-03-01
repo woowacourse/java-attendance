@@ -74,6 +74,10 @@ public class AttendanceController {
                 outputView::printExceptionMessage);
 
         final AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
+        if (attendanceHistory.isAlreadyAttendance(now())) {
+            outputView.printIntroduceUpdate();
+            return;
+        }
         final AttendanceRecord attendanceRecord = attendanceHistory.attendance(LocalDateTime.of(now(), attendanceTime));
 
         outputView.printAttendanceRecord(dtoConverter.convertToAttendanceRecordDto(attendanceRecord));

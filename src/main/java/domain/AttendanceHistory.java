@@ -40,6 +40,10 @@ public class AttendanceHistory {
         }
     }
 
+    public boolean isAlreadyAttendance(final LocalDate targetDate) {
+        return attendanceHistory.containsKey(targetDate);
+    }
+
     private void validateAttendanceDay(final LocalDateTime attendanceDateTime) {
         if (!isAttendanceDay(attendanceDateTime.toLocalDate())) {
             throw new IllegalArgumentException("주어진 날짜는 출석하는 날이 아닙니다.");

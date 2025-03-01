@@ -89,6 +89,10 @@ public class OutputView {
                 riskOfExpulsionCrewDto.lateCount(), riskOfExpulsionCrewDto.expulsionStatus());
     }
 
+    public void printIntroduceUpdate(){
+        System.out.println("이미 출석이 존재합니다. 수정 기능을 사용해주세요.\n");
+    }
+
     public void printExceptionMessage(final String message) {
         System.out.println("[ERROR] "+ message);
     }
