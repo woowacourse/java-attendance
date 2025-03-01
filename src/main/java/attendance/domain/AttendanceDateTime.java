@@ -12,7 +12,7 @@ public class AttendanceDateTime {
     public static final LocalTime ABSENT_TIME = LocalTime.of(0, 0);
     private final LocalDateTime dateTime;
 
-    public AttendanceDateTime(LocalDate absentDate) {
+    private AttendanceDateTime(LocalDate absentDate) {
         LocalDateTime absentDateTime = LocalDateTime.of(absentDate, ABSENT_TIME);
         this.dateTime = absentDateTime;
     }
@@ -85,8 +85,9 @@ public class AttendanceDateTime {
     }
 
     public boolean isThisDayInCurrentMonth(final int day) {
+        int attendanceMonth = this.dateTime.getMonthValue();
         int attendanceDay = this.dateTime.getDayOfMonth();
-        if (attendanceDay == day) {
+        if (attendanceMonth == LocalDate.now().getMonthValue() && attendanceDay == day) {
             return true;
         }
         return false;
