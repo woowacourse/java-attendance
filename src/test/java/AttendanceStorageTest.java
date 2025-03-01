@@ -144,7 +144,7 @@ public class AttendanceStorageTest {
 
         // when
         attendanceStorage.register(date, enterTime);
-        Attendance attendance = attendanceStorage.findByDate(date);
+        Attendance attendance = attendanceStorage.getAttendanceByDate(date);
 
         // then
         assertThat(attendance.isTimeRecorded()).isTrue();
@@ -161,7 +161,7 @@ public class AttendanceStorageTest {
 
         // when
         attendanceStorage.modify(date, modifyTime);
-        Attendance attendance = attendanceStorage.findByDate(date);
+        Attendance attendance = attendanceStorage.getAttendanceByDate(date);
 
         // then
         assertAll(
@@ -182,7 +182,7 @@ public class AttendanceStorageTest {
 
         // when
         attendanceStorage.modify(date, modifiedTime);
-        Attendance attendance = attendanceStorage.findByDate(date);
+        Attendance attendance = attendanceStorage.getAttendanceByDate(date);
 
         // then
         assertAll(

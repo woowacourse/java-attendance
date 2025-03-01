@@ -28,17 +28,24 @@ public class AttendanceStorage {
         return attendances.add(attendance);
     }
 
-    public Attendance findByDate(LocalDate date) {
+    public boolean modify(LocalDate date, LocalTime modifyTime) {
+        Attendance attendance = getAttendanceByDate(date);
+        attendances.remove(attendance);
+        return attendances.add(new ExistAttendance(date, modifyTime));
+    }
+
+    public Attendance getAttendanceByDate(LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isAttendedOn(date))
                 .findFirst()
                 .orElse(EmptyAttendance.of(date));
     }
 
-    public boolean modify(LocalDate date, LocalTime modifyTime) {
-        Attendance attendance = findByDate(date);
-        attendances.remove(attendance);
-        return attendances.add(new ExistAttendance(date, modifyTime));
+    public List<Attendance> getAttendancesByDateRange(LocalDate start, LocalDate end) {
+        return start.datesUntil(end)
+                .filter(AttendanceDate::isValid)
+                .map(this::getAttendanceByDate)
+                .toList();
     }
 
     public AttendanceStatistic getStatisticByDateRange(LocalDate start, LocalDate end) {
@@ -46,7 +53,7 @@ public class AttendanceStorage {
         start.datesUntil(end)
                 .filter(AttendanceDate::isValid)
                 .forEach(date -> {
-                    Attendance attendance = findByDate(date);
+                    Attendance attendance = getAttendanceByDate(date);
                     AttendanceStatus status = attendance.getStatus();
                     final int updatedValue = result.getOrDefault(status, 0) + 1;
                     result.put(status, updatedValue);
