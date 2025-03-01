@@ -7,10 +7,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import util.FileInformationProvider;
 
 public class AttendanceBookTest {
     @Test
@@ -19,14 +19,22 @@ public class AttendanceBookTest {
         String name = "빙티";
         FileInformationProvider fileProvider = new FileInformationProvider();
         AttendanceBook attendanceBook = new AttendanceBook(fileProvider.loadStudentAttendance());
-        Map<LocalDate, LocalTime> result = attendanceBook.findStudentAttendanceTimeRecord(name);
-
-        Map<LocalDate, LocalTime> expect = Map.of(
-                LocalDate.of(2024, 12, 3), LocalTime.of(10, 7),
-                LocalDate.of(2024, 12, 2), LocalTime.of(13, 0)
-        );
+        LocalTime result = attendanceBook.findStudentAttendanceTimeRecord(name, LocalDate.of(2024,12,2));
+        LocalTime expect = LocalTime.of(13,0);
         assertThat(expect).isEqualTo(result);
     }
+
+    @Test
+    @DisplayName("특정 학생의 출석 상태 가져오기 구현")
+    void 특정_학생의_출석_상태_가져오기_구현() throws IOException {
+        String name = "빙티";
+        FileInformationProvider fileProvider = new FileInformationProvider();
+        AttendanceBook attendanceBook = new AttendanceBook(fileProvider.loadStudentAttendance());
+        AttendanceStatus result = attendanceBook.findStudentAttendanceStatusRecord(name, LocalDate.of(2024,12,2));
+        AttendanceStatus expect = AttendanceStatus.ATTENDANCE;
+        assertThat(expect).isEqualTo(result);
+    }
+
 
     @Test
     @DisplayName("제적 위험자 조건에 맞는 크루 찾기 테스트")
