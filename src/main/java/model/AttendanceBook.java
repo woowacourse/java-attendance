@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class AttendanceBook {
 
@@ -64,5 +65,27 @@ public class AttendanceBook {
         return findCrewAttendance(nickname).stream()
                 .filter(Attendance::isAbsent)
                 .count();
+    }
+
+    public long calculateAbsentCountByNicknameUntilDate(String nickname, LocalDate date) {
+        int absentCount = 0;
+        for (int day = 3; day < date.getDayOfMonth(); day++) {
+            boolean flag = false;
+            for (int idx = 0; idx < crewsAttendanceRecords.size(); idx++) {
+                if (crewsAttendanceRecords.get(idx).isSameDate(nickname, date.withDayOfMonth(day))) {
+                    if (crewsAttendanceRecords.get(idx).isAbsent()) {
+                        absentCount++;
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!flag) {
+                absentCount++;
+            }
+        }
+
+        return absentCount;
     }
 }

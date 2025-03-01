@@ -71,7 +71,7 @@ public class CrewAttendanceTest {
         final var nickname = "율무";
 
         // when
-        final var absentCount = attendanceBook.calculateAbsentCountByNickname(nickname);
+        final var absentCount = attendanceBook.calculateAbsentCountByNicknameUntilDate(nickname, today);
 
         // then
         Assertions.assertThat(absentCount)
