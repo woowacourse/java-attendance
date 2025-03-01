@@ -37,8 +37,7 @@ public class FileInput {
                 String studentName = studentNameAndAttendanceDateTimeInformation[NAME_INDEX];
                 String timeInformation = studentNameAndAttendanceDateTimeInformation[ATTENDANCE_DATE_TIME_INDEX];
 
-                LocalDateTime studentDateTime = LocalDateTime.parse(timeInformation, ATTENDANCE_DATE_TIME_FORMATTER);
-                AttendanceDateTime attendanceDateTime = new AttendanceDateTime(studentDateTime);
+                AttendanceDateTime attendanceDateTime = new AttendanceDateTime(LocalDateTime.parse(timeInformation, ATTENDANCE_DATE_TIME_FORMATTER));
 
                 studentInformationInFile.computeIfAbsent(studentName, k -> new StudentAttendanceHistory(new ArrayList<>())).addAttendanceDateTime(attendanceDateTime);
             }
