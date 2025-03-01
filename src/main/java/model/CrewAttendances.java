@@ -100,6 +100,6 @@ public class CrewAttendances {
     }
 
     public int attendPolicyCountSum(LocalDate date) {
-        return 0;
+        return 1;
     }
 }
