@@ -15,10 +15,15 @@ public class CrewAttendanceTest {
     @Test
     void nickname_to_attendances() {
         // given
-        Attendance attendRecord1 = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
-        Attendance attendRecord2 = new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 4));
-        Attendance attendRecord3 = new Attendance("열무", LocalDate.of(2024, 12, 4), LocalTime.of(9, 32));
-        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendRecord1, attendRecord2, attendRecord3));
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+                new CrewAttendances("율무",
+                        List.of(
+                                new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                                new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 3))
+                        )),
+                new CrewAttendances("열무",
+                        List.of(new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0))))
+        ));
         final var nickname = "율무";
 
         // when
@@ -33,9 +38,13 @@ public class CrewAttendanceTest {
     @Test
     void not_exist_nickname_exception() {
         // given
-        Attendance attendRecord1 = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
-        Attendance attendRecord2 = new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 4));
-        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendRecord1, attendRecord2));
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+                new CrewAttendances("율무",
+                        List.of(
+                                new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 3)),
+                                new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                        ))
+        ));
         final var nickname = "열무";
 
         // when
@@ -51,8 +60,11 @@ public class CrewAttendanceTest {
         // given
         LocalDate today = LocalDate.of(2024, 12, 6);
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
-                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 33)),
-                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 31))
+                new CrewAttendances("율무",
+                        List.of(
+                                new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 33)),
+                                new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 31))
+                        ))
         ));
         CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
 
@@ -70,8 +82,10 @@ public class CrewAttendanceTest {
         // given
         LocalDate today = LocalDate.of(2024, 12, 8);
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
-                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 33)),
-                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 31))
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 33)),
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 31))
+                ))
         ));
         CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
 
@@ -89,12 +103,14 @@ public class CrewAttendanceTest {
         // given
         LocalDate today = LocalDate.of(2024, 12, 26);
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
-                new Attendance("율무", LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
-                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
-                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 3)),
-                new Attendance("율무", LocalDate.of(2024, 12, 5), LocalTime.of(10, 3)),
-                new Attendance("율무", LocalDate.of(2024, 12, 6), LocalTime.of(10, 3))
-                ));
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 3)),
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 3)),
+                        new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 3)),
+                        new Attendance(LocalDate.of(2024, 12, 6), LocalTime.of(10, 3))
+                ))
+        ));
         CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
 
         // when
@@ -111,8 +127,10 @@ public class CrewAttendanceTest {
         // given
         LocalDate today = LocalDate.of(2024, 12, 5);
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
-                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
-                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 10))
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10))
+                ))
         ));
         CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
 
@@ -130,8 +148,10 @@ public class CrewAttendanceTest {
         // given
         LocalDate today = LocalDate.of(2024, 12, 5);
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
-                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
-                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(9, 47))
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(9, 47))
+                ))
         ));
         CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
 
@@ -149,8 +169,10 @@ public class CrewAttendanceTest {
         // given
         LocalDate today = LocalDate.of(2024, 12, 5);
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
-                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 31)),
-                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 35))
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 31)),
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 35))
+                ))
         ));
         CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
 

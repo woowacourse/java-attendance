@@ -2,40 +2,33 @@ package model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceBook {
 
-    private final List<Attendance> crewsAttendanceRecords;
+    private final List<CrewAttendances> crewsAttendances;
 
-    public AttendanceBook(List<Attendance> crewsAttendanceRecords) {
-        this.crewsAttendanceRecords = new ArrayList<>(crewsAttendanceRecords);
+    public AttendanceBook(List<CrewAttendances> crewsAttendances) {
+        this.crewsAttendances = crewsAttendances;
     }
 
     public Attendance check(String nickname, LocalDate date, LocalTime time) {
         AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
         checker.determine(date, time);
 
-        Attendance attendance = new Attendance(nickname, date, time);
-        if (isAlreadyAttend(nickname, date)) {
+        CrewAttendances crew = findCrewAttendance(nickname);
+        if (crew.isAlreadyAttend(date)) {
             throw new IllegalArgumentException();
         }
 
-        crewsAttendanceRecords.add(attendance);
+        Attendance attendance = new Attendance(date, time);
+        crew.addAttendance(attendance);
         return attendance;
     }
 
-    private boolean isAlreadyAttend(String nickname, LocalDate date) {
-        return crewsAttendanceRecords.stream()
-                .anyMatch(attendance -> attendance.isSameDate(date) && attendance.isSameNickname(nickname));
-    }
-
     public Attendance findAttendance(String nickname, LocalDate date) {
-        return crewsAttendanceRecords.stream()
-                .filter(attendance -> attendance.isSameDate(date) && attendance.isSameNickname(nickname))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+        CrewAttendances crewAttendances = findCrewAttendance(nickname);
+        return crewAttendances.findAttendance(date);
     }
 
     public Attendance update(String updateNickname, LocalDate updateDate, LocalTime updateTime) {
@@ -49,14 +42,9 @@ public class AttendanceBook {
     }
 
     public CrewAttendances findCrewAttendance(String nickname) {
-        List<Attendance> crewAttendance = crewsAttendanceRecords.stream()
-                .filter(attendance -> attendance.isSameNickname(nickname))
-                .toList();
-
-        if (crewAttendance.isEmpty()) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
-
-        return new CrewAttendances(nickname, crewAttendance);
+        return crewsAttendances.stream()
+                .filter(crew -> crew.isSameNickname(nickname))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
 }

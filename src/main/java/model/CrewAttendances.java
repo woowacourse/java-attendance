@@ -2,6 +2,7 @@ package model;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CrewAttendances {
@@ -11,7 +12,7 @@ public class CrewAttendances {
 
     public CrewAttendances(String nickname, List<Attendance> attendances) {
         this.nickname = nickname;
-        this.attendances = attendances;
+        this.attendances = new ArrayList<>(attendances);
     }
 
     public int calculateLateCountUntilDate(LocalDate date) {
@@ -75,5 +76,25 @@ public class CrewAttendances {
 
         absentCount += lateCount / 3;
         return AbsentPenalty.determine(absentCount);
+    }
+
+    public boolean isSameNickname(String nickname) {
+        return this.nickname.equals(nickname);
+    }
+
+    public boolean isAlreadyAttend(LocalDate date) {
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.isSameDate(date));
+    }
+
+    public void addAttendance(Attendance attendance) {
+        attendances.add(attendance);
+    }
+
+    public Attendance findAttendance(LocalDate date) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isSameDate(date))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없습니다."));
     }
 }

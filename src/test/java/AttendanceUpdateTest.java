@@ -3,6 +3,7 @@ import java.time.LocalTime;
 import java.util.List;
 import model.Attendance;
 import model.AttendanceBook;
+import model.CrewAttendances;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,10 @@ public class AttendanceUpdateTest {
     void update() {
         // given
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
-                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
-                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                ))
         ));
         final var updateNickname = "율무";
         final var updateDate = LocalDate.of(2024, 12, 3);
@@ -34,7 +37,9 @@ public class AttendanceUpdateTest {
     void update_none_attendance() {
         // given
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
-                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                ))
         ));
         final var updateNickname = "율무";
         final var updateDate = LocalDate.of(2024, 12, 3);
@@ -51,7 +56,9 @@ public class AttendanceUpdateTest {
     void not_update_before_operating_time() {
         // given
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
-                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                ))
         ));
         final var updateNickname = "율무";
         final var updateDate = LocalDate.of(2024, 12, 4);
@@ -68,7 +75,9 @@ public class AttendanceUpdateTest {
     void not_update_after_operating_time() {
         // given
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
-                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                ))
         ));
         final var updateNickname = "율무";
         final var updateDate = LocalDate.of(2024, 12, 4);

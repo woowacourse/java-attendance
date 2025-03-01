@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Attendance;
 import model.AttendanceBook;
+import model.CrewAttendances;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,11 @@ public class AttendanceCheckTest {
     @Test
     void attend() {
         // given
-        AttendanceBook attendanceBook = new AttendanceBook(new ArrayList<>());
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                ))
+        ));
         String nickname = "율무";
         LocalDate date = LocalDate.of(2024, 12, 3);
         LocalTime time = LocalTime.of(10, 0);
@@ -32,8 +37,10 @@ public class AttendanceCheckTest {
     void already_attend() {
         // given
         AttendanceBook attendanceBook = new AttendanceBook(List.of(
-                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
-                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+                ))
         ));
         String nickname = "율무";
         LocalDate date = LocalDate.of(2024, 12, 3);
@@ -49,8 +56,10 @@ public class AttendanceCheckTest {
     @Test
     void find_attendance() {
         // given
-        Attendance attendance = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
-        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendance));
+        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+                new CrewAttendances("율무", List.of(attendance))
+        ));
 
         // when
         Attendance find = attendanceBook.findAttendance("율무", LocalDate.of(2024, 12, 3));
@@ -64,8 +73,11 @@ public class AttendanceCheckTest {
     @Test
     void find_attendance_exception() {
         // given
-        Attendance attendance = new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 3));
-        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendance));
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+                new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 3))
+                ))
+        ));
 
         // when
         // then

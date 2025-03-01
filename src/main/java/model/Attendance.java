@@ -5,12 +5,10 @@ import java.time.LocalTime;
 
 public class Attendance {
 
-    private final String nickname;
     private final LocalDate attendDate;
     private LocalTime attendTime;
 
-    public Attendance(String nickname, LocalDate attendDate, LocalTime attendTime) {
-        this.nickname = nickname;
+    public Attendance(LocalDate attendDate, LocalTime attendTime) {
         this.attendDate = attendDate;
         this.attendTime = attendTime;
     }
@@ -21,10 +19,6 @@ public class Attendance {
 
     public void updateTime(LocalTime updateTime) {
         this.attendTime = updateTime;
-    }
-
-    public boolean isSameNickname(String nickname) {
-        return this.nickname.equals(nickname);
     }
 
     public boolean isAbsent() {
