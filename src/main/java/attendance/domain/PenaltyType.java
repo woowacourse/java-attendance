@@ -24,4 +24,8 @@ public enum PenaltyType {
     private static int calculateTotalPenaltyCounts(final int crewAbsenceCounts, final int crewLateCounts) {
         return crewAbsenceCounts + (crewLateCounts / 3);
     }
+
+    public int getPenaltyCounts() {
+        return penaltyCounts;
+    }
 }

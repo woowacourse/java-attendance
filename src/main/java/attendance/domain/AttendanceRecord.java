@@ -70,6 +70,14 @@ public class AttendanceRecord {
         return totalAbsenceCounts;
     }
 
+    public int checkAttendanceCounts() {
+        int totalAttendanceCounts = 0;
+        for (AttendanceTime attendanceTime : attendanceRecord) {
+            totalAttendanceCounts = calculateLateCounts(attendanceTime.isAttendance(), totalAttendanceCounts);
+        }
+        return totalAttendanceCounts;
+    }
+
     private static int calculateLateCounts(boolean attendanceTime, int totalLateCounts) {
         if (attendanceTime) {
             totalLateCounts += 1;

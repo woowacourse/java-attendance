@@ -1,6 +1,7 @@
 package attendance.controller;
 
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceTime;
 import attendance.exception.CustomException;
 import attendance.utils.AttendanceBookParser;
@@ -35,6 +36,9 @@ public class AttendanceController {
             if (commandOption.equals(CommandOption.ATTENDANCE_MODIFY)) {
                 modifyAttendance(attendanceBook, currentDateTime);
             }
+            if (commandOption.equals(CommandOption.ATTENDANCE_RECORD_CHECK)) {
+                checkAttendance(attendanceBook, currentDateTime);
+            }
             commandOption = inputView.readCommandOption(currentDateTime);
         }
     }
@@ -47,8 +51,8 @@ public class AttendanceController {
         });
     }
 
-    //TODO : now가 주말이면 출석확인 버튼 누르면 처리해줘야함 예외
 
+    //TODO : now가 주말이면 출석확인 버튼 누르면 처리해줘야함 예외
     private void registerAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime) {
         String inputCrewName = readCrewName();
         LocalDateTime attendanceTime = readAttendanceTime(currentDateTime);
@@ -64,6 +68,12 @@ public class AttendanceController {
         AttendanceTime beforeTime = attendanceBook.findBeforeAttendanceRecord(inputCrewName, inputModifyDayTime);
         AttendanceTime updateTime = attendanceBook.modifyAttendance(inputCrewName, inputModifyDayTime);
         outputView.writeAttendanceModify(beforeTime, updateTime);
+    }
+
+    private void checkAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime) {
+        String inputCrewName = readCrewName();
+        AttendanceRecord attendanceRecord = attendanceBook.findAttendanceRecord(inputCrewName);
+        outputView.writeAttendanceCheck(inputCrewName, attendanceRecord);
     }
 
     private String readModifyCrewName() {
