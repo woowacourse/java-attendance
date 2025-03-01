@@ -1,6 +1,7 @@
 package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.model.AttendanceDate;
@@ -170,5 +171,17 @@ class AttendanceRegisterTest {
 
         // when & then
         assertThatThrownBy(() -> attendanceRegister.findAttendanceRecordByCrewName("빙티"));
+    }
+
+    @Test
+    void 출석부에_새로운_크루를_추가한다() {
+        // given
+        AttendanceRegister attendanceRegister = new AttendanceRegister();
+
+        // when
+        attendanceRegister.addNewCrew("한스");
+
+        // then
+        assertThatCode(() -> attendanceRegister.findAttendanceRecordByCrewName("한스"));
     }
 }

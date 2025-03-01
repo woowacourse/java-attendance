@@ -66,4 +66,8 @@ public class AttendanceRegister {
     public Stream<Entry<String, AttendanceRecord>> entryStream() {
         return register.entrySet().stream();
     }
+
+    public void addNewCrew(String crewName) {
+
+    }
 }
