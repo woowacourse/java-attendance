@@ -62,7 +62,10 @@ public class AttendanceController {
         Crew crew = new Crew(nickname);
         crewRecords.validateCrew(crew);
         LocalDate date = LocalDate.of(2024, 12, Integer.parseInt(dateOfMonth));
+        AttendanceRecord oldRecord = crewRecords.getRecordOnDate(crew, date);
         crewRecords.editRecord(crew, date, LocalTime.parse(time));
+        AttendanceRecord newRecord = crewRecords.getRecordOnDate(crew, date);
+        outputView.printUpdateResult(oldRecord, newRecord, LocalTime.parse(time));
     }
 
     private void validateMenu(String input) {

@@ -20,4 +20,13 @@ public class OutputView {
         }
         System.out.print(dateFormatter.format(date) + " " + time + " (" + attendanceStatus + ")");
     }
+
+    public void printUpdateResult(AttendanceRecord oldRecord, AttendanceRecord newRecord, LocalTime newTime) {
+        LocalDate oldDate = oldRecord.getDate();
+        LocalTime oldTime = oldRecord.getTime();
+        String oldAttendanceStatus = oldRecord.getAttendanceStatus().getName();
+        String newAttendanceStatus = newRecord.getAttendanceStatus().getName();
+        System.out.print(dateFormatter.format(oldDate) + " " + oldTime + " (" + oldAttendanceStatus + ") -> ");
+        System.out.print(newTime + " (" + newAttendanceStatus + ") 수정 완료!");
+    }
 }
