@@ -54,7 +54,7 @@ public class Controller {
                 attend(nowDate);
             }
             if (option == Option.EDIT) {
-                edit();
+                edit(nowDate);
             }
             if (option == Option.CHECK_RECORDS) {
                 checkRecords();
@@ -81,13 +81,13 @@ public class Controller {
         }
     }
 
-    private void edit() {
+    private void edit(LocalDate nowDate) {
         try {
             String name = inputView.readEditName();
             LocalDate date = parseDate(inputView.readEditDayOfMonth());
             LocalTime time = LocalTime.parse(inputView.readEditTime(), TIME_FORMATTER);
             Attendance originAttendance = attendanceBook.findAttendance(name, date);
-            Attendance updatedAttendance = attendanceBook.editCrew(name, date, time);
+            Attendance updatedAttendance = attendanceBook.editCrew(name, nowDate, date, time);
             outputView.displayAttendanceEdit(date, originAttendance, updatedAttendance);
         } catch (DateTimeParseException e) {
             System.out.println("[ERROR] 시간 형식이 일치하지 않습니다.");

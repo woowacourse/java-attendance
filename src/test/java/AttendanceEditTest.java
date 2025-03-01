@@ -33,7 +33,7 @@ public class AttendanceEditTest {
         Attendance expectedUpdatedAttendance = new Attendance(date, editTime);
 
         assertThat(expectedInitalAttendance).isEqualTo(attendanceBook.findAttendance(name, date));
-        assertThat(expectedUpdatedAttendance).isEqualTo(attendanceBook.editCrew(name, date, editTime));
+        assertThat(expectedUpdatedAttendance).isEqualTo(attendanceBook.editCrew(name, date, date, editTime));
     }
 
     @DisplayName("등록되지 않은 닉네임을 입력한 경우 예외를 발생한다.")
@@ -43,8 +43,21 @@ public class AttendanceEditTest {
         LocalDate date = LocalDate.of(2024, 12, 13);
         LocalTime time = LocalTime.of(13, 0);
 
-        assertThatThrownBy(() -> attendanceBook.editCrew(name, date, time))
+        assertThatThrownBy(() -> attendanceBook.editCrew(name, date, date, time))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContainingAll("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
+
+    @DisplayName("미래 날짜를 수정하는 경우 예외를 발생한다.")
+    @Test
+    void should_ThrowException_When_DateIsInFuture() {
+        String name = "하루";
+        LocalDate nowDate = LocalDate.of(2024, 12, 13);
+        LocalDate date = LocalDate.of(2024, 12, 23);
+        LocalTime time = LocalTime.of(13, 0);
+
+        assertThatThrownBy(() -> attendanceBook.editCrew(name, nowDate, date, time))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContainingAll("[ERROR] 현재보다 이전 날짜만 수정 가능합니다.");
     }
 }

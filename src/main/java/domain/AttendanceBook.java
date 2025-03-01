@@ -25,7 +25,10 @@ public class AttendanceBook {
         return crew.addAttendance(date, time);
     }
 
-    public Attendance editCrew(String name, LocalDate date, LocalTime time) {
+    public Attendance editCrew(String name, LocalDate nowDate, LocalDate date, LocalTime time) {
+        if (date.isAfter(nowDate)) {
+            throw new IllegalArgumentException("[ERROR] 현재보다 이전 날짜만 수정 가능합니다.");
+        }
         return findCrewByName(name).updateAttendance(date, time);
     }
 
