@@ -17,15 +17,18 @@ public class AttendanceController {
 
     public static final String ATTENDANCE_FILE_PATH = "src/main/resources/";
     public static final String ATTENDANCE_FILE_NAME = "attendances.csv";
+    private final GeneralView generalView;
     private final AttendanceConfirmView attendanceConfirmView;
     private final AttendanceModifyView attendanceModifyView;
     private final CrewAttendanceCheckView crewAttendanceCheckView;
     private final CheckAllExpulsionCrewView checkAllExpulsionCrewView;
 
-    public AttendanceController(final AttendanceConfirmView attendanceConfirmView,
+    public AttendanceController(final GeneralView generalView,
+                                final AttendanceConfirmView attendanceConfirmView,
                                 final AttendanceModifyView attendanceModifyView,
                                 final CrewAttendanceCheckView crewAttendanceCheckView,
                                 final CheckAllExpulsionCrewView checkAllExpulsionCrewView) {
+        this.generalView = generalView;
         this.attendanceConfirmView = attendanceConfirmView;
         this.attendanceModifyView = attendanceModifyView;
         this.crewAttendanceCheckView = crewAttendanceCheckView;
@@ -34,6 +37,32 @@ public class AttendanceController {
 
     public void run() {
         AttendanceBook attendanceBook = initializeAttendanceBook();
+        while(true) {
+            try {
+                FeatureCommand featureCommand = generalView.readCommandWithToday(LocalDate.now());
+                branchByFeatureCommand(featureCommand, attendanceBook);
+            } catch (IllegalArgumentException exception) {
+                generalView.printExceptionMessage(exception.getMessage());
+            }
+        }
+    }
+
+    private void branchByFeatureCommand(FeatureCommand featureCommand, AttendanceBook attendanceBook) {
+        if (featureCommand.equals(FeatureCommand.ATTENDANCE_CONFIRMATION)) {
+            confirmAttendance(attendanceBook);
+        }
+        if (featureCommand.equals(FeatureCommand.ATTENDANCE_MODIFICATION)) {
+            modifyAttendance(attendanceBook);
+        }
+        if (featureCommand.equals(FeatureCommand.CREW_ATTENDANCE_CHECK)) {
+            checkCrewAttendance(attendanceBook);
+        }
+        if (featureCommand.equals(FeatureCommand.EXPULSION_CREW_CHECK)) {
+            checkAllExpulsionCrews(attendanceBook);
+        }
+        if (featureCommand.equals(FeatureCommand.QUIT)) {
+            System.exit(0);
+        }
     }
 
     private AttendanceBook initializeAttendanceBook() {
