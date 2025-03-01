@@ -32,6 +32,12 @@ public class Attendance implements Comparable<Attendance>{
         BusinessHours.find(attendanceDateTime);
     }
 
+    public void validateSameTime(final AttendanceTime attendanceTime) {
+        if (attendanceDateTime.getAttendanceTime().equals(attendanceTime)) {
+            throw new IllegalArgumentException("수정 전 시간과 동일한 시간으로 변경할 수 없습니다");
+        }
+    }
+
     public AttendanceDateTime getAttendanceDateTime() {
         return attendanceDateTime;
     }

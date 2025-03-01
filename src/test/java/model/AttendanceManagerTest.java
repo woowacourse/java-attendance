@@ -12,7 +12,7 @@ class AttendanceManagerTest {
 
     @Test
     @DisplayName("Nickname 객체로 AttendanceBook 찾는 메서드가 잘 작동하는 지 테스트")
-    void findByNicknameSuccess() {
+    void findCrewByNicknameSuccess() {
 
         // given
         final Crew crew1 = Crew.of("칼리");
@@ -30,7 +30,7 @@ class AttendanceManagerTest {
         final Nickname nicknameSrc = new Nickname("칼리");
 
         // when
-        final Crew findCrew = attendanceManager.findByNickname(nicknameSrc);
+        final Crew findCrew = attendanceManager.findCrewByNickname(nicknameSrc);
 
         // then
         Assertions.assertThat(crew1.getNickname()).isEqualTo(findCrew.getNickname());
@@ -38,7 +38,7 @@ class AttendanceManagerTest {
 
     @Test
     @DisplayName("존재하지 않는 Nickname 객체로 AttendanceBook 찾는 메서드가 예외 처리를 하는 지")
-    void findByNicknameFailure() {
+    void findCrewByNicknameFailure() {
 
         // given
         final Crew crew1 = Crew.of("칼리");
@@ -58,7 +58,7 @@ class AttendanceManagerTest {
         // when
         // then
         Assertions.assertThatThrownBy(
-                () -> attendanceManager.findByNickname(nicknameSrc)
+                () -> attendanceManager.findCrewByNickname(nicknameSrc)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -14,7 +14,7 @@ public class AttendanceManager {
         return attendanceBooks;
     }
 
-    public Crew findByNickname(final Nickname nickname) {
+    public Crew findCrewByNickname(final Nickname nickname) {
         return attendanceBooks.keySet().stream()
                 .filter(crew -> crew.getNickname().equals(nickname))
                 .findAny()
@@ -23,9 +23,13 @@ public class AttendanceManager {
 
     public void saveAttendance(final Crew crew, final Attendance attendance) {
         final AttendanceBook attendanceBook = attendanceBooks.get(crew);
-        if (attendanceBook.sameByDate(attendance)) {
+        if (attendanceBook.isSameByDate(attendance)) {
             throw new IllegalArgumentException("이미 출석 기록이 존재합니다. 수정 기능을 이용해주세요.");
         }
         attendanceBook.add(attendance);
+    }
+
+    public AttendanceBook findAttendanceBookByCrew(final Crew crew) {
+        return attendanceBooks.get(crew);
     }
 }

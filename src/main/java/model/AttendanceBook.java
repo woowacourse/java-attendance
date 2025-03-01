@@ -10,9 +10,16 @@ public class AttendanceBook {
         this.attendances = attendances;
     }
 
-    public boolean sameByDate(final Attendance attendance) {
+    public boolean isSameByDate(final Attendance attendance) {
         return attendances.stream()
                 .anyMatch(o -> o.getAttendanceDateTime().getDateTime().equals(attendance.getAttendanceDateTime().getDateTime()));
+    }
+
+    public Attendance findByDayOfMonth(final DayOfMonth dayOfMonth) {
+        return attendances.stream()
+                .filter(o -> o.getAttendanceDateTime().getDateTime().getDayOfMonth() == dayOfMonth.getValue())
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("날짜에 대한 출석 기록이 존재하지 않습니다."));
     }
 
     public void add(final Attendance attendance) {

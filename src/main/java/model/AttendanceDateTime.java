@@ -28,6 +28,10 @@ public class AttendanceDateTime {
         return new AttendanceDateTime(dateTime);
     }
 
+    public AttendanceTime getAttendanceTime() {
+        return AttendanceTime.of(dateTime.toLocalTime());
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
