@@ -55,21 +55,23 @@ public class Student {
             registerAsAbsentIfNoAttendance(date);
         }
     }
-
-    private void registerAsAbsentIfNoAttendance(LocalDate date) {
-        if (!attendanceTimeRecord.checkAttendanceRecordByLocalDate(date)) {
-            attendanceTimeRecord.putNullLocalTime(date);
-            attendanceStatusRecord.putAttendanceStateToAbsent(date);
-        }
-    }
-
     public void updateAttendanceCount() {
         attendanceStatusCount.updateAttendanceCount(attendanceStatusRecord);
     }
 
-    public long calculateAbsentCount() {
+    public long calculateTotalAbsentCount() {
         updateAttendanceCount();
         return attendanceStatusCount.getAbsentCount() + convertTardiesToAbsence();
+    }
+
+    public long calculateAbsentCount(){
+        updateAttendanceCount();
+        return attendanceStatusCount.getAbsentCount();
+    }
+
+    public long calculateLateCount(){
+        updateAttendanceCount();
+        return attendanceStatusCount.getLateCount();
     }
 
     private void validateDuplicateAttendance(LocalDate today) {
@@ -78,6 +80,20 @@ public class Student {
         }
     }
 
+    private void registerAsAbsentIfNoAttendance(LocalDate date) {
+        if (!attendanceTimeRecord.checkAttendanceRecordByLocalDate(date)) {
+            attendanceTimeRecord.putNullLocalTime(date);
+            attendanceStatusRecord.putAttendanceStateToAbsent(date);
+        }
+    }
+
+    public Map<LocalDate, LocalTime> getAttendanceTimeRecords(){
+        return attendanceTimeRecord.getAttendanceTimeRecords();
+    }
+
+    public Map<AttendanceStatus, Long> getAttendanceStatusCount(){
+        return attendanceStatusCount.getAttendanceStatusCount();
+    }
     public String getName() {
         return name;
     }
