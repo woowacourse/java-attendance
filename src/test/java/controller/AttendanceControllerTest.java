@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.InputView;
 
 class AttendanceControllerTest {
     private ByteArrayOutputStream outputStream;
@@ -33,7 +34,8 @@ class AttendanceControllerTest {
         System.setOut(new PrintStream(outputStream));
 
         AttendanceBook attendanceBook = createAttendanceBook();
-        attendanceController = new AttendanceController(attendanceBook);
+        InputView inputView = new InputView();
+        attendanceController = new AttendanceController(attendanceBook, inputView);
     }
 
     @AfterEach
@@ -122,7 +124,6 @@ class AttendanceControllerTest {
         );
     }
 
-    @Disabled
     @Test
     @DisplayName("4 입력 시 제적, 면담, 경고 대상자 출력")
     void showDangerCrewTest() {
