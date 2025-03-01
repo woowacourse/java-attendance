@@ -19,28 +19,28 @@ public class AttendanceRecordsGenerator {
             if (lateCount > 0) {
                 final int delayForLate = 6;
                 attendanceRecords.add(
-                        AttendanceRecord.of(
-                                crew, date,
+                        AttendanceRecord.of(crew, date,
                                 LectureTime.from(date).getStartTime().plusMinutes(delayForLate))
                 );
                 lateCount--;
-            } else if (absentCount > 0) {
+                continue;
+            }
+            if (absentCount > 0) {
                 final int delayForAbsent = 31;
                 attendanceRecords.add(
-                        AttendanceRecord.of(
-                                crew, date,
+                        AttendanceRecord.of(crew, date,
                                 LectureTime.from(date).getStartTime().plusMinutes(delayForAbsent))
                 );
                 absentCount--;
-            } else {
-                // 정상 출석
-                attendanceRecords.add(
-                        AttendanceRecord.of(
-                                crew, date,
-                                LectureTime.from(date).getStartTime())
-                );
+                continue;
             }
+
+            // 정상 출석
+            attendanceRecords.add(
+                    AttendanceRecord.of(crew, date, LectureTime.from(date).getStartTime())
+            );
         }
+
         if (lateCount > 0 || absentCount > 0) {
             throw new IllegalArgumentException("날짜 범위를 키우세요");
         }
