@@ -1,5 +1,7 @@
 package domain;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +24,10 @@ public class AttendanceBook {
 
     public void addInfo(Crew crew, AttendanceInfo info) {
         book.get(crew).addInfo(info);
+    }
+
+    public void addInfoWithDate(Crew crew, CampusDate date, CampusTime time) {
+        book.get(crew).addInfoByDateAndTime(date, time);
     }
 
     public Map<Crew, AttendanceInfos> getBook() {

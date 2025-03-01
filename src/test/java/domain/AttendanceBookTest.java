@@ -47,4 +47,20 @@ class AttendanceBookTest {
         assertThat(attendanceBook.getBook().get(crew).getAttendanceInfos().getFirst().getHour()).isEqualTo(10);
         assertThat(attendanceBook.getBook().get(crew).getAttendanceInfos().getFirst().getMinute()).isEqualTo(6);
     }
+
+    @Test
+    void 시간과_날짜_정보로_크루의_출석정보를_추가한다() {
+        // given
+        AttendanceBook attendanceBook = AttendanceBook.initBook();
+        Crew crew = Crew.fromName("제프리");
+        attendanceBook.addCrew(crew);
+
+        // when
+        CampusDate campusDate = CampusDate.fromDate(LocalDate.of(2025, 2, 27));
+        CampusTime campusTime = CampusTime.from("10:06");
+        attendanceBook.addInfoWithDate(crew, campusDate, campusTime);
+
+        // then
+        assertThat(attendanceBook.getBook().get(crew).getAttendanceInfos()).hasSize(1);
+    }
 }
