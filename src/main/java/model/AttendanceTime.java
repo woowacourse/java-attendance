@@ -36,6 +36,12 @@ public enum AttendanceTime {
                 localTime.isBefore(attendanceTime.educationStartTime.plusMinutes(absenceTime));
     }
 
+    public static boolean isAbsence(LocalDate localDate, LocalTime localTime, int absenceTime) {
+        AttendanceTime attendanceTime = find(localDate);
+
+        return localTime.isAfter(attendanceTime.educationStartTime.plusMinutes(absenceTime));
+    }
+
     private static AttendanceTime find(LocalDate localDate) {
         return Arrays.stream(AttendanceTime.values())
                 .filter(attendanceTime -> attendanceTime.dayOfWeek.equals(localDate.getDayOfWeek()))
