@@ -26,7 +26,7 @@ public class CrewAttendance {
     private Map<LocalDate, Attendance> generateCalendar(final LocalDate today) {
         return IntStream.rangeClosed(1, today.getDayOfMonth())
                 .mapToObj(today::withDayOfMonth)
-                .filter(Attendance::isAttendableDate)
+                .filter(AttendanceDate::isAttendDay)
                 .collect(Collectors.toMap(
                         date -> date,
                         Attendance::noShow
