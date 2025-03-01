@@ -42,7 +42,7 @@ public class AttendanceController {
             attend(today);
         }
         if (command == Command.MODIFY_ATTENDANCE) {
-            modifyAttendanceTime();
+            modifyAttendanceTime(today);
         }
         if (command == Command.READ_ATTENDANCE_LOG) {
             readAttendanceLogs(today);
@@ -70,7 +70,7 @@ public class AttendanceController {
         outputView.attendPage(attendanceTime);
     }
 
-    private void modifyAttendanceTime() {
+    private void modifyAttendanceTime(LocalDate today) {
         String crewName = inputView.readNicknameForModify();
         Crew crew = Crew.of(crewName);
         CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
@@ -78,6 +78,9 @@ public class AttendanceController {
         String rawDay = inputView.readModifyDay();
         int dayOfMonth = Integer.parseInt(rawDay);
         LocalDate date = LocalDate.of(2024, 12, dayOfMonth);
+        if (date.isAfter(today)) {
+            throw new IllegalArgumentException("미래의 날짜는 수정할 수 없습니다.");
+        }
 
         String rawTime = inputView.readModifyTime();
         LocalTime time = LocalTime.parse(rawTime, DateTimeFormatter.ISO_LOCAL_TIME);
