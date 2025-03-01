@@ -20,6 +20,11 @@ public class OperationTime {
         return !(isWeekend(targetDate) || isHoliday(targetDate));
     }
 
+    public static boolean isOperationDate(final int targetDay) {
+        LocalDate date = LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), targetDay);
+        return isOperationDate(date);
+    }
+
     private static boolean isWeekend(final LocalDate targetDate) {
         return targetDate.getDayOfWeek() == DayOfWeek.SUNDAY || targetDate.getDayOfWeek() == DayOfWeek.SATURDAY;
     }

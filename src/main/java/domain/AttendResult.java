@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 public class AttendResult {
 
@@ -57,6 +58,17 @@ public class AttendResult {
                 .findAny()
                 .orElse(new Attend(date));
     }
+
+    public Attend findAttendByDay(int day) {
+        LocalDate date = LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), day);
+        return findAttendByDay(date);
+    }
+
+    public List<Attend> getAttendResult(final int targetDay) {
+        return IntStream.range(1, targetDay)
+                .filter(OperationTime::isOperationDate)
+                .mapToObj(this::findAttendByDay)
+                .toList();
     }
 
     @Override

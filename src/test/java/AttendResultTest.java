@@ -119,4 +119,36 @@ public class AttendResultTest {
         );
     }
 
+    @Test
+    @DisplayName("대상 날짜 직전까지의 출석 결과를 반환한다")
+    void getAttendsUntilDay() {
+        //given
+        List<Attend> attend = createAttends();
+        AttendResult attendResult = new AttendResult(attend);
+        int targetDay = 5;
+
+        //when
+        List<Attend> actual = attendResult.getAttendResult(targetDay);
+
+        //then
+        List<Attend> expected = createAttends();
+        assertThat(actual).containsExactlyElementsOf(expected);
+    }
+    
+    @Test
+    @DisplayName("대상 날짜 직전까지의 출석 결과를 누락된 날짜의 출석도 포함하여 반환한다")
+    void getAttendsUntilDayContainAbsence() {
+        //given
+        List<Attend> attend = createAttends();
+        AttendResult attendResult = new AttendResult(attend);
+        int targetDay = 6;
+
+        //when
+        List<Attend> actual = attendResult.getAttendResult(targetDay);
+
+        //then
+        List<Attend> expected = createAttends();
+        expected.add(new Attend(LocalDate.of(2024, 12, 5)));
+        assertThat(actual).containsExactlyElementsOf(expected);
+    }
 }
