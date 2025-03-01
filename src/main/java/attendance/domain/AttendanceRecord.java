@@ -46,12 +46,23 @@ public class AttendanceRecord {
         }
     }
 
-    public LocalDateTime findAttendanceRecord(LocalDateTime inputTime) {
+    public AttendanceTime findAttendanceRecord(LocalDateTime inputTime) {
         return attendanceRecord.stream()
                 .filter(attendanceTime -> attendanceTime.isSameDateTime(inputTime))
-                .map(AttendanceTime::getAttendanceTime)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("출석 기록이 없습니다."));
+    }
+
+    public AttendanceRecord modifyAttendanceTime(LocalDateTime inputTime) {
+        List<AttendanceTime> newRecords = new ArrayList<>();
+        for (AttendanceTime attendanceTime : attendanceRecord) {
+            if (attendanceTime.isSameDateTime(inputTime)) {
+                newRecords.add(attendanceTime.modifyAttendanceTime(inputTime));
+                continue;
+            }
+            newRecords.add(attendanceTime);
+        }
+        return new AttendanceRecord(newRecords);
     }
 
     public List<AttendanceTime> getAttendanceRecord() {

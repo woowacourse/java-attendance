@@ -6,9 +6,9 @@ public class AttendanceTime {
     private final LocalDateTime attendanceTime;
     private final AttendanceStatus attendanceStatus;
 
-    public AttendanceTime(final LocalDateTime attendanceTime) {
-        this.attendanceTime = attendanceTime;
-        this.attendanceStatus = AttendanceStatus.fetchUserAttendanceStatus(attendanceTime);
+    public AttendanceTime(LocalDateTime inputTime) {
+        this.attendanceTime = inputTime;
+        this.attendanceStatus = AttendanceStatus.fetchUserAttendanceStatus(inputTime);
     }
 
     public boolean isSameDateTime(final LocalDateTime inputTime) {
@@ -27,4 +27,7 @@ public class AttendanceTime {
         return attendanceTime;
     }
 
+    public AttendanceTime modifyAttendanceTime(LocalDateTime inputTime) {
+        return new AttendanceTime(inputTime);
+    }
 }

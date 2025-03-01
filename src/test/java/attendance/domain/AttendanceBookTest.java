@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.time.LocalDateTime;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -116,23 +117,30 @@ public class AttendanceBookTest {
                 .getAttendanceTime().getDayOfMonth()).isEqualTo(24);
     }
 
-    //출석부가 출석 기록에게 수정해달라고 요청함 -> 현재 값
-    //출석 기록이 출석 시간에게 이 시간으로 바꿔달라고 요청함
-    //출석 시간이 반환 했다고 true 반환 ->
-    //출석 기록이 true받으면 출석부에게 반환된 시간을 전달함
-    //출석부는 새로운 시간을 보내줘야함
-    @Test
-    void 출석_수정_요청() {
+    @DisplayName("수정된 출석 기록이 이전 값과 다른지 검사")
+    @ParameterizedTest()
+    @CsvSource(value = {
+            "2025, 2, 21, 9, 59, ATTENDANCE", "2025, 2, 21, 10, 6, LATE", "2025, 2, 21, 10, 31, ABSENCE",
+            "2025, 2, 24, 12, 59, ATTENDANCE", "2025, 2,24, 13, 6, LATE", "2025, 2, 24, 13, 31, ABSENCE",
+            "2025, 2, 25, 9, 59, ATTENDANCE", "2025, 2, 25, 10, 6, LATE", "2025, 2, 25, 10, 31, ABSENCE",
+            "2025, 2, 26, 9, 59, ATTENDANCE", "2025, 2, 26, 10, 6, LATE", "2025, 2, 26, 10, 31, ABSENCE",
+            "2025, 2, 27, 9, 59, ATTENDANCE", "2025, 2, 27, 10, 6, LATE", "2025, 2, 27, 10, 31, ABSENCE"
+    })
+    void 출석_수정_정상_동작(int year, int month, int day, int hour, int minute, AttendanceStatus attendanceStatus) {
+        //given
         String crewName = "우가";
         Crew crew = new Crew(crewName);
         Crews crews = new Crews(Set.of(crew));
-
         LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 28, 9, 59);
-        LocalDateTime modifyDateTime = currentDateTime.withDayOfMonth(24).withHour(12).withMinute(59);
-
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
 
-        Assertions.assertThat(attendanceBook.modifyAttendance(crewName, modifyDateTime)
-                .getAttendanceTime().getLocalDateTime()).isEqualTo(modifyDateTime);
+        //when
+        LocalDateTime modifyTime = LocalDateTime.of(year, month, day, hour, minute);
+        AttendanceTime modifiedAttendanceTime = attendanceBook.modifyAttendance(crewName, modifyTime);
+
+        //then
+        Assertions.assertThat(modifiedAttendanceTime.getAttendanceStatus()).isEqualTo(attendanceStatus);
+        Assertions.assertThat(modifiedAttendanceTime.getAttendanceTime()).isEqualTo(modifyTime);
     }
+
 }

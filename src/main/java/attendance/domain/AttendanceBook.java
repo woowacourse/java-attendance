@@ -46,9 +46,17 @@ public class AttendanceBook {
     public AttendanceTime findBeforeAttendanceRecord(String inputCrewName, LocalDateTime inputTime) {
         Crew crew = findRegisteredCrew(inputCrewName);
         AttendanceRecord attendanceRecord = attendanceBook.get(crew);
-        LocalDateTime beforeAttendanceTime = attendanceRecord.findAttendanceRecord(inputTime);
-        return new AttendanceTime(beforeAttendanceTime);
+        return attendanceRecord.findAttendanceRecord(inputTime);
     }
+
+    public AttendanceTime modifyAttendance(String inputCrewName, LocalDateTime inputTime) {
+        Crew crew = findRegisteredCrew(inputCrewName);
+        AttendanceRecord attendanceRecord = attendanceBook.get(crew);
+        AttendanceRecord updatedAttendanceRecord = attendanceRecord.modifyAttendanceTime(inputTime);
+        attendanceBook.put(crew, updatedAttendanceRecord);
+        return updatedAttendanceRecord.findAttendanceRecord(inputTime);
+    }
+
 
     private Crew findRegisteredCrew(String inputCrewName) {
         return attendanceBook.keySet()

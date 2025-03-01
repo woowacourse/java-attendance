@@ -30,23 +30,22 @@ public enum AttendanceStatus {
     }
 
     private static AttendanceStatus findOtherDayAttendanceStatus(int hour, int minute) {
-        if (hour > GENERAL_HOUR_LIMIT || (hour == GENERAL_HOUR_LIMIT && minute > ABSENCE_LIMIT)) {
+        return getAttendanceStatus(hour, minute, GENERAL_HOUR_LIMIT);
+    }
+
+    private static AttendanceStatus getAttendanceStatus(int hour, int minute, int generalHourLimit) {
+        if (hour > generalHourLimit || (hour == generalHourLimit && minute > ABSENCE_LIMIT)
+                || hour == 0 && minute == 0) {
             return ABSENCE;
         }
-        if (hour == GENERAL_HOUR_LIMIT && minute > LATE_LIMIT) {
+        if (hour == generalHourLimit && minute > LATE_LIMIT) {
             return LATE;
         }
         return ATTENDANCE;
     }
 
     private static AttendanceStatus findMondayAttendanceStatus(int hour, int minute) {
-        if (hour > MONDAY_HOUR_LIMIT || (hour == MONDAY_HOUR_LIMIT && minute > ABSENCE_LIMIT)) {
-            return ABSENCE;
-        }
-        if (hour == MONDAY_HOUR_LIMIT && minute > LATE_LIMIT) {
-            return LATE;
-        }
-        return ATTENDANCE;
+        return getAttendanceStatus(hour, minute, MONDAY_HOUR_LIMIT);
     }
 
 }
