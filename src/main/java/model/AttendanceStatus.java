@@ -28,4 +28,8 @@ public enum AttendanceStatus {
         }
         return ATTENDANCE;
     }
+
+    public String getDisplayName() {
+        return displayName;
+    }
 }

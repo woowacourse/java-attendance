@@ -1,9 +1,6 @@
 package model;
 
-import java.time.DateTimeException;
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -24,6 +21,11 @@ public class AttendanceDateTime {
         } catch (DateTimeException e) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public static AttendanceDateTime of(final LocalDate date, final AttendanceTime attendanceTime) {
+        final LocalDateTime dateTime = LocalDateTime.of(date, attendanceTime.getTime());
+        return new AttendanceDateTime(dateTime);
     }
 
     public LocalDateTime getDateTime() {

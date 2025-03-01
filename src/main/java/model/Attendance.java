@@ -17,6 +17,21 @@ public class Attendance implements Comparable<Attendance>{
         return new Attendance(attendanceDateTime, attendanceStatus);
     }
 
+    public static void validatePossibleDate(final AttendanceDateTime attendanceDateTime) {
+        validateHoliday(attendanceDateTime);
+        validateWeekend(attendanceDateTime);
+    }
+
+    private static void validateHoliday(final AttendanceDateTime attendanceDateTime) {
+        if (HolidayManager.isHoliday(attendanceDateTime)) {
+            throw new IllegalArgumentException("공휴일에는 출석할 수 없습니다.");
+        }
+    }
+
+    private static void validateWeekend(final AttendanceDateTime attendanceDateTime) {
+        BusinessHours.find(attendanceDateTime);
+    }
+
     public AttendanceDateTime getAttendanceDateTime() {
         return attendanceDateTime;
     }

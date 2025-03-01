@@ -9,7 +9,7 @@ public class InputView {
     private static final Scanner sc = new Scanner(System.in);
 
     public static String readCommand(final DateInfoDto dto) {
-        System.out.println(String.format("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.", dto.month(), dto.dayOfMonth(), dto.dayOfWeekName()));
+        System.out.println(String.format("오늘은 %s입니다. 기능을 선택해 주세요.", dto.getFormattedDate()));
         readCommandIntro();
         return sc.nextLine();
     }

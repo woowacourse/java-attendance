@@ -20,4 +20,12 @@ public class AttendanceManager {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 닉네임입니다."));
     }
+
+    public void saveAttendance(final Crew crew, final Attendance attendance) {
+        final AttendanceBook attendanceBook = attendanceBooks.get(crew);
+        if (attendanceBook.sameByDate(attendance)) {
+            throw new IllegalArgumentException("이미 출석 기록이 존재합니다. 수정 기능을 이용해주세요.");
+        }
+        attendanceBook.add(attendance);
+    }
 }
