@@ -34,6 +34,12 @@ public class AttendController {
     }
 
     private void addAttend() {
+        String name = inputView.inputName();
+        LocalTime time = inputView.inputAttendTime();
+        Attend attend = new Attend(Current.TODAY.getDate(), time);
+        attendanceBook.addAttend(name, attend);
+        AttendStatus attendStatus = attend.checkStatus();
+        outputView.printAttendResult(attend, attendStatus);
     }
 
     private void edit() {
