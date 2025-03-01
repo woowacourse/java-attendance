@@ -97,21 +97,11 @@ public class OutputView {
             Map<String, Map<AttendanceState, Long>> attendanceStatus,
             Map<String, ExpellState> expellStates) {
 
-        return (nickname1, nickname2) -> {
-            int stateComparison = expellStates.get(nickname1).compareTo(expellStates.get(nickname2));
-            if (stateComparison != 0) {
-                return stateComparison;
-            }
-
-            long totalAbsent1 = calculateTotalAbsences(attendanceStatus.get(nickname1));
-            long totalAbsent2 = calculateTotalAbsences(attendanceStatus.get(nickname2));
-
-            if (totalAbsent1 != totalAbsent2) {
-                return Long.compare(totalAbsent2, totalAbsent1);
-            }
-
-            return nickname1.compareTo(nickname2);
-        };
+        return Comparator
+                .comparing((String nickname) -> expellStates.get(nickname))
+                .thenComparing((String nickname) -> calculateTotalAbsences(attendanceStatus.get(nickname)),
+                        Comparator.reverseOrder())
+                .thenComparing(Comparator.naturalOrder());
     }
 
     private long calculateTotalAbsences(Map<AttendanceState, Long> attendance) {
