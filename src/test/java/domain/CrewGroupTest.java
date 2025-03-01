@@ -38,7 +38,6 @@ public class CrewGroupTest {
 
         //then
         assertThatIllegalArgumentException().isThrownBy(() -> crewGroup.findByName(name));
-
-
     }
+
 }
