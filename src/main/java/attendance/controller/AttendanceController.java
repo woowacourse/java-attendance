@@ -151,7 +151,6 @@ public class AttendanceController {
 
         AttendanceTime attendance = attendanceBook.getAttendance(crewName,
                 LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), modifyDate));
-
         outputView.printAttendance(attendance);
 
         attendance.modify(modifyTime.getHour(), modifyTime.getMinute());
@@ -186,30 +185,33 @@ public class AttendanceController {
     private void getCrewAttendances(final AttendanceBook attendanceBook) {
 
         final String crewName = inputCrewName(attendanceBook);
-        List<AttendanceTime> attendances = attendanceBook.getAttendancesByName(crewName)
-                .stream()
+        List<AttendanceTime> attendances = attendanceBook.getAttendancesByName(crewName).stream()
                 .sorted(Comparator.comparing(AttendanceTime::getDate))
                 .toList();
 
-        int attend = attendanceBook.getAttendanceStatusCount(crewName, AttendanceStatus.ATTEND);
-        int late = attendanceBook.getAttendanceStatusCount(crewName, AttendanceStatus.LATE);
-        int absent = attendanceBook.getAttendanceStatusCount(crewName, AttendanceStatus.ABSENT);
-
-        EnumMap<AttendanceStatus, Integer> attendanceStatusMap = getAttendanceStatusMap(
-                attend, late, absent);
-        AcademicStatus academicStatus = AcademicStatus.getAcademicStatus(late, absent);
+        AttendanceCounts attendanceCounts = getAttendanceCounts(crewName, attendanceBook);
+        EnumMap<AttendanceStatus, Integer> attendanceStatusMap = getAttendanceStatusMap(attendanceCounts);
+        AcademicStatus academicStatus = AcademicStatus.getAcademicStatus(attendanceCounts.late,
+                attendanceCounts.absent);
 
         outputView.printCrewAttendances(
                 new CrewAttendanceDTO(crewName, attendances, attendanceStatusMap, academicStatus));
     }
 
-    private EnumMap<AttendanceStatus, Integer> getAttendanceStatusMap(final int attend, final int late,
-                                                                      final int absent) {
+    private AttendanceCounts getAttendanceCounts(final String crewName, final AttendanceBook attendanceBook) {
+
+        int attend = attendanceBook.getAttendanceStatusCount(crewName, AttendanceStatus.ATTEND);
+        int late = attendanceBook.getAttendanceStatusCount(crewName, AttendanceStatus.LATE);
+        int absent = attendanceBook.getAttendanceStatusCount(crewName, AttendanceStatus.ABSENT);
+        return new AttendanceCounts(attend, late, absent);
+    }
+
+    private EnumMap<AttendanceStatus, Integer> getAttendanceStatusMap(final AttendanceCounts attendanceCounts) {
 
         EnumMap<AttendanceStatus, Integer> attendanceStatusMap = new EnumMap<>(AttendanceStatus.class);
-        attendanceStatusMap.put(AttendanceStatus.ATTEND, attend);
-        attendanceStatusMap.put(AttendanceStatus.LATE, late);
-        attendanceStatusMap.put(AttendanceStatus.ABSENT, absent);
+        attendanceStatusMap.put(AttendanceStatus.ATTEND, attendanceCounts.attend);
+        attendanceStatusMap.put(AttendanceStatus.LATE, attendanceCounts.late);
+        attendanceStatusMap.put(AttendanceStatus.ABSENT, attendanceCounts.absent);
         return attendanceStatusMap;
     }
 
@@ -227,5 +229,8 @@ public class AttendanceController {
             outputView.printErrorMessage(e.getMessage());
             return retryInput(supplier);
         }
+    }
+
+    private record AttendanceCounts(int attend, int late, int absent) {
     }
 }
