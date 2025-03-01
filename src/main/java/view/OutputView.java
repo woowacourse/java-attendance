@@ -6,6 +6,7 @@ import domain.attendance.comparator.AttendanceTimesComparator;
 import domain.crew.CrewAttendance;
 import domain.crew.DisciplinaryStatus;
 import domain.crew.comparator.CrewAttendanceComparator;
+import domain.holiday.Holiday;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -42,12 +43,39 @@ public class OutputView {
         );
     }
 
-    public void attendanceLogPage(List<AttendanceTime> logs) {
-        List<AttendanceTime> sortedLogs = logs.stream().sorted().toList();
+    public void attendanceLogPage(List<AttendanceTime> logs, LocalDate today) {
+        for (int i = 1; i <= today.getDayOfMonth(); i++) {
+            LocalDate date = today.withDayOfMonth(i);
 
-        for (AttendanceTime attendanceTime : sortedLogs) {
+            if (Holiday.isWeekendOrHoliday(date)) {
+                continue;
+            }
+            AttendanceTime attendanceTime = findAttendanceTimeForDate(logs, date);
             System.out.println(buildSingleLog(attendanceTime));
         }
+    }
+
+    private AttendanceTime findAttendanceTimeForDate(List<AttendanceTime> logs, LocalDate date) {
+        return logs.stream()
+                .filter(attendanceTime -> attendanceTime.isSameDate(date))
+                .findFirst()
+                .orElse(AttendanceTime.of(date, null));
+    }
+
+    private String buildSingleLog(AttendanceTime attendanceTime) {
+        LocalDate date = attendanceTime.toLocalDate();
+        String formattedDate = CustomDateTimeFormatter.dateToString(date);
+        String formattedDayOfWeek = CustomDateTimeFormatter.dateToDayOfWeek(date);
+
+        String formattedTime = "--:--";
+        String formattedStatus = "결석";
+
+        if (attendanceTime.toLocalTime() != null) {
+            formattedTime = CustomDateTimeFormatter.timeToString(attendanceTime.toLocalTime());
+            formattedStatus = getAttendanceStatusName(attendanceTime.toAttendanceStatus());
+        }
+
+        return String.format("%s %s %s (%s)", formattedDate, formattedDayOfWeek, formattedTime, formattedStatus);
     }
 
     public void disciplinaryCrewsPage(List<CrewAttendance> crews, LocalDate today) {
@@ -66,23 +94,6 @@ public class OutputView {
                     lateCount,
                     statusName);
         }
-    }
-
-    private String buildSingleLog(AttendanceTime attendanceTime) {
-        LocalDate date = attendanceTime.toLocalDate();
-        LocalTime time = attendanceTime.toLocalTime();
-        AttendanceStatus attendanceStatus = attendanceTime.toAttendanceStatus();
-
-        String formattedDate = CustomDateTimeFormatter.dateToString(date);
-        String formattedDayOfWeek = CustomDateTimeFormatter.dateToDayOfWeek(date);
-        String formattedTime = CustomDateTimeFormatter.timeToString(time);
-        String formattedStatus = getAttendanceStatusName(attendanceStatus);
-
-        return String.format("%s %s %s (%ss)",
-                formattedDate,
-                formattedDayOfWeek,
-                formattedTime,
-                formattedStatus);
     }
 
     private String getAttendanceStatusName(AttendanceStatus status) {
