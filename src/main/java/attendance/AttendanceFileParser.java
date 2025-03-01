@@ -24,12 +24,12 @@ public class AttendanceFileParser {
         while((line = bufferedReader.readLine()) != null) {
             String[] split = line.split(SPLIT_DELIMITER);
             Nickname crewNickname = new Nickname(split[INDEX_AS_CREW_NICKNAME]);
-            Nickname addedCrewNickname = attendanceManager.addCrew(crewNickname);
+            attendanceManager.addCrew(crewNickname);
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
             String attendanceDateTime = split[INDEX_AS_ATTENDANCE_DATE_TIME];
             LocalDate attendanceDate = LocalDate.parse(attendanceDateTime, dateTimeFormatter);
             LocalTime attendanceTime = LocalTime.parse(attendanceDateTime, dateTimeFormatter);
-            attendanceManager.addAttendance(addedCrewNickname, attendanceDate, attendanceTime);
+            attendanceManager.addAttendance(crewNickname, attendanceDate, attendanceTime);
         }
     }
 }

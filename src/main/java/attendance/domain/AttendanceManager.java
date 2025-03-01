@@ -15,12 +15,8 @@ import java.util.Optional;
 public class AttendanceManager {
     private final Map<Nickname, AttendanceHistory> attendanceBook = new HashMap<>();
 
-    public Nickname addCrew(final Nickname crewNickname) {
-        boolean isCrewExists = attendanceBook.containsKey(crewNickname);
-        if (!isCrewExists) {
-            attendanceBook.put(crewNickname, new AttendanceHistory());
-        }
-        return crewNickname;
+    public void addCrew(final Nickname crewNickname) {
+        attendanceBook.putIfAbsent(crewNickname, new AttendanceHistory());
     }
 
     public Attendance addAttendance(final Nickname crewNickname,
@@ -42,10 +38,9 @@ public class AttendanceManager {
     }
 
     public void validateDuplicatedAttendance(final Nickname crewNickname, final LocalDate attendanceDate) {
-        Optional<Attendance> attendance = findAttendance(crewNickname, attendanceDate);
-        if (attendance.isPresent()) {
+        findAttendance(crewNickname, attendanceDate).ifPresent(attendance -> {
             throw new IllegalArgumentException(DUPLICATED_ATTENDANCE.getMessage());
-        }
+        });
     }
 
     public Optional<Attendance> findAttendance(final Nickname crewNickname, final LocalDate attendanceDate) {
