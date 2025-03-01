@@ -1,5 +1,6 @@
 package model;
 
+import static constant.ErrorMessage.ALREADY_CHECK_IN;
 import static constant.ErrorMessage.CANNOT_CHECK_IN_ON_HOLIDAY;
 import static constant.ErrorMessage.NOT_FOUND_CREW;
 import static constant.ErrorMessage.OUT_OF_OPERATION_HOURS;
@@ -234,5 +235,19 @@ class AttendancesTest {
         assertThatThrownBy(() -> attendances.add(request, dateTimeGenerator))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OUT_OF_OPERATION_HOURS.getMessage());
+    }
+
+    @Test
+    @DisplayName("이미 체크인 한 경우 다시 체크인하면 예외가 발생한다.")
+    void test12() {
+        String nickname = "미소";
+        String checkInTime = "10:00";
+        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
+        attendances.add(request, dateTimeGenerator);
+
+        // when & then
+        assertThatThrownBy(() -> attendances.add(request, dateTimeGenerator))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ALREADY_CHECK_IN.getMessage());
     }
 }
