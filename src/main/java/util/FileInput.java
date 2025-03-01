@@ -20,6 +20,7 @@ public class FileInput {
     private static final int NAME_INDEX = 0;
     private static final int ATTENDANCE_DATE_TIME_INDEX = 1;
     private static final DateTimeFormatter ATTENDANCE_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final String ERROR_INVALID_FILE_FORMAT = "[ERROR] 학생 출석 정보 형식과 맞지 않습니다. 파일을 다시 확인해 주세요.";
 
     private FileInput() {}
 
@@ -29,7 +30,7 @@ public class FileInput {
         try{
             for (String studentInformation : fileInformation) {
                 if (!studentInformation.matches(FILE_INFORMATION_REGEX)) {
-                    throw new IllegalArgumentException("[ERROR] 학생 출석 정보 형식과 맞지 않습니다. 파일을 다시 확인해 주세요.");
+                    throw new IllegalArgumentException(ERROR_INVALID_FILE_FORMAT);
                 }
 
                 String[] studentNameAndAttendanceDateTimeInformation = studentInformation.split(",");
