@@ -2,7 +2,9 @@ package view;
 
 import domain.AttendanceStatus;
 import domain.AttendanceTime;
+import domain.AttendanceTimesComparator;
 import domain.CrewAttendance;
+import domain.CrewAttendanceComparator;
 import domain.DisciplinaryStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -49,7 +51,10 @@ public class OutputView {
     }
 
     public void disciplinaryCrewsPage(List<CrewAttendance> crews, LocalDate today) {
-        List<CrewAttendance> sortedCrews = crews.stream().sorted().toList();
+        List<CrewAttendance> sortedCrews = crews.stream()
+                .sorted(
+                        new CrewAttendanceComparator(new AttendanceTimesComparator(today)).reversed()
+                ).toList();
         for (CrewAttendance crewAttendance : sortedCrews) {
             String nickname = crewAttendance.getCrewNickname();
             int absenceCount = crewAttendance.getAbsenceBeforeDate(today);
