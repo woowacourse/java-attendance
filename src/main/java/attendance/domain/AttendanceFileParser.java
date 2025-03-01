@@ -11,7 +11,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.nio.file.Files.lines;
+import java.nio.file.Files;
 
 public class AttendanceFileParser implements AttendanceReader{
 
@@ -26,7 +26,7 @@ public class AttendanceFileParser implements AttendanceReader{
     }
 
     public List<AttendanceFileDto> read() {
-        try (Stream<String> lines = lines(Path.of(path))) {
+        try (Stream<String> lines = Files.lines(Path.of(path))) {
             return lines.skip(1)
                 .map(this::parseToAttendanceFileDto)
                 .toList();
