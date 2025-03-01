@@ -42,11 +42,7 @@ public class AttendResult {
 
     public Attend edit(final Attend targetAttend) {
         Attend before = findAttendByDay(targetAttend.getDate());
-        if (before != null) {
-            attendResult.remove(before);
-            attendResult.add(targetAttend);
-            return before;
-        }
+        attendResult.remove(before);
         attendResult.add(targetAttend);
         return new Attend(targetAttend.getDate());
     }
@@ -55,11 +51,12 @@ public class AttendResult {
         return attendResult;
     }
 
-    public Attend findAttendByDay(LocalDate date) {
+    private Attend findAttendByDay(LocalDate date) {
         return attendResult.stream()
                 .filter(attend -> attend.getDate().equals(date))
                 .findAny()
-                .orElse(null);
+                .orElse(new Attend(date));
+    }
     }
 
     @Override
