@@ -24,7 +24,7 @@ public class Attendance {
         List<String> checkInDateTime = InputParser.split(rawCheckInDateTime, BLANK_SEPARATOR);
         LocalDate checkInDate = LocalDate.parse(checkInDateTime.get(0));
         LocalTime checkInTime = LocalTime.parse(checkInDateTime.get(1));
-        AttendanceType attendanceType = AttendanceType.calculate(checkInDate, checkInTime);
+        AttendanceType attendanceType = AttendanceType.find(checkInDate, checkInTime);
 
         return new Attendance(checkInDate, checkInTime, attendanceType);
     }
@@ -32,7 +32,7 @@ public class Attendance {
     public static Attendance of(DateTimeGenerator dateTimeGenerator, String rawCheckInTime) {
         LocalDate checkInDate = dateTimeGenerator.now().toLocalDate();
         LocalTime checkInTime = LocalTime.parse(rawCheckInTime);
-        AttendanceType attendanceType = AttendanceType.calculate(checkInDate, checkInTime);
+        AttendanceType attendanceType = AttendanceType.find(checkInDate, checkInTime);
 
         return new Attendance(checkInDate, checkInTime, attendanceType);
     }
@@ -43,7 +43,7 @@ public class Attendance {
 
     public void update(LocalTime updateTime) {
         this.checkInTime = updateTime;
-        this.attendanceType = AttendanceType.calculate(checkInDate, updateTime);
+        this.attendanceType = AttendanceType.find(checkInDate, updateTime);
     }
 
     public LocalDate getCheckInDate() {

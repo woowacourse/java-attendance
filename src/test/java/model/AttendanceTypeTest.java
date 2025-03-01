@@ -19,7 +19,7 @@ class AttendanceTypeTest {
         LocalTime localTime = LocalTime.of(9, 30);
 
         // when
-        AttendanceType result = AttendanceType.calculate(localDate, localTime);
+        AttendanceType result = AttendanceType.find(localDate, localTime);
 
         // then
         assertThat(result).isEqualTo(AttendanceType.SUCCESS);
@@ -33,7 +33,7 @@ class AttendanceTypeTest {
         LocalTime localTime = LocalTime.of(10, 6);
 
         // when
-        AttendanceType result = AttendanceType.calculate(localDate, localTime);
+        AttendanceType result = AttendanceType.find(localDate, localTime);
 
         // then
         assertThat(result).isEqualTo(AttendanceType.BE_LATE);
@@ -47,7 +47,7 @@ class AttendanceTypeTest {
         LocalTime localTime = LocalTime.of(10, 31);
 
         // when
-        AttendanceType result = AttendanceType.calculate(localDate, localTime);
+        AttendanceType result = AttendanceType.find(localDate, localTime);
 
         // then
         assertThat(result).isEqualTo(AttendanceType.ABSENCE);
@@ -61,7 +61,7 @@ class AttendanceTypeTest {
         LocalTime localTime = LocalTime.of(12, 30);
 
         // when
-        AttendanceType result = AttendanceType.calculate(localDate, localTime);
+        AttendanceType result = AttendanceType.find(localDate, localTime);
 
         // then
         assertThat(result).isEqualTo(AttendanceType.SUCCESS);
@@ -75,7 +75,7 @@ class AttendanceTypeTest {
         LocalTime localTime = LocalTime.of(13, 6);
 
         // when
-        AttendanceType result = AttendanceType.calculate(localDate, localTime);
+        AttendanceType result = AttendanceType.find(localDate, localTime);
 
         // then
         assertThat(result).isEqualTo(AttendanceType.BE_LATE);
@@ -89,7 +89,7 @@ class AttendanceTypeTest {
         LocalTime localTime = LocalTime.of(13, 31);
 
         // when
-        AttendanceType result = AttendanceType.calculate(localDate, localTime);
+        AttendanceType result = AttendanceType.find(localDate, localTime);
 
         // then
         assertThat(result).isEqualTo(AttendanceType.ABSENCE);
@@ -104,7 +104,7 @@ class AttendanceTypeTest {
         LocalTime localTime = LocalTime.of(10, 0);
 
         // when & then
-        assertThatThrownBy(() -> AttendanceType.calculate(localDate, localTime))
+        assertThatThrownBy(() -> AttendanceType.find(localDate, localTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(CANNOT_CHECK_IN_ON_WEEKEND.getMessage());
     }
