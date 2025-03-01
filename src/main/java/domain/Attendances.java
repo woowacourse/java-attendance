@@ -1,10 +1,10 @@
 package domain;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Attendances {
 
@@ -25,21 +25,24 @@ public class Attendances {
         }
     }
 
-    public Optional<Attendance> findByCrewAndDate(Crew crew, LocalDate day) {
-        return attendances.stream().filter(attendance -> attendance.compareByCrewAndTime(crew, day)).findFirst();
+    public Attendance findByCrewAndDate(Crew crew, LocalDate day) {
+        validateHoliday(day);
+        return attendances.stream().filter(attendance -> attendance.compareByCrewAndTime(crew, day)).findAny()
+                .orElse(Attendance.createAbsence(crew, day));
+    }
+
+    private void validateHoliday(LocalDate day) {
+        if (Holiday.isHoliday(day)) {
+            throw new IllegalArgumentException("주말과 공휴일에는 출석할 수 없습니다.");
+        }
     }
 
     public Attendances createMonthlyAttendances(Crew crew, LocalDate today) {
-        List<Attendance> monthlyAttendances = new ArrayList<>();
-        for (int i = 1; i <= today.getDayOfMonth(); i++) {
-            if (Holiday.isHoliday(today.withDayOfMonth(i))) {
-                continue;
-            }
-            LocalDate day = LocalDate.of(today.getYear(), today.getMonthValue(), i);
-            Attendance attendance = findByCrewAndDate(crew, day)
-                    .orElse(Attendance.createAbsence(crew, day));
-            monthlyAttendances.add(attendance);
-        }
+        List<Attendance> monthlyAttendances = IntStream.rangeClosed(1, today.getDayOfMonth())
+                .filter(i -> !Holiday.isHoliday(LocalDate.of(today.getYear(), today.getMonthValue(), i)))
+                .mapToObj(i -> findByCrewAndDate(crew, LocalDate.of(today.getYear(), today.getMonthValue(), i)))
+                .collect(Collectors.toList());
+
         return new Attendances(monthlyAttendances);
     }
 

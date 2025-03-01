@@ -51,7 +51,7 @@ public class AttendancesTest {
 
         Attendance expected = Attendance.of(crew, attendanceTime);
         //when
-        Attendance actual = attendances.findByCrewAndDate(crew, time.toLocalDate()).get();
+        Attendance actual = attendances.findByCrewAndDate(crew, time.toLocalDate());
         //then
         assertThat(actual).isEqualTo(expected);
     }
