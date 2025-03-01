@@ -2,6 +2,8 @@ package model;
 
 import static constant.ErrorMessage.INVALID_OPTION_FORMAT;
 
+import java.util.Arrays;
+
 public enum Option {
 
     ONE("1"),
@@ -18,11 +20,9 @@ public enum Option {
     }
 
     public static Option find(String value) {
-        for (Option option : Option.values()) {
-            if (option.value.equals(value.toUpperCase())) {
-                return option;
-            }
-        }
-        throw new IllegalArgumentException(INVALID_OPTION_FORMAT.getMessage());
+        return Arrays.stream(Option.values())
+                .filter(option -> option.value.equals(value.toUpperCase()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_OPTION_FORMAT.getMessage()));
     }
 }
