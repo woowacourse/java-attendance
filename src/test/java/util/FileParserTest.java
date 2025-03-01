@@ -18,6 +18,6 @@ class FileParserTest {
         List<String> lines = FileParser.readLines(ATTENDANCE_FILE_PATH.getPath());
 
         // then
-        assertThat(lines).hasSize(4);
+        assertThat(lines).hasSize(16);
     }
 }
