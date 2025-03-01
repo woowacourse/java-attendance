@@ -27,6 +27,10 @@ public class AttendanceTime {
         return attendanceTime.isBefore(OPEN_TIME) || attendanceTime.isAfter(END_TIME);
     }
 
+    public boolean isZeroTime() {
+        return this.toLocalTime().equals(LocalTime.of(0, 0));
+    }
+
     public LocalTime toLocalTime() {
         return this.attendanceTime;
     }
