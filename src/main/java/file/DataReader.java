@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class DataReader {
 
-    private static final String ATTENDANCES_FILE_PATH = "src/resources/attendances.csv";
+    private static final String ATTENDANCES_FILE_PATH = "src/main/resources/attendances.csv";
 
     public List<String> readRawAttendances() {
         List<String> rawAttendances = new ArrayList<>();
