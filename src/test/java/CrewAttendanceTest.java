@@ -95,4 +95,27 @@ public class CrewAttendanceTest {
         Assertions.assertThat(absentCount)
                 .isEqualTo(5);
     }
+
+    @DisplayName("공휴일은 결석 횟수 계산에서 제외한다.")
+    @Test
+    void calculate_absent_count_except_holiday() {
+        // given
+        LocalDate today = LocalDate.of(2024, 12, 26);
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+                new Attendance("율무", LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 3)),
+                new Attendance("율무", LocalDate.of(2024, 12, 5), LocalTime.of(10, 3)),
+                new Attendance("율무", LocalDate.of(2024, 12, 6), LocalTime.of(10, 3))
+                ));
+
+        final var nickname = "율무";
+
+        // when
+        final var absentCount = attendanceBook.calculateAbsentCountByNicknameUntilDate(nickname, today);
+
+        // then
+        Assertions.assertThat(absentCount)
+                .isEqualTo(12);
+    }
 }
