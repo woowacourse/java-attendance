@@ -16,6 +16,12 @@ import java.util.Map;
 
 public class AttendanceController {
 
+    private static final String QUIT = "Q";
+    private static final String RECORD = "1";
+    private static final String EDIT = "2";
+    private static final String CHECK_RECORD = "3";
+    private static final String CHECK_PENALTY = "4";
+
     private final AttendanceBook attendanceBook;
     private final LocalDate systemDate;
 
@@ -27,36 +33,38 @@ public class AttendanceController {
     public void run() {
         while (true) {
             String function = InputView.readFunction(systemDate);
-            if ("Q".equals(function)) {
+            if (QUIT.equals(function)) {
                 break;
             }
 
-            execute(function);
+            try {
+                execute(function);
+            } catch (IllegalArgumentException e) {
+                OutputView.printErrorMessage(e.getMessage());
+            }
         }
     }
 
     private void execute(String function) {
-        if ("1".equals(function)) {
+        if (RECORD.equals(function)) {
             recordAttendance();
         }
 
-        if ("2".equals(function)) {
+        if (EDIT.equals(function)) {
             editAttendance();
         }
 
-        if ("3".equals(function)) {
+        if (CHECK_RECORD.equals(function)) {
             checkRecords();
         }
 
-        if ("4".equals(function)) {
+        if (CHECK_PENALTY.equals(function)) {
             checkPenalty();
         }
     }
 
     private void recordAttendance() {
-        String inputNickname = InputView.readNickname();
-        Crew crew = new Crew(new Nickname(inputNickname));
-        attendanceBook.validateCrew(crew);
+        Crew crew = getCrew(InputView.readNickname());
 
         String inputAttendTime = InputView.readAttendTimeForRecord();
         Attendance attendance = new Attendance(systemDate, LocalTime.parse(inputAttendTime));
@@ -65,10 +73,14 @@ public class AttendanceController {
         OutputView.printRecordAttendanceResult(attendance);
     }
 
-    private void editAttendance() {
-        String inputNickname = InputView.readNicknameForEdit();
+    private Crew getCrew(String inputNickname) {
         Crew crew = new Crew(new Nickname(inputNickname));
         attendanceBook.validateCrew(crew);
+        return crew;
+    }
+
+    private void editAttendance() {
+        Crew crew = getCrew(InputView.readNicknameForEdit());
 
         int inputDay = InputView.readAttendDay();
         LocalDate attendDate = LocalDate.of(systemDate.getYear(), systemDate.getMonthValue(), inputDay);
@@ -82,9 +94,7 @@ public class AttendanceController {
     }
 
     private void checkRecords() {
-        String inputNickname = InputView.readNickname();
-        Crew crew = new Crew(new Nickname(inputNickname));
-        attendanceBook.validateCrew(crew);
+        Crew crew = getCrew(InputView.readNickname());
 
         List<Attendance> attendances = attendanceBook.getRecordOfCrew(systemDate, crew);
         OutputView.printAttendanceRecordsUntilYesterday(crew, systemDate, attendances);
