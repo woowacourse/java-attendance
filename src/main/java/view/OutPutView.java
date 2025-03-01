@@ -5,7 +5,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Map;
 import model.AttendanceStatus;
+import util.AttendanceRecordFormatter;
 
 public class OutPutView {
     public static void displayAttendanceMenu(LocalDate localDate){
@@ -33,7 +35,7 @@ public class OutPutView {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
     }
 
-    public static void askForNewAttendanceTime(){
+    public static void requestModifyTime(){
         System.out.println("언제로 변경하겠습니까?");
     }
 
@@ -41,7 +43,24 @@ public class OutPutView {
         System.out.println(beforeRecord + "->" + modifyRecord + "수정 완료!");
     }
 
-    public static void displayAttendanceRecord(String record){
+    public static void displayRegisterAttendanceRecord(String record){
         System.out.println(record);
+    }
+
+    public static void displayTotalAttendanceRecord(String name,
+                                                    Map<LocalDate, LocalTime> timeRecord,
+                                                    Map<LocalDate, AttendanceStatus> attendanceStatus){
+        System.out.printf("이번 달 %d의 출석 기록입니다.\n", name);
+        for (LocalDate localDate : timeRecord.keySet()){
+            System.out.println(AttendanceRecordFormatter.attendanceRecordFormatter(
+                    timeRecord.get(localDate),
+                    attendanceStatus.get(localDate),
+                    localDate));
+        }
+    }
+    public static void displayTotalAttendanceCount(Map<AttendanceStatus, Long> attendanceCount){
+        for (AttendanceStatus attendanceStatus : attendanceCount.keySet()){
+            System.out.println(attendanceStatus.getAttendanceStatus() + " : " + attendanceCount.get(attendanceStatus) + "회");
+        }
     }
 }
