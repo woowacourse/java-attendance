@@ -11,8 +11,8 @@ public enum ExpellState {
 
     private static final int LATE_ABSENT_RATE = 3;
 
-    public String description;
-    private int limit;
+    public final String description;
+    private final int limit;
 
     ExpellState(String description, int limit) {
         this.description = description;
@@ -20,7 +20,7 @@ public enum ExpellState {
     }
 
     public static ExpellState checkExpellStatus(int lateCount, int absentCount) {
-        absentCount += lateCount/ LATE_ABSENT_RATE;
+        absentCount += lateCount / LATE_ABSENT_RATE;
         final int finalAbsentCount = absentCount;
 
         return Arrays.stream(ExpellState.values())
