@@ -1,4 +1,4 @@
-package service.todayProvider;
+package service.today_provider;
 
 import java.time.Clock;
 import java.time.LocalDate;

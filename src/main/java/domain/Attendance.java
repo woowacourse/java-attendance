@@ -3,9 +3,9 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import domain.attendancetime.AttendanceTime;
-import domain.attendancetime.NoShowAttendanceTime;
-import domain.attendancetime.ShowAttendanceTime;
+import domain.attendance_time.AttendanceTime;
+import domain.attendance_time.NoShowAttendanceTime;
+import domain.attendance_time.ShowAttendanceTime;
 
 public class Attendance {
     

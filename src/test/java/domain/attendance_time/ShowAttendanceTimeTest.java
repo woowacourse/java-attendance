@@ -1,10 +1,4 @@
-package domain.attendancetime;
-
-import domain.Attendance;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+package domain.attendance_time;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,6 +6,12 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import domain.Attendance;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ShowAttendanceTimeTest {
     

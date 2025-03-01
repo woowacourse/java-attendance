@@ -1,7 +1,4 @@
-package service.attendanceBookFactory;
-
-import domain.AttendanceBook;
-import service.todayProvider.TodayProvider;
+package factory;
 
 import java.io.BufferedReader;
 import java.time.LocalDateTime;
@@ -10,6 +7,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import domain.AttendanceBook;
+import service.today_provider.TodayProvider;
 
 public class BufferedReaderAttendanceBookFactory implements AttendanceBookFactory {
     

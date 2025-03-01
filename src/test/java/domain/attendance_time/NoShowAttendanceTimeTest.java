@@ -1,8 +1,8 @@
-package domain.attendancetime;
-
-import org.junit.jupiter.api.Test;
+package domain.attendance_time;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class NoShowAttendanceTimeTest {
     
