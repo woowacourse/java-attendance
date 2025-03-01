@@ -6,7 +6,8 @@ public enum ErrorMessage {
     NOTICE_NICKNAME_IS_NOT_REGISTERED("등록되지 않은 닉네임입니다."),
     NOTICE_TIME_IS_NOT_A_CAMPUS_OPERATING_TIME("캠퍼스 운영 시간에만 출석이 가능합니다."),
     NOTICE_FUTURE_CAN_NOT_BE_MODIFIED("미래의 날짜는 수정할 수 없습니다."),
-    NOTICE_FUNCTION_NUMBER_IS_NOT_EXISTED("선택창에 존재하는 기능만 선택 가능합니다.");
+    NOTICE_FUNCTION_NUMBER_IS_NOT_EXISTED("선택창에 존재하는 기능만 선택 가능합니다."),
+    NOTICE_TIME_INPUT_FORM_IS_NOT_VALID("시간 입력 형식이 올바르지 않습니다.");
 
     private final static String ERROR_SIGN = "[ERROR] ";
     private final String format;

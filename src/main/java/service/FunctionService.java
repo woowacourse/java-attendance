@@ -15,6 +15,7 @@ import dto.PenaltyResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import utils.ParsingUtils;
 import view.ErrorMessage;
 import view.input.Function;
 import view.input.InputView;
@@ -52,7 +53,7 @@ public class FunctionService {
     }
 
     private LocalTime inputTimeToCheckAttendance() {
-        LocalTime time = LocalTime.parse(inputView.askTimeToCheckAttendance());
+        LocalTime time = ParsingUtils.parseTimeInput(inputView.askTimeToCheckAttendance());
         validateTimeIsInTheRangeOfOperation(time); // 운영시간 인지?
         return time;
     }
@@ -88,11 +89,10 @@ public class FunctionService {
     }
 
     private LocalTime inputTimeToModifyAttendance() {
-        LocalTime time = LocalTime.parse(inputView.askTimeToModifyAttendance());
+        LocalTime time = ParsingUtils.parseTimeInput(inputView.askTimeToModifyAttendance());
         validateTimeIsInTheRangeOfOperation(time); // 운영시간 인지?
         return time;
     }
-
 
     // 기능 3
     public void checkAttendanceRecord(Function function, AttendanceBook attendanceBook) {
