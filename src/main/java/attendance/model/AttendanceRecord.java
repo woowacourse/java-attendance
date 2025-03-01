@@ -68,8 +68,8 @@ public record AttendanceRecord(
         }
     }
 
-    public void modify(LocalDate modifyDate, LocalTime modifyTime) {
-        AttendanceDateTime dateTime = findAttendanceByDate(new AttendanceDate(modifyDate));
-        dateTime.modifyAttendanceTime(modifyTime);
+    public void modify(AttendanceDate modifyDate, LocalTime modifyTime) {
+        AttendanceDateTime dateTime = findAttendanceByDate(modifyDate);
+        dateTime.modifyAttendanceTime(new AttendanceDateTime(modifyDate, modifyTime));
     }
 }

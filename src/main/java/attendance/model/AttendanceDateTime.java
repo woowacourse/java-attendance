@@ -18,6 +18,10 @@ public class AttendanceDateTime {
         this.attendanceTime = attendanceTime;
     }
 
+    public void modifyAttendanceTime(AttendanceDateTime attendanceDateTime) {
+        this.attendanceTime = attendanceDateTime.attendanceTime;
+    }
+
     public boolean equalsDate(AttendanceDate attendanceDate) {
         return this.attendanceDate.equals(attendanceDate);
     }
