@@ -66,6 +66,6 @@ class AttendanceTest {
 
         assertThatThrownBy(() -> new Attendance(dateTime))
             .isInstanceOf(AttendanceArgumentException.class)
-            .hasMessageContaining("운영 시간 외에는 출석할 수 없습니다.");
+            .hasMessageContaining("운영시간 외에 출석할 수 없습니다.");
     }
 }

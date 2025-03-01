@@ -4,9 +4,20 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import attendance.exception.AttendanceArgumentException;
+
 public record Attendance(LocalDateTime dateTime, AttendanceStatus state) {
+    private static final String OUT_OF_SCHEDULE = "캠퍼스 운영시간 외에 출석할 수 없습니다.";
+
     public Attendance(LocalDateTime dateTime) {
-        this(dateTime, judgeStatus(dateTime));
+        this(validateDateTime(dateTime), judgeStatus(dateTime));
+    }
+
+    private static LocalDateTime validateDateTime(LocalDateTime dateTime) {
+        if (Schedule.isDuringCampus(dateTime.toLocalTime())) {
+            throw new AttendanceArgumentException(OUT_OF_SCHEDULE);
+        }
+        return dateTime;
     }
 
     private static AttendanceStatus judgeStatus(LocalDateTime dateTime) {
