@@ -38,31 +38,56 @@ public class AttendanceLogs {
     }
 
     public List<AttendanceLog> findAllByNicknameInMonth(Nickname nickname, LocalDate baseDate) {
-        List<AttendanceLog> realLogs = logs.stream()
-                .filter(sameCrewAndMonth(nickname, baseDate))
+        List<AttendanceLog> realLogs = getExistingLogs(nickname, baseDate);
+        List<AttendanceLog> completeLogs = new ArrayList<>(realLogs);
+        Set<LocalDate> existingDates = extractExistingDates(realLogs);
+        addAbsentDaysForMonth(nickname, baseDate, existingDates, completeLogs);
+        return sortByDate(completeLogs);
+    }
+
+    private List<AttendanceLog> getExistingLogs(Nickname nickname, LocalDate baseDate) {
+        return logs.stream()
+                .filter(isSameCrewAndMonth(nickname, baseDate))
                 .filter(untilPreviousDay(baseDate))
                 .toList();
+    }
 
-        Set<LocalDate> existingDates = realLogs.stream()
+    private Set<LocalDate> extractExistingDates(List<AttendanceLog> logs) {
+        return logs.stream()
                 .map(AttendanceLog::getAttendanceDate)
                 .collect(Collectors.toSet());
+    }
 
-        List<AttendanceLog> completeLogs = new ArrayList<>(realLogs);
-        for (LocalDate date = baseDate.withDayOfMonth(1); date.isBefore(baseDate); date = date.plusDays(1)) {
-            if (!existingDates.contains(date)) {
-                try {
-                    completeLogs.add(new AttendanceLog(nickname, date));
-                } catch (IllegalArgumentException ignore) {
-                }
-            }
+    private void addAbsentDaysForMonth(Nickname nickname, LocalDate baseDate,
+                                       Set<LocalDate> existingDates,
+                                       List<AttendanceLog> logs) {
+        LocalDate startOfMonth = baseDate.withDayOfMonth(1);
+        for (LocalDate date = startOfMonth; date.isBefore(baseDate); date = date.plusDays(1)) {
+            addIfLogNotExistDay(nickname, existingDates, logs, date);
         }
+    }
 
-        return completeLogs.stream()
+    private void addIfLogNotExistDay(Nickname nickname, Set<LocalDate> existingDates,
+                                     List<AttendanceLog> logs, LocalDate date) {
+        if (!existingDates.contains(date)) {
+            addIfOpenDay(nickname, logs, date);
+        }
+    }
+
+    private void addIfOpenDay(Nickname nickname, List<AttendanceLog> completeLogs, LocalDate date) {
+        try {
+            completeLogs.add(new AttendanceLog(nickname, date));
+        } catch (IllegalArgumentException ignore) {
+        }
+    }
+
+    private List<AttendanceLog> sortByDate(List<AttendanceLog> logs) {
+        return logs.stream()
                 .sorted(Comparator.comparing(AttendanceLog::getAttendanceDate))
                 .toList();
     }
 
-    private Predicate<AttendanceLog> sameCrewAndMonth(Nickname nickname, LocalDate baseDate) {
+    private Predicate<AttendanceLog> isSameCrewAndMonth(Nickname nickname, LocalDate baseDate) {
         return attendanceLog -> attendanceLog.isSameNicknameAndMonth(nickname, baseDate);
     }
 
@@ -82,7 +107,9 @@ public class AttendanceLogs {
                 .forEach(type -> attendanceCounts.put(type, 0));
 
         findAllByNicknameInMonth(nickname, baseDate).forEach(log -> {
-            AttendanceType type = AttendanceType.determine(EducationSchedule.findStartTimeByDay(log.getAttendanceDate().getDayOfWeek()), log.getAttendanceTime());
+            AttendanceType type = AttendanceType.determine(
+                    EducationSchedule.findStartTimeByDay(log.getAttendanceDate().getDayOfWeek()),
+                    log.getAttendanceTime());
             attendanceCounts.put(type, attendanceCounts.get(type) + 1);
         });
 
