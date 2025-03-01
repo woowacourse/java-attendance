@@ -2,11 +2,12 @@ package view;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Map;
+import model.AttendancePenalty;
 import model.AttendanceStatus;
+import model.Student;
 import util.AttendanceRecordFormatter;
 
 public class OutPutView {
@@ -47,20 +48,27 @@ public class OutPutView {
         System.out.println(record);
     }
 
-    public static void displayTotalAttendanceRecord(String name,
-                                                    Map<LocalDate, LocalTime> timeRecord,
-                                                    Map<LocalDate, AttendanceStatus> attendanceStatus){
-        System.out.printf("이번 달 %d의 출석 기록입니다.\n", name);
+    public static void displayTotalAttendanceRecord(Student student){
+        Map<LocalDate, LocalTime> timeRecord = student.getAttendanceTimeRecords();
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n", student.getName());
         for (LocalDate localDate : timeRecord.keySet()){
             System.out.println(AttendanceRecordFormatter.attendanceRecordFormatter(
-                    timeRecord.get(localDate),
-                    attendanceStatus.get(localDate),
-                    localDate));
+                    student, localDate));
         }
     }
-    public static void displayTotalAttendanceCount(Map<AttendanceStatus, Long> attendanceCount){
+    public static void displayTotalAttendanceCount(Student student){
+        Map<AttendanceStatus, Long> attendanceCount = student.getAttendanceStatusCount();
+        System.out.println();
         for (AttendanceStatus attendanceStatus : attendanceCount.keySet()){
             System.out.println(attendanceStatus.getAttendanceStatus() + " : " + attendanceCount.get(attendanceStatus) + "회");
+        }
+    }
+
+    public static void displayExpulsionRisk(Student student){
+        long expulsionCount = student.calculateAbsentCount();
+        AttendancePenalty attendancePenalty = AttendancePenalty.findPenaltyByAbsentCount(expulsionCount);
+        if (attendancePenalty.getPenalty() != null){
+            System.out.println( attendancePenalty.getPenalty() + "대상자 입니다.");
         }
     }
 }
