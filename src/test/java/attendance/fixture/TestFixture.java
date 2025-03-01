@@ -17,6 +17,30 @@ public class TestFixture {
         return LocalDateTime.of(2024, 12, day, hour, minute);
     }
 
+    public static LocalDateTime makeAttendanceExceptMonday(int day) {
+        return LocalDateTime.of(2024, 12, day, 10, 0);
+    }
+
+    public static LocalDateTime makeAttendanceMonday(int day) {
+        return LocalDateTime.of(2024, 12, day, 13, 0);
+    }
+
+    public static LocalDateTime makeTardinessExceptMonday(int day) {
+        return LocalDateTime.of(2024, 12, day, 10, 6);
+    }
+
+    public static LocalDateTime makeTardinessMonday(int day) {
+        return LocalDateTime.of(2024, 12, day, 13, 6);
+    }
+
+    public static LocalDateTime makeAbsenceExceptMonday(int day) {
+        return LocalDateTime.of(2024, 12, day, 10, 31);
+    }
+
+    public static LocalDateTime makeAbsenceMonday(int day) {
+        return LocalDateTime.of(2024, 12, day, 13, 31);
+    }
+
     public static CrewHistory makeCrewHistory(final LocalDateTime... attendanceTimes) {
         Map<LocalDate, LocalDateTime> history = new HashMap<>();
         for (LocalDateTime attendanceTime : attendanceTimes) {

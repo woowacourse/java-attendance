@@ -11,7 +11,7 @@ public class CrewHistories {
     private final Map<Nickname, CrewHistory> histories;
 
     public CrewHistories(final Map<Nickname, CrewHistory> histories) {
-        this.histories = histories;
+        this.histories = new HashMap<>(histories);
     }
 
     public void addHistory(final Nickname nickname, final LocalDateTime attendanceDateTime) {
