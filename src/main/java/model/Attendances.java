@@ -3,6 +3,7 @@ package model;
 import static constant.AttendanceConstant.COMMA_SEPARATOR;
 import static constant.ErrorMessage.NOT_FOUND_ATTENDANCE;
 import static constant.ErrorMessage.NOT_FOUND_CREW;
+import static constant.ErrorMessage.OUT_OF_OPERATION_HOURS;
 
 import dto.AttendanceCheckInRequest;
 import dto.AttendanceCheckInResponse;
@@ -48,8 +49,7 @@ public class Attendances {
         Attendance attendance = Attendance.of(dateTimeGenerator, request.checkInTime());
 
         validateExistCrew(crew);
-        AttendanceTime.validateInOperationTime(dateTimeGenerator.getNowLocalDate(),
-                LocalTime.parse(request.checkInTime()));
+        validateOperationTime(request, dateTimeGenerator);
 
         attendances.get(crew).add(attendance);
 
@@ -160,6 +160,13 @@ public class Attendances {
     private void validateExistCrew(Crew crew) {
         if (!attendances.containsKey(crew)) {
             throw new IllegalArgumentException(NOT_FOUND_CREW.getMessage());
+        }
+    }
+
+    private void validateOperationTime(AttendanceCheckInRequest request, DateTimeGenerator dateTimeGenerator) {
+        if (!AttendanceTime.isInOperationTime(dateTimeGenerator.getNowLocalDate(),
+                LocalTime.parse(request.checkInTime()))) {
+            throw new IllegalArgumentException(OUT_OF_OPERATION_HOURS.getMessage());
         }
     }
 
