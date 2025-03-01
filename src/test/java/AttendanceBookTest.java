@@ -20,4 +20,16 @@ public class AttendanceBookTest {
         //when & then
         Assertions.assertThatThrownBy(() -> attendanceBook.addAttend(name, attend));
     }
+
+    @Test
+    @DisplayName("출석부에 닉네임을 등록한다")
+    void registerName() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+
+        //when & then
+        assertDoesNotThrow(() -> attendanceBook.register(name));
+    }
+
 }
