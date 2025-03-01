@@ -18,12 +18,12 @@ public enum AttendanceStatus {
     public static AttendanceStatus from(LocalTime startTime, LocalTime enterTime) {
         List<AttendanceStatus> descendingValues = Arrays.stream(values()).sorted(Comparator.reverseOrder()).toList();
         return descendingValues.stream()
-                .filter(status -> enterTime.isAfter(status.getBoundaryTimeWith(startTime)))
+                .filter(status -> enterTime.isAfter(status.getLimitTimeWith(startTime)))
                 .findFirst()
                 .orElse(ATTENDANCE);
     }
 
-    public LocalTime getBoundaryTimeWith(LocalTime time) {
+    private LocalTime getLimitTimeWith(LocalTime time) {
         return time.plusMinutes(upperBoundMinute);
     }
 }
