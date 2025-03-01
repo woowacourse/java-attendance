@@ -4,6 +4,7 @@ import static attendance.view.Command.ATTENDANCE;
 import static attendance.view.Command.ATTENDANCE_CHECK;
 import static attendance.view.Command.ATTENDANCE_UPDATE;
 import static attendance.view.Command.ATTENDANCE_WARNING_CHECK;
+import static attendance.view.Command.QUIT;
 
 import attendance.AttendanceBookInitializer;
 import attendance.domain.Attendance;
@@ -33,8 +34,22 @@ public class AttendanceController {
 
     public void run(LocalDate today) {
         AttendanceBook attendanceBook = new AttendanceBookInitializer().Initialize();
+        inputCommandAndExecuteUtilQuit(today, attendanceBook);
+    }
 
-        Command command = inputView.inputCommand(today);
+    private void inputCommandAndExecuteUtilQuit(LocalDate today, AttendanceBook attendanceBook) {
+        Command command = null;
+        do {
+            try {
+                command = inputView.inputCommand(today);
+                executeCommand(today, attendanceBook, command);
+            } catch (RuntimeException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        } while (command != QUIT);
+    }
+
+    private void executeCommand(LocalDate today, AttendanceBook attendanceBook, Command command) {
         if (command == ATTENDANCE) {
             attend(today, attendanceBook);
         }

@@ -52,6 +52,19 @@ public class AttendanceBookTest {
     }
 
     @Test
+    void 출석을_수정할때_해당하는_크루가_없다면_예외가_발생한다() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook(new Crews());
+
+        //when
+        assertThatThrownBy(() -> attendanceBook.updateAttendance(
+                "pobi",
+                LocalDateTime.of(2024, 12, 13, 11, 1)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("pobi은 등록되지 않은 닉네임입니다.");
+    }
+
+    @Test
     void 출석을_수정할_수_있다() {
         //given
         String nickname = "pobi";
@@ -94,6 +107,18 @@ public class AttendanceBookTest {
                         LocalDateTime.of(2024, 12, 13, 11, 1)
                 )
         ));
+    }
+
+    @Test
+    void 크루의_출석_기록을_조회할때_해당하는_크루가_없다면_예외가_발생한다() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook(new Crews("neo"));
+
+        //when & then
+        assertThatThrownBy(() -> attendanceBook.findAttendancesByNickname("pobi"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("pobi은 등록되지 않은 닉네임입니다.");
+
     }
 
     @Test

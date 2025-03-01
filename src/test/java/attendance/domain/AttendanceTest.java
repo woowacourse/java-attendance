@@ -3,6 +3,7 @@ package attendance.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
@@ -56,5 +57,30 @@ public class AttendanceTest {
 
         //then
         assertThat(attendance).isEqualTo(new Attendance("포비", LocalDateTime.of(2024, 12, 13, 10, 1)));
+    }
+
+    @Test
+    void 출석_객체를_통해_이미_출석을_했는지_알_수_있다1() {
+        //given
+        Attendance attendance1 = new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 11, 1));
+        Attendance attendance2 = new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 10, 1));
+
+        //when
+        boolean result = attendance1.isAlreadyAttend(attendance2);
+
+        //then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void 닉네임과_날짜만으로_이미_출석을_했는지_알_수_있다2() {
+        //given
+        Attendance attendance = new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 11, 1));
+
+        //when
+        boolean result = attendance.isAlreadyAttend("pobi", new AttendanceDate(LocalDate.of(2024, 12, 2)));
+
+        //then
+        assertThat(result).isTrue();
     }
 }

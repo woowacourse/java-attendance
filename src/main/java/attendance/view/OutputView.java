@@ -145,4 +145,8 @@ public class OutputView {
             case WEEDING -> "제적";
         };
     }
+
+    public void printErrorMessage(String message) {
+        System.out.println("[ERROR] " + message);
+    }
 }

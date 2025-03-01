@@ -47,17 +47,17 @@ public class AttendanceDate {
         return true;
     }
 
+    public boolean isBeforeAndEqual(LocalDate date) {
+        return this.attendanceDate.isBefore(date) ||
+                this.attendanceDate.isEqual(date);
+    }
+
     public DayOfWeek getDayOfWeek() {
         return attendanceDate.getDayOfWeek();
     }
 
     public LocalDate getAttendanceDate() {
         return attendanceDate;
-    }
-
-    public boolean isBeforeAndEqual(LocalDate date) {
-        return this.attendanceDate.isBefore(date) ||
-                this.attendanceDate.isEqual(date);
     }
 
     @Override
