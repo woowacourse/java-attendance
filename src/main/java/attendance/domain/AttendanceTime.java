@@ -79,9 +79,11 @@ public class AttendanceTime implements Comparable<AttendanceTime> {
     @Override
     public int compareTo(final AttendanceTime o) {
         int hourComparison = compareHours(o);
+
         if (hourComparison != 0) {
             return hourComparison;
         }
+
         return compareMinutes(o);
     }
 
@@ -89,12 +91,15 @@ public class AttendanceTime implements Comparable<AttendanceTime> {
         if (this.hour == null && o.hour == null) {
             return 0;
         }
+
         if (this.hour == null) {
             return -1;
         }
+
         if (o.hour == null) {
             return 1;
         }
+
         return Integer.compare(this.hour, o.hour);
     }
 
@@ -102,12 +107,15 @@ public class AttendanceTime implements Comparable<AttendanceTime> {
         if (this.minute == null && o.minute == null) {
             return 0;
         }
+
         if (this.minute == null) {
             return -1;
         }
+
         if (o.minute == null) {
             return 1;
         }
+        
         return Integer.compare(this.minute, o.minute);
     }
 }

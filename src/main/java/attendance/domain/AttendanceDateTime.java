@@ -39,7 +39,9 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         final AttendanceDateTime that = (AttendanceDateTime) o;
+
         return Objects.equals(attendanceDate, that.attendanceDate)
             && Objects.equals(attendanceTime, that.attendanceTime);
     }
@@ -52,6 +54,7 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
     @Override
     public int compareTo(final AttendanceDateTime o) {
         int dateDiff = this.attendanceDate.compareTo(o.attendanceDate);
+
         if (dateDiff != 0) {
             return dateDiff;
         }

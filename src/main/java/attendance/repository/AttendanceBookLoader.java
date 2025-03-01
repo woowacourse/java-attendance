@@ -19,6 +19,7 @@ public class AttendanceBookLoader {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
         "yyyy-MM-dd HH:mm");
+
     private final String filePath;
 
     public AttendanceBookLoader(final String filePath) {
