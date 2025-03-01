@@ -65,4 +65,14 @@ public class AttendancesTest {
         assertThatCode(() -> attendances.update(oldAttendance, newAttendance))
                 .doesNotThrowAnyException();
     }
+
+    @Test
+    void 출석_리스트에서_이번달_전날까지의_기록을_반환한다() {
+        Attendance anotherMonthAttendance = new Attendance(LocalDate.of(2024, 11, 12), LocalTime.of(13, 0));
+        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance attendance2 = new Attendance(LocalDate.of(2024, 12, 13), LocalTime.of(13, 0));
+        Attendances attendances = new Attendances(new ArrayList<>(List.of(anotherMonthAttendance, attendance, attendance2)));
+
+        assertThat(attendances.getAttendancesUntilYesterday(LocalDate.of(2024, 12, 14))).hasSize(2);
+    }
 }
