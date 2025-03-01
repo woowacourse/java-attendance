@@ -72,4 +72,18 @@ public class OutputView {
             formattedPenaltyStatusCount += crew.getPenalty().getStatus() + " 대상자입니다.";
         return formattedPenaltyStatusCount;
     }
+
+    public static void printPenaltyReceivedCrew(List<Crew> penaltyReceivedCrew) {
+        System.out.println("제적 위험자 조회 결과");
+        StringBuilder formattedPenaltyReceivedCrew = new StringBuilder();
+        for(Crew crew:penaltyReceivedCrew){
+            formattedPenaltyReceivedCrew.append("- ")
+                    .append(crew.getName())
+                    .append(": 결석 ")
+                    .append(crew.getAbsentCount()).append("회, 지각 ")
+                    .append(crew.getLateCount()).append("회 (")
+                    .append(crew.getPenalty().getStatus()).append(")\n");
+        }
+        System.out.println(formattedPenaltyReceivedCrew);
+    }
 }

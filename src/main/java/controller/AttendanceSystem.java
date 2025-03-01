@@ -44,16 +44,16 @@ public class AttendanceSystem {
                 checkCrewAttendanceHistory();
             }
             if (option.equals("4")) {
-//                checkPenaltyReceivedCrew();
+                checkPenaltyReceivedCrew();
             }
-            if (option.equals("q")) {
+            if (option.equals("q")||option.equals("Q")) {
                 return;
             }
         }
     }
 
     private void checkPenaltyReceivedCrew() {
-        // allCrew에서 제적위험자 crew들만 찾아서 리스트로 넘기면 뷰에서 출력만 하도록
+        OutputView.printPenaltyReceivedCrew(allCrew.getPenaltyReceivedCrew());
     }
 
     private void checkCrewAttendanceHistory() {
