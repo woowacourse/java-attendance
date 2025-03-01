@@ -1,8 +1,7 @@
-package attendance.view;
+package attendance.util;
 
 import attendance.domain.Attendances;
-import attendance.util.DataFileReader;
-import java.io.BufferedReader;
+import attendance.view.DataFileReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;

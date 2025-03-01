@@ -1,4 +1,4 @@
-package attendance.util;
+package attendance.view;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
