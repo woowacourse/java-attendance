@@ -99,4 +99,7 @@ public class CrewAttendances {
         return nickname;
     }
 
+    public int attendPolicyCountSum(LocalDate date) {
+        return 0;
+    }
 }
