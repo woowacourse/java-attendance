@@ -57,8 +57,17 @@ public class AttendanceDateTimeTest {
     void test6() {
         AttendanceDateTime attendanceDateTime = new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 12, 12));
         AttendanceDateTime attendanceDateTime1 = new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 12, 12));
+        Assertions.assertEquals(attendanceDateTime, attendanceDateTime1);
+    }
+
+    @Test
+    @DisplayName("Date 까지만 비교하여 같은 년,월,일 인지 비교하는 메서드 테스트")
+    void test7() {
+        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 12, 12));
+        AttendanceDateTime attendanceDateTime1 = new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 13, 13));
         Assertions.assertTrue(
-                attendanceDateTime.equals(attendanceDateTime1)
+                attendanceDateTime.isSameDate(attendanceDateTime1)
         );
+
     }
 }
