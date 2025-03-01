@@ -1,14 +1,18 @@
-package attendance.domain;
+package attendance;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceLog;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

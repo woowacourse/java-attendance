@@ -1,8 +1,13 @@
-package attendance.domain;
+package attendance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceLog;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.Crew;
+import attendance.domain.Subject;
 import attendance.domain.dto.AttendanceResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

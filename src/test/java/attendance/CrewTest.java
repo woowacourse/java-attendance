@@ -1,5 +1,6 @@
-package attendance.domain;
+package attendance;
 
+import attendance.domain.Crew;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

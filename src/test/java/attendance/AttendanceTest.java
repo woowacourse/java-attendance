@@ -1,5 +1,6 @@
-package attendance.domain;
+package attendance;
 
+import attendance.domain.Attendance;
 import attendance.domain.dto.AttendanceResult;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
