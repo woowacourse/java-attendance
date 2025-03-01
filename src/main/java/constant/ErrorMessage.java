@@ -12,6 +12,7 @@ public enum ErrorMessage {
     INVALID_OPTION_FORMAT("유효한 옵션이 아닙니다."),
 
     CANNOT_CHECK_IN_ON_WEEKEND("주말에는 출석할 수 없습니다."),
+    CANNOT_CHECK_IN_ON_HOLIDAY("공휴일에는 출석할 수 없습니다."),
     NOT_FOUND_CREW("존재하지 않는 크루입니다."),
     NOT_FOUND_ATTENDANCE("존재하지 않는 출석 내역입니다."),
     OUT_OF_OPERATION_HOURS("지금은 운영 시간이 아닙니다."),
