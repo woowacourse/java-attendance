@@ -77,6 +77,10 @@ public class AttendanceController {
         attendanceBook.validateRegisteredCrew(crew);
         List<AttendanceDateTime> crewAttendanceDateTimes = findCrewAttendancesThisMonth(attendanceBook, crew);
         crewAttendanceCheckView.printCrewAttendances(crew, crewAttendanceDateTimes);
+        Map<AttendanceStatus, Long> attendanceStatuses = AttendanceStatusChecker.checkStatuses(crewAttendanceDateTimes);
+        crewAttendanceCheckView.printAttendanceStatuses(attendanceStatuses);
+        ExpulsionStatus expulsionStatus = ExpulsionStatus.from(AttendanceStatusChecker.calculateAllAbsent(crewAttendanceDateTimes));
+        crewAttendanceCheckView.printExpulsionStatus(expulsionStatus);
     }
 
     private static List<AttendanceDateTime> findCrewAttendancesThisMonth(AttendanceBook attendanceBook, Crew crew) {
