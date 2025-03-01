@@ -4,6 +4,8 @@ import attendance.util.ErrorMessage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,5 +44,15 @@ public class AttendanceBook {
     public List<Attendance> getRecordOfCrew(LocalDate today, Crew crew) {
         Attendances attendances = attendanceBook.get(crew);
         return attendances.getAttendancesUntilYesterday(today);
+    }
+
+    public Map<Crew, StatusStatistics> getCrewsAndStatistics(LocalDate today) {
+        Map<Crew, StatusStatistics> penaltyCrews = new HashMap<>();
+        attendanceBook.keySet().forEach(crew -> {
+            List<Attendance> attendances = getRecordOfCrew(today, crew);
+            StatusStatistics statusStatistics = new StatusStatistics(attendances, today);
+            penaltyCrews.put(crew, statusStatistics);
+        });
+        return penaltyCrews;
     }
 }
