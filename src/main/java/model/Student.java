@@ -35,8 +35,8 @@ public class Student {
         );
     }
 
-    public void modifyAttendanceRecord(String modifyDate, LocalTime modifyTime) {
-        LocalDate localDate = LocalDate.of(2024, 12, Integer.parseInt(modifyDate));
+    public void modifyAttendanceRecord(int modifyDate, LocalTime modifyTime) {
+        LocalDate localDate = LocalDate.of(2024, 12, modifyDate);
         attendanceTimeRecord.modifyAttendanceTimeRecord(localDate, modifyTime);
         attendanceStatusRecord.modifyAttendanceStatusRecord(
                 localDate, AttendanceStatus.attendanceStatusCalculate(localDate, modifyTime)
