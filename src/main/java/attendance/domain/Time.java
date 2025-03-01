@@ -78,4 +78,8 @@ public class Time {
     public int getMinute() {
         return attendanceTime.getMinute();
     }
+
+    public int getYear() {
+        return attendanceTime.getYear();
+    }
 }

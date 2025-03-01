@@ -26,4 +26,8 @@ public enum AcademicStatus {
                 .findFirst()
                 .orElse(NOT);
     }
+
+    public String getValue() {
+        return status;
+    }
 }

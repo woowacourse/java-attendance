@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 public class AttendanceBook {
@@ -35,7 +36,11 @@ public class AttendanceBook {
         attendances.add(attendance);
     }
 
-    public Attendance findByCrewNameAndLocalDate(String crewName, LocalDate localDate) {
+    public Attendance findAttendanceByCrewNameAndLocalDate(String crewName, LocalDate localDate) {
         return attendances.findByCrewNameAndLocalDate(crewName, localDate);
+    }
+    
+    public List<Attendance> findAttendancesByCrewNameAndYearAndMonth(String crewName, int year, int month) {
+        return attendances.findAttendancesByCrewName(crewName, year, month);
     }
 }
