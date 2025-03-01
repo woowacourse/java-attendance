@@ -8,12 +8,12 @@ import java.util.Optional;
 
 import attendance.exception.AttendanceArgumentException;
 
-public record AttendanceBook(Map<Nickname, Attendances> attendancesBook) {
+public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemDateTime systemDateTime) {
 
     public static final String NOT_REGISTERED_NICKNAME = "등록되지 않은 닉네임입니다.";
 
-    public AttendanceBook() {
-        this(new HashMap<>());
+    public AttendanceBook(SystemDateTime systemDateTime) {
+        this(new HashMap<>(), systemDateTime);
     }
 
     public void put(String name, LocalDateTime dateTime) {
@@ -26,12 +26,12 @@ public record AttendanceBook(Map<Nickname, Attendances> attendancesBook) {
     }
 
     private void putNewAttendances(LocalDateTime dateTime, Nickname nickname) {
-        var newAttendances = new Attendances();
+        var newAttendances = new Attendances(systemDateTime);
         newAttendances.add(dateTime);
         attendancesBook.put(nickname, newAttendances);
     }
 
-    public void add(Nickname nickname, LocalDateTime dateTime) {
+    public void attendance(Nickname nickname, LocalDateTime dateTime) {
         var attendances = getAttendances(nickname);
         attendances.add(dateTime);
     }

@@ -33,7 +33,7 @@ public class AttendanceReader {
 
     private AttendanceBook getAttendanceBook(BufferedReader bufferedReader) {
         var lines = readLines(bufferedReader);
-        var attendanceBook = new AttendanceBook();
+        var attendanceBook = new AttendanceBook(new AttendanceDateTime());
         for (String line : lines) {
             var parts = line.split(",");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
