@@ -10,17 +10,16 @@ public class AttendanceTime {
     private final LocalDateTime time;
 
     public AttendanceTime(LocalDateTime time) {
+        validateHoliday(time.toLocalDate());
+        validateOperationTime(time);
         this.time = time;
     }
 
     public static AttendanceTime of(LocalDateTime time) {
-        validateHoliday(time.toLocalDate());
-        validateOperationTime(time);
         return new AttendanceTime(time);
     }
 
     public static AttendanceTime createAbsenceTime(LocalDate day) {
-        validateHoliday(day);
         LocalDateTime absenceStandardTime = LocalDateTime.of(day, AttendanceType.calculateAbsenceStandardTime(day));
         return new AttendanceTime(absenceStandardTime.plusNanos(1));
     }
