@@ -100,6 +100,9 @@ public class CrewAttendances {
     }
 
     public int attendPolicyCountSum(LocalDate date) {
-        return 1;
+        int absentCount = calculateAbsentCountUntilDate(date);
+        int lateCount = calculateLateCountUntilDate(date);
+
+        return absentCount + lateCount;
     }
 }
