@@ -19,7 +19,7 @@ public class AttendanceStorageTest {
     @Test
     void test1() {
         // given
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         LocalDate date = LocalDate.of(2025, 2, 27);
         LocalTime enterTime = LocalTime.of(10, 0);
 
@@ -31,7 +31,7 @@ public class AttendanceStorageTest {
     @Test
     void test2() {
         // given
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         LocalDate date = LocalDate.of(2025, 2, 27);
         LocalTime enterTime = LocalTime.of(10, 0);
         attendanceStorage.register(date, enterTime);
@@ -47,7 +47,7 @@ public class AttendanceStorageTest {
     @CsvSource(value = {"7, 59", "23, 1", "0, 0"})
     void test3(int hour, int minutes) {
         // given
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         LocalDate date = LocalDate.of(2025, 2, 27);
 
         // when &  then
@@ -61,7 +61,7 @@ public class AttendanceStorageTest {
     @Test
     void test4() {
         // given
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         LocalDate saturday = LocalDate.of(2025, 2, 22);
 
         // when & then
@@ -75,7 +75,7 @@ public class AttendanceStorageTest {
     @Test
     void test5() {
         // given
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         LocalDate sunday = LocalDate.of(2025, 2, 23);
 
         // when & then
@@ -90,7 +90,7 @@ public class AttendanceStorageTest {
     @CsvSource(value = {"10, 0", "10, 1", "10, 5"})
     void test6(int hour, int minutes) {
         // given
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         LocalDate date = LocalDate.of(2025, 2, 27);
         LocalTime enterTime = LocalTime.of(hour, minutes);
 
@@ -106,7 +106,7 @@ public class AttendanceStorageTest {
     @CsvSource(value = {"10, 6", "10, 30"})
     void test7(int hour, int minutes) {
         // given
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         LocalDate date = LocalDate.of(2025, 2, 27);
         LocalTime enterTime = LocalTime.of(hour, minutes);
 
@@ -122,7 +122,7 @@ public class AttendanceStorageTest {
     @CsvSource(value = {"10, 31", "22, 30"})
     void test8(int hour, int minutes) {
         // given
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         LocalDate date = LocalDate.of(2025, 2, 27);
         LocalTime enterTime = LocalTime.of(hour, minutes);
 
@@ -137,7 +137,7 @@ public class AttendanceStorageTest {
     @Test
     void test9() {
         // given
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         LocalDate date = LocalDate.of(2025, 2, 28);
         LocalTime enterTime = LocalTime.of(10, 5);
 
@@ -154,7 +154,7 @@ public class AttendanceStorageTest {
     @Test
     void test10() {
         // given
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         LocalDate date = LocalDate.of(2025, 2, 28);
         LocalTime modifyTime = LocalTime.of(10, 5);
 
@@ -173,7 +173,7 @@ public class AttendanceStorageTest {
     @Test
     void test11() {
         // given
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         LocalDate date = LocalDate.of(2025, 2, 28);
         LocalTime enterTime = LocalTime.of(10, 5);
         LocalTime modifiedTime = LocalTime.of(10, 0);

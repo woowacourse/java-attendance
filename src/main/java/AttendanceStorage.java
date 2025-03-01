@@ -3,13 +3,23 @@ import exception.DuplicateAttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class AttendanceStorage {
     private final Set<Attendance> attendances;
 
-    public AttendanceStorage() {
-        this.attendances = new HashSet<>();
+    private AttendanceStorage(Set<Attendance> attendances) {
+        this.attendances = attendances;
+    }
+
+    public static AttendanceStorage of(List<Attendance> attendances) {
+        Set<Attendance> distinctAttendances = new HashSet<>(attendances);
+        return new AttendanceStorage(distinctAttendances);
+    }
+
+    public static AttendanceStorage init() {
+        return new AttendanceStorage(new HashSet<>());
     }
 
     public boolean register(LocalDate date, LocalTime time) {

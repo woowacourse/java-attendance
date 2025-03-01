@@ -58,7 +58,7 @@ public class CrewAttendanceStorageTest {
         // given
         String crew = "밍곰";
         CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.of(
-                Map.of(crew, new AttendanceStorage())
+                Map.of(crew, AttendanceStorage.init())
         );
 
         // when
@@ -76,7 +76,7 @@ public class CrewAttendanceStorageTest {
         // given
         String crew = "밍곰";
         CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.of(
-                Map.of(crew, new AttendanceStorage())
+                Map.of(crew, AttendanceStorage.init())
         );
         LocalDate date = LocalDate.of(2025, 2, 28);
         LocalTime time = LocalTime.of(10, 0);
@@ -98,7 +98,7 @@ public class CrewAttendanceStorageTest {
         // given
         String crew = "밍곰";
         CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.of(
-                Map.of(crew, new AttendanceStorage())
+                Map.of(crew, AttendanceStorage.init())
         );
         LocalDate date = LocalDate.of(2025, 2, 28);
         LocalTime time = LocalTime.of(10, 0);
@@ -124,7 +124,7 @@ public class CrewAttendanceStorageTest {
         // given
         String crew = "밍곰";
         CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.of(
-                Map.of(crew, new AttendanceStorage())
+                Map.of(crew, AttendanceStorage.init())
         );
         LocalDate date = LocalDate.of(2025, 2, 28);
 

@@ -24,7 +24,7 @@ public class CrewAttendanceStorage {
         if (storages.containsKey(crew)) {
             throw new RuntimeException("이미 출석 저장소를 생성한 크루입니다.");
         }
-        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        AttendanceStorage attendanceStorage = AttendanceStorage.init();
         storages.put(crew, attendanceStorage);
     }
 
