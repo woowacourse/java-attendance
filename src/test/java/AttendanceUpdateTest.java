@@ -43,4 +43,21 @@ public class AttendanceUpdateTest {
         Assertions.assertThatThrownBy(() -> attendanceBook.update(updateNickname, updateDate, updateTime))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("운영시간 전으로 출석을 수정할 수 없다.")
+    @Test
+    void not_update_before_operating_time() {
+        // given
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 4))
+        ));
+        final var updateNickname = "율무";
+        final var updateDate = LocalDate.of(2024, 12, 4);
+        final var updateTime = LocalTime.of(7, 58);
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> attendanceBook.update(updateNickname, updateDate, updateTime))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
