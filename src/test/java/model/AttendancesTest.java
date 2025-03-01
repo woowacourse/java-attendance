@@ -1,6 +1,7 @@
 package model;
 
 import static constant.ErrorMessage.NOT_FOUND_CREW;
+import static constant.ErrorMessage.OUT_OF_OPERATION_HOURS;
 import static constant.PathConstant.ATTENDANCE_FILE_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -202,5 +203,23 @@ class AttendancesTest {
         assertThat(response.riskCrewResponses().get(0).punishmentType()).isEqualTo(PunishmentType.EXPULSION);
         assertThat(response.riskCrewResponses().get(1).punishmentType()).isEqualTo(PunishmentType.MEETING);
         assertThat(response.riskCrewResponses().get(2).punishmentType()).isEqualTo(PunishmentType.MEETING);
+    }
+
+
+    @Test
+    @DisplayName("공휴일에 출석을 시도하는 경우 예외가 발생한다.")
+    void test10() {
+        fixedDateTime = LocalDateTime.of(2024, 12, 25, 12, 0);
+        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDateTime);
+        dateTimeGenerator = new DateTimeGenerator(fixedDateTimeStrategy);
+
+        String nickname = "미소";
+        String checkInTime = "10:00";
+        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
+
+        // when & then
+        assertThatThrownBy(() -> attendances.add(request, dateTimeGenerator))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(OUT_OF_OPERATION_HOURS.getMessage());
     }
 }
