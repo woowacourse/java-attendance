@@ -143,4 +143,18 @@ public class AttendanceBookTest {
         Assertions.assertThat(modifiedAttendanceTime.getAttendanceTime()).isEqualTo(modifyTime);
     }
 
+    @Test
+    void 출석_기록() {
+        //given
+        String crewName = "우가";
+        Crew crew = new Crew(crewName);
+        Crews crews = new Crews(Set.of(crew));
+
+        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 28, 9, 59);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+
+        //when & then
+        Assertions.assertThat(attendanceBook.findAttendanceRecord().size()).isEqualTo(19);
+    }
+
 }
