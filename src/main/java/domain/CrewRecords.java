@@ -19,4 +19,8 @@ public class CrewRecords {
     public void addRecord(Crew crew, AttendanceRecord record) {
         records.get(crew).add(record);
     }
+
+    public Map<Crew, AttendanceRecords> getRecords() {
+        return records;
+    }
 }
