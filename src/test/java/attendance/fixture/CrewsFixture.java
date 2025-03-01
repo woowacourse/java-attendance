@@ -1,12 +1,17 @@
 package attendance.fixture;
 
+import java.util.Arrays;
+
+import attendance.domain.Crew;
 import attendance.domain.Crews;
 
 public class CrewsFixture {
 
-    public static Crews onlyPobi() {
-        Crews crews = Crews.generate();
-        crews.add(CrewFixture.pobi());
-        return crews;
+    public static Crews of(String... names) {
+        return new Crews(
+            Arrays.stream(names)
+                .map(Crew::new)
+                .toList()
+        );
     }
 }

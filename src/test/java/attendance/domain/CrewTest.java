@@ -25,7 +25,7 @@ class CrewTest {
 
     @BeforeEach
     void setup() {
-        crews = CrewsFixture.onlyPobi();
+        crews = CrewsFixture.of("pobi");
         crew = CrewFixture.pobi();
     }
 

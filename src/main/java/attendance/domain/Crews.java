@@ -10,7 +10,7 @@ public class Crews {
 
     private final List<Crew> crews;
 
-    private Crews(List<Crew> crews) {
+    public Crews(List<Crew> crews) {
         this.crews = crews;
     }
 
@@ -20,10 +20,6 @@ public class Crews {
 
     public static Crews fromFile() {
         return new Crews(AttendanceParser.parseFile());
-    }
-
-    public void add(Crew crew) {
-        crews.add(crew);
     }
 
     public Crew get(String name) {

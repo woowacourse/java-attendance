@@ -9,16 +9,15 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import attendance.fixture.CrewsFixture;
+
 class CrewsTest {
 
     @Test
     @DisplayName("제적 위험자인 크루들을 반환한다")
     void getRiskCrewsTest() {
         // given
-        Crews crews = Crews.generate();
-        crews.add(new Crew("pobi"));
-        crews.add(new Crew("moko"));
-        crews.add(new Crew("dogi"));
+        Crews crews = CrewsFixture.of("pobi", "moko", "dogi");
 
         // when
         crews.get("pobi").attendance(LocalDate.of(2025, 2, 3), LocalTime.of(10, 00));
