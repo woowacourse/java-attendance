@@ -67,4 +67,9 @@ public record AttendanceRecord(
             throw new IllegalArgumentException("이미 출석한 날짜입니다.");
         }
     }
+
+    public void modify(LocalDate modifyDate, LocalTime modifyTime) {
+        AttendanceDateTime dateTime = findAttendanceByDate(new AttendanceDate(modifyDate));
+        dateTime.modifyAttendanceTime(modifyTime);
+    }
 }
