@@ -7,7 +7,7 @@ import static attendance.domain.CrewStatus.INTERVIEW;
 import static attendance.domain.CrewStatus.NONE;
 import static attendance.domain.CrewStatus.WARNING;
 
-public class AttendanceStatistics implements Comparable {
+public class AttendanceStatistics implements Comparable<AttendanceStatistics> {
     private static final int FIRE_THRESHOLD = 5;
     private static final int INTERVIEW_THRESHOLD = 2;
     private static final int WARNING_THRESHOLD = 1;
@@ -54,11 +54,10 @@ public class AttendanceStatistics implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        if (o == null || getClass() != o.getClass()) {
+    public int compareTo(AttendanceStatistics given) {
+        if (given == null || getClass() != given.getClass()) {
             return 0;
         }
-        AttendanceStatistics that = (AttendanceStatistics) o;
-        return that.calculateTotalAbsence() - this.calculateTotalAbsence();
+        return given.calculateTotalAbsence() - this.calculateTotalAbsence();
     }
 }

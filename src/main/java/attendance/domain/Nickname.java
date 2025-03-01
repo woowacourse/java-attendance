@@ -4,7 +4,7 @@ import static attendance.exception.ErrorMessage.INVALID_NICKNAME;
 
 import java.util.Objects;
 
-public class Nickname implements Comparable {
+public class Nickname implements Comparable<Nickname> {
     private static final String WHITE_SPACE = " ";
 
     final String nickname;
@@ -49,11 +49,10 @@ public class Nickname implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        if (o == null || getClass() != o.getClass()) {
+    public int compareTo(Nickname given) {
+        if (given == null || getClass() != given.getClass()) {
             return 0;
         }
-        Nickname that = (Nickname) o;
-        return that.nickname.compareTo(this.nickname);
+        return given.nickname.compareTo(this.nickname);
     }
 }
