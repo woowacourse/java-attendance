@@ -26,6 +26,14 @@ public class AttendanceBook {
         }
     }
 
+    public void save(final AttendanceDateTime attendanceDateTime) {
+        attendanceRecord.addAttendanceDateTime(attendanceDateTime);
+    }
+
+    public AttendanceDateTime retrieveByDate(final AttendanceDate date) {
+        return attendanceRecord.findByDate(date);
+    }
+
     public List<AttendanceDateTime> retrieveOrderByDateTimeUntilDate(final AttendanceDate untilDate) {
         return attendanceRecord.findAllUntilDate(untilDate)
             .stream()
