@@ -23,11 +23,11 @@ public class AttendanceTest {
         //given
         Crew crew1 = new Crew("쿠키");
         AttendanceTime time1 = new AttendanceTime(LocalDateTime.of(2024, 12, 2, 9, 30));
-        Attendance attendance = new Attendance(crew1, time1);
+        Attendance attendance = Attendance.of(crew1, time1);
         Crew crew2 = new Crew(nickname);
         AttendanceTime time2 = new AttendanceTime(LocalDateTime.of(2024, 12, date, 9, 30));
         //when
-        boolean actual = attendance.isSameCrewAndTime(new Attendance(crew2, time2));
+        boolean actual = attendance.isSameCrewAndTime(Attendance.of(crew2, time2));
         //then
         assertThat(expected).isEqualTo(actual);
     }
@@ -42,7 +42,7 @@ public class AttendanceTest {
     void 특정_크루및_날짜가_출석기록과_일치하는지_비교한다(String nickname, int date, boolean expected) {
         Crew crew1 = new Crew("쿠키");
         AttendanceTime time1 = new AttendanceTime(LocalDateTime.of(2024, 12, 2, 9, 30));
-        Attendance attendance = new Attendance(crew1, time1);
+        Attendance attendance = Attendance.of(crew1, time1);
         Crew crew2 = new Crew(nickname);
         LocalDate day = LocalDate.of(2024, 12, date);
         //when
@@ -57,16 +57,30 @@ public class AttendanceTest {
         Crew crew = new Crew("쿠키");
         LocalDateTime time = LocalDateTime.of(2024, 12, 2, 9, 30);
         AttendanceTime attendanceTime = new AttendanceTime(time);
-        Attendance attendance = new Attendance(crew, attendanceTime);
+        Attendance attendance = Attendance.of(crew, attendanceTime);
 
         LocalTime newTime = LocalTime.of(8, 30);
         AttendanceTime newAttendanceTime = new AttendanceTime(LocalDateTime.of(time.toLocalDate(), newTime));
-        Attendance expected = new Attendance(crew, newAttendanceTime);
+        Attendance expected = Attendance.of(crew, newAttendanceTime);
 
         //when
         attendance.changeAttendanceTime(newTime);
 
         //then
         assertThat(attendance).isEqualTo(expected);
+    }
+
+    @Test
+    void 결석_출석기록을_생성한다() {
+        //given
+        Crew crew = new Crew("쿠키");
+        LocalDateTime time = LocalDateTime.of(2024, 12, 3, 10, 30, 0, 1);
+        Attendance expected = Attendance.of(crew, AttendanceTime.of(time));
+
+        //when
+        Attendance actual = Attendance.createAbsence(crew, time.toLocalDate());
+
+        //then
+        assertThat(actual).isEqualTo(expected);
     }
 }
