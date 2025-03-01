@@ -6,12 +6,15 @@ import static constant.OutputViewMessage.ATTENDANCE_CHECK_IN_RESPONSE;
 import static constant.OutputViewMessage.ATTENDANCE_HISTORY_NULL_RESPONSE;
 import static constant.OutputViewMessage.ATTENDANCE_HISTORY_RESPONSE;
 import static constant.OutputViewMessage.ATTENDANCE_PUNISHMENT_TYPE_RESPONSE;
+import static constant.OutputViewMessage.ATTENDANCE_RISK_CREWS_HEADER;
+import static constant.OutputViewMessage.ATTENDANCE_RISK_CREWS_RESPONSE;
 import static constant.OutputViewMessage.ATTENDANCE_SUCCESS_TYPE_RESPONSE;
 import static constant.OutputViewMessage.ATTENDANCE_UPDATE_NULL_RESPONSE;
 import static constant.OutputViewMessage.ATTENDANCE_UPDATE_RESPONSE;
 
 import dto.AttendanceCheckInResponse;
 import dto.AttendanceHistoryResponse;
+import dto.AttendanceRiskCrewsResponse;
 import dto.AttendanceUpdateResponse;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -99,6 +102,18 @@ public class OutputView {
                     parsePunishmentType(response.punishmentType())));
             printNewLine();
         }
+    }
+
+    public static void printRiskCrews(AttendanceRiskCrewsResponse responses) {
+        println(ATTENDANCE_RISK_CREWS_HEADER.getMessage());
+        responses.riskCrewResponses().forEach(response ->
+                println(String.format(ATTENDANCE_RISK_CREWS_RESPONSE.getMessage(),
+                        response.crew().getNickname(),
+                        response.attendanceTotal().get(AttendanceType.ABSENCE),
+                        response.attendanceTotal().get(AttendanceType.BE_LATE),
+                        parsePunishmentType(response.punishmentType()))
+                ));
+        printNewLine();
     }
 
     private static String parseAttendanceType(AttendanceType attendanceType) {
