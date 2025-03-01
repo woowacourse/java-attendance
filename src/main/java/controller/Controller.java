@@ -45,8 +45,7 @@ public class Controller {
     }
     private void functionAttendanceRegister(AttendanceBook attendanceBook){
         try{
-            OutPutView.requestNickName();
-            String nickName = InputView.input();
+            String nickName = requestNickName();
             LocalTime attendanceTime = InputView.inputAttendanceTime();
             Student student = attendanceBook.findStudentByNickName(nickName);
             student.registerAttendanceRecord(TODAY, attendanceTime);
@@ -57,22 +56,47 @@ public class Controller {
             functionAttendanceRegister(attendanceBook);
         }
     }
-    private void functionAttendanceModify(AttendanceBook attendanceBook){
-        try{
-            OutPutView.requestModifyNickName();
-            String nickName = InputView.input();
-            OutPutView.requestModifyDate();
-            int modifyDate = InputView.validateDateFormat(InputView.input());
+
+    private static String requestNickName() {
+        OutPutView.requestNickName();
+        return InputView.input();
+    }
+
+    private void functionAttendanceModify(AttendanceBook attendanceBook) {
+        try {
+            String nickName = requestModifyNickName();
+            int modifyDate = requestModifyDate();
             Student student = attendanceBook.findStudentByNickName(nickName);
-            String beforeRecord = AttendanceRecordFormatter.attendanceRecordFormatter(student, LocalDate.of(2024,12,modifyDate));
-            OutPutView.requestModifyTime();
-            LocalTime modifyTime = InputView.validateTimeFormat(InputView.input());
-            student.modifyAttendanceRecord(modifyDate, modifyTime);
-            String afterRecord = AttendanceRecordFormatter.attendanceRecordFormatter(student, LocalDate.of(2024,12,modifyDate));
-            OutPutView.displayModifyAttendanceRecord(beforeRecord, afterRecord);
-        }catch (IllegalArgumentException e){
+            modifyAttendanceRecord(student, modifyDate);
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            functionAttendanceModify(attendanceBook);
+            functionAttendanceModify(attendanceBook); // 재귀 호출
         }
+    }
+
+    private void modifyAttendanceRecord(Student student, int modifyDate) {
+        LocalDate date = LocalDate.of(2024, 12, modifyDate);
+        String beforeRecord = AttendanceRecordFormatter.attendanceRecordFormatter(student, date);
+
+        LocalTime modifyTime = requestModifyTime();
+        student.modifyAttendanceRecord(modifyDate, modifyTime);
+
+        String afterRecord = AttendanceRecordFormatter.attendanceRecordFormatter(student, date);
+        OutPutView.displayModifyAttendanceRecord(beforeRecord, afterRecord);
+    }
+
+    private String requestModifyNickName() {
+        OutPutView.requestModifyNickName();
+        return InputView.input();
+    }
+
+    private int requestModifyDate() {
+        OutPutView.requestModifyDate();
+        return InputView.validateDateFormat(InputView.input());
+    }
+
+    private LocalTime requestModifyTime() {
+        OutPutView.requestModifyTime();
+        return InputView.validateTimeFormat(InputView.input());
     }
 }
