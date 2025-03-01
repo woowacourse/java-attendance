@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AttendanceManager {
+public class AttendanceTimes {
 
     private final List<AttendanceTime> attendanceTimes;
 
-    private AttendanceManager() {
+    private AttendanceTimes() {
         this.attendanceTimes = new ArrayList<>();
     }
 
-    public static AttendanceManager create() {
-        return new AttendanceManager();
+    public static AttendanceTimes create() {
+        return new AttendanceTimes();
     }
 
     public void add(AttendanceTime attendanceDateTime) {
