@@ -1,91 +1,105 @@
 package view;
 
-import domain.AttendanceStatus;
-import domain.AttendanceTime;
-import domain.ExpelStatus;
+import constant.Constants;
+import domain.Attendance;
+import domain.AttendanceDate;
+import domain.Attendances;
+import domain.Crew;
+import domain.CrewStatus;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 import util.DayOfWeekConvertor;
+import view.sortingMachine.CrewSortingMachine;
 
 public class OutputView {
 
-    public void printErrorMessage(String message) {
-        System.out.println(message);
+    public void printWelcomeMessage() {
+        System.out.println(String.format("오늘은 %02d월 %02d일 %s요일입니다. 기능을 선택해 주세요.",
+                Constants.NOW_DATE.getMonthValue(),
+                Constants.NOW_DATE.getDayOfMonth(),
+                DayOfWeekConvertor.convertToKorean(Constants.NOW_DATE.getDayOfWeek())));
     }
 
-    public void printMenuHeader(LocalDate nowDate) {
-        System.out.print(String.format("\n오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.", nowDate.getMonthValue(), nowDate.getDayOfMonth(),
-                DayOfWeekConvertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek())));
+    public void printErrorMessage(String errorMessage) {
+        System.out.println(errorMessage);
     }
 
-    public void printCheckAttendanceMessage(AttendanceTime attendanceTime) {
-        LocalDateTime attendanceDateTime = attendanceTime.getAttendanceDateTime();
-        AttendanceStatus attendanceStatus = attendanceTime.getAttendanceStatus();
-        System.out.print(writeAttendanceDateMessage(attendanceDateTime)
-                        + writeAttendanceTimeMessage(attendanceDateTime, attendanceStatus));
+    public void printAttendanceMessage(Attendance attendance) {
+        System.out.println(this.generateAttendanceMessage(attendance) + System.lineSeparator());
     }
 
-    public void printEditAttendanceMessage(AttendanceTime oldAttendanceTime, AttendanceTime newAttendanceTime) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(writeAttendanceDateMessage(oldAttendanceTime.getAttendanceDateTime()))
-                .append(writeAttendanceTimeMessage(oldAttendanceTime.getAttendanceDateTime(), oldAttendanceTime.getAttendanceStatus()))
-                .append(" ->")
-                .append(writeAttendanceTimeMessage(newAttendanceTime.getAttendanceDateTime(), newAttendanceTime.getAttendanceStatus()))
-                .append(" 수정 완료!");
-        System.out.println(sb);
+    public void printEditMessage(Attendance oldAttendance, Attendance newAttendance) {
+        System.out.print(System.lineSeparator() + generateAttendanceMessage(oldAttendance));
+
+        System.out.println(String.format(" -> %02d:%02d (%s) 수정 완료!",
+                newAttendance.getAttendanceTime().getHour(),
+                newAttendance.getAttendanceTime().getMinute(),
+                newAttendance.getAttendanceStatus().getStatus()));
     }
 
-    public void printCrewAttendanceHeader(String nickName) {
-        System.out.println(String.format("이번 달 %s의 출석 기록입니다.", nickName));
-    }
+    public void printAttendances(Crew crew) {
+        Attendances attendances = crew.getAttendances();
+        System.out.println(System.lineSeparator() + String.format("이번 달 %s의 출석 기록입니다.", crew.getName()) + System.lineSeparator());
 
-    public void printCrewStatuses(Map<AttendanceStatus, Integer> attendStatuses) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(System.lineSeparator()).append(System.lineSeparator())
-                .append(writeCrewStatus(AttendanceStatus.ATTEND, attendStatuses.get(AttendanceStatus.ATTEND)))
-                .append(writeCrewStatus(AttendanceStatus.LATE, attendStatuses.get(AttendanceStatus.LATE)))
-                .append(writeCrewStatus(AttendanceStatus.ABSENT, attendStatuses.get(AttendanceStatus.ABSENT) + attendStatuses.get(AttendanceStatus.UNATTEND)))
-                .append(System.lineSeparator())
-                .append(writeExpelStatus(attendStatuses))
-                .append(System.lineSeparator());
-        System.out.println(sb);
-    }
-
-    public void printExpelledCrewHeader() {
-        System.out.println("\n제적 위험자 조회 결과");
-    }
-
-    public void printExpelledCrew(String crewName, Map<AttendanceStatus, Integer> attendStatuses) {
-        System.out.println(String.format("- %s: 결석 %d회, 지각 %d회 (%s)", crewName,
-                attendStatuses.get(AttendanceStatus.ABSENT) + attendStatuses.get(AttendanceStatus.UNATTEND),
-                attendStatuses.get(AttendanceStatus.LATE),
-                ExpelStatus.determineExpelStatus(attendStatuses).getExpelStatus()));
-    }
-
-    private String writeCrewStatus(AttendanceStatus attendanceStatus, int attendanceStatusCount) {
-        return String.format("%s: %d회%n", attendanceStatus.getStatus(), attendanceStatusCount);
-    }
-
-    private String writeExpelStatus(Map<AttendanceStatus, Integer> attendStatuses) {
-        return String.format("%s 대상자입니다.", ExpelStatus.determineExpelStatus(attendStatuses).getExpelStatus());
-    }
-
-    private String writeAttendanceDateMessage(LocalDateTime attendanceDateTime) {
-        return String.format("%n%d월 %02d일 %s요일",
-                attendanceDateTime.getMonthValue(),
-                attendanceDateTime.getDayOfMonth(),
-                DayOfWeekConvertor.convertDayOfWeekToKorean(attendanceDateTime.getDayOfWeek()));
-    }
-
-    private String writeAttendanceTimeMessage(LocalDateTime attendanceDateTime, AttendanceStatus attendanceStatus) {
-        if (attendanceStatus.equals(AttendanceStatus.UNATTEND)) {
-            return String.format(" --:-- (%s)",
-                    attendanceStatus.getStatus());
+        List<LocalDate> pastEducationDates = AttendanceDate.findPastEducationDates(Constants.NOW_DATE);
+        for (LocalDate educationDate : pastEducationDates) {
+            System.out.println(generateCrewAttendanceMessage(attendances, educationDate));
         }
-        return String.format(" %02d:%02d (%s)",
-                attendanceDateTime.getHour(),
-                attendanceDateTime.getMinute(),
-                attendanceStatus.getStatus());
+        printCrewStatusMessage(attendances);
+    }
+
+    public void printExpelledCrews(List<Crew> crews, CrewSortingMachine crewSortingMachine) {
+        List<Crew> sortedCrews = crewSortingMachine.sortCrews(crews);
+        System.out.println("제적 위험자 조회 결과");
+        for (Crew crew : sortedCrews) {
+            System.out.println(generateExpelledCrewMessage(crew));
+        }
+        System.out.println();
+    }
+
+    private String generateCrewAttendanceMessage(Attendances attendances, LocalDate educationDate) {
+        AttendanceDate attendanceDate = new AttendanceDate(educationDate);
+        if (attendances.checkAlreadyAttend(attendanceDate)) {
+            Attendance attendance = attendances.findAttendanceByDate(attendanceDate);
+            return generateAttendanceMessage(attendance);
+        }
+        return generateAbsentMessage(educationDate);
+    }
+
+    private void printCrewStatusMessage(Attendances attendances) {
+        System.out.println(System.lineSeparator() + String.format("출석: %d회", attendances.countAttendance()) +
+                System.lineSeparator() + String.format("지각: %d회", attendances.countLate()) +
+                System.lineSeparator() + String.format("결석: %d회", attendances.countUnattended(Constants.NOW_DATE)) + System.lineSeparator());
+
+        CrewStatus crewStatus = CrewStatus.checkCrewStatus(attendances.countLate(), attendances.countUnattended(Constants.NOW_DATE));
+
+        if (!crewStatus.equals(CrewStatus.NORMAL)) {
+            System.out.println(String.format("%s입니다.", crewStatus.getStatus()) + System.lineSeparator());
+        }
+    }
+
+    private String generateExpelledCrewMessage(Crew crew) {
+        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)",
+                crew.getName(),
+                crew.getAbsentCount(Constants.NOW_DATE),
+                crew.getLateCount(),
+                crew.findCrewStatus(Constants.NOW_DATE).getStatus());
+    }
+
+    private String generateAttendanceMessage(Attendance attendance) {
+        return String.format("%02d월 %02d일 %s요일 %02d:%02d (%s)",
+                attendance.getAttendanceDate().getMonthValue(),
+                attendance.getAttendanceDate().getDayOfMonth(),
+                DayOfWeekConvertor.convertToKorean(attendance.getAttendanceDate().getDayOfWeek()),
+                attendance.getAttendanceTime().getHour(),
+                attendance.getAttendanceTime().getMinute(),
+                attendance.getAttendanceStatus().getStatus());
+    }
+
+    private String generateAbsentMessage(LocalDate date) {
+        return String.format("%02d월 %02d일 %s요일 --:-- (결석)",
+                date.getMonthValue(),
+                date.getDayOfMonth(),
+                DayOfWeekConvertor.convertToKorean(date.getDayOfWeek()));
     }
 }

@@ -1,14 +1,36 @@
 package controller;
 
-import domain.Attendance;
-import java.time.LocalDate;
+import constant.Constants;
+import domain.AttendanceBook;
+import util.AttendanceConvertor;
+import util.AttendanceFileReader;
+import util.InputProcessor;
 import view.InputView;
 import view.OutputView;
 
-public interface AttendanceController {
+public class AttendanceController {
 
-    InputView inputView = new InputView();
-    OutputView outputView = new OutputView();
+    private final InputView inputView;
+    private final OutputView outputView;
 
-    void process(Attendance attendance, LocalDate nowDate);
+    public AttendanceController(final InputView inputView, final OutputView outputView) {
+        this.inputView = inputView;
+        this.outputView = outputView;
+    }
+
+    public void run() {
+        AttendanceBook attendanceBook = new AttendanceBook(AttendanceConvertor.convertToAttendances(AttendanceFileReader.readFile()));
+        MenuOption option;
+
+        do {
+            this.outputView.printWelcomeMessage();
+            option = InputProcessor.processInputUntilSuccess(this::processOptionInput);
+            option.process(attendanceBook, Constants.NOW_DATE);
+        } while (!option.equals(MenuOption.QUIT));
+    }
+
+    private MenuOption processOptionInput() {
+        String optionInput = this.inputView.getOptionInput();
+        return MenuOption.findOptionByCommand(optionInput);
+    }
 }

@@ -1,11 +1,11 @@
-import controller.MainController;
+import controller.AttendanceController;
 import view.InputView;
 import view.OutputView;
 
 public class Application {
 
     public static void main(String[] args) {
-        MainController mainController = new MainController(new InputView(), new OutputView());
-        mainController.run();
+        AttendanceController attendanceController = new AttendanceController(new InputView(), new OutputView());
+        attendanceController.run();
     }
 }

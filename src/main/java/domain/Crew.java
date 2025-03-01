@@ -1,39 +1,69 @@
 package domain;
 
-import java.util.HashMap;
-import java.util.Map;
+import constant.Constants;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Crew {
 
     private final String name;
-    private Map<AttendanceStatus, Integer> attendanceStatuses;
+    private final Attendances attendances;
 
-    public Crew(String name) {
+    public Crew(String name, Attendances attendances) {
         this.name = name;
-        this.attendanceStatuses = new HashMap<>();
+        this.attendances = attendances;
     }
 
-    public Map<AttendanceStatus, Integer> getAttendanceStatus(AttendanceTimes attendanceTimes) {
-        countAttendanceStatus(attendanceTimes);
-        return this.attendanceStatuses;
-    }
-
-    public boolean isExpelled(AttendanceTimes attendanceTimes) {
-        countAttendanceStatus(attendanceTimes);
-        return ExpelStatus.determineExpelStatus(this.attendanceStatuses) != ExpelStatus.NONE;
-    }
-
-    private void countAttendanceStatus(AttendanceTimes attendanceTimes) {
-        this.attendanceStatuses = attendanceTimes.calculateAttendanceStatuses();
+    public CrewStatus findCrewStatus(LocalDate nowDate) {
+        return this.attendances.findCrewStatue(nowDate);
     }
 
     public boolean isSameName(String name) {
         return this.name.equals(name);
     }
 
+    public boolean checkAlreadyAttend(AttendanceDate attendanceDate) {
+        return this.attendances.checkAlreadyAttend(attendanceDate);
+    }
+
+    public void attend(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        this.attendances.addNewAttendance(attendanceDate, attendanceTime);
+    }
+
+    public void edit(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        this.attendances.editAttendance(attendanceDate, attendanceTime);
+    }
+
+    public Attendance findAttendanceByDate(AttendanceDate attendanceDate) {
+        return this.attendances.findAttendanceByDate(attendanceDate);
+    }
+
+    public boolean isExpelledStatus(LocalDate nowDate) {
+        return !this.findCrewStatus(nowDate).equals(CrewStatus.NORMAL);
+    }
+
+    public int getLateCount() {
+        return this.attendances.countLate();
+    }
+
+    public int getAbsentCount(LocalDate nowDate) {
+        return this.attendances.countUnattended(nowDate);
+    }
+
+    public int getExpelledAbsentCount(LocalDate nowDate) {
+        return getAbsentCount(nowDate) + getLateCount() / Constants.LATE_TO_UNATTENDED_UNIT;
+    }
+
+    public int getCrewStatusSequence() {
+        return findCrewStatus(Constants.NOW_DATE).getSequence();
+    }
+
     public String getName() {
         return this.name;
+    }
+
+    public Attendances getAttendances() {
+        return this.attendances;
     }
 
     @Override

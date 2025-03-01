@@ -1,76 +1,62 @@
 package view;
 
-import domain.MenuOption;
+import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Scanner;
 
 public class InputView {
 
-    private final static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    public String readOption(List<MenuOption> options) {
-        StringBuilder sb = new StringBuilder();
-        for (MenuOption option : options) {
-            sb.append(System.lineSeparator())
-                    .append(option.getCommand())
-                    .append(". ")
-                    .append(option.getOption());
-        }
-        return prompt(sb.toString());
-    }
-
-    public String readNickname() {
-        return prompt("\n닉네임을 입력해 주세요.");
-    }
-
-    public LocalTime readArrivalTime() {
-        String response = prompt("등교 시간을 입력해 주세요.");
-        return parseTime(response);
-    }
-
-    public String readEditNickname() {
-        return prompt("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-    }
-
-    public int readEditArrivalDate() {
-        String response = prompt("수정하려는 날짜(일)를 입력해 주세요.");
-        int day = parseDay(response);
-        validateDay(day);
-        return day;
-    }
-
-    public LocalTime readEditArrivalTime() {
-        String response = prompt("언제로 변경하겠습니까?");
-        return parseTime(response);
-    }
-
-    private String prompt(String message) {
-        System.out.println(message);
+    public String getNameInput() {
+        System.out.println("닉네임을 입력해 주세요.");
         return scanner.nextLine();
     }
 
-    private LocalTime parseTime(String response) {
+    public LocalTime getAttendTimeInput() {
+        System.out.println("등교 시간을 입력해 주세요.");
         try {
-            return LocalTime.parse(response, DateTimeFormatter.ofPattern("HH:mm"));
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 시간 형식이 올바르지 않습니다.");
+            return LocalTime.parse(scanner.nextLine(), TIME_FORMATTER);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("[ERROR] 시간 입력 형식이 올바르지 않습니다.");
         }
     }
 
-    private int parseDay(String response) {
+    public String getOptionInput() {
+        System.out.println("1. 출석 확인");
+        System.out.println("2. 출석 수정");
+        System.out.println("3. 크루별 출석 기록 확인");
+        System.out.println("4. 제적 위험자 확인");
+        System.out.println("Q. 종료" + System.lineSeparator());
+        return scanner.nextLine();
+    }
+
+    public String getEditNameInput() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
+
+    public int getEditDayInput() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return parseDay(scanner.nextLine());
+    }
+
+    public LocalTime getEditTimeInput() {
+        System.out.println("언제로 변경하겠습니까?");
         try {
-            return Integer.parseInt(response);
+            return LocalTime.parse(scanner.nextLine(), TIME_FORMATTER);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("[ERROR] 시간 입력 형식이 올바르지 않습니다.");
+        }
+    }
+
+    private int parseDay(String input) {
+        try {
+            return Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 날짜 형식이 올바르지 않습니다.");
-        }
-    }
-
-    private void validateDay(int day) {
-        if (day < 1 || day > 31) {
-            throw new IllegalArgumentException("[ERROR] 유효한 날짜가 아닙니다.");
+            throw new IllegalArgumentException("[ERROR] 날짜 입력 형식이 올바르지 않습니다.");
         }
     }
 }
