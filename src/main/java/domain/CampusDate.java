@@ -3,6 +3,7 @@ package domain;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class CampusDate {
 
@@ -11,6 +12,11 @@ public class CampusDate {
     private CampusDate(final LocalDate date) {
         validateDateIsWeekday(date);
         this.date = date;
+    }
+
+    public static CampusDate from(final String date) {
+        LocalDate localDate = validateDateRangeAndType(date);
+        return new CampusDate(localDate);
     }
 
     public static CampusDate fromDate(final LocalDate date) {
@@ -24,6 +30,14 @@ public class CampusDate {
 
     public CampusDate withDay(final int day) {
         return new CampusDate(date.withDayOfMonth(day));
+    }
+
+    private static LocalDate validateDateRangeAndType(final String inputDate) {
+        try {
+            return LocalDate.parse(inputDate);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 유효한 범위의 날짜를 입력해 주세요.");
+        }
     }
 
     private static void validateDayRangeOfMonth(final LocalDate date, final int day) {

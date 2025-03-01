@@ -38,6 +38,31 @@ class CampusDateTest {
         assertThat(campusDate.getDay()).isEqualTo(7);
     }
 
+    @Test
+    void 문자열을_입력받아_객체를_생성한다() {
+        // given
+        String inputDate = "2025-02-27";
+
+        // when
+        CampusDate date = CampusDate.from(inputDate);
+
+        // then
+        assertThat(date.getYear()).isEqualTo(2025);
+        assertThat(date.getMonth()).isEqualTo(2);
+        assertThat(date.getDay()).isEqualTo(27);
+    }
+
+    @Test
+    void 잘못된_문자열_입력시_예외를_발생시킨다() {
+        // given
+        String inputDate = "2025-02-2ㅁ";
+
+        // when // then
+        assertThatThrownBy(() -> CampusDate.from(inputDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 유효한 범위의 날짜를 입력해 주세요.");
+    }
+
     @ParameterizedTest
     @CsvSource(value =
             {
