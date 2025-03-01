@@ -2,7 +2,6 @@ package attendance.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -101,18 +100,21 @@ public class AttendanceLogs {
     }
 
     public EnumMap<AttendanceType, Integer> countAttendanceTypes(Nickname nickname, LocalDate baseDate) {
-        EnumMap<AttendanceType, Integer> attendanceCounts = new EnumMap<>(AttendanceType.class);
-
-        Arrays.stream(AttendanceType.values())
-                .forEach(type -> attendanceCounts.put(type, 0));
-
-        findAllByNicknameInMonth(nickname, baseDate).forEach(log -> {
+        EnumMap<AttendanceType, Integer> attendanceCounts = initializeAttendanceCounts();
+        for (AttendanceLog attendanceLog : findAllByNicknameInMonth(nickname, baseDate)) {
             AttendanceType type = AttendanceType.determine(
-                    EducationSchedule.findStartTimeByDay(log.getAttendanceDate().getDayOfWeek()),
-                    log.getAttendanceTime());
-            attendanceCounts.put(type, attendanceCounts.get(type) + 1);
-        });
+                    EducationSchedule.findStartTimeByDay(attendanceLog.getAttendanceDate().getDayOfWeek()),
+                    attendanceLog.getAttendanceTime());
+            attendanceCounts.merge(type, 1, Integer::sum);
+        }
+        return attendanceCounts;
+    }
 
+    private EnumMap<AttendanceType, Integer> initializeAttendanceCounts() {
+        EnumMap<AttendanceType, Integer> attendanceCounts = new EnumMap<>(AttendanceType.class);
+        for (AttendanceType value : AttendanceType.values()) {
+            attendanceCounts.put(value, 0);
+        }
         return attendanceCounts;
     }
 
