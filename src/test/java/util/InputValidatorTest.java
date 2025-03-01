@@ -1,6 +1,8 @@
 package util;
 
 import static constant.ErrorMessage.INVALID_INPUT_NULL_OR_BLANK;
+import static constant.ErrorMessage.INVALID_INTEGER_FORMAT;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
@@ -9,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class InputValidatorTest {
 
     @Test
-    @DisplayName("입력 값은 null일 수 없다.")
+    @DisplayName("null 입력 시 예외가 발생한다.")
     void test1() {
         // given
         String input = null;
@@ -21,7 +23,7 @@ class InputValidatorTest {
     }
 
     @Test
-    @DisplayName("입력 값은 공백일 수 없다.")
+    @DisplayName("공백 입력 시 예외가 발생한다.")
     void test2() {
         // given
         String input = " ";
@@ -30,5 +32,28 @@ class InputValidatorTest {
         assertThatThrownBy(() -> InputValidator.validateNullOrBlank(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(INVALID_INPUT_NULL_OR_BLANK.getMessage());
+    }
+
+    @Test
+    @DisplayName("정수 입력 시 예외가 발생하지 않는다.")
+    void test3() {
+        // given
+        String input = "12";
+
+        // when & then
+        assertThatCode(() -> InputValidator.validateInteger(input))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("정수가 아닌 입력 시 예외가 발생한다.")
+    void test4() {
+        // given
+        String input = "AB";
+
+        // when & then
+        assertThatThrownBy(() -> InputValidator.validateInteger(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(INVALID_INTEGER_FORMAT.getMessage());
     }
 }
