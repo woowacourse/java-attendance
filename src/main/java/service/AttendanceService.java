@@ -33,6 +33,10 @@ public class AttendanceService {
         return attendanceStorage.containsSameHistoryOf(crew, localDateTime);
     }
 
+    public boolean checkRestDay(LocalDate localDate) {
+        return !AttendanceDateTime.generateWithoutTimeFrom(localDate).isRestDay();
+    }
+
     public AttendanceStatusDto addAttendanceHistory(Crew crew, LocalDateTime localDateTime) {
         AttendanceHistory history = AttendanceHistory.of(crew, localDateTime);
         attendanceStorage.add(history);
@@ -41,45 +45,56 @@ public class AttendanceService {
 
     public List<AttendanceStatusDto> replaceAttendanceHistory(Crew crew, LocalDateTime newLocalDateTime) {
         AttendanceHistory newHistory = AttendanceHistory.of(crew, newLocalDateTime);
-
         int replaceTargetIndex = attendanceStorage.indexOfSameDateAndCrew(newHistory);
         AttendanceHistory oldHistory = attendanceStorage.getAttendanceHistory(replaceTargetIndex);
-        LocalDateTime oldLocalDateTime = oldHistory.getAttendanceDateTime().getLocalDateTime();
-        AttendanceStatusDto oldStatusDto = AttendanceStatusDto.of(oldLocalDateTime, oldHistory.getAttendanceType());
 
         attendanceStorage.replace(newHistory);
 
+        LocalDateTime oldLocalDateTime = oldHistory.getAttendanceDateTime().getLocalDateTime();
+        AttendanceStatusDto oldStatusDto = AttendanceStatusDto.of(oldLocalDateTime, oldHistory.getAttendanceType());
         AttendanceStatusDto newStatusDto = AttendanceStatusDto.of(newLocalDateTime, newHistory.getAttendanceType());
 
         return List.of(oldStatusDto, newStatusDto);
     }
 
-    public AttendanceStatusesOfCrewDto getHistoriesDto(Crew crew, int untilDay) {
+    public AttendanceStatusesOfCrewDto getAllHistories(Crew crew, int untilDay) {
         List<AttendanceStatusDto> attendanceStatusDtos = new ArrayList<>();
-        Map<Integer, AttendanceHistory> historyOfDays = getHistoryForEachDay(crew, untilDay);
-        Map<AttendanceType, Integer> attendanceTypeCount = new HashMap<>();
+        Map<Integer, AttendanceHistory> historyForEachDay = getHistoryForEachDay(crew, untilDay);
+        Map<AttendanceType, Integer> attendanceTypeCount = getAttendanceTypeCount(historyForEachDay, untilDay);
 
         for (int currentDay = 1; currentDay < untilDay; currentDay++) {
-            AttendanceHistory currentDayHistory = historyOfDays.get(currentDay);
+            AttendanceHistory currentDayHistory = historyForEachDay.get(currentDay);
             if (currentDayHistory.getAttendanceDateTime().isRestDay()) {
                 continue;
             }
-            attendanceTypeCount.merge(currentDayHistory.getAttendanceType(), 1, Integer::sum);
-
-            if (currentDayHistory.isRecorded()) {
-                AttendanceStatusDto currentStatusDto = AttendanceStatusDto.of(
-                        currentDayHistory.getAttendanceDateTime().getLocalDateTime(),
-                        currentDayHistory.getAttendanceType()
-                );
-                attendanceStatusDtos.add(currentStatusDto);
-                continue;
-            }
-
-            AttendanceStatusDto currentStatusDto = AttendanceStatusDto.generateNotRecordedOf(currentDayHistory.getAttendanceDateTime().getLocalDateTime());
-            attendanceStatusDtos.add(currentStatusDto);
+            attendanceStatusDtos.add(makeAttendanceStatus(currentDayHistory));
         }
 
         return new AttendanceStatusesOfCrewDto(attendanceStatusDtos, attendanceTypeCount, PenaltyType.getFrom(attendanceTypeCount));
+    }
+
+    public Map<Crew, Map<AttendanceType, Integer>> getAllAttendanceTypeCountOfCrew(int untilDay) {
+        Set<Crew> registeredCrews = attendanceStorage.getCrews();
+        Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = new HashMap<>();
+
+        for (Crew crew : registeredCrews) {
+            Map<Integer, AttendanceHistory> historyForEachDay = getHistoryForEachDay(crew, untilDay);
+            Map<AttendanceType, Integer> attendanceTypeCount = getAttendanceTypeCount(historyForEachDay, untilDay);
+            attendanceTypeCountOfCrew.put(crew, attendanceTypeCount);
+        }
+
+        return attendanceTypeCountOfCrew;
+    }
+
+    private AttendanceStatusDto makeAttendanceStatus(AttendanceHistory attendanceHistory) {
+        if (attendanceHistory.isRecorded()) {
+            return AttendanceStatusDto.of(
+                    attendanceHistory.getAttendanceDateTime().getLocalDateTime(),
+                    attendanceHistory.getAttendanceType()
+            );
+        }
+
+        return AttendanceStatusDto.generateNotRecordedOf(attendanceHistory.getAttendanceDateTime().getLocalDateTime());
     }
 
     private Map<Integer, AttendanceHistory> getHistoryForEachDay(Crew crew, int untilDay) {
@@ -105,21 +120,6 @@ public class AttendanceService {
         return historyForEachDay;
     }
 
-    public Map<Crew, Map<AttendanceType, Integer>> getAllAttendanceTypeCountOfCrew(int untilDay) {
-        Set<Crew> registeredCrews = attendanceStorage.getCrews();
-        Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = new HashMap<>();
-        for (Crew crew : registeredCrews) {
-            Map<Integer, AttendanceHistory> historyForEachDay = getHistoryForEachDay(crew, untilDay);
-            Map<AttendanceType, Integer> attendanceTypeCount = getAttendanceTypeCount(historyForEachDay, untilDay);
-            attendanceTypeCountOfCrew.put(crew, attendanceTypeCount);
-        }
-
-        return attendanceTypeCountOfCrew;
-    }
-
-    public boolean checkRestDay(LocalDate localDate) {
-        return !AttendanceDateTime.generateWithoutTimeFrom(localDate).isRestDay();
-    }
 
     private Map<AttendanceType, Integer> getAttendanceTypeCount(Map<Integer, AttendanceHistory> historyForEachDay, int untilDay) {
         Map<AttendanceType, Integer> attendanceTypeCount = new HashMap<>();
