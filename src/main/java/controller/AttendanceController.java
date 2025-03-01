@@ -40,7 +40,7 @@ public class AttendanceController {
 
     private CrewRecords loadCrewRecords() {
         CrewRecordsGenerator crewRecordsGenerator = new CrewRecordsGenerator();
-        return crewRecordsGenerator.generate(FileReader.read("src/main/resources/attendances.csv"));
+        return crewRecordsGenerator.generate(FileReader.read("src/main/resources/attendances.csv").stream().skip(1).toList());
     }
 
     private void checkIn() {
@@ -48,7 +48,6 @@ public class AttendanceController {
         String time = inputView.readCheckInTime();
 
         Crew crew = new Crew(nickname);
-        CrewRecords crewRecords = new CrewRecords();
         crewRecords.validateCrew(crew);
         AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDateTime.of(currentDate, LocalTime.parse(time)));
         crewRecords.addRecord(crew, attendanceRecord);
