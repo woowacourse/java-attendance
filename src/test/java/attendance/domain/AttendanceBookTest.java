@@ -57,7 +57,7 @@ public class AttendanceBookTest {
 
         Assertions.assertThatThrownBy(() -> attendanceBook.registerAttendance(invalidCrewName, inputTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("해당 크루를 찾을 수 없습니다.");
+                .hasMessage("[ERROR] 해당 크루를 찾을 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -99,7 +99,7 @@ public class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
         Assertions.assertThatThrownBy(() -> attendanceBook.findBeforeAttendanceRecord(invalidCrewName, modifyDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("해당 크루를 찾을 수 없습니다.");
+                .hasMessage("[ERROR] 해당 크루를 찾을 수 없습니다.");
     }
 
     //출석부가 출석 기록에게 (이 날)을 메시지로 보내서 기록 있냐고 요청하고 있으면 달라고 함

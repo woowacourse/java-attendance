@@ -37,4 +37,21 @@ public class InputView {
 
         return currentDateTime.withHour(inputTime.getHour()).withMinute(inputTime.getMinute());
     }
+
+    public String readModifyCrewName() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
+
+    public LocalDateTime readModifyDay(LocalDateTime currentDateTime) {
+        System.out.println("수정하려는 날짜(일)을 입력해 주세요.");
+        return currentDateTime.withDayOfMonth(Integer.parseInt(scanner.nextLine()));
+    }
+
+    public LocalDateTime readModifyTime(LocalDateTime modifyDayTime) {
+        System.out.println("언제로 변경하겠습니까?");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime inputTime = LocalTime.parse(scanner.nextLine(), dateTimeFormatter);
+        return modifyDayTime.withHour(inputTime.getHour()).withMinute(inputTime.getMinute());
+    }
 }

@@ -32,6 +32,9 @@ public class AttendanceController {
             if (commandOption.equals(CommandOption.ATTENDANCE_CHECK)) {
                 registerAttendance(attendanceBook, currentDateTime);
             }
+            if (commandOption.equals(CommandOption.ATTENDANCE_MODIFY)) {
+                modifyAttendance(attendanceBook, currentDateTime);
+            }
             commandOption = inputView.readCommandOption(currentDateTime);
         }
     }
@@ -45,11 +48,34 @@ public class AttendanceController {
     }
 
     //TODO : now가 주말이면 출석확인 버튼 누르면 처리해줘야함 예외
+
     private void registerAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime) {
         String inputCrewName = readCrewName();
         LocalDateTime attendanceTime = readAttendanceTime(currentDateTime);
         AttendanceTime registerdAttendanceTime = attendanceBook.registerAttendance(inputCrewName, attendanceTime);
         outputView.writeAttendanceRegister(registerdAttendanceTime);
+    }
+
+    private void modifyAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime) {
+        String inputCrewName = readModifyCrewName();
+        LocalDateTime inputModifyDay = readModifyDay(currentDateTime);
+        LocalDateTime inputModifyDayTime = readModifyTime(inputModifyDay);
+
+        AttendanceTime beforeTime = attendanceBook.findBeforeAttendanceRecord(inputCrewName, inputModifyDayTime);
+        AttendanceTime updateTime = attendanceBook.modifyAttendance(inputCrewName, inputModifyDayTime);
+        outputView.writeAttendanceModify(beforeTime, updateTime);
+    }
+
+    private String readModifyCrewName() {
+        return retryInput(inputView::readModifyCrewName);
+    }
+
+    private LocalDateTime readModifyDay(LocalDateTime currentDateTime) {
+        return retryInput(() -> inputView.readModifyDay(currentDateTime));
+    }
+
+    private LocalDateTime readModifyTime(LocalDateTime modifyDayTime) {
+        return retryInput(() -> inputView.readModifyTime(modifyDayTime));
     }
 
     private String readCrewName() {
