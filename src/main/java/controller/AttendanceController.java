@@ -101,16 +101,17 @@ public class AttendanceController {
     }
 
     private void runCheckAttendanceOfCrew() {
-        int currentDay = currentDate.getDayOfMonth();
+        int untilDay = currentDate.getDayOfMonth(); // 오늘 날짜 이전까지 검색
         String nickname = InputView.askNickname(false);
         validateNicknameRegistered(nickname);
-        AttendanceStatusesOfCrewDto statusesDto = attendanceService.getHistoriesDto(Crew.from(nickname), currentDay);
+
+        AttendanceStatusesOfCrewDto statusesDto = attendanceService.getAllHistories(Crew.from(nickname), untilDay);
         OutputView.printAttendanceStatus(statusesDto, nickname);
     }
 
     private void runCheckCrewOfBanRisk() {
-        int currentDay = currentDate.getDayOfMonth();
-        Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = attendanceService.getAllAttendanceTypeCountOfCrew(currentDay);
+        int untilDay = currentDate.getDayOfMonth();
+        Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = attendanceService.getAllAttendanceTypeCountOfCrew(untilDay);
         OutputView.printCrewOfBanRisk(attendanceTypeCountOfCrew);
     }
 

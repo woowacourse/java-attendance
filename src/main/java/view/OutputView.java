@@ -52,6 +52,7 @@ public class OutputView {
         }
 
         System.out.println("\n");
+
         for (Entry<AttendanceType, Integer> entry : dto.attendanceTypeCount().entrySet()) {
             String typeName = entry.getKey().getName();
             int count = entry.getValue();
