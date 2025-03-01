@@ -38,6 +38,6 @@ public class Initializer {
     }
 
     public LocalDate initSystemDate() {
-        return LocalDate.of(2024, 12, 13);
+        return LocalDate.of(2024, 12, 14);
     }
 }

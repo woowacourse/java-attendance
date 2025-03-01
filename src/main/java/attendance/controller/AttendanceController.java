@@ -1,11 +1,14 @@
 package attendance.controller;
 
 import attendance.Initializer;
+import attendance.constant.Holiday;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.Crew;
 import attendance.domain.Nickname;
 import attendance.domain.StatusStatistics;
+import attendance.util.DateUtil;
+import attendance.util.FormattedErrorMessage;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
@@ -64,6 +67,7 @@ public class AttendanceController {
     }
 
     private void recordAttendance() {
+        validateSystemDate();
         Crew crew = getCrew(InputView.readNickname());
 
         String inputAttendTime = InputView.readAttendTimeForRecord();
@@ -71,6 +75,12 @@ public class AttendanceController {
 
         attendanceBook.add(crew, attendance);
         OutputView.printRecordAttendanceResult(attendance);
+    }
+
+    private void validateSystemDate() {
+        if (DateUtil.isWeekend(systemDate) || Holiday.isHoliday(systemDate)) {
+            throw new IllegalArgumentException(FormattedErrorMessage.INVALID_ATTEND_DATE_ERROR.getDateFormatMessage(systemDate));
+        }
     }
 
     private Crew getCrew(String inputNickname) {
@@ -81,15 +91,14 @@ public class AttendanceController {
 
     private void editAttendance() {
         Crew crew = getCrew(InputView.readNicknameForEdit());
-
         int inputDay = InputView.readAttendDay();
+        validateSystemDate();
         LocalDate attendDate = LocalDate.of(systemDate.getYear(), systemDate.getMonthValue(), inputDay);
         LocalTime inputTime = InputView.readAttendTimeForEdit();
 
         Attendance newAttendance = new Attendance(attendDate, inputTime);
         Attendance oldAttendance = attendanceBook.findAttendanceByCrew(crew, attendDate);
         attendanceBook.update(crew, oldAttendance, newAttendance);
-
         OutputView.printEditAttendanceResult(oldAttendance, newAttendance);
     }
 
