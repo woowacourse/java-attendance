@@ -47,4 +47,8 @@ public class AttendanceBook {
 
         return findAttendance;
     }
+
+    public List<Attendance> findCrewAttendance(String nickname) {
+        return null;
+    }
 }
