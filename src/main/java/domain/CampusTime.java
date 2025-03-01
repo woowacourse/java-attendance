@@ -27,6 +27,12 @@ public enum CampusTime {
         this.endTime = endTime;
     }
 
+    public static boolean isNotOpenTime(final DayOfWeek dayOfWeek, final LocalTime time) {
+        return Arrays.stream(CampusTime.values())
+                .filter(campusTime -> Objects.equals(campusTime.dayOfWeek, dayOfWeek))
+                .anyMatch(campusTime -> isNotInTime(campusTime, time));
+    }
+
     public static boolean isOpenTime(final LocalDateTime localDateTime) {
         return Arrays.stream(CampusTime.values())
                 .filter(campusTime -> Objects.equals(campusTime.dayOfWeek, localDateTime.getDayOfWeek()))
