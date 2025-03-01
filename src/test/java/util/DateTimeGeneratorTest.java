@@ -1,5 +1,6 @@
 package util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,5 +29,17 @@ class DateTimeGeneratorTest {
 
         // then
         Assertions.assertThat(now).isEqualTo(fixedDateTime);
+    }
+
+    @Test
+    @DisplayName("현재 LocalDate 시간을 가져온다.")
+    void test2() {
+        // given
+
+        // when
+        LocalDate localDate = dateTimeGenerator.getNowLocalDate();
+
+        // then
+        Assertions.assertThat(localDate).isEqualTo(fixedDateTime.toLocalDate());
     }
 }
