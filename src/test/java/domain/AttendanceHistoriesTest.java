@@ -79,6 +79,8 @@ public class AttendanceHistoriesTest {
             // when
             AttendanceStatus attendanceStatus = attendanceHistories.addAttendanceHistory(crew,
                     LocalDateTime.of(MONDAY_DATE, time));
+            AttendanceStatus attendanceStatus2 = attendanceHistories.addAttendanceHistory(crew,
+                    LocalDateTime.of(TUESDAY_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.PRESENT);
         }
@@ -125,7 +127,7 @@ public class AttendanceHistoriesTest {
 
     @Test
     @DisplayName("1.3 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
-    void test() {
+    void testValidateCrew() {
         // given
         Crew crew = new Crew("노랑");
         Map<Crew, LocalDate> attendanceHistoryData = new HashMap<>();

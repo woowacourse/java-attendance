@@ -5,15 +5,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceHistories {
     private final Map<Crew, LocalDate> attendanceHistories;
-
-    public AttendanceHistories() {
-        this.attendanceHistories = new HashMap<>();
-    }
 
     public AttendanceHistories(Map<Crew, LocalDate> attendanceHistoryData) {
         this.attendanceHistories = attendanceHistoryData;
