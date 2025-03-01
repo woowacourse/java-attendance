@@ -4,34 +4,32 @@ import domain.AttendanceStatus;
 import domain.RiskStatus;
 import dto.AttendanceResultDto;
 import dto.RiskCrewDto;
+import util.Dates;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-public class Output {
-    public static LocalTime DEFAULT_TIME = LocalTime.of(0, 0);
+import static util.Parser.localDateToDateMessage;
 
+public class Output {
     public String getAttendanceMessage(AttendanceResultDto attendanceResultDto) {
         if (attendanceResultDto.attendanceStatus().equals(AttendanceStatus.ABSENCE)) {
             return getAbsenceMessage(attendanceResultDto);
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm", Locale.KOREAN);
-        LocalDateTime dateTime = LocalDateTime.of(attendanceResultDto.localDate(), attendanceResultDto.localTime());
-        String formattedDate = dateTime.format(formatter);
-        return String.format("%s (%s)", formattedDate,
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String formattedTime = attendanceResultDto.localTime().format(formatter);
+        return String.format("%s %s (%s)",
+                localDateToDateMessage(attendanceResultDto.localDate()),
+                formattedTime,
                 getAttendanceStatusMessage(attendanceResultDto.attendanceStatus()));
     }
 
     private String getAbsenceMessage(AttendanceResultDto attendanceResultDto) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE", Locale.KOREAN);
-        String formattedDate = attendanceResultDto.localDate().format(formatter);
-        return String.format("%s --:-- (%s)", formattedDate,
+        return String.format("%s --:-- (%s)", localDateToDateMessage(attendanceResultDto.localDate()),
                 getAttendanceStatusMessage(attendanceResultDto.attendanceStatus()));
     }
 
@@ -45,26 +43,17 @@ public class Output {
 
     public void printAttendResult(AttendanceResultDto attendanceResultDto) {
         System.out.println(getAttendanceMessage(attendanceResultDto));
-
     }
 
     public void printAttendanceRecord(String name, LocalDate today, Map<LocalDate, LocalTime> attendanceBook, Map<LocalDate, AttendanceStatus> attendanceStatuses) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", name);
-        for (LocalDate date = today.withDayOfMonth(1); !date.isAfter(today); date = date.plusDays(1)) {
-            if (!attendanceStatuses.containsKey(date) || attendanceStatuses.get(date).equals(AttendanceStatus.ABSENCE)) {
-                System.out.println(getAbsenceMessage(new AttendanceResultDto(
+        today.withDayOfMonth(1).datesUntil(today.plusDays(1))
+                .filter(Dates::isNotHoliday)
+                .forEach(date -> System.out.println(getAttendanceMessage(new AttendanceResultDto(
                         date,
-                        DEFAULT_TIME,
-                        AttendanceStatus.ABSENCE
-                )));
-            } else {
-                System.out.println(getAttendanceMessage(new AttendanceResultDto(
-                        date,
-                        attendanceBook.get(date),
-                        attendanceStatuses.get(date)
-                )));
-            }
-        }
+                        attendanceBook.getOrDefault(date, Dates.DEFAULT_TIME),
+                        attendanceStatuses.getOrDefault(date, AttendanceStatus.ABSENCE)
+                ))));
     }
 
     public void printRiskCrews(List<RiskCrewDto> riskCrews) {
@@ -82,7 +71,7 @@ public class Output {
                 });
     }
 
-    public String getRiskStatusMessage(RiskStatus riskStatus) {
+    private String getRiskStatusMessage(RiskStatus riskStatus) {
         if(riskStatus.equals(RiskStatus.EXPULSION)) {
             return "제적";
         }
@@ -95,7 +84,7 @@ public class Output {
         return "없음";
     }
 
-    public String getAttendanceStatusMessage(AttendanceStatus attendanceStatus) {
+    private String getAttendanceStatusMessage(AttendanceStatus attendanceStatus) {
         if(attendanceStatus.equals(AttendanceStatus.ABSENCE)) {
             return "결석";
         }

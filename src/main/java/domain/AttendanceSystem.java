@@ -6,8 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static util.Dates.TODAY;
+
 public class AttendanceSystem {
-    public LocalDate TODAY = LocalDate.of(2024, 12, 17);
     private final Map<String, AttendanceBook> attendanceBooks;
 
     public AttendanceSystem() {

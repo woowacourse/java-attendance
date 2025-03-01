@@ -1,32 +1,30 @@
 package domain;
 
-import java.time.DayOfWeek;
+import util.Dates;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AttendanceBook {
     private final Map<LocalDate, LocalTime> attendanceBook;
-    private final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
-
 
     public AttendanceBook() {
         attendanceBook = new HashMap<>();
     }
 
     public LocalTime getAttendanceTimeByDate(LocalDate date) {
-        return attendanceBook.get(date);
+        return attendanceBook.getOrDefault(date, Dates.DEFAULT_TIME);
     }
 
     public void attendance(LocalDate date, LocalTime time) {
         if (isNotOperatingHours(time)) {
             throw new IllegalArgumentException();
         }
-        if (isHoliday(date)) {
+        if (Dates.isHoliday(date)) {
             throw new IllegalArgumentException();
         }
         attendanceBook.put(date, time);
@@ -43,7 +41,7 @@ public class AttendanceBook {
     public int getAbsenceCount(LocalDate today) {
         return (int) LocalDate.of(2024, 12, 1)
                 .datesUntil(today.plusDays(1))
-                .filter(date -> !isHoliday(date))
+                .filter(Dates::isNotHoliday)
                 .filter(this::isAbsence)
                 .count();
     }
@@ -57,7 +55,7 @@ public class AttendanceBook {
     public int getTardyCount(LocalDate today) {
         return (int) LocalDate.of(2024, 12, 1)
                 .datesUntil(today.plusDays(1))
-                .filter(date -> !isHoliday(date))
+                .filter(Dates::isNotHoliday)
                 .filter(attendanceBook::containsKey)
                 .filter(this::isTardy)
                 .count();
@@ -72,7 +70,7 @@ public class AttendanceBook {
     public int getAttendCount(LocalDate today) {
         return (int) LocalDate.of(2024, 12, 1)
                 .datesUntil(today.plusDays(1))
-                .filter(date -> !isHoliday(date))
+                .filter(Dates::isNotHoliday)
                 .filter(attendanceBook::containsKey)
                 .filter(this::isAttend)
                 .count();
@@ -88,18 +86,7 @@ public class AttendanceBook {
         return RiskStatus.getRiskStatus(getAbsenceCount(today), getTardyCount(today));
     }
 
-    private boolean isHoliday(LocalDate date) {
-        DayOfWeek day = date.getDayOfWeek();
-        return isWeekend(day) || isChristmas(date);
-    }
 
-    private boolean isChristmas(LocalDate date) {
-        return Objects.equals(date, CHRISTMAS);
-    }
-
-    private static boolean isWeekend(DayOfWeek day) {
-        return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
-    }
 
     public AttendanceStatus getAttendanceStatus(LocalDate today) {
         LocalTime dateTime = getAttendanceTimeByDate(today);
