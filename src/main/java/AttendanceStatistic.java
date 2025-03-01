@@ -18,4 +18,8 @@ public class AttendanceStatistic {
     public int getAbsenceCount() {
         return statistic.getOrDefault(AttendanceStatus.ABSENCE, 0);
     }
+
+    public ExpulsionRiskStatus getExpulsionRiskStatus() {
+        return null;
+    }
 }
