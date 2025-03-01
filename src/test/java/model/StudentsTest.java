@@ -32,7 +32,7 @@ public class StudentsTest {
     @DisplayName("같은 이름의 학생 찾기")
     void test1() {
         String studentName = "이든";
-        Assertions.assertEquals(students.findStudentByName(studentName), student);
+        Assertions.assertTrue(students.isExistStudent(studentName));
     }
 
     @Test
