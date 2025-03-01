@@ -32,4 +32,16 @@ public class AttendanceBookTest {
         assertDoesNotThrow(() -> attendanceBook.register(name));
     }
 
+    @Test
+    @DisplayName("대상 닉네임의 출석을 추가한다")
+    void addAttendUsingName() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        Attend attend = new Attend(Current.TODAY.getDate());
+        attendanceBook.register(name);
+
+        //when & then
+        assertDoesNotThrow(() -> attendanceBook.addAttend(name, attend));
+    }
 }

@@ -15,6 +15,9 @@ public class AttendanceBook {
         if (!attendBook.containsKey(name)) {
             throw new IllegalArgumentException("존재하지 않는 닉네임입니다.");
         }
+        AttendResult attendResult = attendBook.get(name);
+        attendResult.addAttend(attend);
+    }
 
     public void register(final String name) {
         attendBook.putIfAbsent(name, new AttendResult());
