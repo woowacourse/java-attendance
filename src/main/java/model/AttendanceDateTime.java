@@ -18,10 +18,6 @@ public class AttendanceDateTime {
         return attendanceDateTime.toLocalDate();
     }
 
-    public LocalTime toLocalTime() {
-        return attendanceDateTime.toLocalTime();
-    }
-
     public DayOfWeek toDayOfWeek() {
         return attendanceDateTime.getDayOfWeek();
     }
@@ -32,10 +28,6 @@ public class AttendanceDateTime {
 
     public boolean isChristmas() {
         return (this.toLocalDate().equals(CHRISTMAS));
-    }
-
-    public boolean isNotOpeningTime() {
-        return attendanceDateTime.toLocalTime().isBefore(LocalTime.of(8, 0)) || attendanceDateTime.toLocalTime().isAfter(LocalTime.of(23, 0));
     }
 
     public boolean isSameDate(AttendanceDateTime attendanceDateTime) {
