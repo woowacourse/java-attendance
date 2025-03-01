@@ -6,7 +6,6 @@ import view.AttendanceFileReader;
 import view.OutputView;
 
 public class AttendanceApplication {
-    // TODO: 10:1 입력 처리, 즉 format이 HH:M 등 일때 ..
     public static void main(String[] args) {
         try {
             AttendanceStorage attendanceStorage = new AttendanceStorage();
