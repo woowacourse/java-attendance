@@ -157,7 +157,7 @@ public class CrewAttendanceStorageTest {
         LocalDate endDate = LocalDate.of(2025, 3, 1);
 
         // when
-        List<Attendance> attendance = crewAttendanceStorage.findAttendanceByDateRange(startDate, endDate);
+        List<Attendance> attendance = crewAttendanceStorage.findAttendanceByDateRange(crew, startDate, endDate);
 
         // then
         assertThat(attendance).isEqualTo(List.of(

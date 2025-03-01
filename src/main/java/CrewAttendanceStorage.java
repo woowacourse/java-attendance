@@ -51,7 +51,10 @@ public class CrewAttendanceStorage {
         return storages.get(crew);
     }
 
-    public List<Attendance> findAttendanceByDateRange(LocalDate startDate, LocalDate endDate) {
-        return null;
+    public List<Attendance> findAttendanceByDateRange(String crew, LocalDate startDate, LocalDate endDate) {
+        AttendanceStorage storage = findAttendanceStorageByCrew(crew);
+        return startDate.datesUntil(endDate)
+                .map(storage::findByDate)
+                .toList();
     }
 }

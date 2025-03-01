@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class EmptyAttendance implements Attendance {
     private final AttendanceDate date;
@@ -30,5 +31,18 @@ public class EmptyAttendance implements Attendance {
     @Override
     public AttendanceStatus getStatus() {
         return AttendanceStatus.ABSENCE;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        EmptyAttendance that = (EmptyAttendance) object;
+        return Objects.equals(date, that.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date);
     }
 }
