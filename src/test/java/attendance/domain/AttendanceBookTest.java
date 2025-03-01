@@ -40,7 +40,7 @@ class AttendanceBookTest {
 
             // when
             List<AttendanceDateTime> foundAttendanceDateTimes = attendanceBook.retrieveOrderByDateTimeUntilDate(
-                new AttendanceDate(2024, 12, 3));
+                new AttendanceDate(2024, 12, 4));
 
             // then
             assertThat(foundAttendanceDateTimes).containsExactly(

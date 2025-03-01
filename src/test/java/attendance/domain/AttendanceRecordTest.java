@@ -110,7 +110,7 @@ class AttendanceRecordTest {
                 attendanceDateTimes);
 
             AttendanceDate untilDate = new AttendanceDate(
-                2024, 12, 5);
+                2024, 12, 6);
 
             // when
             List<AttendanceDateTime> foundAttendanceTimes = attendanceRecord.findAllUntilDate(

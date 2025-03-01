@@ -105,9 +105,9 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
         return AttendanceDate.from(localDate);
     }
 
-    public boolean isAfter(final AttendanceDate o) {
+    public boolean isBefore(final AttendanceDate o) {
         return LocalDate.of(year, month, day)
-            .isAfter(LocalDate.of(o.year, o.month, o.day));
+            .isBefore(LocalDate.of(o.year, o.month, o.day));
     }
 
     public AttendanceDayOfWeek getAttendanceDayOfWeekDayOfWeek() {

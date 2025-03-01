@@ -1,7 +1,11 @@
 package attendance.repository;
 
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceDate;
+import attendance.domain.AttendancePenalty;
+import attendance.domain.AttendanceStatus;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,5 +38,72 @@ public class AttendanceBookRepository {
 
     public Optional<AttendanceBook> findByCrewNickname(String crewNickname) {
         return Optional.ofNullable(attendanceBooks.get(crewNickname));
+    }
+
+    public List<AttendanceBook> findAllPenaltyCrewUntilDateOrderByAbsenceCountAndCrewNickname(
+        final AttendanceDate untilDate
+    ) {
+        return attendanceBooks.values()
+            .stream()
+            .filter(attendanceBook -> hasPenalty(attendanceBook, untilDate))
+            .sorted((previous, next) ->
+                compareByAbsenceCountAndCrewNickName(previous, next, untilDate))
+            .toList();
+    }
+
+    private boolean hasPenalty(
+        final AttendanceBook attendanceBook,
+        final AttendanceDate untilDate
+    ) {
+        final Map<AttendanceStatus, Integer> statusCount = AttendanceStatus.from(
+            attendanceBook.retrieveOrderByDateTimeUntilDate(untilDate));
+        return AttendancePenalty.from(statusCount) != AttendancePenalty.NONE;
+    }
+
+    private int compareByAbsenceCountAndCrewNickName(
+        final AttendanceBook previousAttendanceBook,
+        final AttendanceBook nextAttendanceBook,
+        final AttendanceDate untilDate
+    ) {
+        final int previousAbsenceCount = extractAbsenceCount(
+            previousAttendanceBook, untilDate);
+        final int nextAbsenceCount = extractAbsenceCount(
+            nextAttendanceBook, untilDate);
+
+        if (previousAbsenceCount != nextAbsenceCount) {
+            return compareByAbsenceCount(previousAbsenceCount,
+                nextAbsenceCount);
+        }
+
+        return compareByCrewNickname(
+            previousAttendanceBook, nextAttendanceBook);
+    }
+
+    private int extractAbsenceCount(
+        final AttendanceBook attendanceBook,
+        final AttendanceDate untilDate
+    ) {
+        final Map<AttendanceStatus, Integer> statusCount = AttendanceStatus.from(
+            attendanceBook.retrieveOrderByDateTimeUntilDate(untilDate)
+        );
+        
+        return AttendancePenalty.calculateAbsenceCount(statusCount);
+    }
+
+    private int compareByAbsenceCount(
+        final int previousAbsenceCount,
+        final int nextAbsenceCount
+    ) {
+        return Integer.compare(nextAbsenceCount, previousAbsenceCount);
+    }
+
+    private int compareByCrewNickname(
+        final AttendanceBook previousAttendanceBook,
+        final AttendanceBook nextAttendanceBook
+    ) {
+        return previousAttendanceBook.getCrew()
+            .getNickname()
+            .compareTo(nextAttendanceBook.getCrew()
+                .getNickname());
     }
 }

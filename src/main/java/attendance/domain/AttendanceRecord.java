@@ -67,7 +67,7 @@ public class AttendanceRecord {
         AttendanceDate currentDate = AttendanceDate.FIRST_DATE;
         final List<AttendanceDateTime> attendanceRecord = new ArrayList<>();
 
-        while (!currentDate.isAfter(untilDate)) {
+        while (currentDate.isBefore(untilDate)) {
             attendanceRecord.add(extractAttendanceDateTime(currentDate));
             currentDate = currentDate.plusDay();
         }
