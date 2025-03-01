@@ -1,4 +1,4 @@
-package attendance;
+package attendance.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import utils.AttendanceFileReader;
 
 public class AttendanceHistory {
 

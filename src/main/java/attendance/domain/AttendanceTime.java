@@ -1,8 +1,8 @@
-package attendance;
+package attendance.domain;
 
-import static attendance.DayOfWeek.SATURDAY;
-import static attendance.DayOfWeek.SUNDAY;
-import static attendance.DayOfWeek.findDayOfWeek;
+import static attendance.domain.DayOfWeek.SATURDAY;
+import static attendance.domain.DayOfWeek.SUNDAY;
+import static attendance.domain.DayOfWeek.findDayOfWeek;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

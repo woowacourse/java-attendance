@@ -1,6 +1,6 @@
-package attendance;
+package attendance.domain;
 
-import static attendance.DayOfWeek.*;
+import static attendance.domain.DayOfWeek.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;

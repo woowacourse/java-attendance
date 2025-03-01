@@ -1,4 +1,4 @@
-package view;
+package attendance.view;
 
 import java.util.Scanner;
 

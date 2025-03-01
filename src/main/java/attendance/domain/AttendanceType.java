@@ -1,6 +1,6 @@
-package attendance;
+package attendance.domain;
 
-import static attendance.DayOfWeek.*;
+import static attendance.domain.DayOfWeek.*;
 
 public enum AttendanceType {
     ATTENDANCE(0), LATE(5), ABSENCE(30);
