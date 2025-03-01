@@ -118,4 +118,22 @@ public class CrewAttendanceTest {
         Assertions.assertThat(absentCount)
                 .isEqualTo(12);
     }
+
+    @DisplayName("닉네임을 통해 크루의 지각 횟수를 계산할 수 있다.")
+    @Test
+    void calculate_late_count_by_nickname() {
+        // given
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
+                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 10))
+        ));
+        final var nickname = "율무";
+
+        // when
+        final var lateCount = attendanceBook.calculateLateCountByNickname(nickname);
+
+        // then
+        Assertions.assertThat(lateCount)
+                .isEqualTo(2);
+    }
 }
