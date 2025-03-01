@@ -3,6 +3,7 @@ package attendance.domain;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +23,7 @@ class AttendanceBookTest {
     @DisplayName("닉네임을 입력하면, 현재 시간으로 출석한다.")
     void test_SaveAttendanceWhenEnterNickname() {
         var nickname = new Nickname("이든");
-        var dateTime = systemDateTime.now();
+        var dateTime = LocalDateTime.of(2024, 12, 11, 10, 0);
         attendanceBook.attendance(nickname, dateTime);
 
         var attendance = new Attendance(dateTime);
