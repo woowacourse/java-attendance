@@ -17,7 +17,7 @@ public enum ExpulsionStatus {
         this.absentStandard = absentStandard;
     }
 
-    public static ExpulsionStatus from(long absentCount) {
+    public static ExpulsionStatus from(final long absentCount) {
         return Arrays.stream(values())
                 .filter(expulsionStatus -> expulsionStatus.absentStandard <= absentCount)
                 .findAny()

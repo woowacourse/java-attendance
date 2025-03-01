@@ -16,12 +16,12 @@ public enum Holiday {
     private final int month;
     private final int day;
 
-    Holiday(int month, int day) {
+    Holiday(final int month, final int day) {
         this.month = month;
         this.day = day;
     }
 
-    public static boolean isHoliday(LocalDateTime dateTime) {
+    public static boolean isHoliday(final LocalDateTime dateTime) {
         int month = dateTime.getMonthValue();
         int day = dateTime.getDayOfMonth();
         return Arrays.stream(values())
