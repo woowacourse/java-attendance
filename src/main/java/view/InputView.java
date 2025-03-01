@@ -1,7 +1,5 @@
 package view;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Scanner;
 import util.DateTimeUtil;
 import util.ExceptionHandler;
@@ -9,8 +7,6 @@ import util.ExceptionHandler;
 public class InputView {
 
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static final DateTimeFormatter MENU_DATE_TIME_FORMAT
-            = DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREAN);
 
     public static String scanMenuCommand() {
         System.out.printf("""
@@ -20,7 +16,7 @@ public class InputView {
                 3. 크루별 출석 기록 확인
                 4. 제적 위험자 확인
                 Q. 종료       
-                """, DateTimeUtil.nowDate().format(MENU_DATE_TIME_FORMAT));
+                """, DateTimeUtil.nowDate().format(DateTimeUtil.DATE_FORMAT));
         return SCANNER.nextLine();
     }
 
