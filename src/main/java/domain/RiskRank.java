@@ -22,7 +22,15 @@ public enum RiskRank {
         this.condition = condition;
     }
 
-    public static int calculateRiskCount(int lateCount, int absentCount) {
+    public static int getRiskWeight(int lateCount, int absentCount) {
+        int riskCount = lateCount + absentCount * ABSENT_PER_LATE;
+        if (riskCount < 0) {
+            throw new IllegalArgumentException(riskCount + ": 결석 횟수는 음수일 수 없습니다.");
+        }
+        return riskCount;
+    }
+
+    public static int getRiskCount(int lateCount, int absentCount) {
         int riskCount = lateCount / ABSENT_PER_LATE + absentCount;
         if (riskCount < 0) {
             throw new IllegalArgumentException(riskCount + ": 결석 횟수는 음수일 수 없습니다.");
@@ -31,7 +39,7 @@ public enum RiskRank {
     }
 
     public static RiskRank from(Map<AttendanceStatus, Integer> statusCount) {
-        int riskCount = calculateRiskCount(
+        int riskCount = getRiskCount(
                 statusCount.getOrDefault(AttendanceStatus.LATE, 0),
                 statusCount.getOrDefault(AttendanceStatus.ABSENT, 0));
         return Arrays.stream(values())
@@ -41,7 +49,7 @@ public enum RiskRank {
     }
 
     public static RiskRank of(int lateCount, int absentCount) {
-        int riskCount = calculateRiskCount(lateCount, absentCount);
+        int riskCount = getRiskCount(lateCount, absentCount);
         return Arrays.stream(values())
                 .filter(riskRank -> riskRank.condition.apply(riskCount))
                 .findAny()

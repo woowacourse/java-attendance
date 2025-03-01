@@ -24,11 +24,11 @@ class RiskRankTest {
     @DisplayName("지각 횟수 3회를 결석 횟수 1회로 계산한다")
     void calculateRiskCount_test() {
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(RiskRank.calculateRiskCount(3, 1)).isEqualTo(2);
-            softAssertions.assertThat(RiskRank.calculateRiskCount(4, 1)).isEqualTo(2);
-            softAssertions.assertThat(RiskRank.calculateRiskCount(5, 1)).isEqualTo(2);
-            softAssertions.assertThat(RiskRank.calculateRiskCount(6, 1)).isEqualTo(3);
-            softAssertions.assertThat(RiskRank.calculateRiskCount(7, 1)).isEqualTo(3);
+            softAssertions.assertThat(RiskRank.getRiskCount(3, 1)).isEqualTo(2);
+            softAssertions.assertThat(RiskRank.getRiskCount(4, 1)).isEqualTo(2);
+            softAssertions.assertThat(RiskRank.getRiskCount(5, 1)).isEqualTo(2);
+            softAssertions.assertThat(RiskRank.getRiskCount(6, 1)).isEqualTo(3);
+            softAssertions.assertThat(RiskRank.getRiskCount(7, 1)).isEqualTo(3);
         });
     }
 }

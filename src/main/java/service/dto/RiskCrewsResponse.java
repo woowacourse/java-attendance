@@ -17,7 +17,8 @@ public record RiskCrewsResponse(
     }
 
     private List<RiskCrew> sortedRiskCrews(List<RiskCrew> riskCrews) {
-        Function<RiskCrew, Integer> firstSort = riskCrew -> riskCrew.lateCount() + riskCrew.absentCount() * 3;
+        Function<RiskCrew, Integer> firstSort =
+                riskCrew -> RiskRank.getRiskWeight(riskCrew.lateCount(), riskCrew.absentCount());
         Function<RiskCrew, String> secondSort = RiskCrew::nickname;
         return riskCrews.stream().sorted(
                         Comparator.comparing(firstSort, Comparator.reverseOrder())
