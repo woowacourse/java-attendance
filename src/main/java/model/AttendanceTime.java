@@ -1,7 +1,6 @@
 package model;
 
 import static constant.ErrorMessage.CANNOT_CHECK_IN_ON_WEEKEND;
-import static constant.ErrorMessage.OUT_OF_OPERATION_HOURS;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -30,13 +29,11 @@ public enum AttendanceTime {
         this.educationStartTime = educationStartTime;
     }
 
-    public static void validateInOperationTime(LocalDate localDate, LocalTime localTime) {
+    public static boolean isInOperationTime(LocalDate localDate, LocalTime localTime) {
         AttendanceTime attendanceTime = find(localDate);
 
-        if (localTime.isBefore(attendanceTime.operationStartTime) ||
-                localTime.isAfter(attendanceTime.operationEndTime)) {
-            throw new IllegalArgumentException(OUT_OF_OPERATION_HOURS.getMessage());
-        }
+        return !localTime.isBefore(attendanceTime.operationStartTime) &&
+                !localTime.isAfter(attendanceTime.operationEndTime);
     }
 
     public static boolean isLate(LocalDate localDate, LocalTime localTime, int beLateTime, int absenceTime) {
