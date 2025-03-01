@@ -57,7 +57,7 @@ public class AttendanceStorage {
                 .filter(comparedHistory -> comparedHistory.hasSameCrew(attendanceHistory)
                         && comparedHistory.hasSameDate(attendanceHistory))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("올바른 출석 기록을 찾을 수 없습니다."));
 
         return attendanceHistories.indexOf(foundHistory);
     }

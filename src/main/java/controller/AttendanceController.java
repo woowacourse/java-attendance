@@ -117,26 +117,22 @@ public class AttendanceController {
 
     private void validateIsSchoolDay() {
         if (attendanceService.checkRestDay(currentDate)) {
-            OutputView.printErrorMessage(String.format("%d월 %d일 %s은 등교일이 아닙니다.",
+            throw new IllegalArgumentException(String.format("%d월 %d일 %s은 등교일이 아닙니다.",
                     currentDate.getMonthValue(),
                     currentDate.getDayOfMonth(),
                     currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
-
-            throw new IllegalArgumentException("");
         }
     }
 
     private void validateHistoryNotAlreadyExists(Crew crew, LocalDateTime dateTime) {
         if (attendanceService.checkHistoryAlreadyExists(crew, dateTime)) {
-           OutputView.printErrorMessage("해당 날짜에 출석 기록이 이미 존재합니다. 수정 기능을 이용해주세요.");
-           throw new IllegalArgumentException();
+           throw new IllegalArgumentException("해당 날짜에 출석 기록이 이미 존재합니다. 수정 기능을 이용해주세요.");
         }
     }
 
     private void validateNicknameRegistered(String nickname) {
         if (!attendanceService.checkNicknameRegistered(nickname)) {
-            OutputView.printErrorMessage("등록되지 않은 닉네임입니다.");
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }
     }
 }

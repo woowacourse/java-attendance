@@ -30,6 +30,6 @@ public enum FeatureType {
         return Arrays.stream(FeatureType.values())
                 .filter(value -> value.getKey().equals(key))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 입력입니다. 기능 목록에 있는 키만 입력해주세요."));
     }
 }

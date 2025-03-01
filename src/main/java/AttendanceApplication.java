@@ -1,6 +1,7 @@
 import controller.AttendanceController;
 import domain.AttendanceStorage;
 import java.io.FileNotFoundException;
+import java.time.DateTimeException;
 import service.AttendanceService;
 import view.AttendanceFileReader;
 import view.OutputView;
@@ -16,6 +17,10 @@ public class AttendanceApplication {
             attendanceController.run();
         } catch (FileNotFoundException exception) {
             OutputView.printErrorMessage("attendances.csv 파일을 찾을 수 없습니다. 프로그램을 종료합니다.");
+        } catch (IllegalArgumentException exception) {
+            OutputView.printErrorMessage(exception.getMessage());
+        } catch (DateTimeException exception) {
+            OutputView.printErrorMessage("올바른 입력이 아닙니다. 날짜 형식을 지켜주세요.");
         }
     }
 }
