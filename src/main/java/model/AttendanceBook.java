@@ -107,4 +107,8 @@ public class AttendanceBook {
                 .filter(Attendance::isLate)
                 .count();
     }
+
+    public int calculateAttendCountByNickname(String nickname) {
+        return 0;
+    }
 }
