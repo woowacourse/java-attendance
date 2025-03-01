@@ -55,11 +55,20 @@ public class InputView {
         return readInput();
     }
 
+    public int readModifyAttendanceDate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return parseInt(readInput());
     }
 
     private LocalTime parseLocalTime(final String time) {
+    private int parseInt(final String input) {
         try {
             return LocalTime.parse(time.trim(), TIME_FORMATTER);
+            return Integer.parseInt(input.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("잘못된 숫자 형식입니다.");
+        }
+    }
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("잘못된 시간 형식입니다.");
         }
