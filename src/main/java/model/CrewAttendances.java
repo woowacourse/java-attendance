@@ -14,21 +14,21 @@ public class CrewAttendances {
         this.attendances = attendances;
     }
 
-    public long calculateLateCountUntilDate(LocalDate date) {
-        return attendances.stream()
+    public int calculateLateCountUntilDate(LocalDate date) {
+        return (int) attendances.stream()
                 .filter(attendance -> attendance.isBefore(date))
                 .filter(Attendance::isLate)
                 .count();
     }
 
-    public long calculateAttendCountUntilDate(LocalDate date) {
-        return attendances.stream()
+    public int calculateAttendCountUntilDate(LocalDate date) {
+        return (int) attendances.stream()
                 .filter(attendance -> attendance.isBefore(date))
                 .filter(Attendance::isAttend)
                 .count();
     }
 
-    public long calculateAbsentCountUntilDate(LocalDate date) {
+    public int calculateAbsentCountUntilDate(LocalDate date) {
         int absentCount = 0;
         for (int day = 1; day < date.getDayOfMonth(); day++) {
             if (isWeekend(date.withDayOfMonth(day)) || isHoliday(date.withDayOfMonth(day))) {
@@ -64,5 +64,16 @@ public class CrewAttendances {
 
     public int allAttendanceCount() {
         return attendances.size();
+    }
+
+    public AbsentPenalty determineAttendPenalty(LocalDate date) {
+        int absentCount = calculateAbsentCountUntilDate(date);
+        int lateCount = calculateLateCountUntilDate(date);
+
+        System.out.println(absentCount);
+        System.out.println(lateCount);
+
+        absentCount += lateCount / 3;
+        return AbsentPenalty.determine(absentCount);
     }
 }
