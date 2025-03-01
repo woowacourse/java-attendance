@@ -13,12 +13,12 @@ public class GeneralView {
     static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREA);
 
-    public void printExceptionMessage(String exceptionMessage) {
+    public void printExceptionMessage(final String exceptionMessage) {
         System.out.println("[ERROR] " + exceptionMessage);
         System.out.println();
     }
 
-    public FeatureCommand readCommandWithToday(LocalDate today) {
+    public FeatureCommand readCommandWithToday(final LocalDate today) {
         System.out.println("오늘은 %s입니다. 기능을 선택해 주세요.".formatted(DATE_FORMATTER.format(today)));
         System.out.println("1. 출석 확인");
         System.out.println("2. 출석 수정");

@@ -56,7 +56,7 @@ public class AttendanceController {
         return new AttendanceBook(crewAttendances);
     }
 
-    private void branchByFeatureCommand(FeatureCommand featureCommand, AttendanceBook attendanceBook) {
+    private void branchByFeatureCommand(final FeatureCommand featureCommand, final AttendanceBook attendanceBook) {
         if (featureCommand.equals(FeatureCommand.ATTENDANCE_CONFIRMATION)) {
             confirmAttendance(attendanceBook);
         }

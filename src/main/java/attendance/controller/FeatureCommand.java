@@ -11,14 +11,14 @@ public enum FeatureCommand {
 
     private final String commandText;
 
-    FeatureCommand(String commandText) {
+    FeatureCommand(final String commandText) {
         this.commandText = commandText;
     }
 
-    public static FeatureCommand from(String commandText) {
+    public static FeatureCommand from(final String commandText) {
         return Arrays.stream(values())
                 .filter(value -> value.commandText.equalsIgnoreCase(commandText))
-                .findAny()
+                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기능입니다."));
     }
 }
