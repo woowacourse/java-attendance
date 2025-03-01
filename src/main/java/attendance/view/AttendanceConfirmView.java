@@ -6,15 +6,12 @@ import attendance.domain.AttendanceStatusChecker.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Locale;
-import java.util.Scanner;
+
+import static attendance.view.GeneralView.*;
 
 public class AttendanceConfirmView {
 
-    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREA);
 
     public String readCrewNickname() {
         System.out.println("닉네임을 입력해 주세요.");
@@ -39,10 +36,5 @@ public class AttendanceConfirmView {
         String attendanceStatusText = attendanceStatusTextMaker.make(attendanceStatus);
         System.out.println(DATE_TIME_FORMATTER.format(attendanceLocalDateTime)
                 + " (%s)".formatted(attendanceStatusText));
-    }
-
-    private String readOneLine() {
-        final Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
     }
 }

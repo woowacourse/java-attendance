@@ -9,7 +9,9 @@ import java.util.Scanner;
 
 public class GeneralView {
 
-    private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREA);
+    static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREA);
+    static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREA);
 
     public void printExceptionMessage(String exceptionMessage) {
         System.out.println("[ERROR] " + exceptionMessage);
@@ -27,7 +29,7 @@ public class GeneralView {
         return FeatureCommand.from(commandText);
     }
 
-    private String readOneLine() {
+    static String readOneLine() {
         final Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }

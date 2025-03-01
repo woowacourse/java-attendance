@@ -5,15 +5,12 @@ import attendance.domain.Crew;
 import attendance.domain.ExpulsionStatus;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static attendance.domain.AttendanceStatusChecker.*;
+import static attendance.view.GeneralView.*;
 
 public class CrewAttendanceCheckView {
-
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREA);
-    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREA);
 
     public String readCrewNickname() {
         System.out.println("닉네임을 입력해 주세요.");
@@ -57,10 +54,5 @@ public class CrewAttendanceCheckView {
             return;
         }
         System.out.println("%s 대상자입니다.".formatted(expulsionStatusTextMaker.make(expulsionStatus)));
-    }
-
-    private String readOneLine() {
-        final Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
     }
 }

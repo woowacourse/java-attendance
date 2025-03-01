@@ -3,18 +3,13 @@ package attendance.view;
 import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceStatusChecker;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Locale;
-import java.util.Scanner;
+
+import static attendance.view.GeneralView.*;
 
 public class AttendanceModifyView {
-
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREA);
-    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public String readCrewNickname() {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
@@ -36,11 +31,6 @@ public class AttendanceModifyView {
         } catch (DateTimeParseException exception) {
             throw new IllegalArgumentException("시간을 올바르게 입력해 주세요.");
         }
-    }
-
-    private String readOneLine() {
-        final Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
     }
 
     public void printAttendanceModifyResult(AttendanceDateTime originalDateTime,
