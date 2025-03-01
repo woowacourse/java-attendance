@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class AttendanceBook {
 
@@ -75,23 +74,24 @@ public class AttendanceBook {
                 continue;
             }
 
-            boolean flag = false;
-            for (int idx = 0; idx < crewsAttendanceRecords.size(); idx++) {
-                if (crewsAttendanceRecords.get(idx).isSameDate(nickname, date.withDayOfMonth(day))) {
-                    if (crewsAttendanceRecords.get(idx).isAbsent()) {
-                        absentCount++;
-                        flag = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!flag) {
-                absentCount++;
-            }
+            absentCount += increaseAbsentCountByNickname(nickname, date.withDayOfMonth(day));
         }
 
         return absentCount;
+    }
+
+    private int increaseAbsentCountByNickname(String nickname, LocalDate date) {
+        for (Attendance crewsAttendanceRecord : crewsAttendanceRecords) {
+            if (crewsAttendanceRecord.isSameDate(nickname, date) && crewsAttendanceRecord.isAbsent()) {
+                return 1;
+            }
+        }
+
+        if (!isWeekend(date)) {
+            return 1;
+        }
+
+        return 0;
     }
 
     private boolean isWeekend(LocalDate date) {
