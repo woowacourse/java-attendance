@@ -8,23 +8,25 @@ import controller.command.ModifyCommand;
 import domain.AttendanceBook;
 import java.time.DateTimeException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
+import service.AttendanceService;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
 
-    private static final Map<Selection, ControllerCommand> commands = new HashMap<>();
+    private static final Map<Selection, ControllerCommand> commands = new EnumMap<>(Selection.class);
 
-    static {
-        commands.put(Selection.ATTEND, new AttendCommand());
-        commands.put(Selection.MODIFY, new ModifyCommand());
-        commands.put(Selection.GET_RECORDS, new GetRecordsCommand());
-        commands.put(Selection.GET_PENALTIES, new GetPenaltyCommand());
+    public AttendanceController(AttendanceBook attendanceBook) {
+        AttendanceService service = new AttendanceService(attendanceBook);
+        commands.put(Selection.ATTEND, new AttendCommand(service));
+        commands.put(Selection.MODIFY, new ModifyCommand(service));
+        commands.put(Selection.GET_RECORDS, new GetRecordsCommand(service));
+        commands.put(Selection.GET_PENALTIES, new GetPenaltyCommand(service));
     }
 
-    public static void run(AttendanceBook book) {
+    public void run(AttendanceBook book) {
         while (true) {
             try {
                 Selection selection = Selection.of(InputView.readSelection());
@@ -40,14 +42,14 @@ public class AttendanceController {
         }
     }
 
-    private static void executeCommand(Selection selection, AttendanceBook book)
+    private void executeCommand(Selection selection, AttendanceBook book)
         throws QuitException {
         if (selection == Selection.QUIT) {
             throw new QuitException();
         }
 
         ControllerCommand command = commands.get(selection);
-        command.execute(book);
+        command.execute();
     }
 
     private enum Selection {

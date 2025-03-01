@@ -10,6 +10,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import vo.DangerCrew;
 
 public class OutputView {
 
@@ -74,31 +75,22 @@ public class OutputView {
         }
     }
 
-    public static void printDangerCrews(List<DangerCrewVO> vos) {
+    public static void printDangerCrews(List<DangerCrew> vos) {
         System.out.println("제적 위험자 조회 결과");
         vos.sort(
-            Comparator.comparing(DangerCrewVO::penalty)
+            Comparator.comparing(DangerCrew::penalty)
                 .thenComparing((vo1, vo2) -> {
-                    int left = vo1.absenceCount + (vo1.lateCount / 3);
-                    int right = vo2.absenceCount + (vo2.lateCount / 3);
+                    int left = vo1.absence() + (vo1.late() / 3);
+                    int right = vo2.absence() + (vo2.late() / 3);
                     return Integer.compare(left, right);
                 })
-                .thenComparing(dangerCrewVO -> dangerCrewVO.crew.getName())
+                .thenComparing(DangerCrew -> DangerCrew.crew().getName())
         );
 
-        for (DangerCrewVO vo : vos) {
+        for (DangerCrew vo : vos) {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
-                vo.crew.getName(), vo.absenceCount, vo.lateCount, vo.penalty.description());
+                vo.crew().getName(), vo.absence(), vo.late(), vo.penalty().description());
         }
         blankLine();
-    }
-
-    public record DangerCrewVO(
-        Crew crew,
-        int absenceCount,
-        int lateCount,
-        Penalty penalty
-    ) {
-
     }
 }

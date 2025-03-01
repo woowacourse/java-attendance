@@ -1,35 +1,36 @@
 package controller.command;
 
-import domain.AttendanceBook;
 import domain.AttendanceDateTime;
 import domain.Crew;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import service.AttendanceService;
 import util.DateUtils;
 import view.InputView;
 import view.OutputView;
 
 public class AttendCommand implements ControllerCommand {
 
+    private final AttendanceService service;
+
+    public AttendCommand(AttendanceService service) {
+        this.service = service;
+    }
+
     @Override
-    public void execute(AttendanceBook book) {
+    public void execute() {
         LocalDate today = LocalDate.now();
         validateTodayIsWorkingDay(today);
 
         String nickName = InputView.readNickName();
-        Crew crew = retrieveCrew(book, nickName);
+        Crew crew = service.getCrewByNickName(nickName);
 
         String attendTime = InputView.readAttendTime();
         LocalTime time = LocalTime.parse(attendTime);
-        LocalDateTime dateTime = LocalDateTime.of(today, time);
 
-        book.attend(crew, AttendanceDateTime.from(dateTime));
-
-        AttendanceDateTime result = book.findRecordByCrewAndDate(crew, today).orElseThrow();
-        OutputView.printAttendResult(result);
+        AttendanceDateTime attended = service.attend(crew, today, time);
+        OutputView.printAttendResult(attended);
     }
 
     private static void validateTodayIsWorkingDay(LocalDate today) {
@@ -38,10 +39,5 @@ public class AttendCommand implements ControllerCommand {
             String formattedDate = formatter.format(today);
             throw new IllegalArgumentException(formattedDate + "은 등교일이 아닙니다.");
         }
-    }
-
-    private Crew retrieveCrew(AttendanceBook book, String nickName) {
-        return book.findCrewByName(nickName)
-            .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
     }
 }

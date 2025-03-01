@@ -8,6 +8,7 @@ public class Application {
         String fileName = "src/main/resources/attendances.csv";
         AttendanceBook book = AttendanceBookFileReader.read(fileName);
 
-        AttendanceController.run(book);
+        AttendanceController controller = new AttendanceController(book);
+        controller.run(book);
     }
 }

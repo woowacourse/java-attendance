@@ -1,39 +1,37 @@
 package controller.command;
 
-import domain.AttendanceBook;
 import domain.AttendanceDateTime;
-import domain.AttendanceStatus;
 import domain.Crew;
 import domain.Penalty;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+import service.AttendanceService;
 import view.InputView;
 import view.OutputView;
+import vo.AttendanceStatusCount;
 
 public class GetRecordsCommand implements ControllerCommand {
 
+    private final AttendanceService service;
+
+    public GetRecordsCommand(AttendanceService service) {
+        this.service = service;
+    }
+
     @Override
-    public void execute(AttendanceBook book) {
+    public void execute() {
         String nickName = InputView.readNickName();
-        Crew crew = retrieveCrew(book, nickName);
+        Crew crew = service.getCrewByNickName(nickName);
 
         LocalDate from = LocalDate.now().withDayOfMonth(1);
         LocalDate to = LocalDate.now().minusDays(1);
-        List<AttendanceDateTime> attendances = book.listAttendancesOfCrew(crew, from, to);
 
-        Map<AttendanceStatus, Integer> counts = book.countAttendanceStatuses(crew, from, to);
-        int onTime = counts.get(AttendanceStatus.ON_TIME);
-        int late = counts.get(AttendanceStatus.LATE);
-        int absence = counts.get(AttendanceStatus.ABSENCE);
-        Penalty penalty = Penalty.determine(late, absence);
-
+        List<AttendanceDateTime> attendances = service.findAllRecordsByCrewBetween(crew, from, to);
         OutputView.printAttendanceList(crew, attendances);
-        OutputView.printCountAndPenalty(onTime, late, absence, penalty);
-    }
 
-    private Crew retrieveCrew(AttendanceBook book, String nickName) {
-        return book.findCrewByName(nickName)
-            .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
+        AttendanceStatusCount counts = service.countAttendanceStatusesByCrewBetween(crew, from, to);
+        Penalty penalty = Penalty.determine(counts.late(), counts.absence());
+
+        OutputView.printCountAndPenalty(counts.onTime(), counts.late(), counts.absence(), penalty);
     }
 }
