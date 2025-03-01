@@ -133,4 +133,28 @@ public class AttendanceTest {
                 () -> assertThat(attendance.isSameDate(differentDateAttendance)).isFalse()
         );
     }
+
+    @Test
+    void 입력된_일자와_출석의_일자가_동일하면_true_아니면_false를_반환한다() {
+        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        LocalDate sameDate = LocalDate.of(2024, 12, 12);
+        LocalDate differentDate = LocalDate.of(2024, 12, 13);
+
+        assertAll(
+                () -> assertThat(attendance.isSameDate(sameDate)).isTrue(),
+                () -> assertThat(attendance.isSameDate(differentDate)).isFalse()
+        );
+    }
+
+    @Test
+    void 입력된_날짜와_출석의_연월이_동일하면_true_아니면_false를_반환한다() {
+        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        LocalDate sameYearAndMonth = LocalDate.of(2024, 12, 12);
+        LocalDate differentYearAndMonth = LocalDate.of(2024, 11, 12);
+
+        assertAll(
+                () -> assertThat(attendance.isSameYearAndMonth(sameYearAndMonth)).isTrue(),
+                () -> assertThat(attendance.isSameYearAndMonth(differentYearAndMonth)).isFalse()
+        );
+    }
 }
