@@ -1,5 +1,9 @@
 package attendance.domain;
 
+import static attendance.domain.CampusOperatingRule.DEFAULT_ABSENCE_THRESHOLD;
+import static attendance.domain.CampusOperatingRule.DEFAULT_LATE_THRESHOLD;
+import static attendance.domain.CampusOperatingRule.MONDAY_ABSENCE_THRESHOLD;
+import static attendance.domain.CampusOperatingRule.MONDAY_LATE_THRESHOLD;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -39,7 +43,9 @@ public class AttendanceTest {
 
     @Test
     void 월요일_출결_상태를_반환한다_출석() {
-        Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 9, 12, 59));
+        LocalDate monday = LocalDate.of(2024, 12, 9);
+        LocalDateTime dateTime = LocalDateTime.of(monday, MONDAY_LATE_THRESHOLD.getTime().minusMinutes(1));
+        Attendance attend = Attendance.from(dateTime);
 
         final var result = attend.checkAttendanceStatus();
 
@@ -48,7 +54,9 @@ public class AttendanceTest {
 
     @Test
     void 월요일_출결_상태를_반환한다_지각() {
-        Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 9, 13, 6));
+        LocalDate monday = LocalDate.of(2024, 12, 9);
+        LocalDateTime dateTime = LocalDateTime.of(monday, MONDAY_LATE_THRESHOLD.getTime().plusMinutes(1));
+        Attendance attend = Attendance.from(dateTime);
 
         final var result = attend.checkAttendanceStatus();
 
@@ -57,7 +65,10 @@ public class AttendanceTest {
 
     @Test
     void 월요일_출결_상태를_반환한다_결석() {
-        Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 9, 13, 31));
+        LocalDate monday = LocalDate.of(2024, 12, 9);
+        LocalDateTime date = LocalDateTime.of(monday, MONDAY_ABSENCE_THRESHOLD.getTime().plusMinutes(1));
+        Attendance attend = Attendance.from(
+                date);
 
         final var result = attend.checkAttendanceStatus();
 
@@ -66,7 +77,9 @@ public class AttendanceTest {
 
     @Test
     void 다른_요일_출결_상태를_반환한다_출석() {
-        Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59));
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalDateTime dateTime = LocalDateTime.of(date, DEFAULT_LATE_THRESHOLD.getTime().minusMinutes(1));
+        Attendance attend = Attendance.from(dateTime);
 
         final var result = attend.checkAttendanceStatus();
 
@@ -75,7 +88,9 @@ public class AttendanceTest {
 
     @Test
     void 다른_요일_출결_상태를_반환한다_지각() {
-        Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 13, 10, 6));
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalDateTime dateTime = LocalDateTime.of(date, DEFAULT_LATE_THRESHOLD.getTime().plusMinutes(1));
+        Attendance attend = Attendance.from(dateTime);
 
         final var result = attend.checkAttendanceStatus();
 
@@ -84,7 +99,9 @@ public class AttendanceTest {
 
     @Test
     void 다른_요일_출결_상태를_반환한다_결석() {
-        Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 13, 10, 31));
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalDateTime dateTime = LocalDateTime.of(date, DEFAULT_ABSENCE_THRESHOLD.getTime().plusMinutes(1));
+        Attendance attend = Attendance.from(dateTime);
 
         final var result = attend.checkAttendanceStatus();
 
