@@ -77,4 +77,22 @@ public class CrewAttendanceTest {
         Assertions.assertThat(absentCount)
                 .isEqualTo(3);
     }
+
+    @DisplayName("주말은 결석 횟수 계산에서 제외한다.")
+    @Test
+    void calculate_absent_count_except_weekend() {
+        // given
+        LocalDate today = LocalDate.of(2024, 12, 8);
+        Attendance attendRecord1 = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 33));
+        Attendance attendRecord2 = new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 31));
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendRecord1, attendRecord2));
+        final var nickname = "율무";
+
+        // when
+        final var absentCount = attendanceBook.calculateAbsentCountByNicknameUntilDate(nickname, today);
+
+        // then
+        Assertions.assertThat(absentCount)
+                .isEqualTo(4);
+    }
 }
