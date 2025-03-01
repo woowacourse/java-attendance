@@ -16,11 +16,12 @@ public class CrewTest {
     @DisplayName("크루 생성 테스트")
     void test1() {
         //given
+        final Long id = 1L;
         final String name = "윌슨";
         final Map<LocalDate, Attendance> attendanceMap = new LinkedHashMap<>();
 
         //should
-        assertThatCode(() -> new Crew(name, attendanceMap)).doesNotThrowAnyException();
+        assertThatCode(() -> new Crew(id, name, attendanceMap)).doesNotThrowAnyException();
 
     }
 
@@ -28,6 +29,7 @@ public class CrewTest {
     @DisplayName("출석 추가 테스트")
     void test2() {
         //given
+        final Long id = 1L;
     	final String name = "윌슨";
         final Map<LocalDate, Attendance> attendanceMap = new LinkedHashMap<>();
         final LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 13, 10, 6);
@@ -38,7 +40,7 @@ public class CrewTest {
         final LocalDateTime localDateTime6 = LocalDateTime.of(2024, 12, 16, 13, 31);
 
         //when
-        final Crew crew = new Crew(name, attendanceMap);
+        final Crew crew = new Crew(id, name, attendanceMap);
         crew.putAttendance(localDateTime1);
         crew.putAttendance(localDateTime2);
         crew.putAttendance(localDateTime3);
