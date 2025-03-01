@@ -50,27 +50,19 @@ public class AttendanceTimes {
     }
 
     public int countAttendanceBeforeDate(LocalDate date) {
-        int count = 0;
-        for (AttendanceTime time : attendanceLog) {
-            if (time.isBefore(date)) {
-                if (!time.isAbsence() && !time.isLate()) {
-                    count++;
-                }
-            }
-        }
-        return count;
+        return Math.toIntExact(
+                attendanceLog.stream()
+                        .filter(time -> time.isBefore(date) && !time.isAbsence() && !time.isLate())
+                        .count()
+        );
     }
 
     public int countLateBeforeDate(LocalDate date) {
-        int count = 0;
-        for (AttendanceTime time : attendanceLog) {
-            if (time.isBefore(date)) {
-                if (time.isLate()) {
-                    count++;
-                }
-            }
-        }
-        return count;
+        return Math.toIntExact(
+                attendanceLog.stream()
+                        .filter(time -> time.isBefore(date) && time.isLate())
+                        .count()
+        );
     }
 
     public int countAbsenceBeforeDate(LocalDate date) {
