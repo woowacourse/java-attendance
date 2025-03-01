@@ -79,20 +79,6 @@ class AttendanceTimesTest {
     }
 
     @Test
-    @DisplayName("날짜를 입력 시 해당 날짜 이전의 AttendanceTime에 대한 리스트 반환")
-    void readListOfAttendanceTest() {
-        // given
-        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
-        LocalDate today = LocalDate.of(2024, 12, 13);
-
-        // when
-        List<AttendanceTime> log = attendanceTimes.readAttendance(today);
-
-        // then
-        assertThat(log).hasSize(3);
-    }
-
-    @Test
     @DisplayName("날짜를 입력 시 해당 날짜에 대한 AttendanceTime 반환")
     void readPresentAttendanceTest() {
         // given
@@ -100,7 +86,7 @@ class AttendanceTimesTest {
         LocalDate today = LocalDate.of(2024, 12, 12);
 
         // when
-        Optional<AttendanceTime> log = attendanceTimes.readAttendanceV2(today);
+        Optional<AttendanceTime> log = attendanceTimes.readAttendance(today);
 
         // then
         AttendanceTime expected = AttendanceTime.of(
@@ -113,13 +99,13 @@ class AttendanceTimesTest {
 
     @Test
     @DisplayName("출석이 존재하지 않는 날짜를 입력 시 해당 날짜에 대한 Optional is empty")
-    void readEmptyAttendanceTestV2() {
+    void readEmptyAttendanceTest() {
         // given
         AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
         LocalDate today = LocalDate.of(2024, 12, 14);
 
         // when
-        Optional<AttendanceTime> log = attendanceTimes.readAttendanceV2(today);
+        Optional<AttendanceTime> log = attendanceTimes.readAttendance(today);
 
         // then
         assertThat(log).isEmpty();

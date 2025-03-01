@@ -31,13 +31,7 @@ public class AttendanceTimes {
         attendanceLog.add(time);
     }
 
-    public List<AttendanceTime> readAttendance(LocalDate date) {
-        return attendanceLog.stream()
-                .filter(time -> time.isBefore(date))
-                .toList();
-    }
-
-    public Optional<AttendanceTime> readAttendanceV2(LocalDate date) {
+    public Optional<AttendanceTime> readAttendance(LocalDate date) {
         return attendanceLog.stream()
                 .filter(attendanceTime -> attendanceTime.isSameDate(date))
                 .findAny();

@@ -96,9 +96,8 @@ public class AttendanceController {
         Crew crew = Crew.of(crewName);
 
         CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
-        List<AttendanceTime> localDateTimes = crewAttendance.readAttendanceTimesBefore(today);
 
-        outputView.attendanceLogPage(localDateTimes, today);
+        outputView.attendanceLogPage(crewAttendance, today);
     }
 
     private void readDisciplinaryCrews(LocalDate today) {

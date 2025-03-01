@@ -43,23 +43,28 @@ public class OutputView {
         );
     }
 
-    public void attendanceLogPage(List<AttendanceTime> logs, LocalDate today) {
+    public void attendanceLogPage(CrewAttendance crewAttendance, LocalDate today) {
         for (int i = 1; i <= today.getDayOfMonth(); i++) {
             LocalDate date = today.withDayOfMonth(i);
 
             if (Holiday.isWeekendOrHoliday(date)) {
                 continue;
             }
-            AttendanceTime attendanceTime = findAttendanceTimeForDate(logs, date);
-            System.out.println(buildSingleLog(attendanceTime));
+            Optional<AttendanceTime> optionalLog = crewAttendance.readLog(date);
+            AttendanceTime log = AttendanceTime.of(date, null);
+            if (optionalLog.isPresent()) {
+                log = optionalLog.get();
+            }
+            System.out.println(buildSingleLog(log));
         }
-    }
-
-    private AttendanceTime findAttendanceTimeForDate(List<AttendanceTime> logs, LocalDate date) {
-        return logs.stream()
-                .filter(attendanceTime -> attendanceTime.isSameDate(date))
-                .findFirst()
-                .orElse(AttendanceTime.of(date, null));
+        DisciplinaryStatus status = crewAttendance.getDisciplinaryStatus(today);
+        System.out.printf("\n출석: %d회\n지각:%d회\n결석:%d회\n",
+                crewAttendance.getAttendanceBeforeDate(today),
+                crewAttendance.getLateBeforeDate(today),
+                crewAttendance.getAbsenceBeforeDate(today));
+        if (status != DisciplinaryStatus.NORMAL) {
+            System.out.printf("\n%s 대상자입니다\n\n", getDisciplinaryStatusName(status));
+        }
     }
 
     private String buildSingleLog(AttendanceTime attendanceTime) {

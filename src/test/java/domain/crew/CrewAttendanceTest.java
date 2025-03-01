@@ -162,23 +162,6 @@ class CrewAttendanceTest {
     }
 
     @Test
-    @DisplayName("오늘 전날까지의 출석 기록 반환")
-    void readAttendanceTimesTestV2() {
-        // given
-        CrewAttendance crewAttendance = CrewAttendance.of(
-                Crew.of("차니"), createAttendanceTimes()
-        );
-
-        // when
-        List<AttendanceTime> times = crewAttendance.readAttendanceTimesBefore(
-                LocalDate.of(2024, 12, 13)
-        );
-
-        // then
-        assertThat(times).hasSize(3);
-    }
-
-    @Test
     @DisplayName("날짜로부터 존재하는 출석 기록 반환")
     void readPresentAttendanceLogTest() {
         // given

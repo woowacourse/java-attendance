@@ -4,7 +4,6 @@ import domain.attendance.AttendanceTime;
 import domain.attendance.AttendanceTimes;
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 
 public class CrewAttendance {
@@ -28,12 +27,8 @@ public class CrewAttendance {
         return attendanceTimes.modifyAttendance(attendanceTime);
     }
 
-    public List<AttendanceTime> readAttendanceTimesBefore(LocalDate date) {
-        return attendanceTimes.readAttendance(date);
-    }
-
     public Optional<AttendanceTime> readLog(LocalDate date) {
-        return attendanceTimes.readAttendanceV2(date);
+        return attendanceTimes.readAttendance(date);
     }
 
     public DisciplinaryStatus getDisciplinaryStatus(LocalDate date) {
