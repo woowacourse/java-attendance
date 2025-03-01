@@ -24,13 +24,6 @@ public class AttendanceBook {
         this.crews = new ArrayList<>();
     }
 
-    public void registerCrew(String name, LocalDate date, LocalTime time) {
-        if (!checkCrewExisted(name)) {
-            crews.add(new Crew(name));
-        }
-        findCrewByName(name).addNewTimeLog(date, time);
-    }
-
     public Crew findCrewByName(String name) {
         return crews.stream()
                 .filter(crew -> crew.isMyName(name))
@@ -73,6 +66,15 @@ public class AttendanceBook {
         }
     }
 
+    // 초기 등록
+    public void registerCrew(String name, LocalDate date, LocalTime time) {
+        if (!checkCrewExisted(name)) {
+            crews.add(new Crew(name));
+        }
+        findCrewByName(name).addNewTimeLog(date, time);
+    }
+
+    // 기능 1
     public CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
         validateTimeIsInTheRangeOfOperation(time);
         String attendanceStatus = validateTrainingDay(date, time);
@@ -84,6 +86,7 @@ public class AttendanceBook {
         return new CheckAttendanceResponse(time, attendanceStatus);
     }
 
+    // 기능 2
     public ModifyAttendanceResponse modifyAttendance(String name, LocalDate date, LocalTime modifiedTime) {
         validateTimeIsInTheRangeOfOperation(modifiedTime);
         validateIsDateFuture(date);
@@ -99,6 +102,7 @@ public class AttendanceBook {
         return new ModifyAttendanceResponse(date, previousTime, modifiedTime, previousStatus, modifiedStatus);
     }
 
+    // 기능 3
     public List<CheckAttendanceRecordResponse> checkAttendanceRecord(String name) {
         Crew foundCrew = findCrewByName(name);
 
@@ -112,6 +116,7 @@ public class AttendanceBook {
                 .collect(Collectors.toList());
     }
 
+    // 기능 4
     public List<PenaltyCrewResponse> checkPenaltyCrew() {
         List<PenaltyCrewResponse> responses = new ArrayList<>();
         for (Crew crew : crews) {
