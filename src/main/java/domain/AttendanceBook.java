@@ -1,11 +1,5 @@
 package domain;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.flatMapping;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toMap;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -13,8 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 public class AttendanceBook {
 
@@ -25,6 +18,10 @@ public class AttendanceBook {
             .stream()
             .filter(crew -> crew.hasName(name))
             .findAny();
+    }
+
+    public Set<Crew> getAllCrews() {
+        return Set.copyOf(crewRecords.keySet());
     }
 
     public void attend(Crew crew, AttendanceDateTime attendDateTime) {
@@ -65,7 +62,6 @@ public class AttendanceBook {
         List<AttendanceDateTime> attendances = listAttendancesOfCrew(crew, fromInclusive, endInclusive);
         attendances.stream()
             .map(AttendanceDateTime::getAttendanceStatus)
-            .peek(System.out::println)
             .forEach(status -> counts.compute(status, (key, val) -> val + 1));
         return counts;
     }

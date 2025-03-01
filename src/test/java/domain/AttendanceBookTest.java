@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -41,6 +42,18 @@ public class AttendanceBookTest {
         Optional<Crew> existCrew = book.findCrewByName("크루");
 
         assertThat(existCrew).isEmpty();
+    }
+
+    @Test
+    void 출석한_적이_있는_모든_크루를_조회할_수_있다() {
+        Crew popo = new Crew("포포");
+        Crew papa = new Crew("파파");
+        book.attend(popo, dateTime);
+        book.attend(papa, dateTime);
+
+        Set<Crew> allCrews = book.getAllCrews();
+
+        assertThat(allCrews).contains(popo, papa);
     }
 
     @Test

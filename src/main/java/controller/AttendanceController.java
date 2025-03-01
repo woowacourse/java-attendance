@@ -2,6 +2,7 @@ package controller;
 
 import controller.command.AttendCommand;
 import controller.command.ControllerCommand;
+import controller.command.GetPenaltyCommand;
 import controller.command.GetRecordsCommand;
 import controller.command.ModifyCommand;
 import domain.AttendanceBook;
@@ -20,6 +21,7 @@ public class AttendanceController {
         commands.put(Selection.ATTEND, new AttendCommand());
         commands.put(Selection.MODIFY, new ModifyCommand());
         commands.put(Selection.GET_RECORDS, new GetRecordsCommand());
+        commands.put(Selection.GET_PENALTIES, new GetPenaltyCommand());
     }
 
     public static void run(AttendanceBook book) {

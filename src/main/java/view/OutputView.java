@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 
 public class OutputView {
@@ -71,5 +72,33 @@ public class OutputView {
             System.out.println(penalty.description() + "대상자입니다.");
             blankLine();
         }
+    }
+
+    public static void printDangerCrews(List<DangerCrewVO> vos) {
+        System.out.println("제적 위험자 조회 결과");
+        vos.sort(
+            Comparator.comparing(DangerCrewVO::penalty)
+                .thenComparing((vo1, vo2) -> {
+                    int left = vo1.absenceCount + (vo1.lateCount / 3);
+                    int right = vo2.absenceCount + (vo2.lateCount / 3);
+                    return Integer.compare(left, right);
+                })
+                .thenComparing(dangerCrewVO -> dangerCrewVO.crew.getName())
+        );
+
+        for (DangerCrewVO vo : vos) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                vo.crew.getName(), vo.absenceCount, vo.lateCount, vo.penalty.description());
+        }
+        blankLine();
+    }
+
+    public record DangerCrewVO(
+        Crew crew,
+        int absenceCount,
+        int lateCount,
+        Penalty penalty
+    ) {
+
     }
 }
