@@ -27,15 +27,14 @@ public class AttendanceController {
     public void run() {
         Command command;
         do {
-//            LocalDate today = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-            LocalDate today = LocalDate.of(2024, 12, 14); // TODO: 작동확인을 위한 코드, 추후 삭제
+            LocalDate today = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
             command = Command.from(inputView.readCommandCode(today));
             try {
                 runCommand(command, today);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
-        } while (command == Command.QUIT);
+        } while (command != Command.QUIT);
     }
 
     public void runCommand(Command command, LocalDate today) {
@@ -71,10 +70,6 @@ public class AttendanceController {
         outputView.attendPage(attendanceTime);
     }
 
-    public void quit() {
-        System.out.println("프로그램을 종료합니다.");
-    }
-
     private void modifyAttendanceTime() {
         String crewName = inputView.readNicknameForModify();
         Crew crew = Crew.of(crewName);
@@ -100,11 +95,15 @@ public class AttendanceController {
         CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
         List<AttendanceTime> localDateTimes = crewAttendance.readAttendanceTimesBefore(today);
 
-        outputView.attendanceLogPage(localDateTimes);
+        outputView.attendanceLogPage(localDateTimes, today);
     }
 
     private void readDisciplinaryCrews(LocalDate today) {
         List<CrewAttendance> disciplinaryCrews = attendanceBook.findDisciplinaryCrews(today);
         outputView.disciplinaryCrewsPage(disciplinaryCrews, today);
+    }
+
+    private void quit() {
+        System.out.println("프로그램을 종료합니다.");
     }
 }
