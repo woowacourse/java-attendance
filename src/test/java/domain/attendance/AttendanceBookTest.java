@@ -1,4 +1,4 @@
-package domain;
+package domain.attendance;
 
 import static domain.testdata.AttendanceTestData.AttendanceTimesData.createCounselingAttendanceTimes;
 import static domain.testdata.AttendanceTestData.AttendanceTimesData.createDismissAttendanceTimes;
@@ -8,6 +8,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import domain.crew.Crew;
+import domain.crew.CrewAttendance;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

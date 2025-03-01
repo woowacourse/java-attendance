@@ -1,4 +1,4 @@
-package domain;
+package domain.crew;
 
 import static domain.testdata.AttendanceTestData.AttendanceTimesData.createCounselingAttendanceTimes;
 import static domain.testdata.AttendanceTestData.AttendanceTimesData.createDismissAttendanceTimes;
@@ -7,6 +7,8 @@ import static domain.testdata.AttendanceTestData.AttendanceTimesData.createWarne
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import domain.attendance.AttendanceTime;
+import domain.attendance.AttendanceTimes;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;

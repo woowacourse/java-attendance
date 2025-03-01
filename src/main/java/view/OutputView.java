@@ -1,11 +1,11 @@
 package view;
 
-import domain.AttendanceStatus;
-import domain.AttendanceTime;
-import domain.AttendanceTimesComparator;
-import domain.CrewAttendance;
-import domain.CrewAttendanceComparator;
-import domain.DisciplinaryStatus;
+import domain.attendance.AttendanceStatus;
+import domain.attendance.AttendanceTime;
+import domain.attendance.comparator.AttendanceTimesComparator;
+import domain.crew.CrewAttendance;
+import domain.crew.DisciplinaryStatus;
+import domain.crew.comparator.CrewAttendanceComparator;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;

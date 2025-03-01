@@ -1,7 +1,7 @@
 import controller.AttendanceController;
-import domain.AttendanceBook;
+import domain.attendance.AttendanceBook;
+import domain.attendance.factory.AttendanceBookFactory;
 import domain.dto.AttendanceRecordDto;
-import domain.factory.AttendanceBookFactory;
 import java.io.IOException;
 import java.util.List;
 import util.AttendanceParser;

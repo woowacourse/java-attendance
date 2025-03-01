@@ -1,7 +1,10 @@
-package domain;
+package domain.crew.comparator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import domain.attendance.comparator.AttendanceTimesComparator;
+import domain.crew.Crew;
+import domain.crew.CrewAttendance;
 import domain.testdata.AttendanceTestData.AttendanceTimesData;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;

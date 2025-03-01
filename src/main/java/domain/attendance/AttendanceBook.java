@@ -1,5 +1,8 @@
-package domain;
+package domain.attendance;
 
+import domain.crew.Crew;
+import domain.crew.CrewAttendance;
+import domain.crew.DisciplinaryStatus;
 import java.time.LocalDate;
 import java.util.List;
 

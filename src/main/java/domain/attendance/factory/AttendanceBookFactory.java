@@ -1,10 +1,10 @@
-package domain.factory;
+package domain.attendance.factory;
 
-import domain.AttendanceBook;
-import domain.AttendanceTime;
-import domain.AttendanceTimes;
-import domain.Crew;
-import domain.CrewAttendance;
+import domain.attendance.AttendanceBook;
+import domain.attendance.AttendanceTime;
+import domain.attendance.AttendanceTimes;
+import domain.crew.Crew;
+import domain.crew.CrewAttendance;
 import domain.dto.AttendanceRecordDto;
 import java.util.List;
 import java.util.Map;

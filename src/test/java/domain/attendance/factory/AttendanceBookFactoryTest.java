@@ -1,4 +1,4 @@
-package domain.factory;
+package domain.attendance.factory;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 

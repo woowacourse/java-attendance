@@ -1,9 +1,10 @@
-package domain;
+package domain.attendance.comparator;
 
 import static domain.testdata.AttendanceTestData.AttendanceTimesData.createNormalAttendanceTimes;
 import static domain.testdata.AttendanceTestData.AttendanceTimesData.createWarnedAttendanceTimes;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import domain.attendance.AttendanceTimes;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

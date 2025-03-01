@@ -1,10 +1,9 @@
 package controller;
 
-import domain.AttendanceBook;
-import domain.AttendanceTime;
-import domain.Command;
-import domain.Crew;
-import domain.CrewAttendance;
+import domain.attendance.AttendanceBook;
+import domain.attendance.AttendanceTime;
+import domain.crew.Crew;
+import domain.crew.CrewAttendance;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

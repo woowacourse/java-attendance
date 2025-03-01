@@ -1,4 +1,4 @@
-package domain;
+package domain.crew;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

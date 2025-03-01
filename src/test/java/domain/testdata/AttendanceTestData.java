@@ -1,7 +1,7 @@
 package domain.testdata;
 
-import domain.AttendanceTime;
-import domain.AttendanceTimes;
+import domain.attendance.AttendanceTime;
+import domain.attendance.AttendanceTimes;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;

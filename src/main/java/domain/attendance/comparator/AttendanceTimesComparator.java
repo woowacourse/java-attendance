@@ -1,5 +1,6 @@
-package domain;
+package domain.attendance.comparator;
 
+import domain.attendance.AttendanceTimes;
 import java.time.LocalDate;
 import java.util.Comparator;
 

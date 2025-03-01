@@ -1,5 +1,7 @@
-package domain;
+package domain.crew.comparator;
 
+import domain.attendance.comparator.AttendanceTimesComparator;
+import domain.crew.CrewAttendance;
 import java.util.Comparator;
 
 public class CrewAttendanceComparator implements Comparator<CrewAttendance> {

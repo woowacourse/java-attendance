@@ -1,4 +1,4 @@
-package domain;
+package domain.crew;
 
 public enum DisciplinaryStatus {
     DISMISSED,

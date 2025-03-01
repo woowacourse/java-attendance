@@ -1,4 +1,4 @@
-package domain;
+package domain.holiday;
 
 import java.time.LocalDate;
 import java.util.Arrays;

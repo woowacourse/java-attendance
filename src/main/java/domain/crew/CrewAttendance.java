@@ -1,5 +1,7 @@
-package domain;
+package domain.crew;
 
+import domain.attendance.AttendanceTime;
+import domain.attendance.AttendanceTimes;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
