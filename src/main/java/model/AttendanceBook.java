@@ -59,4 +59,8 @@ public class AttendanceBook {
 
         return crewAttendance;
     }
+
+    public int calculateAbsentCountByNickname(String nickname) {
+        return 0;
+    }
 }

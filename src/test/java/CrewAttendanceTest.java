@@ -42,4 +42,21 @@ public class CrewAttendanceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
+
+    @DisplayName("닉네임을 통해 크루의 결석 횟수를 계산할 수 있다.")
+    @Test
+    void calculate_absent_count_by_nickname() {
+        // given
+        Attendance attendRecord1 = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
+        Attendance attendRecord2 = new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 31));
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendRecord1, attendRecord2));
+        final var nickname = "율무";
+
+        // when
+        final var absentCount = attendanceBook.calculateAbsentCountByNickname(nickname);
+
+        // then
+        Assertions.assertThat(absentCount)
+                .isEqualTo(1);
+    }
 }
