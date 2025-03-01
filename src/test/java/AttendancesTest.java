@@ -5,6 +5,7 @@ import domain.Attendance;
 import domain.AttendanceTime;
 import domain.Attendances;
 import domain.Crew;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class AttendancesTest {
         //given
         Crew crew = new Crew("쿠키");
         AttendanceTime time = new AttendanceTime(LocalDateTime.of(2024, 12, 2, 9, 30));
-        Attendance attendance = new Attendance(crew, time);
+        Attendance attendance = Attendance.of(crew, time);
         Attendances attendances = new Attendances(new ArrayList<>());
         Attendances expected = new Attendances(List.of(attendance));
         //when
@@ -31,7 +32,7 @@ public class AttendancesTest {
         //given
         Crew crew = new Crew("쿠키");
         AttendanceTime time = new AttendanceTime(LocalDateTime.of(2024, 12, 2, 9, 30));
-        Attendance attendance = new Attendance(crew, time);
+        Attendance attendance = Attendance.of(crew, time);
         Attendances expected = new Attendances(List.of(attendance));
         //when & then
         assertThatThrownBy(() -> expected.add(attendance))
@@ -45,13 +46,33 @@ public class AttendancesTest {
         Crew crew = new Crew("쿠키");
         LocalDateTime time = LocalDateTime.of(2024, 12, 2, 9, 30);
         AttendanceTime attendanceTime = new AttendanceTime(time);
-        Attendance attendance = new Attendance(crew, attendanceTime);
+        Attendance attendance = Attendance.of(crew, attendanceTime);
         Attendances attendances = new Attendances(List.of(attendance));
 
-        Attendance expected = new Attendance(crew, attendanceTime);
+        Attendance expected = Attendance.of(crew, attendanceTime);
         //when
         Attendance actual = attendances.findByCrewAndDate(crew, time.toLocalDate()).get();
         //then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 특정_크루의_이번달_출석목록을_조회한다() {
+        //given
+        Crew crew = new Crew("쿠키");
+        LocalDateTime time = LocalDateTime.of(2024, 12, 2, 9, 30);
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        Attendance attendance1 = Attendance.of(crew, attendanceTime);
+        LocalDate day = LocalDate.of(2024, 12, 3);
+        Attendance attendance2 = Attendance.createAbsence(crew, day);
+
+        Attendances attendances = new Attendances(List.of(attendance1));
+        Attendances expected = new Attendances(List.of(attendance1, attendance2));
+
+        //when
+        Attendances filteredAttendances = attendances.createMonthlyAttendances(crew, day);
+
+        //then
+        assertThat(filteredAttendances).isEqualTo(expected);
     }
 }
