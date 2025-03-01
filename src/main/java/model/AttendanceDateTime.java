@@ -38,6 +38,10 @@ public class AttendanceDateTime {
         return attendanceDateTime.toLocalTime().isBefore(LocalTime.of(8, 0)) || attendanceDateTime.toLocalTime().isAfter(LocalTime.of(23, 0));
     }
 
+    public boolean isSameDate(AttendanceDateTime attendanceDateTime) {
+        return attendanceDateTime.toLocalDate().equals(this.attendanceDateTime.toLocalDate());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
