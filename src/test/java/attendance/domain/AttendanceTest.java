@@ -6,6 +6,10 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import attendance.exception.AttendanceArgumentException;
 
 class AttendanceTest {
 
@@ -52,5 +56,16 @@ class AttendanceTest {
         var assertion = new Attendance(dateTime);
 
         assertThat(assertion.state()).isEqualTo(AttendanceStatus.ABSENCE);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {7, 23})
+    @DisplayName("캠퍼스 운영 시간 외에 출석할 경우, 예외가 발생한다.")
+    void error_AttendanceOutOfSchedule(int hour) {
+        var dateTime = LocalDateTime.of(2024, 12, 16, hour, 35);
+
+        assertThatThrownBy(() -> new Attendance(dateTime))
+            .isInstanceOf(AttendanceArgumentException.class)
+            .hasMessageContaining("운영 시간 외에는 출석할 수 없습니다.");
     }
 }
