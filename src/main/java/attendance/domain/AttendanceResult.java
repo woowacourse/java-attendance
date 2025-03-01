@@ -56,6 +56,9 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
     @Override
     public int compareTo(AttendanceResult o) {
         if (this.calculateTotalAbsent() == o.calculateTotalAbsent()) {
+            if (this.getLateCount() == o.getLateCount()) {
+                return this.nickname.compareTo(o.nickname);
+            }
             return o.getLateCount() - this.getLateCount();
         }
         return o.calculateTotalAbsent() - this.calculateTotalAbsent();

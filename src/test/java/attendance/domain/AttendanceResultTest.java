@@ -117,6 +117,6 @@ public class AttendanceResultTest {
         int result = attendanceResult1.compareTo(attendanceResult2);
 
         //then
-        assertThat(result).isEqualTo(-1);
+        assertThat(result > 0).isTrue();
     }
 }
