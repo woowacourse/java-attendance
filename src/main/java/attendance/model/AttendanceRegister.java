@@ -59,6 +59,7 @@ public class AttendanceRegister {
     }
 
     public AttendanceRecord findAttendanceRecordByCrewName(String crewName) {
+        validateContainsCrewName(crewName);
         return register.get(crewName);
     }
 
