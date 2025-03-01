@@ -13,10 +13,12 @@ import java.util.Locale;
 public class OutputView {
 
     public void printErrorMessage(final String message) {
+
         System.out.println(message);
     }
 
     public void printAttendance(final AttendanceTime attendanceTime) {
+
         final int month = attendanceTime.getDate().getMonthValue();
         final int date = attendanceTime.getDate().getDayOfMonth();
         final String day = attendanceTime.getDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
@@ -41,6 +43,7 @@ public class OutputView {
     }
 
     public void printCrewAttendances(final CrewAttendanceDTO crewAttendanceDTO) {
+
         System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", crewAttendanceDTO.name());
 
         printAttendances(crewAttendanceDTO);
@@ -75,6 +78,7 @@ public class OutputView {
     }
 
     private void printCrewAttendanceStatus(CrewAttendanceDTO crewAttendanceDTO) {
+
         EnumMap<AttendanceStatus, Integer> statusCounts = crewAttendanceDTO.statusCount();
         for (AttendanceStatus attendanceStatus : statusCounts.keySet()) {
             printAttendanceStatus(attendanceStatus, statusCounts.get(attendanceStatus));
@@ -82,11 +86,13 @@ public class OutputView {
     }
 
     private void printAttendanceStatus(final AttendanceStatus attendanceStatus, final int count) {
+
         System.out.printf("%s: %d회", attendanceStatus.getValue(), count);
         printLine();
     }
 
     public void printLine() {
+
         System.out.println();
     }
 }
