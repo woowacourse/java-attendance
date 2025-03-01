@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import attendance.domain.AttendanceReader;
+import attendance.domain.Nickname;
 
 public class AttendanceReaderTest {
 
@@ -31,7 +32,7 @@ public class AttendanceReaderTest {
         var attendanceBook = loadedBook.attendancesBook();
         assertAll(
             () -> assertThat(attendanceBook.keySet().size()).isEqualTo(5),
-            () -> assertThat(attendanceBook.containsKey("짱수")).isTrue()
+            () -> assertThat(attendanceBook.containsKey(new Nickname("짱수"))).isTrue()
         );
     }
 
