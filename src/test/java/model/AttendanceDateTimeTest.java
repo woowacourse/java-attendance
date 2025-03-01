@@ -43,6 +43,20 @@ public class AttendanceDateTimeTest {
         Assertions.assertTrue(
                 attendanceDateTime.isSameDate(attendanceDateTime1)
         );
+    }
+
+    @Test
+    @DisplayName("월요일인지 비교하는 테스트")
+    void test8() {
+        AttendanceDateTime monday = new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 12, 12));
+        AttendanceDateTime notMonday = new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 12, 12));
+        Assertions.assertTrue(
+                monday.isMonday()
+        );
+        Assertions.assertFalse(
+                notMonday.isMonday()
+        );
 
     }
+
 }
