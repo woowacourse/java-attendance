@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -9,7 +10,9 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus state) {
     }
 
     private static AttendanceStatus judgeStatus(LocalDateTime dateTime) {
-        var status = AttendanceStatus.judgeStatus(dateTime.toLocalTime(), LocalTime.of(10, 0));
-        return status;
+        LocalDate date = dateTime.toLocalDate();
+        LocalTime time = dateTime.toLocalTime();
+        LocalTime schedule = Schedule.getSchedule(date);
+        return AttendanceStatus.judgeStatus(time, schedule);
     }
 }

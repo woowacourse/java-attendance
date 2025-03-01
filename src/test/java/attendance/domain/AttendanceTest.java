@@ -39,7 +39,7 @@ class AttendanceTest {
     @Test
     @DisplayName("월요일은 출석 시간이 13:05분 초과일 경우, 지각으로 저장한다.")
     void test_AttendanceLateOnMonday() {
-        var dateTime = LocalDateTime.of(2024, 12, 11, 13, 10);
+        var dateTime = LocalDateTime.of(2024, 12, 16, 13, 10);
         var assertion = new Attendance(dateTime);
 
         assertThat(assertion.state()).isEqualTo(AttendanceStatus.LATE);
@@ -48,7 +48,7 @@ class AttendanceTest {
     @Test
     @DisplayName("월요일은 출석 시간이 13:30분 초과일 경우, 지각으로 저장한다.")
     void test_AttendanceAbsenceOnMonday() {
-        var dateTime = LocalDateTime.of(2024, 12, 11, 13, 35);
+        var dateTime = LocalDateTime.of(2024, 12, 16, 13, 35);
         var assertion = new Attendance(dateTime);
 
         assertThat(assertion.state()).isEqualTo(AttendanceStatus.ABSENCE);

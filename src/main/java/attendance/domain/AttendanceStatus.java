@@ -18,10 +18,10 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus judgeStatus(LocalTime time, LocalTime schedule) {
-        if (schedule.isAfter(time.plusMinutes(ABSENCE.getValue()))) {
+        if (time.isAfter(schedule.plusMinutes(ABSENCE.getValue()))) {
             return AttendanceStatus.ABSENCE;
         }
-        if (schedule.isAfter(time.plusMinutes(LATE.getValue()))) {
+        if (time.isAfter(schedule.plusMinutes(LATE.getValue()))) {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTENDANCE;
