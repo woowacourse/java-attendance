@@ -1,6 +1,5 @@
 package controller;
 
-import domain.AttendanceDateTime;
 import domain.AttendanceType;
 import domain.Crew;
 import dto.AttendanceStatusDto;
@@ -116,7 +115,7 @@ public class AttendanceController {
     }
 
     private void validateIsSchoolDay() {
-        if (AttendanceDateTime.generateWithoutTimeFrom(currentDate).isRestDay()) {
+        if (attendanceService.checkRestDayFrom(currentDate)) {
             OutputView.printErrorMessage(String.format("%d월 %d일 %s은 등교일이 아닙니다.",
                     currentDate.getMonthValue(),
                     currentDate.getDayOfMonth(),

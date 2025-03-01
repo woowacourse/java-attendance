@@ -8,6 +8,7 @@ import domain.Crew;
 import domain.PenaltyType;
 import dto.AttendanceStatusDto;
 import dto.AttendanceStatusesOfCrewDto;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,6 +115,10 @@ public class AttendanceService {
         }
 
         return attendanceTypeCountOfCrew;
+    }
+
+    public boolean checkRestDayFrom(LocalDate localDate) {
+        return !AttendanceDateTime.generateWithoutTimeFrom(localDate).isRestDay();
     }
 
     private Map<AttendanceType, Integer> getAttendanceTypeCountFrom(Map<Integer, AttendanceHistory> historyForEachDay, int untilDay) {
