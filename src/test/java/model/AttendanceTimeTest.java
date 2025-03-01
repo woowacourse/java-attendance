@@ -43,4 +43,37 @@ class AttendanceTimeTest {
         assertThat(result1).isFalse();
         assertThat(result2).isFalse();
     }
+
+    @Test
+    @DisplayName("결석이면 true를 반환한다.")
+    void test3() {
+        // given
+        LocalDate localDate = LocalDate.of(2025, 2, 28);
+        LocalTime localTime = LocalTime.of(10, 31);
+        int absenceTime = 30;
+
+        // when
+        boolean result = AttendanceTime.isAbsence(localDate, localTime, absenceTime);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("지각이 아니면 false를 반환한다.")
+    void test4() {
+        // given
+        LocalDate localDate = LocalDate.of(2025, 2, 28);
+        LocalTime localTime1 = LocalTime.of(10, 0);
+        LocalTime localTime2 = LocalTime.of(10, 5);
+        int absenceTime = 30;
+
+        // when
+        boolean result1 = AttendanceTime.isAbsence(localDate, localTime1, absenceTime);
+        boolean result2 = AttendanceTime.isAbsence(localDate, localTime2, absenceTime);
+
+        // then
+        assertThat(result1).isFalse();
+        assertThat(result2).isFalse();
+    }
 }
