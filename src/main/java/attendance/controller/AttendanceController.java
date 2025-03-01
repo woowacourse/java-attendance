@@ -2,6 +2,7 @@ package attendance.controller;
 
 import attendance.view.InputView;
 import attendance.view.OutputView;
+import java.time.LocalDate;
 
 public class AttendanceController {
 
@@ -13,7 +14,7 @@ public class AttendanceController {
         this.outputView = outputView;
     }
 
-    public void run() {
-        
+    public void run(LocalDate today) {
+        inputView.inputCommand(today);
     }
 }
