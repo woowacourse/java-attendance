@@ -15,13 +15,6 @@ public class AttendanceSystem {
         attendanceBooks = new HashMap<>();
     }
 
-    public void attendance(String name, LocalTime time) {
-        if (attendanceBooks.get(name).hasAttendanceRecord(TODAY)) {
-            throw new IllegalArgumentException();
-        }
-        attendanceBooks.get(name).attendance(TODAY, time);
-    }
-
     private boolean hasNoName(String name) {
         return !attendanceBooks.containsKey(name);
     }

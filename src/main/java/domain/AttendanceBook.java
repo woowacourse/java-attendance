@@ -34,10 +34,6 @@ public class AttendanceBook {
         attendanceBook.put(date, time);
     }
 
-    public boolean hasAttendanceRecord(LocalDate date) {
-        return attendanceBook.containsKey(date);
-    }
-
     private boolean isNotOperatingHours(LocalTime time) {
         return time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(23, 0));
     }
