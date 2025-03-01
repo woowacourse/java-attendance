@@ -62,4 +62,8 @@ public class CrewAttendanceStorage {
         }
         return storages.get(crew);
     }
+
+    public Map<String, AttendanceStatistic> findRiskCrewStatistics(LocalDate startDate, LocalDate endDate) {
+        return null;
+    }
 }

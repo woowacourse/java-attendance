@@ -196,4 +196,49 @@ public class CrewAttendanceStorageTest {
                 () -> assertThat(statistic.getAbsenceCount()).isEqualTo(1)
         );
     }
+
+    @DisplayName("제적 위험자의 이름과 통계 내역 리스트를 리턴할 수 있다.")
+    @Test
+    void test10() {
+        // given
+        LocalDate startDate = LocalDate.of(2025, 2, 24); // 월
+        LocalDate endDate = LocalDate.of(2025, 3, 4); // 화
+
+        String 경고_대상자 = "경고대상자"; // 결석 2회
+        AttendanceStorage storageOf경고_대상자 = AttendanceStorage.of(List.of(
+                new ExistAttendance(startDate, LocalTime.of(13, 0)), // 월 - 지각
+                new ExistAttendance(startDate.plusDays(1), LocalTime.of(10, 0)), // 화 - 지각
+                new ExistAttendance(startDate.plusDays(2), LocalTime.of(10, 0)), // 수 - 지각
+                new ExistAttendance(startDate.plusDays(3), LocalTime.of(10, 0)), // 목 - 출석
+                new ExistAttendance(startDate.plusDays(4), LocalTime.of(10, 0)) // 금 - 출석
+                // 월 - 결석
+        ));
+        String 면담_대상자 = "면담대상자"; // 결석 3회
+        AttendanceStorage storageOf면담_대상자 = AttendanceStorage.of(List.of(
+                new ExistAttendance(startDate, LocalTime.of(13, 0)), // 월 - 출석
+                new ExistAttendance(startDate.plusDays(1), LocalTime.of(10, 0)), // 화 - 출석
+                new ExistAttendance(startDate.plusDays(2), LocalTime.of(10, 0)), // 수 - 출석
+                new ExistAttendance(startDate.plusDays(3), LocalTime.of(13, 0)) // 목 - 결석
+                // 금 - 결석
+                // 월 - 결석
+        ));
+        String 제적_대상자 = "제적대상자"; // 결석 6회
+        AttendanceStorage storageOf제적_대상자 = AttendanceStorage.init();
+
+        CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.of(Map.of(
+                경고_대상자, storageOf경고_대상자,
+                면담_대상자, storageOf면담_대상자,
+                제적_대상자, storageOf제적_대상자
+        ));
+
+        // when
+        Map<String, AttendanceStatistic> statistic = crewAttendanceStorage.findRiskCrewStatistics(startDate, endDate);
+
+        // then
+        assertAll(
+                () -> assertThat(statistic.get(경고_대상자).getExpulsionRiskStatus()).isSameAs(ExpulsionRiskStatus.WARNING),
+                () -> assertThat(statistic.get(면담_대상자).getExpulsionRiskStatus()).isSameAs(ExpulsionRiskStatus.INTERVIEW),
+                () -> assertThat(statistic.get(제적_대상자).getExpulsionRiskStatus()).isSameAs(ExpulsionRiskStatus.EXPELLED)
+        );
+    }
 }
