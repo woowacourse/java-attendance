@@ -19,9 +19,8 @@ public class CsvReaderTest {
 
         //then
         List<String> expected = List.of(
-                "빙티,2024-12-02 10:00",
-                "빙티,2024-12-03 10:00",
-                "빙티,2024-12-05 10:00"
+                "빙티,2024-12-02 10:00", "빙티,2024-12-03 10:00", "빙티,2024-12-05 10:00",
+                "가나,2024-12-02 10:05", "가나,2024-12-03 10:06", "가나,2024-12-05 10:31"
         );
         assertThat(actual).containsExactlyElementsOf(expected);
     }
