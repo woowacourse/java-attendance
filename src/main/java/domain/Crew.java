@@ -27,6 +27,18 @@ public class Crew {
         return attendance;
     }
 
+    public ModifyResult modifyAttendedTime(int date, LocalTime localTime) {
+        if (isEmptyDay(date)) {
+            throw new IllegalArgumentException(ERROR_MESSAGE.EMPTY_DATE.getMessage());
+        }
+        return attendanceHistory.stream().filter(attendance -> attendance.getDayOfMonth() == date).findFirst()
+                .map(attendance -> attendance.changeTimeTo(localTime)).orElse(null);
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public List<Attendance> getAttendanceHistory() {
         return attendanceHistory;
     }
@@ -52,6 +64,18 @@ public class Crew {
                 .anyMatch(attendance -> attendance.getDayOfMonth() == newAttendance.getDayOfMonth());
     }
 
+    public void fillEmptyDateWithAbsent(LocalDate localDate) {
+        for (int day = 1; day <= localDate.getDayOfMonth(); day++) {
+            if (isEmptyDay(day) && !isWeekendOrChristmas(LocalDate.of(2024, 12, day))) {
+                addDummyAbsent(day);
+            }
+        }
+    }
+
+    private void addDummyAbsent(int day) {
+        attendanceHistory.add(new Attendance(LocalDateTime.of(2024, 12, day, 22, 59, 59)));
+    }
+
     public int getAttendCount() {
         return (int) attendanceHistory.stream()
                 .filter(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.ATTEND)
@@ -70,19 +94,6 @@ public class Crew {
                 .count();
     }
 
-
-    public void fillEmptyDateWithAbsent(LocalDate localDate) {
-        for (int day = 1; day <= localDate.getDayOfMonth(); day++) {
-            if (isEmptyDay(day) && !isWeekendOrChristmas(LocalDate.of(2024, 12, day))) {
-                addDummyAbsent(day);
-            }
-        }
-    }
-
-    private void addDummyAbsent(int day) {
-        attendanceHistory.add(new Attendance(LocalDateTime.of(2024, 12, day, 22, 59, 59)));
-    }
-
     public Penalty getPenalty() {
         int penaltyStandard = getAbsentCount() + (getLateCount() / 3);
         if (penaltyStandard > EXPEL.getCount()) {
@@ -97,11 +108,5 @@ public class Crew {
         return NONE;
     }
 
-    public ModifyResult modifyAttendedTime(int date, LocalTime localTime) {
-        if (isEmptyDay(date)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE.EMPTY_DATE.getMessage());
-        }
-        return attendanceHistory.stream().filter(attendance -> attendance.getDayOfMonth() == date).findFirst()
-                .map(attendance -> attendance.changeTimeTo(localTime)).orElse(null);
-    }
+
 }
