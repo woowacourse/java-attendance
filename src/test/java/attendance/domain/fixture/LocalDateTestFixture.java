@@ -21,7 +21,7 @@ public class LocalDateTestFixture {
 
     public static List<LocalDate> createRegularDates(int endDate) {
         LocalDate now = LocalDate.now();
-        return IntStream.range(1, endDate - 1)
+        return IntStream.range(1, endDate)
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
                 .filter(date -> !Holiday.isHoliday(date))
                 .filter(date -> !isWeekend(date))
@@ -48,7 +48,7 @@ public class LocalDateTestFixture {
 
     public static int countOnCampusDay(int today) {
         LocalDate now = LocalDate.now();
-        return (int) IntStream.range(1, today - 1)
+        return (int) IntStream.range(1, today)
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
                 .filter(AttendanceChecker::isCampusOpenDate)
                 .count();
