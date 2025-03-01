@@ -26,4 +26,20 @@ public class CrewAttendanceTest {
         Assertions.assertThat(crewAttendances)
                 .containsExactly(attendRecord1, attendRecord2);
     }
+
+    @DisplayName("없는 닉네임 입력 시 예외를 발생한다.")
+    @Test
+    void not_exist_nickname_exception() {
+        // given
+        Attendance attendRecord1 = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
+        Attendance attendRecord2 = new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 4));
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendRecord1, attendRecord2));
+        final var nickname = "열무";
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> attendanceBook.findCrewAttendance(nickname))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
 }
