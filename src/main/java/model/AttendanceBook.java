@@ -21,12 +21,22 @@ public class AttendanceBook {
                 .collect(Collectors.toList());
     }
 
-    public Map<LocalDate, LocalTime> findStudentAttendanceTimeRecord(String name) {
-        Student student = attendanceBook.stream()
+
+    public LocalTime findStudentAttendanceTimeRecord(String name, LocalDate localDate) {
+        Student student = findStudentByNickName(name);
+        return student.findAttendanceLocalTimeByLocalDate(localDate);
+    }
+    public AttendanceStatus findStudentAttendanceStatusRecord(String name, LocalDate localDate) {
+        Student student = findStudentByNickName(name);
+        return student.findAttendanceStatusByLocalDate(localDate);
+    }
+
+
+    private Student findStudentByNickName(String name){
+        return attendanceBook.stream()
                 .filter(stu -> stu.getName().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 찾는 학생이 존재하지 않습니다."));
-        return student.findAttendanceTimeRecordMap();
     }
 
     public List<Student> findExpulsionRiskStudents() {
