@@ -1,87 +1,59 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceStatus.ABSENCE;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 public class AttendanceRecord {
     private final String crewName;
-    private final Map<LocalDate, Attendance> timestamps;
+    private final Attendances attendances;
 
     public AttendanceRecord(String crewName) {
         this.crewName = crewName;
-        this.timestamps = new HashMap<>();
+        this.attendances = new Attendances();
     }
 
     public LocalDateTime attend(LocalDate date, LocalTime time) {
-        if (isAttendedDate(date)) {
-            throw new IllegalArgumentException("해당 날짜에 출석 기록이 있습니다. 출석 수정 기능을 이용해주세요.");
-        }
+        checkDuplicateAttendance(date);
         AttendanceChecker.checkCampusOpen(date, time);
 
-        updateTimeStamp(date, time);
+        updateAttendance(date, time);
         return LocalDateTime.of(date, time);
+    }
+
+    private void checkDuplicateAttendance(LocalDate date) {
+        if (attendances.isAttendedDate(date)) {
+            throw new IllegalArgumentException("해당 날짜에 출석 기록이 있습니다. 출석 수정 기능을 이용해주세요.");
+        }
     }
 
     public Attendance modify(LocalDate date, LocalTime time) {
         AttendanceChecker.checkCampusOpen(date, time);
 
-        Attendance prevAttendance = timestamps.get(date);
+        Attendance prevAttendance = attendances.getCurrentAttendance(date);
 
-        updateTimeStamp(date, time);
+        updateAttendance(date, time);
         return prevAttendance;
     }
 
-    public Map<AttendanceStatus, Integer> getTotalStatusCount(int today) {
-        Map<AttendanceStatus, Integer> statusCount = new EnumMap<>(AttendanceStatus.class);
 
-        Arrays.stream(AttendanceStatus.values())
-                .forEach(status -> statusCount.put(status, getTotalStatusCount(status)));
-
-        statusCount.put(ABSENCE, statusCount.get(ABSENCE) + countBlankAttendanceAbsence(today));
-
-        return statusCount;
-    }
 
     public WarningLevel calculateWarningLevel(int today){
-        Map<AttendanceStatus, Integer> statusCount = getTotalStatusCount(today);
+        Map<AttendanceStatus, Integer> statusCount = AttendanceStatistics.getStatusCount(attendances, today);
 
         return WarningLevel.of(statusCount);
     }
 
-    private int getTotalStatusCount(AttendanceStatus status) {
-        return (int) timestamps.values().stream()
-                .filter(attendance -> attendance.status() == status)
-                .count();
-    }
 
-    private int countBlankAttendanceAbsence(int today) {
-        LocalDate now = LocalDate.now();
-        return (int) IntStream.range(1, today - 1)
-                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
-                .filter(date -> !timestamps.containsKey(date))
-                .filter(AttendanceChecker::isCampusOpenDate)
-                .count();
-    }
-
-    private void updateTimeStamp(LocalDate date, LocalTime time) {
-        Attendance attendance = new Attendance(time, date);
-
-        timestamps.put(date, attendance);
+    private void updateAttendance(LocalDate date, LocalTime time) {
+        Attendance attendance = new Attendance(date, time);
+        attendances.addAttendance(date, attendance);
     }
 
     public boolean isNameMatched(String crewName) {
         return this.crewName.equals(crewName);
     }
 
-    private boolean isAttendedDate(LocalDate attendDate) {
-        return timestamps.containsKey(attendDate);
-    }
+
 }
