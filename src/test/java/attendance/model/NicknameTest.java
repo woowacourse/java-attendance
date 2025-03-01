@@ -71,4 +71,16 @@ class NicknameTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("닉네임이 공백으로만 구성되어 있습니다.");
     }
+
+    @DisplayName("닉네임은 오름차순으로 정렬할 수 있다.")
+    @Test
+    void compareToTest() {
+        // given
+        Nickname neo = new Nickname("네오");
+        Nickname bello = new Nickname("벨로");
+
+        // when & then
+        assertThat(neo.compareTo(bello))
+                .isNegative();
+    }
 }

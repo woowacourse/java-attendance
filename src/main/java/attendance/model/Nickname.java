@@ -2,7 +2,7 @@ package attendance.model;
 
 import java.util.Objects;
 
-public class Nickname {
+public class Nickname implements Comparable<Nickname> {
 
     private final String value;
 
@@ -43,5 +43,10 @@ public class Nickname {
     @Override
     public String toString() {
         return value;
+    }
+
+    @Override
+    public int compareTo(Nickname other) {
+        return this.value.compareTo(other.value);
     }
 }

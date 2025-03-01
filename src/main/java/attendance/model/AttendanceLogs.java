@@ -1,7 +1,6 @@
 package attendance.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -71,20 +70,12 @@ public class AttendanceLogs {
         return attendanceLog -> attendanceLog.isBefore(baseDate);
     }
 
-    public AttendanceLog edit(Nickname nickname, LocalDateTime dateTime) {
-        AttendanceLog attendanceLog = findByNicknameAndAttendanceDate(nickname, dateTime.toLocalDate());
-        if (attendanceLog.isNotRecorded()) {
-            AttendanceLog newAttendanceLog = new AttendanceLog(nickname, dateTime.toLocalDate(), dateTime.toLocalTime());
-            logs.add(newAttendanceLog);
-            return newAttendanceLog;
-        }
-        logs.remove(attendanceLog);
-        AttendanceLog newAttendanceLog = new AttendanceLog(nickname, dateTime.toLocalDate(), dateTime.toLocalTime());
-        logs.add(newAttendanceLog);
-        return newAttendanceLog;
+    public void edit(AttendanceLog updateAttendanceLog) {
+        logs.remove(updateAttendanceLog);
+        logs.add(updateAttendanceLog);
     }
 
-    public EnumMap<AttendanceType, Integer> countAllAttendanceType(Nickname nickname, LocalDate baseDate) {
+    public EnumMap<AttendanceType, Integer> countAttendanceTypes(Nickname nickname, LocalDate baseDate) {
         EnumMap<AttendanceType, Integer> attendanceCounts = new EnumMap<>(AttendanceType.class);
 
         Arrays.stream(AttendanceType.values())

@@ -144,7 +144,7 @@ class AttendanceLogsTest {
 
         // when
         LocalDateTime updateDateTime = LocalDateTime.of(today, LocalTime.of(13, 0));
-        attendanceLogs.edit(nickname, updateDateTime);
+        attendanceLogs.edit(new AttendanceLog(nickname, updateDateTime.toLocalDate(), updateDateTime.toLocalTime()));
         AttendanceLog edited = attendanceLogs.findByNicknameAndAttendanceDate(nickname, updateDateTime.toLocalDate());
 
         // then
@@ -154,7 +154,7 @@ class AttendanceLogsTest {
 
     @DisplayName("닉네임과 기준 날짜로 이번 달 각 출석 유형 횟수를 조회할 수 있다.")
     @Test
-    void countAllAttendanceTypeTest() {
+    void countAttendanceTypesTest() {
         // given
         Nickname nickname = new Nickname("벨로");
         LocalDate today = LocalDate.of(2024, 12, 5);
@@ -166,7 +166,7 @@ class AttendanceLogsTest {
         attendanceLogs.add(new AttendanceLog(nickname, today, attendanceTime));
 
         // when
-        EnumMap<AttendanceType, Integer> map = attendanceLogs.countAllAttendanceType(nickname, today);
+        EnumMap<AttendanceType, Integer> map = attendanceLogs.countAttendanceTypes(nickname, today);
 
         // then
         assertThat(map.get(AttendanceType.PRESENT))

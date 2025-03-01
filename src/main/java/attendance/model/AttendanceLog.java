@@ -26,6 +26,15 @@ public class AttendanceLog {
         this.attendanceTime = attendanceTime;
     }
 
+    public AttendanceLog(Nickname nickname, LocalDateTime attendanceDateTime) {
+        validateNickname(nickname);
+        validateAttendanceDate(attendanceDateTime.toLocalDate());
+        validateAttendanceTime(attendanceDateTime.toLocalTime());
+        this.nickname = nickname;
+        this.attendanceDate = attendanceDateTime.toLocalDate();
+        this.attendanceTime = attendanceDateTime.toLocalTime();
+    }
+
     private void validateAttendanceTime(LocalTime attendanceTime) {
         if (attendanceTime.isBefore(OPEN_TIME) || attendanceTime.isAfter(CLOSE_TIME)) {
             throw new IllegalArgumentException("캠퍼스 운영시간(%s~%s) 외에는 출석할 수 없습니다."
