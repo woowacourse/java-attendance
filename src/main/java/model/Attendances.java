@@ -1,9 +1,12 @@
 package model;
 
 import static constant.AttendanceConstant.COMMA_SEPARATOR;
+import static constant.ErrorMessage.NOT_FOUND_CREW;
 
+import dto.AttendanceCheckInResponse;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,6 +33,22 @@ public class Attendances {
         fillMissingAttendances(attendances, allDates);
 
         return new Attendances(attendances);
+    }
+
+    public AttendanceCheckInResponse add(String nickname, String checkInTime, DateTimeGenerator dateTimeGenerator) {
+        Crew crew = Crew.of(nickname);
+        Attendance attendance = Attendance.of(dateTimeGenerator, checkInTime);
+
+        if (!attendances.containsKey(crew)) {
+            throw new IllegalArgumentException(NOT_FOUND_CREW.getMessage());
+        }
+
+        attendances.get(crew).add(attendance);
+
+        return new AttendanceCheckInResponse(
+                dateTimeGenerator.now().toLocalDate(),
+                LocalTime.parse(checkInTime),
+                attendance.getAttendanceType());
     }
 
     private static Map<Crew, List<Attendance>> parseAttendances(List<String> inputs) {

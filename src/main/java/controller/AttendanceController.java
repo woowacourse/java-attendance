@@ -3,6 +3,7 @@ package controller;
 import static constant.PathConstant.ATTENDANCE_FILE_PATH;
 
 import dto.AttendanceCheckInRequest;
+import dto.AttendanceCheckInResponse;
 import dto.AttendanceHistoryRequest;
 import dto.AttendanceOptionRequest;
 import dto.AttendanceUpdateRequest;
@@ -13,6 +14,7 @@ import model.Option;
 import util.DateTimeGenerator;
 import util.FileParser;
 import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
 
@@ -29,16 +31,16 @@ public class AttendanceController {
             Option option = processWithRetry(this::option);
 
             if (option.equals(Option.ONE)) {
-                processWithRetry(this::checkIn);
+                processWithRetry(() -> recordAttendance(attendances));
             }
             if (option.equals(Option.TWO)) {
-                processWithRetry(this::checkIn);
+                processWithRetry(this::updateAttendance);
             }
             if (option.equals(Option.THREE)) {
-                processWithRetry(this::update);
+                processWithRetry(this::getAttendanceHistoryByCrew);
             }
             if (option.equals(Option.FOUR)) {
-                processWithRetry(this::history);
+                processWithRetry(this::findRiskCrews);
             }
             if (option.equals(Option.QUIT)) {
                 break;
@@ -52,22 +54,30 @@ public class AttendanceController {
     }
 
     private Option option() {
-        AttendanceOptionRequest attendanceOptionRequest = InputView.readAttendanceOptionRequest(dateTimeGenerator);
-        return Option.find(attendanceOptionRequest.option());
+        AttendanceOptionRequest request = InputView.readAttendanceOptionRequest(dateTimeGenerator);
+        return Option.find(request.option());
     }
 
-    private void checkIn() {
-        AttendanceCheckInRequest attendanceCheckInRequest = InputView.readAttendanceCheckInRequest();
+    private void recordAttendance(Attendances attendances) {
+        AttendanceCheckInRequest request = InputView.readAttendanceCheckInRequest();
+
+        AttendanceCheckInResponse response =
+                attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator);
+
+        OutputView.printCheckIn(response);
+    }
+
+    private void updateAttendance() {
+        AttendanceUpdateRequest request = InputView.readAttendanceUpdateRequest(dateTimeGenerator);
 
     }
 
-    private void update() {
-        AttendanceUpdateRequest attendanceUpdateRequest = InputView.readAttendanceUpdateRequest(dateTimeGenerator);
+    private void getAttendanceHistoryByCrew() {
+        AttendanceHistoryRequest request = InputView.readAttendanceHistoryRequest();
 
     }
 
-    private void history() {
-        AttendanceHistoryRequest attendanceHistoryRequest = InputView.readAttendanceHistoryRequest();
+    private void findRiskCrews() {
 
     }
 

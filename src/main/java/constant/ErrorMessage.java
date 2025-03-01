@@ -12,6 +12,7 @@ public enum ErrorMessage {
     INVALID_OPTION_FORMAT("유효한 옵션이 아닙니다."),
 
     CANNOT_CHECK_IN_ON_WEEKEND("주말에는 출석할 수 없습니다."),
+    NOT_FOUND_CREW("존재하지 않는 크루입니다."),
     ;
 
     private static final String prefix = "[ERROR] ";
