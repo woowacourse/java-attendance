@@ -8,12 +8,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class StudentAttendanceHistoryMapTest {
-    StudentAttendanceHistoryMap studentAttendanceHistoryMap;
+public class StudentAttendanceHistoryTest {
+    StudentAttendanceHistory studentAttendanceHistoryMap;
 
     @BeforeEach
     void set() {
-        studentAttendanceHistoryMap = new StudentAttendanceHistoryMap(
+        studentAttendanceHistoryMap = new StudentAttendanceHistory(
                 Map.of(
                         new AttendanceDate(LocalDate.of(2024, 12, 12)), new AttendanceTime(LocalTime.of(8, 0))
                 )
@@ -28,7 +28,7 @@ public class StudentAttendanceHistoryMapTest {
                 new AttendanceTime(LocalTime.of(10, 31))
         );
         Assertions.assertTrue(
-                studentAttendanceHistoryMap.getStudentAttendanceHistory().containsKey(new AttendanceDate(LocalDate.of(2024, 12, 13)))
+                studentAttendanceHistoryMap.getAttendanceHistory().containsKey(new AttendanceDate(LocalDate.of(2024, 12, 13)))
         );
     }
 
@@ -40,11 +40,11 @@ public class StudentAttendanceHistoryMapTest {
                 new AttendanceTime(LocalTime.of(9, 0))
         );
 
-        Assertions.assertTrue(studentAttendanceHistoryMap.getStudentAttendanceHistory().containsKey(
+        Assertions.assertTrue(studentAttendanceHistoryMap.getAttendanceHistory().containsKey(
                 new AttendanceDate(LocalDate.of(2024, 12, 12))
         ));
 
-        Assertions.assertEquals(studentAttendanceHistoryMap.getStudentAttendanceHistory().get(
+        Assertions.assertEquals(studentAttendanceHistoryMap.getAttendanceHistory().get(
                 new AttendanceDate(LocalDate.of(2024, 12, 12))
         ), new AttendanceTime(LocalTime.of(9, 0)));
     }
