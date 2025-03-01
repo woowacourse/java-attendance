@@ -40,4 +40,17 @@ class AttendanceBookTest {
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("등록되지 않은 닉네임");
     }
+
+    @Test
+    @DisplayName("닉네임과 날짜,시간으로 출석 정보를 수정한다.")
+    void test_modifyAttendance() {
+        var nickname = new Nickname("이든");
+        var dateTime = LocalDateTime.of(2024, 12, 11, 10, 0);
+        attendanceBook.attendance(nickname, dateTime);
+        var oldAttendance = attendanceBook.getAttendance(nickname, dateTime.toLocalDate());
+
+        attendanceBook.modify(nickname, dateTime.plusMinutes(10));
+        var newAttendance = attendanceBook.getAttendance(nickname, dateTime.toLocalDate());
+        assertThat(newAttendance).isNotEqualTo(oldAttendance);
+    }
 }
