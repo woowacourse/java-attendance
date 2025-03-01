@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,6 +20,17 @@ class FunctionTest {
 
         // then
         Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void 기능에_없는_입력_시_예외를_발생한다() {
+
+        // given
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> Function.getFunction("notValid"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 올바른 기능을 입력해 주세요.");
     }
 
     public static Stream<Arguments> functionAndResult() {
