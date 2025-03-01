@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import model.AbsentPenalty;
 import model.Attendance;
 import model.AttendanceBook;
 import model.CrewAttendances;
@@ -142,22 +143,22 @@ public class CrewAttendanceTest {
                 .isEqualTo(2);
     }
 
-    @DisplayName("크루의 출석 상태를 결정한다.")
+    @DisplayName("크루의 결석 패널티를 결정한다.")
     @Test
     void determine_crew_absent_penalty() {
-//        // given
-//        LocalDate today = LocalDate.of(2024, 12, 5);
-//        AttendanceBook attendanceBook = new AttendanceBook(List.of(
-//                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
-//                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(9, 47))
-//        ));
-//        CrewAttendances crewAttendances = attendanceBook.findCrewAttendance2("율무");
-//
-//        // when
-//        final var penalty = attendanceBook.
-//
-//        // then
-//        Assertions.assertThat(attendCount)
-//                .isEqualTo(2);
+        // given
+        LocalDate today = LocalDate.of(2024, 12, 5);
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
+                new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 31)),
+                new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 35))
+        ));
+        CrewAttendances crewAttendances = attendanceBook.findCrewAttendance("율무");
+
+        // when
+        final var result = crewAttendances.determineAttendPenalty(today);
+
+        // then
+        Assertions.assertThat(result)
+                .isEqualTo(AbsentPenalty.INTERVIEW);
     }
 }
