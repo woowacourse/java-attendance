@@ -30,7 +30,7 @@ public class Attendance {
         return this.attendanceDate.isEqualToDate(date);
     }
 
-    public boolean isEqaulToDateByAttendance(final Attendance attendance) {
+    public boolean isEqualToDateByAttendance(final Attendance attendance) {
         return this.attendanceDate.isEqualToDate(attendance.attendanceDate.date());
     }
 

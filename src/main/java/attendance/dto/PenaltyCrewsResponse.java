@@ -1,30 +1,30 @@
 package attendance.dto;
 
-import attendance.domain.Attendances;
 import attendance.domain.AttendancePenalty;
+import attendance.domain.Attendances;
 import java.util.List;
 import java.util.Map;
 
 public record PenaltyCrewsResponse(
-        List<PenaltyCrew> penaltyCrews
+        List<PenaltyCrewResponse> penaltyCrewResponses
 ) {
     public static PenaltyCrewsResponse from(final Map<String, Attendances> warningCrewsAttendances) {
         return new PenaltyCrewsResponse(
                 warningCrewsAttendances.entrySet()
                         .stream()
-                        .map(entry -> PenaltyCrew.of(entry.getKey(), entry.getValue()))
+                        .map(entry -> PenaltyCrewResponse.of(entry.getKey(), entry.getValue()))
                         .toList()
         );
     }
 
-    public record PenaltyCrew(
+    public record PenaltyCrewResponse(
             String nickname,
             int lateCount,
             int absenceCount,
             AttendancePenalty risk
     ) {
-        public static PenaltyCrew of(final String nickname, final Attendances attendances) {
-            return new PenaltyCrew(
+        public static PenaltyCrewResponse of(final String nickname, final Attendances attendances) {
+            return new PenaltyCrewResponse(
                     nickname,
                     attendances.countLate(),
                     attendances.countAbsence(),

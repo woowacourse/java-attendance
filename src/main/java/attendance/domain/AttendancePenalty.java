@@ -3,7 +3,7 @@ package attendance.domain;
 public enum AttendancePenalty {
     EXPULSION("제적", 5),
     INTERVIEW("면담", 3),
-    Warning("경고", 2),
+    CAUTION("경고", 2),
     NONE("", 0);
 
     private final String message;
@@ -21,8 +21,8 @@ public enum AttendancePenalty {
         if (value >= INTERVIEW.criteria) {
             return INTERVIEW;
         }
-        if (value >= Warning.criteria) {
-            return Warning;
+        if (value >= CAUTION.criteria) {
+            return CAUTION;
         }
         return NONE;
     }

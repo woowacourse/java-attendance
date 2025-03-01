@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import static attendance.constant.ErrorMessage.INVALID_ATTEND_DATE;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -13,7 +12,7 @@ public record AttendanceDate(
     private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
 
     public static AttendanceDate from(final LocalDate date) {
-        validate(date);
+        validateAvailableAttendDate(date);
         return new AttendanceDate(date);
     }
 
@@ -21,7 +20,7 @@ public record AttendanceDate(
         return this.date.isEqual(date);
     }
 
-    private static void validate(final LocalDate date) {
+    private static void validateAvailableAttendDate(final LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY ||
                 date.isEqual(CHRISTMAS)) {

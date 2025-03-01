@@ -1,13 +1,12 @@
 package attendance.view;
 
-import static attendance.domain.AttendanceStatus.ABSENCE;
-
-import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendancePenalty;
+import attendance.domain.AttendanceStatus;
+import static attendance.domain.AttendanceStatus.ABSENCE;
 import attendance.dto.AttendanceResultResponse;
 import attendance.dto.AttendancesResponse;
 import attendance.dto.PenaltyCrewsResponse;
-import attendance.dto.PenaltyCrewsResponse.PenaltyCrew;
+import attendance.dto.PenaltyCrewsResponse.PenaltyCrewResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -30,7 +29,7 @@ public class OutputView {
                                   final AttendanceResultResponse afterResponse) {
         DateTimeFormatter afterFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        printAbsenceResult(beforeResponse);
+        printAttendResult(beforeResponse);
         System.out.printf(" -> %s (%s)수정 완료!\n",
                 afterResponse.dateTime().format(afterFormatter),
                 afterResponse.status().getMessage()
@@ -58,18 +57,18 @@ public class OutputView {
     }
 
     public void printPenaltyCrews(final PenaltyCrewsResponse response) {
-        List<PenaltyCrew> penaltyCrews = response.penaltyCrews()
+        List<PenaltyCrewResponse> penaltyCrewResponses = response.penaltyCrewResponses()
                 .stream()
-                .sorted(Comparator.comparing(PenaltyCrew::absenceCount)
-                        .thenComparing(PenaltyCrew::lateCount)
-                        .thenComparing(PenaltyCrew::nickname))
+                .sorted(Comparator.comparing(PenaltyCrewResponse::absenceCount)
+                        .thenComparing(PenaltyCrewResponse::lateCount)
+                        .thenComparing(PenaltyCrewResponse::nickname))
                 .toList();
-        for (PenaltyCrew penaltyCrew : penaltyCrews) {
+        for (PenaltyCrewResponse penaltyCrewResponse : penaltyCrewResponses) {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
-                    penaltyCrew.nickname(),
-                    penaltyCrew.absenceCount(),
-                    penaltyCrew.lateCount(),
-                    penaltyCrew.risk().getMessage()
+                    penaltyCrewResponse.nickname(),
+                    penaltyCrewResponse.absenceCount(),
+                    penaltyCrewResponse.lateCount(),
+                    penaltyCrewResponse.risk().getMessage()
             );
         }
     }

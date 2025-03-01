@@ -2,7 +2,6 @@ package attendance.domain;
 
 import static attendance.domain.CampusOperatingRule.CAMPUS_CLOSE_HOUR;
 import static attendance.domain.CampusOperatingRule.CAMPUS_OPEN_HOUR;
-
 import java.time.LocalTime;
 
 public record AttendanceTime(

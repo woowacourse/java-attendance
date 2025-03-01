@@ -1,7 +1,7 @@
 package attendance.domain;
 
 import static attendance.constant.ErrorMessage.ALREADY_ATTEND;
-
+import static attendance.constant.ErrorMessage.DATE_WITHOUT_ATTENDANCE;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,17 +15,16 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-    public Attendance add(final Attendance attendance) {
+    public void addIfAbsent(final Attendance attendance) {
         if (existsByDate(attendance)) {
             throw new IllegalArgumentException(ALREADY_ATTEND.getMessage());
         }
         attendances.add(attendance);
-        return attendance;
     }
 
     private boolean existsByDate(final Attendance attendance) {
         return attendances.stream()
-                .anyMatch(record -> record.isEqaulToDateByAttendance(attendance));
+                .anyMatch(history -> history.isEqualToDateByAttendance(attendance));
     }
 
     public Attendance updateAttendance(final LocalDateTime updateDateTime) {
@@ -40,7 +39,7 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendance -> attendance.isEqualToDate(date))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 날짜입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(DATE_WITHOUT_ATTENDANCE.getMessage()));
     }
 
     public AttendancePenalty calculatePenalty() {
