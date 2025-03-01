@@ -70,11 +70,8 @@ public class AttendanceController {
 
         final AttendanceDateTime attendanceDateTime = saveAttendanceDateTime(
             attendanceBook, attendanceDate, attendanceTime);
-        final AttendanceStatus attendanceStatus = AttendanceStatus.from(
-            attendanceDateTime);
 
-        outputView.printAttendanceDateTime(
-            attendanceDateTime, attendanceStatus);
+        printAttendanceSave(attendanceDateTime);
     }
 
     private AttendanceDateTime saveAttendanceDateTime(
@@ -86,6 +83,16 @@ public class AttendanceController {
             attendanceDate, attendanceTime));
         return attendanceBook.retrieveByDate(
             attendanceDate);
+    }
+
+    private void printAttendanceSave(
+        final AttendanceDateTime attendanceDateTime
+    ) {
+        final AttendanceStatus attendanceStatus = AttendanceStatus.from(
+            attendanceDateTime);
+
+        outputView.printAttendanceDateTime(
+            attendanceDateTime, attendanceStatus);
     }
 
     private void handleEditAttendance(final LocalDate currentDate) {
