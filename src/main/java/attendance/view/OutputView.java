@@ -14,6 +14,7 @@ import java.util.Map;
 public class OutputView {
 
     private static final String ATTENDANCE_RESULT = "%s월 %s일 %s %02d:%02d (%s) ";
+    private static final String ABSENCE_RESULT = "%s월 %s일 %s --:-- (%s) ";
     private static final String MODIFY_ATTENDANCE_RESULT = "%s월 %s일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!";
     private static final String ATTENDANCE_HISTORY_NAME_MASSAGE = "이번 달 %s의 출석 기록입니다.";
     private static final String CREW_STATUS_INFO = "%s: %s회";
@@ -42,6 +43,13 @@ public class OutputView {
             LocalTime time = attendanceTime.getTime();
             DayOfWeek dayOfWeek = DayOfWeek.findDayOfWeek(date);
             AttendanceType attendanceType = decideAttendanceType(attendanceTime);
+            if (attendanceTime.isAbsenceTime(time)) {
+                System.out.println(ABSENCE_RESULT.formatted(
+                    date.getMonthValue(), date.getDayOfMonth(), dayOfWeek.getDayOfWeekName(),
+                    attendanceType.getType()));
+                continue;
+            }
+
             System.out.println(ATTENDANCE_RESULT.formatted(
                 date.getMonthValue(), date.getDayOfMonth(), dayOfWeek.getDayOfWeekName(),
                 time.getHour(), time.getMinute(), attendanceType.getType()));

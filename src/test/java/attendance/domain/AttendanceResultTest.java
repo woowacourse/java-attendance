@@ -3,6 +3,7 @@ package attendance.domain;
 import static attendance.domain.AttendanceType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +26,8 @@ public class AttendanceResultTest {
         attendanceTimes.add(lateAttendanceTime2);
         attendanceTimes.add(absenceAttendanceTime1);
 
-        Map<AttendanceType, Integer> result = AttendanceResult.calculateAttendanceResult(attendanceTimes);
+        LocalDate currentDate = LocalDate.of(2024, 12, 7);
+        Map<AttendanceType, Integer> result = AttendanceResult.calculateAttendanceResult(currentDate, attendanceTimes);
         assertThat(result.get(ATTENDANCE)).isEqualTo(2);
         assertThat(result.get(LATE)).isEqualTo(2);
         assertThat(result.get(ABSENCE)).isEqualTo(1);

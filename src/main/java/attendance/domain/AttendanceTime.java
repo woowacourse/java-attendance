@@ -11,6 +11,7 @@ import java.util.Objects;
 
 public class AttendanceTime {
 
+    private static final LocalTime ABSENCE_TIME = LocalTime.of(23, 59, 59, 999999999);
     private final LocalDateTime attendanceDateTime;
 
     private AttendanceTime(LocalDateTime attendanceDateTime) {
@@ -19,12 +20,35 @@ public class AttendanceTime {
         this.attendanceDateTime = attendanceDateTime;
     }
 
+    private AttendanceTime(LocalDate attendanceDate) {
+        this.attendanceDateTime = LocalDateTime.of(attendanceDate, ABSENCE_TIME);
+    }
+
     public static AttendanceTime from(LocalDateTime attendanceDateTime) {
         return new AttendanceTime(attendanceDateTime);
     }
 
+    public static AttendanceTime from(LocalDate attendanceDate) {
+        return new AttendanceTime(attendanceDate);
+    }
+
     public boolean isSameDate(int findDate) {
         return attendanceDateTime.getDayOfMonth() == findDate;
+    }
+
+    public boolean hasDate(LocalDate findDate) {
+        return attendanceDateTime.toLocalDate().equals(findDate);
+    }
+
+    public boolean isAbsenceTime(LocalTime attendanceTime) {
+        return attendanceTime == ABSENCE_TIME;
+    }
+
+    public boolean isAbsenceDate() {
+        if (attendanceDateTime.toLocalTime() == null) {
+            return true;
+        }
+        return false;
     }
 
     public LocalDateTime getAttendanceDateTime() {
@@ -66,4 +90,5 @@ public class AttendanceTime {
     public int hashCode() {
         return Objects.hashCode(attendanceDateTime.toLocalDate());
     }
+
 }

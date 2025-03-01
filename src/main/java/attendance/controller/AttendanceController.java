@@ -85,7 +85,7 @@ public class AttendanceController {
         AttendanceTimes attendanceTimes = attendanceHistory.getAttendanceTimesByName(
             inputNickname);
         Map<AttendanceType, Integer> attendanceResult = AttendanceResult.calculateAttendanceResult(
-            attendanceTimes);
+            currentDate.now(), attendanceTimes);
         CrewStatus crewStatus = CrewStatus.calculate(attendanceResult);
         outputView.printAttendanceHistory(inputNickname, attendanceTimes);
         outputView.printAttendanceResult(attendanceResult);

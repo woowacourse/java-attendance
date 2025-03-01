@@ -1,8 +1,12 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class AttendanceTimes {
@@ -35,7 +39,14 @@ public class AttendanceTimes {
             .orElseThrow(() -> new IllegalArgumentException("해당 날짜에는 출석 기록이 없습니다."));
     }
 
-    public Set<AttendanceTime> getAttendanceTimes() {
-        return Collections.unmodifiableSet(attendanceTimes);
+    public boolean hasAttendanceOnDate(LocalDate findDate) {
+        return attendanceTimes.stream()
+            .anyMatch(result -> result.hasDate(findDate));
+    }
+
+    public List<AttendanceTime> getAttendanceTimes() {
+        List<AttendanceTime> sortAttendanceTimes = new ArrayList<>(attendanceTimes);
+        Collections.sort(sortAttendanceTimes, Comparator.comparing(AttendanceTime::getAttendanceDateTime));
+        return Collections.unmodifiableList(sortAttendanceTimes);
     }
 }

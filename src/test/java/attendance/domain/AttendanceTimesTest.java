@@ -3,7 +3,7 @@ package attendance.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class AttendanceTimesTest {
         AttendanceTimes attendanceManager = AttendanceTimes.create();
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 0);
         attendanceManager.add(AttendanceTime.from(attendanceDateTime));
-        Set<AttendanceTime> attendanceTimes = attendanceManager.getAttendanceTimes();
+        List<AttendanceTime> attendanceTimes = attendanceManager.getAttendanceTimes();
         assertThat(attendanceTimes.size()).isEqualTo(1);
     }
 }

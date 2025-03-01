@@ -17,6 +17,10 @@ public enum AttendanceType {
 
     public static AttendanceType decideAttendanceType(AttendanceTime attendanceTime) {
         DayOfWeek dayOfWeek = findDayOfWeek(attendanceTime.getDate());
+        if (attendanceTime.isAbsenceDate()) {
+            return ABSENCE;
+        }
+
         if (dayOfWeek.calculateTypeDecisionValueOnHour(attendanceTime) > 0) {
             return ABSENCE;
         }
