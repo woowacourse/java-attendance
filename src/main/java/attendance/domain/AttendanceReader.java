@@ -1,32 +1,36 @@
 package attendance.domain;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Optional;
 
 public class AttendanceReader {
-    private String fileName;
+    private static final String CANT_FIND_FILE = "[ERROR] 파일을 찾을 수 없습니다: ";
+    private static final String CANT_READ_FILE = "[ERROR] 파일을 읽을 수 없습니다: ";
+    private final String fileName;
 
     public AttendanceReader(String fileName) {
         this.fileName = fileName;
-
     }
 
-    public void load() {
-        InputStream inputStream = getClass().getResourceAsStream(fileName);
-        if (inputStream == null) {
-            throw new IllegalArgumentException("파일을 찾을 수 없습니다: " + fileName);
-        }
+    public void load() throws FileNotFoundException {
         try (
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader)
-        ) {
-            var lines = bufferedReader.lines()
-                .skip(1)
-                .toList();
+            InputStream inputStream = Optional.ofNullable(getClass().getResourceAsStream(fileName))
+                .orElseThrow(() -> new FileNotFoundException(CANT_FIND_FILE + fileName));
+            var inputStreamReader = new InputStreamReader(inputStream);
+            var bufferedReader = new BufferedReader(inputStreamReader)) {
+            readFile(bufferedReader);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileNotFoundException(CANT_READ_FILE + e);
         }
+    }
+
+    private static void readFile(BufferedReader bufferedReader) {
+        var lines = bufferedReader.lines()
+            .skip(1)
+            .toList();
     }
 }
