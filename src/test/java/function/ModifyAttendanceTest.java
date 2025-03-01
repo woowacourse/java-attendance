@@ -9,6 +9,8 @@ import static constants.TestDataMaker.SUNDAY_DATE;
 import static constants.TestDataMaker.THURSDAY_DATE;
 import static constants.TestDataMaker.TUESDAY_DATE;
 import static constants.TestDataMaker.WEDNESDAY_DATE;
+import static domain.AttendanceStatus.ATTEND_STATUS;
+import static domain.AttendanceStatus.LATE_STATUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -43,8 +45,8 @@ public class ModifyAttendanceTest {
         assertThat(response.date()).isEqualTo(MONDAY_DATE);
         assertThat(response.previousTime()).isEqualTo(ATTEND_MONDAY);
         assertThat(response.modifiedTime()).isEqualTo(LATE_MONDAY);
-        assertThat(response.previousStatus()).isEqualTo("출석");
-        assertThat(response.modifiedStatus()).isEqualTo("지각");
+        assertThat(response.previousStatus()).isEqualTo(ATTEND_STATUS);
+        assertThat(response.modifiedStatus()).isEqualTo(LATE_STATUS);
     }
 
     @Test

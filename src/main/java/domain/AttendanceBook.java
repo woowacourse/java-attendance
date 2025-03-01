@@ -2,6 +2,9 @@ package domain;
 
 import static constants.AttendanceCriteria.OPERATING_END;
 import static constants.AttendanceCriteria.OPERATING_START;
+import static domain.AttendanceStatus.ABSENT_STATUS;
+import static domain.AttendanceStatus.ATTEND_STATUS;
+import static domain.AttendanceStatus.LATE_STATUS;
 
 import dto.CheckAttendanceRecordResponse;
 import dto.CheckAttendanceResponse;
@@ -45,7 +48,8 @@ public class AttendanceBook {
 
     public static String validateTrainingDay(LocalDate date, LocalTime time) {
         String attendanceStatus = AttendanceStatus.judgeAttendanceStatusByDateAndTime(date, time);
-        if (!attendanceStatus.equals("출석") && !attendanceStatus.equals("결석") && !attendanceStatus.equals("지각")) {
+        if (!attendanceStatus.equals(ATTEND_STATUS) && !attendanceStatus.equals(LATE_STATUS)
+                && !attendanceStatus.equals(ABSENT_STATUS)) {
             throw new IllegalArgumentException(
                     ErrorMessage.NOTICE_NOT_TRAINING_DAY.format(date.getMonthValue(), date.getDayOfMonth(),
                             attendanceStatus));

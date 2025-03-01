@@ -11,15 +11,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendanceStatus {
-    private static final String ATTEND = "출석";
-    private static final String ABSENT = "결석";
-    private static final String LATE = "지각";
+    public static final String ATTEND_STATUS = "출석";
+    public static final String ABSENT_STATUS = "결석";
+    public static final String LATE_STATUS = "지각";
 
     public static String judgeAttendanceStatusByDateAndTime(LocalDate date, LocalTime time) {
         String dayOfWeek = DecemberCalendar.judgeWorkingDay(date);
         if (time == null) {
-            return ABSENT;
+            return ABSENT_STATUS;
         }
+
         if (dayOfWeek.equals("월요일")) {
             return judgeAttendanceByTimeAtMonday(time);
         }
@@ -27,6 +28,7 @@ public class AttendanceStatus {
         if (dayOfWeek.equals("근무일")) { // 월요일이 아닌 근무일의 경우
             return judgeAttendanceByTimeExceptMonday(time);
         }
+
         return dayOfWeek; // 근무일이 아닌 경우 사유 반환
     }
 
@@ -41,13 +43,13 @@ public class AttendanceStatus {
     private static String judgeAttendanceByCriteriaTime(LocalTime time, LocalTime attendCriteria,
                                                         LocalTime lateCriteria) {
         if (existedOnTime(time, OPERATING_START.getTime(), attendCriteria)) {
-            return ATTEND;
+            return ATTEND_STATUS;
         }
         if (existedOnTime(time, attendCriteria, lateCriteria)) {
-            return LATE;
+            return LATE_STATUS;
         }
         if (existedOnTime(time, lateCriteria, OPERATING_END.getTime())) {
-            return ABSENT;
+            return ABSENT_STATUS;
         }
         return null;
     }

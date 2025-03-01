@@ -7,6 +7,9 @@ import static constants.TestDataMaker.MONDAY_DATE;
 import static constants.TestDataMaker.THURSDAY_DATE;
 import static constants.TestDataMaker.TUESDAY_DATE;
 import static constants.TestDataMaker.WEDNESDAY_DATE;
+import static domain.AttendanceStatus.ABSENT_STATUS;
+import static domain.AttendanceStatus.ATTEND_STATUS;
+import static domain.AttendanceStatus.LATE_STATUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -41,19 +44,19 @@ public class CheckAttendanceRecordTest {
         // then
         assertThat(responses.getFirst().date()).isEqualTo(MONDAY_DATE);
         assertThat(responses.getFirst().time()).isEqualTo(ATTEND_MONDAY);
-        assertThat(responses.getFirst().attendanceStatus()).isEqualTo("출석");
+        assertThat(responses.getFirst().attendanceStatus()).isEqualTo(ATTEND_STATUS);
 
         assertThat(responses.get(1).date()).isEqualTo(TUESDAY_DATE);
         assertThat(responses.get(1).time()).isEqualTo(LATE_EXCEPT_MONDAY);
-        assertThat(responses.get(1).attendanceStatus()).isEqualTo("지각");
+        assertThat(responses.get(1).attendanceStatus()).isEqualTo(LATE_STATUS);
 
         assertThat(responses.get(2).date()).isEqualTo(WEDNESDAY_DATE);
         assertThat(responses.get(2).time()).isNull(); // 수요일 기록 존재 X
-        assertThat(responses.get(2).attendanceStatus()).isEqualTo("결석");
+        assertThat(responses.get(2).attendanceStatus()).isEqualTo(ABSENT_STATUS);
 
         assertThat(responses.get(3).date()).isEqualTo(THURSDAY_DATE);
         assertThat(responses.get(3).time()).isEqualTo(ABSENT_EXCEPT_MONDAY);
-        assertThat(responses.get(3).attendanceStatus()).isEqualTo("결석");
+        assertThat(responses.get(3).attendanceStatus()).isEqualTo(ABSENT_STATUS);
     }
 
     @Test

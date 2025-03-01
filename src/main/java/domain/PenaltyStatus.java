@@ -4,6 +4,9 @@ import static constants.NumberConstants.EXPULSION_COUNT;
 import static constants.NumberConstants.INTERVIEW_COUNT;
 import static constants.NumberConstants.LATE_TO_ABSENT;
 import static constants.NumberConstants.WARNING_COUNT;
+import static domain.AttendanceStatus.ABSENT_STATUS;
+import static domain.AttendanceStatus.ATTEND_STATUS;
+import static domain.AttendanceStatus.LATE_STATUS;
 
 import dto.CheckAttendanceRecordResponse;
 import dto.PenaltyResponse;
@@ -16,13 +19,13 @@ public class PenaltyStatus {
         int absentCount = 0;
 
         for (CheckAttendanceRecordResponse response : responses) {
-            if (response.attendanceStatus().equals("출석")) {
+            if (response.attendanceStatus().equals(ATTEND_STATUS)) {
                 attendCount++;
             }
-            if (response.attendanceStatus().equals("지각")) {
+            if (response.attendanceStatus().equals(LATE_STATUS)) {
                 lateCount++;
             }
-            if (response.attendanceStatus().equals("결석")) {
+            if (response.attendanceStatus().equals(ABSENT_STATUS)) {
                 absentCount++;
             }
         }
