@@ -64,6 +64,35 @@ public class AttendanceBook {
         return attendanceBook.get(crew).getLast();
     }
 
+    public List<RiskCrew> findPenaltyCrews() {
+        List<RiskCrew> riskCrews = new ArrayList<>();
+        for (Crew crew : attendanceBook.keySet()) {
+            AttendanceRecord attendanceRecord = attendanceBook.get(crew).getLast();
+            PenaltyType penaltyType = attendanceRecord.checkPenaltyStatus();
+            if (!penaltyType.equals(PenaltyType.NONE)) {
+                int lateCounts = attendanceRecord.checkLateCounts();
+                int absenceCounts = attendanceRecord.checkAbsenceCounts();
+                riskCrews.add(new RiskCrew(crew.getName(), absenceCounts, lateCounts, penaltyType));
+            }
+        }
+
+        riskCrews.sort((r1, r2) -> {
+            // 결석과 지각을 우선순위로 정렬 (결석이 많은 순서로)
+            int absenceComparison = Integer.compare(r2.getAbsenceCount(), r1.getAbsenceCount());
+            if (absenceComparison == 0) {
+                // 결석이 같으면 지각으로 정렬 (지각이 많은 순서로)
+                int lateComparison = Integer.compare(r2.getLateCount(), r1.getLateCount());
+                if (lateComparison == 0) {
+                    // 지각이 같으면, 닉네임(이름) 순으로 정렬
+                    return r1.getName().compareTo(r2.getName());
+                }
+                return lateComparison;
+            }
+            return absenceComparison;
+        });
+
+        return riskCrews;
+    }
 
     private Crew findRegisteredCrew(String inputCrewName) {
         return attendanceBook.keySet()

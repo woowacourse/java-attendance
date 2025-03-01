@@ -1,8 +1,11 @@
 package attendance.domain;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -155,6 +158,145 @@ public class AttendanceBookTest {
 
         //when & then
         Assertions.assertThat(attendanceBook.findAttendanceRecord(crewName).getAttendanceRecord().size()).isEqualTo(19);
+    }
+
+    @Test
+    void 제적_위험자_확인() {
+        //given
+        String crewName1 = "우가";
+        String crewName2 = "부기";
+        String crewName3 = "헤일러";
+
+        Crew crew1 = new Crew(crewName1);
+        Crew crew2 = new Crew(crewName2);
+        Crew crew3 = new Crew(crewName3);
+
+        Crews crews = new Crews(Set.of(crew1, crew2, crew3));
+
+        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+
+        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 24, 13, 6));
+
+        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 26, 10, 6));
+        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 28, 10, 31));
+
+        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 27, 10, 6));
+        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 28, 10, 31));
+
+        //when & then
+        Assertions.assertThat(attendanceBook.findPenaltyCrews().size()).isEqualTo(3);
+    }
+
+    @Test
+    void 닉네임_순으로_정렬() {
+        //given
+        String crewName1 = "우가";
+        String crewName2 = "부기";
+        String crewName3 = "헤일러";
+
+        Crew crew1 = new Crew(crewName1);
+        Crew crew2 = new Crew(crewName2);
+        Crew crew3 = new Crew(crewName3);
+
+        Crews crews = new Crews(Set.of(crew1, crew2, crew3));
+
+        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+
+        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 24, 13, 6));
+
+        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 26, 10, 6));
+        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 28, 10, 31));
+
+        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 27, 10, 6));
+        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 28, 10, 31));
+
+        //when
+        List<RiskCrew> penaltyCrews = attendanceBook.findPenaltyCrews();
+
+        //then
+        assertAll(
+                () -> assertEquals(3, penaltyCrews.size()),
+                () -> assertEquals(crewName2, penaltyCrews.get(0).getName()),
+                () -> assertEquals(crewName1, penaltyCrews.get(1).getName()),
+                () -> assertEquals(crewName3, penaltyCrews.get(2).getName()));
+    }
+
+    @Test
+    void 결석_순으로_정렬() {
+        //given
+        String crewName1 = "우가";
+        String crewName2 = "부기";
+        String crewName3 = "헤일러";
+
+        Crew crew1 = new Crew(crewName1);
+        Crew crew2 = new Crew(crewName2);
+        Crew crew3 = new Crew(crewName3);
+
+        Crews crews = new Crews(Set.of(crew1, crew2, crew3));
+
+        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+
+        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 24, 13, 31));
+        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 26, 10, 31));
+
+        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 24, 13, 31));
+        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 25, 10, 31));
+
+        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 24, 12, 59));
+        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 25, 10, 31));
+
+        //when
+        List<RiskCrew> penaltyCrews = attendanceBook.findPenaltyCrews();
+
+        //then
+        assertAll(
+                () -> assertEquals(3, penaltyCrews.size()),
+                () -> assertEquals(crewName1, penaltyCrews.get(0).getName()),
+                () -> assertEquals(crewName2, penaltyCrews.get(1).getName()),
+                () -> assertEquals(crewName3, penaltyCrews.get(2).getName()));
+    }
+
+    @Test
+    void 결석_횟수가_같을때_지각_횟수_정렬() {
+        //given
+        String crewName1 = "우가";
+        String crewName2 = "부기";
+        String crewName3 = "헤일러";
+
+        Crew crew1 = new Crew(crewName1);
+        Crew crew2 = new Crew(crewName2);
+        Crew crew3 = new Crew(crewName3);
+
+        Crews crews = new Crews(Set.of(crew1, crew2, crew3));
+
+        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+
+        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 24, 13, 31));
+        attendanceBook.registerAttendance(crewName2, LocalDateTime.of(2025, 2, 25, 10, 31));
+
+        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 24, 13, 31));
+        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 25, 10, 31));
+        attendanceBook.registerAttendance(crewName1, LocalDateTime.of(2025, 2, 26, 10, 30));
+
+        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 24, 12, 59));
+        attendanceBook.registerAttendance(crewName3, LocalDateTime.of(2025, 2, 25, 10, 31));
+
+        //when
+        List<RiskCrew> penaltyCrews = attendanceBook.findPenaltyCrews();
+
+        //then
+        assertAll(
+                () -> assertEquals(3, penaltyCrews.size()),
+                () -> assertEquals(crewName1, penaltyCrews.get(0).getName()),
+                () -> assertEquals(crewName2, penaltyCrews.get(1).getName()),
+                () -> assertEquals(crewName3, penaltyCrews.get(2).getName()));
     }
 
 }
