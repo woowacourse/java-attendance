@@ -59,4 +59,22 @@ public class CrewAttendanceTest {
         Assertions.assertThat(absentCount)
                 .isEqualTo(2);
     }
+
+    @DisplayName("등교날이지만 출석 기록이 없는 날짜도 결석 횟수에 포함된다.")
+    @Test
+    void calculate_absent_count_but_none_record() {
+        // given
+        LocalDate today = LocalDate.of(2024, 12, 6);
+        Attendance attendRecord1 = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 33));
+        Attendance attendRecord2 = new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 31));
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(attendRecord1, attendRecord2));
+        final var nickname = "율무";
+
+        // when
+        final var absentCount = attendanceBook.calculateAbsentCountByNickname(nickname);
+
+        // then
+        Assertions.assertThat(absentCount)
+                .isEqualTo(3);
+    }
 }
