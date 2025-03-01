@@ -64,6 +64,68 @@ class AttendancesTest {
                 .doesNotThrowAnyException();
     }
 
+    @DisplayName("닉네임과 수정날짜(일), 수정시간을 받아 출석 기록을 수정 한다.")
+    @Test
+    void updateAttendance() {
+        //given
+        Attendance attendances1 = createAttendance("도기");
+        Attendance attendances2 = createAttendance("포비");
+
+        Attendances attendances = new Attendances();
+        attendances.add(attendances1);
+        attendances.add(attendances2);
+
+        String name = "도기";
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 10, 10);
+
+        //when //then
+        assertThatCode(() -> attendances.updateAttendance(name, dateTime))
+                .doesNotThrowAnyException();
+    }
+
+    @DisplayName("수정 후, 출석 기록을 가져온다.")
+    @Test
+    void getAfterAttendance() {
+        //given
+        Attendance attendances1 = createAttendance("도기");
+        Attendance attendances2 = createAttendance("포비");
+
+        Attendances attendances = new Attendances();
+        attendances.add(attendances1);
+        attendances.add(attendances2);
+
+        String name = "도기";
+        LocalDateTime time = LocalDateTime.of(2024, 12, 2, 10, 10);
+
+        //when
+        attendances.updateAttendance(name, time);
+        LocalDateTime actual = attendances.getAttendanceRecordBy(name, time.toLocalDate());
+
+        //then
+        assertThat(actual).isEqualTo(LocalDateTime.of(2024, 12, 2, 10, 10));
+    }
+
+    @DisplayName("수정을 하기 전, 출석 기록을 가져온다.")
+    @Test
+    void getBeforeAttendance() {
+        //given
+        Attendance attendances1 = createAttendance("도기");
+        Attendance attendances2 = createAttendance("포비");
+
+        Attendances attendances = new Attendances();
+        attendances.add(attendances1);
+        attendances.add(attendances2);
+
+        String name = "도기";
+        LocalDateTime time = LocalDateTime.of(2024, 12, 2, 10, 10);
+
+        //when
+        LocalDateTime actual = attendances.getAttendanceRecordBy(name, time.toLocalDate());
+
+        //then
+        assertThat(actual).isEqualTo(LocalDateTime.of(2024, 12, 2, 11, 11));
+    }
+
     private Attendance createAttendance(final String name) {
         Crew crew = Crew.of(name);
 
@@ -76,5 +138,6 @@ class AttendancesTest {
 
         return new Attendance(crew, attendanceTime);
     }
+
 
 }
