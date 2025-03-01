@@ -47,7 +47,7 @@ public class CrewAttendanceTest {
     @Test
     void calculate_absent_count_by_nickname() {
         // given
-        Attendance attendRecord1 = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
+        Attendance attendRecord1 = new Attendance("율무", LocalDate.of(2024, 12, 3), LocalTime.of(10, 33));
         Attendance attendRecord2 = new Attendance("율무", LocalDate.of(2024, 12, 4), LocalTime.of(10, 31));
         AttendanceBook attendanceBook = new AttendanceBook(List.of(attendRecord1, attendRecord2));
         final var nickname = "율무";
@@ -57,6 +57,6 @@ public class CrewAttendanceTest {
 
         // then
         Assertions.assertThat(absentCount)
-                .isEqualTo(1);
+                .isEqualTo(2);
     }
 }
