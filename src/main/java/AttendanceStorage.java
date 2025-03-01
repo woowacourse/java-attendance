@@ -44,6 +44,7 @@ public class AttendanceStorage {
     public AttendanceStatistic getStatisticByDateRange(LocalDate start, LocalDate end) {
         Map<AttendanceStatus, Integer> result = new EnumMap<>(AttendanceStatus.class);
         start.datesUntil(end)
+                .filter(AttendanceDate::isValid)
                 .forEach(date -> {
                     Attendance attendance = findByDate(date);
                     AttendanceStatus status = attendance.getStatus();

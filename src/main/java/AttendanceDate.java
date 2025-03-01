@@ -1,6 +1,5 @@
 import exception.InvalidDateException;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -16,9 +15,12 @@ public class AttendanceDate {
         return date;
     }
 
+    public static boolean isValid(LocalDate date) {
+        return EducationTime.isOperatingOn(date.getDayOfWeek()) && !Holiday.matches(date);
+    }
+
     private void validate(LocalDate date) {
-        DayOfWeek attendanceDay = date.getDayOfWeek();
-        if (!EducationTime.isOperatingOn(attendanceDay) || Holiday.matches(date)) {
+        if (!isValid(date)) {
             throw new InvalidDateException();
         }
     }
