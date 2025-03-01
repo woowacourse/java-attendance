@@ -103,6 +103,7 @@ public class CrewAttendances {
         int absentCount = calculateAbsentCountUntilDate(date);
         int lateCount = calculateLateCountUntilDate(date);
 
-        return absentCount + lateCount;
+        absentCount += (lateCount / 3);
+        return absentCount + (lateCount % 3);
     }
 }
