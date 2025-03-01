@@ -13,6 +13,11 @@ import dto.PenaltyResponse;
 import java.util.List;
 
 public class PenaltyStatus {
+    public static final String EXPULSION_STATUS = "제적";
+    public static final String INTERVIEW_STATUS = "면담";
+    public static final String WARNING_STATUS = "경고";
+    public static final String NO_PENALTY_STATUS = "";
+
     public static PenaltyResponse judgeCrewAttendanceRecord(List<CheckAttendanceRecordResponse> responses) {
         int attendCount = 0;
         int lateCount = 0;
@@ -36,17 +41,17 @@ public class PenaltyStatus {
     private static String judgePenalty(int lateCount, int absentCount) {
         int penaltyCount = absentCount + lateCount / LATE_TO_ABSENT;
         if (penaltyCount > EXPULSION_COUNT) {
-            return "제적";
+            return EXPULSION_STATUS;
         }
 
         if (penaltyCount >= INTERVIEW_COUNT) {
-            return "면담";
+            return INTERVIEW_STATUS;
         }
 
         if (penaltyCount == WARNING_COUNT) {
-            return "경고";
+            return WARNING_STATUS;
         }
 
-        return "";
+        return NO_PENALTY_STATUS;
     }
 }

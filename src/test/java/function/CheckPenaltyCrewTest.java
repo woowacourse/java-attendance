@@ -1,6 +1,9 @@
 package function;
 
 import static constants.AttendanceCriteria.OPERATING_START;
+import static domain.PenaltyStatus.EXPULSION_STATUS;
+import static domain.PenaltyStatus.INTERVIEW_STATUS;
+import static domain.PenaltyStatus.WARNING_STATUS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.AttendanceBook;
@@ -46,8 +49,8 @@ public class CheckPenaltyCrewTest {
     void Using_Crew_Attendance_Records_To_Checking_Penalty_Crews() {
         List<PenaltyCrewResponse> responses = attendanceBook.checkPenaltyCrew();
 
-        assertThat(responses.getFirst().penalty()).isEqualTo("제적");
-        assertThat(responses.get(1).penalty()).isEqualTo("면담");
-        assertThat(responses.getLast().penalty()).isEqualTo("경고");
+        assertThat(responses.getFirst().penalty()).isEqualTo(EXPULSION_STATUS);
+        assertThat(responses.get(1).penalty()).isEqualTo(INTERVIEW_STATUS);
+        assertThat(responses.getLast().penalty()).isEqualTo(WARNING_STATUS);
     }
 }

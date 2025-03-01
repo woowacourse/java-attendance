@@ -10,6 +10,7 @@ import static constants.TestDataMaker.WEDNESDAY_DATE;
 import static domain.AttendanceStatus.ABSENT_STATUS;
 import static domain.AttendanceStatus.ATTEND_STATUS;
 import static domain.AttendanceStatus.LATE_STATUS;
+import static domain.PenaltyStatus.EXPULSION_STATUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -77,6 +78,6 @@ public class CheckAttendanceRecordTest {
         assertThat(penaltyResponse.attendCount()).isEqualTo(1);
         assertThat(penaltyResponse.lateCount()).isEqualTo(1);
         assertThat(penaltyResponse.absentCount()).isEqualTo(19);
-        assertThat(penaltyResponse.penalty()).isEqualTo("제적");
+        assertThat(penaltyResponse.penalty()).isEqualTo(EXPULSION_STATUS);
     }
 }
