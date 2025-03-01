@@ -1,8 +1,8 @@
 package util;
 
-import java.util.function.Supplier;
-
 import static controller.AttendanceController.QUIT;
+
+import java.util.function.Supplier;
 
 public class ExceptionHandler {
     public static <T> void runInputCommand(final Supplier<T> supplier) {

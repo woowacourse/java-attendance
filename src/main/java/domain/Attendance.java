@@ -1,7 +1,6 @@
 package domain;
 
 import domain.policy.AttendanceState;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 

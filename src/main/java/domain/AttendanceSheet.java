@@ -1,10 +1,16 @@
 package domain;
 
+import static config.AppConfig.TODAY;
+import static domain.policy.AttendanceState.ABSENT;
+import static domain.policy.AttendanceState.LATE;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
+
 import domain.policy.AbsentPolicy;
 import domain.policy.AttendanceState;
 import domain.policy.ExpellState;
 import domain.policy.TimePolicy;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,11 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static config.AppConfig.TODAY;
-import static domain.policy.AttendanceState.ABSENT;
-import static domain.policy.AttendanceState.LATE;
-import static java.util.stream.Collectors.*;
 
 public class AttendanceSheet {
 
@@ -36,7 +37,8 @@ public class AttendanceSheet {
     public void add(String nickname, LocalDate date, LocalTime time) {
         validateIsAlreadyAttendance(nickname, date);
         timePolicy.validateOperatingTime(time);
-        this.attendances.add(new Attendance(nickname, date, time, absentPolicy.checkAttendanceStatus(LocalDateTime.of(date, time))));
+        this.attendances.add(
+                new Attendance(nickname, date, time, absentPolicy.checkAttendanceStatus(LocalDateTime.of(date, time))));
     }
 
     public void validateIsAlreadyAttendance(String nickname, LocalDate date) {
@@ -75,7 +77,7 @@ public class AttendanceSheet {
 
         initUndefinedState(counts);
         Long absentCount = calculateAbsentCount(counts);
-        counts.put(ABSENT, counts.get(ABSENT)*2 + absentCount);
+        counts.put(ABSENT, counts.get(ABSENT) * 2 + absentCount);
 
         return counts;
     }

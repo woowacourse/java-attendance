@@ -4,7 +4,6 @@ import domain.Attendance;
 import domain.AttendanceSheet;
 import domain.policy.AbsentPolicy;
 import domain.policy.TimePolicy;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;

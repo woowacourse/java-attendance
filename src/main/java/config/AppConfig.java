@@ -4,14 +4,13 @@ import controller.AttendanceController;
 import domain.Attendance;
 import domain.AttendanceSheet;
 import domain.policy.AbsentPolicy;
-import view.InputView;
-import view.OutputView;
 import domain.policy.TimePolicy;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Scanner;
+import view.InputView;
+import view.OutputView;
 
 public enum AppConfig {
     INSTANCE;

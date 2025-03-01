@@ -28,13 +28,13 @@ public class AbsentPolicy {
     }
 
     public void validateIsWeekend(DayOfWeek attendanceDayOfWeek) {
-        if(attendanceDayOfWeek == DayOfWeek.SATURDAY || attendanceDayOfWeek == DayOfWeek.SUNDAY){
+        if (attendanceDayOfWeek == DayOfWeek.SATURDAY || attendanceDayOfWeek == DayOfWeek.SUNDAY) {
             throw new IllegalArgumentException("[ERROR] 주말에는 출석할 수 없습니다");
         }
     }
 
     public void validateIsHoliday(LocalDate attendanceDate) {
-        if(attendanceDate.equals(CHRISTMAS)){
+        if (attendanceDate.equals(CHRISTMAS)) {
             throw new IllegalArgumentException("[ERROR] 공휴일에는 출석할 수 없습니다");
         }
     }
@@ -53,11 +53,11 @@ public class AbsentPolicy {
     }
 
     private static AttendanceState calculateAttendanceStatus(LocalTime educationTime, LocalTime attendanceTime) {
-        if(isAttendanceTime(educationTime, attendanceTime)){
+        if (isAttendanceTime(educationTime, attendanceTime)) {
             return ATTENDANCE;
         }
 
-        if(isLateTime(educationTime, attendanceTime)){
+        if (isLateTime(educationTime, attendanceTime)) {
             return LATE;
         }
 
@@ -73,7 +73,7 @@ public class AbsentPolicy {
     }
 
     private static LocalTime calculateAttendanceTime(DayOfWeek attendanceDayOfWeek) {
-        if(attendanceDayOfWeek == DayOfWeek.MONDAY){
+        if (attendanceDayOfWeek == DayOfWeek.MONDAY) {
             return MONDAY_EDUCATION_START_TIME;
         }
         return STANDARD_EDUCATION_START_TIME;

@@ -1,18 +1,17 @@
 package controller;
 
-import domain.AttendanceSheet;
-import domain.policy.AttendanceState;
-import domain.policy.ExpellState;
-import view.InputView;
-import view.OutputView;
-
-import java.time.LocalTime;
-import java.util.Map;
-
 import static config.AppConfig.TODAY;
 import static domain.policy.AttendanceState.ABSENT;
 import static domain.policy.AttendanceState.LATE;
 import static util.ExceptionHandler.runInputCommand;
+
+import domain.AttendanceSheet;
+import domain.policy.AttendanceState;
+import domain.policy.ExpellState;
+import java.time.LocalTime;
+import java.util.Map;
+import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
 
@@ -25,7 +24,7 @@ public class AttendanceController {
     private InputView inputView;
     private OutputView outputView;
     private AttendanceSheet attendanceSheet;
-    
+
     public AttendanceController(InputView inputView, OutputView outputView, AttendanceSheet attendanceSheet) {
         this.inputView = inputView;
         this.outputView = outputView;

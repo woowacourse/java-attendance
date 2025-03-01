@@ -1,28 +1,32 @@
 package domain;
 
+import static domain.policy.AttendanceState.ABSENT;
+import static domain.policy.AttendanceState.ATTENDANCE;
+import static domain.policy.AttendanceState.LATE;
+import static domain.policy.ExpellState.EXPELL;
+import static domain.policy.ExpellState.INTERVIEW;
+import static domain.policy.ExpellState.NONE;
+import static domain.policy.ExpellState.WARNING;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import domain.policy.AbsentPolicy;
 import domain.policy.AttendanceState;
 import domain.policy.TimePolicy;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import static domain.policy.AttendanceState.*;
-import static domain.policy.ExpellState.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceSheetTest {
     AttendanceSheet attendanceSheet;
@@ -32,26 +36,26 @@ public class AttendanceSheetTest {
         attendanceSheet = new AttendanceSheet(new TimePolicy(), new AbsentPolicy(),
                 new ArrayList<>(
                         List.of(
-                                new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크2", LocalDate.of(2024, 12, 6), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크2", LocalDate.of(2024, 12, 9), LocalTime.of(10,5), ATTENDANCE),
-                                new Attendance("링크2", LocalDate.of(2024, 12, 10), LocalTime.of(10,10), LATE),
-                                new Attendance("링크2", LocalDate.of(2024, 12, 11), LocalTime.of(10,10), LATE),
-                                new Attendance("링크3", LocalDate.of(2024, 12, 2), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크3", LocalDate.of(2024, 12, 3), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크3", LocalDate.of(2024, 12, 4), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크3", LocalDate.of(2024, 12, 5), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크3", LocalDate.of(2024, 12, 6), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크3", LocalDate.of(2024, 12, 9), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크3", LocalDate.of(2024, 12, 10), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크4", LocalDate.of(2024, 12, 2), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크4", LocalDate.of(2024, 12, 3), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크4", LocalDate.of(2024, 12, 4), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크4", LocalDate.of(2024, 12, 5), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크4", LocalDate.of(2024, 12, 6), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크4", LocalDate.of(2024, 12, 9), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크4", LocalDate.of(2024, 12, 10), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크4", LocalDate.of(2024, 12, 11), LocalTime.of(13,5), ATTENDANCE)
+                                new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 6), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 9), LocalTime.of(10, 5), ATTENDANCE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 10), LocalTime.of(10, 10), LATE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 11), LocalTime.of(10, 10), LATE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 2), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 3), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 4), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 5), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 6), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 9), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 10), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 2), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 3), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 4), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 5), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 6), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 9), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 10), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 11), LocalTime.of(13, 5), ATTENDANCE)
                         ))
         );
     }
@@ -62,7 +66,7 @@ public class AttendanceSheetTest {
         //given
         String nickname = "링크";
         LocalDate date = LocalDate.of(2024, 12, 13);
-        LocalTime time = LocalTime.of(10,0);
+        LocalTime time = LocalTime.of(10, 0);
 
         //when-then
         assertDoesNotThrow(() -> attendanceSheet.add(nickname, date, time));
@@ -86,7 +90,7 @@ public class AttendanceSheetTest {
         //given
         String nickname = "링크";
         int dayOfMonth = 10;
-        LocalTime updateTime = LocalTime.of(11,0);
+        LocalTime updateTime = LocalTime.of(11, 0);
 
         //when-then
         assertDoesNotThrow(() -> attendanceSheet.update(nickname, dayOfMonth, updateTime));
@@ -98,7 +102,7 @@ public class AttendanceSheetTest {
         //given
         String nickname = "링크";
         int dayOfMonth = 15;
-        LocalTime updateTime = LocalTime.of(11,0);
+        LocalTime updateTime = LocalTime.of(11, 0);
 
         //when-then
         assertThatThrownBy(() -> attendanceSheet.update(nickname, dayOfMonth, updateTime))

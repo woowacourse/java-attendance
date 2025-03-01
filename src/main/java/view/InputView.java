@@ -1,14 +1,13 @@
 package view;
 
-import view.parser.DayParser;
-import view.parser.TimeParser;
+import static config.AppConfig.TODAY;
 
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
-
-import static config.AppConfig.TODAY;
+import view.parser.DayParser;
+import view.parser.TimeParser;
 
 public class InputView {
     private final Scanner scanner;

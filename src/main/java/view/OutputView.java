@@ -1,19 +1,28 @@
 package view;
 
+import static config.AppConfig.TODAY;
+import static domain.policy.AttendanceState.ABSENT;
+import static domain.policy.AttendanceState.ATTENDANCE;
+import static domain.policy.AttendanceState.LATE;
+import static domain.policy.ExpellState.NONE;
+import static view.ViewMessage.ABSENT_POLICY_FORMAT;
+import static view.ViewMessage.ATTENDANCE_FORMAT;
+import static view.ViewMessage.RISK_OF_EXPULSION_FORMAT;
+import static view.ViewMessage.STATISTICS_FORMAT;
+import static view.ViewMessage.TIME_FORMAT;
+
 import domain.Attendance;
 import domain.policy.AbsentPolicy;
 import domain.policy.AttendanceState;
 import domain.policy.ExpellState;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
-import java.util.*;
-
-import static config.AppConfig.TODAY;
-import static domain.policy.AttendanceState.*;
-import static domain.policy.ExpellState.NONE;
-import static view.ViewMessage.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class OutputView {
 
@@ -24,12 +33,12 @@ public class OutputView {
     public void printAttendancesSheet(String nickname, List<Attendance> attendanceByNickname) {
         List<Attendance> attendancesForPrint = new ArrayList<>(attendanceByNickname);
 
-        for(int day = 1; day < TODAY.getDayOfMonth(); day++) {
+        for (int day = 1; day < TODAY.getDayOfMonth(); day++) {
             LocalDate date = LocalDate.of(TODAY.getYear(), TODAY.getMonth(), day);
 
             int finalDay = day;
-            if(attendancesForPrint.stream()
-                    .noneMatch(attendance -> attendance.getDate().getDayOfMonth() == finalDay)){
+            if (attendancesForPrint.stream()
+                    .noneMatch(attendance -> attendance.getDate().getDayOfMonth() == finalDay)) {
                 attendancesForPrint.add(new Attendance(nickname, date, null, AttendanceState.ABSENT));
             }
         }
@@ -53,17 +62,20 @@ public class OutputView {
         LocalDate date = attendance.getDate();
         String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
 
-            return String.format(ATTENDANCE_FORMAT,
-                    date.getDayOfMonth(), dayOfWeek, getTime(attendance.getTime()), attendance.getState().description);
+        return String.format(ATTENDANCE_FORMAT,
+                date.getDayOfMonth(), dayOfWeek, getTime(attendance.getTime()), attendance.getState().description);
     }
 
     private String getTime(LocalTime time) {
-        if(time == null) return "--:--";
+        if (time == null) {
+            return "--:--";
+        }
         return String.format(TIME_FORMAT, time.getHour(), time.getMinute());
     }
 
     public void printAttendanceStatistics(Map<AttendanceState, Long> attendanceState) {
-        System.out.printf(STATISTICS_FORMAT, attendanceState.get(ATTENDANCE), attendanceState.get(LATE), attendanceState.get(ABSENT));
+        System.out.printf(STATISTICS_FORMAT, attendanceState.get(ATTENDANCE), attendanceState.get(LATE),
+                attendanceState.get(ABSENT));
         System.out.print(System.lineSeparator().repeat(2));
     }
 
@@ -71,7 +83,8 @@ public class OutputView {
         System.out.printf(ABSENT_POLICY_FORMAT, expellState.description);
     }
 
-    public void printRiskOfExpulsion(Map<String, Map<AttendanceState, Long>> attendanceStatus, Map<String, ExpellState> expellStates) {
+    public void printRiskOfExpulsion(Map<String, Map<AttendanceState, Long>> attendanceStatus,
+                                     Map<String, ExpellState> expellStates) {
         System.out.println(ViewMessage.RISK_OF_EXPULSION_BANNER);
 
         attendanceStatus.keySet().stream()
@@ -107,7 +120,8 @@ public class OutputView {
         return absentCount + (lateCount / 3);
     }
 
-    private void printStudentExpulsionRisk(String nickname, Map<String, Map<AttendanceState, Long>> attendanceStatus, Map<String, ExpellState> expellStates) {
+    private void printStudentExpulsionRisk(String nickname, Map<String, Map<AttendanceState, Long>> attendanceStatus,
+                                           Map<String, ExpellState> expellStates) {
         Map<AttendanceState, Long> attendanceMap = attendanceStatus.get(nickname);
         ExpellState expellState = expellStates.get(nickname);
 

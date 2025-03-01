@@ -1,15 +1,15 @@
 package domain.policy;
 
-import domain.policy.ExpellState;
+import static domain.policy.ExpellState.EXPELL;
+import static domain.policy.ExpellState.INTERVIEW;
+import static domain.policy.ExpellState.WARNING;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static domain.policy.ExpellState.*;
 
 public class ExpellStateTest {
 
@@ -22,10 +22,10 @@ public class ExpellStateTest {
 
     private static Stream<Arguments> provideLateCountAndAbsentCountForIsExpell() {
         return Stream.of(
-                Arguments.of(0,6),
-                Arguments.of(1,6),
-                Arguments.of(2,6),
-                Arguments.of(3,5)
+                Arguments.of(0, 6),
+                Arguments.of(1, 6),
+                Arguments.of(2, 6),
+                Arguments.of(3, 5)
         );
     }
 
@@ -38,10 +38,10 @@ public class ExpellStateTest {
 
     private static Stream<Arguments> provideLateCountAndAbsentCountForIsInterview() {
         return Stream.of(
-                Arguments.of(0,3),
-                Arguments.of(0,4),
-                Arguments.of(0,5),
-                Arguments.of(3,2)
+                Arguments.of(0, 3),
+                Arguments.of(0, 4),
+                Arguments.of(0, 5),
+                Arguments.of(3, 2)
         );
     }
 
@@ -54,9 +54,9 @@ public class ExpellStateTest {
 
     private static Stream<Arguments> provideLateCountAndAbsentCountForIsWarning() {
         return Stream.of(
-                Arguments.of(0,2),
-                Arguments.of(3,1),
-                Arguments.of(6,0)
+                Arguments.of(0, 2),
+                Arguments.of(3, 1),
+                Arguments.of(6, 0)
         );
     }
 }
