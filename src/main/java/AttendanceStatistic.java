@@ -20,6 +20,16 @@ public class AttendanceStatistic {
     }
 
     public ExpulsionRiskStatus getExpulsionRiskStatus() {
-        return null;
+        final int totalAbsence = getAbsenceCount() + getLateCount() / 3;
+        if (totalAbsence > 5) {
+            return ExpulsionRiskStatus.EXPELLED;
+        }
+        if (totalAbsence >= 3) {
+            return ExpulsionRiskStatus.INTERVIEW;
+        }
+        if (totalAbsence >= 2) {
+            return ExpulsionRiskStatus.WARNING;
+        }
+        return ExpulsionRiskStatus.NORMAL;
     }
 }

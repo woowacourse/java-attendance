@@ -47,7 +47,7 @@ class AttendanceStatisticTest {
 
     @DisplayName("제적 대상자 상태 값을 올바르게 반환할 수 있다.")
     @ParameterizedTest
-    @CsvSource(value = {"0, 5", "3, 1", "4, 1", "5, 1"})
+    @CsvSource(value = {"0, 6", "1, 6", "2, 6", "3, 6"})
     void test3(int late, int absence) {
         // given
         AttendanceStatistic statistic = new AttendanceStatistic(Map.of(
