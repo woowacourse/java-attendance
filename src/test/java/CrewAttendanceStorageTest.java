@@ -168,4 +168,33 @@ public class CrewAttendanceStorageTest {
                 new ExistAttendance(LocalDate.of(2025, 2, 28), LocalTime.of(10, 0))
         ));
     }
+
+    @DisplayName("크루 이름과 날짜를 입력하면 전날까지의 출석 통계 결과를 반환할 수 있다.")
+    @Test
+    void test9() {
+        // given
+        String crew = "밍곰";
+        AttendanceStorage attendanceStorage = AttendanceStorage.of(List.of(
+                new ExistAttendance(LocalDate.of(2025, 2, 24), LocalTime.of(13, 0)),
+                new ExistAttendance(LocalDate.of(2025, 2, 25), LocalTime.of(10, 30)),
+                new ExistAttendance(LocalDate.of(2025, 2, 27), LocalTime.of(10, 0)),
+                new ExistAttendance(LocalDate.of(2025, 2, 28), LocalTime.of(10, 0))
+        )); // 출석 3 지각 1 결석 1
+        CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.of(
+                Map.of(crew, attendanceStorage)
+        );
+        LocalDate startDate = LocalDate.of(2025, 2, 24);
+        LocalDate endDate = LocalDate.of(2025, 3, 1);
+
+        // when
+        Map<AttendanceStatus, Integer> statistic =
+                crewAttendanceStorage.findStatisticByDateRange(crew, startDate, endDate);
+
+        // then
+        assertAll(
+                () -> assertThat(statistic.get(AttendanceStatus.ATTENDANCE)).isEqualTo(3),
+                () -> assertThat(statistic.get(AttendanceStatus.LATE)).isEqualTo(1),
+                () -> assertThat(statistic.get(AttendanceStatus.ABSENCE)).isEqualTo(1)
+        );
+    }
 }

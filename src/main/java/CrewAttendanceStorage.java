@@ -57,4 +57,8 @@ public class CrewAttendanceStorage {
                 .map(storage::findByDate)
                 .toList();
     }
+
+    public Map<AttendanceStatus, Integer> findStatisticByDateRange(String crew, LocalDate startDate, LocalDate endDate) {
+        return null;
+    }
 }
