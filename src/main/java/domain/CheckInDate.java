@@ -1,5 +1,7 @@
 package domain;
 
+import exception.AppException;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
@@ -7,6 +9,7 @@ public class CheckInDate implements Comparable<CheckInDate> {
     private final LocalDate checkInDate;
 
     private CheckInDate(LocalDate checkInDate) {
+        validateSchoolDay(checkInDate);
         this.checkInDate = checkInDate;
     }
 
@@ -16,6 +19,15 @@ public class CheckInDate implements Comparable<CheckInDate> {
 
     public static CheckInDate of(int year, int month, int day) {
         return of(LocalDate.of(year, month, day));
+    }
+
+    private void validateSchoolDay(LocalDate checkInDate) {
+        if (!isNotWeekend(checkInDate)) {
+            throw new AppException("주말에는 출석할 수 없습니다.");
+        }
+        if (!Holidays.isNotHoliday(checkInDate)) {
+            throw new AppException("공휴일에는 출석할 수 없습니다.");
+        }
     }
 
     public static boolean isNotWeekend(LocalDate date) {
