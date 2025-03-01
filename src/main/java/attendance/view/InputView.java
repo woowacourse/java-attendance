@@ -1,6 +1,7 @@
 package attendance.view;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
@@ -19,6 +20,17 @@ public class InputView {
     public String inputCommand(LocalDate today) {
         System.out.printf(INPUT_COMMAND_FORMAT, today.format(DateTimeFormatter.ofPattern("MM월 dd일 E요일")));
         return readLine();
+    }
+
+    public String inputNickname() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return readLine();
+    }
+
+    public LocalTime inputAttendanceTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        String rawAttendanceTime = readLine();
+        return LocalTime.parse(rawAttendanceTime, DateTimeFormatter.ofPattern("HH:mm"));
     }
 
     private String readLine() {
