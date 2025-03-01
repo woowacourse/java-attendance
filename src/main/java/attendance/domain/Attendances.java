@@ -3,9 +3,8 @@ package attendance.domain;
 import attendance.util.ErrorMessage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Attendances {
 
@@ -50,6 +49,7 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameYearAndMonth(today))
                 .filter(attendance ->  !attendance.isSameDate(today))
+                .sorted(Comparator.comparing(Attendance::getAttendDate))
                 .toList();
     }
 }

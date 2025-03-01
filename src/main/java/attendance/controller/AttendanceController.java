@@ -10,6 +10,7 @@ import attendance.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class AttendanceController {
 
@@ -40,10 +41,14 @@ public class AttendanceController {
         if ("2".equals(function)) {
             editAttendance();
         }
+
+        if ("3".equals(function)) {
+            checkRecords();
+        }
     }
 
     private void recordAttendance() {
-        String inputNickname = InputView.readNicknameForRecord();
+        String inputNickname = InputView.readNickname();
         Crew crew = new Crew(new Nickname(inputNickname));
         attendanceBook.validateCrew(crew);
 
@@ -68,5 +73,14 @@ public class AttendanceController {
         attendanceBook.update(crew, oldAttendance, newAttendance);
 
         OutputView.printEditAttendanceResult(oldAttendance, newAttendance);
+    }
+
+    private void checkRecords() {
+        String inputNickname = InputView.readNickname();
+        Crew crew = new Crew(new Nickname(inputNickname));
+        attendanceBook.validateCrew(crew);
+
+        List<Attendance> attendances = attendanceBook.getRecordOfCrew(systemDate, crew);
+        OutputView.printAttendanceRecordsUntilYesterday(inputNickname, systemDate, attendances);
     }
 }

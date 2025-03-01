@@ -26,7 +26,7 @@ public class InputView {
         return validateInput(scanner.nextLine());
     }
 
-    public static String readNicknameForRecord() {
+    public static String readNickname() {
         System.out.println("닉네임을 입력해 주세요.");
         return validateInput(scanner.nextLine());
     }
