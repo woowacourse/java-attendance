@@ -18,12 +18,15 @@ public enum DangerousTarget {
 
     public static DangerousTarget getWarningStatus(int lateCount, int absentCount) {
         int count = lateCount / LateRateOfAbsent + absentCount;
-        if (count > DISMISSAL.absentCount)
+        if (count > DISMISSAL.absentCount) {
             return DISMISSAL;
-        if (count >= ONE_ON_ONE.absentCount)
+        }
+        if (count >= ONE_ON_ONE.absentCount) {
             return ONE_ON_ONE;
-        if (count >= WARNING.absentCount)
+        }
+        if (count >= WARNING.absentCount) {
             return WARNING;
+        }
         return SAFE;
     }
 
