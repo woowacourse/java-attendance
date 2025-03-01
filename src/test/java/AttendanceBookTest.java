@@ -41,6 +41,27 @@ public class AttendanceBookTest {
     }
 
     @Test
+    @DisplayName("출석부에 닉네임을 중복해서 등록하면 이전 값을 가지고 있다")
+    void registerNameDuplicate() {
+        //given
+
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        attendanceBook.register(name);
+        Attend attend = new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0));
+        attendanceBook.addAttend(name, attend);
+        List<Attend> before = attendanceBook.searchAttend(name, 3);
+
+        //when
+        attendanceBook.register(name);
+        List<Attend> after = attendanceBook.searchAttend(name, 3);
+
+        //then
+        LocalTime beforeTime = before.getFirst().getTime();
+        LocalTime afterTime = after.getFirst().getTime();
+        assertThat(beforeTime).isEqualTo(afterTime);
+    }
+    @Test
     @DisplayName("대상 닉네임의 출석을 추가한다")
     void addAttendUsingName() {
         //given

@@ -25,7 +25,9 @@ public class AttendanceBook {
     }
 
     public void register(final String name) {
-        attendBook.putIfAbsent(name, new AttendResult());
+        if (!attendBook.containsKey(name)) {
+            attendBook.put(name, new AttendResult());
+        }
     }
 
     public Attend edit(final String name, final Attend afterAttend) {
