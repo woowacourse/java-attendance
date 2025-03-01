@@ -43,4 +43,15 @@ class AttendanceDateTest {
         Assertions.assertThatThrownBy(() -> new AttendanceDate(now))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 시스템_운영기간이_아닐_경우_예외가_발생한다() {
+        // given
+        LocalDate now = LocalDate.of(2025, 1, 1);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> new AttendanceDate(now))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("시스템 운영 기간은");
+    }
 }
