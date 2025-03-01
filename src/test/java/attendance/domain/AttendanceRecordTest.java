@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceRecordTest {
@@ -139,6 +140,7 @@ public class AttendanceRecordTest {
         Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.EXPULSION);
     }
 
+    @DisplayName("출석 등록할 때")
     @Test
     void 출석_기록이_있으면_예외_발생() {
         //given
@@ -152,5 +154,21 @@ public class AttendanceRecordTest {
         Assertions.assertThatThrownBy(() -> attendanceRecord.registerAttendance(inputTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 출석 기록이 있습니다.");
+    }
+
+    @DisplayName("출석 수정할 때")
+    @Test
+    void 출석_기록이_없으면_예외_발생() {
+        //given
+        LocalDateTime inputTime = LocalDateTime.of(2025, 2, 28, 9, 59);
+
+        AttendanceRecord attendanceRecord = new AttendanceRecord(
+                List.of(new AttendanceTime(LocalDateTime.of(2025, 2, 27, 9, 59)))
+        );
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> attendanceRecord.findAttendanceRecord(inputTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출석 기록이 없습니다.");
     }
 }
