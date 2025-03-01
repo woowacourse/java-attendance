@@ -45,7 +45,7 @@ public class AttendResult {
         Attend before = findAttendByDay(targetAttend.getDate());
         attendResult.remove(before);
         attendResult.add(targetAttend);
-        return new Attend(targetAttend.getDate());
+        return before;
     }
 
     public List<Attend> getAttendResult(final int targetDay) {
