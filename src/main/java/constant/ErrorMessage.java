@@ -16,6 +16,7 @@ public enum ErrorMessage {
     NOT_FOUND_CREW("존재하지 않는 크루입니다."),
     NOT_FOUND_ATTENDANCE("존재하지 않는 출석 내역입니다."),
     OUT_OF_OPERATION_HOURS("지금은 운영 시간이 아닙니다."),
+    ALREADY_CHECK_IN("이미 출석했습니다. 출석을 수정하려면 출석 수정 기능을 이용해 주세요."),
     ;
 
     private static final String prefix = "[ERROR] ";
