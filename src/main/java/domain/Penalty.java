@@ -6,6 +6,8 @@ public enum Penalty {
     WARNING("경고"),
     NONE("");
 
+    public static final int LATE_TO_ABSENCE_RATE = 3;
+
     private final String description;
 
     Penalty(String description) {
@@ -17,7 +19,7 @@ public enum Penalty {
     }
 
     public static Penalty determine(int late, int absence) {
-        int totalAbsence = absence + (late / 3);
+        int totalAbsence = absence + (late / LATE_TO_ABSENCE_RATE);
         if (totalAbsence > 5) {
             return LEAVE;
         }
