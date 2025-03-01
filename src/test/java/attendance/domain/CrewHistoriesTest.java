@@ -2,8 +2,13 @@ package attendance.domain;
 
 import static attendance.fixture.TestFixture.makeAttendanceTime;
 import static attendance.fixture.TestFixture.makeCrewHistory;
+import static attendance.fixture.TestFixture.makeDecemberDate;
+import static attendance.fixture.TestFixture.makeDefaultAttendanceTime;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,12 +28,68 @@ class CrewHistoriesTest {
     void 크루의_출석_기록을_저장한다() {
         // Given
         Nickname nickname = new Nickname("밍트");
-        LocalDateTime attendanceTime = makeAttendanceTime();
+        LocalDateTime yesterdayAttendanceTime = makeDefaultAttendanceTime();
+        crewHistories.addHistory(nickname, yesterdayAttendanceTime);
+
+        LocalDateTime todayAttendanceTime = makeAttendanceTime(4, 10, 0);
+
+        // When
+        crewHistories.addHistory(nickname, todayAttendanceTime);
+
+        // Then
+        assertThat(crewHistories).isEqualTo(
+                new CrewHistories(Map.of(nickname, makeCrewHistory(yesterdayAttendanceTime, todayAttendanceTime))));
+    }
+
+    @Test
+    void 크루의_출석_기록이_존재하지_않은_경우_새롭게_만들어_저장한다() {
+        // Given
+        Nickname nickname = new Nickname("밍트");
+        LocalDateTime attendanceTime = makeDefaultAttendanceTime();
 
         // When
         crewHistories.addHistory(nickname, attendanceTime);
 
         // Then
         assertThat(crewHistories).isEqualTo(new CrewHistories(Map.of(nickname, makeCrewHistory(attendanceTime))));
+    }
+
+    @Test
+    void 닉네임으로_출석_기록이_존재하는지_조회한다() {
+        // Given
+        Nickname nickname = new Nickname("밍트");
+        LocalDateTime yesterdayAttendanceTime = makeDefaultAttendanceTime();
+        crewHistories.addHistory(nickname, yesterdayAttendanceTime);
+        LocalDate today = makeDecemberDate(4);
+
+        // When & Then
+        assertThatCode(() -> crewHistories.validateHistoryNotExists(nickname, today))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 존재하지_않은_닉네임으로_조회하는_경우_예외가_발생한다() {
+        // Given
+        Nickname nickname = new Nickname("밍트");
+        LocalDate today = makeDecemberDate(4);
+
+        // When & Then
+        assertThatThrownBy(() -> crewHistories.validateHistoryNotExists(nickname, today))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
+
+    @Test
+    void 이미_출석_기록이_존재하는_경우_예외가_발생한다() {
+        // Given
+        Nickname nickname = new Nickname("밍트");
+        LocalDateTime yesterdayAttendanceTime = makeDefaultAttendanceTime();
+        crewHistories.addHistory(nickname, yesterdayAttendanceTime);
+        LocalDate yesterday = LocalDate.from(yesterdayAttendanceTime);
+
+        // When & Then
+        assertThatThrownBy(() -> crewHistories.validateHistoryNotExists(nickname, yesterday))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 이미 출석했습니다. 수정 기능을 이용해주세요.");
     }
 }

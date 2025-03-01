@@ -20,9 +20,9 @@ public class CrewHistory {
         history.put(attendanceDate, attendanceDateTime);
     }
 
-    private void validateNotExists(final LocalDate attendanceDate) {
+    public void validateNotExists(final LocalDate attendanceDate) {
         if (history.containsKey(attendanceDate)) {
-            throw new IllegalArgumentException("이미 출석했습니다. 수정 기능을 이용해주세요.");
+            throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용해주세요.");
         }
     }
 

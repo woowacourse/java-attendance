@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,18 @@ public class CrewHistories {
         createIfNotExists(nickname);
         CrewHistory crewHistory = histories.get(nickname);
         crewHistory.add(attendanceDateTime);
+    }
+
+    public void validateHistoryNotExists(final Nickname nickname, final LocalDate attendanceDate) {
+        validateKeyExists(nickname);
+        CrewHistory crewHistory = histories.get(nickname);
+        crewHistory.validateNotExists(attendanceDate);
+    }
+
+    private void validateKeyExists(final Nickname nickname) {
+        if (!histories.containsKey(nickname)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
 
     private void createIfNotExists(final Nickname nickname) {
