@@ -28,13 +28,14 @@ public class AttendanceHistoryLoader {
     private void addAttendances(BufferedReader reader, AttendanceBook attendanceBook) throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
-            addAttendance(attendanceBook, line);
+            addAttendance(line, attendanceBook);
         }
     }
 
-    private void addAttendance(AttendanceBook attendanceBook, String line) {
+    private void addAttendance(String line, AttendanceBook attendanceBook) {
         String[] history = line.split(",");
         String nickname = history[0];
+        Crew crew = new Crew(nickname);
 
         String[] attendanceDateTime = history[1].trim().split(" ");
         String attendanceDate = attendanceDateTime[0];
@@ -42,6 +43,6 @@ public class AttendanceHistoryLoader {
 
         Day day = new Day(LocalDate.parse(attendanceDate.trim()));
         Attendance attendance = new Attendance(day, LocalTime.parse(attendanceTime.trim()));
-        attendanceBook.recordAttendance(nickname, attendance);
+        attendanceBook.recordAttendance(crew, attendance);
     }
 }

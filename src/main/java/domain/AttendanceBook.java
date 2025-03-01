@@ -5,50 +5,50 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceBook {
-    private final Map<String, Attendances> crewsAttendances = new HashMap<>();
+    private final Map<Crew, Attendances> crewsAttendances = new HashMap<>();
 
-    private static void updatePenaltyHistory(String nickname, Attendances attendances,
-                                             Map<String, Attendances> penaltyHistory) {
+    private static void updatePenaltyHistory(Crew crew, Attendances attendances,
+                                             Map<Crew, Attendances> penaltyHistory) {
         if (attendances.getPenaltyStatus() != null) {
-            penaltyHistory.put(nickname, attendances);
+            penaltyHistory.put(crew, attendances);
         }
     }
 
-    public void recordAttendance(String nickname, Attendance attendance) {
-        if (crewsAttendances.containsKey(nickname)) {
-            crewsAttendances.get(nickname).add(attendance);
+    public void recordAttendance(Crew crew, Attendance attendance) {
+        if (crewsAttendances.containsKey(crew)) {
+            crewsAttendances.get(crew).add(attendance);
             return;
         }
-        crewsAttendances.put(nickname, new Attendances());
-        crewsAttendances.get(nickname).add(attendance);
+        crewsAttendances.put(crew, new Attendances());
+        crewsAttendances.get(crew).add(attendance);
     }
 
-    public Attendances getAttendances(String nickname) {
-        validateNickname(nickname);
-        return crewsAttendances.get(nickname);
+    public Attendances getAttendances(Crew crew) {
+        validateCrew(crew);
+        return crewsAttendances.get(crew);
     }
 
     public void recordAllAbsences() {
-        crewsAttendances.forEach((nickname, attendances) -> attendances.recordAbsences());
+        crewsAttendances.forEach((crew, attendances) -> attendances.recordAbsences());
     }
 
-    public Map<String, Attendances> getPenaltyHistory() {
-        Map<String, Attendances> penaltyHistory = new HashMap<>();
+    public Map<Crew, Attendances> getPenaltyHistory() {
+        Map<Crew, Attendances> penaltyHistory = new HashMap<>();
         crewsAttendances.forEach((nickname, attendances) ->
                 updatePenaltyHistory(nickname, attendances, penaltyHistory)
         );
         return penaltyHistory;
     }
 
-    public void isAlreadyAttended(String nickname, LocalDate date) {
-        if (crewsAttendances.get(nickname).isAlreadyAttended(date)) {
+    public void isAlreadyAttended(Crew crew, LocalDate date) {
+        if (crewsAttendances.get(crew).isAlreadyAttended(date)) {
             throw new IllegalStateException("[ERROR] 이미 출석이 완료되었습니다. 수정 기능을 이용하세요.");
         }
     }
 
-    private void validateNickname(String nickname) {
-        if (!crewsAttendances.containsKey(nickname)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+    private void validateCrew(Crew crew) {
+        if (!crewsAttendances.containsKey(crew)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 크루입니다.");
         }
     }
 }

@@ -21,14 +21,14 @@ public class Attendances {
 
     public Integer getLateCount() {
         return (int) attendances.stream()
-                .filter(attendance -> !attendance.has(new Day(LocalDate.now())))
+                .filter(attendance -> !attendance.has(new Day(LocalDate.of(2025, 2, 28))))
                 .filter(Attendance::isLate)
                 .count();
     }
 
     public Integer getAbsentCount() {
         return (int) attendances.stream()
-                .filter(attendance -> !attendance.has(new Day(LocalDate.now())))
+                .filter(attendance -> !attendance.has(new Day(LocalDate.of(2025, 2, 28))))
                 .filter(Attendance::isAbsent)
                 .count();
     }

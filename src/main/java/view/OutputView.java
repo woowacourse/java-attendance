@@ -2,6 +2,7 @@ package view;
 
 import domain.Attendance;
 import domain.Attendances;
+import domain.Crew;
 import domain.CustomDayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -49,27 +50,27 @@ public class OutputView {
         printPenaltyStatus(attendances);
     }
 
-    public void printPenaltyCrews(Map<String, Attendances> penaltyCrews) {
-        List<String> nicknames = new ArrayList<>(penaltyCrews.keySet());
-        sortPenaltyCrews(penaltyCrews, nicknames);
+    public void printPenaltyCrews(Map<Crew, Attendances> penaltyCrews) {
+        List<Crew> crews = new ArrayList<>(penaltyCrews.keySet());
+        sortPenaltyCrews(penaltyCrews, crews);
 
-        for (String nickname : nicknames) {
-            int absentCount = penaltyCrews.get(nickname).getAbsentCount();
-            int lateCount = penaltyCrews.get(nickname).getLateCount();
-            String penaltyName = penaltyCrews.get(nickname).getPenaltyStatus().getName();
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", nickname, absentCount, lateCount, penaltyName);
+        for (Crew crew : crews) {
+            int absentCount = penaltyCrews.get(crew).getAbsentCount();
+            int lateCount = penaltyCrews.get(crew).getLateCount();
+            String penaltyName = penaltyCrews.get(crew).getPenaltyStatus().getName();
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", crew.getNickname(), absentCount, lateCount, penaltyName);
         }
     }
 
-    private void sortPenaltyCrews(Map<String, Attendances> penaltyCrews, List<String> nicknames) {
-        nicknames.sort(
-                Comparator.comparing((String nickname) -> penaltyCrews.get(nickname).getPenaltyStatus().getPoint(),
+    private void sortPenaltyCrews(Map<Crew, Attendances> penaltyCrews, List<Crew> crews) {
+        crews.sort(
+                Comparator.comparing((Crew crew) -> penaltyCrews.get(crew).getPenaltyStatus().getPoint(),
                                 Comparator.reverseOrder())
                         .thenComparing(
-                                (String nickname) -> penaltyCrews.get(nickname).getLateCount() + penaltyCrews.get(
-                                        nickname).getAbsentCount(),
+                                (Crew crew) -> penaltyCrews.get(crew).getLateCount() + penaltyCrews.get(
+                                        crew).getAbsentCount(),
                                 Comparator.reverseOrder())
-                        .thenComparing((String nickname) -> nickname));
+                        .thenComparing(Crew::getNickname));
     }
 
     private void printEachStatusCount(Attendances attendances) {
