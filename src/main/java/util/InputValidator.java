@@ -5,6 +5,7 @@ import static constant.ErrorMessage.INVALID_INPUT_NULL_OR_BLANK;
 import static constant.ErrorMessage.INVALID_INTEGER_FORMAT;
 import static constant.ErrorMessage.INVALID_TIME_FORMAT;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 
@@ -35,11 +36,11 @@ public class InputValidator {
         }
     }
 
-    public static void validateDay(String input, LocalDateTime dateTime) {
+    public static void validateDay(String input, LocalDate date) {
         validateInteger(input);
 
         int day = Integer.parseInt(input);
-        int lastDay = YearMonth.of(dateTime.getYear(), dateTime.getMonthValue()).atEndOfMonth().getDayOfMonth();
+        int lastDay = YearMonth.of(date.getYear(), date.getMonthValue()).atEndOfMonth().getDayOfMonth();
 
         if (day < 1 || day > lastDay) {
             throw new IllegalArgumentException(INVALID_DAY_FORMAT.getMessage());

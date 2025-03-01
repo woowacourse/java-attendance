@@ -1,17 +1,17 @@
 package util;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class FixedDateTimeStrategy implements DateTimeStrategy {
 
-    private final LocalDateTime fixedDateTime;
+    private final LocalDate fixedDate;
 
-    public FixedDateTimeStrategy(LocalDateTime fixedDateTime) {
-        this.fixedDateTime = fixedDateTime;
+    public FixedDateTimeStrategy(LocalDate fixedDate) {
+        this.fixedDate = fixedDate;
     }
 
     @Override
-    public LocalDateTime now() {
-        return fixedDateTime;
+    public LocalDate now() {
+        return fixedDate;
     }
 }

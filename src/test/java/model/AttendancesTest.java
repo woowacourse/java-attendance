@@ -16,7 +16,6 @@ import dto.AttendanceRiskCrewsResponse;
 import dto.AttendanceUpdateRequest;
 import dto.AttendanceUpdateResponse;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,14 +27,14 @@ import util.FixedDateTimeStrategy;
 
 class AttendancesTest {
 
-    LocalDateTime fixedDateTime;
+    LocalDate fixedDate;
     DateTimeGenerator dateTimeGenerator;
     Attendances attendances;
 
     @BeforeEach
     void beforeEach() {
-        fixedDateTime = LocalDateTime.of(2024, 12, 13, 12, 0);
-        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDateTime);
+        fixedDate = LocalDate.of(2024, 12, 13);
+        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDate);
         dateTimeGenerator = new DateTimeGenerator(fixedDateTimeStrategy);
 
         List<String> lines = FileParser.readLines(ATTENDANCE_FILE_PATH.getPath());
@@ -72,7 +71,7 @@ class AttendancesTest {
         AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
 
         // then
-        assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now().toLocalDate());
+        assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now());
         assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 0));
         assertThat(response.attendanceType()).isEqualTo(AttendanceType.SUCCESS);
     }
@@ -89,7 +88,7 @@ class AttendancesTest {
         AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
 
         // then
-        assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now().toLocalDate());
+        assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now());
         assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 6));
         assertThat(response.attendanceType()).isEqualTo(AttendanceType.BE_LATE);
     }
@@ -106,7 +105,7 @@ class AttendancesTest {
         AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
 
         // then
-        assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now().toLocalDate());
+        assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now());
         assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 31));
         assertThat(response.attendanceType()).isEqualTo(AttendanceType.ABSENCE);
     }
@@ -210,8 +209,8 @@ class AttendancesTest {
     @Test
     @DisplayName("공휴일에 출석을 시도하는 경우 예외가 발생한다.")
     void test10() {
-        fixedDateTime = LocalDateTime.of(2024, 12, 25, 12, 0);
-        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDateTime);
+        fixedDate = LocalDate.of(2024, 12, 25);
+        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDate);
         dateTimeGenerator = new DateTimeGenerator(fixedDateTimeStrategy);
 
         String nickname = "미소";

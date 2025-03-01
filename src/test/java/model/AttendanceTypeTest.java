@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.EnumMap;
 import java.util.List;
@@ -19,14 +18,14 @@ import util.FixedDateTimeStrategy;
 
 class AttendanceTypeTest {
 
-    LocalDateTime fixedDateTime;
+    LocalDate fixedDate;
     DateTimeGenerator dateTimeGenerator;
     Attendances attendances;
 
     @BeforeEach
     void beforeEach() {
-        fixedDateTime = LocalDateTime.of(2024, 12, 13, 12, 0);
-        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDateTime);
+        fixedDate = LocalDate.of(2024, 12, 13);
+        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDate);
         dateTimeGenerator = new DateTimeGenerator(fixedDateTimeStrategy);
 
         List<String> lines = FileParser.readLines(ATTENDANCE_FILE_PATH.getPath());

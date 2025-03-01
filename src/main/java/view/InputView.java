@@ -5,7 +5,7 @@ import dto.AttendanceCheckInRequest;
 import dto.AttendanceHistoryRequest;
 import dto.AttendanceOptionRequest;
 import dto.AttendanceUpdateRequest;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
@@ -21,7 +21,7 @@ public class InputView {
     }
 
     public static AttendanceOptionRequest readAttendanceOptionRequest(DateTimeGenerator dateTimeGenerator) {
-        LocalDateTime now = dateTimeGenerator.now();
+        LocalDate now = dateTimeGenerator.now();
 
         println(String.format(InputViewMessage.ATTENDANCE_OPTION_PROMPT.getMessage(),
                 now.getMonth().getValue(),

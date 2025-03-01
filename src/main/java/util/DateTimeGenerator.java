@@ -1,7 +1,6 @@
 package util;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class DateTimeGenerator {
 
@@ -11,15 +10,7 @@ public class DateTimeGenerator {
         this.dateTimeStrategy = dateTimeStrategy;
     }
 
-    public LocalDateTime now() {
+    public LocalDate now() {
         return dateTimeStrategy.now();
-    }
-
-    public LocalDate getNowLocalDate() {
-        return LocalDate.of(
-                now().getYear(),
-                now().getMonthValue(),
-                now().getDayOfMonth()
-        );
     }
 }

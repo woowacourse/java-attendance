@@ -1,7 +1,6 @@
 package util;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,13 +8,13 @@ import org.junit.jupiter.api.Test;
 
 class DateTimeGeneratorTest {
 
-    LocalDateTime fixedDateTime;
+    LocalDate fixedDate;
     DateTimeGenerator dateTimeGenerator;
 
     @BeforeEach
     void beforeEach() {
-        fixedDateTime = LocalDateTime.of(2025, 2, 28, 12, 0);
-        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDateTime);
+        fixedDate = LocalDate.of(2025, 2, 28);
+        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDate);
         dateTimeGenerator = new DateTimeGenerator(fixedDateTimeStrategy);
     }
 
@@ -25,10 +24,10 @@ class DateTimeGeneratorTest {
         // given
 
         // when
-        LocalDateTime now = dateTimeGenerator.now();
+        LocalDate now = dateTimeGenerator.now();
 
         // then
-        Assertions.assertThat(now).isEqualTo(fixedDateTime);
+        Assertions.assertThat(now).isEqualTo(fixedDate);
     }
 
     @Test
@@ -37,9 +36,9 @@ class DateTimeGeneratorTest {
         // given
 
         // when
-        LocalDate localDate = dateTimeGenerator.getNowLocalDate();
+        LocalDate localDate = dateTimeGenerator.now();
 
         // then
-        Assertions.assertThat(localDate).isEqualTo(fixedDateTime.toLocalDate());
+        Assertions.assertThat(localDate).isEqualTo(fixedDate);
     }
 }

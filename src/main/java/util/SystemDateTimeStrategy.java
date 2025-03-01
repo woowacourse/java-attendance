@@ -1,11 +1,11 @@
 package util;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class SystemDateTimeStrategy implements DateTimeStrategy {
 
     @Override
-    public LocalDateTime now() {
-        return LocalDateTime.now();
+    public LocalDate now() {
+        return LocalDate.now();
     }
 }

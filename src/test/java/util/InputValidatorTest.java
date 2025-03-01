@@ -7,7 +7,7 @@ import static constant.ErrorMessage.INVALID_TIME_FORMAT;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -100,10 +100,10 @@ class InputValidatorTest {
     void test8() {
         // given
         String input = "5";
-        LocalDateTime dateTime = LocalDateTime.of(2025, 2, 28, 10, 0);
+        LocalDate date = LocalDate.of(2025, 2, 28);
 
         // when & then
-        assertThatCode(() -> InputValidator.validateDay(input, dateTime))
+        assertThatCode(() -> InputValidator.validateDay(input, date))
                 .doesNotThrowAnyException();
     }
 
@@ -112,10 +112,10 @@ class InputValidatorTest {
     void test9() {
         // given
         String input = "29";
-        LocalDateTime dateTime = LocalDateTime.of(2025, 2, 28, 10, 0);
+        LocalDate date = LocalDate.of(2025, 2, 28);
 
         // when & then
-        assertThatThrownBy(() -> InputValidator.validateDay(input, dateTime))
+        assertThatThrownBy(() -> InputValidator.validateDay(input, date))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(INVALID_DAY_FORMAT.getMessage());
     }

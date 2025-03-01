@@ -59,7 +59,7 @@ public class Attendances {
         attendances.get(crew).add(attendance);
 
         return new AttendanceCheckInResponse(
-                dateTimeGenerator.now().toLocalDate(),
+                dateTimeGenerator.now(),
                 LocalTime.parse(request.checkInTime()),
                 attendance.getAttendanceType());
     }
@@ -145,7 +145,7 @@ public class Attendances {
     }
 
     private static List<LocalDate> generateDateRange(DateTimeGenerator dateTimeGenerator) {
-        LocalDate now = dateTimeGenerator.now().toLocalDate();
+        LocalDate now = dateTimeGenerator.now();
 
         return IntStream.rangeClosed(1, now.getDayOfMonth() - 1)
                 .mapToObj(now::withDayOfMonth)
@@ -177,20 +177,20 @@ public class Attendances {
     }
 
     private void validateOperationTime(AttendanceCheckInRequest request, DateTimeGenerator dateTimeGenerator) {
-        if (!AttendanceTime.isInOperationTime(dateTimeGenerator.getNowLocalDate(),
+        if (!AttendanceTime.isInOperationTime(dateTimeGenerator.now(),
                 LocalTime.parse(request.checkInTime()))) {
             throw new IllegalArgumentException(OUT_OF_OPERATION_HOURS.getMessage());
         }
     }
 
     private void validateHoliday(DateTimeGenerator dateTimeGenerator) {
-        if (Holiday.isHoliday(dateTimeGenerator.getNowLocalDate())) {
+        if (Holiday.isHoliday(dateTimeGenerator.now())) {
             throw new IllegalArgumentException(CANNOT_CHECK_IN_ON_HOLIDAY.getMessage());
         }
     }
 
     private void validateAlreadyCheckIn(DateTimeGenerator dateTimeGenerator, Crew crew) {
-        if (find(crew, dateTimeGenerator.getNowLocalDate()).isPresent()) {
+        if (find(crew, dateTimeGenerator.now()).isPresent()) {
             throw new IllegalArgumentException(ALREADY_CHECK_IN.getMessage());
         }
     }

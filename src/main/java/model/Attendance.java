@@ -30,7 +30,7 @@ public class Attendance {
     }
 
     public static Attendance of(DateTimeGenerator dateTimeGenerator, String rawCheckInTime) {
-        LocalDate checkInDate = dateTimeGenerator.now().toLocalDate();
+        LocalDate checkInDate = dateTimeGenerator.now();
         LocalTime checkInTime = LocalTime.parse(rawCheckInTime);
         AttendanceType attendanceType = AttendanceType.find(checkInDate, checkInTime);
 

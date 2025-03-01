@@ -1,8 +1,8 @@
 package util;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public interface DateTimeStrategy {
 
-    LocalDateTime now();
+    LocalDate now();
 }
