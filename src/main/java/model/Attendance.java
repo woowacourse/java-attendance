@@ -30,4 +30,8 @@ public class Attendance {
     public boolean isAbsent() {
         return attendTime.isAfter(LocalTime.of(10, 30));
     }
+
+    public boolean isLate() {
+        return attendTime.isAfter(LocalTime.of(10, 5));
+    }
 }

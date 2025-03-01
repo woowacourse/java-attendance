@@ -101,4 +101,10 @@ public class AttendanceBook {
     private boolean isWeekend(LocalDate date) {
         return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
+
+    public long calculateLateCountByNickname(String nickname) {
+        return findCrewAttendance(nickname).stream()
+                .filter(Attendance::isLate)
+                .count();
+    }
 }
