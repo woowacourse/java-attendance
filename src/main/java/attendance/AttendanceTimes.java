@@ -1,5 +1,6 @@
 package attendance;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +19,13 @@ public class AttendanceTimes {
 
     public boolean add(AttendanceTime attendanceDateTime) {
         return attendanceTimes.add(attendanceDateTime);
+    }
+
+    public AttendanceTime modifyAttendance(AttendanceTime attendanceTime, LocalDateTime modifyTime)  {
+        attendanceTimes.remove(attendanceTime);
+        AttendanceTime modifyAttendanceTime = AttendanceTime.from(modifyTime);
+        add(modifyAttendanceTime);
+        return modifyAttendanceTime;
     }
 
     public AttendanceTime findAttendanceByDate(int findDate) {

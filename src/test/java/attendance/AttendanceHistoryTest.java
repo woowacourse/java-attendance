@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -92,5 +93,20 @@ public class AttendanceHistoryTest {
         LocalDate expectedAttendanceDate = LocalDate.of(2024, 12, 3);
         AttendanceTime foundAttendanceTime = attendanceHistory.getAttendanceTimeByDate(nickname, findDate);
         assertThat(foundAttendanceTime.getDate()).isEqualTo(expectedAttendanceDate);
+    }
+
+    @DisplayName("기존 시간과 수정 시간이 주어졌을 때, 기존 출석 기록을 제거 후, 새로운 출석 기록을 삽입한다")
+    @Test
+    void remove_before_attendance_and_insert_new_attendance() {
+        String nickname = "젠슨";
+        int findDate = 3;
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalDateTime.of(2024, 12, 3, 10, 0));
+        attendanceHistory.add(nickname, attendanceTime);
+        LocalDateTime modifyTime = LocalDateTime.of(2024, 12, 3, 10, 0);
+        AttendanceTime modifyAttendanceTime = attendanceHistory.modifyAttendance(nickname, attendanceTime, modifyTime);
+        assertThat(modifyAttendanceTime.getAttendanceDateTime().toLocalTime()).isEqualTo(LocalTime.of(10, 0));
+        AttendanceTime attendanceTimeByDate = attendanceHistory.getAttendanceTimeByDate(nickname,
+            findDate);
+        assertThat(attendanceTimeByDate.getAttendanceDateTime()).isEqualTo(modifyTime);
     }
 }

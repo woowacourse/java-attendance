@@ -1,5 +1,6 @@
 package attendance;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,5 +36,10 @@ public class AttendanceHistory {
         if (!isAdded) {
             throw new IllegalArgumentException("해당 날짜에 이미 출석했습니다. 수정 기능을 이용해주세요.");
         }
+    }
+
+    public AttendanceTime modifyAttendance(String nickname, AttendanceTime attendanceTime, LocalDateTime modifyTime) {
+        AttendanceTimes attendanceTimes = attendanceHistory.get(nickname);
+        return attendanceTimes.modifyAttendance(attendanceTime, modifyTime);
     }
 }
