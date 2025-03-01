@@ -13,12 +13,12 @@ public enum AcademicStatus {
     private final String status;
     private final Predicate<Long> determineStatusConditions;
 
-    AcademicStatus(String status, Predicate<Long> determineStatusConditions) {
+    AcademicStatus(String status, final Predicate<Long> determineStatusConditions) {
         this.status = status;
         this.determineStatusConditions = determineStatusConditions;
     }
 
-    public static AcademicStatus getStatus(long late, long absent) {
+    public static AcademicStatus getStatus(final long late, final long absent) {
         long totalCount = late / 3 + absent;
 
         return Stream.of(values())

@@ -16,7 +16,7 @@ public class Time {
         validateCampusOperationTime(attendanceTime);
         this.attendanceTime = attendanceTime;
     }
-    
+
     private void validateCampusOperationTime(LocalDateTime attendanceTime) {
         if (attendanceTime.getHour() < 8 || (attendanceTime.getHour() == 23 && attendanceTime.getMinute() > 0)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
@@ -36,7 +36,7 @@ public class Time {
                 && this.attendanceTime.getDayOfMonth() == time.getDayOfMonth();
     }
 
-    public boolean isSameYearAndMonth(int year, int month) {
+    public boolean isSameYearAndMonth(final int year, final int month) {
         return this.attendanceTime.getYear() == year
                 && this.attendanceTime.getMonthValue() == month;
     }

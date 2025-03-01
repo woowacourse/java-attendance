@@ -9,7 +9,7 @@ public class Attendance {
     private final String crewName;
     private final Time attendanceTime;
 
-    public Attendance(String crewName, Time attendanceTime) {
+    public Attendance(String crewName, final Time attendanceTime) {
         this.crewName = crewName;
         this.attendanceTime = attendanceTime;
     }
@@ -27,14 +27,14 @@ public class Attendance {
         return this.crewName.equals(crewName);
     }
 
-    public boolean isSameYearAndMonth(int year, int month) {
+    public boolean isSameYearAndMonth(final int year, final int month) {
         return attendanceTime.isSameYearAndMonth(year, month);
     }
 
     public AttendanceStatus checkStatus() {
         return attendanceTime.getStatus();
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

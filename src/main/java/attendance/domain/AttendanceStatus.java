@@ -24,7 +24,7 @@ public enum AttendanceStatus {
     private final String status;
     private final BiPredicate<LocalTime, LocalTime> timeCondition;
 
-    AttendanceStatus(String status, BiPredicate<LocalTime, LocalTime> timeCondition) {
+    AttendanceStatus(String status, final BiPredicate<LocalTime, LocalTime> timeCondition) {
         this.status = status;
         this.timeCondition = timeCondition;
     }
@@ -38,7 +38,7 @@ public enum AttendanceStatus {
                 .findFirst()
                 .orElse(ABSENT);
     }
-    
+
     private static LocalTime getStartTimeByDayOfWeek(DayOfWeek dayOfWeek) {
         if (dayOfWeek == DayOfWeek.MONDAY) {
             return LocalTime.of(13, 0);

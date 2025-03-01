@@ -4,6 +4,7 @@ import dto.AcademicStatusResultDTO;
 import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,8 +15,8 @@ public class AttendanceBook {
     private final Set<String> crewNames;
     private final Attendances attendances;
 
-    public AttendanceBook(final Set<String> crewNames, Attendances attendances) {
-        this.crewNames = crewNames;
+    public AttendanceBook(final Set<String> crewNames, final Attendances attendances) {
+        this.crewNames = new HashSet<>(crewNames);
         this.attendances = attendances;
     }
 
@@ -25,12 +26,12 @@ public class AttendanceBook {
         }
     }
 
-    public long getCountAttendanceStatus(Map<LocalDate, Attendance> monthlyAttendances,
+    public long getCountAttendanceStatus(final Map<LocalDate, Attendance> monthlyAttendances,
                                          AttendanceStatus attendanceStatus) {
         return attendances.getStatusCount(monthlyAttendances, attendanceStatus);
     }
 
-    public AcademicStatus getAcademicStatusByCalendar(Map<LocalDate, Attendance> monthlyAttendances) {
+    public AcademicStatus getAcademicStatusByCalendar(final Map<LocalDate, Attendance> monthlyAttendances) {
 
         long late = getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.LATE);
         long absent = getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.ABSENT);
@@ -38,7 +39,7 @@ public class AttendanceBook {
         return AcademicStatus.getStatus(late, absent);
     }
 
-    public void addAttendance(Attendance attendance) {
+    public void addAttendance(final Attendance attendance) {
         attendances.add(attendance);
     }
 
@@ -46,17 +47,18 @@ public class AttendanceBook {
         return attendances.findByCrewNameAndLocalDate(crewName, localDate);
     }
 
-    public Map<LocalDate, Attendance> findAttendancesByCrewNameAndYearAndMonth(String crewName, int year, int month) {
+    public Map<LocalDate, Attendance> findAttendancesByCrewNameAndYearAndMonth(String crewName, final int year,
+                                                                               final int month) {
         return attendances.getMonthlyAttendanceMap(crewName, year, month);
     }
 
-    public List<AcademicStatusResultDTO> getExpulsionCrews(AcademicStatus academicStatus, LocalDate localDate) {
+    public List<AcademicStatusResultDTO> getExpulsionCrews(final AcademicStatus academicStatus, LocalDate localDate) {
         List<AcademicStatusResultDTO> academicStatusResultDTOS = filterCrewsByAcademicStatus(academicStatus, localDate);
         sortAcademicStatusResults(academicStatusResultDTOS);
         return academicStatusResultDTOS;
     }
 
-    private List<AcademicStatusResultDTO> filterCrewsByAcademicStatus(AcademicStatus academicStatus,
+    private List<AcademicStatusResultDTO> filterCrewsByAcademicStatus(final AcademicStatus academicStatus,
                                                                       LocalDate localDate) {
         return crewNames.stream()
                 .map(crewName -> {
@@ -74,7 +76,7 @@ public class AttendanceBook {
                 .collect(Collectors.toList());
     }
 
-    private void sortAcademicStatusResults(List<AcademicStatusResultDTO> academicStatusResultDTOS) {
+    private void sortAcademicStatusResults(final List<AcademicStatusResultDTO> academicStatusResultDTOS) {
         academicStatusResultDTOS.sort(new Comparator<AcademicStatusResultDTO>() {
             @Override
             public int compare(AcademicStatusResultDTO o1, AcademicStatusResultDTO o2) {

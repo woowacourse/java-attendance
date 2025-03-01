@@ -15,7 +15,7 @@ public final class AttendanceReader {
     private AttendanceReader() {
     }
 
-    public static Set<Attendance> getAttendancesOnFile(List<String> attendanceContents) {
+    public static Set<Attendance> getAttendancesOnFile(final List<String> attendanceContents) {
         attendanceContents.removeFirst();
 
         Set<Attendance> attendances = new HashSet<>();
@@ -31,7 +31,7 @@ public final class AttendanceReader {
         return attendances;
     }
 
-    public static Set<String> getCrewNamesOnFile(List<String> attendanceContents) {
+    public static Set<String> getCrewNamesOnFile(final List<String> attendanceContents) {
 
         attendanceContents.removeFirst();
 
