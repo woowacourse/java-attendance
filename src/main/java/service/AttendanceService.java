@@ -73,7 +73,7 @@ public class AttendanceService {
         LocalDate to = request.today().minusDays(1);
 
         List<RiskCrew> riskCrews = crews.findAllCrews().stream()
-                .map(crew -> crew.convertToRiskCrew(attendanceRecords.getAttendanceStatistics(crew, from, to)))
+                .map(crew -> RiskCrew.of(crew, attendanceRecords.getAttendanceStatistics(crew, from, to)))
                 .filter(crew -> crew.riskRank() != RiskRank.NOT_MANAGED)
                 .toList();
         return new RiskCrewsResponse(riskCrews);

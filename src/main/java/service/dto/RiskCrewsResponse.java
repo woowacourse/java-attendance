@@ -1,8 +1,11 @@
 package service.dto;
 
+import domain.AttendanceStatus;
+import domain.Crew;
 import domain.RiskRank;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public record RiskCrewsResponse(
@@ -29,5 +32,11 @@ public record RiskCrewsResponse(
             RiskRank riskRank
     ) {
 
+        public static RiskCrew of(Crew crew, Map<AttendanceStatus, Integer> statusCount) {
+            return new RiskCrew(crew.getNickname(),
+                    statusCount.getOrDefault(AttendanceStatus.LATE, 0),
+                    statusCount.getOrDefault(AttendanceStatus.ABSENT, 0),
+                    RiskRank.from(statusCount));
+        }
     }
 }
