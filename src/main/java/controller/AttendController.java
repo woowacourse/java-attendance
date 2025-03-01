@@ -1,0 +1,69 @@
+package controller;
+
+import domain.Attend;
+import domain.AttendReader;
+import domain.AttendStatus;
+import domain.AttendanceBook;
+import domain.Command;
+import domain.Current;
+import java.time.LocalTime;
+import java.util.Map;
+import view.InputView;
+import view.OutputView;
+
+public class AttendController {
+
+    private static final String CSV_PATH = "attendances.csv";
+
+    private final InputView inputView;
+    private final OutputView outputView;
+    private final Map<Command, Runnable> commands;
+    private final AttendanceBook attendanceBook;
+
+    public AttendController(final InputView inputView, final OutputView outputView) {
+        this.inputView = inputView;
+        this.outputView = outputView;
+        this.commands = Map.of(
+                Command.ADD, this::addAttend,
+                Command.EDIT, this::edit,
+                Command.SEARCH, this::searchAttend,
+                Command.FIND_WARNING, this::findWarningCrew,
+                Command.EXIT, this::close
+        );
+        this.attendanceBook = new AttendReader(CSV_PATH).loadAttendanceBook();
+    }
+
+    private void addAttend() {
+    }
+
+    private void edit() {
+    }
+
+    private void searchAttend() {
+    }
+
+    private void findWarningCrew() {
+    }
+
+    private void close() {
+        inputView.close();
+    }
+
+    public void run() {
+        String command;
+        do {
+            command = inputView.inputCommand(Current.TODAY.getDate());
+            runCommand(command);
+        } while (!command.equals("Q"));
+    }
+
+    private void runCommand(final String command) {
+        try {
+            Command targetCommand = Command.findCommand(command);
+            Runnable commandRunner = commands.get(targetCommand);
+            commandRunner.run();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
