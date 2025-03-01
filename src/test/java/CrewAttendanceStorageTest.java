@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -136,5 +137,35 @@ public class CrewAttendanceStorageTest {
                 () -> assertThat(attendance.isTimeRecorded()).isFalse(),
                 () -> assertThat(attendance.getStatus()).isSameAs(AttendanceStatus.ABSENCE)
         );
+    }
+
+    @DisplayName("크루 이름과 날짜를 입력하면 전날까지의 출석 기록 리스트를 반환할 수 있다.")
+    @Test
+    void test8() {
+        // given
+        String crew = "밍곰";
+        AttendanceStorage attendanceStorage = AttendanceStorage.of(List.of(
+                new ExistAttendance(LocalDate.of(2025, 2, 24), LocalTime.of(13, 0)),
+                new ExistAttendance(LocalDate.of(2025, 2, 25), LocalTime.of(10, 0)),
+                new ExistAttendance(LocalDate.of(2025, 2, 27), LocalTime.of(10, 0)),
+                new ExistAttendance(LocalDate.of(2025, 2, 28), LocalTime.of(10, 0))
+        ));
+        CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.of(
+                Map.of(crew, attendanceStorage)
+        );
+        LocalDate startDate = LocalDate.of(2025, 2, 24);
+        LocalDate endDate = LocalDate.of(2025, 3, 1);
+
+        // when
+        List<Attendance> attendance = crewAttendanceStorage.findAttendanceByDateRange(startDate, endDate);
+
+        // then
+        assertThat(attendance).isEqualTo(List.of(
+                new ExistAttendance(LocalDate.of(2025, 2, 24), LocalTime.of(13, 0)),
+                new ExistAttendance(LocalDate.of(2025, 2, 25), LocalTime.of(10, 0)),
+                EmptyAttendance.of(LocalDate.of(2025, 2, 26)),
+                new ExistAttendance(LocalDate.of(2025, 2, 27), LocalTime.of(10, 0)),
+                new ExistAttendance(LocalDate.of(2025, 2, 28), LocalTime.of(10, 0))
+        ));
     }
 }

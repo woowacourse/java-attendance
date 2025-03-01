@@ -3,6 +3,7 @@ import exception.CrewNotExistException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CrewAttendanceStorage {
@@ -48,5 +49,9 @@ public class CrewAttendanceStorage {
             throw new CrewNotExistException();
         }
         return storages.get(crew);
+    }
+
+    public List<Attendance> findAttendanceByDateRange(LocalDate startDate, LocalDate endDate) {
+        return null;
     }
 }
