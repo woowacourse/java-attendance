@@ -1,10 +1,9 @@
 package attendance.domain;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
@@ -35,7 +34,7 @@ public class AttendanceTest {
         before.updateTime(time);
         Attendance updated = Attendance.from(LocalDateTime.of(2024, 12, 13, 10, 6));
 
-        assertThat(before).isEqualTo(updated);
+        assertThat(before.getAttendanceDateTime()).isEqualTo(updated.getAttendanceDateTime());
     }
 
     @Test

@@ -1,10 +1,9 @@
 package attendance.domain;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.jupiter.api.Test;
 
 public class AttendancesTest {
@@ -17,7 +16,7 @@ public class AttendancesTest {
         LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 13, 10, 6);
         final var result = attendances.updateAttendance(updateDateTime);
 
-        assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 13, 10, 6)));
+        assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 6));
     }
 
     @Test
@@ -85,7 +84,7 @@ public class AttendancesTest {
 
         final var result = attendances.calculatePenalty();
 
-        assertThat(result).isEqualTo(AttendancePenalty.Warning);
+        assertThat(result).isEqualTo(AttendancePenalty.CAUTION);
     }
 
     @Test

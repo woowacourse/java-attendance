@@ -3,7 +3,6 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Objects;
 
 public class Attendance {
     private final AttendanceDate attendanceDate;
@@ -39,21 +38,7 @@ public class Attendance {
         return attendanceTime.checkAttendanceStatus(attendanceDate.isMonday());
     }
 
-    public AttendanceDate getAttendanceDate() {
-        return attendanceDate;
-    }
-
-    public AttendanceTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Attendance that = (Attendance) o;
-        return Objects.equals(attendanceDate, that.attendanceDate) && Objects.equals(attendanceTime,
-                that.attendanceTime);
+    public LocalDateTime getAttendanceDateTime() {
+        return LocalDateTime.of(this.attendanceDate.date(), this.attendanceTime.time());
     }
 }

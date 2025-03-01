@@ -1,14 +1,13 @@
 package attendance.domain;
 
 import static attendance.domain.AttendancesTest.generateAttendances;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceBookTest {
@@ -48,7 +47,7 @@ public class AttendanceBookTest {
 
         final var result = attendanceBook.updateAttendance("훌라", LocalDateTime.of(2024, 12, 13, 10, 6));
 
-        assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 13, 10, 6)));
+        assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 6));
     }
 
     @Test
@@ -76,7 +75,7 @@ public class AttendanceBookTest {
 
         final var result = attendanceBook.findByNicknameAndDate("훌라", LocalDateTime.of(2024, 12, 13, 10, 6));
 
-        assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59)));
+        assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 9, 59));
     }
 
     @Test
@@ -86,7 +85,7 @@ public class AttendanceBookTest {
 
         final var result = attendanceBook.findByNicknameAndDate("훌라", LocalDateTime.of(2024, 12, 12, 10, 4));
 
-        assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 12, 9, 31)));
+        assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 12, 9, 31));
     }
 
     @Test
@@ -103,7 +102,7 @@ public class AttendanceBookTest {
                         "모루", generateAttendances(attendances)
                 )
         );
-        
+
         final var result = attendanceBook.findPenaltyCrews();
 
         assertThat(result.keySet()).hasSize(2);
