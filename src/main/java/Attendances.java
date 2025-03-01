@@ -2,6 +2,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -93,6 +94,20 @@ public class Attendances {
                 .filter(attendance -> attendance.isSame(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루 입니다."));
+    }
+
+    public Map<Crew, Map<AttendanceState, Integer>> calculateAbsence(final LocalDate dateTime) {
+        Map<Crew, Map<AttendanceState, Integer>> absenceCounts = new HashMap<>();
+
+        for (Attendance attendance : attendances) {
+            Crew crew = attendance.getCrew();
+
+            Map<LocalDateTime, AttendanceState> attendanceHistory = getHistory(crew.getName(), dateTime);
+            Map<AttendanceState, Integer> absenceHistory = calculate(attendanceHistory);
+
+            absenceCounts.put(crew, absenceHistory);
+        }
+        return absenceCounts;
     }
 
     public List<Attendance> getAttendances() {

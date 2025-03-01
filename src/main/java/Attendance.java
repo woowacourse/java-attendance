@@ -49,5 +49,9 @@ public class Attendance {
     public List<LocalDateTime> getAttendanceTime() {
         return new ArrayList<>(attendanceTime);
     }
+
+    public Crew getCrew() {
+        return crew;
+    }
 }
 

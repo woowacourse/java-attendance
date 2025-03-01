@@ -187,6 +187,38 @@ class AttendancesTest {
                 );
     }
 
+    @DisplayName("전날까지의 크루 출석 기록을 바탕으로 제적 위험자를 계산한다.")
+    @Test
+    void calculateAbsence() {
+        //given
+        Attendance attendances1 = createAttendance("도기");
+        Attendance attendances2 = createAttendance("포비");
+
+        Attendances attendances = new Attendances();
+        attendances.add(attendances1);
+        attendances.add(attendances2);
+
+        LocalDate dateTime = LocalDate.of(2024, 12, 10);
+        Crew crew = attendances1.getCrew();
+        Crew crew1 = attendances2.getCrew();
+
+        //when
+        Map<Crew, Map<AttendanceState, Integer>> actual = attendances.calculateAbsence(dateTime);
+
+        //then
+        assertThat(actual)
+                .extractingByKeys(crew, crew1)
+                .flatExtracting(Map::entrySet)
+                .containsExactly(
+                        entry(AttendanceState.ATTENDANCE, 1),
+                        entry(AttendanceState.LATE, 0),
+                        entry(AttendanceState.ABSENCE, 5),
+                        entry(AttendanceState.ATTENDANCE, 1),
+                        entry(AttendanceState.LATE, 0),
+                        entry(AttendanceState.ABSENCE, 5)
+                );
+    }
+
     private Attendance createAttendance(final String name) {
         Crew crew = Crew.of(name);
 
