@@ -1,8 +1,6 @@
 package model;
 
-import static constant.ErrorMessage.OUT_OF_OPERATION_HOURS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -80,15 +78,28 @@ class AttendanceTimeTest {
     }
 
     @Test
-    @DisplayName("운영 시간이 아니면 예외를 발생시킨다.")
+    @DisplayName("운영 시간이면 true를 반환한다.")
     void test5() {
+        // given
+        LocalDate localDate = LocalDate.of(2025, 2, 28);
+        LocalTime localTime = LocalTime.of(10, 0);
+
+        // when
+        boolean result = AttendanceTime.isInOperationTime(localDate, localTime);
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("운영 시간이 아니면 false를 반환한다.")
+    void test6() {
         // given
         LocalDate localDate = LocalDate.of(2025, 2, 28);
         LocalTime localTime = LocalTime.of(7, 0);
 
-        // when & then
-        assertThatThrownBy(() -> AttendanceTime.validateInOperationTime(localDate, localTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(OUT_OF_OPERATION_HOURS.getMessage());
+        // when
+        boolean result = AttendanceTime.isInOperationTime(localDate, localTime);
+
+        assertThat(result).isFalse();
     }
 }
