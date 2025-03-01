@@ -37,4 +37,21 @@ public class AttendanceBookTest {
                 .isEqualTo(expectedResult);
 
     }
+
+    //닉네임, 등교시간, 전달받음, 반환해야할 것은 출석 상태
+    @Test
+    public void 출석_확인() {
+        //given
+        String crewName = "우가";
+        Crew crew = new Crew(crewName);
+
+        Crews crews = new Crews(Set.of(crew));
+
+        LocalDateTime currentTime = LocalDateTime.of(2025, 2, 27, 9, 59);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentTime);
+
+        LocalDateTime inputTime = LocalDateTime.of(2025, 2, 28, 9, 59);
+        Assertions.assertThat(attendanceBook.registerAttendance(crew, inputTime))
+                .isEqualTo(AttendanceStatus.ATTENDANCE);
+    }
 }
