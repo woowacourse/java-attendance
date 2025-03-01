@@ -3,13 +3,16 @@ package attendance.controller;
 import attendance.Initializer;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceStatus;
 import attendance.domain.Crew;
 import attendance.domain.Nickname;
+import attendance.domain.StatusStatistics;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.EnumMap;
 import java.util.List;
 
 public class AttendanceController {
@@ -82,5 +85,9 @@ public class AttendanceController {
 
         List<Attendance> attendances = attendanceBook.getRecordOfCrew(systemDate, crew);
         OutputView.printAttendanceRecordsUntilYesterday(inputNickname, systemDate, attendances);
+
+        StatusStatistics statusStatistics = new StatusStatistics(new EnumMap<>(AttendanceStatus.class));
+        statusStatistics.calculate(attendances, systemDate);
+        OutputView.printStatusStatistics(statusStatistics);
     }
 }

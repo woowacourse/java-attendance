@@ -39,4 +39,8 @@ public enum Penalty {
 
         return NONE;
     }
+
+    public String getName() {
+        return name;
+    }
 }

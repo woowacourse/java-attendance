@@ -2,6 +2,9 @@ package attendance.view;
 
 import attendance.constant.Holiday;
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.Penalty;
+import attendance.domain.StatusStatistics;
 import attendance.util.DateUtil;
 
 import java.time.LocalDate;
@@ -70,5 +73,18 @@ public class OutputView {
                 currentDate.getMonthValue(),
                 currentDate.getDayOfMonth(),
                 currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
+    }
+
+    public static void printStatusStatistics(StatusStatistics statusStatistics) {
+        for(AttendanceStatus status : AttendanceStatus.values()) {
+            System.out.printf("%s: %d회%n", status.getName(), statusStatistics.getAttendanceStatusCount(status));
+        }
+
+        int lateCount = statusStatistics.getAttendanceStatusCount(AttendanceStatus.LATE);
+        int absentCount = statusStatistics.getAttendanceStatusCount(AttendanceStatus.ABSENT);
+        Penalty penalty = Penalty.determine(lateCount, absentCount);
+        if (penalty != Penalty.NONE) {
+            System.out.printf("%n%s 대상자입니다.%n", penalty.getName());
+        }
     }
 }
