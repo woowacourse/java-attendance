@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import attendance.exception.ExceptionMessage;
 import attendance.util.AttendanceParser;
 
 public class Crews {
@@ -26,7 +27,7 @@ public class Crews {
         return crews.stream()
             .filter(crew -> crew.getName().equals(name))
             .findAny()
-            .orElseThrow(() -> new IllegalArgumentException(String.format("{%s}는 존재하지 않는 크루입니다.", name)));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NOT_FOUND_CREW.getMessage(name)));
     }
 
     public List<Crew> getRiskCrews(LocalDate date) {

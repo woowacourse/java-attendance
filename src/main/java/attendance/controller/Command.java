@@ -3,6 +3,7 @@ package attendance.controller;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
+import attendance.exception.ExceptionMessage;
 import attendance.util.RetryHandler;
 
 public enum Command {
@@ -25,7 +26,7 @@ public enum Command {
         return Arrays.stream(values())
             .filter(command -> command.input.equalsIgnoreCase(input))
             .findAny()
-            .orElseThrow(() -> new IllegalArgumentException(String.format("{%s}는 잘못된 메뉴 번호입니다.", input)));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.INVALID_COMMAND.getMessage(input)));
     }
 
     public void run(AttendanceController controller) {

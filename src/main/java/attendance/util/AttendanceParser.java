@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import attendance.domain.Crew;
+import attendance.exception.ExceptionMessage;
 
 public class AttendanceParser {
 
@@ -28,7 +29,7 @@ public class AttendanceParser {
         try (final Stream<String> lines = Files.lines(Path.of("src/main/resources/attendances.csv"))) {
             return parseLines(lines.skip(HEADER_HEIGHT));
         } catch (final IOException e) {
-            throw new IllegalStateException("파일을 읽는 과정에서 문제가 발생했습니다.");
+            throw new IllegalStateException(ExceptionMessage.FILE_READ_ERROR.getMessage());
         }
     }
 

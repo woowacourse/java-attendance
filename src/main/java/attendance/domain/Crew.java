@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import attendance.util.DateTimeUtil;
+import attendance.exception.ExceptionMessage;
 
 public class Crew {
 
@@ -32,20 +32,17 @@ public class Crew {
 
     private void validateAttendanceDate(LocalDate date) {
         if (attendanceRecords.containsKey(date)) {
-            throw new IllegalArgumentException("이미 출석한 경우 다시 출석할 수 없습니다. 출석 수정 기능을 이용해 주세요.");
+            throw new IllegalArgumentException(ExceptionMessage.ALREADY_ATTENDANCE.getMessage(date));
         }
         if (DayOff.isDayOff(date)) {
-            throw new IllegalArgumentException("주말 및 공휴일에는 등교가 불가능합니다.");
+            throw new IllegalArgumentException(ExceptionMessage.ATTENDANCE_ON_DAY_OFF.getMessage());
         }
     }
 
     private void validateCampusTime(LocalTime time) {
-        if (time.isBefore(CAMPUS_OPEN_TIME) ||
-            time.isAfter(CAMPUS_CLOSE_TIME)) {
-            throw new IllegalArgumentException(String.format("캠퍼스 운영시간(%s ~ %s) 내에만 출석할 수 있습니다.",
-                CAMPUS_OPEN_TIME.format(DateTimeUtil.TIME_FORMATTER),
-                CAMPUS_CLOSE_TIME.format(DateTimeUtil.TIME_FORMATTER)
-            ));
+        if (time.isBefore(CAMPUS_OPEN_TIME) || time.isAfter(CAMPUS_CLOSE_TIME)) {
+            throw new IllegalArgumentException(ExceptionMessage.NOT_CAMPUS_OPEN_TIME.getMessage(
+                CAMPUS_OPEN_TIME, CAMPUS_CLOSE_TIME));
         }
     }
 
@@ -57,8 +54,7 @@ public class Crew {
 
     private void validateModifyAttendanceDate(LocalDate date) {
         if (!attendanceRecords.containsKey(date)) {
-            throw new IllegalArgumentException(String.format("%s에는 출석 기록이 존재하지 않습니다.",
-                date.format(DateTimeUtil.DATE_FORMATTER)));
+            throw new IllegalArgumentException(ExceptionMessage.NOT_FOUND_ATTENDANCE_DATA.getMessage(date));
         }
     }
 

@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
+import attendance.exception.ExceptionMessage;
+
 public class DateTimeUtil {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER =
@@ -25,7 +27,7 @@ public class DateTimeUtil {
         try {
             return LocalTime.parse(time, DateTimeUtil.TIME_FORMATTER);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(String.format("{%s}는 잘못된 시간입니다.", time));
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_TIME.getMessage(time));
         }
     }
 
@@ -33,7 +35,7 @@ public class DateTimeUtil {
         try {
             return date.withDayOfMonth(day);
         } catch (DateTimeException e) {
-            throw new IllegalArgumentException(String.format("{%d}는 잘못된 날짜입니다.", day));
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_DATE.getMessage(day));
         }
     }
 }

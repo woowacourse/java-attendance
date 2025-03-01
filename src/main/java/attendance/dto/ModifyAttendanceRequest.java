@@ -3,6 +3,7 @@ package attendance.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import attendance.exception.ExceptionMessage;
 import attendance.util.DateTimeUtil;
 
 public record ModifyAttendanceRequest(
@@ -23,7 +24,7 @@ public record ModifyAttendanceRequest(
         try {
             return Integer.parseInt(day);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(String.format("{%s}는 잘못된 날짜입니다.", day));
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_DATE.getMessage(day));
         }
     }
 }

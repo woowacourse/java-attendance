@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 
-import attendance.util.DateTimeUtil;
+import attendance.exception.ExceptionMessage;
 
 public enum LectureTime {
     MONDAY(DayOfWeek.MONDAY, LocalTime.of(13, 00), LocalTime.of(18, 00)),
@@ -32,8 +32,7 @@ public enum LectureTime {
         return Arrays.stream(values())
             .filter(lectureTime -> lectureTime.dayOfWeek == date.getDayOfWeek())
             .findAny()
-            .orElseThrow(() -> new IllegalStateException(String.format("{%s}는 잘못된 요일입니다.",
-                date.format(DateTimeUtil.DATE_FORMATTER))));
+            .orElseThrow(() -> new IllegalStateException(ExceptionMessage.INVALID_LECTURE_STATE.getMessage(date)));
     }
 
     public int getLateTimeOf(LocalTime time) {
