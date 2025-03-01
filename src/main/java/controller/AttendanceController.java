@@ -54,13 +54,13 @@ public class AttendanceController {
                 findWarningCrews();
             }
         }catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
+            OutputView.printErrorMessage(e.getMessage());
         }
     }
 
     private void validateAttendDate(){
         if(!isAttendanceDay(TODAY_DATE_NOW)){
-            throw new IllegalArgumentException("[ERROR] " + TODAY_DATE_NOW.format(localDayFormatter)
+            throw new IllegalArgumentException(TODAY_DATE_NOW.format(localDayFormatter)
                     + TODAY_DATE_NOW.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + "은 등교일이 아닙니다.");
         }
     }
@@ -82,7 +82,7 @@ public class AttendanceController {
 
     private void validateAttendTime(LocalDateTime attendTime){
         if(!isOnCampusOperatingTime(LocalTime.from(attendTime))){
-            throw new IllegalArgumentException("[ERROR] " + attendTime.getHour() + "시 " + attendTime.getMinute() + "분은 캠퍼스 운영시간이 아닙니다.");
+            throw new IllegalArgumentException(attendTime.getHour() + "시 " + attendTime.getMinute() + "분은 캠퍼스 운영시간이 아닙니다.");
         }
     }
 
@@ -97,14 +97,13 @@ public class AttendanceController {
         String findCrewName = InputView.getEditCrewName();
         Crew findCrew = crews.findByName(findCrewName);
         Attendance crewRecord = findCrew.getAttendanceRecord();
-
         LocalDateTime editTime = InputView.getEditTime();
+        AttendanceDate findDate = crewRecord.findByLocalDate(LocalDate.from(editTime));
 
-        AttendanceDate oldRecord = crewRecord.findByLocalDate(LocalDate.from(editTime));
+        AttendanceDate oldRecord = new AttendanceDate(findDate.getAttendanceAt());
         crewRecord.editAttendance(editTime);
-        AttendanceDate newRecord = crewRecord.findByLocalDate(LocalDate.from(editTime));
 
-        OutputView.printEditResult(oldRecord,newRecord);
+        OutputView.printEditResult(oldRecord, findDate);
     }
 
     private void findWarningCrews(){
@@ -116,7 +115,7 @@ public class AttendanceController {
         try {
             crews = FileInputView.loadInitFileData();
         }catch (IOException e){
-            System.out.println(e.getMessage());
+            throw new IllegalArgumentException("IOException 발생");
         }
     }
 }
