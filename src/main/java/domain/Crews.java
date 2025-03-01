@@ -1,6 +1,5 @@
 package domain;
 
-import java.util.Optional;
 import java.util.Set;
 
 public class Crews {
@@ -11,9 +10,9 @@ public class Crews {
         this.crews = crews;
     }
 
-    public Optional<Crew> findByNickname(String nickname) {
+    public Crew findByNickname(String nickname) {
         return crews.stream()
                 .filter(crew -> crew.isSameNickname(nickname))
-                .findFirst();
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("해당 닉네임의 크루가 존재하지 않습니다."));
     }
 }

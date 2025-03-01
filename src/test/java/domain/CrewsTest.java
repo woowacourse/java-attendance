@@ -14,7 +14,7 @@ class CrewsTest {
         Crew crew = new Crew("쿠키");
         Crews crews = new Crews(Set.of(crew));
         //when
-        Crew actual = crews.findByNickname("쿠키").get();
+        Crew actual = crews.findByNickname("쿠키");
         //then
         assertThat(actual).isEqualTo(crew);
     }
