@@ -17,7 +17,7 @@ class AttendancesTest {
         LocalDateTime weekend = LocalDateTime.of(2024, 12, 14, 10, 0);
         var attendances = new Attendances(systemDateTime);
 
-        Assertions.assertThatThrownBy(() -> attendances.add(weekend))
+        Assertions.assertThatThrownBy(() -> attendances.addAttendance(weekend))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("12월 14일 토요일은 등교일이 아닙니다.");
     }
@@ -28,7 +28,7 @@ class AttendancesTest {
         LocalDateTime holiday = LocalDateTime.of(2024, 12, 25, 10, 0);
         var attendances = new Attendances(systemDateTime);
 
-        Assertions.assertThatThrownBy(() -> attendances.add(holiday))
+        Assertions.assertThatThrownBy(() -> attendances.addAttendance(holiday))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("12월 25일 수요일은 등교일이 아닙니다.");
     }
@@ -38,9 +38,9 @@ class AttendancesTest {
     void error_duplicateAttendance() {
         LocalDateTime duplicate = LocalDateTime.of(2024, 12, 13, 10, 0);
         var attendances = new Attendances(systemDateTime);
-        attendances.add(duplicate);
+        attendances.addAttendance(duplicate);
 
-        Assertions.assertThatThrownBy(() -> attendances.add(duplicate))
+        Assertions.assertThatThrownBy(() -> attendances.addAttendance(duplicate))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("이미 출석하였습니다. 수정 기능을 이용해주세요.");
     }

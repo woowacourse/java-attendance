@@ -19,20 +19,20 @@ public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemD
         var nickname = new Nickname(name);
         Optional<Attendances> attendances = Optional.ofNullable(attendancesBook.get(nickname));
         attendances.ifPresentOrElse(
-            eixstAttendances -> eixstAttendances.add(dateTime),
+            eixstAttendances -> eixstAttendances.addAttendance(dateTime),
             () -> putNewAttendances(dateTime, nickname)
         );
     }
 
     private void putNewAttendances(LocalDateTime dateTime, Nickname nickname) {
         var newAttendances = new Attendances(systemDateTime);
-        newAttendances.add(dateTime);
+        newAttendances.addAttendance(dateTime);
         attendancesBook.put(nickname, newAttendances);
     }
 
     public void attendance(Nickname nickname, LocalDateTime dateTime) {
         var attendances = getAttendances(nickname);
-        attendances.add(dateTime);
+        attendances.addAttendance(dateTime);
     }
 
     public Attendance getAttendance(Nickname nickname, LocalDate date) {
@@ -47,6 +47,6 @@ public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemD
 
     public void modify(Nickname nickname, LocalDateTime dateTime) {
         var attendances = getAttendances(nickname);
-        attendances.put(dateTime);
+        attendances.modifyAttendance(dateTime);
     }
 }

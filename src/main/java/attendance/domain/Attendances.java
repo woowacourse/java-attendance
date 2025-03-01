@@ -18,7 +18,7 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
         this(new HashMap<>(), systemDateTime);
     }
 
-    public void add(LocalDateTime dateTime) {
+    public void addAttendance(LocalDateTime dateTime) {
         LocalDate date = dateTime.toLocalDate();
         isDuplicateAttendance(date);
         isValidateSchedule(date);
@@ -50,7 +50,7 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
         return Optional.ofNullable(attendances.get(date));
     }
 
-    public void put(LocalDateTime dateTime) {
+    public void modifyAttendance(LocalDateTime dateTime) {
         LocalDate date = dateTime.toLocalDate();
         isValidateSchedule(date);
         attendances.put(date, new Attendance(dateTime));
