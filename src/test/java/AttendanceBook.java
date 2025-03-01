@@ -33,7 +33,16 @@ public class AttendanceBook {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
+    private boolean isSameDateAttendance(String nickname, LocalDate updateDate) {
+        return crewsAttendanceRecords.stream()
+                .anyMatch(crew -> crew.isSameDate(nickname, updateDate));
+    }
+
     public Attendance update(String updateNickname, LocalDate updateDate, LocalTime updateTime) {
+        if (!isSameDateAttendance(updateNickname, updateDate)) {
+            throw new IllegalArgumentException();
+        }
+
         Attendance attendance = new Attendance(updateNickname, updateDate, updateTime);
         crewsAttendanceRecords.add(attendance);
 
