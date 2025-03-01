@@ -18,6 +18,6 @@ public class Crew {
     }
 
     public void putAttendance(final LocalDateTime localDateTime) {
-
+        attendanceMap.put(localDateTime.toLocalDate(), Attendance.of(localDateTime));
     }
 }
