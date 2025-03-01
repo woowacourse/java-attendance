@@ -26,9 +26,8 @@ class AttendancesTest {
 
         LocalDate date = LocalDate.of(2024, 12, 5);
         LocalTime time = LocalTime.of(10, 5);
-        Attendance attendance = new Attendance(date, time);
 
-        attendances.addAttendance(date, attendance);
+        attendances.addAttendance(date, time);
 
         Attendance savedAttendance = attendances.getAttendances().get(date);
         assertThat(savedAttendance.time()).isEqualTo(time);
@@ -39,8 +38,7 @@ class AttendancesTest {
         Attendances attendances = new Attendances();
         LocalDate date = LocalDate.of(2024, 12, 5);
         LocalTime time = LocalTime.of(10, 5);
-        Attendance attendance = new Attendance(date, time);
-        attendances.addAttendance(date, attendance);
+        attendances.addAttendance(date, time);
 
         assertThat(attendances.isAttendedDate(date)).isTrue();
     }
@@ -52,7 +50,7 @@ class AttendancesTest {
         LocalDate date = LocalDate.of(2024, 12, 5);
         LocalTime time = LocalTime.of(10, 5);
         Attendance attendance = new Attendance(date, time);
-        attendances.addAttendance(date, attendance);
+        attendances.addAttendance(date, time);
 
         assertThat(attendances.getCurrentAttendance(date)).isEqualTo(attendance);
     }

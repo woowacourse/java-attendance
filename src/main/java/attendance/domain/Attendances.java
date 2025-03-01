@@ -2,6 +2,7 @@ package attendance.domain;
 
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,8 +13,8 @@ public class Attendances {
         this.attendances = new HashMap<>();
     }
 
-    public void addAttendance(LocalDate date, Attendance attendance) {
-        attendances.put(date, attendance);
+    public void addAttendance(LocalDate date, LocalTime time) {
+        attendances.put(date, new Attendance(date, time));
     }
 
     public boolean isAttendedDate(LocalDate attendDate) {
