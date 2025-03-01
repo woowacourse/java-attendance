@@ -16,6 +16,14 @@ public class AttendanceBook {
         return new AttendanceBook(book);
     }
 
+    public void addCrew(Crew crew) {
+        book.put(crew, AttendanceInfos.initInfos());
+    }
+
+    public void addInfo(Crew crew, AttendanceInfo info) {
+        book.get(crew).addInfo(info);
+    }
+
     public Map<Crew, AttendanceInfos> getBook() {
         return new HashMap<>(book);
     }
