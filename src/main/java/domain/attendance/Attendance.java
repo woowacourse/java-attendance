@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import static domain.attendance.StudentStatus.*;
 import static domain.attendance.TimeTable.*;
 
 public class Attendance {
@@ -92,7 +93,11 @@ public class Attendance {
                 .count());
     }
 
-    public int getAbsenceIncludingTardyCount() {
+    public StudentStatus getStudentStatus(){
+        return calcStudentStatus(getAbsenceIncludingTardyCount());
+    }
+
+    private int getAbsenceIncludingTardyCount() {
         return getAbsenceCount() + getTardyCount() / 3;
     }
 

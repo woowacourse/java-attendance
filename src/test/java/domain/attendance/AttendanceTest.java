@@ -1,6 +1,5 @@
 package domain.attendance;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -209,8 +208,7 @@ class AttendanceTest {
             assertAll(
                     () -> assertThat(attendance.getAttendanceCount()).isEqualTo(5),
                     () -> assertThat(attendance.getTardyCount()).isEqualTo(2),
-                    () -> assertThat(attendance.getAbsenceCount()).isEqualTo(12),
-                    () -> assertThat(attendance.getAbsenceIncludingTardyCount()).isEqualTo(12)
+                    () -> assertThat(attendance.getAbsenceCount()).isEqualTo(12)
             );
         }
 
