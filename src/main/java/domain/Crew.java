@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Map;
 
 public class Crew {
@@ -21,5 +22,9 @@ public class Crew {
 
     public void putAttendance(final LocalDateTime localDateTime) {
         attendanceMap.put(localDateTime.toLocalDate(), Attendance.of(localDateTime));
+    }
+
+    public Map<LocalDate, Attendance> getAttendanceMap() {
+        return Collections.unmodifiableMap(attendanceMap);
     }
 }
