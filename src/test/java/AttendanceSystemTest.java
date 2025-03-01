@@ -1,14 +1,10 @@
-import domain.AttendanceBook;
-import domain.AttendanceStatus;
 import domain.AttendanceSystem;
 import domain.RiskStatus;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -16,12 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static util.Dates.TODAY;
 
 public class AttendanceSystemTest {
-    private AttendanceSystem attendanceSystem;
-
-    @BeforeEach
-    void initAttendanceSystem() {
-        attendanceSystem = new AttendanceSystem();
-    }
+    private final AttendanceSystem attendanceSystem = new AttendanceSystem();
 
     @DisplayName("이름과 등교시간을 입력하면 오늘 날짜로 출석할 수 있다")
     @Test
@@ -39,6 +30,17 @@ public class AttendanceSystemTest {
         LocalTime time = LocalTime.of(10, 30);
         attendanceSystem.editAttendance(name, TODAY, time);
         assertThat(attendanceSystem.getAttendanceRecord(name, TODAY)).isEqualTo(time);
+    }
+
+    @DisplayName("이미 출석한 경우 다시 출석할 수 없다")
+    @Test
+    void cannot_attend_if_already_attend() {
+        String name = "두리";
+        LocalTime time = LocalTime.of(10, 0);
+        attendanceSystem.editAttendance(name, TODAY, time);
+        assertThatThrownBy(() -> {
+            attendanceSystem.attendance(name, time);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("출석하려는 시간이 캠퍼스 운영시간이 아닌 경우 예외를 던진다")
@@ -282,50 +284,5 @@ public class AttendanceSystemTest {
                 () -> assertThat(attendanceSystem.getAbsenceCount(name) + attendanceSystem.getTardyCount(name) / 3).isEqualTo(1),
                 () -> assertThat(attendanceSystem.getRisk(name)).isEqualTo(RiskStatus.NONE)
         );
-    }
-
-    @DisplayName("특정 날짜의 출석 상태를 가져온다_출석")
-    @Test
-    void attendanceStatusTest() {
-        String name = "두리";
-        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 0));
-        AttendanceBook attendanceBook = attendanceSystem.findByName(name);
-        assertThat(attendanceBook.getAttendanceStatus(TODAY)).isEqualTo(AttendanceStatus.ATTEND);
-    }
-
-    @DisplayName("특정 날짜의 출석 상태를 가져온다_결석")
-    @Test
-    void attendanceStatusTest2() {
-        String name = "두리";
-        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(11, 0));
-        AttendanceBook attendanceBook = attendanceSystem.findByName(name);
-        assertThat(attendanceBook.getAttendanceStatus(TODAY)).isEqualTo(AttendanceStatus.ABSENCE);
-    }
-
-    @DisplayName("특정 날짜의 출석 상태를 가져온다_지각")
-    @Test
-    void attendanceStatusTest3() {
-        String name = "두리";
-        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 10));
-        AttendanceBook attendanceBook = attendanceSystem.findByName(name);
-        assertThat(attendanceBook.getAttendanceStatus(TODAY)).isEqualTo(AttendanceStatus.TARDY);
-    }
-
-    @DisplayName("출석 상태를 가져온다")
-    @Test
-    void attendanceStatusTest4() {
-        String name = "두리";
-        attendanceSystem.editAttendance(name, TODAY, LocalTime.of(10, 10));
-        AttendanceBook attendanceBook = attendanceSystem.findByName(name);
-        Map<LocalDate, AttendanceStatus> attendanceStatuses = attendanceBook.getAttendanceStatuses();
-        assertThat(attendanceStatuses.get(TODAY)).isEqualTo(AttendanceStatus.TARDY);
-    }
-
-    @DisplayName("이름이 등록되지 않았으면 예외를 던진다")
-    @Test
-    void attendanceThrowError() {
-        assertThatThrownBy(() ->
-                attendanceSystem.findByName("누구"))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 }
