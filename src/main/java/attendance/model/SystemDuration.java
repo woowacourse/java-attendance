@@ -7,6 +7,6 @@ public class SystemDuration {
     public static final LocalDate endDate = LocalDate.of(2024, 12, 31);
 
     public static boolean isSystemDuration(LocalDate now) {
-        return true;
+        return !(now.isBefore(startDate) || now.isAfter(endDate));
     }
 }
