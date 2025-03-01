@@ -40,20 +40,17 @@ public class AttendanceManagerTest {
     }
 
     @Test
-    void 크루원의_이름에_해당하면_true를_반환한다() {
-        String crewName = "빙티";
-        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
-        boolean result = attendanceRecord.isNameMatched(crewName);
+    void 크루원의_이름에_해당하는_데이터가_있으면_예외가_발생하지_않는다() {
+        String[] crewNames = {"빙티", "빙봉", "이든", "쿠키"};
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewNames);
 
         attendanceManager.validateExistCrew("빙티");
     }
 
     @Test
-    void 크루원의_이름예_해당하지_않으면_false를_반환한다() {
-        String crewName = "빙티";
-        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
-        String findName = "루키";
-        boolean result = attendanceRecord.isNameMatched(findName);
+    void 크루원의_이름에_해당하는_데이터가_없으면_예외가_발생한다() {
+        String[] crewNames = {"빙티", "빙봉", "이든"};
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewNames);
 
         String errorName = "루키";
 
@@ -65,7 +62,7 @@ public class AttendanceManagerTest {
     @Test
     void 출석_저장_시_출석_시각을_반환한다() {
         String crewName = "빙티";
-        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
         LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(10, 0);
 
@@ -79,7 +76,7 @@ public class AttendanceManagerTest {
     @Test
     void 출석_기록이_있는_경우_예외가_발생한다() {
         String crewName = "빙티";
-        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
         LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(10, 0);
         attendanceManager.attend(crewName, attendDate, attendTime);
@@ -104,7 +101,7 @@ public class AttendanceManagerTest {
     @MethodSource("provideClosedCampusTimes")
     void 캠퍼스_운영시간이_아니면_예외가_발생한다() {
         String crewName = "빙티";
-        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
         LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(23, 59);
 
@@ -116,7 +113,7 @@ public class AttendanceManagerTest {
     @Test
     void 캠퍼스_등교일이_아니면_예외가_발생한다() {
         String crewName = "빙티";
-        AttendanceRecord attendanceRecord = new AttendanceRecord(crewName);
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
         LocalDate attendDate = LocalDateTestFixture.createWeekendDate();
         LocalTime attendTime = LocalTime.of(10, 0);
 
@@ -127,6 +124,8 @@ public class AttendanceManagerTest {
 
     @Test
     void 등교_날짜와_시간으로_출석_기록을_수정한다() {
+        String crewName = "빙티";
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
         LocalDate date = LocalDateTestFixture.createRegularDate();
         LocalTime time = LocalTime.of(9, 0);
 
@@ -136,6 +135,9 @@ public class AttendanceManagerTest {
 
     @Test
     void 출석_수정에_성공하면_기존_출석_기록을_반환한다() {
+        String crewName = "빙티";
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
+
         LocalDate date = LocalDateTestFixture.createRegularDate();
         LocalTime time = LocalTime.of(9, 0);
 
@@ -152,8 +154,11 @@ public class AttendanceManagerTest {
     void 제적_위험_레벨을_반환한다() {
         int endDate = 28;
         String crewName = "빙티";
-        AttendanceRecord attendanceRecord = AttendanceRecordTestFixture.createAttendanceRecord(crewName, 3, 5, endDate);
-        WarningLevel warningLevel = attendanceRecord.calculateWarningLevel(endDate);
+        Map<String, Attendances> crewAttendances = new HashMap<>();
+        crewAttendances.put(crewName, AttendancesTestFixture.createAttendances(3, 5, endDate));
+        AttendanceManager attendanceManager = new AttendanceManager(crewAttendances);
+
+        WarningLevel warningLevel = attendanceManager.calculateCrewWarningLevel(crewName, endDate);
 
         assertThat(warningLevel).isEqualTo(WarningLevel.REMOVE);
     }
