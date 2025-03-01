@@ -1,15 +1,17 @@
 package controller;
 
+import static domain.ERROR_MESSAGE.NO_ATTENDANCES_FILE;
 import static java.lang.Integer.parseInt;
 import static view.OutputView.getFormattedDayInfo;
 import static view.OutputView.printCheckedAttendance;
-import static view.OutputView.printMenu;
 import static view.OutputView.printModifyResult;
 import static view.UserInputView.*;
 
+import constant.MenuOption;
 import domain.AllCrew;
 import domain.Crew;
 import view.OutputView;
+import view.UserInputView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,29 +26,33 @@ public class AttendanceSystem {
     private final AllCrew allCrew;
 
     public AttendanceSystem() throws FileNotFoundException {
-        today = LocalDate.now();
-        allCrew = new AllCrew(new File("src/main/resources/attendances.csv"));
-        allCrew.fillAllCrewsEmptyDateWithAbsent(today);
+        try {
+            today = LocalDate.now();
+            Scanner scanner = new Scanner(new File("src/main/resources/attendances.csv"));
+            allCrew = new AllCrew(scanner);
+            allCrew.fillAllCrewsEmptyDateWithAbsent(today);
+        } catch (FileNotFoundException e){
+            throw new FileNotFoundException(NO_ATTENDANCES_FILE.getMessage());
+        }
     }
 
-    public void run() throws FileNotFoundException {
+    public void run() {
         while (true) {
             System.out.println("오늘은 " + getFormattedDayInfo(today) + "입니다. 기능을 선택해 주세요.");
-            printMenu();
-            String option = new Scanner(System.in).nextLine();
-            if (option.equals("1")) {
+            MenuOption option = UserInputView.askMenuOption();
+            if (option == MenuOption.CHECK_ATTENDANCE) {
                 checkAttendance();
             }
-            if (option.equals("2")) {
+            if (option == MenuOption.MODIFY_ATTENDANCE) {
                 modifyAttendance();
             }
-            if (option.equals("3")) {
+            if (option == MenuOption.CHECK_CREW_ATTENDANCE_HISTORY) {
                 checkCrewAttendanceHistory();
             }
-            if (option.equals("4")) {
+            if (option == MenuOption.CHECK_PENALTY_RECEIVED_CREW) {
                 checkPenaltyReceivedCrew();
             }
-            if (option.equals("q")||option.equals("Q")) {
+            if (option == MenuOption.QUIT) {
                 return;
             }
         }
@@ -63,8 +69,7 @@ public class AttendanceSystem {
     }
 
     private void modifyAttendance() {
-        String crewName = askCrewName();
-        Crew crew = allCrew.findCrewByName(crewName);
+        Crew crew = allCrew.findCrewByName(askCrewName());
         int date = parseInt(askAttendedDate());
         List<String> hourAndMinute = List.of(askTimeForModify().split(":"));
         LocalTime timeTo = LocalTime.of(parseInt(hourAndMinute.getFirst()), parseInt(hourAndMinute.getLast()));

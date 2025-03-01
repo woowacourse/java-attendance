@@ -2,9 +2,11 @@ package domain;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,23 +19,24 @@ public class AllCrew {
         allCrew = new ArrayList<Crew>();
     }
 
-
-    // 리팩토링, 뷰 분리
-    public AllCrew(File file) throws FileNotFoundException {
+    public AllCrew(Scanner fileScanner) {
         allCrew = new ArrayList<>();
-        Scanner fileScanner = new Scanner(file);
         while (fileScanner.hasNextLine()) {
             String line = fileScanner.nextLine();
             List<String> crewNameAndAttendanceTime = List.of(line.split("-"));
-
             String rawDateTime = crewNameAndAttendanceTime.get(1);
-            // 예외 처리
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MM dd HH mm");
+            loadFileAllCrewData(rawDateTime, formatter, crewNameAndAttendanceTime);
+        }
+    }
 
+    private void loadFileAllCrewData(String rawDateTime, DateTimeFormatter formatter, List<String> crewNameAndAttendanceTime) {
+        try {
             LocalDateTime dateTime = LocalDateTime.parse(rawDateTime, formatter);
             Attendance attendance = new Attendance(dateTime);
-
             addCrewInfoWithNameAndAttendance(crewNameAndAttendanceTime.getFirst(), attendance);
+        } catch (DateTimeParseException e) {
+            throw new DateTimeException(ERROR_MESSAGE.INVALID_FILE_TIME_FORMAT.getMessage());
         }
     }
 
@@ -72,7 +75,7 @@ public class AllCrew {
     public List<Crew> getPenaltyReceivedCrew() {
         List<Crew> penaltyReceivedCrew = new ArrayList<>();
         for (Crew crew : allCrew) {
-            if(crew.getPenalty()!=Penalty.NONE)
+            if (crew.getPenalty() != Penalty.NONE)
                 penaltyReceivedCrew.add(crew);
         }
         return penaltyReceivedCrew;
