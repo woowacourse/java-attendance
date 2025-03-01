@@ -10,7 +10,7 @@ public class CheckAllExpulsionCrewView {
         System.out.println("제적 위험자 조회 결과");
     }
 
-    public void printCrewExpulsions(List<CheckExpulsionResultDto> expulsionResults) {
+    public void printCrewExpulsions(final List<CheckExpulsionResultDto> expulsionResults) {
         ExpulsionStatusTextMaker expulsionStatusTextMaker = new ExpulsionStatusTextMaker();
         expulsionResults.sort((o1, o2) -> {
             final long firstAllAbsents = o1.absentCount() + (o1.lateCount() / 3);

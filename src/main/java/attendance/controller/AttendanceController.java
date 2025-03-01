@@ -74,10 +74,8 @@ public class AttendanceController {
         }
     }
 
-    private void confirmAttendance(AttendanceBook attendanceBook) {
-        String nickname = attendanceConfirmView.readCrewNickname();
-        Crew crew = new Crew(nickname);
-        attendanceBook.validateRegisteredCrew(crew);
+    private void confirmAttendance(final AttendanceBook attendanceBook) {
+        Crew crew = getCrewIfExistInAttendanceBook(attendanceConfirmView.readCrewNickname(), attendanceBook);
         LocalDateTime dateTime = attendanceConfirmView.readAttendanceTime();
         AttendanceDateTime attendanceDateTime = new AttendanceDateTime(dateTime);
         attendanceBook.validateDuplicateAttendanceDate(crew, attendanceDateTime);
@@ -86,10 +84,14 @@ public class AttendanceController {
         attendanceConfirmView.printAttendanceResult(attendanceDateTime, attendanceStatus);
     }
 
-    private void modifyAttendance(AttendanceBook attendanceBook) {
-        String nickname = attendanceModifyView.readCrewNickname();
+    private Crew getCrewIfExistInAttendanceBook(final String nickname, final AttendanceBook attendanceBook) {
         Crew crew = new Crew(nickname);
         attendanceBook.validateRegisteredCrew(crew);
+        return crew;
+    }
+
+    private void modifyAttendance(final AttendanceBook attendanceBook) {
+        Crew crew = getCrewIfExistInAttendanceBook(attendanceModifyView.readCrewNickname(), attendanceBook);
         int dayToModify = attendanceModifyView.readDayToModify();
         AttendanceDateTime originalDateTime = attendanceBook.findAttendanceDateTimeByCrewAndDay(crew, dayToModify);
         attendanceBook.removeAttendanceDateTime(crew, originalDateTime);
@@ -101,10 +103,8 @@ public class AttendanceController {
         attendanceModifyView.printAttendanceModifyResult(originalDateTime, originalAttendanceStatus, newDateTime, newAttendanceStatus);
     }
 
-    private void checkCrewAttendance(AttendanceBook attendanceBook) {
-        String nickname = crewAttendanceCheckView.readCrewNickname();
-        Crew crew = new Crew(nickname);
-        attendanceBook.validateRegisteredCrew(crew);
+    private void checkCrewAttendance(final AttendanceBook attendanceBook) {
+        Crew crew = getCrewIfExistInAttendanceBook(crewAttendanceCheckView.readCrewNickname(), attendanceBook);
         List<AttendanceDateTime> crewAttendanceDateTimes = findCrewAttendancesThisMonth(attendanceBook, crew);
         crewAttendanceCheckView.printCrewAttendances(crew, crewAttendanceDateTimes);
         Map<AttendanceStatus, Long> attendanceStatuses = AttendanceStatusChecker.checkStatuses(crewAttendanceDateTimes);
@@ -113,7 +113,7 @@ public class AttendanceController {
         crewAttendanceCheckView.printExpulsionStatus(expulsionStatus);
     }
 
-    private List<AttendanceDateTime> findCrewAttendancesThisMonth(AttendanceBook attendanceBook, Crew crew) {
+    private List<AttendanceDateTime> findCrewAttendancesThisMonth(final AttendanceBook attendanceBook, final Crew crew) {
         LocalDate today = LocalDate.now();
         List<AttendanceDateTime> crewAttendanceDateTimes = new ArrayList<>();
         for (int day=1; day<=today.getDayOfMonth()-1; day++) {
@@ -131,20 +131,19 @@ public class AttendanceController {
         return crewAttendanceDateTimes;
     }
 
-    private void checkAllExpulsionCrews(AttendanceBook attendanceBook) {
+    private void checkAllExpulsionCrews(final AttendanceBook attendanceBook) {
         checkAllExpulsionCrewView.printTitle();
         List<CheckExpulsionResultDto> expulsionResults = new ArrayList<>();
         Set<Crew> allCrews = attendanceBook.getAllCrews();
-        allCrews.stream()
-                .forEach(crew -> {
-                    List<AttendanceDateTime> attendancesThisMonth = findCrewAttendancesThisMonth(attendanceBook, crew);
-                    Map<AttendanceStatus, Long> attendanceStatuses = AttendanceStatusChecker.checkStatuses(attendancesThisMonth);
-                    ExpulsionStatus expulsionStatus = ExpulsionStatus.from(AttendanceStatusChecker.calculateAllAbsent(attendancesThisMonth));
-                    if (!expulsionStatus.equals(ExpulsionStatus.NONE)) {
-                        expulsionResults.add(new CheckExpulsionResultDto(crew.getNickname(), attendanceStatuses.getOrDefault(AttendanceStatus.ABSENT, 0L),
-                                attendanceStatuses.getOrDefault(AttendanceStatus.LATE, 0L), expulsionStatus));
-                    }
-                });
+        for (Crew crew : allCrews) {
+            List<AttendanceDateTime> attendancesThisMonth = findCrewAttendancesThisMonth(attendanceBook, crew);
+            Map<AttendanceStatus, Long> attendanceStatuses = AttendanceStatusChecker.checkStatuses(attendancesThisMonth);
+            ExpulsionStatus expulsionStatus = ExpulsionStatus.from(AttendanceStatusChecker.calculateAllAbsent(attendancesThisMonth));
+            if (!expulsionStatus.equals(ExpulsionStatus.NONE)) {
+                expulsionResults.add(new CheckExpulsionResultDto(crew.getNickname(), attendanceStatuses.get(AttendanceStatus.ABSENT),
+                        attendanceStatuses.get(AttendanceStatus.LATE), expulsionStatus));
+            }
+        }
         checkAllExpulsionCrewView.printCrewExpulsions(expulsionResults);
     }
 }
