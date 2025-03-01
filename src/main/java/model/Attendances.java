@@ -6,6 +6,8 @@ import static constant.ErrorMessage.NOT_FOUND_CREW;
 
 import dto.AttendanceCheckInRequest;
 import dto.AttendanceCheckInResponse;
+import dto.AttendanceHistoryRequest;
+import dto.AttendanceHistoryResponse;
 import dto.AttendanceUpdateRequest;
 import dto.AttendanceUpdateResponse;
 import java.time.DayOfWeek;
@@ -14,6 +16,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +76,20 @@ public class Attendances {
                 previousAttendanceType,
                 attendance.getCheckInTime(),
                 attendance.getAttendanceType()
+        );
+    }
+
+    public AttendanceHistoryResponse findHistoryByCrew(AttendanceHistoryRequest request) {
+        Crew crew = Crew.of(request.nickname());
+        List<Attendance> attendances = getAttendancesByCrew(crew);
+        EnumMap<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(attendances);
+        PunishmentType punishmentType = PunishmentType.find(attendanceTotal);
+
+        return new AttendanceHistoryResponse(
+                crew.getNickname(),
+                attendances,
+                attendanceTotal,
+                punishmentType
         );
     }
 

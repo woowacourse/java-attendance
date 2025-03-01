@@ -5,6 +5,7 @@ import static constant.PathConstant.ATTENDANCE_FILE_PATH;
 import dto.AttendanceCheckInRequest;
 import dto.AttendanceCheckInResponse;
 import dto.AttendanceHistoryRequest;
+import dto.AttendanceHistoryResponse;
 import dto.AttendanceOptionRequest;
 import dto.AttendanceUpdateRequest;
 import dto.AttendanceUpdateResponse;
@@ -29,7 +30,7 @@ public class AttendanceController {
         Attendances attendances = initialize();
 
         while (true) {
-            Option option = processWithRetry(this::option);
+            Option option = processWithRetry(this::selectOption);
 
             if (option.equals(Option.ONE)) {
                 processWithRetry(() -> checkInAttendance(attendances));
@@ -38,10 +39,10 @@ public class AttendanceController {
                 processWithRetry(() -> updateAttendance(attendances));
             }
             if (option.equals(Option.THREE)) {
-                processWithRetry(this::getAttendanceHistoryByCrew);
+                processWithRetry(() -> findAttendanceHistoryByCrew(attendances));
             }
             if (option.equals(Option.FOUR)) {
-                processWithRetry(this::findRiskCrews);
+                processWithRetry(() -> findRiskCrews(attendances));
             }
             if (option.equals(Option.QUIT)) {
                 break;
@@ -54,7 +55,7 @@ public class AttendanceController {
         return Attendances.from(lines, dateTimeGenerator);
     }
 
-    private Option option() {
+    private Option selectOption() {
         AttendanceOptionRequest request = InputView.readAttendanceOptionRequest(dateTimeGenerator);
         return Option.find(request.option());
     }
@@ -71,12 +72,13 @@ public class AttendanceController {
         OutputView.printUpdateAttendance(response);
     }
 
-    private void getAttendanceHistoryByCrew() {
+    private void findAttendanceHistoryByCrew(Attendances attendances) {
         AttendanceHistoryRequest request = InputView.readAttendanceHistoryRequest();
-
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request);
+        OutputView.printAttendanceHistory(response);
     }
 
-    private void findRiskCrews() {
+    private void findRiskCrews(Attendances attendances) {
 
     }
 
