@@ -40,7 +40,7 @@ public class InputView {
         String input = inputString();
         try {
             return LocalTime.parse(input);
-        } catch (DateTimeParseException e) {
+        } catch (DateTimeException e) {
             throw new IllegalArgumentException("잘못된 시간 입력입니다");
         }
     }
