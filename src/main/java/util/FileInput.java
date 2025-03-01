@@ -1,17 +1,18 @@
 package util;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import model.AttendanceDateTime;
+import model.AttendanceDate;
+import model.AttendanceTime;
 import model.StudentAttendanceHistory;
 
 public class FileInput {
@@ -19,7 +20,10 @@ public class FileInput {
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
     private static final int NAME_INDEX = 0;
     private static final int ATTENDANCE_DATE_TIME_INDEX = 1;
-    private static final DateTimeFormatter ATTENDANCE_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final int ATTENDANCE_DATE_INDEX = 0;
+    private static final int ATTENDANCE_TIME_INDEX = 1;
+    private static final DateTimeFormatter ATTENDANCE_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter ATTENDANCE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final String ERROR_INVALID_FILE_FORMAT = "[ERROR] 학생 출석 정보 형식과 맞지 않습니다. 파일을 다시 확인해 주세요.";
 
     private FileInput() {}
@@ -37,9 +41,18 @@ public class FileInput {
                 String studentName = studentNameAndAttendanceDateTimeInformation[NAME_INDEX];
                 String timeInformation = studentNameAndAttendanceDateTimeInformation[ATTENDANCE_DATE_TIME_INDEX];
 
-                AttendanceDateTime attendanceDateTime = new AttendanceDateTime(LocalDateTime.parse(timeInformation, ATTENDANCE_DATE_TIME_FORMATTER));
+                String[] attendanceDateAndAttendanceTime = timeInformation.split(" ");
 
-                studentInformationInFile.computeIfAbsent(studentName, k -> new StudentAttendanceHistory(new ArrayList<>())).addAttendanceDateTime(attendanceDateTime);
+                AttendanceDate attendanceDate = new AttendanceDate(
+                        LocalDate.parse(attendanceDateAndAttendanceTime[ATTENDANCE_DATE_INDEX], ATTENDANCE_DATE_FORMATTER));
+
+                AttendanceTime attendanceTime = new AttendanceTime(
+                        LocalTime.parse(attendanceDateAndAttendanceTime[ATTENDANCE_TIME_INDEX], ATTENDANCE_TIME_FORMATTER));
+
+                studentInformationInFile.putIfAbsent(studentName, new StudentAttendanceHistory(new HashMap<>()));
+
+                StudentAttendanceHistory history = studentInformationInFile.get(studentName);
+                history.getAttendanceHistory().put(attendanceDate, attendanceTime);
             }
             return studentInformationInFile;
         } catch (IllegalArgumentException e) {
