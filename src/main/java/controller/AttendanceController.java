@@ -27,9 +27,19 @@ public class AttendanceController {
     public void run() {
         AttendanceBook book = new AttendanceBook(List.of(
                 new CrewAttendances("율무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
                         new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 2)),
-                        new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(8, 57))
-
+                        new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 57))
+                )),
+                new CrewAttendances("열무", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 6)),
+                        new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 57))
+                )),
+                new CrewAttendances("군자", List.of(
+                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
+                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 6)),
+                        new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 6))
                 ))
         ));
 
@@ -51,10 +61,10 @@ public class AttendanceController {
                 continue;
             }
 
-//            if (select.equals("4")) {
-//                printRiskOfExpulsion(attendanceSheets);
-//                continue;
-//            }
+            if (select.equals("4")) {
+                printRiskOfExpulsion(book);
+                continue;
+            }
 
             if (select.equals("Q")) {
                 return;
@@ -180,14 +190,18 @@ public class AttendanceController {
         return "";
     }
 
-
     // 4번 기능
     private void printRiskOfExpulsion(AttendanceBook book) {
-        List<String> names = book.allNames();
+        List<CrewAttendances> risk = book.findRisk(today);
 
-        for (String name : names) {
-
+        System.out.print(System.lineSeparator());
+        System.out.println("제적 위험자 조회 결과");
+        for (CrewAttendances crew : risk) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                    crew.getNickname(), crew.calculateAbsentCountUntilDate(today), crew.calculateLateCountUntilDate(today),
+                    getAbsentPenalty(crew.determineAttendPenalty(today)));
         }
+        System.out.print(System.lineSeparator());
     }
 
 }
