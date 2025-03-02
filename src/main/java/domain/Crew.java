@@ -27,6 +27,11 @@ public class Crew {
         return dailyRecords.get(date);
     }
 
+    public List<DailyRecord> findRecordsOfYearAndMonth(LocalDate startDate) {
+        // TODO: 년도와 달에 해당하는 모든 기록을 반환한다.
+        return null;
+    }
+
     public DailyRecord addDailyRecord(LocalDateTime dateTime) {
         LocalDate date = dateTime.toLocalDate();
         LocalTime time = dateTime.toLocalTime();

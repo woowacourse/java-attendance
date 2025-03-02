@@ -18,6 +18,60 @@ import org.junit.jupiter.api.Test;
 public class CrewTest {
 
     @Nested
+    @DisplayName("출석 기록 검색 테스트")
+    class FindRecordTest {
+
+        @Test
+        @DisplayName("2024년 12월의 출석 기록을 검색할 수 있다.")
+        void searchDecemberRecords() {
+            Crew crew = new Crew();
+            List<LocalDateTime> crewRecords = List.of(
+                parseStringToDateTime("2024-12-04 10:08"),
+                parseStringToDateTime("2024-12-05 10:02")
+            );
+            crew.initializeDailyRecords(crewRecords);
+
+            LocalDate startDate = parseStringToDate("2024-12-01");
+            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate);
+
+            assertThat(records.size()).isEqualTo(2);
+        }
+
+        @Test
+        @DisplayName("2025년 3월의 출석 기록을 검색할 수 없다.")
+        void searchMarchRecords() {
+            Crew crew = new Crew();
+            List<LocalDateTime> crewRecords = List.of(
+                parseStringToDateTime("2024-12-04 10:08"),
+                parseStringToDateTime("2024-12-05 10:02")
+            );
+            crew.initializeDailyRecords(crewRecords);
+
+            LocalDate startDate = parseStringToDate("2025-03-01");
+            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate);
+
+            assertThat(records.size()).isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("2025년 2월에 출석을 하고 기록을 검색할 수 없다.")
+        void searchRecordAfterAttendance() {
+            Crew crew = new Crew();
+            List<LocalDateTime> crewRecords = List.of(
+                parseStringToDateTime("2024-12-04 10:08"),
+                parseStringToDateTime("2024-12-05 10:02")
+            );
+            crew.initializeDailyRecords(crewRecords);
+
+            crew.addDailyRecord(parseStringToDateTime("2025-02-04 10:08"));
+            LocalDate startDate = parseStringToDate("2025-02-01");
+            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate);
+
+            assertThat(records.size()).isEqualTo(1);
+        }
+    }
+
+    @Nested
     @DisplayName("크루 출석 기록 생성 테스트")
     class CreateCrewRecordTest {
 
