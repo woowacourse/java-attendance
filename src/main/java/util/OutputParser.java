@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class Parser {
+public class OutputParser {
     private static final String TIME_NULL_DISPLAY = "--:--";
 
     public static String parseDateInKorean(LocalDate date) {

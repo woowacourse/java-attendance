@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import util.Parser;
+import util.OutputParser;
 
 public class AttendanceController {
 
@@ -37,7 +37,7 @@ public class AttendanceController {
         attendanceBook.putAttendanceRecordByName(name, date, time);
 
         return new CheckAttendanceResponse(
-                Parser.parseDateInKorean(date), Parser.parseTimeToString(time),
+                OutputParser.parseDateInKorean(date), OutputParser.parseTimeToString(time),
                 AttendanceStatus.findMessageByAttendDateAndTime(date, time)
         );
     }
@@ -47,9 +47,9 @@ public class AttendanceController {
         attendanceBook.putAttendanceRecordByName(name, date, timeToModify);
 
         return new ModifyAttendanceResponse(
-                Parser.parseDateInKorean(date),
-                Parser.parseTimeToString(originalTime),
-                Parser.parseTimeToString(timeToModify),
+                OutputParser.parseDateInKorean(date),
+                OutputParser.parseTimeToString(originalTime),
+                OutputParser.parseTimeToString(timeToModify),
                 AttendanceStatus.findMessageByAttendDateAndTime(date, originalTime),
                 AttendanceStatus.findMessageByAttendDateAndTime(date, timeToModify)
         );
@@ -66,8 +66,8 @@ public class AttendanceController {
         LocalTime time = attendanceBook.findTimeByNameAndDate(name, date);
 
         return new AttendanceRecordResponse(
-                Parser.parseDateInKorean(date),
-                Parser.parseTimeToString(time),
+                OutputParser.parseDateInKorean(date),
+                OutputParser.parseTimeToString(time),
                 AttendanceStatus.findByAttendDateAndTime(date, time).getMessage()
         );
     }
