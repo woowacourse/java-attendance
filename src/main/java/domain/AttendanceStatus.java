@@ -10,8 +10,10 @@ public enum AttendanceStatus {
     private static final int LATE_CUTOFF = 30;
     private static final int ATTENDANCE_CUTOFF = 5;
 
-    public static AttendanceStatus findByAttendanceDateTime(final AttendanceDateTime attendanceDateTime,
-                                                            final AttendanceTimePolicy attendanceTimePolicy) {
+    public static AttendanceStatus findByAttendanceDateTime(
+            final AttendanceDateTime attendanceDateTime,
+            final AttendanceTimePolicy attendanceTimePolicy
+    ) {
         final LocalTime attendanceTime = attendanceTimePolicy.getAttendanceTime();
         final LocalTime entranceTime = attendanceDateTime.getDateTime()
                 .toLocalTime();
