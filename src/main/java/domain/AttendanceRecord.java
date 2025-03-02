@@ -1,5 +1,7 @@
 package domain;
 
+import java.util.Objects;
+
 public class AttendanceRecord implements Comparable<AttendanceRecord> {
 
     private final AttendanceDateTime attendanceDateTime;
@@ -16,12 +18,30 @@ public class AttendanceRecord implements Comparable<AttendanceRecord> {
         return AttendanceStatus.findByAttendanceDateTime(attendanceDateTime, attendanceTimePolicy);
     }
 
+    public boolean hasAttendanceDateTime(final AttendanceDateTime dateTime) {
+        return attendanceDateTime.equals(dateTime);
+    }
+
     public AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
     }
 
     @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final AttendanceRecord that = (AttendanceRecord) o;
+        return Objects.equals(attendanceDateTime, that.attendanceDateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(attendanceDateTime);
+    }
+
+    @Override
     public int compareTo(final AttendanceRecord o) {
-        return attendanceDateTime.getDateTime().compareTo(o.attendanceDateTime.getDateTime());
+        return attendanceDateTime.compareTo(o.attendanceDateTime);
     }
 }

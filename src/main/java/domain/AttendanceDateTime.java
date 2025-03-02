@@ -1,11 +1,15 @@
 package domain;
 
+import static controller.AttendanceController.REFERENCE_DATE_TIME;
+
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 
-public class AttendanceDateTime {
+public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
     private static final String ATTENDANCE_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
             ATTENDANCE_DATE_TIME_FORMAT);
@@ -17,9 +21,19 @@ public class AttendanceDateTime {
         this.dateTime = dateTime;
     }
 
+    public static AttendanceDateTime from(final LocalDateTime dateTime) {
+        return new AttendanceDateTime(dateTime);
+    }
+
     public static AttendanceDateTime from(final String inputDateTime) {
         final LocalDateTime parsedDateTime = parseDateTime(inputDateTime);
         return new AttendanceDateTime(parsedDateTime);
+    }
+
+    public static AttendanceDateTime from(final AttendanceTime attendanceTime) {
+        final LocalDate date = REFERENCE_DATE_TIME.toLocalDate();
+        final LocalDateTime dateTime = LocalDateTime.of(date, attendanceTime.getTime());
+        return new AttendanceDateTime(dateTime);
     }
 
     private static LocalDateTime parseDateTime(final String inputDateTime) {
@@ -37,5 +51,24 @@ public class AttendanceDateTime {
 
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final AttendanceDateTime that = (AttendanceDateTime) o;
+        return Objects.equals(dateTime, that.dateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(dateTime);
+    }
+
+    @Override
+    public int compareTo(final AttendanceDateTime o) {
+        return dateTime.compareTo(o.dateTime);
     }
 }
