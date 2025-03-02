@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class Crews {
@@ -38,32 +39,24 @@ public class Crews {
     }
 
     public void attendToday(final Crew crew, final LocalTime attendTime) {
-        crews.stream()
-                .filter(findCrew -> findCrew.equals(crew))
-                .findFirst()
+        getCrewData(crew)
                 .ifPresent(findCrew -> findCrew.attendToday(attendTime));
     }
 
     public Attendance findTodayAttendance(final Crew crew) {
-        return crews.stream()
-                .filter(findCrew -> findCrew.equals(crew))
-                .findFirst()
+        return getCrewData(crew)
                 .map(findCrew -> findCrew.findAttendance(LocalDate.now()))
                 .orElseThrow(() -> new IllegalStateException("출석 체크가 안됐습니다."));
     }
 
     public boolean hasTodayAttendance(final Crew crew) {
-        return crews.stream()
-                .filter(findCrew -> findCrew.equals(crew))
-                .findFirst()
+        return getCrewData(crew)
                 .map(Crew::isAttendToday)
                 .get();
     }
 
     public LocalTime findCrewAttendanceTime(final Crew crew, final LocalDate modifyDate) {
-        return crews.stream()
-                .filter(findCrew -> findCrew.equals(crew))
-                .findFirst()
+        return getCrewData(crew)
                 .map(Crew::getAttendanceHistory)
                 .flatMap(attendanceHistory ->
                         attendanceHistory.stream()
@@ -75,9 +68,7 @@ public class Crews {
     }
 
     public Attendance findCrewAttendance(final Crew crew, final LocalDate modifyDate) {
-        return crews.stream()
-                .filter(findCrew -> findCrew.equals(crew))
-                .findFirst()
+        return getCrewData(crew)
                 .map(Crew::getAttendanceHistory)
                 .map(attendanceHistory -> attendanceHistory.stream()
                         .filter(attendance -> attendance.isSameDate(modifyDate))
@@ -89,9 +80,7 @@ public class Crews {
     }
 
     public void modifyAttendance(final Crew crew, final LocalDate modifyDate, final LocalTime modifyTime) {
-        crews.stream()
-                .filter(modifyCrew -> modifyCrew.equals(crew))
-                .findFirst()
+        getCrewData(crew)
                 .ifPresent(modifyCrew -> modifyCrew.modifyAttendance(LocalDateTime.of(modifyDate, modifyTime)));
     }
 
@@ -100,5 +89,11 @@ public class Crews {
                 .filter(crew -> !crew.getStatus().equals(Status.NONE))
                 .sorted(Comparator.comparingInt(Crew::getPenaltyCount).reversed().thenComparing(Crew::getName))
                 .toList();
+    }
+
+    private Optional<Crew> getCrewData(Crew crew) {
+        return crews.stream()
+                .filter(findCrew -> findCrew.equals(crew))
+                .findFirst();
     }
 }
