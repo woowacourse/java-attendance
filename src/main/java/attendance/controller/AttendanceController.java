@@ -4,6 +4,7 @@ import attendance.controller.constant.CommandOption;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceTime;
+import attendance.domain.CampusOperationTime;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
 import attendance.domain.PublicHolidays;
@@ -74,13 +75,23 @@ public class AttendanceController {
     //TODO : 시간 숫자로 입력 안한거 처리
     //TODO : 분은 숫자로 입력 안한거 처리
     private void registerAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime, Crews crews) {
-        if (checkPublicHolidays(currentDateTime)) {
+        if (checkPublicHolidays(currentDateTime) || checkCampusOperationTime(currentDateTime)) {
             return;
         }
         Crew inputCrewName = readCrewName(crews);
         LocalDateTime attendanceTime = readAttendanceTime(currentDateTime);
         AttendanceTime registerdAttendanceTime = attendanceBook.registerAttendance(inputCrewName, attendanceTime);
         outputView.writeAttendanceRegister(registerdAttendanceTime);
+    }
+
+    private boolean checkCampusOperationTime(LocalDateTime currentDateTime) {
+        try {
+            CampusOperationTime.isOperation(currentDateTime.getHour());
+        } catch (CustomException customException) {
+            outputView.writeErrorMessage(customException.getMessage());
+            return true;
+        }
+        return false;
     }
 
     private boolean checkPublicHolidays(LocalDateTime currentDateTime) {

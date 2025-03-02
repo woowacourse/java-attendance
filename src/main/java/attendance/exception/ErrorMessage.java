@@ -2,6 +2,7 @@ package attendance.exception;
 
 public enum ErrorMessage {
 
+    NOT_OPEN_CAMPUS("캠퍼스 운영 시간이 아닙니다"),
     NOT_ATTENDANCE_WEEKEND("주말에는 출석을 할 수 없습니다."),
     NOT_PRESENCE_COMMAND_OPTION("제공하지 않는 기능입니다."),
     ALREADY_PRESENCE_ATTENDANCE_RECORD("이미 출석 기록이 있습니다."),

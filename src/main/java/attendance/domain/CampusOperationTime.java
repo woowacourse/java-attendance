@@ -1,5 +1,8 @@
 package attendance.domain;
 
+import attendance.exception.CustomException;
+import attendance.exception.ErrorMessage;
+
 public enum CampusOperationTime {
     OPEN(8),
     CLOSE(23);
@@ -10,7 +13,9 @@ public enum CampusOperationTime {
         this.hour = hour;
     }
 
-    public static boolean isOperation(final int inputHour) {
-        return (OPEN.hour <=  inputHour) && (CLOSE.hour > inputHour);
+    public static void isOperation(final int hour) {
+        if (hour < OPEN.hour || hour >= CLOSE.hour) {
+            throw CustomException.from(ErrorMessage.NOT_OPEN_CAMPUS);
+        }
     }
 }
