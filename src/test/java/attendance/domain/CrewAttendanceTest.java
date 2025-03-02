@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -56,5 +57,27 @@ public class CrewAttendanceTest {
         assertThatThrownBy(() -> crewAttendance.add(attendance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 이미 출석 기록이 존재합니다. 출석 수정 기능을 이용해주세요.");
+    }
+
+    @DisplayName("출석 기록 수정 성공")
+    @Test
+    void test4() {
+        LocalDate date = LocalDate.of(2024, 12, 3);
+        LocalTime prevTime = LocalTime.parse("10:07");
+        LocalDateTime prevDateTime = LocalDateTime.of(date, prevTime);
+        LocalTime newTime = LocalTime.parse("09:58");
+        LocalDateTime newDateTime = LocalDateTime.of(date, newTime);
+
+        CrewAttendance crewAttendance = new CrewAttendance();
+        crewAttendance.add(prevDateTime);
+        Entry<AttendanceRecord, AttendanceStatus> prevAttendance = crewAttendance.getAttendanceOn(date);
+
+        crewAttendance.modify(newDateTime);
+        Entry<AttendanceRecord, AttendanceStatus> newAttendance = crewAttendance.getAttendanceOn(date);
+
+        assertThat(prevAttendance.getKey()).isEqualTo(new AttendanceRecord(prevDateTime));
+        assertThat(prevAttendance.getValue()).isEqualTo(AttendanceStatus.LATE);
+        assertThat(newAttendance.getKey()).isEqualTo(new AttendanceRecord(newDateTime));
+        assertThat(newAttendance.getValue()).isEqualTo(AttendanceStatus.PRESENT);
     }
 }
