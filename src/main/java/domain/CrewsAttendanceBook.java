@@ -18,12 +18,13 @@ public class CrewsAttendanceBook {
     }
 
     public Crew getCrewByName(String name) {
-        return attendances.keySet().stream().filter(c -> c.getName().equals(name)).findFirst().orElse(null);
+        return attendances.keySet().stream()
+                .filter(c -> c.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하는 크루의 닉네임을 입력해주세요."));
     }
 
     public void checkIn(Crew crew, LocalDate localDate, LocalTime localTime) {
-        validateExistingCrew(crew);
-
         AttendanceBook attendanceBook = attendances.get(crew);
         attendanceBook.validateWeekDay(localDate);
         attendanceBook.validateDuplicateCheckIn(localDate);
