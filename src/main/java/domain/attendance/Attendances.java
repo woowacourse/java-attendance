@@ -15,9 +15,6 @@ public class Attendances {
         validate(attendances);
         initAttendanceDate(startDate, endDate);
         attendances.forEach(this::editAttendanceDate);
-        this.attendances.addAll(attendances.stream()
-                .map(Attendance::new)
-                .toList());
     }
 
     private void initAttendanceDate(LocalDate startDate, LocalDate endDate) {
