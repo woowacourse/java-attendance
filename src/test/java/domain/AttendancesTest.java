@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class AttendancesTest {
-    private List<Attendance> testAttendance = List.of(
+    private final List<Attendance> testAttendance = List.of(
             new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)),
             new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)),
             new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)),
@@ -40,19 +40,20 @@ class AttendancesTest {
     }
 
     @Test
-    @DisplayName("미래 날짜를 불러올 시 예외가 발생합니다.")
+    @DisplayName("없는 날짜를 불러올 시 예외가 발생합니다.")
     void validateFutureDateTest() {
-        DayOfMonth dayOfMonth = new DayOfMonth(10); // 불러올 날짜
+        DayOfMonth dayOfMonth = new DayOfMonth(20); // 불러올 날짜
+        LocalDate testToday = LocalDate.of(2024, 12, 6);
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> attendances.getSpecificAttendance(dayOfMonth, LocalDate.of(2024, 12, 6)));
+                () -> attendances.getSpecificAttendance(dayOfMonth, testToday));
     }
 
     @Test
     @DisplayName("특정 날짜의 출석을 특정 시간으로 변경합니다.")
     void changeAttendanceTest() {
-        DayOfMonth dayOfMonth = new DayOfMonth(2); // 불러올 날짜
-        LocalTime changeTime = LocalTime.of(11, 0); // 바꿀 시간
+        DayOfMonth dayOfMonth = new DayOfMonth(2);
+        LocalTime changeTime = LocalTime.of(11, 0);
 
         Assertions.assertEquals(new Attendance(LocalDateTime.of(2024, 12, 2, 11, 0)),
                 attendances.changeAttendance(dayOfMonth, LocalDate.of(2024, 12, 6), changeTime));

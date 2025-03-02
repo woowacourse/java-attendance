@@ -60,10 +60,9 @@ public class Attendances {
     }
 
     private void validateNotExistDate(DayOfMonth dayOfMonth, LocalDate today) {
-        if (dayOfMonth.isHoliday(today)) {
-            if (today.getDayOfMonth() < dayOfMonth.dayOfMonth()) {
-                throw new IllegalArgumentException("없는 날짜는 변경할 수 없습니다.");
-            }
+        LocalDate localDate = DayConverter.combineDayAndDate(dayOfMonth, today);
+        if (dayOfMonth.isHoliday(today) || !isExist(localDate)) {
+            throw new IllegalArgumentException("없는 날짜는 변경할 수 없습니다.");
         }
     }
 

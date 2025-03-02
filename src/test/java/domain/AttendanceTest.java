@@ -17,7 +17,7 @@ class AttendanceTest {
     @ValueSource(strings = {"10:00", "09:00", "10:05"})
     void attendancePresentTest(String value) {
         Time time = new Time(value);
-        LocalDate today = LocalDate.of(2024, 12, 3); // 화요일
+        LocalDate today = LocalDate.of(2024, 12, 3);
 
         Attendance attendance = new Attendance(DayConverter.combineTimeAndDate(time, today));
 
@@ -29,7 +29,7 @@ class AttendanceTest {
     @ValueSource(strings = {"10:06", "10:30", "10:15"})
     void attendanceLateTest(String value) {
         Time time = new Time(value);
-        LocalDate today = LocalDate.of(2024, 12, 3); // 화요일
+        LocalDate today = LocalDate.of(2024, 12, 3);
 
         Attendance attendance = new Attendance(DayConverter.combineTimeAndDate(time, today));
 
@@ -41,7 +41,7 @@ class AttendanceTest {
     @ValueSource(strings = {"10:31", "10:59", "11:00", "23:00"})
     void attendanceAbsentTest(String value) {
         Time time = new Time(value);
-        LocalDate today = LocalDate.of(2024, 12, 3); // 화요일
+        LocalDate today = LocalDate.of(2024, 12, 3);
 
         Attendance attendance = new Attendance(DayConverter.combineTimeAndDate(time, today));
 
