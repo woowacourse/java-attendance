@@ -2,6 +2,7 @@ package controller;
 
 import domain.AttendanceDate;
 import domain.AttendanceReader;
+import domain.AttendanceStatus;
 import domain.AttendanceTime;
 import domain.CrewAttendance;
 import domain.CrewAttendances;
@@ -138,7 +139,7 @@ public class AttendanceController {
 
     private LocalDate handleAttendanceInputDate() {
         outputView.printInputDate();
-        return inputDate();s
+        return inputDate();
     }
 
     private LocalDate inputDate() {
