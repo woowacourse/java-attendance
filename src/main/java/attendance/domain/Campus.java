@@ -1,4 +1,4 @@
-package attendance;
+package attendance.domain;
 
 import static java.time.DayOfWeek.MONDAY;
 

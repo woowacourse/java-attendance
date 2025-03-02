@@ -1,4 +1,4 @@
-package attendance;
+package attendance.domain;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ public class AttendanceLoader {
 
         return attendanceBook;
     }
-    
+
     public static AttendanceBook load(final List<String> data) {
         AttendanceBook attendanceBook = new AttendanceBook();
         for (String line : data) {
