@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import common.SystemDate;
 import java.time.LocalDate;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +20,7 @@ public class AttendanceRecordGeneratorTest {
 
         //then
         assertThat(attendanceMap).containsKey(LocalDate.of(2024, 12, 2))
-                .containsKey(LocalDate.of(2024, 12, 23))
+                .containsKey(SystemDate.NOW.getDate().minusDays(1))
                 .doesNotContainKey(LocalDate.of(2024, 12, 24))
                 .doesNotContainKey(LocalDate.of(2024, 12, 1))
                 .doesNotContainKey(LocalDate.of(2024, 12, 25))
