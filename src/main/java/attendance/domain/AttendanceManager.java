@@ -50,6 +50,15 @@ public class AttendanceManager {
         return WarningLevel.from(statusCount);
     }
 
+    public Map<AttendanceStatus, Integer> calculateStatusCount(String crewName, int today){
+        Attendances attendances = findAttendancesByName(crewName);
+        return AttendanceStatistics.getTotalStatusCount(attendances, today);
+    }
+
+    public WarningLevel calculateWarningLevel(String crewName, int today){
+        return WarningLevel.from(calculateStatusCount(crewName, today));
+    }
+
     private Attendances findAttendancesByName(String crewName) {
         validateExistCrew(crewName);
         return crewAttendances.get(crewName);

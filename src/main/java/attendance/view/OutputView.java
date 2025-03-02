@@ -1,12 +1,17 @@
 package attendance.view;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.WarningLevel;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class OutputView {
     private static final String ERROR_MESSAGE_PREFIX = "[ERROR] ";
@@ -15,17 +20,23 @@ public class OutputView {
     private static final DateTimeFormatter PRINT_ATTENDANCE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final String EMPTY_ATTENDANCE_TIME_MESSAGE = "--:--";
     private static final String EMPTY_ATTENDANCE_STATUS_MESSAGE = "--";
+    private static final String ATTENDANCE_RECORD_HEADER_FORMAT = "이번 달 %s의 출석 기록입니다.\n";
+    private static final String ATTENDANCE_STATUS_COUNT_FORMAT = "%s: %d회\n";
+    private static final String CREW_WARNING_LEVEL_FORMAT = "%s 대상자 입니다.\n\n";
 
     public void printCheckAttendanceResult(LocalTime enterTime) {
-        System.out.print(createAttendanceDescription(LocalDate.now(), enterTime));
+        LocalDate now = LocalDate.now();
+        System.out.print(
+                createAttendanceDescription(LocalDate.now(), enterTime, AttendanceStatus.from(now, enterTime)));
     }
 
-    private String createAttendanceDescription(LocalDate date, LocalTime enterTime) {
+    private String createAttendanceDescription(LocalDate date, LocalTime enterTime, AttendanceStatus status) {
         return String.format(ATTENDANCE_DESCRIPTION_FORMAT,
                 date.getMonthValue(),
                 date.getDayOfMonth(),
                 getDisplayName(date),
-                AttendanceStatus.from(date, enterTime).getStatus()
+                formatAttendanceTime(enterTime),
+                status.getStatus()
         );
     }
 
@@ -59,6 +70,45 @@ public class OutputView {
         }
         return AttendanceStatus.from(date, time).getStatus();
     }
+
+    public void printAttendanceRecords(String crewName, Map<LocalDate, Attendance> crewAttendances) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(String.format(ATTENDANCE_RECORD_HEADER_FORMAT, crewName)).append("\n");
+        LocalDate now = LocalDate.now();
+        IntStream.range(1, now.getDayOfMonth())
+                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
+                .filter(AttendanceChecker::isCampusOpenDate)
+                .forEach(date -> {
+                    builder.append(toAttendanceRecordString(crewAttendances, date));
+                });
+        System.out.println(builder);
+    }
+
+    public void printAttendanceStatusCount(Map<AttendanceStatus, Integer> statusCounts) {
+        StringBuilder builder = new StringBuilder();
+        statusCounts.keySet()
+                .forEach(status -> {
+                    builder.append(String.format(ATTENDANCE_STATUS_COUNT_FORMAT, status.getStatus(),
+                            statusCounts.get(status)));
+                });
+        System.out.println(builder);
+    }
+
+    public void printCrewWarningLevel(WarningLevel level) {
+        if (level == WarningLevel.NONE) {
+            return;
+        }
+        System.out.printf(CREW_WARNING_LEVEL_FORMAT, level.getDescription());
+    }
+
+    private String toAttendanceRecordString(Map<LocalDate, Attendance> crewAttendances, LocalDate date) {
+        if (crewAttendances.containsKey(date)) {
+            Attendance attendance = crewAttendances.get(date);
+            return createAttendanceDescription(date, attendance.time(), attendance.status());
+        }
+        return createAttendanceDescription(date, null, AttendanceStatus.ABSENCE);
+    }
+
 
     public void printErrorMessage(Exception error) {
         System.out.println(ERROR_MESSAGE_PREFIX + error);

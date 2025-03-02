@@ -5,14 +5,16 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 public enum WarningLevel {
-    REMOVE(absenceCount -> absenceCount > 5),
-    COUNSELING(absenceCount -> absenceCount >= 3),
-    WARNING(absenceCount -> absenceCount >= 2),
-    NONE(absenceCount -> absenceCount >= 0);
+    REMOVE("제적", absenceCount -> absenceCount > 5),
+    COUNSELING("면담", absenceCount -> absenceCount >= 3),
+    WARNING("경고", absenceCount -> absenceCount >= 2),
+    NONE("해당 없음", absenceCount -> absenceCount >= 0);
 
+    private final String description;
     private final Predicate<Integer> condition;
 
-    WarningLevel(Predicate<Integer> condition) {
+    WarningLevel(String description, Predicate<Integer> condition) {
+        this.description = description;
         this.condition = condition;
     }
 
@@ -28,5 +30,9 @@ public enum WarningLevel {
 
     public static int calculateTotalAbsenceCount(int latenessCount) {
         return latenessCount / 3;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
