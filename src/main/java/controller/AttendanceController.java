@@ -1,11 +1,14 @@
-package domain;
+package controller;
 
+import domain.AttendTime;
+import domain.Command;
+import domain.Crew;
+import domain.Crews;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import utils.CrewAttendanceFileReader;
 import view.InputView;
 import view.OutputView;
-
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class AttendanceController {
 
@@ -25,26 +28,26 @@ public class AttendanceController {
 
         Crews crews = new Crews(CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv"));
         while (true) {
-        Command command = inputView.getCommand();
-        try {
-            if (command.equals(Command.ATTEND_TODAY)) {
-                attendToday(crews);
+            Command command = inputView.getCommand();
+            try {
+                if (command.equals(Command.ATTEND_TODAY)) {
+                    attendToday(crews);
+                }
+                if (command.equals(Command.CHANGE_ATTENDANCE)) {
+                    changeAttendance(crews);
+                }
+                if (command.equals(Command.SHOW_CREW_ATTENDANCES)) {
+                    showCrewAttendances(crews);
+                }
+                if (command.equals(Command.SHOW_DISMISSAL_CREW)) {
+                    showDismissalCrew(crews);
+                }
+                if (command.equals(Command.QUIT)) {
+                    return;
+                }
+            } catch (Exception e) {
+                System.out.println(ERROR_MESSAGE + e.getMessage());
             }
-            if (command.equals(Command.CHANGE_ATTENDANCE)) {
-                changeAttendance(crews);
-            }
-            if(command.equals(Command.SHOW_CREW_ATTENDANCES)){
-                showCrewAttendances(crews);
-            }
-            if(command.equals(Command.SHOW_DISMISSAL_CREW)){
-                showDismissalCrew(crews);
-            }
-            if (command.equals(Command.QUIT)) {
-                return;
-            }
-        } catch (Exception e) {
-            System.out.println(ERROR_MESSAGE + e.getMessage());
-        }
         }
     }
 

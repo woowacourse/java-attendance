@@ -1,8 +1,7 @@
 package view;
 
-import domain.AttendanceController;
+import controller.AttendanceController;
 import domain.Command;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -25,12 +24,13 @@ public class InputView {
     public String getTodayLocalDateTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         String time = scanner.nextLine();
-        return AttendanceController.TODAY_LOCAL_DATE +" "+ time;
+        return AttendanceController.TODAY_LOCAL_DATE + " " + time;
     }
 
     public Command getCommand() {
         LocalDate today = LocalDate.parse(AttendanceController.TODAY_LOCAL_DATE, AttendanceController.TODAY_FORMATTER);
-        System.out.printf("오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.\n", today.getMonthValue(), today.getDayOfMonth(), today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
+        System.out.printf("오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.\n", today.getMonthValue(), today.getDayOfMonth(),
+                today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
         System.out.println("1. 출석 확인\n" +
                 "2. 출석 수정\n" +
                 "3. 크루별 출석 기록 확인\n" +
