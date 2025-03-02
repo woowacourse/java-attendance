@@ -31,7 +31,7 @@ public record StatusStatistics(Nickname nickname, Map<AttendanceStatus, Integer>
             + getCount(AttendanceStatus.ABSENCE);
     }
 
-    public int compareWeight() {
+    private int compareWeight() {
         return getCount(AttendanceStatus.LATE) + getCount(AttendanceStatus.ABSENCE);
     }
 
@@ -39,6 +39,10 @@ public record StatusStatistics(Nickname nickname, Map<AttendanceStatus, Integer>
     public int compareTo(StatusStatistics o) {
         var sanctionLevel = SanctionLevel.matchLevel(getWeight());
         var otherSanctionLevel = SanctionLevel.matchLevel(o.getWeight());
+
+        if (sanctionLevel == otherSanctionLevel) {
+            return compareWeight() - o.compareWeight();
+        }
 
         return otherSanctionLevel.compareTo(sanctionLevel);
     }

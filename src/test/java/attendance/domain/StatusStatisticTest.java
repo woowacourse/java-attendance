@@ -65,7 +65,7 @@ class StatusStatisticTest {
         var status = new StatusStatistics(nickname);
         status.update(attendances);
 
-        var late = LocalDateTime.of(2024, 12, 16, 10, 10);
+        var late = LocalDateTime.of(2024, 12, 17, 10, 10);
         attendances.put(late.toLocalDate(), new Attendance(late));
         var statusMoreWeight = new StatusStatistics(nickname);
         statusMoreWeight.update(attendances);
