@@ -49,7 +49,7 @@ public class Attendances {
     }
 
     public Attendances createMonthlyAttendances(Crew crew, LocalDate today) {
-        List<Attendance> monthlyAttendances = IntStream.rangeClosed(1, today.getDayOfMonth())
+        List<Attendance> monthlyAttendances = IntStream.range(1, today.getDayOfMonth())
                 .filter(i -> !Holiday.isHoliday(LocalDate.of(today.getYear(), today.getMonthValue(), i)))
                 .mapToObj(i -> findByCrewAndDate(crew, LocalDate.of(today.getYear(), today.getMonthValue(), i)))
                 .collect(Collectors.toList());
