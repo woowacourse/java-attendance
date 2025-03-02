@@ -72,4 +72,31 @@ public class AttendanceDateTest {
         Assertions.assertTrue(earlyAttendanceDate.compareTo(lateAttendanceDate) < 0);
     }
 
+    @Test
+    @DisplayName("month 리턴하는 메서드 테스트")
+    void test12() {
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 1));
+        Assertions.assertEquals(
+                attendanceDate.getMonth(), 12
+        );
+    }
+
+    @Test
+    @DisplayName("day 리턴하는 메서드 테스트")
+    void test13() {
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 1));
+        Assertions.assertEquals(
+                attendanceDate.getDate(), 1
+        );
+    }
+
+    @Test
+    @DisplayName("요일 리턴하는 메서드 테스ㅌ")
+    void test14() {
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 1));
+        Assertions.assertEquals(
+                attendanceDate.getDay(), "월요일"
+        );
+    }
+
 }
