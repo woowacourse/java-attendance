@@ -1,10 +1,11 @@
 package domain.attendance;
 
-import java.time.DayOfWeek;
+import domain.holiday.Holiday;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class AttendanceTimes {
 
@@ -71,14 +72,11 @@ public class AttendanceTimes {
     }
 
     private int countWorkday(LocalDate date) {
-        int count = 0;
-        for (int i = 1; i < date.getDayOfMonth(); i++) {
-            LocalDate today = LocalDate.of(2024, 12, i);
-            if (today.getDayOfWeek() == DayOfWeek.SATURDAY || today.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                continue;
-            }
-            count++;
-        }
-        return count;
+        return Math.toIntExact(
+                IntStream.range(1, date.getDayOfMonth())
+                        .mapToObj(date::withDayOfMonth)
+                        .filter(d -> !Holiday.isWeekendOrHoliday(d))
+                        .count()
+        );
     }
 }
