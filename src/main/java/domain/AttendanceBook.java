@@ -2,7 +2,10 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -52,9 +55,37 @@ public class AttendanceBook {
     }
 
     public Penalty determinePenaltyStatus(String name, LocalDate nowDate) {
-        int latenessCount = calculateLatenessCount(name, nowDate);
-        int absenceCount = calculateAbsenceCount(name, nowDate);
-        return Penalty.from(latenessCount, absenceCount);
+        Crew crew = findCrewByName(name);
+        return crew.determinePenaltyStatus(nowDate);
+    }
+
+    public List<Crew> checkExpulsionRiskCrew(LocalDate nowDate) {
+        List<Crew> resultCrew = new ArrayList<>();
+        for (String name : crews.keySet()) {
+            Penalty penalty = determinePenaltyStatus(name, nowDate);
+            if (penalty != Penalty.PASS) {
+                resultCrew.add(crews.get(name));
+            }
+        }
+        return sortCrews(resultCrew, nowDate);
+    }
+
+    private List<Crew> sortCrews(List<Crew> crews, LocalDate nowDate) {
+        crews.sort(Comparator
+                .comparing((Crew crew) -> crew.determinePenaltyStatus(nowDate))
+                .thenComparing(crew -> calculateAdjustedAbsence(crew, nowDate), Comparator.reverseOrder())
+                .thenComparing(crew -> calculateRemainingLateness(crew, nowDate), Comparator.reverseOrder())
+                .thenComparing(Crew::getName)
+        );
+        return crews;
+    }
+
+    private int calculateAdjustedAbsence(Crew crew, LocalDate nowDate) {
+        return crew.calculateAbsenceCount(nowDate) + crew.calculateLatenessCount(nowDate) / 3;
+    }
+
+    private int calculateRemainingLateness(Crew crew, LocalDate nowDate) {
+        return crew.calculateLatenessCount(nowDate) % 3;
     }
 
     public Attendance findAttendance(String name, LocalDate date) {

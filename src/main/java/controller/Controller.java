@@ -2,6 +2,7 @@ package controller;
 
 import domain.Attendance;
 import domain.AttendanceBook;
+import domain.Crew;
 import domain.FileWithAttendanceData;
 import domain.Option;
 import domain.Penalty;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import view.InputView;
 import view.OutputView;
 
@@ -62,7 +64,7 @@ public class Controller {
                 checkRecords(nowDate);
             }
             if (option == Option.CHECK_EXPULSION_RISK_CREW) {
-                checkExpulsionRiskCrew();
+                checkExpulsionRiskCrew(nowDate);
             }
             if (option == Option.QUIT) {
                 break;
@@ -132,7 +134,14 @@ public class Controller {
         }
     }
 
-    private void checkExpulsionRiskCrew() {
+    private void checkExpulsionRiskCrew(LocalDate nowDate) {
+        List<Crew> riskCrewResult = attendanceBook.checkExpulsionRiskCrew(nowDate);
+        outputView.displayExpulsionRiskCrewMessage();
+
+        for (Crew crew : riskCrewResult) {
+            outputView.displayExpulsionRiskCrew(crew.getName(), crew.calculateAbsenceCount(nowDate),
+                    crew.calculateLatenessCount(nowDate), crew.determinePenaltyStatus(nowDate).getDescription());
+        }
     }
 
     private boolean isHoliday(LocalDate date) {

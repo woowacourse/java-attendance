@@ -72,4 +72,10 @@ public class CrewTest {
 
         assertThat(crew.calculateAbsenceCount(nowDate)).isEqualTo(2);
     }
+
+    @DisplayName("전날까지의 크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
+    @Test
+    void should_() {
+        LocalDate nowDate = LocalDate.of(2024, 12, 13);
+    }
 }

@@ -65,6 +65,16 @@ public class Crew {
         return absenceCount;
     }
 
+    public Penalty determinePenaltyStatus(LocalDate nowDate) {
+        int latenessCount = calculateLatenessCount(nowDate);
+        int absenceCount = calculateAbsenceCount(nowDate);
+        return Penalty.from(latenessCount, absenceCount);
+    }
+
+    public String getName() {
+        return name;
+    }
+
     private boolean isAbsentDay(LocalDate date) {
         return !isHoliday(date) && !attendanceExists(date);
     }

@@ -46,6 +46,14 @@ public class OutputView {
         System.out.printf("%n%s 대상자입니다.%n", status);
     }
 
+    public void displayExpulsionRiskCrewMessage() {
+        System.out.println("제적 위험자 조회 결과");
+    }
+
+    public void displayExpulsionRiskCrew(String name, int absenceCount, int latenessCount, String penaltyStatus) {
+        System.out.printf("%s: 결석 %d회, 지각 %d회 (%s)%n", name, absenceCount, latenessCount, penaltyStatus);
+    }
+
     private void printRecordInfo(Attendance attendance) {
         if (attendance == null) {
             System.out.printf("--:-- (%s)%n", AttendanceStatus.ABSENCE.getDescription());

@@ -1,9 +1,9 @@
 package domain;
 
 public enum Penalty {
-    WARNING("경고"),
-    COUNSEL("면담"),
     EXPULSION("제적"),
+    COUNSEL("면담"),
+    WARNING("경고"),
     PASS("통과");
 
     private final String status;
