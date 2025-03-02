@@ -4,20 +4,18 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AttendanceBook {
-    private final Map<String, Crew> crews;
+    private final CrewGroup crewGroup;
 
     public AttendanceBook() {
-        this.crews = new HashMap<>();
+        this.crewGroup = new CrewGroup();
     }
 
     public void addCrew(String name, LocalDate date, LocalTime time) {
-        crews.putIfAbsent(name, new Crew(name));
-        crews.get(name).addAttendance(date, time);
+        crewGroup.addCrew(name, new Crew(name));
+        crewGroup.findCrewByName(name).addAttendance(date, time);
     }
 
     public Attendance attendCrew(String name, LocalDate date, LocalTime time) {
@@ -32,7 +30,7 @@ public class AttendanceBook {
         if (date.isAfter(nowDate)) {
             throw new IllegalArgumentException("[ERROR] 현재보다 이전 날짜만 수정 가능합니다.");
         }
-        return findCrewByName(name).updateAttendance(date, time);
+        return crewGroup.findCrewByName(name).updateAttendance(date, time);
     }
 
     public int calculateAttendanceCount(String name, LocalDate nowDate) {
@@ -57,26 +55,26 @@ public class AttendanceBook {
 
     public List<Crew> checkExpulsionRiskCrew(LocalDate nowDate) {
         List<Crew> resultCrew = new ArrayList<>();
-        for (String name : crews.keySet()) {
-            addCrewIfAtRisk(nowDate, name, resultCrew);
+        for (Crew crew : crewGroup.getAllCrews()) {
+            addCrewIfAtRisk(nowDate, crew, resultCrew);
         }
         return sortCrews(resultCrew, nowDate);
     }
 
     public Crew findCrewByName(String name) {
-        if (!crews.containsKey(name)) {
+        if (!crewGroup.containsCrew(name)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
-        return crews.get(name);
+        return crewGroup.findCrewByName(name);
     }
 
     public Attendance findAttendance(String name, LocalDate date) {
-        return findCrewByName(name).findAttendanceByDate(date);
+        return crewGroup.findCrewByName(name).findAttendanceByDate(date);
     }
 
-    private void addCrewIfAtRisk(LocalDate nowDate, String name, List<Crew> resultCrew) {
-        if (determinePenaltyStatus(name, nowDate) != Penalty.PASS) {
-            resultCrew.add(crews.get(name));
+    private void addCrewIfAtRisk(LocalDate nowDate, Crew crew, List<Crew> resultCrew) {
+        if (determinePenaltyStatus(crew.getName(), nowDate) != Penalty.PASS) {
+            resultCrew.add(crew);
         }
     }
 
