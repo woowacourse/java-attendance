@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,5 +20,9 @@ public class CrewGroup {
     public Attendances getSpecificAttendances(String name) {
         validateCrewName(name);
         return crewInformation.get(name);
+    }
+
+    public boolean isExist(String name, LocalDate today) {
+        return crewInformation.get(name).isExist(today);
     }
 }

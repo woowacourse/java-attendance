@@ -12,6 +12,13 @@ public class InputView {
         return scanner.nextLine();
     }
 
+    public String insertTime() {
+        System.out.println("등교 시간을 입력해 주세요.\n");
+        String rawTime = readLine();
+        validateTime(rawTime);
+        return rawTime;
+    }
+
     public String insertChangeName() {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
         return readLine();

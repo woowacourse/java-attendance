@@ -1,9 +1,12 @@
 package controller;
 
+import domain.Attendance;
 import domain.AttendanceStatistics;
 import domain.Attendances;
 import domain.CrewGroup;
+import domain.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import service.CrewLoader;
 import view.InputView;
 import view.OutputView;
@@ -23,7 +26,25 @@ public class AttendanceController {
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.load(today);
 
+        markAttendance(crewGroup);
         showCrewAttendanceLog(crewGroup);
+    }
+
+    public void markAttendance(CrewGroup crewGroup) {
+        String name = inputView.insertName();
+        Attendances attendances = crewGroup.getSpecificAttendances(name);
+
+        if (attendances.isExist(today)) {
+            throw new IllegalArgumentException("이미 출석했습니다. 수정 기능을 이용하세요");
+        }
+
+        String rawTime = inputView.insertTime();
+        Time time = new Time(rawTime);
+
+        Attendance attendance = new Attendance(LocalDateTime.of(today, time.convertTime()));
+        attendances.addAttendance(attendance);
+
+        outputView.printAttendanceLog(attendance);
     }
 
     public void showCrewAttendanceLog(CrewGroup crewGroup) {
