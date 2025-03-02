@@ -131,10 +131,10 @@ class AttendanceInfosTest {
         AttendanceInfo attendanceInfo4 = createAttendanceInfo("10:31", 2025, 2, 6);
         AttendanceInfos attendanceInfos = AttendanceInfos.from(
                 List.of(attendanceInfo1, attendanceInfo2, attendanceInfo3, attendanceInfo4));
-        CampusDate campusDate = CampusDate.ofDateWithDay(LocalDate.of(2025, 2, 3), 10);
+        LocalDate date = LocalDate.of(2025, 2, 10);
 
         // when
-        AttendanceCounts attendanceCounts = attendanceInfos.countsByDate(campusDate);
+        AttendanceCounts attendanceCounts = attendanceInfos.countsByDate(date);
 
         // then
         assertThat(attendanceCounts.getAttendanceCount()).isEqualTo(2);
