@@ -13,6 +13,8 @@ public enum AttendanceStatus {
     public static final LocalTime EXCEPT_MONDAY_ATTEND_TIME = LocalTime.of(10, 0);
     public static final int LATE_THRESHOLD_MINUTES = 5;
     public static final int ABSENT_THRESHOLD_MINUTES = 30;
+    public static final LocalTime CAMPUS_OPERATION_HOUR_START = LocalTime.of(8, 0);
+    public static final LocalTime CAMPUS_OPERATION_HOUR_END = LocalTime.of(23, 0);
 
     private final String message;
 
@@ -53,6 +55,10 @@ public enum AttendanceStatus {
 
     private static boolean isBetween(LocalTime target, LocalTime start, LocalTime end) {
         return !target.isBefore(start) && !target.isAfter(end);
+    }
+
+    public static boolean isOperationHour(LocalTime time) {
+        return isBetween(time, CAMPUS_OPERATION_HOUR_START, CAMPUS_OPERATION_HOUR_END);
     }
 
     public String getMessage() {
