@@ -22,10 +22,6 @@ public enum AttendanceStatus {
         this.boundaryMinute = boundaryMinute;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public static Map<AttendanceStatus, Integer> countStatus(Map<LocalDate, DailyRecord> records) {
         Map<AttendanceStatus, Integer> statisticsResult = new LinkedHashMap<>();
         statisticsResult.put(PRESENT, 0);
@@ -68,5 +64,9 @@ public enum AttendanceStatus {
             return LATE;
         }
         return ABSENT;
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -74,6 +74,7 @@ public class AttendanceController {
         Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
         outputView.printCrewRecords(name, records);
         outputView.printStatistics(statisticsResult);
+        // TODO: 패널티 계산
     }
 
     protected void expelledWarningCheck() {
