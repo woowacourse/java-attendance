@@ -6,8 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,14 +16,13 @@ public class CrewAttendanceTest {
     @DisplayName("신규 출석 기록 추가 성공")
     @Test
     void test1() {
-        LocalDate date = LocalDate.of(2024, 12, 3);
-        LocalTime time = LocalTime.parse("10:00");
-        LocalDateTime attendance = LocalDateTime.of(date, time);
+        LocalDateTime attendance = LocalDateTime.of(2024, 12, 3, 10, 0);
         CrewAttendance crewAttendance = new CrewAttendance();
 
         crewAttendance.add(attendance);
 
-        assertThat(crewAttendance.hasRecordAlready(attendance)).isTrue();
+        assertThat(crewAttendance.isExistDay(attendance)).isTrue();
+        assertThat(crewAttendance.getAttendanceOn(attendance)).isEqualTo(new Attendance(attendance));
     }
 
     @DisplayName("신규 출석 기록 추가 시 출석 상태 계산 및 저장 성공")
@@ -37,19 +35,17 @@ public class CrewAttendanceTest {
         CrewAttendance crewAttendance = new CrewAttendance();
 
         crewAttendance.add(attendance);
-        Map<AttendanceRecord, AttendanceStatus> crewAttendances = crewAttendance.getAttendances();
+        List<Attendance> crewAttendances = crewAttendance.getAttendances();
 
-        assertThat(crewAttendance.hasRecordAlready(attendance)).isTrue();
-        assertThat(crewAttendances.get(new AttendanceRecord(attendance)))
+        assertThat(crewAttendances).contains(new Attendance(attendance));
+        assertThat(crewAttendance.getAttendanceOn(attendance).status())
                 .isEqualTo(AttendanceStatus.valueOf(expectedStatus));
     }
 
     @DisplayName("이미 존재하는 날짜의 출석 기록 추가 시 예외 발생")
     @Test
     void test3() {
-        LocalDate date = LocalDate.of(2024, 12, 3);
-        LocalTime time = LocalTime.parse("10:00");
-        LocalDateTime attendance = LocalDateTime.of(date, time);
+        LocalDateTime attendance = LocalDateTime.of(2024, 12, 3, 10, 0);
         CrewAttendance crewAttendance = new CrewAttendance();
 
         crewAttendance.add(attendance);
@@ -67,17 +63,15 @@ public class CrewAttendanceTest {
         LocalDateTime prevDateTime = LocalDateTime.of(date, prevTime);
         LocalTime newTime = LocalTime.parse("09:58");
         LocalDateTime newDateTime = LocalDateTime.of(date, newTime);
-
         CrewAttendance crewAttendance = new CrewAttendance();
+
         crewAttendance.add(prevDateTime);
-        Entry<AttendanceRecord, AttendanceStatus> prevAttendance = crewAttendance.getAttendanceOn(date);
+        Attendance prevAttendance = crewAttendance.getAttendanceOn(date);
 
         crewAttendance.modify(newDateTime);
-        Entry<AttendanceRecord, AttendanceStatus> newAttendance = crewAttendance.getAttendanceOn(date);
+        Attendance newAttendance = crewAttendance.getAttendanceOn(date);
 
-        assertThat(prevAttendance.getKey()).isEqualTo(new AttendanceRecord(prevDateTime));
-        assertThat(prevAttendance.getValue()).isEqualTo(AttendanceStatus.LATE);
-        assertThat(newAttendance.getKey()).isEqualTo(new AttendanceRecord(newDateTime));
-        assertThat(newAttendance.getValue()).isEqualTo(AttendanceStatus.PRESENT);
+        assertThat(prevAttendance).isEqualTo(new Attendance(prevDateTime));
+        assertThat(newAttendance).isEqualTo(new Attendance(newDateTime));
     }
 }
