@@ -40,7 +40,9 @@ public class AttendanceHistories {
     }
 
     public long getTardyCount(Crew crew, LocalDate toDate) {
-        return 0;
+        validateCrewPresence(crew);
+        AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
+        return attendanceDateTimes.getTardyCount(toDate);
     }
 
     private void validateCrewPresence(Crew crew) {

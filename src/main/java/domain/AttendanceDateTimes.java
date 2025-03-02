@@ -39,6 +39,13 @@ public class AttendanceDateTimes {
                 .count();
     }
 
+    public long getTardyCount(LocalDate toDate) {
+        return attendanceDateTimes.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.isDateBefore(toDate))
+                .filter(attendanceDateTime -> attendanceDateTime.isStatusOf(AttendanceStatus.TARDY))
+                .count();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
