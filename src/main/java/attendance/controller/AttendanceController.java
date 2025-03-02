@@ -32,7 +32,7 @@ public class AttendanceController {
         }
         Command command = commandProcess.get(commandStatus);
         command.execute(crewHistories);
-        resultView.showBlank();
+        resultView.showBlankLine();
         run(crewHistories);
     }
 
@@ -40,7 +40,7 @@ public class AttendanceController {
         return Map.of(
                 CommandStatus.ATTEND, new AttendCommand(inputView, resultView, clock, campusScheduler),
                 CommandStatus.MODIFY, new ModifyCommand(inputView, resultView, clock, campusScheduler),
-                CommandStatus.INQUIRY_CREW, new InQuiryCrewCommand(),
+                CommandStatus.INQUIRY_CREW, new InquiryCrewCommand(inputView, resultView, clock, campusScheduler),
                 CommandStatus.FIND_DISMISSAL, new FindDismissalCommand()
         );
     }
