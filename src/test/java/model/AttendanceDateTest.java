@@ -63,4 +63,13 @@ public class AttendanceDateTest {
         );
     }
 
+    @Test
+    @DisplayName("정렬을 위한 메서드 테스트")
+    void test11() {
+        AttendanceDate earlyAttendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 1));
+        AttendanceDate lateAttendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 12));
+
+        Assertions.assertTrue(earlyAttendanceDate.compareTo(lateAttendanceDate) < 0);
+    }
+
 }
