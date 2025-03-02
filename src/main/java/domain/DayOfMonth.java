@@ -5,6 +5,10 @@ import java.util.List;
 
 public record DayOfMonth(int dayOfMonth) {
     public static final List<Integer> HOLIDAYS = List.of(25);
+    public static final int SATURDAY = 6;
+    public static final int SUNDAY = 7;
+    public static final int START_OF_DAY = 1;
+    public static final int END_OF_DAY = 31;
 
     public DayOfMonth {
         isInvalidDayOfMonth(dayOfMonth);
@@ -15,11 +19,11 @@ public record DayOfMonth(int dayOfMonth) {
             return true;
         }
         LocalDate newDay = LocalDate.of(today.getYear(), today.getMonth().getValue(), dayOfMonth);
-        return newDay.getDayOfWeek().getValue() == 6 || newDay.getDayOfWeek().getValue() == 7;
+        return newDay.getDayOfWeek().getValue() == SATURDAY || newDay.getDayOfWeek().getValue() == SUNDAY;
     }
 
     private void isInvalidDayOfMonth(int dayOfMonth) {
-        if (dayOfMonth <= 0 || dayOfMonth > 31) {
+        if (dayOfMonth < START_OF_DAY || dayOfMonth > END_OF_DAY) {
             throw new IllegalArgumentException("잘못된 날짜입니다.");
         }
     }

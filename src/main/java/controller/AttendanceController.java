@@ -29,6 +29,8 @@ public class AttendanceController {
     private static final LocalDate today = LocalDate.of(2024, 12, 16);
     private static final LocalTime startTime = LocalTime.of(8, 0);
     private static final LocalTime endTime = LocalTime.of(23, 0);
+    private static final LocalTime INITIAL_TIME = LocalTime.of(10, 0);
+    
     private final Map<UserCommandType, Command> commands = new HashMap<>();
     private final InputView inputView;
     private final OutputView outputView;
@@ -66,7 +68,7 @@ public class AttendanceController {
     }
 
     public void markAttendance(CrewGroup crewGroup) {
-        Attendance attendanceValidator = new Attendance(LocalDateTime.of(today, LocalTime.of(10, 0)));
+        Attendance attendanceValidator = new Attendance(LocalDateTime.of(today, INITIAL_TIME));
         attendanceValidator.validateHoliday();
 
         String name = inputView.insertName();

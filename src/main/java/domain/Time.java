@@ -3,6 +3,10 @@ package domain;
 import java.time.LocalTime;
 
 public class Time {
+    private static final String TIME_DELIMITER = ":";
+    public static final int HOUR_INDEX = 0;
+    public static final int MINUTE_INDEX = 1;
+
     private final String rawTime;
 
     public Time(String rawTime) {
@@ -10,9 +14,9 @@ public class Time {
     }
 
     public LocalTime convertTime() {
-        String[] splittedTime = rawTime.split(":");
-        int hour = Integer.parseInt(splittedTime[0]);
-        int minute = Integer.parseInt(splittedTime[1]);
+        String[] splittedTime = rawTime.split(TIME_DELIMITER);
+        int hour = Integer.parseInt(splittedTime[HOUR_INDEX]);
+        int minute = Integer.parseInt(splittedTime[MINUTE_INDEX]);
         return LocalTime.of(hour, minute);
     }
 

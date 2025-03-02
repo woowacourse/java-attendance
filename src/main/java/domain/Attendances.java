@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import util.DayConverter;
 
 public class Attendances {
+    public static final int LATE_WEIGHT = 3;
     private List<Attendance> attendances;
 
     public Attendances(List<Attendance> attendances) {
@@ -43,7 +44,7 @@ public class Attendances {
     }
 
     public AlertCode calucateAlertCode() {
-        int alertThreshold = calculateAbsent() + (calculateLate() / 3);
+        int alertThreshold = calculateAbsent() + (calculateLate() / LATE_WEIGHT);
         if (alertThreshold >= EXPULSION.getLimit()) {
             return EXPULSION;
         }

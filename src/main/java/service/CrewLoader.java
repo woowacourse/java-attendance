@@ -19,20 +19,24 @@ import util.FileReader;
 
 public class CrewLoader {
     private static final LocalTime ABSENT_TIME = LocalTime.of(23, 59);
-    private static final List<Integer> HOLIDAYS = List.of(25);
+    public static final String NAME_DELIMITER = ",";
+    public static final int NAME_INDEX = 0;
+    public static final int ATTENDANCE_INDEX = 1;
+    public static final int DATE_INDEX = 0;
+    public static final int TIME_INDEX = 1;
 
     public CrewGroup load(LocalDate today) {
         List<String> rawCrewsInformation = FileReader.readFile();
         CrewGroup crewGroup = new CrewGroup();
         Map<String, List<Attendance>> rawCrewGroup = new HashMap<>();
         for (String rawCrewInformation : rawCrewsInformation) {
-            List<String> splittedInfomation = splitTextByDelimiter(rawCrewInformation, ",");
-            String name = splittedInfomation.get(0);
-            String rawAttendance = splittedInfomation.get(1);
+            List<String> splittedInfomation = splitTextByDelimiter(rawCrewInformation, NAME_DELIMITER);
+            String name = splittedInfomation.get(NAME_INDEX);
+            String rawAttendance = splittedInfomation.get(ATTENDANCE_INDEX);
 
             List<String> splittedAttendance = splitTextByDelimiter(rawAttendance, " ");
-            String rawDate = splittedAttendance.get(0);
-            String rawTime = splittedAttendance.get(1);
+            String rawDate = splittedAttendance.get(DATE_INDEX);
+            String rawTime = splittedAttendance.get(TIME_INDEX);
 
             LocalDate localDate = LocalDate.parse(rawDate, ISO_LOCAL_DATE);
             LocalTime localTime = LocalTime.parse(rawTime, ISO_LOCAL_TIME);
