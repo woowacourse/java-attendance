@@ -10,6 +10,9 @@ public class AttendanceRecordGenerator {
 
     private static final LocalDate START_DATE = LocalDate.of(2024, 12, 1);
 
+    private AttendanceRecordGenerator() {
+    }
+
     public static Map<LocalDate, AttendanceRecord> generate() {
         final List<LocalDate> attendanceDates = createAttendanceDates();
         Map<LocalDate, AttendanceRecord> attendanceRecords = new LinkedHashMap<>();
