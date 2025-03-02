@@ -15,7 +15,6 @@ public class AttendanceSystem {
         return !attendanceBooks.containsKey(crew);
     }
 
-
     public void editAttendance(Crew crew, AttendanceDate date, AttendanceTime time) {
         if (hasNoCrew(crew)) {
             attendanceBooks.put(crew, new AttendanceBook());
@@ -23,30 +22,18 @@ public class AttendanceSystem {
         attendanceBooks.get(crew).attendance(date, time);
     }
 
-    public int getAbsenceCount(Crew crew) {
-        return attendanceBooks.get(crew).getAbsenceCount();
-    }
-
-    public int getTardyCount(Crew crew) {
-        return attendanceBooks.get(crew).getTardyCount();
-    }
-
-    public int getAttendCount(Crew crew) {
-        return attendanceBooks.get(crew).getAttendCount();
-    }
-
-    public RiskStatus getRisk(Crew crew) {
-        return attendanceBooks.get(crew).getRiskStatus();
-    }
-
     public Map<Crew, AttendanceBook> getRiskCrews() {
         return attendanceBooks.entrySet().stream()
-                .filter(entry -> !entry.getValue().getRiskStatus().equals(RiskStatus.NONE))
+                .filter(this::crewHasRisk)
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> new AttendanceBook(entry.getValue().getAttendanceBook(),
                                 entry.getValue().getAttendanceStatuses().getAttendanceStatuses()))
                 );
+    }
+
+    private boolean crewHasRisk(Map.Entry<Crew, AttendanceBook> entry) {
+        return !entry.getValue().getRiskStatus().equals(RiskStatus.NONE);
     }
 
     public AttendanceBook findByCrew(Crew crew) {

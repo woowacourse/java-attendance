@@ -32,19 +32,6 @@ public class AttendanceBook {
         return attendanceBook.containsKey(date);
     }
 
-    public int getAbsenceCount() {
-        return attendanceStatuses.getAbsenceCount();
-    }
-
-    public int getAttendCount() {
-        return attendanceStatuses.getAttendCount();
-    }
-
-    public int getTardyCount() {
-        return attendanceStatuses.getTardyCount();
-    }
-
-
     public RiskStatus getRiskStatus() {
         return attendanceStatuses.getRiskStatus();
     }
@@ -59,6 +46,6 @@ public class AttendanceBook {
     }
 
     public AttendanceStatuses getAttendanceStatuses() {
-        return attendanceStatuses;
+        return new AttendanceStatuses(attendanceStatuses.getAttendanceStatuses());
     }
 }

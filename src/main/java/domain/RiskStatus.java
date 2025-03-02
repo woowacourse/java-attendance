@@ -25,7 +25,6 @@ public enum RiskStatus {
                 .filter(riskStatus -> riskValue >= riskStatus.riskValue)
                 .findFirst()
                 .orElse(NONE);
-
     }
 
     public static int calculateRiskValue(int absenceCount, int tardyCount) {

@@ -1,6 +1,7 @@
 import domain.AttendanceBook;
 import domain.AttendanceDate;
 import domain.AttendanceStatus;
+import domain.AttendanceStatuses;
 import domain.AttendanceSystem;
 import domain.AttendanceTime;
 import domain.Crew;
@@ -93,7 +94,8 @@ public class AttendanceSystemTest {
     void get_absence_record() {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 0));
-        assertThat(attendanceSystem.getAbsenceCount(crew)).isEqualTo(11);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses().getAbsenceCount()).isEqualTo(11);
     }
 
     @DisplayName("30분 초과시 결석이다")
@@ -101,7 +103,8 @@ public class AttendanceSystemTest {
     void get_absence_record2() {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 31));
-        assertThat(attendanceSystem.getAbsenceCount(crew)).isEqualTo(12);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses().getAbsenceCount()).isEqualTo(12);
     }
 
     @DisplayName("30분 초과시 결석이다")
@@ -109,7 +112,8 @@ public class AttendanceSystemTest {
     void get_absence_record3() {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 7));
-        assertThat(attendanceSystem.getAbsenceCount(crew)).isEqualTo(11);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses().getAbsenceCount()).isEqualTo(11);
     }
 
     @DisplayName("월요일은 1시 시작이다")
@@ -118,7 +122,8 @@ public class AttendanceSystemTest {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 31));
         attendanceSystem.editAttendance(crew, AttendanceDate.of(2024, 12, 2), AttendanceTime.of(10, 31));
-        assertThat(attendanceSystem.getAbsenceCount(crew)).isEqualTo(11);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses().getAbsenceCount()).isEqualTo(11);
     }
 
     @DisplayName("오늘까지의 지각 횟수를 가져온다")
@@ -126,7 +131,8 @@ public class AttendanceSystemTest {
     void get_tardy_record() {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 7));
-        assertThat(attendanceSystem.getTardyCount(crew)).isEqualTo(1);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses().getTardyCount()).isEqualTo(1);
     }
 
     @DisplayName("오늘까지의 지각 횟수를 가져온다2")
@@ -135,7 +141,8 @@ public class AttendanceSystemTest {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 7));
         attendanceSystem.editAttendance(crew, AttendanceDate.of(2024, 12, 3), AttendanceTime.of(10, 7));
-        assertThat(attendanceSystem.getTardyCount(crew)).isEqualTo(2);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses().getTardyCount()).isEqualTo(2);
     }
 
     @DisplayName("월요일 지각 횟수")
@@ -144,7 +151,8 @@ public class AttendanceSystemTest {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 7));
         attendanceSystem.editAttendance(crew, AttendanceDate.of(2024, 12, 2), AttendanceTime.of(10, 7));
-        assertThat(attendanceSystem.getTardyCount(crew)).isEqualTo(1);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses().getTardyCount()).isEqualTo(1);
     }
 
     @DisplayName("월요일 지각 횟수2")
@@ -153,7 +161,8 @@ public class AttendanceSystemTest {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 7));
         attendanceSystem.editAttendance(crew, AttendanceDate.of(2024, 12, 2), AttendanceTime.of(13, 7));
-        assertThat(attendanceSystem.getTardyCount(crew)).isEqualTo(2);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses().getTardyCount()).isEqualTo(2);
     }
 
     @DisplayName("출석 횟수를 가져온다")
@@ -161,7 +170,8 @@ public class AttendanceSystemTest {
     void get_attend_record() {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 5));
-        assertThat(attendanceSystem.getAttendCount(crew)).isEqualTo(1);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses().getAttendCount()).isEqualTo(1);
     }
 
     @DisplayName("월요일에 출석 횟수를 가져온다")
@@ -170,7 +180,8 @@ public class AttendanceSystemTest {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 5));
         attendanceSystem.editAttendance(crew, AttendanceDate.of(2024, 12, 2), AttendanceTime.of(13, 5));
-        assertThat(attendanceSystem.getAttendCount(crew)).isEqualTo(2);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses().getAttendCount()).isEqualTo(2);
     }
 
     @DisplayName("출석 횟수를 가져온다")
@@ -179,7 +190,8 @@ public class AttendanceSystemTest {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 5));
         attendanceSystem.editAttendance(crew, AttendanceDate.of(2024, 12, 2), AttendanceTime.of(13, 7));
-        assertThat(attendanceSystem.getAttendCount(crew)).isEqualTo(1);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses().getAttendCount()).isEqualTo(1);
     }
 
     @DisplayName("결석을 5회 초과로 한 경우 제적 대상자이다")
@@ -187,8 +199,9 @@ public class AttendanceSystemTest {
     void expulsion_test() {
         Crew crew = new Crew("두리");
         attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 0));
-        assertThat(attendanceSystem.getAbsenceCount(crew) + attendanceSystem.getTardyCount(crew) / 3).isEqualTo(11);
-        assertThat(attendanceSystem.getRisk(crew)).isEqualTo(RiskStatus.EXPULSION);
+        AttendanceStatuses attendanceStatuses = attendanceSystem.findByCrew(crew).getAttendanceStatuses();
+        assertThat(attendanceStatuses.getAbsenceCount() + attendanceStatuses.getTardyCount() / 3).isEqualTo(11);
+        assertThat(attendanceStatuses.getRiskStatus()).isEqualTo(RiskStatus.EXPULSION);
     }
 
     @DisplayName("결석을 3회이상 5회 이하로 한 경우 면담 대상자이다")
@@ -205,9 +218,10 @@ public class AttendanceSystemTest {
 
             }
         }
+        AttendanceStatuses attendanceStatuses = attendanceSystem.findByCrew(crew).getAttendanceStatuses();
         assertAll(
-                () -> assertThat(attendanceSystem.getAbsenceCount(crew) + attendanceSystem.getTardyCount(crew) / 3).isEqualTo(3),
-                () -> assertThat(attendanceSystem.getRisk(crew)).isEqualTo(RiskStatus.COUNSELING)
+                () -> assertThat(attendanceStatuses.getAbsenceCount() + attendanceStatuses.getTardyCount() / 3).isEqualTo(3),
+                () -> assertThat(attendanceStatuses.getRiskStatus()).isEqualTo(RiskStatus.COUNSELING)
         );
     }
 
@@ -225,9 +239,10 @@ public class AttendanceSystemTest {
 
             }
         }
+        AttendanceStatuses attendanceStatuses = attendanceSystem.findByCrew(crew).getAttendanceStatuses();
         assertAll(
-                () -> assertThat(attendanceSystem.getAbsenceCount(crew) + attendanceSystem.getTardyCount(crew) / 3).isEqualTo(2),
-                () -> assertThat(attendanceSystem.getRisk(crew)).isEqualTo(RiskStatus.WARNING)
+                () -> assertThat(attendanceStatuses.getAbsenceCount() + attendanceStatuses.getTardyCount() / 3).isEqualTo(2),
+                () -> assertThat(attendanceStatuses.getRiskStatus()).isEqualTo(RiskStatus.WARNING)
         );
     }
 
@@ -245,9 +260,10 @@ public class AttendanceSystemTest {
 
             }
         }
+        AttendanceStatuses attendanceStatuses = attendanceSystem.findByCrew(crew).getAttendanceStatuses();
         assertAll(
-                () -> assertThat(attendanceSystem.getAbsenceCount(crew) + attendanceSystem.getTardyCount(crew) / 3).isEqualTo(0),
-                () -> assertThat(attendanceSystem.getRisk(crew)).isEqualTo(RiskStatus.NONE)
+                () -> assertThat(attendanceStatuses.getAbsenceCount() + attendanceStatuses.getTardyCount() / 3).isEqualTo(0),
+                () -> assertThat(attendanceStatuses.getRiskStatus()).isEqualTo(RiskStatus.NONE)
         );
     }
 
@@ -265,9 +281,10 @@ public class AttendanceSystemTest {
 
             }
         }
+        AttendanceStatuses attendanceStatuses = attendanceSystem.findByCrew(crew).getAttendanceStatuses();
         assertAll(
-                () -> assertThat(attendanceSystem.getAbsenceCount(crew) + attendanceSystem.getTardyCount(crew) / 3).isEqualTo(1),
-                () -> assertThat(attendanceSystem.getRisk(crew)).isEqualTo(RiskStatus.NONE)
+                () -> assertThat(attendanceStatuses.getAbsenceCount() + attendanceStatuses.getTardyCount() / 3).isEqualTo(1),
+                () -> assertThat(attendanceStatuses.getRiskStatus()).isEqualTo(RiskStatus.NONE)
         );
     }
 

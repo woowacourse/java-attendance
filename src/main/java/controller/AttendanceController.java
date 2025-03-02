@@ -75,12 +75,14 @@ public class AttendanceController {
     }
 
     private void checkRiskCrews() {
-        List<RiskCrewDto> riskCrews = attendanceSystem.getRiskCrews().entrySet().stream()
+        List<RiskCrewDto> riskCrews = attendanceSystem.getRiskCrews()
+                .entrySet()
+                .stream()
                 .map(entry -> new RiskCrewDto(
                         entry.getKey().name(),
-                        entry.getValue().getAbsenceCount(),
-                        entry.getValue().getTardyCount(),
-                        entry.getValue().getRiskStatus()
+                        entry.getValue().getAttendanceStatuses().getAbsenceCount(),
+                        entry.getValue().getAttendanceStatuses().getTardyCount(),
+                        entry.getValue().getAttendanceStatuses().getRiskStatus()
                 )).toList();
         output.printRiskCrews(riskCrews);
     }
@@ -89,7 +91,6 @@ public class AttendanceController {
         Crew crew = new Crew(input.getNameInput());
         AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
         attendanceBook.getAttendanceBook();
-
         AttendanceStatuses attendanceStatuses = attendanceBook.getAttendanceStatuses();
         output.printAttendanceRecord(
                 crew.name(),
@@ -149,7 +150,8 @@ public class AttendanceController {
     private void initCrew() {
         List<AttendanceRecordDto> attendanceRecords = fileInput.getFileInit();
         attendanceRecords.forEach(attendanceRecordDto ->
-                attendanceSystem.editAttendance(new Crew(attendanceRecordDto.nickname()),
+                attendanceSystem.editAttendance(
+                        new Crew(attendanceRecordDto.nickname()),
                         new AttendanceDate(attendanceRecordDto.attendanceDateTime().toLocalDate()),
                         new AttendanceTime(attendanceRecordDto.attendanceDateTime().toLocalTime())));
     }
