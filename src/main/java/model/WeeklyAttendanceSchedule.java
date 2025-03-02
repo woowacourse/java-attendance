@@ -31,6 +31,15 @@ public enum WeeklyAttendanceSchedule {
                 .orElseThrow();
     }
 
+    public static boolean checkHoliday(LocalDate date) {
+        return date.equals(LocalDate.of(2024, 12, 25)) ||
+                Arrays.stream(WeeklyAttendanceSchedule.values())
+                        .noneMatch(
+                                weeklyAttendanceSchedule ->
+                                        weeklyAttendanceSchedule.getDayOfWeek().equals(date.getDayOfWeek())
+                        );
+    }
+
     private static void validateHoliday(LocalDate localDate) {
         int month = localDate.getMonthValue();
         int date = localDate.getDayOfMonth();
@@ -41,15 +50,6 @@ public enum WeeklyAttendanceSchedule {
                 localDate.equals(LocalDate.of(2024, 12, 25))) {
             throw new IllegalArgumentException(String.format("[ERROR] %d월 %d일 %s은 등교일이 아닙니다.", month, date, day));
         }
-    }
-
-    public static boolean checkHoliday(LocalDate date) {
-        return date.equals(LocalDate.of(2024, 12, 25)) ||
-                Arrays.stream(WeeklyAttendanceSchedule.values())
-                        .noneMatch(
-                                weeklyAttendanceSchedule ->
-                                        weeklyAttendanceSchedule.getDayOfWeek().equals(date.getDayOfWeek())
-                        );
     }
 
     public LocalTime getAttendanceStartTime() {
