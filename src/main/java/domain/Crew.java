@@ -24,6 +24,10 @@ public class Crew {
         attendanceMap.put(localDateTime.toLocalDate(), Attendance.of(localDateTime));
     }
 
+    public boolean existAttendance(final LocalDateTime localDateTime) {
+        return attendanceMap.containsKey(localDateTime.toLocalDate());
+    }
+
     public Map<LocalDate, Attendance> getAttendanceMap() {
         return Collections.unmodifiableMap(attendanceMap);
     }
