@@ -30,18 +30,30 @@ public class AttendanceSystem {
     public void run() {
         crewAttendanceManager.initAttendanceFromFile();
 
-        outputView.printMenu(dateGenerator.generate());
-        Menu menu = inputView.readMenuCommand();
+        Menu menu = displayMenuAndReadCommand();
 
+        processCheck(menu);
+    }
+
+    private Menu displayMenuAndReadCommand() {
+        outputView.printMenu(dateGenerator.generate());
+        return inputView.readMenuCommand();
+    }
+
+    private void processCheck(final Menu menu) {
         if (menu.equals(Menu.CHECK)) {
             String nickname = inputView.readNickname();
             crewAttendanceManager.validateNicknameExists(nickname);
 
-            String attendanceTime = inputView.readAttendanceTime();
-            LocalTime time = DateTimeParser.parseTime(attendanceTime, TIME_FORMATTER);
+            LocalTime time = readAndParseAttendanceTime();
 
             Attendance attendance = crewAttendanceManager.processAttendanceCheck(nickname, time);
             outputView.printAttendanceResult(attendance);
         }
+    }
+
+    private LocalTime readAndParseAttendanceTime() {
+        String attendanceTime = inputView.readAttendanceTime();
+        return DateTimeParser.parseTime(attendanceTime, TIME_FORMATTER);
     }
 }
