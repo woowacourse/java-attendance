@@ -8,12 +8,10 @@ public class AttendanceTime {
     private static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
     private static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
 
-
     public AttendanceTime(LocalTime attendanceTime) {
         validateIsOperatingHours(attendanceTime);
         this.attendanceTime = attendanceTime;
     }
-
 
     public LocalTime getTime() {
         return attendanceTime;
