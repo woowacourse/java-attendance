@@ -7,6 +7,14 @@ public enum AttendanceRiskLevel {
     NORMAL("정상"),
     ;
 
-    AttendanceRiskLevel(String status) {}
+    private final String status;
+
+    AttendanceRiskLevel(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
 }
 
