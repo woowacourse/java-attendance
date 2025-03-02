@@ -73,6 +73,19 @@ class StatusStatisticTest {
         assertThat(status.compareTo(statusMoreWeight)).isLessThan(0);
     }
 
+    @Test
+    @DisplayName("가중치가 같을 경우, 이름 비교해 정렬할 수 있다.")
+    void test_compareNameOfStatusStatistics() {
+        Map<LocalDate, Attendance> attendances = createStandardAttendanceMap();
+        var status = new StatusStatistics(new Nickname("나"));
+        status.update(attendances);
+
+        var statusFastName = new StatusStatistics(new Nickname("가"));
+        statusFastName.update(attendances);
+
+        assertThat(status.compareTo(statusFastName)).isLessThan(0);
+    }
+
     private StatusStatistics createStatusWithAttendance(Nickname nickname, int attendanceCount) {
         var status = new StatusStatistics(nickname);
         Map<LocalDate, Attendance> attendances = new HashMap<>();
