@@ -35,8 +35,8 @@ public class CampusTest {
     @DisplayName("정규 시작 시간 결석 테스트")
     @ParameterizedTest
     @CsvSource({"3,10,30,1", "3,10,31,0", "3,18,0,0", "3,23,0,0", "24,10,30,1", "24,10,31,0", "24,18,0,0", "24,23,0,0"})
-    void test3(int dayOfMonth, int hour, int minute) {
-        LocalDateTime attendance = LocalDateTime.of(2024, 12, dayOfMonth, hour, minute);
+    void test3(int dayOfMonth, int hour, int minute, int second) {
+        LocalDateTime attendance = LocalDateTime.of(2024, 12, dayOfMonth, hour, minute, second);
         AttendanceStatus expected = AttendanceStatus.ABSENT;
 
         AttendanceStatus actual = Campus.calculateAttendanceStatus(attendance);
