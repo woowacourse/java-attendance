@@ -17,6 +17,11 @@ public class AttendanceDateTime implements SystemDateTime {
     }
 
     @Override
+    public LocalDate nowDate() {
+        return NOW_DATETIME.toLocalDate();
+    }
+
+    @Override
     public boolean isWorkingDay(LocalDate date) {
         return !isWeekend(date) && !isHoliday(date);
     }

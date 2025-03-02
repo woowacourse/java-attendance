@@ -19,7 +19,7 @@ class AttendanceTest {
         var dateTime = LocalDateTime.of(2024, 12, 11, 10, 0);
         var assertion = new Attendance(dateTime);
 
-        assertThat(assertion.state()).isEqualTo(AttendanceStatus.ATTENDANCE);
+        assertThat(assertion.status()).isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
     @Test
@@ -28,7 +28,7 @@ class AttendanceTest {
         var dateTime = LocalDateTime.of(2024, 12, 11, 10, 10);
         var assertion = new Attendance(dateTime);
 
-        assertThat(assertion.state()).isEqualTo(AttendanceStatus.LATE);
+        assertThat(assertion.status()).isEqualTo(AttendanceStatus.LATE);
     }
 
     @Test
@@ -37,7 +37,7 @@ class AttendanceTest {
         var dateTime = LocalDateTime.of(2024, 12, 11, 10, 35);
         var assertion = new Attendance(dateTime);
 
-        assertThat(assertion.state()).isEqualTo(AttendanceStatus.ABSENCE);
+        assertThat(assertion.status()).isEqualTo(AttendanceStatus.ABSENCE);
     }
 
     @Test
@@ -46,7 +46,7 @@ class AttendanceTest {
         var dateTime = LocalDateTime.of(2024, 12, 16, 13, 10);
         var assertion = new Attendance(dateTime);
 
-        assertThat(assertion.state()).isEqualTo(AttendanceStatus.LATE);
+        assertThat(assertion.status()).isEqualTo(AttendanceStatus.LATE);
     }
 
     @Test
@@ -55,7 +55,7 @@ class AttendanceTest {
         var dateTime = LocalDateTime.of(2024, 12, 16, 13, 35);
         var assertion = new Attendance(dateTime);
 
-        assertThat(assertion.state()).isEqualTo(AttendanceStatus.ABSENCE);
+        assertThat(assertion.status()).isEqualTo(AttendanceStatus.ABSENCE);
     }
 
     @ParameterizedTest

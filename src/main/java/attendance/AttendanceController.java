@@ -1,7 +1,9 @@
 package attendance;
 
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -29,10 +31,10 @@ public class AttendanceController {
     private AttendanceBook attendanceBook;
 
     {
-        optionMenu.put("1", this::registerAttendance);
-        optionMenu.put("2", this::modifyAttendance);
-        optionMenu.put("3", this::generateCrewStatistics);
-        optionMenu.put("4", this::generateSanctionsLevelStatistics);
+        optionMenu.put("1", this::processAttendance);
+        optionMenu.put("2", this::processModify);
+        optionMenu.put("3", this::processCrewStatistics);
+        optionMenu.put("4", this::processSanctionsLevels);
     }
 
     public AttendanceController(InputView inputView, OutputView outputView) {
@@ -42,7 +44,7 @@ public class AttendanceController {
 
     public void run() {
         attendanceBook = readFile();
-        handleAttendanceMethod();
+        process();
     }
 
     private AttendanceBook readFile() {
@@ -51,6 +53,15 @@ public class AttendanceController {
             return attendanceReader.load();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void process() {
+        try {
+            handleAttendanceMethod();
+        } catch (AttendanceArgumentException e) {
+            outputView.printError(e.getMessage());
+            handleAttendanceMethod();
         }
     }
 
@@ -72,16 +83,53 @@ public class AttendanceController {
         runnable.run();
     }
 
-    private void registerAttendance() {
+    private void processAttendance() {
         outputView.printRequestNickName();
         var nickname = requestNickname();
         outputView.printRequestAttendanceTime();
         var time = handleInput(inputView::requestTime);
-        var date = systemDateTime.now().toLocalDate();
+        var date = systemDateTime.nowDate();
+        registerAttendance(date, time, nickname);
+    }
+
+    private void registerAttendance(LocalDate date, LocalTime time, Nickname nickname) {
         LocalDateTime dateTime = LocalDateTime.of(date, time);
         attendanceBook.attendance(nickname, dateTime);
         String state = attendanceBook.getConvertedAttendanceState(nickname, date);
         outputView.printAttendance(dateTime, state);
+    }
+
+    private void processModify() {
+        outputView.printRequestNickNameForModify();
+        var nickname = requestNickname();
+        outputView.printRequestDateForModify();
+        var date = requestDate();
+        outputView.printRequestTimeForModify();
+        var time = handleInput(inputView::requestTime);
+
+        modifyAttendance(nickname, date, time);
+        outputView.flushStringBuilder();
+    }
+
+    private void modifyAttendance(Nickname nickname, LocalDate date, LocalTime time) {
+        var dateTime = LocalDateTime.of(date, time);
+        try {
+            var oldAttendance = attendanceBook.getAttendance(nickname, date);
+            outputView.appendOldAttendance(oldAttendance.dateTime(), oldAttendance.getConvertedStatus());
+        } catch (AttendanceArgumentException e) {
+            outputView.appendAbsenceAttendance(date);
+        }
+        attendanceBook.attendance(nickname, dateTime);
+        var newAttendance = attendanceBook.getAttendance(nickname, date);
+        outputView.appendNewAttendance(time, newAttendance.getConvertedStatus());
+    }
+
+    private void processCrewStatistics() {
+
+    }
+
+    private void processSanctionsLevels() {
+
     }
 
     private Nickname requestNickname() {
@@ -91,16 +139,9 @@ public class AttendanceController {
         });
     }
 
-    private void modifyAttendance() {
-
-    }
-
-    private void generateCrewStatistics() {
-
-    }
-
-    private void generateSanctionsLevelStatistics() {
-
+    private LocalDate requestDate() {
+        var input = handleInput(inputView::requestDate);
+        return systemDateTime.nowDate().withDayOfMonth(input);
     }
 
     private <T> T handleInput(Supplier<T> inputSupplier) {

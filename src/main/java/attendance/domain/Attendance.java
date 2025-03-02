@@ -6,7 +6,7 @@ import java.time.LocalTime;
 
 import attendance.exception.AttendanceArgumentException;
 
-public record Attendance(LocalDateTime dateTime, AttendanceStatus state) {
+public record Attendance(LocalDateTime dateTime, AttendanceStatus status) {
     private static final String OUT_OF_SCHEDULE = "캠퍼스 운영시간 외에 출석할 수 없습니다.";
 
     public Attendance(LocalDateTime dateTime) {
@@ -25,5 +25,9 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus state) {
         LocalTime time = dateTime.toLocalTime();
         LocalTime schedule = Schedule.getSchedule(date);
         return AttendanceStatus.judgeStatus(time, schedule);
+    }
+
+    public String getConvertedStatus() {
+        return status.convertMessage();
     }
 }

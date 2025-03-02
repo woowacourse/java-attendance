@@ -6,5 +6,7 @@ import java.time.LocalDateTime;
 public interface SystemDateTime {
     LocalDateTime now();
 
+    LocalDate nowDate();
+
     boolean isWorkingDay(LocalDate date);
 }

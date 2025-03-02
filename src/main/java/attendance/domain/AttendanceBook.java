@@ -42,7 +42,7 @@ public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemD
 
     public String getConvertedAttendanceState(Nickname nickname, LocalDate date) {
         Attendance attendance = getAttendance(nickname, date);
-        return attendance.state().convertMessage();
+        return attendance.status().convertMessage();
     }
 
     private Attendances getAttendances(Nickname nickname) {

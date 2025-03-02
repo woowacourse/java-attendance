@@ -15,7 +15,7 @@ public record StatusStatistics(Nickname nickname, EnumMap<AttendanceStatus, Inte
 
     public void update(Map<LocalDate, Attendance> attendances) {
         for (LocalDate date : attendances.keySet()) {
-            put(attendances.get(date).state());
+            put(attendances.get(date).status());
         }
     }
 
