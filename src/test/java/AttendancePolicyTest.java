@@ -12,13 +12,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendancePolicyTest {
 
-    private LocalDate monday;
     private LocalDate weekday;
     private LocalDate weekend;
 
     @BeforeEach
     void setUp() {
-        monday = LocalDate.of(2024, 12, 9);
         weekday = LocalDate.of(2024, 12, 13);
         weekend = LocalDate.of(2024, 12, 14);
     }
@@ -59,10 +57,19 @@ public class AttendancePolicyTest {
         LocalTime todayTime = LocalTime.of(
                 Integer.parseInt(time.split(":")[0]),
                 Integer.parseInt(time.split(":")[1]));
+        LocalDate monday = LocalDate.of(2024, 12, 9);
         LocalDateTime attendanceTime = LocalDateTime.of(monday, todayTime);
 
         AttendanceStatus status = new AttendancePolicy().getAttendanceStatus(attendanceTime);
         assertThat(status.getStatus()).isEqualTo(expected);
     }
 
+    @Test
+    void 공휴일에_출석하면_예외가_발생한다() {
+        LocalDate holiday = LocalDate.of(2024, 12, 25);
+
+        assertThatThrownBy(() -> new AttendancePolicy().validateIsHolidays(holiday))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 공휴일에는 등교할 수 없습니다.");
+    }
 }
