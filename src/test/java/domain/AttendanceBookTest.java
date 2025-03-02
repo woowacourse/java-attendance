@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -107,6 +108,19 @@ public class AttendanceBookTest {
 
         //then
         assertThat(attendanceRecords).contains(AttendanceRecord.of(localDate));
+    }
+
+    @Test
+    @DisplayName("크루별 출석 상태를 카운팅 한다.")
+    void test6() {
+        //given
+        final String name = "쿠키";
+
+        //when
+        final Map<AttendanceStatus, Integer> countAttendanceStatus = attendanceBook.countAttendanceStatus(name);
+
+        //then
+        assertThat(countAttendanceStatus).isNotEmpty();
 
     }
 }

@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import util.DateTimeConvertor;
@@ -56,5 +57,9 @@ public class AttendanceBook {
 
     public List<AttendanceRecord> lookUpAttendanceHistory(final String name) {
         return crews.get(name).getAttendanceRecords();
+    }
+
+    public Map<AttendanceStatus, Integer> countAttendanceStatus(final String name) {
+        return null;
     }
 }
