@@ -1,10 +1,12 @@
 package dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Optional;
 
 public record AttendanceRecordDto(
-        LocalDateTime dateTime,
-        boolean isEmpty,
+        LocalDate attendanceDate,
+        Optional<LocalTime> attendanceTime,
         String attendanceStatus
 ) {
 }

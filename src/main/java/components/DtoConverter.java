@@ -22,8 +22,8 @@ public class DtoConverter {
 
     public AttendanceRecordDto convertToAttendanceRecordDto(final AttendanceRecord attendanceRecord) {
         return new AttendanceRecordDto(
-                attendanceRecord.getDateTime(),
-                attendanceRecord.isEmpty(),
+                attendanceRecord.getAttendanceDate(),
+                attendanceRecord.getAttendanceTime(),
                 convertAttendanceStatusToString(attendanceRecord.calculateAttendanceStatus())
         );
     }

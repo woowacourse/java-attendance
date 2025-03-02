@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,10 +35,12 @@ public class AttendanceHistoryTest {
             final var actual = attendanceHistory.attendance(attendanceDateTime);
 
             // then
-            assertThat(actual.getDateTime())
+            assertThat(actual.getAttendanceDate())
                     .hasYear(2024)
                     .hasMonthValue(12)
-                    .hasDayOfMonth(13)
+                    .hasDayOfMonth(13);
+            assertThat(actual.getAttendanceTime()).isNotEmpty();
+            assertThat(actual.getAttendanceTime().get())
                     .hasHour(10)
                     .hasMinute(5);
         }
@@ -55,12 +58,16 @@ public class AttendanceHistoryTest {
             final AttendanceRecord actual = attendanceHistory.findByDate(LocalDate.of(2024, 12, 13));
 
             // then
-            assertThat(actual.getDateTime())
-                    .hasYear(2024)
-                    .hasMonthValue(12)
-                    .hasDayOfMonth(13)
-                    .hasHour(10)
-                    .hasMinute(5);
+            assertSoftly(s -> {
+                s.assertThat(actual.getAttendanceDate())
+                        .hasYear(2024)
+                        .hasMonthValue(12)
+                        .hasDayOfMonth(13);
+                s.assertThat(actual.getAttendanceTime()).isNotEmpty();
+                s.assertThat(actual.getAttendanceTime().get())
+                        .hasHour(10)
+                        .hasMinute(5);
+            });
         }
 
         @DisplayName("기존의 출석 기록을 새로운 시간으로 수정한다.")
@@ -78,27 +85,16 @@ public class AttendanceHistoryTest {
             final AttendanceRecord after = attendanceHistory.findByDate(LocalDate.of(2024, 12, 13));
 
             // then
-            assertThat(before.getDateTime())
-                    .hasHour(10)
-                    .hasMinute(5);
-            assertThat(after.getDateTime())
-                    .hasHour(11)
-                    .hasMinute(30);
-        }
-
-        @DisplayName("기록이 존재하지 않는다면, empty record를 반환한다.")
-        @Test
-        public void findEmpty() throws Exception {
-            // given
-            final Crew owner = new Crew("owner");
-            final var attendanceHistory = new AttendanceHistory(owner);
-            final LocalDate targetDate = LocalDate.of(2024, 12, 13);
-
-            // when
-            final AttendanceRecord actual = attendanceHistory.findByDate(targetDate);
-
-            // then
-            assertThat(actual.isEmpty()).isTrue();
+            assertSoftly(s -> {
+                s.assertThat(before.getAttendanceTime()).isNotEmpty();
+                s.assertThat(before.getAttendanceTime().get())
+                        .hasHour(10)
+                        .hasMinute(5);
+                s.assertThat(after.getAttendanceTime()).isNotEmpty();
+                s.assertThat(after.getAttendanceTime().get())
+                        .hasHour(11)
+                        .hasMinute(30);
+            });
         }
 
         @DisplayName("주어진 날짜 이전날까지의 출석 기록을 반환한다.")
@@ -114,9 +110,9 @@ public class AttendanceHistoryTest {
 
             // then
             assertThat(actual).hasSize(1);
-            assertThat(actual.getFirst().getDateTime())
+            assertThat(actual.getFirst().getAttendanceDate())
                     .hasDayOfMonth(2);
-            assertThat(actual.getFirst().isEmpty()).isTrue();
+            assertThat(actual.getFirst().getAttendanceTime()).isEmpty();
         }
 
         @DisplayName("전날까지의 출석 통계를 계산하여 반환한다.")

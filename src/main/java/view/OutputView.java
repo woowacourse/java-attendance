@@ -4,6 +4,7 @@ package view;
 import dto.AttendanceRecordDto;
 import dto.RiskOfExpulsionCrewDto;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +25,13 @@ public class OutputView {
     }
 
     private String formatAttendanceTime(final AttendanceRecordDto attendanceRecordDto) {
-        if (attendanceRecordDto.isEmpty()) {
-            return String.format("%s (%s)", attendanceRecordDto.dateTime().format(EMPTY_FORMATTER),
+        if (attendanceRecordDto.attendanceTime().isEmpty()) {
+            return String.format("%s (%s)", attendanceRecordDto.attendanceDate().format(EMPTY_FORMATTER),
                     attendanceRecordDto.attendanceStatus());
         }
-        return String.format("%s (%s)", attendanceRecordDto.dateTime().format(TIME_FORMATTER),
+        return String.format("%s (%s)",
+                LocalDateTime.of(attendanceRecordDto.attendanceDate(), attendanceRecordDto.attendanceTime().get())
+                        .format(TIME_FORMATTER),
                 attendanceRecordDto.attendanceStatus());
     }
 
@@ -45,12 +48,13 @@ public class OutputView {
     }
 
     private String formatAttendanceRecord(final AttendanceRecordDto attendanceRecordDto) {
-        if (attendanceRecordDto.isEmpty()) {
-            return String.format(attendanceRecordDto.dateTime().format(EMPTY_TIME_FORMATTER) + " (%s)",
+        if (attendanceRecordDto.attendanceTime().isEmpty()) {
+            return String.format(attendanceRecordDto.attendanceDate().format(EMPTY_TIME_FORMATTER) + " (%s)",
                     attendanceRecordDto.attendanceStatus());
         }
         return String.format(
-                attendanceRecordDto.dateTime().format(DATE_TIME_FORMATTER) + " (%s)",
+                LocalDateTime.of(attendanceRecordDto.attendanceDate(), attendanceRecordDto.attendanceTime().get())
+                        .format(DATE_TIME_FORMATTER) + " (%s)",
                 attendanceRecordDto.attendanceStatus());
     }
 
@@ -88,12 +92,12 @@ public class OutputView {
                 riskOfExpulsionCrewDto.lateCount(), riskOfExpulsionCrewDto.expulsionStatus());
     }
 
-    public void printIntroduceUpdate(){
+    public void printIntroduceUpdate() {
         System.out.println("이미 출석이 존재합니다. 수정 기능을 사용해주세요.\n");
     }
 
     public void printExceptionMessage(final String message) {
-        System.out.println("[ERROR] "+ message);
+        System.out.println("[ERROR] " + message);
     }
 
 }

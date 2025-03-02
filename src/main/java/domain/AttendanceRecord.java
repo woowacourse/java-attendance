@@ -3,38 +3,38 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 public class AttendanceRecord {
-    private final LocalDateTime attendanceDateTime;
-    private final boolean isEmpty;
+    private final LocalDate attendanceDate;
+    private final LocalTime attendanceTime;
+
+    private AttendanceRecord(final LocalDate attendanceDate) {
+        this.attendanceDate = attendanceDate;
+        this.attendanceTime = null;
+    }
 
     public AttendanceRecord(final LocalDateTime attendanceDateTime) {
-        this.attendanceDateTime = attendanceDateTime;
-        this.isEmpty = false;
+        this.attendanceDate = attendanceDateTime.toLocalDate();
+        this.attendanceTime = attendanceDateTime.toLocalTime();
     }
 
-    private AttendanceRecord(final LocalDateTime attendanceDateTime, final boolean isEmpty) {
-        this.attendanceDateTime = attendanceDateTime;
-        this.isEmpty = isEmpty;
-    }
-
-    public static AttendanceRecord empty(final LocalDate date) {
-        final LocalDateTime emptyTime = LocalDateTime.of(date, LocalTime.NOON);
-        return new AttendanceRecord(emptyTime, true);
-    }
-
-    public boolean isEmpty() {
-        return this.isEmpty;
+    public static AttendanceRecord empty(final LocalDate attendanceDate) {
+        return new AttendanceRecord(attendanceDate);
     }
 
     public AttendanceStatus calculateAttendanceStatus() {
-        if (isEmpty) {
+        if (attendanceTime == null) {
             return AttendanceStatus.ABSENCE;
         }
-        return AttendanceStatus.calculateStatus(attendanceDateTime.toLocalTime(), attendanceDateTime.getDayOfWeek());
+        return AttendanceStatus.calculateStatus(attendanceTime, attendanceDate.getDayOfWeek());
     }
 
-    public LocalDateTime getDateTime() {
-        return this.attendanceDateTime;
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    public Optional<LocalTime> getAttendanceTime() {
+        return Optional.ofNullable(attendanceTime);
     }
 }
