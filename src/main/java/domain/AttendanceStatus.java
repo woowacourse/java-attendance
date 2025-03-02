@@ -3,7 +3,9 @@ package domain;
 import static util.parser.DateTimeParser.parseIntegerToTime;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
 import java.util.Optional;
 
 public enum AttendanceStatus {
@@ -17,6 +19,15 @@ public enum AttendanceStatus {
     AttendanceStatus(String name, int boundaryMinute) {
         this.name = name;
         this.boundaryMinute = boundaryMinute;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static Map<AttendanceStatus, Integer> countStatus(Map<LocalDate, DailyRecord> records) {
+        // TODO: 통계 계산
+        return null;
     }
 
     public static AttendanceStatus of(DayOfWeek dayOfWeek, LocalTime time) {
@@ -48,9 +59,5 @@ public enum AttendanceStatus {
             return LATE;
         }
         return ABSENT;
-    }
-
-    public String getName() {
-        return name;
     }
 }
