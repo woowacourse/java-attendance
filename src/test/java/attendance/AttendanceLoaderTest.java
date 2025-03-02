@@ -17,5 +17,6 @@ public class AttendanceLoaderTest {
                 .isNotNull()
                 .isInstanceOf(AttendanceBook.class);
         assertThat(attendanceBook.countCrews()).isEqualTo(1);
+        assertThat(attendanceBook.isCrew("쿠키")).isTrue();
     }
 }
