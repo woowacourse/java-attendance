@@ -28,23 +28,12 @@ public class CrewLoader {
     public CrewGroup load(LocalDate today) {
         List<String> rawCrewsInformation = FileReader.readFile();
         CrewGroup crewGroup = new CrewGroup();
-        Map<String, List<Attendance>> rawCrewGroup = new HashMap<>();
-        for (String rawCrewInformation : rawCrewsInformation) {
-            List<String> splittedInfomation = splitTextByDelimiter(rawCrewInformation, NAME_DELIMITER);
-            String name = splittedInfomation.get(NAME_INDEX);
-            String rawAttendance = splittedInfomation.get(ATTENDANCE_INDEX);
+        Map<String, List<Attendance>> rawCrewGroup = makeCrewGroup(rawCrewsInformation);
+        updateAbsent(today, rawCrewGroup, crewGroup);
+        return crewGroup;
+    }
 
-            List<String> splittedAttendance = splitTextByDelimiter(rawAttendance, " ");
-            String rawDate = splittedAttendance.get(DATE_INDEX);
-            String rawTime = splittedAttendance.get(TIME_INDEX);
-
-            LocalDate localDate = LocalDate.parse(rawDate, ISO_LOCAL_DATE);
-            LocalTime localTime = LocalTime.parse(rawTime, ISO_LOCAL_TIME);
-
-            Attendance attendance = new Attendance(LocalDateTime.of(localDate, localTime));
-            rawCrewGroup.computeIfAbsent(name, k -> new ArrayList<>()).add(attendance);
-        }
-
+    private void updateAbsent(LocalDate today, Map<String, List<Attendance>> rawCrewGroup, CrewGroup crewGroup) {
         for (String name : rawCrewGroup.keySet()) {
             List<LocalDate> presentDate = rawCrewGroup.get(name).stream()
                     .map(attendance -> attendance.getAttendanceTime().toLocalDate())
@@ -62,8 +51,26 @@ public class CrewLoader {
             rawCrewGroup.get(name).addAll(absentAttendances);
             crewGroup.add(name, new Attendances(rawCrewGroup.get(name)));
         }
+    }
 
-        return crewGroup;
+    private Map<String, List<Attendance>> makeCrewGroup(List<String> rawCrewsInformation) {
+        Map<String, List<Attendance>> rawCrewGroup = new HashMap<>();
+        for (String rawCrewInformation : rawCrewsInformation) {
+            List<String> splittedInfomation = splitTextByDelimiter(rawCrewInformation, NAME_DELIMITER);
+            String name = splittedInfomation.get(NAME_INDEX);
+            String rawAttendance = splittedInfomation.get(ATTENDANCE_INDEX);
+
+            List<String> splittedAttendance = splitTextByDelimiter(rawAttendance, " ");
+            String rawDate = splittedAttendance.get(DATE_INDEX);
+            String rawTime = splittedAttendance.get(TIME_INDEX);
+
+            LocalDate localDate = LocalDate.parse(rawDate, ISO_LOCAL_DATE);
+            LocalTime localTime = LocalTime.parse(rawTime, ISO_LOCAL_TIME);
+
+            Attendance attendance = new Attendance(LocalDateTime.of(localDate, localTime));
+            rawCrewGroup.computeIfAbsent(name, k -> new ArrayList<>()).add(attendance);
+        }
+        return rawCrewGroup;
     }
 
     private List<String> splitTextByDelimiter(String text, String delimiter) {
