@@ -3,8 +3,11 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static global.utils.DateTimeUtil.*;
 
@@ -52,13 +55,22 @@ public class AttendanceBook {
         return findAttendanceRecordByName(name).calculateAttendanceCount();
     }
 
-
     public int getTardyCount(String name) {
         return findAttendanceRecordByName(name).calculateTardyCount();
     }
 
     public int getAbsenceCount(String name) {
         return findAttendanceRecordByName(name).calculateAbsenceCount();
+    }
+
+    public RiskStatusResult getRiskStatusResult(String name) {
+        return new RiskStatusResult(name, getAttendanceCount(name), getTardyCount(name), getAbsenceCount(name));
+    }
+
+    public List<RiskStatusResult> getRiskStatusResults() {
+        return attendance.keySet().stream()
+                .map(this::getRiskStatusResult)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void validateHasCrew(String name) {

@@ -36,6 +36,6 @@ public class ViewUtil {
         if (riskStatus.equals(RiskStatus.WARNING)) {
             return "경고";
         }
-        return "";
+        return "--";
     }
 }

@@ -63,6 +63,7 @@ public class AttendanceController {
         String name = enterCrewName(attendanceBook);
         attendanceBook.attend(name, getFixedRunningDate(), enterAttendanceTime());
         outputView.printAttendResultMessage(attendanceBook.findAttendanceDateByNameAndDate(name, getFixedRunningDate()));
+        selectMenu(attendanceBook);
     }
 
     private void editMenu(AttendanceBook attendanceBook) {
@@ -72,6 +73,7 @@ public class AttendanceController {
         AttendanceDate originalAttendanceDate = attendanceBook.findAttendanceDateByNameAndDate(name, date);
         attendanceBook.edit(name, date, enterAttendanceTimeForEdit());
         outputView.printEditResultMessage(originalAttendanceDate, attendanceBook.findAttendanceDateByNameAndDate(name, date));
+        selectMenu(attendanceBook);
     }
 
     private void retrieveAttendanceMenu(AttendanceBook attendanceBook) {
@@ -79,8 +81,14 @@ public class AttendanceController {
         List<AttendanceDate> attendanceDates = attendanceBook.findAttendanceRecordByName(name).getAttendanceDates();
         outputView.printAttendanceResult(name);
         attendanceDates.forEach(outputView::printAttendResultMessage);
+        outputView.printAttendanceCountResult(attendanceBook.getRiskStatusResult(name));
+        selectMenu(attendanceBook);
     }
 
+    private void retrieveRiskStatusMenu(AttendanceBook attendanceBook) {
+        outputView.printRiskStatusResult(attendanceBook.getRiskStatusResults());
+        selectMenu(attendanceBook);
+    }
 
     private String enterCrewName(AttendanceBook attendanceBook) {
         try {
