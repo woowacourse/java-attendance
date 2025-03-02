@@ -1,5 +1,13 @@
 package domain;
 
+import static domain.AlertCode.COUNSELING;
+import static domain.AlertCode.EXPULSION;
+import static domain.AlertCode.NORMAL;
+import static domain.AlertCode.WARNING;
+import static domain.AttendanceCode.ABSENT;
+import static domain.AttendanceCode.LATE;
+import static domain.AttendanceCode.PRESENT;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -14,6 +22,40 @@ public class Attendances {
 
     public Attendances(List<Attendance> attendances) {
         this.attendances = new ArrayList<>(attendances);
+    }
+
+    private int calculateAttendanceCode(AttendanceCode attendanceCode) {
+        return Math.toIntExact(attendances.stream()
+                .filter(attendance -> attendance.calculateAttendanceCode() == attendanceCode)
+                .count());
+    }
+
+    public int calculatePresent() {
+        return calculateAttendanceCode(PRESENT);
+    }
+
+    public int calculateLate() {
+        return calculateAttendanceCode(LATE);
+    }
+
+    public int calculateAbsent() {
+        return calculateAttendanceCode(ABSENT);
+    }
+
+    public AlertCode calucateAlertCode() {
+        int alertThreshold = calculateAbsent() + (calculateLate() / 3);
+        if (alertThreshold >= EXPULSION.getLimit()) {
+            return EXPULSION;
+        }
+
+        if (alertThreshold >= COUNSELING.getLimit()) {
+            return COUNSELING;
+        }
+
+        if (alertThreshold >= WARNING.getLimit()) {
+            return WARNING;
+        }
+        return NORMAL;
     }
 
     private void validateFutureDate(DayOfMonth dayOfMonth, LocalDate today) {

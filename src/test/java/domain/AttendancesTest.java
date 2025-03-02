@@ -11,11 +11,16 @@ import org.junit.jupiter.api.Test;
 
 class AttendancesTest {
     private List<Attendance> testAttendance = List.of(
-            new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)),
+            new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)),
             new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)),
             new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)),
             new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)),
-            new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
+            new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)),
+            new Attendance(LocalDateTime.of(2024, 12, 9, 13, 6)),
+            new Attendance(LocalDateTime.of(2024, 12, 10, 10, 6)),
+            new Attendance(LocalDateTime.of(2024, 12, 11, 10, 6)),
+            new Attendance(LocalDateTime.of(2024, 12, 12, 10, 31)),
+            new Attendance(LocalDateTime.of(2024, 12, 13, 10, 31)));
 
     private Attendances attendances;
 
@@ -51,5 +56,29 @@ class AttendancesTest {
 
         Assertions.assertEquals(new Attendance(LocalDateTime.of(2024, 12, 2, 11, 0)),
                 attendances.changeAttendance(dayOfMonth, LocalDate.of(2024, 12, 6), changeTime));
+    }
+
+    @Test
+    @DisplayName("올바른 출석 횟수를 세는지 확인합니다.")
+    void calculatePresentTest() {
+        Assertions.assertEquals(5, attendances.calculatePresent());
+    }
+
+    @Test
+    @DisplayName("올바른 지각 횟수를 세는지 확인합니다.")
+    void calculateLateTest() {
+        Assertions.assertEquals(3, attendances.calculateLate());
+    }
+
+    @Test
+    @DisplayName("올바른 결석 횟수를 세는지 확인합니다.")
+    void calculateAbsentTest() {
+        Assertions.assertEquals(2, attendances.calculateAbsent());
+    }
+
+    @Test
+    @DisplayName("올바른 출석 제적 상태를 계산하는지 확인합니다.")
+    void calculateAlertTest() {
+        Assertions.assertEquals(AlertCode.COUNSELING, attendances.calucateAlertCode());
     }
 }
