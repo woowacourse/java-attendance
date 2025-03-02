@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static domain.utils.DateTimeUtil.FIXED_RUNNING_DATE;
+import static global.utils.DateTimeUtil.FIXED_RUNNING_DATETIME;
 
 public enum AttendanceStatus {
     ATTENDANCE,
@@ -19,7 +19,7 @@ public enum AttendanceStatus {
     private final static LocalTime NORMAL_ATTENDANCE_REFERENCE_TIME = LocalTime.of(10, 0);
 
     public static AttendanceStatus evaluateAttendanceNow() {
-        return evaluateAttendance(FIXED_RUNNING_DATE);
+        return evaluateAttendance(FIXED_RUNNING_DATETIME);
     }
 
     public static AttendanceStatus evaluateAttendance(LocalDateTime dateTime) {

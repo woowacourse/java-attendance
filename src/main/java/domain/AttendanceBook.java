@@ -6,8 +6,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static domain.utils.DateTimeUtil.isOutOfRunningTime;
-import static domain.utils.DateTimeUtil.isWeekday;
+import static global.utils.DateTimeUtil.*;
 
 public class AttendanceBook {
     private final Map<String, AttendanceRecord> attendance;
