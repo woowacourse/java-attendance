@@ -59,14 +59,20 @@ public class AttendanceManager {
     public Map<Nickname, AttendanceStatistics> getDangerousCrewsInformation(final LocalDate today) {
         Map<Nickname, AttendanceStatistics> dangerousCrewsStatistics = new HashMap<>();
         for (Entry<Nickname, AttendanceHistory> entry : attendanceBook.entrySet()) {
-            AttendanceHistory attendanceHistory = entry.getValue();
-            AttendanceStatistics attendanceStatistics = attendanceHistory.getAttendanceStatistics(today);
-            CrewStatus crewStatus = attendanceStatistics.calculateCrewStatus();
-            if (!crewStatus.equals(CrewStatus.NONE)) {
-                dangerousCrewsStatistics.put(entry.getKey(), attendanceStatistics);
-            }
+            putDangerousCrew(today, entry, dangerousCrewsStatistics);
         }
         return dangerousCrewsStatistics;
+    }
+
+    private static void putDangerousCrew(final LocalDate today,
+                                         final Entry<Nickname, AttendanceHistory> entry,
+                                         final Map<Nickname, AttendanceStatistics> dangerousCrewsStatistics) {
+        AttendanceHistory attendanceHistory = entry.getValue();
+        AttendanceStatistics attendanceStatistics = attendanceHistory.getAttendanceStatistics(today);
+        CrewStatus crewStatus = attendanceStatistics.calculateCrewStatus();
+        if (!crewStatus.equals(CrewStatus.NONE)) {
+            dangerousCrewsStatistics.put(entry.getKey(), attendanceStatistics);
+        }
     }
 
     public void validateExistingCrew(final Nickname crewNickname) {

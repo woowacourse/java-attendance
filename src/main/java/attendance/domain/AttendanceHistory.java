@@ -55,19 +55,23 @@ public class AttendanceHistory {
         initializeStatistics(statistics);
         for (int i = today.getDayOfMonth() - 1; i > 0; i--) {
             LocalDate date = today.minusDays(i);
-            boolean isOperationDate = CampusManager.isOperationDate(date);
-            if (!isOperationDate) {
-                continue;
-            }
-            Optional<Attendance> attendance = findAttendance(date);
-            if (attendance.isEmpty()) {
-                statistics.put(ABSENCE, statistics.get(ABSENCE) + 1);
-                continue;
-            }
-            AttendanceStatus status = attendance.get().getStatus();
-            statistics.put(status, statistics.get(status) + 1);
+            addAttendanceStatusCount(date, statistics);
         }
         return new AttendanceStatistics(statistics.get(ATTENDANCE), statistics.get(LATE), statistics.get(ABSENCE));
+    }
+
+    private void addAttendanceStatusCount(final LocalDate date, final Map<AttendanceStatus, Integer> statistics) {
+        boolean isOperationDate = CampusManager.isOperationDate(date);
+        if (!isOperationDate) {
+            return;
+        }
+        Optional<Attendance> attendance = findAttendance(date);
+        if (attendance.isEmpty()) {
+            statistics.put(ABSENCE, statistics.get(ABSENCE) + 1);
+            return;
+        }
+        AttendanceStatus status = attendance.get().getStatus();
+        statistics.put(status, statistics.get(status) + 1);
     }
 
     private void initializeStatistics(final Map<AttendanceStatus, Integer> statistics) {

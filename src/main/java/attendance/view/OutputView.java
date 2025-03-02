@@ -67,16 +67,20 @@ public class OutputView {
         System.out.println();
         for (int i = today.getDayOfMonth() - 1; i > 0; i--) {
             LocalDate date = today.minusDays(i);
-            boolean isOperationDate = CampusManager.isOperationDate(date);
-            if (!isOperationDate) {
-                continue;
-            }
-            attendances.stream()
-                    .filter(attendance -> attendance.isDateEquals(date))
-                    .findAny()
-                    .ifPresentOrElse(attendance -> printAttendance(attendance), () -> printNoAttendance(date));
+            printMonthlyAttendance(attendances, date);
         }
         System.out.println();
+    }
+
+    private static void printMonthlyAttendance(final List<Attendance> attendances, final LocalDate date) {
+        boolean isOperationDate = CampusManager.isOperationDate(date);
+        if (!isOperationDate) {
+            return;
+        }
+        attendances.stream()
+                .filter(attendance -> attendance.isDateEquals(date))
+                .findAny()
+                .ifPresentOrElse(OutputView::printAttendance, () -> printNoAttendance(date));
     }
 
     private static void printNoAttendance(final LocalDate noAttendanceDate) {
