@@ -24,6 +24,7 @@ public class OutputView {
         String status = attendanceInfo.getAttendanceStatus().getValue();
 
         System.out.println(String.format("%s월 %s일 %s %s:%s (%s)", month, day, dayOfWeek, hour, minute, status));
+        System.out.println();
     }
 
     public void writeModifiedAttendanceCheck(AttendanceInfo beforeInfo, AttendanceInfo afterInfo) {
@@ -33,14 +34,15 @@ public class OutputView {
 
         String beforeHour = parseWithLeadingZero(beforeInfo.getHour());
         String beforeMinute = parseWithLeadingZero(beforeInfo.getMinute());
-        String beforeStatus = parseDayOfWeekToKorean(beforeInfo.getDayOfWeek());
+        String beforeStatus = beforeInfo.getAttendanceStatus().getValue();
 
         String afterHour = parseWithLeadingZero(afterInfo.getHour());
         String afterMinute = parseWithLeadingZero(afterInfo.getMinute());
-        String afterStatus = parseDayOfWeekToKorean(afterInfo.getDayOfWeek());
+        String afterStatus = afterInfo.getAttendanceStatus().getValue();
         System.out.println(String.format("%s월 %s일 %s %s:%s (%s) -> %s:%s (%s) 수정 완료!", month, day, dayOfWeek,
                 beforeHour, beforeMinute, beforeStatus,
                 afterHour, afterMinute, afterStatus));
+        System.out.println();
     }
 
     public void writeCreatedAttendanceCheck(AttendanceInfo afterInfo) {
@@ -50,9 +52,10 @@ public class OutputView {
 
         String afterHour = parseWithLeadingZero(afterInfo.getHour());
         String afterMinute = parseWithLeadingZero(afterInfo.getMinute());
-        String afterStatus = parseDayOfWeekToKorean(afterInfo.getDayOfWeek());
+        String afterStatus = afterInfo.getAttendanceStatus().getValue();
         System.out.println(String.format("%s월 %s일 %s --:-- (결석) -> %s:%s (%s) 수정 완료!", month, day, dayOfWeek,
                 afterHour, afterMinute, afterStatus));
+        System.out.println();
     }
 
     public void writeCrewHistory(LocalDate date, AttendanceInfos infos, AttendanceCounts counts,
@@ -103,6 +106,7 @@ public class OutputView {
         String dayOfWeek = parseDayOfWeekToKorean(campusDate.getDayOfWeek());
 
         System.out.println(String.format("%s월 %s일 %s --:-- (결석)", month, day, dayOfWeek));
+        System.out.println();
     }
 
     private static boolean isWeekend(LocalDate date, int day) {
