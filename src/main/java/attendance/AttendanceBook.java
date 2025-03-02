@@ -1,5 +1,6 @@
 package attendance;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,11 @@ public class AttendanceBook {
             crews.put(crew, new CrewAttendance());
         }
         return crews.get(crew);
+    }
+
+    public void addAttendance(final String nickname, final LocalDateTime attendance) {
+        CrewAttendance crewAttendance = addCrew(nickname);
+        crewAttendance.add(attendance);
     }
 
     public int countCrews() {
