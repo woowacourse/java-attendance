@@ -29,6 +29,7 @@ public class Student {
 
     public void registerAttendanceRecord(LocalDate todayDate, LocalTime attendanceTime) {
         validateDuplicateAttendance(todayDate);
+        CampusOperatingHours.validateOperatingHours(attendanceTime);
         attendanceTimeRecord.registerAttendanceTimeRecord(todayDate, attendanceTime);
         attendanceStatusRecord.registerAttendanceStatusRecord(
                 todayDate, AttendanceStatus.calculateAttendanceStatus(todayDate, attendanceTime)
@@ -37,6 +38,7 @@ public class Student {
 
     public void modifyAttendanceRecord(int modifyDate, LocalTime modifyTime) {
         LocalDate localDate = LocalDate.of(2024, 12, modifyDate);
+        CampusOperatingHours.validateOperatingHours(modifyTime);
         attendanceTimeRecord.modifyAttendanceTimeRecord(localDate, modifyTime);
         attendanceStatusRecord.modifyAttendanceStatusRecord(
                 localDate, AttendanceStatus.calculateAttendanceStatus(localDate, modifyTime)
