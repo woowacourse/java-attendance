@@ -39,4 +39,8 @@ public enum Command {
     public boolean isFour() {
         return this == FOUR;
     }
+
+    public boolean isQuit() {
+        return this == QUIT;
+    }
 }

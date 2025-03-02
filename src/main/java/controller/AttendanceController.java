@@ -39,7 +39,7 @@ public class AttendanceController {
             do {
                 command = readCommand();
                 process(command, crews, attendances);
-            } while (command != Command.QUIT);
+            } while (!command.isQuit());
         } catch (RuntimeException e) {
             outputView.printErrorMessage(e);
         }
@@ -90,12 +90,9 @@ public class AttendanceController {
 
     private void modify(Crews crews, Attendances attendances) {
         LocalDate today = LocalDate.now();
-        String rawNickname = inputView.readNickname();
-        Crew crew = crews.findByNickname(rawNickname);
+        Crew crew = crews.findByNickname(inputView.readNickname());
+        LocalDateTime newTime = converter.convertToLocalDateTime(inputView.readDate(), inputView.readTime(), today);
 
-        String rawDate = inputView.readDate();
-        String rawNewTime = inputView.readTime();
-        LocalDateTime newTime = converter.convertToLocalDateTime(rawDate, rawNewTime, today);
         Attendance oldAttendance = attendances.findByCrewAndDate(crew, newTime.toLocalDate());
         attendances.modifyAttendanceTime(crew, newTime);
         Attendance newAttendance = attendances.findByCrewAndDate(crew, newTime.toLocalDate());
@@ -115,12 +112,18 @@ public class AttendanceController {
     private void showDangerCrews(Crews crews, Attendances attendances) {
         LocalDate today = LocalDate.now();
         List<Crew> dangerCrews = crews.findDangerCrews(attendances, today);
-        Map<Crew, Attendances> dangerAttendances = new HashMap<>();
-        for (Crew crew : dangerCrews) {
-            dangerAttendances.put(crew, attendances.createMonthlyAttendances(crew, today));
-        }
+        Map<Crew, Attendances> dangerAttendances = createAttendancesOfDangerCrews(dangerCrews, attendances, today);
         List<Crew> crewOrder = sortDangerCrews(dangerAttendances);
         outputView.printDangerCrews(dangerAttendances, crewOrder);
+    }
+
+    private Map<Crew, Attendances> createAttendancesOfDangerCrews(List<Crew> crews, Attendances attendances,
+                                                                  LocalDate today) {
+        Map<Crew, Attendances> dangerAttendances = new HashMap<>();
+        for (Crew crew : crews) {
+            dangerAttendances.put(crew, attendances.createMonthlyAttendances(crew, today));
+        }
+        return dangerAttendances;
     }
 
     private List<Crew> sortDangerCrews(Map<Crew, Attendances> dangerCrews) {
