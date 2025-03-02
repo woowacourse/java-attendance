@@ -32,7 +32,7 @@ public class AttendanceLogs {
         return new AttendanceLogs(attendanceLogs);
     }
 
-    public AttendanceLogs getAllAttendanceLogs(
+    public AttendanceLogs getAllAttendanceLogsFromTo(
             final LocalDate from,
             final LocalDate to,
             final CampusOperationPolicy campusOperationPolicy
@@ -63,19 +63,14 @@ public class AttendanceLogs {
         return values.stream().anyMatch(attendanceLog -> attendanceLog.isSameDate(date));
     }
 
-    public Map<AttendanceStatus, Integer> getAttendanceStatusStatistics(
-            final LocalDate from,
-            final LocalDate to,
-            final CampusOperationPolicy campusOperationPolicy
-    ) {
+    public Map<AttendanceStatus, Integer> calculateAttendanceStatusStatistics() {
+        return AttendanceStatus.getStatistics(getAllAttendanceStatuses());
+    }
 
-        final List<AttendanceLog> allAttendanceLogs = getAllAttendanceLogs(from, to, campusOperationPolicy).values;
-
-        final List<AttendanceStatus> attendanceStatuses = allAttendanceLogs.stream()
+    public List<AttendanceStatus> getAllAttendanceStatuses() {
+        return values.stream()
                 .map(AttendanceLog::getAttendanceStatus)
                 .toList();
-
-        return AttendanceStatus.getStatistics(attendanceStatuses);
     }
 
     public void add(final AttendanceLog attendanceLog) {

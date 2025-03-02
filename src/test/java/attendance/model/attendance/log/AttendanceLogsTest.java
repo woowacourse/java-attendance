@@ -45,7 +45,7 @@ class AttendanceLogsTest {
     }
 
     @Test
-    void getAllAttendanceLogs() {
+    void getAllAttendanceLogsFromTo() {
 
         // Given
         final LocalDate from = LocalDate.of(2024, 12, 2);
@@ -77,15 +77,15 @@ class AttendanceLogsTest {
         );
 
         // When
-        final List<AttendanceLog> actual = attendanceLogs.getAllAttendanceLogs(from, to, campusOperationPolicy)
-                .getValues();
+        final List<AttendanceLog> actual = attendanceLogs.getAllAttendanceLogsFromTo(from, to, campusOperationPolicy)
+                .values();
 
         // Then
         assertThat(actual).containsExactlyElementsOf(expected);
     }
 
     @Test
-    void getAttendanceStatusStatistics() {
+    void calculateAttendanceStatusStatistics() {
 
         // Given
         final LocalDate from = LocalDate.of(2024, 12, 2);
@@ -96,12 +96,8 @@ class AttendanceLogsTest {
         expected.put(AttendanceStatus.LATE, 1);
 
         // When
-        final Map<AttendanceStatus, Integer> actual = attendanceLogs.getAttendanceStatusStatistics(
-                from,
-                to,
-                campusOperationPolicy
-        );
-
+        final Map<AttendanceStatus, Integer> actual = attendanceLogs.getAllAttendanceLogsFromTo(from, to,
+                campusOperationPolicy).calculateAttendanceStatusStatistics();
         // Then
         assertAll(
                 () -> assertThat(actual).containsExactlyEntriesOf(expected), // 순서와 값 모두 검증
