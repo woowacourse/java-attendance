@@ -1,11 +1,16 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Crew {
 
@@ -24,12 +29,15 @@ public class Crew {
     }
 
     public DailyRecord findRecordByDate(LocalDate date) {
-        return dailyRecords.get(date);
+        return dailyRecords.getOrDefault(date, new DailyRecord(date.getDayOfWeek(), null));
     }
 
-    public List<DailyRecord> findRecordsOfYearAndMonth(LocalDate startDate) {
-        // TODO: 년도와 달에 해당하는 모든 기록을 반환한다.
-        return null;
+    public List<DailyRecord> findRecordsOfYearAndMonth(LocalDate startDate, LocalDate endDate) {
+        return Stream.iterate(startDate, date -> date.plusDays(1))
+            .limit(ChronoUnit.DAYS.between(startDate, endDate))
+            .filter(date -> !Holiday.isHoliday(date))
+            .map(this::findRecordByDate)
+            .collect(Collectors.toList());
     }
 
     public DailyRecord addDailyRecord(LocalDateTime dateTime) {
@@ -51,7 +59,7 @@ public class Crew {
     }
 
     public void initializeDailyRecords(List<LocalDateTime> crewRecords) {
-        for(LocalDateTime dateTime : crewRecords) {
+        for (LocalDateTime dateTime : crewRecords) {
             LocalDate date = dateTime.toLocalDate();
             LocalTime time = dateTime.toLocalTime();
 

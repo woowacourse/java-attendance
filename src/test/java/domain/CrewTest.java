@@ -32,9 +32,10 @@ public class CrewTest {
             crew.initializeDailyRecords(crewRecords);
 
             LocalDate startDate = parseStringToDate("2024-12-01");
-            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate);
+            LocalDate endDate = parseStringToDate("2024-12-06"); // 2일, 3일을 결석으로 추가
+            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
 
-            assertThat(records.size()).isEqualTo(2);
+            assertThat(records.size()).isEqualTo(4);
         }
 
         @Test
@@ -48,7 +49,8 @@ public class CrewTest {
             crew.initializeDailyRecords(crewRecords);
 
             LocalDate startDate = parseStringToDate("2025-03-01");
-            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate);
+            LocalDate endDate = parseStringToDate("2025-03-02");
+            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
 
             assertThat(records.size()).isEqualTo(0);
         }
@@ -65,9 +67,10 @@ public class CrewTest {
 
             crew.addDailyRecord(parseStringToDateTime("2025-02-04 10:08"));
             LocalDate startDate = parseStringToDate("2025-02-01");
-            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate);
+            LocalDate endDate = parseStringToDate("2025-02-05");// 3일을 결석으로 추가
+            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
 
-            assertThat(records.size()).isEqualTo(1);
+            assertThat(records.size()).isEqualTo(2);
         }
     }
 
