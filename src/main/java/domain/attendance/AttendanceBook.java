@@ -27,21 +27,25 @@ public class AttendanceBook {
     }
 
     public static AttendanceBook createBookByAttendances(final List<String> attendances) {
-        AttendanceBook book = initBook();
+        Map<Crew, AttendanceInfos> book = new HashMap<>();
         for (String attendance : attendances) {
             List<String> parsedAttendance = List.of(attendance.split(COMMA_OR_SPACE_SPLIT_REGEX));
             Crew crew = Crew.fromName(parsedAttendance.get(0));
             CampusDate date = CampusDate.from(parsedAttendance.get(1));
             CampusTime time = CampusTime.from(parsedAttendance.get(2));
 
-            if (book.getBook().containsKey(crew)) {
-                book.findInfoByCrew(crew).addInfoByDateAndTime(date, time);
+            if (book.containsKey(crew)) {
+                AttendanceInfos crewInfos = book.get(crew);
+                AttendanceInfos attendanceInfos = crewInfos.addInfoByDateAndTime(date, time);
+                book.put(crew, attendanceInfos);
                 continue;
             }
-            book.addCrew(crew);
-            book.findInfoByCrew(crew).addInfoByDateAndTime(date, time);
+
+            AttendanceInfos initInfos = AttendanceInfos.initInfos();
+            AttendanceInfos attendanceInfos = initInfos.addInfoByDateAndTime(date, time);
+            book.put(crew, attendanceInfos);
         }
-        return book;
+        return new AttendanceBook(book);
     }
 
     public void addCrew(final Crew crew) {
