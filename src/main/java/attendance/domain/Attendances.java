@@ -71,13 +71,13 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
         return attendanceHistory;
     }
 
-    public void updateStatics(StatusStatistics statusStatics) {
+    public Map<LocalDate, AttendanceStatus> updateStatics() {
         List<LocalDate> workingDates = systemDateTime.extractWorkingDays();
         Map<LocalDate, AttendanceStatus> attendanceStatus = new HashMap<>();
         for (LocalDate date : workingDates) {
             attendanceStatus.put(date, getOrAbsence(date));
         }
-        statusStatics.update(attendanceStatus);
+        return attendanceStatus;
     }
 
     private AttendanceStatus getOrAbsence(LocalDate date) {

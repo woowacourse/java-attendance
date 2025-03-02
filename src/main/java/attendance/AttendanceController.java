@@ -138,7 +138,7 @@ public class AttendanceController {
         displayHistory(attendances);
 
         var statistics = new StatusStatistics(nickname);
-        attendances.updateStatics(statistics);
+        statistics.update(attendances.updateStatics());
         displayCrewStatistics(statistics);
     }
 

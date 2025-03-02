@@ -3,8 +3,10 @@ package attendance.domain;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +51,7 @@ class AttendancesTest {
     }
 
     @Test
-    @DisplayName("출석하지 않은 날도 포함한 출석 목록을 반환한다.")
+    @DisplayName("출석하지 않은 날을 반환 할 때, 무단결석(Truancy)으로 저장한다.")
     void test_getAttendancesWithTruancy() {
         var attendances = new Attendances(systemDateTime);
         attendances.addAttendance(LocalDateTime.of(2024, 12, 11, 10, 0));
@@ -66,6 +68,28 @@ class AttendancesTest {
             () -> assertThat(attendanceCount).isEqualTo(1),
             () -> assertThat(truancyCount).isEqualTo(16),
             () -> assertThat(attendanceCount + truancyCount).isEqualTo(attendancesWithTruancy.size())
+        );
+    }
+
+    @Test
+    @DisplayName("출석하지 않은 날을 반환 할 때, 결석으로 저장한다.")
+    void test_updateStatics() {
+        var attendances = new Attendances(systemDateTime);
+        attendances.addAttendance(LocalDateTime.of(2024, 12, 11, 10, 0));
+
+        Map<LocalDate, AttendanceStatus> attendanceStatusMap = attendances.updateStatics();
+
+        var attendanceCount = attendanceStatusMap.values().stream()
+            .filter(status -> !status.equals(AttendanceStatus.ABSENCE))
+            .count();
+        var absenceCount = attendanceStatusMap.values().stream()
+            .filter(status -> status.equals(AttendanceStatus.ABSENCE))
+            .count();
+
+        assertAll(
+            () -> assertThat(attendanceCount).isEqualTo(1),
+            () -> assertThat(absenceCount).isEqualTo(16),
+            () -> assertThat(attendanceCount + absenceCount).isEqualTo(attendanceStatusMap.values().size())
         );
     }
 }

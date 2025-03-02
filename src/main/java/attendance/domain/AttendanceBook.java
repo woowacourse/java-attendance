@@ -62,7 +62,7 @@ public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemD
         for (Nickname nickname : attendancesBook.keySet()) {
             var attendances = getAttendances(nickname);
             var statistics = new StatusStatistics(nickname);
-            attendances.updateStatics(statistics);
+            statistics.update(attendances.updateStatics());
             sanctionLevels.add(statistics);
         }
         return sanctionLevels;
