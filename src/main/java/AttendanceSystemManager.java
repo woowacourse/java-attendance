@@ -26,9 +26,7 @@ public class AttendanceSystemManager {
         return attendanceHistory;
     }
 
-    public void updateRegisteredAttendance(String nickname, LocalDateTime requestedAt) {
-        Crew crew = crews.findCrewByName(nickname);
-
+    public void updateRegisteredAttendance(Crew crew, LocalDateTime requestedAt) {
         AttendanceHistory oldAttendanceHistory = attendanceHistories.findByCrewAndDate(crew, requestedAt.toLocalDate());
         AttendanceHistory newAttendanceHistory = new AttendanceHistory(crew, requestedAt);
 

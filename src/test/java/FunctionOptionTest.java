@@ -12,7 +12,7 @@ public class FunctionOptionTest {
     private static Stream<Arguments> testCasesForFindOptionTest() {
         return Stream.of(
                 Arguments.of("1", FunctionOption.REGISTER_ATTENDANCE),
-                Arguments.of("2", FunctionOption.EDIT_ATTENDANCE),
+                Arguments.of("2", FunctionOption.UPDATE_ATTENDANCE),
                 Arguments.of("3", FunctionOption.CHECK_ATTENDANCE_OF_CREW),
                 Arguments.of("4", FunctionOption.CHECK_EXPULSION_CANDIDATES),
                 Arguments.of("Q", FunctionOption.QUIT)

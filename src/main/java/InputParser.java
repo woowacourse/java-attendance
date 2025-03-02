@@ -52,4 +52,12 @@ public class InputParser {
                 + attendanceTypeCount.getLateCount() + "회 (" + parsePenaltyType(penaltyType) + ")";
 
     }
+
+    public static int parseInteger(String input) {
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("숫자를 입력하셔야 합니다.");
+        }
+    }
 }

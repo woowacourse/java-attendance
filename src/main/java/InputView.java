@@ -26,8 +26,23 @@ public class InputView {
         return SCANNER.next();
     }
 
+    public static String readNameToUpdate() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return SCANNER.next();
+    }
+
     public static String readAttendanceTime() {
         System.out.println("등교 시간을 입력해 주세요.");
+        return SCANNER.next();
+    }
+
+    public static String readUpdateRequestDate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return SCANNER.next();
+    }
+
+    public static String readNewAttendanceTime() {
+        System.out.println("언제로 변경하겠습니까?");
         return SCANNER.next();
     }
 }
