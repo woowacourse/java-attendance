@@ -6,13 +6,16 @@ import java.util.Arrays;
 
 public enum AttendanceStatus {
 
-    ATTENDANCE(0),
-    LATE(5),
-    ABSENCE(30);
+    ATTENDANCE(1,0),
+    LATE(2, 5),
+    ABSENCE(3,30);
 
+
+    private final int code;
     private final int limit;
 
-    AttendanceStatus(final int limit) {
+    AttendanceStatus(final int code, final int limit) {
+        this.code = code;
         this.limit = limit;
     }
 
@@ -28,4 +31,7 @@ public enum AttendanceStatus {
         return ClassTime.findByDayOfWeek(dayOfWeek).plusMinutes(attendanceStatus.limit);
     }
 
+    public int getCode() {
+        return code;
+    }
 }
