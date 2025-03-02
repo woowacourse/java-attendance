@@ -37,7 +37,7 @@ public class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(crews, now);
 
         //then
-        Assertions.assertThat(attendanceBook.getAttendanceBook().get(crew).getFirst().getAttendanceRecord().size())
+        Assertions.assertThat(attendanceBook.getAttendanceBook().get(crew).getAttendanceRecord().size())
                 .isEqualTo(expectedResult);
 
     }

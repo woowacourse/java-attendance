@@ -6,12 +6,13 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
-    private final Map<Crew, List<AttendanceRecord>> attendanceBook;
+    private final Map<Crew, AttendanceRecord> attendanceBook;
     private static final int DEFAULT_VALUE = 0;
 
     public AttendanceBook(Crews crews, LocalDateTime now) {
@@ -25,51 +26,50 @@ public class AttendanceBook {
         }
     }
 
-    private List<AttendanceRecord> putDefaultValue(LocalDateTime now) {
+    private AttendanceRecord putDefaultValue(LocalDateTime now) {
         List<AttendanceTime> attendanceTimes = new ArrayList<>();
         for (int i = 1; i < now.getDayOfMonth(); i++) {
             LocalDateTime dateTime = now.withDayOfMonth(i).withHour(DEFAULT_VALUE).withMinute(DEFAULT_VALUE);
             excludeWeekend(dateTime, attendanceTimes);
         }
-        AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceTimes);
-        return Collections.singletonList(attendanceRecord);
+        return new AttendanceRecord(attendanceTimes);
     }
 
     private void excludeWeekend(LocalDateTime dateTime, List<AttendanceTime> attendanceTimes) {
-        if (dateTime.getDayOfWeek() != DayOfWeek.SATURDAY && dateTime.getDayOfWeek() != DayOfWeek.SUNDAY) {
+        if (!EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(dateTime.getDayOfWeek())) {
             attendanceTimes.add(new AttendanceTime(dateTime));
         }
     }
 
     public AttendanceTime registerAttendance(Crew inputCrewName, LocalDateTime inputTime) {
         Crew crew = findRegisteredCrew(inputCrewName.getName());
-        AttendanceRecord attendanceRecord = attendanceBook.get(crew).getLast();
+        AttendanceRecord attendanceRecord = attendanceBook.get(crew);
         return attendanceRecord.registerAttendance(inputTime);
     }
 
     public AttendanceTime findBeforeAttendanceRecord(Crew inputCrewName, LocalDateTime inputTime) {
         Crew crew = findRegisteredCrew(inputCrewName.getName());
-        AttendanceRecord attendanceRecord = attendanceBook.get(crew).getLast();
+        AttendanceRecord attendanceRecord = attendanceBook.get(crew);
         return attendanceRecord.findAttendanceRecord(inputTime);
     }
 
     public AttendanceTime modifyAttendance(Crew inputCrewName, LocalDateTime inputTime) {
         Crew crew = findRegisteredCrew(inputCrewName.getName());
-        AttendanceRecord attendanceRecord = attendanceBook.get(crew).getLast();
+        AttendanceRecord attendanceRecord = attendanceBook.get(crew);
         AttendanceRecord updatedAttendanceRecord = attendanceRecord.modifyAttendanceTime(inputTime);
-        attendanceBook.put(crew, List.of(updatedAttendanceRecord));
+        attendanceBook.put(crew, updatedAttendanceRecord);
         return updatedAttendanceRecord.findAttendanceRecord(inputTime);
     }
 
     public AttendanceRecord findAttendanceRecord(Crew inputCrewName) {
         Crew crew = findRegisteredCrew(inputCrewName.getName());
-        return attendanceBook.get(crew).getLast();
+        return attendanceBook.get(crew);
     }
 
     public List<RiskCrew> findPenaltyCrews() {
         List<RiskCrew> riskCrews = new ArrayList<>();
         for (Crew crew : attendanceBook.keySet()) {
-            AttendanceRecord attendanceRecord = attendanceBook.get(crew).getLast();
+            AttendanceRecord attendanceRecord = attendanceBook.get(crew);
             PenaltyType penaltyType = attendanceRecord.checkPenaltyStatus();
             findRiskCrews(crew, penaltyType, attendanceRecord, riskCrews);
         }
@@ -109,8 +109,8 @@ public class AttendanceBook {
                 .orElseThrow(() -> CustomException.from(ErrorMessage.NOT_FIND_CREW));
     }
 
-    public Map<Crew, List<AttendanceRecord>> getAttendanceBook() {
-        return attendanceBook;
+    public Map<Crew, AttendanceRecord> getAttendanceBook() {
+        return Collections.unmodifiableMap(attendanceBook);
     }
 
 }
