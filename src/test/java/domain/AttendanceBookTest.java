@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import common.SystemDate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -98,12 +99,14 @@ public class AttendanceBookTest {
     void test5() {
         //given
         final String name = "쿠키";
+        final LocalDate localDate = SystemDate.NOW.getDate();
 
         //when
+        attendanceBook.addAttendance(name,LocalDateTime.of(localDate, LocalTime.of(10, 8)));
         final List<AttendanceRecord> attendanceRecords = attendanceBook.lookUpAttendanceHistory(name);
 
         //then
-        assertThat(attendanceRecords).isNotEmpty();
+        assertThat(attendanceRecords).contains(AttendanceRecord.of(localDate));
 
     }
 }

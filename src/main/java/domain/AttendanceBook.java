@@ -54,6 +54,6 @@ public class AttendanceBook {
     }
 
     public List<AttendanceRecord> lookUpAttendanceHistory(final String name) {
-        return null;
+        return crewGroup.getCrewByName(name).getAttendanceMap().values().stream().toList();
     }
 }
