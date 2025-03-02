@@ -2,7 +2,9 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -76,6 +78,19 @@ public class CampusTest {
         AttendanceStatus expected = AttendanceStatus.ABSENT;
 
         AttendanceStatus actual = Campus.calculateAttendanceStatus(attendance);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("캠퍼스 휴일 여부 확인 테스트")
+    @ParameterizedTest
+    @CsvSource({"1,true", "2,false", "3,false", "7,true", "24,false", "25,true", "31,false"})
+    void test7(int dayOfMonth, boolean expected) {
+        LocalDate date = LocalDate.of(2024, 12, dayOfMonth);
+        LocalTime time = LocalTime.of(8, 0);
+        LocalDateTime attendance = LocalDateTime.of(date, time);
+
+        boolean actual = Campus.isOffDay(attendance);
 
         assertThat(actual).isEqualTo(expected);
     }
