@@ -1,6 +1,7 @@
 package domain.attendance;
 
 public enum AttendanceStatus {
+
     ATTEND,
     LATE,
     ABSENCE,

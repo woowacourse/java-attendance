@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CsvFileReaderTest {
+
     private static final String CSV_FILE_PATH = "src/test/resources/attendances.csv";
 
     @Test

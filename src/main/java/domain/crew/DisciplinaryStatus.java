@@ -8,8 +8,7 @@ public enum DisciplinaryStatus {
     ;
 
     public static DisciplinaryStatus from(int absenceCount, int lateCount) {
-        int additionAbsence = lateCount / 3;
-        absenceCount += additionAbsence;
+        absenceCount += (lateCount / 3);
         if (absenceCount < 2) {
             return NORMAL;
         }

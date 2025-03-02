@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class OutputView {
+
     public void attendPage(AttendanceTime attendanceTime) {
         System.out.println(buildSingleLog(attendanceTime));
     }

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AttendanceBookFactory {
+
     public static AttendanceBook createAttendanceBook(List<AttendanceRecordDto> records) {
         Map<String, List<AttendanceTime>> groupedRecords = mapToAttendanceTimes(records);
 

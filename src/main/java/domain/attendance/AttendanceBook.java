@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class AttendanceBook {
+
     private final List<CrewAttendance> crewAttendances;
 
     private AttendanceBook(List<CrewAttendance> crewAttendances) {

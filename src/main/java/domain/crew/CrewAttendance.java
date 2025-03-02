@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Optional;
 
 public class CrewAttendance {
+
     private final Crew crew;
     private final AttendanceTimes attendanceTimes;
 

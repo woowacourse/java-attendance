@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CommandTest {
+
     @Test
     @DisplayName("1 입력 시 출석 반환")
     void attendFromCodeTest() {

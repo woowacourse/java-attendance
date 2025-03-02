@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class AttendanceScheduleTest {
+
     @Test
     @DisplayName("월요일 AttendanceTime 으로부터 지각한 시간 반환")
     void getLateMinuteFromAttendanceTimeInMondayTest() {

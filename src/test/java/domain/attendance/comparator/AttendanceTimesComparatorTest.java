@@ -32,5 +32,4 @@ class AttendanceTimesComparatorTest {
         assertThat(positive).isGreaterThan(0);
         assertThat(zero).isEqualTo(0);
     }
-
 }

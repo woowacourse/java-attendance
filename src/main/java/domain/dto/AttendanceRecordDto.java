@@ -3,6 +3,7 @@ package domain.dto;
 import java.time.LocalDateTime;
 
 public class AttendanceRecordDto {
+
     private final String nickname;
     private final LocalDateTime attendanceTime;
 

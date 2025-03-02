@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 public enum AttendanceSchedule {
+
     MONDAY(LocalTime.of(13, 0)),
     TUESDAY(LocalTime.of(10, 0)),
     WEDNESDAY(LocalTime.of(10, 0)),

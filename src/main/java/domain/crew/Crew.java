@@ -3,6 +3,7 @@ package domain.crew;
 import java.util.Objects;
 
 public class Crew implements Comparable<Crew> {
+
     private final String nickName;
 
     private Crew(String nickName) {

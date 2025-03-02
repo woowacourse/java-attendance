@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class AttendanceTimes {
+
     private final List<AttendanceTime> attendanceLog;
 
     private AttendanceTimes(List<AttendanceTime> attendanceLog) {

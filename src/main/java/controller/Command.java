@@ -3,6 +3,7 @@ package controller;
 import java.util.Arrays;
 
 public enum Command {
+
     ATTEND("1"),
     MODIFY_ATTENDANCE("2"),
     READ_ATTENDANCE_LOG("3"),

@@ -5,6 +5,7 @@ import domain.crew.CrewAttendance;
 import java.util.Comparator;
 
 public class CrewAttendanceComparator implements Comparator<CrewAttendance> {
+
     private final AttendanceTimesComparator attendanceTimesComparator;
 
     public CrewAttendanceComparator(AttendanceTimesComparator attendanceTimesComparator) {

@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AttendanceParser {
+
     public static List<AttendanceRecordDto> parse(List<String[]> records) {
         return records.stream()
                 .map(data -> new AttendanceRecordDto(

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 
 public class AttendanceTimesComparator implements Comparator<AttendanceTimes> {
+
     private final LocalDate date;
 
     public AttendanceTimesComparator(LocalDate date) {
