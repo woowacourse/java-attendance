@@ -1,5 +1,14 @@
 package view;
 
+import domain.AttendanceBook;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class InputView {
@@ -40,5 +49,27 @@ public class InputView {
 
     public String enterAttendanceTimeForEdit() {
         return readLine("언제로 변경하겠습니까?");
+    }
+
+    public void readFile(AttendanceBook attendanceBook) {
+        try {
+            Path filePath = Paths.get("src", "main", "resources", "attendances.csv");
+            File file = filePath.toFile();
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            String line = bufferedReader.readLine();
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] tokens = line.split(",");
+                validateName(tokens[0]);
+                attendanceBook.initAttendance(tokens[0], LocalDateTime.parse(tokens[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("파일을 불러오는 중 예외가 발생하였습니다.");
+        }
+    }
+
+    private void validateName(String name) {
+        if (name.length() > 4 || name.length() < 2) {
+            throw new IllegalArgumentException("닉네임은 2글자 이상, 4글자 이하여야 합니다.");
+        }
     }
 }

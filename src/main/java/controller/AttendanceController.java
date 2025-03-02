@@ -25,8 +25,7 @@ public class AttendanceController {
 
     public void start() {
         AttendanceBook attendanceBook = new AttendanceBook();
-        // TODO: 파일 입력
-        attendanceBook.initAttendance("시소", LocalDateTime.of(2024, 12, 10, 10, 0));
+        inputView.readFile(attendanceBook);
         selectMenu(attendanceBook);
     }
 
@@ -61,6 +60,7 @@ public class AttendanceController {
         attendanceBook.validateIsWeekday(DateTimeUtil.getFixedRunningDate());
         attendanceBook.validateIsInRunningTime(DateTimeUtil.getFixedRunningTime());
         String name = enterCrewName(attendanceBook);
+        attendanceBook.validateBeforeAdd(name);
         attendanceBook.attend(name, getFixedRunningDate(), enterAttendanceTime());
         outputView.printAttendResultMessage(attendanceBook.findAttendanceDateByNameAndDate(name, getFixedRunningDate()));
         selectMenu(attendanceBook);
