@@ -3,10 +3,10 @@ package domain;
 import exception.AppException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
     Map<Crew, CheckInHistory> book;
@@ -25,12 +25,10 @@ public class AttendanceBook {
     }
 
     public List<DangerCrew> findDangerCrews(LocalDate now) {
-        List<DangerCrew> dangerCrews = new ArrayList<>();
-        for (Map.Entry<Crew, CheckInHistory> entry : book.entrySet()) {
-            if (entry.getValue().getPenaltyStatus(now) != PenaltyStatus.NONE) {
-                DangerCrew.of(entry.getKey(), entry.getValue().countLate(now), entry.getValue().countAbsence(now));
-            }
-        }
-        return dangerCrews;
+        return book.entrySet().stream()
+                .filter(entry -> entry.getValue().getPenaltyStatus(now) != PenaltyStatus.NONE)
+                .map(entry ->
+                        DangerCrew.of(entry.getKey(), entry.getValue().countLate(now), entry.getValue().countAbsence(now)))
+                .collect(Collectors.toList());
     }
 }
