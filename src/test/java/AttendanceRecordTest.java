@@ -35,6 +35,15 @@ public class AttendanceRecordTest {
 //        assertThat(status).isEqualTo("출석");
     }
 
+    @Test
+    void 해당_날짜의_출석_시간을_확인한다() {
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        LocalDateTime attendanceTime = attendanceRecord.attend("09:59");
+
+        LocalDateTime targetAttendanceTime = attendanceRecord.findAttendanceTimeByDay(attendanceTime.getDayOfMonth());
+        assertThat(targetAttendanceTime).isEqualTo(attendanceTime);
+    }
+
 
     class AttendanceRecord {
 
@@ -53,6 +62,13 @@ public class AttendanceRecordTest {
                     ));
             attendanceTimes.add(attendanceTime);
             return attendanceTime;
+        }
+
+        public LocalDateTime findAttendanceTimeByDay(int dayOfMonth) {
+            return attendanceTimes.stream()
+                    .filter(time -> time.getDayOfMonth() == dayOfMonth)
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석 시간이 없습니다."));
         }
     }
 }
