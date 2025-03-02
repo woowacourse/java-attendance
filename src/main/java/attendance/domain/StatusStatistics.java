@@ -1,15 +1,16 @@
 package attendance.domain;
 
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.Map;
 
-public record StatusStatistics(Nickname nickname, Map<AttendanceStatus, Integer> statistics)
+public record StatusStatistics(Nickname nickname, EnumMap<AttendanceStatus, Integer> statistics)
     implements Comparable<StatusStatistics> {
     private static final int WEIGHT_DIVIDER_FOR_LATE = 3;
 
     public StatusStatistics(Nickname nickname) {
-        this(nickname, new HashMap<>());
+        this(nickname, new EnumMap<>(AttendanceStatus.class));
     }
 
     public void update(Map<LocalDate, Attendance> attendances) {
@@ -35,19 +36,15 @@ public record StatusStatistics(Nickname nickname, Map<AttendanceStatus, Integer>
         return getCount(AttendanceStatus.LATE) + getCount(AttendanceStatus.ABSENCE);
     }
 
+    private SanctionLevel getSanctionLevel() {
+        return SanctionLevel.matchLevel(getWeight());
+    }
+
     @Override
     public int compareTo(StatusStatistics o) {
-        var sanctionLevel = SanctionLevel.matchLevel(getWeight());
-        var otherSanctionLevel = SanctionLevel.matchLevel(o.getWeight());
-
-        if (sanctionLevel == otherSanctionLevel) {
-            if (compareWeight() == o.compareWeight()) {
-                return o.nickname.compareTo(nickname);
-            }
-
-            return compareWeight() - o.compareWeight();
-        }
-
-        return otherSanctionLevel.compareTo(sanctionLevel);
+        return Comparator.comparing(StatusStatistics::getSanctionLevel).reversed()
+            .thenComparing(StatusStatistics::compareWeight)
+            .thenComparing(StatusStatistics::nickname)
+            .compare(this, o);
     }
 }
