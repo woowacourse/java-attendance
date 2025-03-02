@@ -49,6 +49,9 @@ public class Attendance {
         if(!isOnCampusOperatingTime(LocalTime.from(attendanceDateTime))){
             throw new IllegalArgumentException("캠퍼스 운영시간이 아닙니다.");
         }
+        if(!isAttendanceDay(attendanceDate)){
+            throw new IllegalArgumentException("캠퍼스 운영일이 아닙니다.");
+        }
     }
 
     public AttendanceDate findByLocalDate(LocalDate findLocalDate) {
