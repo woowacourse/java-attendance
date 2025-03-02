@@ -33,6 +33,7 @@ public class AttendCommand implements Command {
         crewHistories.validateHistoryNotExists(nickname, now);
 
         LocalDateTime attendanceTime = LocalDateTime.of(now, parseAttendanceTime());
+        campusScheduler.validateOperationTime(attendanceTime);
         crewHistories.addHistory(nickname, attendanceTime);
         resultView.showAttendance(attendanceTime, campusScheduler.calculateAttendanceState(attendanceTime));
     }

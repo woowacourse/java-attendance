@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -50,6 +51,21 @@ class CampusSchedulerTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR]",
                         TimeFormatter.makeDateMessage(attendanceDate) + "은 등교일이 아닙니다.");
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1, true",
+            "2, false",
+            "7, true",
+            "25, true",
+    })
+    void 운영일이_아닌_경우_true를_반환한다(int day, boolean expected) {
+        // Given
+        LocalDate attendanceDate = makeDecemberDate(day);
+
+        // When & Then
+        assertThat(campusScheduler.isNotOperationDate(attendanceDate)).isEqualTo(expected);
     }
 
     @ParameterizedTest

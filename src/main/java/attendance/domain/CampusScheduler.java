@@ -17,7 +17,6 @@ public class CampusScheduler {
     }
 
     public AttendanceState calculateAttendanceState(final LocalDateTime attendanceTime) {
-        validateOperationTime(attendanceTime);
         LocalTime startTime = Campus.getEducationStartTime(attendanceTime.getDayOfWeek());
         long diff = Duration.between(startTime, attendanceTime).toMinutes();
         return AttendanceState.from(diff);
@@ -30,7 +29,7 @@ public class CampusScheduler {
         }
     }
 
-    private boolean isNotOperationDate(final LocalDate attendanceDate) {
+    public boolean isNotOperationDate(final LocalDate attendanceDate) {
         return isWeekend(attendanceDate) || isHoliday(attendanceDate);
     }
 
