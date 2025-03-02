@@ -31,4 +31,9 @@ public class AttendanceBook {
     public boolean isCrew(final String nickname) {
         return crews.containsKey(new Crew(nickname));
     }
+
+    public Map<AttendanceStatus, Integer> getAttendanceStatusCounts(final String nickname, final LocalDateTime today) {
+       CrewAttendance crewAttendance = crews.get(new Crew(nickname));
+       return crewAttendance.countAttendanceStatusesBefore(today);
+    }
 }
