@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -128,9 +129,13 @@ class CrewHistoriesTest {
         LocalDateTime modifyingTime = makeDateTime(3, 11, 0);
 
         // When
-        crewHistories.modify(nickname, modifyingTime);
+        LocalDateTime previousHistory = crewHistories.modify(nickname, modifyingTime);
 
         // Then
-        assertThat(crewHistories).isEqualTo(new CrewHistories(Map.of(nickname, makeCrewHistory(modifyingTime))));
+        Assertions.assertAll(
+                () -> assertThat(previousHistory).isEqualTo(attendanceTime),
+                () -> assertThat(crewHistories).isEqualTo(
+                        new CrewHistories(Map.of(nickname, makeCrewHistory(modifyingTime))))
+        );
     }
 }

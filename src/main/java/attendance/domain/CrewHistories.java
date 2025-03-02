@@ -38,10 +38,10 @@ public class CrewHistories {
         }
     }
 
-    public void modify(final Nickname nickname, final LocalDateTime modifyingDateTime) {
+    public LocalDateTime modify(final Nickname nickname, final LocalDateTime modifyingDateTime) {
         validateKeyExists(nickname);
         CrewHistory crewHistory = histories.get(nickname);
-        crewHistory.modify(modifyingDateTime);
+        return crewHistory.modify(modifyingDateTime);
     }
 
     private void createIfNotExists(final Nickname nickname) {
