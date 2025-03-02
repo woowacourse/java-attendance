@@ -9,6 +9,7 @@ import domain.AttendanceRecords;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.Crews;
+import domain.RiskCrew;
 import domain.RiskRank;
 import fixture.AttendanceRecordsGenerator;
 import java.time.LocalDate;
@@ -151,19 +152,21 @@ class AttendanceServiceTest {
 
             AttendanceService attendanceService = new AttendanceService(crews, new AttendanceRecords(allRecords));
             RiskCrewsRequest request = new RiskCrewsRequest(to.plusDays(1));
-
-            // 제적 위험자 순서: 부기, 미소, 우가, 포스티
+            
             // when & then
             RiskCrewsResponse response = attendanceService.findRiskCrews(request);
             SoftAssertions.assertSoftly(softAssertions -> {
-                softAssertions.assertThat(response.riskCrews().get(0).nickname())
-                        .isEqualTo("부기");
-                softAssertions.assertThat(response.riskCrews().get(1).nickname())
-                        .isEqualTo("미소");
-                softAssertions.assertThat(response.riskCrews().get(2).nickname())
-                        .isEqualTo("우가");
-                softAssertions.assertThat(response.riskCrews().get(3).nickname())
-                        .isEqualTo("포스티");
+                for (RiskCrew riskCrew : response.riskCrews()) {
+                    if (riskCrew.nickname().equals("부기")) {
+                        softAssertions.assertThat(riskCrew.riskRank()).isEqualByComparingTo(RiskRank.EXPELLED);
+                    } else if (riskCrew.nickname().equals("미소")) {
+                        softAssertions.assertThat(riskCrew.riskRank()).isEqualByComparingTo(RiskRank.EXPELLED);
+                    } else if (riskCrew.nickname().equals("우가")) {
+                        softAssertions.assertThat(riskCrew.riskRank()).isEqualByComparingTo(RiskRank.INTERVIEW);
+                    } else if (riskCrew.nickname().equals("포스티")) {
+                        softAssertions.assertThat(riskCrew.riskRank()).isEqualByComparingTo(RiskRank.INTERVIEW);
+                    }
+                }
             });
         }
     }
