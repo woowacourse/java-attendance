@@ -1,5 +1,6 @@
 package domain;
 
+import fixture.CrewRecordsFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,27 +18,25 @@ class CrewRecordsTest {
     @Test
     void validateCrewTest() {
         // given
-        CrewRecords crewRecords = new CrewRecords();
-        Crew includedCrew = new Crew("솔라");
-        Crew excludedCrew = new Crew("네오");
+        CrewRecords crewRecords = CrewRecordsFixture.of("솔라", "2024-12-02T13:00");
+        LocalDate date = LocalDate.of(2024, 12, 2);
 
         // when
-        crewRecords.addCrewRecords(includedCrew, new AttendanceRecords());
+        Crew excludedCrew = new Crew("네오");
 
         // then
-        assertThatThrownBy(() -> crewRecords.validateCrew(excludedCrew)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> crewRecords.getRecordOnDate(excludedCrew, date)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("입력 받은 닉네임과 LocalDateTime으로 새 출석 기록을 저장할 수 있다.")
     @Test
     void test() {
         // given
-        CrewRecords crewRecords = new CrewRecords();
-        Crew crew = new Crew("브리");
-        AttendanceRecord record = new AttendanceRecord(LocalDateTime.parse("2024-12-03T13:00"));
+        CrewRecords crewRecords = CrewRecordsFixture.fromNicknames("브리");
 
         // when
-        crewRecords.addCrewRecords(crew, new AttendanceRecords());
+        Crew crew = new Crew("브리");
+        AttendanceRecord record = new AttendanceRecord(LocalDateTime.parse("2024-12-03T13:00"));
 
         // then
         assertDoesNotThrow(() -> crewRecords.addRecord(crew, record));
@@ -47,22 +46,20 @@ class CrewRecordsTest {
     @Test
     void updateRecordTest() {
         // given
-        CrewRecords crewRecords = new CrewRecords();
+        CrewRecords crewRecords = CrewRecordsFixture.of("저스틴", "2024-12-02T13:35");
         Crew crew = new Crew("저스틴");
         AttendanceRecord oldRecord = new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:35"));
         LocalTime newTime = LocalTime.of(13, 30);
         LocalDate oldDate = LocalDate.of(2024, 12, 2);
 
         // when
-        crewRecords.addCrewRecords(crew, new AttendanceRecords());
-        crewRecords.addRecord(crew, oldRecord);
         crewRecords.updateRecord(crew, oldDate, newTime);
+        AttendanceRecord newRecord = crewRecords.getRecordOnDate(crew, oldDate);
 
         // then
         assertAll(
                 () -> assertThat(oldRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.ABSENT),
-                () -> assertThat(crewRecords.getRecordOnDate(crew, oldDate).getAttendanceStatus()).isEqualTo(AttendanceStatus.TARDY)
+                () -> assertThat(newRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.TARDY)
         );
-
     }
 }
