@@ -16,32 +16,24 @@ public class AttendanceController {
     private final SystemDateProvider systemDateProvider;
     private final InputView inputView;
     private final OutputView outputView;
+    private final AttendanceBook attendanceBook;
 
     public AttendanceController(SystemDateProvider systemDateProvider, InputView inputView, OutputView outputView) {
         this.systemDateProvider = systemDateProvider;
         this.inputView = inputView;
         this.outputView = outputView;
-    }
-
-    public void run() {
-        AttendanceBook attendanceBook = AttendanceBookParser.parseToAttendanceBook(
+        this.attendanceBook = AttendanceBookParser.parseToAttendanceBook(
                 FILE_PATH,
                 DateTimeFormatter.ofPattern(YEAR_MONTH_DAY_FORMAT),
                 DateTimeFormatter.ofPattern(HOUR_MINUTE_FORMAT)
         );
+    }
 
+    public void run() {
         while (true) {
             String featureNumber = inputView.readFeatureNumber(systemDateProvider.now());
             if (featureNumber.equals("1")) {
-                CheckInDate checkInDate = CheckInDate.of(systemDateProvider.now());
-                String nickname = inputView.readNickName();
-                Crew crew = Crew.of(nickname);
-                CheckInHistory historyByCrew = attendanceBook.findHistoryByCrew(crew);
-                String time = inputView.readTimeForCheckIn();
-                LocalTime parsedTime = LocalTime.parse(time);
-                CheckInTime checkInTime = CheckInTime.of(parsedTime);
-                attendanceBook.checkIn(historyByCrew, checkInDate, checkInTime);
-                outputView.printTodayCheckInTime(checkInDate, checkInTime);
+                checkIn();
             }
             if (featureNumber.equals("Q")) {
                 break;
@@ -49,5 +41,23 @@ public class AttendanceController {
         }
     }
 
+    private void checkIn() {
+        CheckInDate checkInDate = CheckInDate.of(systemDateProvider.now());
+        String nickname = inputView.readNickName();
+        CheckInHistory historyByCrew = getCheckInHistoryByName(nickname);
+        CheckInTime checkInTime = getCheckInTime();
+        attendanceBook.checkIn(historyByCrew, checkInDate, checkInTime);
+        outputView.printTodayCheckInTime(checkInDate, checkInTime);
+    }
 
+    private CheckInHistory getCheckInHistoryByName(String nickname) {
+        Crew crew = Crew.of(nickname);
+        return attendanceBook.findHistoryByCrew(crew);
+    }
+
+    private CheckInTime getCheckInTime() {
+        String time = inputView.readTimeForCheckIn();
+        LocalTime parsedTime = LocalTime.parse(time);
+        return CheckInTime.of(parsedTime);
+    }
 }

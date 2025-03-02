@@ -1,6 +1,5 @@
 package view;
 
-import controller.AttendanceController;
 import domain.AttendanceStatus;
 import domain.CheckInDate;
 import domain.CheckInTime;
@@ -8,10 +7,12 @@ import domain.CheckInTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class OutputView {
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN);
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
     public void printTodayCheckInTime(CheckInDate checkInDate, CheckInTime checkInTime) {
         AttendanceStatus status = AttendanceStatus.determineAttendanceStatus(checkInDate.getClassStartTime(), checkInTime.toLocalTime());
         System.out.println(formatDate(checkInDate.toLocalDate())
@@ -29,18 +30,13 @@ public class OutputView {
         return "결석";
     }
 
-    private static String formatDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN);
-        String datePart = date.format(dateFormatter);
-
-        String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-
+    private String formatDate(LocalDate date) {
+        String datePart = date.format(DATE_FORMATTER);
+        String dayOfWeek = date.getDayOfWeek().getDisplayName(java.time.format.TextStyle.FULL, Locale.KOREAN);
         return datePart + " " + dayOfWeek;
     }
 
-    private static String formatTime(LocalTime time) {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(AttendanceController.HOUR_MINUTE_FORMAT);
-        String timePart = time.format(timeFormatter);
-        return timePart;
+    private String formatTime(LocalTime time) {
+        return time.format(TIME_FORMATTER);
     }
 }

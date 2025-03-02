@@ -1,7 +1,6 @@
 package view;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
@@ -45,9 +44,7 @@ public class InputView {
     }
 
     private static String formatDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN);
-        String datePart = date.format(dateFormatter);
-
+        String datePart = date.format(OutputView.DATE_FORMATTER);
         String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
 
         return datePart + " " + dayOfWeek;
