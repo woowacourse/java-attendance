@@ -87,4 +87,19 @@ class AttendancesTest {
                 .hasMessage("동일한 날짜의 출석 기록은 등록할 수 없습니다");
     }
 
+    @DisplayName("동일한 날짜에 두 번 출석할 수 없다")
+    @Test
+    void test5() {
+        // given
+        LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+        Attendances attendances = new Attendances(List.of(
+                attendDateTime
+        ));
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> attendances.attend(attendDateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요");
+    }
+
 }

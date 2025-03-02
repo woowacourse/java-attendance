@@ -55,4 +55,7 @@ public class Attendances {
                 .filter(attendance -> attendance.getStatus() == AttendanceStatus.ABSENCE)
                 .count();
     }
+
+    public void attend(LocalDateTime attendDateTime) {
+    }
 }
