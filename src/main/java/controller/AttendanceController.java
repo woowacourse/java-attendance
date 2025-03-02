@@ -3,8 +3,11 @@ package controller;
 import common.SystemDate;
 import domain.AttendanceBook;
 import domain.AttendanceCommand;
+import domain.AttendanceModification;
 import domain.AttendanceRecord;
+import domain.AttendanceTime;
 import dto.AttendanceDetails;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -36,6 +39,22 @@ public class AttendanceController {
             final LocalDateTime localDateTime = LocalDateTime.of(SystemDate.NOW.getDate(), localTime);
             final AttendanceRecord attendanceRecord = attendanceBook.addAttendance(name, localDateTime);
             outputView.printAttendanceDetails(convertToAttendanceDetails(attendanceRecord));
+        }
+        if (Objects.equals(attendanceCommand, AttendanceCommand.MODIFY)) {
+            outputView.askCrewNicknameForModification();
+            final String name = inputView.readCrewName();
+            attendanceBook.validateExistCrew(name);
+            outputView.askAttendanceDayForModification();
+            final LocalDate localDate = inputView.readDate();
+            attendanceBook.validateModificationAttendanceDate(name, localDate);
+            outputView.askAttendanceTimeForModification();
+            final LocalTime localTime = inputView.readTime();
+            final AttendanceTime attendanceTime = AttendanceTime.of(localDate.getDayOfWeek(), localTime);
+            final AttendanceModification attendanceModification = attendanceBook.modifyAttendance(name,localDate, attendanceTime);
+            outputView.printModifiedAttendanceDetails(
+                    convertToAttendanceDetails(attendanceModification.beforeAttendanceRecord()),
+                    convertToAttendanceDetails(attendanceModification.afterAttendanceRecord()));
+
         }
         if (Objects.equals(attendanceCommand, AttendanceCommand.QUIT)) {
             return;

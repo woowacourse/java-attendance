@@ -15,7 +15,7 @@ public class ConsoleOutputView {
             3, "결석"
     );
 
-    public void printIntro(final LocalDate localDate) {
+    public void intro(final LocalDate localDate) {
         final String message = String.format("""
                  오늘은 %s입니다. 기능을 선택해 주세요.
                 1. 출석 확인
@@ -27,19 +27,40 @@ public class ConsoleOutputView {
         printMessage(LINE_SEPARATOR + message);
     }
 
-    public void printAskNickName() {
+    public void askCrewNickName() {
         printlnMessage(LINE_SEPARATOR + "닉네임을 입력해 주세요.");
     }
 
-    public void printAskAttendanceTime() {
+    public void askCrewNicknameForModification() {
+        printlnMessage(LINE_SEPARATOR + "출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+    }
+
+    public void askAttendanceDayForModification() {
+        printlnMessage("수정하려는 날짜(일)를 입력해 주세요.");
+    }
+
+    public void askAttendanceTimeForModification() {
+        printlnMessage("언제로 변경하겠습니까?");
+    }
+
+    public void askAttendanceTime() {
         printlnMessage("등교 시간을 입력해 주세요.");
+    }
+
+    public void printModifiedAttendanceDetails(final AttendanceDetails beforeAttendanceDetails,
+                                               final AttendanceDetails afterAttendanceDetails) {
+        final String beforeAttendanceMessage = convertToAttendanceDetailsMessage(beforeAttendanceDetails);
+        final String afterAttendanceMessage = String.format("%s (%s) 수정 완료!",
+                DateTimeConvertor.convertToLocalTimeKoreanFormat(afterAttendanceDetails.localTime()),
+                ATTENDANCE_STATUS.get(afterAttendanceDetails.attendanceStatusCode()));
+        printlnMessage(LINE_SEPARATOR + String.format("%s -> %s", beforeAttendanceMessage, afterAttendanceMessage));
     }
 
     public void printAttendanceDetails(final AttendanceDetails attendanceDetails) {
         printlnMessage(LINE_SEPARATOR + convertToAttendanceDetailsMessage(attendanceDetails));
     }
 
-    public String convertToAttendanceDetailsMessage(final AttendanceDetails attendanceDetails) {
+    private String convertToAttendanceDetailsMessage(final AttendanceDetails attendanceDetails) {
         final String attendanceDateMessage = DateTimeConvertor.convertToLocalDateKoreanFormat(
                 attendanceDetails.localDate());
         final LocalTime attendanceTime = attendanceDetails.localTime();

@@ -1,14 +1,18 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceBookTest {
 
@@ -56,11 +60,35 @@ public class AttendanceBookTest {
         //given
         final String name = "쿠키";
         final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 13, 10, 31);
+        final AttendanceTime attendanceTime = AttendanceTime.of(localDateTime.getDayOfWeek(),
+                localDateTime.toLocalTime());
 
         //when
-        final AttendanceRecord attendanceRecord = attendanceBook.modifyAttendance(name, localDateTime);
+        final AttendanceModification attendanceModification = attendanceBook.modifyAttendance(name,
+                localDateTime.toLocalDate(), attendanceTime);
+        final AttendanceRecord beforeAttendanceRecord = attendanceModification.beforeAttendanceRecord();
+        final AttendanceRecord afterAttendanceRecord = attendanceModification.afterAttendanceRecord();
         //then
-        assertThat(attendanceRecord).isNotNull();
+        assertThat(beforeAttendanceRecord.attendanceTime().getLocaltime()).isEqualTo(LocalTime.of(10, 8));
+        assertThat(afterAttendanceRecord.attendanceTime().getLocaltime()).isEqualTo(LocalTime.of(10, 31));
 
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    @DisplayName("출석 기록이 존재하지 않아 예외가 발생한다.")
+    void test3(final LocalDate localDate) {
+        //should
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> attendanceBook.validateModificationAttendanceDate("쿠키", localDate));
+
+    }
+
+    private static Stream<LocalDate> test3() {
+        return Stream.of(
+                LocalDate.of(2024, 12, 7),
+                LocalDate.of(2024, 12, 14),
+                LocalDate.of(2024, 12, 25)
+        );
     }
 }

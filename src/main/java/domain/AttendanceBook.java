@@ -1,6 +1,8 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import util.DateTimeConvertor;
 
 public class AttendanceBook {
@@ -34,7 +36,19 @@ public class AttendanceBook {
         }
     }
 
-    public AttendanceRecord modifyAttendance(final String name, final LocalDateTime localDateTime) {
-        return null;
+    public void validateModificationAttendanceDate(final String name, final LocalDate localDate) {
+        final Crew crew = crewGroup.getCrewByName(name);
+        if (!crew.existAttendance(localDate)) {
+            throw new IllegalArgumentException("[ERROR] 출석 기록이 존재하지 않습니다.");
+        }
+    }
+
+    public AttendanceModification modifyAttendance(final String name, final LocalDate localDate, final AttendanceTime attendanceTime) {
+        final Crew crew = crewGroup.getCrewByName(name);
+        final LocalTime localtime = attendanceTime.getLocaltime();
+        final AttendanceRecord beforeAttendanceRecord = crew.getAttendanceRecordByDate(localDate);
+        crew.putAttendance(LocalDateTime.of(localDate, localtime));
+        final AttendanceRecord afterAttendanceRecord = crew.getAttendanceRecordByDate(localDate);
+        return new AttendanceModification(beforeAttendanceRecord, afterAttendanceRecord);
     }
 }

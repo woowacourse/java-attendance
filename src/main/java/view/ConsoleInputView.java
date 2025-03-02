@@ -1,6 +1,7 @@
 package view;
 
 import domain.AttendanceCommand;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
 import util.DateTimeParser;
@@ -17,6 +18,10 @@ public class ConsoleInputView {
 
     public AttendanceCommand readAttendanceCommand() {
         return AttendanceCommand.findByCommand(readLine());
+    }
+
+    public LocalDate readDate() {
+        return DateTimeParser.parseToLocalDate(readLine());
     }
 
     private String readLine() {

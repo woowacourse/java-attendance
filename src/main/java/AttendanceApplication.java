@@ -1,4 +1,5 @@
 import controller.AttendanceController;
+import domain.AttendanceBook;
 import view.ConsoleInputView;
 import view.ConsoleOutputView;
 
@@ -8,7 +9,8 @@ public class AttendanceApplication {
 
         final ConsoleInputView consoleInputView = new ConsoleInputView();
         final ConsoleOutputView consoleOutputView = new ConsoleOutputView();
-        final AttendanceController attendanceController = new AttendanceController(consoleInputView, consoleOutputView);
+        final AttendanceBook attendanceBook = AttendanceBook.create();
+        final AttendanceController attendanceController = new AttendanceController(consoleInputView, consoleOutputView, attendanceBook);
         attendanceController.run();
 
     }

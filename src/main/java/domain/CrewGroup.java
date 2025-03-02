@@ -22,4 +22,8 @@ public class CrewGroup {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
+
+    public Crew getCrewByName(final String name) {
+        return crews.get(name);
+    }
 }
