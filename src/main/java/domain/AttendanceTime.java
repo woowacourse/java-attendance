@@ -27,4 +27,8 @@ public class AttendanceTime {
             throw new IllegalArgumentException("시간 형식은 hh:mm으로 입력해주세요.");
         }
     }
+
+    public LocalTime getTime() {
+        return time;
+    }
 }
