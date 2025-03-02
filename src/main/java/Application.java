@@ -25,7 +25,7 @@ public class Application {
         attendanceController.register(SHOWING_ATTENDANCE, new ShowingAttendanceCommand(attendanceController));
         attendanceController.register(SHOWING_ALERT_CREWS, new ShowingAlertCrewsCommand(attendanceController));
         attendanceController.register(QUIT, new QuitCommand());
-
+      
         attendanceController.run();
     }
 }
