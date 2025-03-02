@@ -19,7 +19,6 @@ public record AttendanceRecordsDto(
     int absenceCount,
     AttendancePenalty attendancePenalty
 ) {
-
     public static AttendanceRecordsDto from(
         final AttendanceBook attendanceBook,
         final AttendanceDate untilDate
@@ -59,6 +58,5 @@ public record AttendanceRecordsDto(
         AttendanceDateTime attendanceDateTime,
         AttendanceStatus attendanceStatus
     ) {
-
     }
 }

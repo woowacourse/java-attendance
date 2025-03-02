@@ -11,7 +11,6 @@ import java.util.Map;
 public record AttendancePenaltyCrewsDto(
     List<AttendancePenaltyCrewDto> attendancePenaltyCrewDtos
 ) {
-
     public static AttendancePenaltyCrewsDto from(
         final List<AttendanceBook> attendanceBooks,
         final AttendanceDate untilDate
@@ -30,7 +29,6 @@ public record AttendancePenaltyCrewsDto(
         int lateCount,
         AttendancePenalty attendancePenalty
     ) {
-
         public static AttendancePenaltyCrewDto from(
             final AttendanceBook attendanceBook,
             final AttendanceDate untilDate
