@@ -3,7 +3,9 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -41,9 +43,10 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
 
     public Attendance getAttendance(LocalDate date) {
         Optional<Attendance> attendance = getOptionalAttendance(date);
-        return attendance.orElseThrow(() ->
-            new AttendanceArgumentException(CANT_FIND_ATTENDANCE)
-        );
+        if (attendance.isEmpty() || attendance.get().isTruancy()) {
+            throw new AttendanceArgumentException(CANT_FIND_ATTENDANCE);
+        }
+        return attendance.get();
     }
 
     public Optional<Attendance> getOptionalAttendance(LocalDate date) {
@@ -56,7 +59,31 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
         attendances.put(date, new Attendance(dateTime));
     }
 
+    public List<Attendance> getAttendancesWithTruancy() {
+        List<LocalDate> workingDates = systemDateTime.extractWorkingDays();
+        List<Attendance> attendanceHistory = new ArrayList<>();
+
+        for (LocalDate date : workingDates) {
+            var attendance = attendances.getOrDefault(date, Attendance.generateTruancy(date));
+            attendanceHistory.add(attendance);
+        }
+
+        return attendanceHistory;
+    }
+
     public void updateStatics(StatusStatistics statusStatics) {
-        statusStatics.update(attendances);
+        List<LocalDate> workingDates = systemDateTime.extractWorkingDays();
+        Map<LocalDate, AttendanceStatus> attendanceStatus = new HashMap<>();
+        for (LocalDate date : workingDates) {
+            attendanceStatus.put(date, getOrAbsence(date));
+        }
+        statusStatics.update(attendanceStatus);
+    }
+
+    private AttendanceStatus getOrAbsence(LocalDate date) {
+        Optional<Attendance> optionalAttendance = getOptionalAttendance(date);
+        return optionalAttendance
+            .map(Attendance::status)
+            .orElse(AttendanceStatus.ABSENCE);
     }
 }
