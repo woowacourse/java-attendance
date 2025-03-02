@@ -59,15 +59,15 @@ public class AttendanceController {
     }
 
     private CrewName getCrewName() {
-        String name = inputView.readName();
-        CrewName crewName = new CrewName(name);
+        String nameInput = inputView.readName();
+        CrewName crewName = new CrewName(nameInput);
         attendanceBook.findAttendanceRecordBy(crewName);
         return crewName;
     }
 
     private Attendance getAttendance() {
-        String time = inputView.readAttendanceTime();
-        return new Attendance(TODAY, LocalTime.parse(time));
+        String timeInput = inputView.readAttendanceTime();
+        return new Attendance(TODAY, LocalTime.parse(timeInput));
     }
 
     private void modifyAttendance() {
@@ -80,17 +80,17 @@ public class AttendanceController {
     }
 
     private LocalDate getDate() {
-        String day = inputView.readModifyDay();
-        LocalDate date = LocalDate.of(TODAY.getYear(), TODAY.getMonth(), Integer.parseInt(day));
+        String dayInput = inputView.readModifyDay();
+        LocalDate date = LocalDate.of(TODAY.getYear(), TODAY.getMonth(), Integer.parseInt(dayInput));
         AttendancePolicy.validateHoliday(date);
         return date;
     }
 
     private LocalTime getTime() {
-        String time = inputView.readModifyName();
-        LocalTime localTime = LocalTime.parse(time);
-        AttendancePolicy.validateRunningTime(localTime);
-        return localTime;
+        String timeInput = inputView.readModifyName();
+        LocalTime time = LocalTime.parse(timeInput);
+        AttendancePolicy.validateRunningTime(time);
+        return time;
     }
 
     private void showAttendanceHistory() {
@@ -99,8 +99,8 @@ public class AttendanceController {
     }
 
     private AttendanceHistory getAttendanceHistory() {
-        String name = inputView.readName();
-        CrewName crewName = new CrewName(name);
+        String nameInput = inputView.readName();
+        CrewName crewName = new CrewName(nameInput);
         return attendanceBook.findAttendanceHistoryUntilYesterday(crewName);
     }
 
