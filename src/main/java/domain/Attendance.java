@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import util.DayConverter;
 
-public class Attendance {
+public class Attendance implements Comparable<Attendance> {
     private final LocalDateTime attendanceTime;
 
     public Attendance(LocalDateTime attendanceTime) {
@@ -37,9 +37,13 @@ public class Attendance {
         return ABSENT;
     }
 
-    public void validateHoliday(List<Integer> holidays) {
+    public boolean isHoliday(List<Integer> holidays) {
         DayOfMonth dayOfMonth = new DayOfMonth(attendanceTime.getDayOfMonth());
-        if (dayOfMonth.isHoliday(holidays, attendanceTime.toLocalDate())) {
+        return dayOfMonth.isHoliday(holidays, attendanceTime.toLocalDate());
+    }
+
+    public void validateHoliday(List<Integer> holidays) {
+        if (isHoliday(holidays)) {
             throw new IllegalArgumentException(
                     String.format("%d월 %d일 %s은 등교일이 아닙니다.",
                             attendanceTime.getMonth().getValue(),
@@ -50,6 +54,10 @@ public class Attendance {
 
     public LocalDateTime getAttendanceTime() {
         return attendanceTime;
+    }
+
+    public boolean isSameDay(LocalDate localDate) {
+        return attendanceTime.toLocalDate().equals(localDate);
     }
 
     @Override
@@ -69,7 +77,11 @@ public class Attendance {
         return Objects.hash(attendanceTime);
     }
 
-    public boolean isSameDay(LocalDate localDate) {
-        return attendanceTime.toLocalDate().equals(localDate);
+    @Override
+    public int compareTo(Attendance o) {
+        if (attendanceTime.isAfter(o.getAttendanceTime())) {
+            return 1;
+        }
+        return -1;
     }
 }

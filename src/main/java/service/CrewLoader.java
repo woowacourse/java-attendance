@@ -19,6 +19,7 @@ import util.FileReader;
 
 public class CrewLoader {
     private static final LocalTime ABSENT_TIME = LocalTime.of(23, 59);
+    private static final List<Integer> HOLIDAYS = List.of(25);
 
     public CrewGroup load(LocalDate today) {
         List<String> rawCrewsInformation = FileReader.readFile();
@@ -51,6 +52,7 @@ public class CrewLoader {
 
             List<Attendance> absentAttendances = allDate.stream()
                     .map(date -> new Attendance(LocalDateTime.of(date, ABSENT_TIME)))
+                    .filter(attendance -> !attendance.isHoliday(HOLIDAYS))
                     .toList();
 
             rawCrewGroup.get(name).addAll(absentAttendances);
