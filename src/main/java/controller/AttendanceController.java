@@ -38,7 +38,7 @@ public class AttendanceController {
         }
     }
 
-    protected void attend() {
+    void attend() {
         validateToday();
         LocalDate today = LocalDate.now(clock);
         String nickname = inputView.getNickname();
@@ -61,7 +61,7 @@ public class AttendanceController {
         }
     }
 
-    protected void modifyAttendance() {
+    void modifyAttendance() {
         String nickname = inputView.getNicknameForModification();
         Crew crew = new Crew(nickname);
         Attendances attendances = attendanceBook.getAttendances(crew);
@@ -76,18 +76,18 @@ public class AttendanceController {
         outputView.printModifiedAttendanceDetail(originAttendance, attendance);
     }
 
-    protected void readAttendanceHistory() {
+    void readAttendanceHistory() {
         String nickname = inputView.getNickname();
         Crew crew = new Crew(nickname);
         Attendances attendances = attendanceBook.getAttendances(crew);
         outputView.printAttendanceHistory(nickname, attendances, clock);
     }
 
-    protected void readPenaltyHistory() {
+    void readPenaltyHistory() {
         Map<Crew, Attendances> penaltyCrews = attendanceBook.getPenaltyHistory(clock);
         outputView.printPenaltyCrews(penaltyCrews, clock);
     }
 
-    protected void quit() {
+    void quit() {
     }
 }
