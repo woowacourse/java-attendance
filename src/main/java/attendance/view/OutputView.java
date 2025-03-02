@@ -1,6 +1,7 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceUpdate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,12 +29,21 @@ public class OutputView {
         LocalDateTime dateTime = attendance.getDateTime();
         AttendanceStateView stateView = AttendanceStateView.findByName(attendance.getState().name());
 
-        System.out.printf("%d월 %d일 %s %s (%s)\n",
+        System.out.printf("%d월 %d일 %s %s (%s)",
                 dateTime.getMonthValue(),
                 dateTime.getDayOfMonth(),
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 dateTime.toLocalTime(),
                 stateView.getName()
+        );
+    }
+
+    public void printAttendanceUpdate(AttendanceUpdate attendanceUpdate) {
+        printAttendanceResult(attendanceUpdate.beforeAttendance());
+        Attendance attendance = attendanceUpdate.afterAttendance();
+        System.out.printf(" -> %s (%s) 수정 완료!",
+                attendance.getDateTime().toLocalTime(),
+                AttendanceStateView.findByName(attendance.getState().name())
         );
     }
 }
