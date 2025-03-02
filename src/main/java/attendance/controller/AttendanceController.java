@@ -87,7 +87,7 @@ public class AttendanceController {
         String crewName = inputView.inputCrewName();
         Map<LocalDate, Attendance> crewAttendances = attendanceManager.getCrewAttendances(crewName);
         Map<AttendanceStatus, Integer> statusCounts = attendanceManager.calculateStatusCount(crewName);
-        WarningLevel level = attendanceManager.calculateWarningLevel(crewName);
+        WarningLevel level = attendanceManager.calculateCrewWarningLevel(crewName);
 
         outputView.printAttendanceRecords(crewName, crewAttendances);
         outputView.printAttendanceStatusCount(statusCounts);

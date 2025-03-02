@@ -50,10 +50,7 @@ public class AttendanceManager {
     }
 
     public WarningLevel calculateCrewWarningLevel(String crewName) {
-        Attendances attendances = findAttendancesByName(crewName);
-        Map<AttendanceStatus, Integer> statusCount = statistics.getTotalStatusCount(attendances);
-
-        return WarningLevel.from(statusCount);
+        return WarningLevel.from(calculateStatusCount(crewName));
     }
 
     public Map<AttendanceStatus, Integer> calculateStatusCount(String crewName) {
@@ -69,10 +66,6 @@ public class AttendanceManager {
                     result.put(name, statusCount);
                 });
         return result;
-    }
-
-    public WarningLevel calculateWarningLevel(String crewName) {
-        return WarningLevel.from(calculateStatusCount(crewName));
     }
 
     private Attendances findAttendancesByName(String crewName) {

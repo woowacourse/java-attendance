@@ -3,6 +3,7 @@ package attendance.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import attendance.domain.fixture.AttendanceManagerTestFixture;
 import attendance.domain.fixture.AttendancesTestFixture;
@@ -150,6 +151,47 @@ public class AttendanceManagerTest {
         Map<LocalDate, Attendance> findAttendances = attendanceManager.getCrewAttendances(crewName);
 
         assertThat(findAttendances).isNotNull();
+    }
+
+    @Test
+    void 특정_크루의_출석_지각_결석_횟수를_반환한다() {
+        String crewName = "빙티";
+        Map<String, Attendances> crewAttendances = new HashMap<>();
+        crewAttendances.put(crewName, AttendancesTestFixture.createAttendances(3, 5,
+                LocalDateTestFixture.DATE_PROVIDER.now().getDayOfMonth()));
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createByCrewAttendances(crewAttendances);
+
+        Map<AttendanceStatus, Integer> statusCount = attendanceManager.calculateStatusCount(crewName);
+
+        assertThat(statusCount).containsEntry(AttendanceStatus.LATENESS, 3);
+        assertThat(statusCount).containsEntry(AttendanceStatus.ABSENCE, 5);
+    }
+
+    @Test
+    void 전체_크루원의_출석_지각_결석_횟수를_반환한다() {
+        String crewName1 = "빙티";
+        Map<String, Attendances> crewAttendances = new HashMap<>();
+        crewAttendances.put(crewName1, AttendancesTestFixture.createAttendances(3, 5,
+                LocalDateTestFixture.DATE_PROVIDER.now().getDayOfMonth()));
+
+        String crewName2 = "짱수";
+        crewAttendances.put(crewName2, AttendancesTestFixture.createAttendances(5, 6,
+                LocalDateTestFixture.DATE_PROVIDER.now().getDayOfMonth()));
+
+        String crewName3 = "이든";
+        crewAttendances.put(crewName3, AttendancesTestFixture.createAttendances(7, 2,
+                LocalDateTestFixture.DATE_PROVIDER.now().getDayOfMonth()));
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createByCrewAttendances(crewAttendances);
+
+        Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount = attendanceManager.getCrewsStatusCount();
+        assertAll(
+                () -> assertThat(crewsStatusCount.get(crewName1)).containsEntry(AttendanceStatus.LATENESS, 3),
+                () -> assertThat(crewsStatusCount.get(crewName1)).containsEntry(AttendanceStatus.ABSENCE, 5),
+                () -> assertThat(crewsStatusCount.get(crewName2)).containsEntry(AttendanceStatus.LATENESS, 5),
+                () -> assertThat(crewsStatusCount.get(crewName2)).containsEntry(AttendanceStatus.ABSENCE, 6),
+                () -> assertThat(crewsStatusCount.get(crewName3)).containsEntry(AttendanceStatus.LATENESS, 7),
+                () -> assertThat(crewsStatusCount.get(crewName3)).containsEntry(AttendanceStatus.ABSENCE, 2)
+        );
     }
 
 
