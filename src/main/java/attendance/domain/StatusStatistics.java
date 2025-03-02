@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public record StatusStatistics(Map<AttendanceStatus, Integer> statistics) {
+    private static final int WEIGHT_DIVIDER_FOR_LATE = 3;
+
     public StatusStatistics() {
         this(new HashMap<>());
     }
@@ -17,6 +19,7 @@ public record StatusStatistics(Map<AttendanceStatus, Integer> statistics) {
     }
 
     public int getWeight() {
-        return statistics.get(AttendanceStatus.LATE) / 3 + statistics.get(AttendanceStatus.ABSENCE);
+        return statistics.get(AttendanceStatus.LATE) / WEIGHT_DIVIDER_FOR_LATE
+            + statistics.get(AttendanceStatus.ABSENCE);
     }
 }

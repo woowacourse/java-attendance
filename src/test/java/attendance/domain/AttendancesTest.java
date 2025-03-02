@@ -64,6 +64,5 @@ class AttendancesTest {
             () -> assertThat(statusStatics.get(AttendanceStatus.LATE)).isEqualTo(1),
             () -> assertThat(statusStatics.get(AttendanceStatus.ABSENCE)).isEqualTo(1)
         );
-
     }
 }
