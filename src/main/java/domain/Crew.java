@@ -1,5 +1,5 @@
-import domain.AttendanceRecord;
-import domain.DateProvider;
+package domain;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
