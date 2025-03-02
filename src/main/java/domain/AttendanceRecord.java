@@ -30,6 +30,10 @@ public class AttendanceRecord {
         return attendanceTime;
     }
 
+    public void add(LocalDateTime attendanceTime) {
+        attendanceTimes.add(attendanceTime);
+    }
+
     private void validateAlreadyAttend(LocalDate today) {
         if (attendanceTimes.stream()
                 .anyMatch(attendanceTime -> attendanceTime.getDayOfMonth() == today.getDayOfMonth())) {

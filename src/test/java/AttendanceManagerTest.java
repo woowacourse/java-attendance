@@ -29,12 +29,21 @@ public class AttendanceManagerTest {
     }
 
     @Test
-    void 크루_출석_기록을_추가한다() {
+    void 크루_출석_기록을_추가할_때_크루가_있으면_시간만_추가한다() {
         AttendanceManager attendanceManager = new AttendanceManager(() -> weekday);
 
         attendanceManager.addCrew("이든", LocalDateTime.of(2024, 12, 13, 9, 59));
-
+        attendanceManager.addCrew("이든", LocalDateTime.of(2024, 12, 14, 9, 59));
         assertThat(attendanceManager.getCrewSize()).isEqualTo(1);
+    }
+
+    @Test
+    void 크루_출석_기록을_추가할_때_크루가_없으면_크루를_추가한다() {
+        AttendanceManager attendanceManager = new AttendanceManager(() -> weekday);
+
+        attendanceManager.addCrew("이든", LocalDateTime.of(2024, 12, 13, 9, 59));
+        attendanceManager.addCrew("쿠키", LocalDateTime.of(2024, 12, 13, 9, 59));
+        assertThat(attendanceManager.getCrewSize()).isEqualTo(2);
     }
 
 

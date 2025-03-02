@@ -18,7 +18,7 @@ public class Crew {
         return nickname;
     }
 
-    public void addAttendanceTime(LocalDateTime time) {
-
+    public void addAttendanceTime(LocalDateTime attendanceTime) {
+        attendanceRecord.add(attendanceTime);
     }
 }
