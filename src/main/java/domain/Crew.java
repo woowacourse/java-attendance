@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -31,11 +32,56 @@ public class Crew {
         return attendances.stream()
                 .filter(attendance -> attendance.hasSameDate(date))
                 .findFirst()
-                .orElseThrow(null);
+                .orElse(null);
     }
 
     public boolean hasAlreadyAttended(LocalDate date) {
         return attendances.stream()
                 .anyMatch(attendance -> attendance.hasSameDate(date));
+    }
+
+    public int calculateAttendanceCount(LocalDate nowDate) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.determineStatus() == AttendanceStatus.ATTENDANCE)
+                .filter(attendance -> attendance.isBeforeDate(nowDate))
+                .count();
+    }
+
+    public int calculateLatenessCount(LocalDate nowDate) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.determineStatus() == AttendanceStatus.LATENESS)
+                .filter(attendance -> attendance.isBeforeDate(nowDate))
+                .count();
+    }
+
+    public int calculateAbsenceCount(LocalDate nowDate) {
+        LocalDate startDate = LocalDate.of(2024, 12, 1);
+
+        int absenceCount = (int) startDate.datesUntil(nowDate)
+                .filter(this::isAbsentDay)
+                .count();
+
+        absenceCount += countManualAbsences(nowDate);
+        return absenceCount;
+    }
+
+    private boolean isAbsentDay(LocalDate date) {
+        return !isHoliday(date) && !attendanceExists(date);
+    }
+
+    private int countManualAbsences(LocalDate nowDate) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.determineStatus() == AttendanceStatus.ABSENCE)
+                .filter(attendance -> attendance.isBeforeDate(nowDate))
+                .count();
+    }
+
+    private boolean attendanceExists(LocalDate date) {
+        return attendances.stream().anyMatch(attendance -> attendance.hasSameDate(date));
+    }
+
+    private boolean isHoliday(LocalDate date) {
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY ||
+                date.equals(LocalDate.of(2024, 12, 25));
     }
 }
