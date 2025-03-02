@@ -56,6 +56,23 @@ class StatusStatisticTest {
         );
     }
 
+    @Test
+    @DisplayName("제적 상태가 같을 경우, 가중치로 비교해 정렬할 수 있다.")
+    void test_compareWeightOfStatusStatistics() {
+        var nickname = new Nickname("이든");
+
+        Map<LocalDate, Attendance> attendances = createStandardAttendanceMap();
+        var status = new StatusStatistics(nickname);
+        status.update(attendances);
+
+        var late = LocalDateTime.of(2024, 12, 16, 10, 10);
+        attendances.put(late.toLocalDate(), new Attendance(late));
+        var statusMoreWeight = new StatusStatistics(nickname);
+        statusMoreWeight.update(attendances);
+
+        assertThat(status.compareTo(statusMoreWeight)).isLessThan(0);
+    }
+
     private StatusStatistics createStatusWithAttendance(Nickname nickname, int attendanceCount) {
         var status = new StatusStatistics(nickname);
         Map<LocalDate, Attendance> attendances = new HashMap<>();
@@ -70,7 +87,7 @@ class StatusStatisticTest {
     private Map<LocalDate, Attendance> createStandardAttendanceMap() {
         var attendance = LocalDateTime.of(2024, 12, 10, 10, 0);
         var late = LocalDateTime.of(2024, 12, 11, 10, 10);
-        var absence = LocalDateTime.of(2024, 12, 12, 10, 35);
+        var absence = LocalDateTime.of(2024, 12, 13, 10, 35);
 
         Map<LocalDate, Attendance> attendances = new HashMap<>();
         attendances.put(attendance.toLocalDate(), new Attendance(attendance));
