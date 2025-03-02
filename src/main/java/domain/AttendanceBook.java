@@ -68,7 +68,6 @@ public class AttendanceBook {
 
     public List<Attendance> getAttendanceBook() {
         return attendanceBook;
-//        return Collections.unmodifiableList(attendanceBook);
     }
 
     public AttendanceStateCount calculateState() {
@@ -92,5 +91,14 @@ public class AttendanceBook {
 
         int count = absence + (lateness / 3);
         return PenaltyType.getPenaltyType(count);
+    }
+
+    public PenaltyBook createPenaltyBook(String name) {
+        AttendanceStateCount stateCount = this.calculateState();
+        int lateness = stateCount.lateness();
+        int absence = stateCount.absence();
+        PenaltyType penaltyType = this.calculatePenaltyType(stateCount);
+
+        return new PenaltyBook(name, lateness, absence, penaltyType);
     }
 }

@@ -2,10 +2,11 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,20 +20,34 @@ public class CrewsAttendanceBookTest {
     void setUp() {
         Map<String, AttendanceBook> initialAttendances = new HashMap<>();
 
-        LocalDate localDate = LocalDate.of(2024, 12, 5);
-        LocalTime localTime = LocalTime.of(10, 0);
-
-        initialAttendances.put("fora", new AttendanceBook(new ArrayList<>(List.of(
-                new Attendance(localDate, localTime)
+        initialAttendances.put("fora", new AttendanceBook(createAttendances(Map.of(
+                5, LocalTime.of(9, 50),
+                6, LocalTime.of(10, 0),
+                9, LocalTime.of(12, 50)
         ))));
-        initialAttendances.put("mingom", new AttendanceBook(new ArrayList<>(List.of(
-                new Attendance(localDate, localTime)
+        initialAttendances.put("mingom", new AttendanceBook(createAttendances(Map.of(
+                5, LocalTime.of(9, 50),
+                6, LocalTime.of(10, 40),
+                9, LocalTime.of(13, 50),
+                10, LocalTime.of(10, 40)
         ))));
-        initialAttendances.put("mungoo", new AttendanceBook(new ArrayList<>(List.of(
-                new Attendance(localDate, localTime)
+        initialAttendances.put("mungoo", new AttendanceBook(createAttendances(Map.of(
+                5, LocalTime.of(9, 50),
+                6, LocalTime.of(10, 40),
+                9, LocalTime.of(13, 40),
+                10, LocalTime.of(10, 40),
+                11, LocalTime.of(10, 40),
+                12, LocalTime.of(10, 50),
+                13, LocalTime.of(10, 50)
         ))));
 
         repository = new CrewsAttendanceBook(initialAttendances);
+    }
+
+    private List<Attendance> createAttendances(Map<Integer, LocalTime> dayTimeMap) {
+        return dayTimeMap.entrySet().stream()
+                .map(entry -> new Attendance(LocalDate.of(2024, 12, entry.getKey()), entry.getValue()))
+                .collect(Collectors.toList());
     }
 
     @Test
@@ -171,7 +186,7 @@ public class CrewsAttendanceBookTest {
     class AttendanceUpdateTest {
         String name = "fora";
 
-        LocalDate localDate = LocalDate.of(2024, 12, 6);
+        LocalDate localDate = LocalDate.of(2024, 12, 26);
 
         LocalTime attendanceLocalTime = LocalTime.of(10, 0);
         LocalTime lateLocalTime = LocalTime.of(10, 6);
@@ -293,12 +308,23 @@ public class CrewsAttendanceBookTest {
     }
 
     @Test
-    void 닉네임을_입력하면_전날까지의_출석_기록을_확인할_수_있다() {
-        // given
-        String name = "fora";
-
+    void 전날까지의_출석_기록을_바탕으로_제적_위험자를_확인할_수_있다() {
         // when
+        Set<PenaltyBook> penaltyBooks = repository.calculatePenaltyBooks();
+
+        PenaltyBook mingomPenalty = penaltyBooks.stream()
+                .filter(penalty -> penalty.name().equals("mingom"))
+                .findFirst()
+                .orElse(null);
+
+        PenaltyBook mungooPenalty = penaltyBooks.stream()
+                .filter(penalty -> penalty.name().equals("mungoo"))
+                .findFirst()
+                .orElse(null);
 
         // then
+        Assertions.assertThat(penaltyBooks.size()).isEqualTo(3);
+        Assertions.assertThat(mingomPenalty.penaltyType()).isEqualTo(PenaltyType.INTERVIEW);
+        Assertions.assertThat(mungooPenalty.penaltyType()).isEqualTo(PenaltyType.EXPULSION);
     }
 }

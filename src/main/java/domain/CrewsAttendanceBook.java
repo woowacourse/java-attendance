@@ -3,6 +3,8 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CrewsAttendanceBook {
     private final Map<String, AttendanceBook> attendances;
@@ -42,5 +44,11 @@ public class CrewsAttendanceBook {
         if (!attendances.containsKey(name)) {
             throw new IllegalArgumentException("존재하는 크루의 닉네임을 입력해주세요.");
         }
+    }
+
+    public Set<PenaltyBook> calculatePenaltyBooks() {
+        return attendances.entrySet().stream()
+                .map(entry -> entry.getValue().createPenaltyBook(entry.getKey()))
+                .collect(Collectors.toSet());
     }
 }
