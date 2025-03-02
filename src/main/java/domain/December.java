@@ -13,12 +13,15 @@ public enum December {
         this.days = days;
     }
 
-    public static boolean checkHoliday(int dayOfMonth) {
+    public static boolean isHoliday(int dayOfMonth) {
         return HOLIDAY.days.contains(dayOfMonth);
     }
 
-    public static boolean checkWeekDay(int dayOfMonth){
+    public static boolean isWeekDay(int dayOfMonth) {
         return WEEKDAY.days.contains(dayOfMonth);
     }
 
+    public static boolean isWeekend(int dayOfMonth) {
+        return WEEKEND.days.contains(dayOfMonth);
+    }
 }
