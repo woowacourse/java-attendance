@@ -18,20 +18,20 @@ public class CrewsAttendanceBookTest {
 
     @BeforeEach
     void setUp() {
-        Map<String, AttendanceBook> initialAttendances = new HashMap<>();
+        Map<Crew, AttendanceBook> initialAttendances = new HashMap<>();
 
-        initialAttendances.put("fora", new AttendanceBook(createAttendances(Map.of(
+        initialAttendances.put(new Crew("fora"), new AttendanceBook(createAttendances(Map.of(
                 5, LocalTime.of(9, 50),
                 6, LocalTime.of(10, 0),
                 9, LocalTime.of(12, 50)
         ))));
-        initialAttendances.put("mingom", new AttendanceBook(createAttendances(Map.of(
+        initialAttendances.put(new Crew("mingom"), new AttendanceBook(createAttendances(Map.of(
                 5, LocalTime.of(9, 50),
                 6, LocalTime.of(10, 40),
                 9, LocalTime.of(13, 50),
                 10, LocalTime.of(10, 40)
         ))));
-        initialAttendances.put("mungoo", new AttendanceBook(createAttendances(Map.of(
+        initialAttendances.put(new Crew("mungoo"), new AttendanceBook(createAttendances(Map.of(
                 5, LocalTime.of(9, 50),
                 6, LocalTime.of(10, 40),
                 9, LocalTime.of(13, 40),
@@ -68,13 +68,13 @@ public class CrewsAttendanceBookTest {
     @Test
     void 출석을_저장한다() {
         // given
-        String name = "fora";
+        Crew crew = new Crew("fora");
         LocalDate localDate = LocalDate.of(2024, 12, 3);
         LocalTime localTime = LocalTime.of(9, 55);
 
         // when
-        repository.checkIn(name, localDate, localTime);
-        Attendance attendance = repository.getAttendances().get(name).getAttendance(localDate);
+        repository.checkIn(crew, localDate, localTime);
+        Attendance attendance = repository.getAttendances().get(crew).getAttendance(localDate);
 
         // then
 //        Assertions.assertThat(attendance.getName()).isEqualTo(name);
@@ -128,12 +128,13 @@ public class CrewsAttendanceBookTest {
     @Test
     void 존재하는_않는_크루는_출석할_수_없다() {
         // given
+        Crew crew = new Crew("dompoo");
         LocalDate localDate = LocalDate.of(2024, 12, 3);
         LocalTime localTime = LocalTime.of(9, 55);
 
         // when & then
         Assertions.assertThatThrownBy(() -> {
-                    repository.checkIn("dompoo", localDate, localTime);
+                    repository.checkIn(crew, localDate, localTime);
                 }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하는 크루의 닉네임을 입력해주세요.");
     }
@@ -141,13 +142,13 @@ public class CrewsAttendanceBookTest {
     @Test
     void 닉네임과_수정할_날짜와_등교_시간을_입력시_출석기록이_수정된다() {
         // given
-        String name = "fora";
+        Crew crew = new Crew("fora");
         LocalDate localDate = LocalDate.of(2024, 12, 5);
         LocalTime localTime = LocalTime.of(10, 10);
 
         // when
-        repository.update(name, localDate, localTime);
-        Attendance attendance = repository.getAttendances().get(name).getAttendance(localDate);
+        repository.update(crew, localDate, localTime);
+        Attendance attendance = repository.getAttendances().get(crew).getAttendance(localDate);
 
         // then
 //        Assertions.assertThat(attendance.getName()).isEqualTo(name);
@@ -157,12 +158,13 @@ public class CrewsAttendanceBookTest {
     @Test
     void 존재하는_않는_크루는_출석을_수정할_수_없다() {
         // given
+        Crew crew = new Crew("dompoo");
         LocalDate localDate = LocalDate.of(2024, 12, 3);
         LocalTime localTime = LocalTime.of(9, 55);
 
         // when & then
         Assertions.assertThatThrownBy(() -> {
-                    repository.update("dompoo", localDate, localTime);
+                    repository.update(crew, localDate, localTime);
                 }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하는 크루의 닉네임을 입력해주세요.");
     }
@@ -170,13 +172,13 @@ public class CrewsAttendanceBookTest {
     @Test
     void 주말_및_공휴일에는_출석을_수정할_수_없다() {
         // given
-        String name = "fora";
+        Crew crew = new Crew("fora");
         LocalDate localDate = LocalDate.of(2024, 12, 1);
         LocalTime localTime = LocalTime.of(9, 55);
 
         // when & then
         Assertions.assertThatThrownBy(() -> {
-                    repository.update(name, localDate, localTime);
+                    repository.update(crew, localDate, localTime);
                 }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주말 및 공휴일에는 출석할 수 없습니다.");
     }
@@ -184,7 +186,7 @@ public class CrewsAttendanceBookTest {
     @Nested
     @DisplayName("출석_수정_후_변경_전과_변경_후의_출석_기록을_확인할_수_있다")
     class AttendanceUpdateTest {
-        String name = "fora";
+        Crew crew = new Crew("fora");
 
         LocalDate localDate = LocalDate.of(2024, 12, 26);
 
@@ -195,14 +197,14 @@ public class CrewsAttendanceBookTest {
         @Test
         void 출석에서_지각() {
             // given
-            repository.checkIn(name, localDate, attendanceLocalTime);
+            repository.checkIn(crew, localDate, attendanceLocalTime);
 
             // when
-            repository.update(name, localDate, lateLocalTime);
+            repository.update(crew, localDate, lateLocalTime);
 //            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
 //                    beforeAttendance.getLocalTime());
 
-            Attendance afterAttendance = repository.getAttendances().get(name).getAttendance(localDate);
+            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -214,14 +216,14 @@ public class CrewsAttendanceBookTest {
         @Test
         void 출석에서_결석() {
             // given
-            repository.checkIn(name, localDate, attendanceLocalTime);
+            repository.checkIn(crew, localDate, attendanceLocalTime);
 
             // when
-            repository.update(name, localDate, absenceLocalTime);
+            repository.update(crew, localDate, absenceLocalTime);
 //            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
 //                    beforeAttendance.getLocalTime());
 
-            Attendance afterAttendance = repository.getAttendances().get(name).getAttendance(localDate);
+            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -233,14 +235,14 @@ public class CrewsAttendanceBookTest {
         @Test
         void 지각에서_출석() {
             // given
-            repository.checkIn(name, localDate, lateLocalTime);
+            repository.checkIn(crew, localDate, lateLocalTime);
 
             // when
-            repository.update(name, localDate, attendanceLocalTime);
+            repository.update(crew, localDate, attendanceLocalTime);
 //            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
 //                    beforeAttendance.getLocalTime());
 
-            Attendance afterAttendance = repository.getAttendances().get(name).getAttendance(localDate);
+            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -252,14 +254,14 @@ public class CrewsAttendanceBookTest {
         @Test
         void 지각에서_결석() {
             // given
-            repository.checkIn(name, localDate, lateLocalTime);
+            repository.checkIn(crew, localDate, lateLocalTime);
 
             // when
-            repository.update(name, localDate, absenceLocalTime);
+            repository.update(crew, localDate, absenceLocalTime);
 //            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
 //                    beforeAttendance.getLocalTime());
 
-            Attendance afterAttendance = repository.getAttendances().get(name).getAttendance(localDate);
+            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -271,14 +273,14 @@ public class CrewsAttendanceBookTest {
         @Test
         void 결석에서_출석() {
             // given
-            repository.checkIn(name, localDate, absenceLocalTime);
+            repository.checkIn(crew, localDate, absenceLocalTime);
 
             // when
-            repository.update(name, localDate, attendanceLocalTime);
+            repository.update(crew, localDate, attendanceLocalTime);
 //            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
 //                    beforeAttendance.getLocalTime());
 
-            Attendance afterAttendance = repository.getAttendances().get(name).getAttendance(localDate);
+            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -290,14 +292,14 @@ public class CrewsAttendanceBookTest {
         @Test
         void 결석에서_지각() {
             // given
-            repository.checkIn(name, localDate, absenceLocalTime);
+            repository.checkIn(crew, localDate, absenceLocalTime);
 
             // when
-            repository.update(name, localDate, lateLocalTime);
+            repository.update(crew, localDate, lateLocalTime);
 //            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
 //                    beforeAttendance.getLocalTime());
 
-            Attendance afterAttendance = repository.getAttendances().get(name).getAttendance(localDate);
+            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -313,12 +315,12 @@ public class CrewsAttendanceBookTest {
         Set<PenaltyBook> penaltyBooks = repository.calculatePenaltyBooks();
 
         PenaltyBook mingomPenalty = penaltyBooks.stream()
-                .filter(penalty -> penalty.name().equals("mingom"))
+                .filter(penalty -> penalty.crew().getName().equals("mingom"))
                 .findFirst()
                 .orElse(null);
 
         PenaltyBook mungooPenalty = penaltyBooks.stream()
-                .filter(penalty -> penalty.name().equals("mungoo"))
+                .filter(penalty -> penalty.crew().getName().equals("mungoo"))
                 .findFirst()
                 .orElse(null);
 

@@ -7,41 +7,45 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CrewsAttendanceBook {
-    private final Map<String, AttendanceBook> attendances;
+    private final Map<Crew, AttendanceBook> attendances;
 
-    public CrewsAttendanceBook(Map<String, AttendanceBook> initialAttendances) {
+    public CrewsAttendanceBook(Map<Crew, AttendanceBook> initialAttendances) {
         this.attendances = initialAttendances;
     }
 
-    public Map<String, AttendanceBook> getAttendances() {
+    public Map<Crew, AttendanceBook> getAttendances() {
         return attendances;
     }
 
-    public void checkIn(String name, LocalDate localDate, LocalTime localTime) {
-        validateExistingCrew(name);
+    public Crew getCrewByName(String name) {
+        return attendances.keySet().stream().filter(c -> c.getName().equals(name)).findFirst().orElse(null);
+    }
 
-        AttendanceBook attendanceBook = attendances.get(name);
+    public void checkIn(Crew crew, LocalDate localDate, LocalTime localTime) {
+        validateExistingCrew(crew);
+
+        AttendanceBook attendanceBook = attendances.get(crew);
         attendanceBook.validateWeekDay(localDate);
         attendanceBook.validateDuplicateCheckIn(localDate);
 
         attendanceBook.checkIn(new Attendance(localDate, localTime));
     }
 
-    public void update(String name, LocalDate localDate, LocalTime localTime) {
-        validateExistingCrew(name);
+    public void update(Crew crew, LocalDate localDate, LocalTime localTime) {
+        validateExistingCrew(crew);
 
-        AttendanceBook attendanceBook = attendances.get(name);
+        AttendanceBook attendanceBook = attendances.get(crew);
         attendanceBook.validateWeekDay(localDate);
         attendanceBook.validateAfterToday(localDate);
 
         AttendanceBook newAttendanceBook = attendanceBook.update(localDate, localTime);
 
-        attendances.put(name, newAttendanceBook);
+        attendances.put(crew, newAttendanceBook);
     }
 
 
-    private void validateExistingCrew(String name) {
-        if (!attendances.containsKey(name)) {
+    private void validateExistingCrew(Crew crew) {
+        if (!attendances.containsKey(crew)) {
             throw new IllegalArgumentException("존재하는 크루의 닉네임을 입력해주세요.");
         }
     }

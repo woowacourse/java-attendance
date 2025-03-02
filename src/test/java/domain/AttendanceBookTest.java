@@ -64,7 +64,7 @@ class AttendanceBookTest {
     @Test
     void 모든_출석_기록을_확인할_수_있다() {
         // when
-        List<Attendance> foraAttendanceBook = attendanceBook.getAttendanceBook();
+        List<Attendance> foraAttendanceBook = attendanceBook.getAttendanceBookHistory();
 
         // then
         Assertions.assertThat(foraAttendanceBook).containsOnly(
@@ -84,7 +84,7 @@ class AttendanceBookTest {
     @Test
     void 결석을_포함한_전날까지의_모든_출석_기록을_확인할_수_있다() {
         // when
-        List<Attendance> foraAttendanceBook = attendanceBook.getAttendanceBook();
+        List<Attendance> foraAttendanceBook = attendanceBook.getAttendanceBookHistory();
 
         // then
         Assertions.assertThat(foraAttendanceBook.size()).isEqualTo(10);

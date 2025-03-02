@@ -72,6 +72,10 @@ public class AttendanceBook {
     }
 
     public List<Attendance> getAttendanceBook() {
+        return attendanceBook;
+    }
+
+    public List<Attendance> getAttendanceBookHistory() {
         Set<LocalDate> attendanceDates = attendanceBook.stream()
                 .map(Attendance::getLocalDate)
                 .collect(Collectors.toSet());
@@ -111,12 +115,12 @@ public class AttendanceBook {
         return PenaltyType.getPenaltyType(count);
     }
 
-    public PenaltyBook createPenaltyBook(String name) {
+    public PenaltyBook createPenaltyBook(Crew crew) {
         AttendanceStateCount stateCount = this.calculateState();
         int lateness = stateCount.lateness();
         int absence = stateCount.absence();
         PenaltyType penaltyType = this.calculatePenaltyType(stateCount);
 
-        return new PenaltyBook(name, lateness, absence, penaltyType);
+        return new PenaltyBook(crew, lateness, absence, penaltyType);
     }
 }

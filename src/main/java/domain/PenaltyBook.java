@@ -1,4 +1,4 @@
 package domain;
 
-public record PenaltyBook(String name, int lateness, int absence, PenaltyType penaltyType) {
+public record PenaltyBook(Crew crew, int lateness, int absence, PenaltyType penaltyType) {
 }

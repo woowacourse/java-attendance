@@ -1,6 +1,7 @@
 package util;
 
 import domain.AttendanceBook;
+import domain.Crew;
 import domain.CrewsAttendanceBook;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -13,11 +14,12 @@ public class AttendanceFileReaderTest {
         String ATTENDANCE_FILE_PATH = "src/test/resources/attendances_test.csv";
 
         // when
-        Map<String, AttendanceBook> initialAttendances = AttendanceFileReader.read(ATTENDANCE_FILE_PATH);
+        Map<Crew, AttendanceBook> initialAttendances = AttendanceFileReader.read(ATTENDANCE_FILE_PATH);
         CrewsAttendanceBook crewsAttendanceBook = new CrewsAttendanceBook(initialAttendances);
-        AttendanceBook cookieAttendanceBook = crewsAttendanceBook.getAttendances().get("쿠키");
+        Crew crew = crewsAttendanceBook.getCrewByName("쿠키");
+        AttendanceBook cookieAttendanceBook = crewsAttendanceBook.getAttendances().get(crew);
 
         // then
-        Assertions.assertThat(cookieAttendanceBook.getAttendanceBook().size()).isEqualTo(8);
+        Assertions.assertThat(cookieAttendanceBook.getAttendanceBookHistory().size()).isEqualTo(10);
     }
 }
