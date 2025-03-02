@@ -42,6 +42,14 @@ public class AttendanceRecord {
         return date.getDayOfMonth() == dateInt;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
