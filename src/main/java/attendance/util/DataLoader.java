@@ -10,16 +10,14 @@ import java.util.Map;
 
 public class DataLoader {
     private static final String NAME_DATE_DELIMITER = ",";
-    private static final DateTimeFormatter CONVERT_FORMATTER= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter CONVERT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static Map<String, Attendances> loadAttendancesData(){
+    public static Map<String, Attendances> loadAttendancesData() {
         List<String> readFile = DataFileReader.readFile();
         Map<String, Attendances> crewAttendances = new HashMap<>();
 
-        readFile.stream()
-                .forEach(line -> {
-                    addData(crewAttendances, line);
-                });
+        readFile
+                .forEach(line -> addData(crewAttendances, line));
 
         return crewAttendances;
     }
@@ -34,7 +32,7 @@ public class DataLoader {
         attendances.addAttendance(dateTime.toLocalDate(), dateTime.toLocalTime());
     }
 
-    private static LocalDateTime parseDateTime(String dateTimeString){
+    private static LocalDateTime parseDateTime(String dateTimeString) {
         return LocalDateTime.parse(dateTimeString, CONVERT_FORMATTER);
     }
 }

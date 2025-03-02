@@ -1,0 +1,100 @@
+package attendance.controller;
+
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.WarningLevel;
+import attendance.util.DataLoader;
+import attendance.view.InputView;
+import attendance.view.OutputView;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.EnumMap;
+import java.util.Map;
+
+public class AttendanceController {
+    private final Map<AttendanceCommand, Runnable> commands;
+    private final InputView inputView;
+    private final OutputView outputView;
+
+    public AttendanceController(InputView inputView, OutputView outputView) {
+        this.inputView = inputView;
+        this.outputView = outputView;
+        AttendanceManager attendanceManager = initData();
+        commands = initCommands(attendanceManager);
+    }
+
+    private AttendanceManager initData() {
+        return new AttendanceManager(DataLoader.loadAttendancesData());
+    }
+
+    public Map<AttendanceCommand, Runnable> initCommands(AttendanceManager attendanceManager) {
+        Map<AttendanceCommand, Runnable> commands = new EnumMap<>(AttendanceCommand.class);
+        commands.put(AttendanceCommand.CHECK_ATTENDANCE, () -> checkAttendance(attendanceManager));
+        commands.put(AttendanceCommand.MODIFY_ATTENDANCE, () -> modifyAttendance(attendanceManager));
+        commands.put(AttendanceCommand.VIEW_ATTENDANCE_RECORD, () -> viewAttendanceRecord(attendanceManager));
+        commands.put(AttendanceCommand.VIEW_WARNING_CREWS, () -> viewWarningCrews(attendanceManager));
+        return commands;
+    }
+
+    public void run() {
+        while (true) {
+            AttendanceCommand command = inputCommand();
+            if (command == AttendanceCommand.EXIT) {
+                break;
+            }
+            execute(command);
+        }
+        inputView.close();
+    }
+
+
+    private void checkAttendance(AttendanceManager attendanceManager) {
+        String crewName = inputView.inputCrewName();
+        attendanceManager.validateExistCrew(crewName);
+        LocalTime enterTime = inputView.inputEnterTime();
+        attendanceManager.attend(crewName, LocalDate.now(), enterTime);
+
+        outputView.printCheckAttendanceResult(enterTime);
+    }
+
+    private void modifyAttendance(AttendanceManager attendanceManager) {
+        String crewName = inputView.inputModifyCrewName();
+        attendanceManager.validateExistCrew(crewName);
+        LocalDate modifyDate = inputView.inputModifyDate();
+        LocalTime modifyTime = inputView.inputModifyTime();
+        LocalTime prevTime = attendanceManager.modify(crewName, modifyDate, modifyTime);
+
+        outputView.printModifyAttendanceResult(prevTime, modifyDate, modifyTime);
+    }
+
+    private void viewAttendanceRecord(AttendanceManager attendanceManager) {
+        String crewName = inputView.inputCrewName();
+        int today = LocalDate.now().getDayOfMonth();
+        Map<LocalDate, Attendance> crewAttendances = attendanceManager.getCrewAttendances(crewName);
+        Map<AttendanceStatus, Integer> statusCounts = attendanceManager.calculateStatusCount(crewName,
+                today);
+        WarningLevel level = attendanceManager.calculateWarningLevel(crewName, today);
+
+        outputView.printAttendanceRecords(crewName, crewAttendances);
+        outputView.printAttendanceStatusCount(statusCounts);
+        outputView.printCrewWarningLevel(level);
+    }
+
+    private void viewWarningCrews(AttendanceManager attendanceManager) {
+
+    }
+
+    private void execute(AttendanceCommand command) {
+        commands.get(command).run();
+    }
+
+    private AttendanceCommand inputCommand() {
+        try {
+            return AttendanceCommand.from(inputView.inputCommand());
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return inputCommand();
+        }
+    }
+}

@@ -55,7 +55,6 @@ public class OutputView {
     private String formatAttendanceTime(LocalTime time) {
         if (Optional.ofNullable(time).isEmpty()) {
             return EMPTY_ATTENDANCE_TIME_MESSAGE;
-
         }
         return toTimeString(time);
     }
