@@ -20,6 +20,15 @@ public class AttendanceDateTime {
         return attendanceDateTime.toLocalDate();
     }
 
+    public boolean isDateBefore(LocalDate other) {
+        return attendanceDateTime.toLocalDate()
+                .isBefore(other);
+    }
+
+    public boolean isStatusOf(AttendanceStatus attendanceStatus) {
+        return AttendanceStatus.of(attendanceDateTime) == attendanceStatus;
+    }
+
     private void validateDayOff(LocalDate attendanceDate) {
         if (attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY
                 || attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY

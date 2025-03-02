@@ -233,7 +233,7 @@ public class AttendanceHistoriesTest {
         // given
         // when
         // then
-        int presentCount = defaultAttendanceHistory.getPresentCount(DEFAULT_DATE, DEFAULT_DATE.plusDays(1));
+        long presentCount = defaultAttendanceHistory.getPresentCount(DEFAULT_CREW, DEFAULT_DATE.plusDays(1));
         assertThat(presentCount).isEqualTo(1);
     }
 

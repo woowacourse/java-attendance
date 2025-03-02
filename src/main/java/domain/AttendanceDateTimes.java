@@ -32,6 +32,13 @@ public class AttendanceDateTimes {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다."));
     }
 
+    public long getPresentCount(LocalDate toDate) {
+        return attendanceDateTimes.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.isDateBefore(toDate))
+                .filter(attendanceDateTime -> attendanceDateTime.isStatusOf(AttendanceStatus.PRESENT))
+                .count();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
