@@ -43,7 +43,7 @@ public class AttendanceManagementController {
                 .stream()
                 .toList());
         CrewAttendances crewAttendances = new CrewAttendances(
-                changeKeyToCrew(nicknameAttendanceDateTimes), today.toLocalDate());
+                changeKeyToCrew(nicknameAttendanceDateTimes), today.toLocalDate().minusDays(1L));
 
         startAttendanceManagementSystem(crews, crewAttendances);
     }
@@ -79,23 +79,29 @@ public class AttendanceManagementController {
     }
 
     private void startAttendanceManagementSystem(final Crews crews, final CrewAttendances crewAttendances) {
-        try {
-            String operationCommand = inputView.readOperationCommand(today);
-            if (operationCommand.equals("1")) {
-                runAttendanceConfirmOperation(crews, crewAttendances);
+        while (true) {
+            try {
+                String operationCommand = inputView.readOperationCommand(today);
+                if (operationCommand.equals("Q")) {
+                    return;
+                }
+                if (operationCommand.equals("1")) {
+                    runAttendanceConfirmOperation(crews, crewAttendances);
+                }
+                if (operationCommand.equals("2")) {
+                    runAttendanceModificationOperation(crews, crewAttendances);
+                }
+                if (operationCommand.equals("3")) {
+                    runCrewAttendancesInquiryOperation(crews, crewAttendances);
+                }
+                if (operationCommand.equals("4")) {
+                    runPenaltyCrewsInquiryOperation(crews, crewAttendances);
+                }
+            } catch (IllegalArgumentException e) {
+                resultView.printErrorMessage(e.getMessage());
             }
-            if (operationCommand.equals("2")) {
-                runAttendanceModificationOperation(crews, crewAttendances);
-            }
-            if (operationCommand.equals("3")) {
-                runCrewAttendancesInquiryOperation(crews, crewAttendances);
-            }
-            if (operationCommand.equals("4")) {
-                runPenaltyCrewsInquiryOperation(crews, crewAttendances);
-            }
-        } catch (IllegalArgumentException e) {
-            resultView.printErrorMessage(e.getMessage());
         }
+
     }
 
     private void runAttendanceConfirmOperation(final Crews crews, final CrewAttendances crewAttendances) {
