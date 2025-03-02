@@ -29,16 +29,16 @@ public class Controller {
         OutPutView.displayAttendanceMenu(TODAY);
         MenuOption menuOption = chooseMenuOption();
         if (menuOption.equals(MenuOption.ATTENDANCE_REGISTER)) {
-            functionAttendanceRegister(attendanceBook);
+            registerAttendance(attendanceBook);
         }
         if (menuOption.equals(MenuOption.ATTENDANCE_MODIFY)) {
-            functionAttendanceModify(attendanceBook);
+            modifyAttendance(attendanceBook);
         }
         if (menuOption.equals(MenuOption.CREW_ATTENDANCE_CHECK)) {
-            functionCrewAttendanceCheck(attendanceBook);
+            checkCrewAttendance(attendanceBook);
         }
         if (menuOption.equals(MenuOption.EXPULSION_RISK)) {
-            functionExpulsionRisk(attendanceBook);
+            checkExpulsionRisk(attendanceBook);
         }
         return menuOption.equals(MenuOption.QUIT);
     }
@@ -52,7 +52,7 @@ public class Controller {
         }
     }
 
-    private void functionAttendanceRegister(AttendanceBook attendanceBook) {
+    private void registerAttendance(AttendanceBook attendanceBook) {
         try {
             String nickName = requestNickName();
             LocalTime attendanceTime = requestAttendanceTime();
@@ -62,7 +62,7 @@ public class Controller {
                     student, TODAY));
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            functionAttendanceRegister(attendanceBook);
+            registerAttendance(attendanceBook);
         }
     }
 
@@ -72,7 +72,7 @@ public class Controller {
         return attendanceTime;
     }
 
-    private void functionAttendanceModify(AttendanceBook attendanceBook) {
+    private void modifyAttendance(AttendanceBook attendanceBook) {
         try {
             String nickName = requestModifyNickName();
             int modifyDate = requestModifyDate();
@@ -80,11 +80,11 @@ public class Controller {
             modifyAttendanceRecord(student, modifyDate);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            functionAttendanceModify(attendanceBook);
+            modifyAttendance(attendanceBook);
         }
     }
 
-    private void functionCrewAttendanceCheck(AttendanceBook attendanceBook) {
+    private void checkCrewAttendance(AttendanceBook attendanceBook) {
         try {
             String nickName = requestNickName();
             Student student = attendanceBook.findStudentByNickName(nickName);
@@ -93,11 +93,11 @@ public class Controller {
             OutPutView.displayCounselingCandidate(student);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            functionCrewAttendanceCheck(attendanceBook);
+            checkCrewAttendance(attendanceBook);
         }
     }
 
-    private void functionExpulsionRisk(AttendanceBook attendanceBook) {
+    private void checkExpulsionRisk(AttendanceBook attendanceBook) {
         List<Student> expulsionRiskStudents = attendanceBook.findExpulsionRiskStudents();
         OutPutView.displayExpulsionRiskStudents(expulsionRiskStudents);
     }
