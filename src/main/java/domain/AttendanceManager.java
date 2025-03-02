@@ -39,4 +39,8 @@ public class AttendanceManager {
                 .filter(crew -> crew.getNickname().equals(nickname))
                 .findAny();
     }
+
+    public List<Crew> getCrews() {
+        return crews;
+    }
 }

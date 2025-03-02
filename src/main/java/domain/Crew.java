@@ -25,4 +25,8 @@ public class Crew {
     public void addAttendanceTime(LocalDateTime attendanceTime) {
         attendanceRecord.add(attendanceTime);
     }
+
+    public AttendanceRecord getAttendanceRecord() {
+        return attendanceRecord;
+    }
 }

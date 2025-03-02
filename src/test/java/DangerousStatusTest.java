@@ -1,9 +1,12 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
+import domain.AttendanceManager;
 import domain.AttendanceRecord;
 import domain.AttendanceStatus;
+import domain.Crew;
 import domain.DangerousStatus;
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class DangerousStatusTest {
@@ -53,6 +56,22 @@ public class DangerousStatusTest {
                 attendanceRecord.countStatus(AttendanceStatus.ABSENCE));
 
         assertThat(dangerousStatus).isEqualTo(DangerousStatus.GOOD);
+    }
+
+    @Test
+    void 제적_위험자_조회_정렬_테스트() {
+        AttendanceManager attendanceManager = new AttendanceManager(() -> LocalDate.of(2024, 12, 13));
+        AttendanceFileReader attendanceFileReader = new AttendanceFileReader();
+        attendanceFileReader.readFiles(attendanceManager);
+
+        List<Crew> crews = attendanceManager.getCrews();
+        crews.forEach(crew -> {
+            DangerousStatus dangerousStatus = DangerousStatus.of(
+                    crew.getAttendanceRecord().countStatus(AttendanceStatus.LATE),
+                    crew.getAttendanceRecord().countStatus(AttendanceStatus.ABSENCE));
+            System.out.println(crew.getNickname() + " : " + dangerousStatus);
+        });
+
     }
 
 
