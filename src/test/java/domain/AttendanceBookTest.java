@@ -85,7 +85,7 @@ class AttendanceBookTest {
     }
 
     @Nested
-    @DisplayName("한_크루가_제적_면담_경고_대상자인지_확인할_수_있다")
+    @DisplayName("한_크루의_제적_면담_경고_대상자_여부를_확인할_수_있다")
     class dismissedTest {
         @ParameterizedTest
         @CsvSource({
