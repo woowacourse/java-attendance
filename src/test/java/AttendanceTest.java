@@ -2,13 +2,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
 
     @Test
-    void 출석한다() {
+    void 출석하면_출석_시간을_추가한다() {
         String time = "09:59";
 
         AttendanceRecord attendanceRecord = new AttendanceRecord();
@@ -26,13 +27,19 @@ public class AttendanceTest {
 
         private List<LocalDateTime> attendanceTimes;
 
+        public AttendanceRecord() {
+            this.attendanceTimes = new ArrayList<>();
+        }
+
         public LocalDateTime attend(String time) {
-            return LocalDateTime.of(
+            LocalDateTime attendanceTime = LocalDateTime.of(
                     Today.TODAY,
                     LocalTime.of(
                             Integer.parseInt(time.split(":")[0]),
                             Integer.parseInt(time.split(":")[1])
                     ));
+            attendanceTimes.add(attendanceTime);
+            return attendanceTime;
         }
     }
 }
