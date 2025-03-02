@@ -40,6 +40,15 @@ public class OutputView {
         records.stream()
                 .filter(record -> record.getDate().isBefore(currentDate))
                 .forEach(this::printAttendanceRecord);
+        printAttendanceStatus(attendanceRecords);
+    }
+
+    private void printAttendanceStatus(AttendanceRecords attendanceRecords) {
+        System.out.println(System.lineSeparator());
+        for (AttendanceStatus status : AttendanceStatus.values()) {
+            int count = attendanceRecords.getAttendanceCount(status);
+            System.out.printf("%s: %d회%n", status.getName(), count);
+        }
     }
 
     private String getDisplayTime(AttendanceStatus attendanceStatus, LocalTime time) {
