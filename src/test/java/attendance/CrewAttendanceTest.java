@@ -20,7 +20,7 @@ public class CrewAttendanceTest {
 
         crewAttendance.add(attendance);
 
-        assertThat(crewAttendance.hasRecord(date)).isTrue();
+        assertThat(crewAttendance.hasRecord(attendance)).isTrue();
     }
 
     @DisplayName("이미 존재하는 날짜의 출석 기록 추가 시 예외 발생")
