@@ -8,6 +8,7 @@ import domain.PenaltyPolicy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -20,9 +21,11 @@ public class OutputView {
     private static final String ARROW = "-> ";
     private static final String TIME_FORMAT = "%02d:%02d (%s) ";
     private static final String MODIFY_COMPLETE = "수정 완료!%n";
-    private final String ATTENDANCE_RECORD_HEADER_FORMAT = "이번 달 %s의 출석 기록입니다.%n";
-    private final String PENALTY_INFO_FORMAT = "%s 대상자입니다.%n";
-    private final String ATTENDANCE_COUNT = "%s: %d회%n";
+    private static final String ATTENDANCE_RECORD_HEADER_FORMAT = "이번 달 %s의 출석 기록입니다.%n";
+    private static final String PENALTY_INFO_FORMAT = "%s 대상자입니다.%n";
+    private static final String ATTENDANCE_COUNT = "%s: %d회%n";
+    private static final String PENALTY_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
+    private static final String DANGER_CREW_HEADER = "제적 위험자 조회 결과%n";
     private static final String SUCCESS = "출석";
     private static final String LATE = "지각";
     private static final String ABSENCE = "결석";
@@ -127,11 +130,26 @@ public class OutputView {
         }
 
         if (PenaltyPolicy.judgePenalty(counts).isDanger()) {
-            System.out.printf(PENALTY_INFO_FORMAT, convertToPunishmentTypeString(PenaltyPolicy.judgePenalty(counts)));
+            System.out.printf(PENALTY_INFO_FORMAT, convertToPenaltyString(PenaltyPolicy.judgePenalty(counts)));
         }
     }
 
-    private String convertToPunishmentTypeString(PenaltyPolicy punishmentType) {
+    public void printDangerCrews(Map<Crew, Attendances> dangerCrews, List<Crew> crewOrder) {
+        System.out.printf(DANGER_CREW_HEADER);
+        for (Crew crew : crewOrder) {
+            Attendances attendances = dangerCrews.get(crew);
+            Map<AttendanceType, Integer> counts = attendances.countAttendanceType();
+            System.out.printf(PENALTY_FORMAT,
+                    crew.getNickname(),
+                    counts.getOrDefault(AttendanceType.ABSENCE, 0),
+                    counts.getOrDefault(AttendanceType.LATE, 0),
+                    convertToPenaltyString(PenaltyPolicy.judgePenalty(counts))
+            );
+        }
+        printEmptyLine();
+    }
+
+    private String convertToPenaltyString(PenaltyPolicy punishmentType) {
         if (punishmentType.equals(PenaltyPolicy.WARNING)) {
             return WARNING;
         }

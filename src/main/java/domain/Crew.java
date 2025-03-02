@@ -18,6 +18,10 @@ public class Crew {
         return nickname;
     }
 
+    public int compareTo(Crew o) {
+        return this.nickname.compareTo(o.nickname);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

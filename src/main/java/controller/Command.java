@@ -35,4 +35,8 @@ public enum Command {
     public boolean isThree() {
         return this == THREE;
     }
+
+    public boolean isFour() {
+        return this == FOUR;
+    }
 }
