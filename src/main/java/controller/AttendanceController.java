@@ -35,6 +35,9 @@ public class AttendanceController {
             if (featureNumber.equals("1")) {
                 checkIn();
             }
+            if (featureNumber.equals("2")) {
+                modify();
+            }
             if (featureNumber.equals("Q")) {
                 break;
             }
@@ -48,6 +51,19 @@ public class AttendanceController {
         CheckInTime checkInTime = getCheckInTime();
         attendanceBook.checkIn(historyByCrew, checkInDate, checkInTime);
         outputView.printTodayCheckInTime(checkInDate, checkInTime);
+    }
+
+    private void modify() {
+        String nickname = inputView.readNickNameForModify();
+        CheckInHistory checkInHistoryByName = getCheckInHistoryByName(nickname);
+        String date = inputView.readDateForModify();
+        int parsedDate = Integer.parseInt(date);
+        CheckInDate dateToModify = CheckInDate.of(2024, 12, parsedDate);
+        String time = inputView.readTimeForModify();
+        LocalTime parsedTime = LocalTime.parse(time);
+        CheckInTime afterTime = CheckInTime.of(parsedTime);
+        CheckInTime beforeTime = checkInHistoryByName.modifyCheckInTime(dateToModify, afterTime);
+        outputView.printModifiedChSeckInTime(dateToModify, beforeTime, afterTime);
     }
 
     private CheckInHistory getCheckInHistoryByName(String nickname) {

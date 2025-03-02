@@ -20,6 +20,18 @@ public class OutputView {
                 + " (" + attendanceStatusToString(status) + ")");
     }
 
+    public void printModifiedChSeckInTime(CheckInDate checkInDate, CheckInTime beforeTime, CheckInTime afterTime) {
+        AttendanceStatus beforeStatus = AttendanceStatus.determineAttendanceStatus(checkInDate.getClassStartTime(), beforeTime.toLocalTime());
+        AttendanceStatus afterStatus = AttendanceStatus.determineAttendanceStatus(checkInDate.getClassStartTime(), afterTime.toLocalTime());
+        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료! \n"
+                , formatDate(checkInDate.toLocalDate())
+                , formatTime(beforeTime.toLocalTime())
+                , attendanceStatusToString(beforeStatus)
+                , formatTime(afterTime.toLocalTime())
+                , attendanceStatusToString(afterStatus)
+        );
+    }
+
     private static String attendanceStatusToString(AttendanceStatus attendanceStatus) {
         if (attendanceStatus == AttendanceStatus.PRESENCE) {
             return "출석";

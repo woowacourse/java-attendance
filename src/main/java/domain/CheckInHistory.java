@@ -26,9 +26,11 @@ public class CheckInHistory {
         return history.size();
     }
 
-    public void modifyCheckInTime(CheckInDate checkInDate, CheckInTime checkInTime) {
+    public CheckInTime modifyCheckInTime(CheckInDate checkInDate, CheckInTime checkInTime) {
         validateNonSameTime(checkInDate, checkInTime);
+        CheckInTime beforeCheckInTime = history.get(checkInDate);
         history.put(checkInDate, checkInTime);
+        return beforeCheckInTime;
     }
 
     private void validateNonSameTime(CheckInDate checkInDate, CheckInTime checkInTime) {
