@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,11 +17,17 @@ class CrewGroupTest {
 
     @BeforeEach
     void makeTestCrewGroup() {
-        crewGroup.add("민지", new Attendances(List.of(new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)))));
+        crewGroup.add("민지", new Attendances(List.of(
+                new Attendance(LocalDateTime.of(2024, 12, 2, 13, 31)),
+                new Attendance(LocalDateTime.of(2024, 12, 3, 13, 31)),
+                new Attendance(LocalDateTime.of(2024, 12, 4, 13, 31)))));
         crewGroup.add("아마", specificAttendances);
-        crewGroup.add("가콩", new Attendances(List.of(new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)))));
-        crewGroup.add("김수한무", new Attendances(List.of(new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)))));
-        crewGroup.add("거북이", new Attendances(List.of(new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)))));
+        crewGroup.add("가콩", new Attendances(List.of(
+                new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)))));
+        crewGroup.add("김수한무", new Attendances(List.of(
+                new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)))));
+        crewGroup.add("거북이", new Attendances(List.of(
+                new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)))));
     }
 
     @ParameterizedTest
@@ -35,5 +42,12 @@ class CrewGroupTest {
     void getSpecificAttendancesTest() {
         String name = "아마";
         Assertions.assertEquals(specificAttendances, crewGroup.getSpecificAttendances(name));
+    }
+
+    @Test
+    @DisplayName("제적 대상 학생을 구합니다.")
+    void getAlertCrewsTest() {
+        Map<String, Attendances> alertCrews = crewGroup.getAlertCrews();
+        Assertions.assertTrue(alertCrews.containsKey("민지"));
     }
 }

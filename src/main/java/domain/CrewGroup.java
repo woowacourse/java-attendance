@@ -1,11 +1,14 @@
 package domain;
 
+import static domain.AlertCode.NORMAL;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CrewGroup {
-    private Map<String, Attendances> crewInformation = new HashMap<>();
+    private final Map<String, Attendances> crewInformation = new HashMap<>();
 
     public void add(String name, Attendances attendances) {
         crewInformation.put(name, attendances);
@@ -24,5 +27,11 @@ public class CrewGroup {
 
     public boolean isExist(String name, LocalDate today) {
         return crewInformation.get(name).isExist(today);
+    }
+
+    public Map<String, Attendances> getAlertCrews() {
+        return crewInformation.entrySet().stream()
+                .filter(stringAttendancesEntry -> stringAttendancesEntry.getValue().calucateAlertCode() != NORMAL)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
