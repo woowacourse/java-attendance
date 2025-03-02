@@ -39,7 +39,8 @@ public class CrewAttendanceTest {
         Map<AttendanceRecord, AttendanceStatus> crewAttendances = crewAttendance.getAttendances();
 
         assertThat(crewAttendance.hasRecord(attendance)).isTrue();
-        assertThat(crewAttendances.get(new AttendanceRecord(attendance))).isEqualTo(expectedStatus);
+        assertThat(crewAttendances.get(new AttendanceRecord(attendance)))
+                .isEqualTo(AttendanceStatus.valueOf(expectedStatus));
     }
 
     @DisplayName("이미 존재하는 날짜의 출석 기록 추가 시 예외 발생")
