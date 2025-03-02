@@ -12,6 +12,7 @@ public enum SanctionLevel {
     NONE(weight -> weight <= 1),
     ;
 
+    public static final String WEIGHT_BE_POSITIVE = "가중치는 음수가 될 수 없습니다: ";
     private final Predicate<Integer> condition;
 
     SanctionLevel(Predicate<Integer> condition) {
@@ -32,7 +33,7 @@ public enum SanctionLevel {
 
     private static void validateWeight(int wight) {
         if (wight < 0) {
-            throw new AttendanceArgumentException("가중치는 음수가 될 수 없습니다: " + wight);
+            throw new AttendanceArgumentException(WEIGHT_BE_POSITIVE + wight);
         }
     }
 }

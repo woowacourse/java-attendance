@@ -1,8 +1,9 @@
 package attendance.domain;
 
+import static org.assertj.core.api.AssertionsForClassTypes.*;
+
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,13 +18,13 @@ class SanctionLevelTest {
     @MethodSource("methodForTestGetSanctionLevel")
     @DisplayName("가중치를 입력하면 제적 상태를 반환한다.")
     void test_matchSanctionLevel(int weight, SanctionLevel sanctionLevel) {
-        Assertions.assertThat(SanctionLevel.matchLevel(weight)).isEqualTo(sanctionLevel);
+        assertThat(SanctionLevel.matchLevel(weight)).isEqualTo(sanctionLevel);
     }
 
     @Test
-    @DisplayName("가중치를 입력하면 제적 상태를 반환한다.")
+    @DisplayName("음수 가중치를 입력할 경우, 예외가 발생한다.")
     void error_matchWeightNotPositive() {
-        Assertions.assertThatThrownBy(() -> SanctionLevel.matchLevel(-1))
+        assertThatThrownBy(() -> SanctionLevel.matchLevel(-1))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("가중치는 음수가 될 수 없습니다");
     }
