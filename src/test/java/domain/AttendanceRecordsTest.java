@@ -105,7 +105,7 @@ public class AttendanceRecordsTest {
 
             // when & then
             AttendanceRecord found = attendanceRecords.getOneByCrewAndDate(crew, checkedDate);
-            Assertions.assertThat(attendanceRecord).isEqualTo(found);
+            Assertions.assertThat(found).isEqualTo(attendanceRecord);
         }
 
         @Test
