@@ -4,6 +4,7 @@ import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -14,6 +15,22 @@ public class Campus {
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0, 0);
     private static final int PRESENT_LIMIT_MINUTES = 5;
     private static final int LATE_LIMIT_MINUTES = 30;
+
+    public static boolean isOffDay(final LocalDateTime attendance) {
+        if (isWeekend(attendance)) {
+            return true;
+        }
+        return isHoliday(attendance);
+    }
+
+    private static boolean isWeekend(final LocalDateTime attendance) {
+        final DayOfWeek dayOfWeek = attendance.getDayOfWeek();
+        return dayOfWeek == SATURDAY || dayOfWeek == SUNDAY;
+    }
+
+    private static boolean isHoliday(final LocalDateTime attendance) {
+        return CHRISTMAS.equals(LocalDate.from(attendance));
+    }
 
     public static AttendanceStatus calculateAttendanceStatus(final LocalDateTime attendance) {
         final LocalTime attendanceTime = LocalTime.from(attendance);
@@ -31,15 +48,5 @@ public class Campus {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.PRESENT;
-    }
-
-    public static boolean isOffDay(final LocalDateTime attendance) {
-        if (attendance.getDayOfWeek() == SATURDAY || attendance.getDayOfWeek() == SUNDAY) {
-            return true;
-        }
-        if (CHRISTMAS.equals(LocalDate.from(attendance))) {
-            return true;
-        }
-        return false;
     }
 }
