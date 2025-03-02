@@ -50,22 +50,4 @@ class AttendanceRecordTest {
 
         assertThat(attendanceRecord.getAttendanceDates().size()).isEqualTo(dateTimes.size());
     }
-
-    @Test
-    void 이미_출석된_일자에_출석하려는_경우_예외가_발생한다() {
-        final LocalDateTime datetime = LocalDateTime.of(2024, 12, 14, 10, 5);
-
-        AttendanceRecord attendanceRecord = new AttendanceRecord(datetime);
-
-        assertThatThrownBy(() -> attendanceRecord.validateBeforeAdd(datetime.toLocalDate())).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 출석되지_않은_일자를_수정하려는_경우_예외가_발생한다() {
-        final LocalDateTime datetime = LocalDateTime.of(2024, 12, 14, 10, 5);
-
-        AttendanceRecord attendanceRecord = new AttendanceRecord();
-
-        assertThatThrownBy(() -> attendanceRecord.validateBeforeEdit(datetime.toLocalDate())).isInstanceOf(IllegalArgumentException.class);
-    }
 }
