@@ -43,7 +43,20 @@ public enum WeeklyAttendanceSchedule {
         }
     }
 
+    public static boolean checkHoliday(LocalDate date) {
+        return date.equals(LocalDate.of(2024, 12, 25)) ||
+                Arrays.stream(WeeklyAttendanceSchedule.values())
+                        .noneMatch(
+                                weeklyAttendanceSchedule ->
+                                        weeklyAttendanceSchedule.getDayOfWeek().equals(date.getDayOfWeek())
+                        );
+    }
+
     public LocalTime getAttendanceStartTime() {
         return attendanceStartTime;
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
     }
 }
