@@ -19,20 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class CrewRecordsTest {
-    @DisplayName("입력한 닉네임에 대한 출석 기록이 없을 경우 예외를 발생시킨다.")
-    @Test
-    void validateCrewTest() {
-        // given
-        CrewRecords crewRecords = CrewRecordsFixture.createSingleCrewRecord("솔라", "2024-12-02T13:00");
-        LocalDate date = LocalDate.of(2024, 12, 2);
-
-        // when
-        Crew excludedCrew = new Crew("네오");
-
-        // then
-        assertThatThrownBy(() -> crewRecords.getRecordOnDate(excludedCrew, date)).isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("입력 받은 닉네임과 LocalDateTime으로 새 출석 기록을 저장할 수 있다.")
     @Test
     void addRecordTest() {
@@ -49,13 +35,27 @@ class CrewRecordsTest {
 
     @DisplayName("존재하지 않는 크루의 출석 기록을 등록하려고 할 경우 예외가 발생한다.")
     @Test
-    void addRecordExceptionTest() {
+    void addRecordCrewExceptionTest() {
         // given
         CrewRecords crewRecords = CrewRecordsFixture.createEmptyCrewRecords("브리");
 
         // when
         Crew crew = new Crew("솔라");
         AttendanceRecord record = new AttendanceRecord(LocalDateTime.parse("2024-12-03T13:00"));
+
+        // then
+        assertThatThrownBy(() -> crewRecords.addRecord(crew, record)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("이미 기록이 있는 날짜에 새 출석 기록을 등록하려고 할 경우 예외가 발생한다.")
+    @Test
+    void addRecordExceptionTest() {
+        // given
+        CrewRecords crewRecords = CrewRecordsFixture.createSingleCrewRecord("저스틴", "2024-12-02T13:35");
+
+        // when
+        Crew crew = new Crew("저스틴");
+        AttendanceRecord record = new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:00"));
 
         // then
         assertThatThrownBy(() -> crewRecords.addRecord(crew, record)).isInstanceOf(IllegalArgumentException.class);
@@ -111,6 +111,20 @@ class CrewRecordsTest {
 
         // then
         assertThat(actualValue).isEqualTo(expectedValue);
+    }
+
+    @DisplayName("입력한 닉네임에 대한 출석 기록이 없을 경우 예외를 발생시킨다.")
+    @Test
+    void getCrewRecordsExceptionTest() {
+        // given
+        CrewRecords crewRecords = CrewRecordsFixture.createSingleCrewRecord("솔라", "2024-12-02T13:00");
+        LocalDate date = LocalDate.of(2024, 12, 2);
+
+        // when
+        Crew excludedCrew = new Crew("네오");
+
+        // then
+        assertThatThrownBy(() -> crewRecords.getRecordOnDate(excludedCrew, date)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("입력 받은 크루의 전체 출석 기록을 반환한다.")
