@@ -41,6 +41,10 @@ public record StatusStatistics(Nickname nickname, Map<AttendanceStatus, Integer>
         var otherSanctionLevel = SanctionLevel.matchLevel(o.getWeight());
 
         if (sanctionLevel == otherSanctionLevel) {
+            if (compareWeight() == o.compareWeight()) {
+                return o.nickname.compareTo(nickname);
+            }
+
             return compareWeight() - o.compareWeight();
         }
 
