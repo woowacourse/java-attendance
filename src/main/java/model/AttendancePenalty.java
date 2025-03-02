@@ -17,10 +17,10 @@ public enum AttendancePenalty {
         this.thresholdAbsenceCount = penaltyCount;
     }
 
-    public static AttendancePenalty findPenaltyByAbsentCount(long absentCount) {
-         return Arrays.stream(AttendancePenalty.values())
+    public static AttendancePenalty findPenaltyByAbsentCount(long totalAbsentCount) {
+        return Arrays.stream(AttendancePenalty.values())
                 .sorted(Comparator.comparingInt(AttendancePenalty::getThresholdAbsenceCount).reversed())
-                .filter(attendancePenalty -> absentCount > attendancePenalty.getThresholdAbsenceCount())
+                .filter(attendancePenalty -> totalAbsentCount > attendancePenalty.getThresholdAbsenceCount())
                 .findFirst()
                 .orElse(NONE);
     }
