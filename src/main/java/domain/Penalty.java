@@ -1,26 +1,26 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public enum Penalty {
-    EXPULSION(0, "제적"),
-    INTERVIEW(1, "면담"),
-    WARNING(2, "경고"),
-    NONE(3, "해당 없음"),
+    EXPULSION(0, "제적", 6),
+    INTERVIEW(1, "면담", 3),
+    WARNING(2, "경고", 2),
+    NONE(3, "해당 없음", 0),
     ;
 
-    public static final int PENALTY_THRESHOLD_EXPULSION = 6;
-    public static final int PENALTY_THRESHOLD_INTERVIEW = 3;
-    public static final int PENALTY_THRESHOLD_WARNING = 2;
     public static final int LATE_TO_ABSENT_UNIT = 3;
 
     private final int priority;
     private final String message;
+    private final int threshold;
 
-    Penalty(int priority, String message) {
+    Penalty(int priority, String message, int threshold) {
         this.message = message;
         this.priority = priority;
+        this.threshold = threshold;
     }
 
     public static String findPenaltyMessageByAttendanceStatusCount(int lateCount, int absentCount) {
@@ -37,16 +37,10 @@ public enum Penalty {
     }
 
     private static Penalty findPenaltyByPenaltyPoint(int penaltyPoint) {
-        if (penaltyPoint >= PENALTY_THRESHOLD_EXPULSION) {
-            return EXPULSION;
-        }
-        if (penaltyPoint >= PENALTY_THRESHOLD_INTERVIEW) {
-            return INTERVIEW;
-        }
-        if (penaltyPoint >= PENALTY_THRESHOLD_WARNING) {
-            return WARNING;
-        }
-        return NONE;
+        return Arrays.stream(Penalty.values())
+                .filter(penalty -> penaltyPoint >= penalty.threshold)
+                .findFirst()
+                .orElse(NONE);
     }
 
     public static List<Penalty> valuesWithoutNone() {
@@ -61,5 +55,9 @@ public enum Penalty {
 
     public int getPriority() {
         return priority;
+    }
+
+    public int getThreshold() {
+        return threshold;
     }
 }

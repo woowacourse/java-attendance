@@ -13,13 +13,13 @@ class PenaltyTest {
         assertThat(Penalty.findPenaltyMessageByAttendanceStatusCount(0, 0))
                 .isEqualTo(Penalty.NONE.getMessage());
 
-        assertThat(Penalty.findPenaltyMessageByAttendanceStatusCount(0, Penalty.PENALTY_THRESHOLD_WARNING))
+        assertThat(Penalty.findPenaltyMessageByAttendanceStatusCount(0, Penalty.WARNING.getThreshold()))
                 .isEqualTo(Penalty.WARNING.getMessage());
 
-        assertThat(Penalty.findPenaltyMessageByAttendanceStatusCount(0, Penalty.PENALTY_THRESHOLD_INTERVIEW))
+        assertThat(Penalty.findPenaltyMessageByAttendanceStatusCount(0, Penalty.INTERVIEW.getThreshold()))
                 .isEqualTo(Penalty.INTERVIEW.getMessage());
 
-        assertThat(Penalty.findPenaltyMessageByAttendanceStatusCount(0, Penalty.PENALTY_THRESHOLD_EXPULSION))
+        assertThat(Penalty.findPenaltyMessageByAttendanceStatusCount(0, Penalty.EXPULSION.getThreshold()))
                 .isEqualTo(Penalty.EXPULSION.getMessage());
     }
 
