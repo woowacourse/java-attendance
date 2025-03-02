@@ -1,6 +1,7 @@
 package attendance.view;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -17,5 +18,9 @@ public class TimeFormatter {
 
     public static String makeTimeMessage(final LocalTime localTime) {
         return TIME_FORMATTER.format(localTime);
+    }
+
+    public static String makeDateTimeMessage(final LocalDateTime localDateTime) {
+        return DATE_FORMATTER.format(localDateTime) + " " + TIME_FORMATTER.format(localDateTime);
     }
 }
