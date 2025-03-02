@@ -11,6 +11,10 @@ public class CrewGroup {
         this.crews = crews;
     }
 
+    public boolean containsCrew(final String crewName) {
+        return crews.containsKey(crewName);
+    }
+
     public Crew findByName(final String name) {
         return crews.entrySet().stream()
                 .filter(entry -> Objects.equals(entry.getKey(), name))
