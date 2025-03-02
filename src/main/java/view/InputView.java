@@ -68,10 +68,10 @@ public class InputView {
         try {
             System.out.println(PROMPT_DAY_INPUT_TO_MODIFY);
             String date = userInput();
-            if (!date.matches("^(0?[1-9]|[12][0-9]|3[01])$")) {
-                throw new IllegalArgumentException("[ERROR] 1 ~ 31 사이의 숫자만 입력해 주세요.");
-            }
             AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, Integer.parseInt(date)));
+            if(!attendanceDate.isDecemberDay()) {
+                throw new IllegalArgumentException("[ERROR] 12월은 1일부터 31일까지 있습니다. 다시 입력해 주세요.");
+            }
             student.validateAttendanceBeforeModification(attendanceDate);
             return attendanceDate;
         } catch (IllegalArgumentException e) {
