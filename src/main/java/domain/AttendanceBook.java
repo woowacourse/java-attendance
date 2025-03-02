@@ -15,7 +15,8 @@ public class AttendanceBook {
         attendance = new HashMap<>();
     }
 
-    public void addAttendance(String name, LocalDateTime dateTime) {
+    public void initAttendance(String name, LocalDateTime dateTime) {
+        validateIsWeekday(dateTime.toLocalDate());
         attendance.put(name, new AttendanceRecord(dateTime));
     }
 
