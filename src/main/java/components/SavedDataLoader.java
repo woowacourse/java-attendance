@@ -38,15 +38,8 @@ public class SavedDataLoader {
 
     private void loadAttendance(final AttendanceBook attendanceBook, final Crews crews, final String[] line) {
         final Crew crew = crews.findByName(line[CREW_INDEX]);
-        registerCrew(attendanceBook, crew);
         final AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
         attendanceHistory.attendance(parseDateTime(line[ATTENDANCE_INDEX]));
-    }
-
-    private void registerCrew(final AttendanceBook attendanceBook, final Crew crew) {
-        if (!attendanceBook.containsCrew(crew)) {
-            attendanceBook.registerCrew(crew);
-        }
     }
 
     private LocalDateTime parseDateTime(final String dateTime) {

@@ -37,6 +37,7 @@ public class AttendanceController {
     public void run() {
         final AttendanceBook attendanceBook = new AttendanceBook();
         final Crews crews = savedDataLoader.loadCrews();
+        crews.registerCrewsToAttendanceBook(attendanceBook);
         savedDataLoader.loadAttendances(attendanceBook, crews);
         retryUntilQuit(attendanceBook, crews);
     }

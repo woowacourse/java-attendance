@@ -15,4 +15,8 @@ public class Crews {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
     }
+
+    public void registerCrewsToAttendanceBook(final AttendanceBook attendanceBook) {
+        crews.forEach(attendanceBook::registerCrew);
+    }
 }
