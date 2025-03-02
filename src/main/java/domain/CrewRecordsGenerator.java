@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,19 @@ public class CrewRecordsGenerator {
             AttendanceRecords attendanceRecords = crewRecords.get(crew);
             attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse(dateTime)));
         }
+        return fillAbsences(currentDate, crewRecords);
+    }
+
+    private CrewRecords fillAbsences(LocalDate currentDate, Map<Crew, AttendanceRecords> crewRecords) {
+        crewRecords.forEach((crew, attendanceRecords) -> {
+            for (int date = 1; date < currentDate.getDayOfMonth(); date++) {
+                LocalDate targetDate = LocalDate.of(currentDate.getYear(), currentDate.getMonth(), date);
+                if (ClassSchedule.isDayOff(targetDate) || attendanceRecords.hasRecordOnDate(targetDate)) {
+                    continue;
+                }
+                attendanceRecords.add(new AttendanceRecord(LocalDateTime.of(targetDate, LocalTime.of(23, 59))));
+            }
+        });
         return new CrewRecords(crewRecords);
     }
 }
