@@ -10,7 +10,7 @@ public class AttendanceRecord {
 
     private final AttendancePolicy attendancePolicy;
     private final DateProvider dateProvider;
-    private List<LocalDateTime> attendanceTimes;
+    private final List<LocalDateTime> attendanceTimes;
 
     public AttendanceRecord(DateProvider dateProvider) {
         this.dateProvider = dateProvider;
