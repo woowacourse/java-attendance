@@ -15,7 +15,6 @@ import view.OutPutView;
 public class Controller {
     private static final LocalDate TODAY = LocalDate.of(2024, 12, 13);
 
-
     public void run() throws IOException {
         AttendanceBook attendanceBook = new AttendanceBook(FileInformationProvider.loadStudentAttendance());
         attendanceBook.updateNonExistentAttendanceRecords(TODAY);
@@ -41,10 +40,7 @@ public class Controller {
         if (menuOption.equals(MenuOption.EXPULSION_RISK)) {
             functionExpulsionRisk(attendanceBook);
         }
-        if (menuOption.equals(MenuOption.QUIT)) {
-            return true;
-        }
-        return false;
+        return menuOption.equals(MenuOption.QUIT);
     }
 
     private MenuOption chooseMenuOption() {
