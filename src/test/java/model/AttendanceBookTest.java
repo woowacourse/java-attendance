@@ -3,6 +3,7 @@ package model;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.assertj.core.api.Assertions;
@@ -15,8 +16,7 @@ public class AttendanceBookTest {
     @DisplayName("학생 이름으로 학생 찾기 구현 테스트")
     void 특정_학생의_출석_시간_가져오기_구현() throws IOException {
         String expect = "빙티";
-        FileInformationProvider fileProvider = new FileInformationProvider();
-        AttendanceBook attendanceBook = new AttendanceBook(fileProvider.loadStudentAttendance());
+        AttendanceBook attendanceBook = new AttendanceBook(FileInformationProvider.loadStudentAttendance());
         String result = attendanceBook.findStudentByNickName(expect).getName();
         assertThat(expect).isEqualTo(result);
     }
@@ -47,5 +47,33 @@ public class AttendanceBookTest {
         Assertions.assertThat(expulsionRiskStudents)
                 .extracting(Student::getName)
                 .contains("빙티", "이든");
+    }
+
+    @Test
+    @DisplayName("출결 기록이 없는 경우 결석 처리 테스트")
+    void 출결_기록이_없는_경우_결석_처리_테스트() throws IOException {
+        List<Student> students = List.of(
+                new Student("빙티", List.of(
+                        LocalDateTime.of(2024, 12, 13, 10, 31),
+                        LocalDateTime.of(2024, 12, 12, 10, 31),
+                        LocalDateTime.of(2024, 12, 11, 10, 31)
+                )),
+                new Student("이든", List.of(
+                        LocalDateTime.of(2024, 12, 13, 10, 31),
+                        LocalDateTime.of(2024, 12, 12, 10, 31),
+                        LocalDateTime.of(2024, 12, 11, 10, 31)
+                )),
+                new Student("쿠키", List.of(
+                        LocalDateTime.of(2024, 12, 13, 10, 0),
+                        LocalDateTime.of(2024, 12, 12, 10, 0),
+                        LocalDateTime.of(2024, 12, 11, 10, 0)
+                ))
+        );
+        AttendanceBook attendanceBook = new AttendanceBook(students);
+        attendanceBook.updateNonExistentAttendanceRecords(LocalDate.of(2024,12,15));
+        AttendanceStatus expect = AttendanceStatus.ABSENT;
+        Student student = attendanceBook.findStudentByNickName("이든");
+        AttendanceStatus result = student.findAttendanceStatusByLocalDate(LocalDate.of(2024,12,14));
+        assertThat(expect).isEqualTo(result);
     }
 }
