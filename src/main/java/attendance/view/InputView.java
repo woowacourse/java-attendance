@@ -9,4 +9,14 @@ public class InputView {
     public Menu readMenuCommand() {
         return Menu.find(console.nextLine());
     }
+
+    public String readNickname() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return console.nextLine();
+    }
+
+    public String readAttendanceTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        return console.nextLine();
+    }
 }

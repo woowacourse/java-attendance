@@ -1,6 +1,9 @@
 package attendance.view;
 
+import attendance.domain.Attendance;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
@@ -18,6 +21,19 @@ public class OutputView {
                 today.getMonthValue(),
                 today.getDayOfMonth(),
                 today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
+        );
+    }
+
+    public void printAttendanceResult(Attendance attendance) {
+        LocalDateTime dateTime = attendance.getDateTime();
+        AttendanceStateView stateView = AttendanceStateView.findByName(attendance.getState().name());
+
+        System.out.printf("%d월 %d일 %s %s (%s)\n",
+                dateTime.getMonthValue(),
+                dateTime.getDayOfMonth(),
+                dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
+                dateTime.toLocalTime(),
+                stateView.getName()
         );
     }
 }
