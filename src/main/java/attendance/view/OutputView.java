@@ -4,6 +4,7 @@ import static attendance.view.OutputMessage.ABSENCE;
 import static attendance.view.OutputMessage.ABSENCE_COUNT;
 import static attendance.view.OutputMessage.ATTEND;
 import static attendance.view.OutputMessage.ATTEND_COUNT;
+import static attendance.view.OutputMessage.BLANK;
 import static attendance.view.OutputMessage.CONFIRM_RESULT_TILE;
 import static attendance.view.OutputMessage.CREWS_PER_PENALTY;
 import static attendance.view.OutputMessage.CREW_ATTENDANCE_TITLE;
@@ -33,14 +34,14 @@ import java.util.Map;
 
 public class OutputView {
 
-    public void printConfirmResult(final LocalDateTime dateTime, final AttendanceStatus status) {
+    public void printConfirmResult(final LocalDateTime dateTime, final Attendance attendance) {
         System.out.printf(CONFIRM_RESULT_TILE,
                 dateTime.getMonthValue(),
                 dateTime.getDayOfMonth(),
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 dateTime.getHour(),
                 dateTime.getMinute(),
-                getStatusString(status));
+                getStatusName(attendance));
     }
 
     public void printUpdateResult(final Attendance beforeUpdateAttendance, final Attendance afterUpdateAttendance) {
@@ -52,10 +53,10 @@ public class OutputView {
                 beforeDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 beforeDateTime.getHour(),
                 beforeDateTime.getMinute(),
-                getStatusString(beforeUpdateAttendance.getStatus()),
+                getStatusName(beforeUpdateAttendance),
                 afterDateTime.getHour(),
                 afterDateTime.getMinute(),
-                getStatusString(afterUpdateAttendance.getStatus()));
+                getStatusName(afterUpdateAttendance));
     }
 
     public void printCrewAttendances(LocalDate today, Crew crew) {
@@ -94,7 +95,8 @@ public class OutputView {
         System.out.println(e.getMessage());
     }
 
-    private String getStatusString(final AttendanceStatus status) {
+    private String getStatusName(final Attendance attendance) {
+        AttendanceStatus status = attendance.getStatus();
         if (status.equals(AttendanceStatus.ATTEND)) {
             return ATTEND;
         }
@@ -104,7 +106,7 @@ public class OutputView {
         if (status.equals(AttendanceStatus.ABSENCE)) {
             return ABSENCE;
         }
-        return "";
+        return BLANK;
     }
 
     private void printNotVisitAbsence(final LocalDateTime dateTime) {
@@ -121,7 +123,7 @@ public class OutputView {
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 dateTime.getHour(),
                 dateTime.getMinute(),
-                getStatusString(attendance.getStatus()));
+                getStatusName(attendance));
     }
 
     private String getAbsenceRuleString(final AbsenceRule absenceRule) {

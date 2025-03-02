@@ -1,9 +1,13 @@
 package attendance.controller;
 
-import attendance.domain.*;
+import attendance.domain.Attendance;
+import attendance.domain.Command;
+import attendance.domain.Crew;
+import attendance.domain.Crews;
+import attendance.domain.CrewsFactory;
+import attendance.domain.Holiday;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -54,7 +58,7 @@ public class CrewsController {
         LocalTime attendanceTime = inputView.inputAttendanceTime();
         Attendance attendance = crew.addAttendance(LocalDateTime.of(today, attendanceTime));
 
-        outputView.printConfirmResult(attendance.getDateTime(), attendance.getStatus());
+        outputView.printConfirmResult(attendance.getDateTime(), attendance);
     }
 
     private void updateAttendance(final Crews crews) {
