@@ -1,10 +1,12 @@
 package model;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -50,8 +52,8 @@ public class AttendanceBookTest {
     }
 
     @Test
-    @DisplayName("출결 기록이 없는 경우 결석 처리 테스트")
-    void 출결_기록이_없는_경우_결석_처리_테스트() throws IOException {
+    @DisplayName("출결 기록이 없는 경우 null 처리 테스트")
+    void 출결_기록이_없는_경우_null_처리_테스트() throws IOException {
         List<Student> students = List.of(
                 new Student("빙티", List.of(
                         LocalDateTime.of(2024, 12, 13, 10, 31),
@@ -71,9 +73,8 @@ public class AttendanceBookTest {
         );
         AttendanceBook attendanceBook = new AttendanceBook(students);
         attendanceBook.updateNonExistentAttendanceRecords(LocalDate.of(2024,12,15));
-        AttendanceStatus expect = AttendanceStatus.ABSENT;
         Student student = attendanceBook.findStudentByNickName("이든");
-        AttendanceStatus result = student.findAttendanceStatusByLocalDate(LocalDate.of(2024,12,14));
-        assertThat(expect).isEqualTo(result);
+        LocalTime result = student.findAttendanceLocalTimeByLocalDate(LocalDate.of(2024,12,14));
+        assertNull(result);
     }
 }
