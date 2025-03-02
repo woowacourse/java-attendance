@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AttendanceBook {
@@ -41,10 +42,14 @@ public class AttendanceBook {
     }
 
     public void validateWeekDay(LocalDate localDate) {
-        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || Holiday.isHoliday(localDate)) {
+        if (isWeekDay(localDate)) {
             throw new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다.");
         }
+    }
+
+    private boolean isWeekDay(LocalDate localDate) {
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || Holiday.isHoliday(localDate);
     }
 
     public void validateDuplicateCheckIn(LocalDate localDate) {
@@ -67,6 +72,19 @@ public class AttendanceBook {
     }
 
     public List<Attendance> getAttendanceBook() {
+        Set<LocalDate> attendanceDates = attendanceBook.stream()
+                .map(Attendance::getLocalDate)
+                .collect(Collectors.toSet());
+
+        for (int day = 1; day < 16; day++) {
+            LocalDate date = LocalDate.of(2024, 12, day);
+            if (isWeekDay(date)) {
+                continue;
+            }
+            if (!attendanceDates.contains(date)) {
+                checkIn(new Attendance(date, LocalTime.of(0, 0)));
+            }
+        }
         return attendanceBook;
     }
 

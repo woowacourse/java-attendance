@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,8 @@ class AttendanceBookTest {
         Attendance attendance2 = new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
         Attendance attendance3 = new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10));
         Attendance attendance4 = new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 55));
-        attendanceBook = new AttendanceBook(List.of(attendance1, attendance2, attendance3, attendance4));
+        attendanceBook = new AttendanceBook(
+                new ArrayList<>(List.of(attendance1, attendance2, attendance3, attendance4)));
     }
 
     @Test
@@ -69,8 +71,23 @@ class AttendanceBookTest {
                 new Attendance(LocalDate.of(2024, 12, 2), LocalTime.of(9, 55)),
                 new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
                 new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)),
-                new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 55))
+                new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 55)),
+                new Attendance(LocalDate.of(2024, 12, 6), LocalTime.of(0, 0)),
+                new Attendance(LocalDate.of(2024, 12, 9), LocalTime.of(0, 0)),
+                new Attendance(LocalDate.of(2024, 12, 10), LocalTime.of(0, 0)),
+                new Attendance(LocalDate.of(2024, 12, 11), LocalTime.of(0, 0)),
+                new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(0, 0)),
+                new Attendance(LocalDate.of(2024, 12, 13), LocalTime.of(0, 0))
         );
+    }
+
+    @Test
+    void 결석을_포함한_전날까지의_모든_출석_기록을_확인할_수_있다() {
+        // when
+        List<Attendance> foraAttendanceBook = attendanceBook.getAttendanceBook();
+
+        // then
+        Assertions.assertThat(foraAttendanceBook.size()).isEqualTo(10);
     }
 
     @Test
