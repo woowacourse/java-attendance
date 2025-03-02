@@ -26,6 +26,12 @@ public class CrewHistories {
         crewHistory.validateNotExists(attendanceDate);
     }
 
+    public void validateHistoryExists(final Nickname nickname, final LocalDate attendanceDate) {
+        validateKeyExists(nickname);
+        CrewHistory crewHistory = histories.get(nickname);
+        crewHistory.validateExists(attendanceDate);
+    }
+
     public void validateKeyExists(final Nickname nickname) {
         if (!histories.containsKey(nickname)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");

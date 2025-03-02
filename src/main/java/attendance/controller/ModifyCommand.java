@@ -33,12 +33,13 @@ public class ModifyCommand implements Command {
         LocalDate now = LocalDate.now(clock);
         Nickname nickname = makeNickname();
         crewHistories.validateKeyExists(nickname);
-        LocalDate date = makeDate(now);
-        campusScheduler.validateOperationDate(date);
-        validatePreviousDate(date, now);
+        LocalDate modifyingDate = makeDate(now);
+        campusScheduler.validateOperationDate(modifyingDate);
+        validatePreviousDate(modifyingDate, now);
+        crewHistories.validateHistoryExists(nickname, modifyingDate);
 
         LocalTime time = makeTime();
-        LocalDateTime modifyingDateTime = LocalDateTime.of(date, time);
+        LocalDateTime modifyingDateTime = LocalDateTime.of(modifyingDate, time);
         campusScheduler.validateOperationTime(modifyingDateTime);
 
         crewHistories.modify(nickname, modifyingDateTime);
