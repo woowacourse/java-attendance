@@ -52,8 +52,7 @@ public class AttendanceController {
         List<String> crewAttendanceTexts = fileLineReader.readAllLines(ATTENDANCE_FILE_PATH, ATTENDANCE_FILE_NAME);
         crewAttendanceTexts.removeFirst();
         AttendanceBookInitializer attendanceBookInitializer = new AttendanceBookInitializer();
-        Map<Crew, List<AttendanceDateTime>> crewAttendances = attendanceBookInitializer.parseTexts(crewAttendanceTexts);
-        return new AttendanceBook(crewAttendances);
+        return attendanceBookInitializer.parseTexts(crewAttendanceTexts);
     }
 
     private void branchByFeatureCommand(final FeatureCommand featureCommand, final AttendanceBook attendanceBook) {
