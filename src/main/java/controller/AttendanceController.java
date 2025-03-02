@@ -1,9 +1,6 @@
 package controller;
 
-import domain.AttendanceRecord;
-import domain.Crew;
-import domain.CrewRecords;
-import domain.CrewRecordsGenerator;
+import domain.*;
 import util.FileReader;
 import view.InputView;
 import view.OutputView;
@@ -53,7 +50,7 @@ public class AttendanceController {
         Crew crew = new Crew(nickname);
         AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDateTime.of(currentDate, LocalTime.parse(time)));
         crewRecords.addRecord(crew, attendanceRecord);
-        outputView.printCheckInResult(attendanceRecord);
+        outputView.printAttendanceRecord(attendanceRecord);
     }
 
     private void updateRecord() {
@@ -73,6 +70,8 @@ public class AttendanceController {
         String nickname = inputView.readNickname();
 
         Crew crew = new Crew(nickname);
+        AttendanceRecords attendanceRecords = crewRecords.getAttendanceRecordsOf(crew);
+        outputView.printCrewRecord(currentDate, crew, attendanceRecords);
     }
 
     private void validateMenu(String input) {

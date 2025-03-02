@@ -49,6 +49,6 @@ public class AttendanceRecord implements Comparable<AttendanceRecord> {
 
     @Override
     public int compareTo(AttendanceRecord o) {
-        return o.dateTime.toLocalDate().compareTo(this.dateTime.toLocalDate());
+        return this.dateTime.toLocalDate().compareTo(o.dateTime.toLocalDate());
     }
 }

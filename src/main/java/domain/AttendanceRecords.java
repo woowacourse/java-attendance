@@ -42,4 +42,8 @@ public class AttendanceRecords {
                 .filter(record -> record.getAttendanceStatus() == status)
                 .count();
     }
+
+    public TreeSet<AttendanceRecord> getRecords() {
+        return records;
+    }
 }
