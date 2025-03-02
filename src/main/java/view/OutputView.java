@@ -51,6 +51,60 @@ public class OutputView {
         printPenaltyStatus(attendances, clock);
     }
 
+    private void printEachStatusCount(Attendances attendances, Clock clock) {
+        int lateCount = attendances.getLateCount(clock);
+        int absentCount = attendances.getAbsentCount(clock);
+        int attendanceCount = attendances.getTotalCount() - lateCount - absentCount;
+        System.out.printf("\n출석: %d회\n", attendanceCount);
+        System.out.printf("지각: %d회\n", lateCount);
+        System.out.printf("결석: %d회\n", absentCount);
+    }
+
+    private void printPenaltyStatus(Attendances attendances, Clock clock) {
+        if (attendances.getPenaltyStatus(clock) == null) {
+            return;
+        }
+        System.out.printf("\n%s 대상자입니다.\n\n", attendances.getPenaltyStatus(clock).getName());
+    }
+
+
+    private void printAttendances(List<Attendance> attendanceHistory) {
+        for (Attendance attendance : attendanceHistory) {
+            int month = attendance.getDay().getDate().getMonthValue();
+            int dayOfMonth = attendance.getDay().getDate().getDayOfMonth();
+            String dayOfWeek = CustomDayOfWeek.getInstance(attendance.getDay().getDate()).getName();
+            String attendanceTime = getAttendanceTime(attendance);
+
+            String attendanceStatus = getAttendanceStatus(attendance);
+            System.out.printf("%d월 %02d일 %s %s (%s)\n", month, dayOfMonth, dayOfWeek, attendanceTime, attendanceStatus);
+        }
+    }
+
+    private String getAttendanceTime(Attendance attendance) {
+        if (attendance.getTime() != null) {
+            return attendance.getTime().toString();
+        }
+        return "--:--";
+    }
+
+
+    private String getAttendanceStatus(Attendance attendance) {
+        if (attendance.isAbsent()) {
+            return "결석";
+        }
+        if (attendance.isLate()) {
+            return "지각";
+        }
+        return "출석";
+    }
+
+    private void removeTodayHistory(List<Attendance> attendanceHistory, Clock clock) {
+        if (attendanceHistory.getLast().getDay().getDate().equals(LocalDate.now(clock))) {
+            attendanceHistory.removeLast();
+        }
+    }
+
+
     public void printPenaltyCrews(Map<Crew, Attendances> penaltyCrews, Clock clock) {
         List<Crew> crews = new ArrayList<>(penaltyCrews.keySet());
         sortPenaltyCrews(penaltyCrews, crews, clock);
@@ -74,54 +128,4 @@ public class OutputView {
                         .thenComparing(Crew::getNickname));
     }
 
-    private void printEachStatusCount(Attendances attendances, Clock clock) {
-        int lateCount = attendances.getLateCount(clock);
-        int absentCount = attendances.getAbsentCount(clock);
-        int attendanceCount = attendances.getTotalCount() - lateCount - absentCount;
-        System.out.printf("\n출석: %d회\n", attendanceCount);
-        System.out.printf("지각: %d회\n", lateCount);
-        System.out.printf("결석: %d회\n", absentCount);
-    }
-
-    private void printPenaltyStatus(Attendances attendances, Clock clock) {
-        if (attendances.getPenaltyStatus(clock) == null) {
-            return;
-        }
-        System.out.printf("\n%s 대상자입니다.\n\n", attendances.getPenaltyStatus(clock).getName());
-    }
-
-    private void printAttendances(List<Attendance> attendanceHistory) {
-        for (Attendance attendance : attendanceHistory) {
-            int month = attendance.getDay().getDate().getMonthValue();
-            int dayOfMonth = attendance.getDay().getDate().getDayOfMonth();
-            String dayOfWeek = CustomDayOfWeek.getInstance(attendance.getDay().getDate()).getName();
-            String attendanceTime = getAttendanceTime(attendance);
-
-            String attendanceStatus = getAttendanceStatus(attendance);
-            System.out.printf("%d월 %02d일 %s %s (%s)\n", month, dayOfMonth, dayOfWeek, attendanceTime, attendanceStatus);
-        }
-    }
-
-    private void removeTodayHistory(List<Attendance> attendanceHistory, Clock clock) {
-        if (attendanceHistory.getLast().getDay().getDate().equals(LocalDate.now(clock))) {
-            attendanceHistory.removeLast();
-        }
-    }
-
-    private String getAttendanceStatus(Attendance attendance) {
-        if (attendance.isAbsent()) {
-            return "결석";
-        }
-        if (attendance.isLate()) {
-            return "지각";
-        }
-        return "출석";
-    }
-
-    private String getAttendanceTime(Attendance attendance) {
-        if (attendance.getTime() != null) {
-            return attendance.getTime().toString();
-        }
-        return "--:--";
-    }
 }

@@ -64,8 +64,7 @@ public class AttendanceController {
     void modifyAttendance() {
         Attendances attendances = getAttendancesForModification();
 
-        Integer datOfMonth = inputView.getDayOfMonth();
-        Day day = Day.of(datOfMonth);
+        Day day = Day.of(inputView.getDayOfMonth());
         Attendance attendance = attendances.findByDay(day);
         Attendance originAttendance = new Attendance(day, attendance.getTime());
 

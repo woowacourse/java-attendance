@@ -19,11 +19,6 @@ public class AttendanceBook {
         crewsAttendances.get(crew).add(attendance);
     }
 
-    public Attendances getAttendances(Crew crew) {
-        validateCrew(crew);
-        return crewsAttendances.get(crew);
-    }
-
     public void recordAllAbsences(Clock clock) {
         crewsAttendances.forEach((crew, attendances) -> attendances.recordAbsences(clock));
     }
@@ -44,6 +39,11 @@ public class AttendanceBook {
         if (crewsAttendances.get(crew).isAlreadyAttended(date)) {
             throw new IllegalStateException("[ERROR] 이미 출석이 완료되었습니다. 수정 기능을 이용하세요.");
         }
+    }
+
+    public Attendances getAttendances(Crew crew) {
+        validateCrew(crew);
+        return crewsAttendances.get(crew);
     }
 
     private void validateCrew(Crew crew) {

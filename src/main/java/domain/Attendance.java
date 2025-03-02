@@ -9,6 +9,7 @@ public class Attendance {
     private static final Integer ABSENT_CRITERIA_MINUTES = 30;
     private static final LocalTime OPERATION_START_TIME = LocalTime.of(8, 0);
     private static final LocalTime OPERATION_END_TIME = LocalTime.of(23, 0);
+
     private final Day day;
     private LocalTime time;
     private Boolean isLate;
@@ -42,22 +43,6 @@ public class Attendance {
         isLate = false;
     }
 
-    public Boolean isLate() {
-        return isLate;
-    }
-
-    public Boolean isAbsent() {
-        return isAbsent;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
-
-    public Day getDay() {
-        return day;
-    }
-
     public Boolean has(LocalDate date) {
         return this.day.getDate().equals(date);
     }
@@ -75,6 +60,22 @@ public class Attendance {
                 throw new UnsupportedOperationException("[ERROR] 수정할 수 없는 Attendance 객체입니다.");
             }
         };
+    }
+
+    public Boolean isLate() {
+        return isLate;
+    }
+
+    public Boolean isAbsent() {
+        return isAbsent;
+    }
+
+    public Day getDay() {
+        return day;
+    }
+
+    public LocalTime getTime() {
+        return time;
     }
 
     @Override

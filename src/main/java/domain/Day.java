@@ -17,10 +17,6 @@ public class Day {
         return new Day(LocalDate.of(2025, 2, dayOfMonth));
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
     private void validateDate(LocalDate date) {
         if (isWeekend(date) || isHoliday(date)) {
             throw new IllegalStateException("[ERROR] 등교일이 아닙니다.");
@@ -38,6 +34,11 @@ public class Day {
     public LocalTime getCriteriaTime() {
         return CustomDayOfWeek.getCriteriaTime(date);
     }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
 
     @Override
     public boolean equals(Object o) {
