@@ -14,8 +14,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static controller.Command.*;
 import static domain.attendance.TimeTable.*;
@@ -24,23 +26,37 @@ import static util.DateTimeUtils.*;
 public class AttendanceController {
     private static CrewGroup crews;
     private static Command currentCommand;
+    private static Map<Command,Runnable> commandHandler;
+    private static boolean runFlag;
 
     public AttendanceController() {
         crews = new CrewGroup();
+        handlerRegister();
     }
 
-    public static void run(){
+    public void run(){
         loadFile();
+        runFlag = true;
         OutputView.printWelcomeMessage();
-        while((currentCommand = InputView.getCommand()) != EXIT){
+        while(runFlag){
             operateCommand();
             OutputView.printWelcomeMessage();
         }
     }
 
+    private static void handlerRegister(){
+        commandHandler = new HashMap<>();
+        commandHandler.put(ATTEND, AttendanceController::attendCommand);
+        commandHandler.put(EDIT, AttendanceController::editCrewAttendance);
+        commandHandler.put(FIND_CREW_RECORD, AttendanceController::findCrewCommand);
+        commandHandler.put(FIND_WARNING_CREWS, AttendanceController::findWarningCrews);
+        commandHandler.put(EXIT,() -> runFlag = false);
+    }
+
     private static void operateCommand(){
         try{
-            currentCommand.execute();
+            currentCommand = InputView.getCommand();
+            commandHandler.get(currentCommand).run();
         }catch (IllegalArgumentException e){
             OutputView.printErrorMessage(e.getMessage());
         }

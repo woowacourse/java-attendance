@@ -2,6 +2,7 @@ import controller.AttendanceController;
 
 public class AttendanceApplication {
     public static void main(String[] args) {
-        AttendanceController.run();
+        AttendanceController attendanceController = new AttendanceController();
+        attendanceController.run();
     }
 }
