@@ -15,20 +15,23 @@ public class AttendanceController {
 
     private final ConsoleInputView inputView;
     private final ConsoleOutputView outputView;
+    private final AttendanceBook attendanceBook;
 
-    public AttendanceController(final ConsoleInputView inputView, final ConsoleOutputView outputView) {
+    public AttendanceController(final ConsoleInputView inputView, final ConsoleOutputView outputView,
+                                final AttendanceBook attendanceBook) {
         this.inputView = inputView;
         this.outputView = outputView;
+        this.attendanceBook = attendanceBook;
     }
 
     public void run() {
         final AttendanceCommand attendanceCommand = requestAttendanceCommand();
         if (Objects.equals(attendanceCommand, AttendanceCommand.CHECK)) {
-            final AttendanceBook attendanceBook = AttendanceBook.create();
-            outputView.printAskNickName();
+            outputView.askCrewNickName();
             final String name = inputView.readCrewName();
             attendanceBook.validateExistCrew(name);
-            outputView.printAskAttendanceTime();
+            attendanceBook.validateExistAttendance(SystemDate.NOW.getDate(), name);
+            outputView.askAttendanceTime();
             final LocalTime localTime = inputView.readTime();
             final LocalDateTime localDateTime = LocalDateTime.of(SystemDate.NOW.getDate(), localTime);
             final AttendanceRecord attendanceRecord = attendanceBook.addAttendance(name, localDateTime);
@@ -41,11 +44,12 @@ public class AttendanceController {
     }
 
     private AttendanceCommand requestAttendanceCommand() {
-        outputView.printIntro(SystemDate.NOW.getDate());
+        outputView.intro(SystemDate.NOW.getDate());
         return inputView.readAttendanceCommand();
     }
 
     private AttendanceDetails convertToAttendanceDetails(final AttendanceRecord attendanceRecord) {
-        return AttendanceDetails.of(attendanceRecord.attendanceDate(), attendanceRecord.attendanceTime(), attendanceRecord.status());
+        return AttendanceDetails.of(attendanceRecord.attendanceDate(), attendanceRecord.attendanceTime(),
+                attendanceRecord.status());
     }
 }

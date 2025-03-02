@@ -26,11 +26,28 @@ public class AttendanceBookTest {
         final String name = "쿠키";
         final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 24, 10, 0);
         //when
+        final AttendanceRecord attendanceRecord = attendanceBook.addAttendance(name, localDateTime);
         //then
         assertAll(
-                () -> assertThatCode(() -> attendanceBook.addAttendance(name, localDateTime)).doesNotThrowAnyException(),
-                () -> assertThatIllegalArgumentException().isThrownBy(() -> attendanceBook.addAttendance(name, localDateTime))
+                () -> assertThat(attendanceRecord.attendanceDate().getLocalDate()).isEqualTo(
+                        localDateTime.toLocalDate()),
+                () -> assertThat(attendanceRecord.attendanceTime().getLocaltime()).isEqualTo(
+                        localDateTime.toLocalTime())
         );
+    }
+
+    @Test
+    @DisplayName("출석 기록이 이미 존재하여 예외가 발생한다.")
+    void test4() {
+        //given
+        final String name = "쿠키";
+        final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 24, 10, 0);
+        //when
+        attendanceBook.addAttendance(name, localDateTime);
+        //then
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> attendanceBook.validateExistAttendance(localDateTime.toLocalDate(), name));
+
     }
 
     @Test

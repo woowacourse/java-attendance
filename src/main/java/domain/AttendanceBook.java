@@ -16,8 +16,7 @@ public class AttendanceBook {
     }
 
     public AttendanceRecord addAttendance(final String crewName, final LocalDateTime localDateTime) {
-        final Crew crew = crewGroup.findByName(crewName);
-        validateExistAttendance(localDateTime, crew);
+        final Crew crew = crewGroup.getCrewByName(crewName);
         return crew.putAttendance(localDateTime);
     }
 
@@ -27,11 +26,11 @@ public class AttendanceBook {
         }
     }
 
-    public void validateExistAttendance(final LocalDateTime localDateTime, final Crew crew) {
-        if (crew.existAttendance(localDateTime)) {
+    public void validateExistAttendance(final LocalDate localDate, final String crewName) {
+        if (crewGroup.getCrewByName(crewName).existAttendance(localDate)) {
             throw new IllegalArgumentException(
                     String.format("[ERROR] %s 출석 기록이 존재합니다. 수정 기능을 이용해주세요", DateTimeConvertor.convertToLocalDateKoreanFormat(
-                            localDateTime.toLocalDate())));
+                            localDate)));
         }
     }
 
