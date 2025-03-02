@@ -1,6 +1,7 @@
 package domain;
 
 import domain.attendance.Attendances;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,9 +11,11 @@ import java.util.stream.Collectors;
 public class AttendanceBook {
     private final Map<Crew, Attendances> attendances = new HashMap<>();
 
-    public AttendanceBook(List<String> crewNames) {
-        validate(crewNames);
-        crewNames.forEach(crew -> this.attendances.put(new Crew(crew), new Attendances()));
+    public AttendanceBook(Map<String, List<LocalDateTime>> crewsInfo) {
+        validate(crewsInfo.keySet().stream().toList());
+        crewsInfo.forEach((name, dateTimes) ->
+                this.attendances.put(new Crew(name), new Attendances(dateTimes))
+        );
     }
 
     public boolean has(String findNickname) {
