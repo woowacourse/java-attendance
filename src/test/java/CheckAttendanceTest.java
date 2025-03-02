@@ -17,7 +17,7 @@ public class CheckAttendanceTest {
     //1번 과정
     //출석, 결석, 지각,
     @Test
-    @DisplayName("출석, 지각, 결석 테스트 (월요일 고려 x)")
+    @DisplayName("출석 확인 처리 - 출석, 지각, 결석")
     public void checkAttendanceStatusTest() {
         // given
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 17, 10, 0);
@@ -29,8 +29,24 @@ public class CheckAttendanceTest {
         Attendance absent = new Attendance(absentTime);
         // then
         assertThat(attendance.getAttendanceStatus()).isEqualTo(AttendanceStatus.ATTEND);
-        assertThat(late.getAttendanceStatus()).isEqualTo(AttendanceStatus.ATTEND);
-        assertThat(absent.getAttendanceStatus()).isEqualTo(AttendanceStatus.ATTEND);
+        assertThat(late.getAttendanceStatus()).isEqualTo(AttendanceStatus.LATE);
+        assertThat(absent.getAttendanceStatus()).isEqualTo(AttendanceStatus.ABSENT);
+
+    }
+    @Test
+    @DisplayName("월요일 출석 확인 처리 - 출석, 지각, 결석")
+    public void checkMondayAttendanceStatus() {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 16, 13, 0);
+        LocalDateTime lateTime = LocalDateTime.of(2024, 12, 16, 13, 6);
+        LocalDateTime absentTime = LocalDateTime.of(2024, 12, 16, 13, 40);
+        // when
+        Attendance attendance = new Attendance(attendanceTime);
+        Attendance late = new Attendance(lateTime);
+        Attendance absent = new Attendance(absentTime);
+        // then
+        assertThat(attendance.getAttendanceStatus()).isEqualTo(AttendanceStatus.ATTEND);
+        assertThat(late.getAttendanceStatus()).isEqualTo(AttendanceStatus.LATE);
+        assertThat(absent.getAttendanceStatus()).isEqualTo(AttendanceStatus.ABSENT);
 
     }
 
@@ -44,7 +60,9 @@ public class CheckAttendanceTest {
         //when
 
         assertThatThrownBy(() -> new Attendance(beforeOperatingTime))
-                .hasMessage("운영일시간이 아닙니다.");
+                .hasMessage("운영시간이 아닙니다.");
+        assertThatThrownBy(() -> new Attendance(afterOperatingTime))
+                .hasMessage("운영시간이 아닙니다.");
 
     }
 
@@ -55,19 +73,13 @@ public class CheckAttendanceTest {
         LocalDateTime weekend = LocalDateTime.of(2024, 12, 21, 10, 0);
         LocalDateTime christmas = LocalDateTime.of(2024, 12, 25, 10, 0);
 
-        assertThat(Attendance.isOperatingDay(notHoliday)).isFalse();
-        assertThat(Attendance.isOperatingDay(weekend)).isTrue();
-        assertThat(Attendance.isOperatingDay(christmas)).isTrue();
+        assertThatThrownBy(() -> new Attendance(weekend))
+                .hasMessageContaining("12월 21일 토요일은 운영일이 아닙니다..");
+        assertThatThrownBy(() -> new Attendance(christmas))
+                .hasMessageContaining("12월 25일 수요일은 운영일이 아닙니다.");
     }
 
-    @Test
-    @DisplayName("월요일에 따라 다른 출석 확인 처리")
-    public void checkMondayAttendanceStatus() {
-        LocalDateTime monday = LocalDateTime.of(2024, 12, 16, 13, 0);
-        AttendanceStatus attendanceStatus = Attendance.checkAttendanceStatus(monday);
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
 
-    }
 
 
 }
