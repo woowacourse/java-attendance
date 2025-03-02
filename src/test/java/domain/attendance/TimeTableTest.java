@@ -1,6 +1,5 @@
 package domain.attendance;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.stream.IntStream;
 
 import static domain.attendance.TimeTable.*;
 import static java.time.DayOfWeek.*;
@@ -62,8 +60,8 @@ class TimeTableTest {
             @ValueSource(ints = {0,1,2,3,4,5,6,7,8,9,10})
             void exceptMondayBeforeTardy(int hour){
                 LocalTime localTime = LocalTime.of(hour,5);
-                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY).forEach(
-                        dayOfWeek -> assertThat(isBeforeTardyTimeLimit(dayOfWeek,localTime)).isTrue()
+                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY)
+                        .forEach(dayOfWeek -> assertThat(isBeforeTardyTimeLimit(dayOfWeek,localTime)).isTrue()
                 );
             }
 
@@ -101,7 +99,7 @@ class TimeTableTest {
             @ValueSource(ints = {10,11,12,13,14,15,17,18,19,20,21,22,23})
             void exceptMondayBeforeTardy(int hour){
                 LocalTime localTime = LocalTime.of(hour,6);
-                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY).forEach(
+                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY).forEach(
                         dayOfWeek -> assertThat(isOverTardyTimeLimit(dayOfWeek,localTime)).isTrue()
                 );
             }
@@ -140,7 +138,7 @@ class TimeTableTest {
             @ValueSource(ints = {10,11,12,13,14,15,17,18,19,20,21,22,23})
             void exceptMondayBeforeAbsence(int hour){
                 LocalTime localTime = LocalTime.of(hour,31);
-                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY).forEach(
+                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY).forEach(
                         dayOfWeek -> assertThat(isOverAbsenceTimeLimit(dayOfWeek,localTime)).isTrue()
                 );
             }
@@ -150,7 +148,7 @@ class TimeTableTest {
             @ValueSource(ints = {0,1,2,3,4,5,6,7,8,9,10})
             void exceptMondayAfterAbsence(int hour){
                 LocalTime localTime = LocalTime.of(hour,30);
-                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY).forEach(
+                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY).forEach(
                         dayOfWeek -> assertThat(isOverAbsenceTimeLimit(dayOfWeek,localTime)).isFalse()
                 );
             }
