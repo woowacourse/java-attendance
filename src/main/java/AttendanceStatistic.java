@@ -24,7 +24,7 @@ public class AttendanceStatistic {
         return ExpulsionRiskStatus.of(totalAbsence);
     }
 
-    private int getTotalAbsenceCount() {
+    public int getTotalAbsenceCount() {
         return getAbsenceCount() + getLateCount() / 3;
     }
 }

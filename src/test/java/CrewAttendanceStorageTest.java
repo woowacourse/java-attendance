@@ -232,13 +232,30 @@ public class CrewAttendanceStorageTest {
         ));
 
         // when
-        Map<String, AttendanceStatistic> statistic = crewAttendanceStorage.findRiskCrewStatistics(startDate, endDate);
+       RiskCrewStatistics statistics = crewAttendanceStorage.findRiskCrewStatistics(startDate, endDate);
 
         // then
         assertAll(
-                () -> assertThat(statistic.get(경고_대상자).getExpulsionRiskStatus()).isSameAs(ExpulsionRiskStatus.WARNING),
-                () -> assertThat(statistic.get(면담_대상자).getExpulsionRiskStatus()).isSameAs(ExpulsionRiskStatus.INTERVIEW),
-                () -> assertThat(statistic.get(제적_대상자).getExpulsionRiskStatus()).isSameAs(ExpulsionRiskStatus.EXPELLED)
+                // 경고 대상자
+                () -> assertThat(statistics.getCrewNamesByStatus(ExpulsionRiskStatus.WARNING))
+                        .containsExactlyInAnyOrderElementsOf(List.of(경고_대상자)),
+                () -> assertThat(statistics.getLateCount(경고_대상자)).isEqualTo(3),
+                () -> assertThat(statistics.getAbsenceCount(경고_대상자)).isEqualTo(1),
+                () -> assertThat(statistics.getTotalAbsenceCount(경고_대상자)).isEqualTo(2),
+
+                // 면담 대상자
+                () -> assertThat(statistics.getCrewNamesByStatus(ExpulsionRiskStatus.INTERVIEW))
+                        .containsExactlyInAnyOrderElementsOf(List.of(면담_대상자)),
+                () -> assertThat(statistics.getLateCount(면담_대상자)).isEqualTo(0),
+                () -> assertThat(statistics.getAbsenceCount(면담_대상자)).isEqualTo(3),
+                () -> assertThat(statistics.getTotalAbsenceCount(면담_대상자)).isEqualTo(3),
+
+                // 제적 대상자
+                () -> assertThat(statistics.getCrewNamesByStatus(ExpulsionRiskStatus.EXPELLED))
+                        .containsExactlyInAnyOrderElementsOf(List.of(제적_대상자)),
+                () -> assertThat(statistics.getLateCount(제적_대상자)).isEqualTo(0),
+                () -> assertThat(statistics.getAbsenceCount(제적_대상자)).isEqualTo(6),
+                () -> assertThat(statistics.getTotalAbsenceCount(제적_대상자)).isEqualTo(6)
         );
     }
 
@@ -263,11 +280,13 @@ public class CrewAttendanceStorageTest {
         ));
 
         // when
-        Map<String, AttendanceStatistic> statistic = crewAttendanceStorage.findRiskCrewStatistics(startDate, endDate);
+        RiskCrewStatistics statistics = crewAttendanceStorage.findRiskCrewStatistics(startDate, endDate);
 
         // then
         assertAll(
-                () -> assertThat(statistic).isEmpty()
+                () -> assertThat(statistics.getCrewNamesByStatus(ExpulsionRiskStatus.WARNING)).isEmpty(),
+                () -> assertThat(statistics.getCrewNamesByStatus(ExpulsionRiskStatus.INTERVIEW)).isEmpty(),
+                () -> assertThat(statistics.getCrewNamesByStatus(ExpulsionRiskStatus.EXPELLED)).isEmpty()
         );
     }
 }

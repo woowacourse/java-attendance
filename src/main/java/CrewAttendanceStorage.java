@@ -54,7 +54,7 @@ public class CrewAttendanceStorage {
         return storage.getStatisticByDateRange(startDate, endDate);
     }
 
-    public Map<String, AttendanceStatistic> findRiskCrewStatistics(LocalDate startDate, LocalDate endDate) {
+    public RiskCrewStatistics findRiskCrewStatistics(LocalDate startDate, LocalDate endDate) {
         Map<String, AttendanceStatistic> result = new HashMap<>();
         List<String> crews = getExpulsionRiskCrews(startDate, endDate);
         for (String crew : crews) {
@@ -62,7 +62,7 @@ public class CrewAttendanceStorage {
             AttendanceStatistic statistic = storage.getStatisticByDateRange(startDate, endDate);
             result.put(crew, statistic);
         }
-        return result;
+        return new RiskCrewStatistics(result);
     }
 
     private List<String> getExpulsionRiskCrews(LocalDate startDate, LocalDate endDate) {
