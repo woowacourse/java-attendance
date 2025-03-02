@@ -70,4 +70,11 @@ public class AttendanceRecordTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    void 캠퍼스_운영_시간이_아니면_예외가_발생한다() {
+        assertThatThrownBy(() -> new AttendanceRecord(() -> weekday).attend("07:59"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+    }
+
 }
