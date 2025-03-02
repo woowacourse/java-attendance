@@ -57,6 +57,66 @@ public class AttendanceController {
         }
     }
 
+    private void attendMenu(AttendanceBook attendanceBook) {
+        attendanceBook.validateIsWeekday(DateTimeUtil.getFixedRunningDate());
+        attendanceBook.validateIsInRunningTime(DateTimeUtil.getFixedRunningTime());
+        String name = enterCrewName(attendanceBook);
+        attendanceBook.attend(name, getFixedRunningDate(), enterAttendanceTime());
+        outputView.printAttendResultMessage(attendanceBook.findAttendanceDateByNameAndDate(name, getFixedRunningDate()));
+    }
 
+
+
+    private String enterCrewName(AttendanceBook attendanceBook) {
+        try {
+            String name = inputView.enterNickname();
+            attendanceBook.validateHasCrew(name);
+            return name;
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return enterCrewName(attendanceBook);
+        }
+    }
+
+    private String enterCrewNameForEdit(AttendanceBook attendanceBook) {
+        try {
+            String name = inputView.enterNicknameForEdit();
+            attendanceBook.validateHasCrew(name);
+            return name;
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return enterCrewName(attendanceBook);
+        }
+    }
+
+    private LocalTime enterAttendanceTime() {
+        try {
+            return parseTime(inputView.enterAttendanceTime());
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return enterAttendanceTime();
+        }
+    }
+
+    private LocalDate enterAttendanceDateForEdit(AttendanceBook attendanceBook, String name) {
+        try {
+            LocalDate date = parseDateOfThisMonth(inputView.enterAttendanceDateForEdit());
+            attendanceBook.validateIsAvailableAttendance(date);
+            attendanceBook.validateBeforeEdit(name, date);
+            return date;
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return enterAttendanceDateForEdit(attendanceBook, name);
+        }
+    }
+
+    private LocalTime enterAttendanceTimeForEdit() {
+        try {
+            return parseTime(inputView.enterAttendanceTimeForEdit());
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return enterAttendanceTimeForEdit();
+        }
+    }
 }
 
