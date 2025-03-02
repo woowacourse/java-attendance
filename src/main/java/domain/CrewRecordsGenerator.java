@@ -7,35 +7,54 @@ import java.util.List;
 import java.util.Map;
 
 public class CrewRecordsGenerator {
+    private static final int NICKNAME_INDEX = 0;
+    private static final int DATE_TIME_INDEX = 1;
+
     public CrewRecords generate(LocalDate currentDate, List<String> lines) {
         Map<Crew, AttendanceRecords> crewRecords = new HashMap<>();
-
         for (String line : lines) {
-            String nickname = line.split(",")[0];
-            String dateTime = line.split(",")[1].replace(" ", "T");
-            Crew crew = new Crew(nickname);
-            if (!crewRecords.containsKey(crew)) {
-                AttendanceRecords attendanceRecords = new AttendanceRecords();
-                attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse(dateTime)));
-                crewRecords.put(crew, attendanceRecords);
-                continue;
-            }
-            AttendanceRecords attendanceRecords = crewRecords.get(crew);
-            attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse(dateTime)));
+            fillRecords(currentDate, line, crewRecords);
         }
-        return fillAbsences(currentDate, crewRecords);
+        for (AttendanceRecords attendanceRecords : crewRecords.values()) {
+            fillAbsences(currentDate, attendanceRecords);
+        }
+        return new CrewRecords(crewRecords);
     }
 
-    private CrewRecords fillAbsences(LocalDate currentDate, Map<Crew, AttendanceRecords> crewRecords) {
-        crewRecords.forEach((crew, attendanceRecords) -> {
-            for (int date = 1; date < currentDate.getDayOfMonth(); date++) {
-                LocalDate targetDate = LocalDate.of(currentDate.getYear(), currentDate.getMonth(), date);
-                if (ClassSchedule.isDayOff(targetDate) || attendanceRecords.hasRecordOnDate(targetDate)) {
-                    continue;
-                }
-                attendanceRecords.add(new AttendanceRecord(targetDate));
-            }
-        });
-        return new CrewRecords(crewRecords);
+    private Crew createCrew(String line) {
+        String nickname = line.split(",")[NICKNAME_INDEX];
+        return new Crew(nickname);
+    }
+
+    private LocalDateTime createDateTime(String line) {
+        String dateTime = line.split(",")[DATE_TIME_INDEX].replace(" ", "T");
+        return LocalDateTime.parse(dateTime);
+    }
+
+    private void fillRecords(LocalDate currentDate, String line, Map<Crew, AttendanceRecords> crewRecords) {
+        Crew crew = createCrew(line);
+        LocalDateTime dateTime = createDateTime(line);
+        if (dateTime.toLocalDate().isEqual(currentDate) || dateTime.toLocalDate().isAfter(currentDate)) {
+            return;
+        }
+        AttendanceRecords attendanceRecords = crewRecords.getOrDefault(crew, new AttendanceRecords());
+        attendanceRecords.add(new AttendanceRecord(dateTime));
+        if (!crewRecords.containsKey(crew)) {
+            crewRecords.put(crew, attendanceRecords);
+        }
+    }
+
+    private void fillAbsences(LocalDate currentDate, AttendanceRecords attendanceRecords) {
+        for (int date = 1; date < currentDate.getDayOfMonth(); date++) {
+            LocalDate targetDate = LocalDate.of(currentDate.getYear(), currentDate.getMonth(), date);
+            addAbsentRecord(targetDate, attendanceRecords);
+        }
+    }
+
+    private void addAbsentRecord(LocalDate date, AttendanceRecords attendanceRecords) {
+        if (ClassSchedule.isDayOff(date) || attendanceRecords.hasRecordOnDate(date)) {
+            return;
+        }
+        attendanceRecords.add(new AttendanceRecord(date));
     }
 }
