@@ -2,6 +2,7 @@ package domain.attendance;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -10,11 +11,21 @@ import java.util.stream.Collectors;
 public class Attendances {
     private final List<Attendance> attendances = new ArrayList<>();
 
-    public Attendances(List<LocalDateTime> attendances) {
+    public Attendances(List<LocalDateTime> attendances, LocalDate startDate, LocalDate endDate) {
         validate(attendances);
+        initAttendanceDate(startDate, endDate);
         this.attendances.addAll(attendances.stream()
                 .map(Attendance::new)
                 .toList());
+    }
+
+    private void initAttendanceDate(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("출석부 시작일이 기준일보다 뒤일 수 없습니다");
+        }
+        while (startDate.isBefore(endDate)) {
+            attendances.add(new Attendance(startDate));
+        }
     }
 
     public boolean has(LocalDate day) {

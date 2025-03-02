@@ -4,7 +4,6 @@ import controller.command.Command;
 import domain.AttendanceBook;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +82,7 @@ public class AttendanceController {
         Map<String, List<String>> crewsInfo = attendanceFileReader.getInfo();
 
         Map<String, List<LocalDateTime>> parsedCrewsInfo = parseCrewsDateTime(crewsInfo);
-        return new AttendanceBook(parsedCrewsInfo);
+        return new AttendanceBook(parsedCrewsInfo, START_DATE, END_DATE);
     }
 
     private static Map<String, List<LocalDateTime>> parseCrewsDateTime(Map<String, List<String>> crewsInfo) {

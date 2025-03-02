@@ -16,7 +16,9 @@ class AttendancesTest {
     void test() {
         // given
         LocalDateTime day = LocalDateTime.of(2025, 2, 27, 10, 0);
-        Attendances attendances = new Attendances(List.of(day, day.plusDays(1)));
+        Attendances attendances = new Attendances(List.of(day, day.plusDays(1)),
+                AttendanceController.START_DATE,
+                AttendanceController.END_DATE);
 
         // when
         boolean hasDate = attendances.has(day.toLocalDate());
@@ -34,7 +36,9 @@ class AttendancesTest {
             // given
             LocalDateTime attendanceDate = LocalDateTime.of(2025, 2, 25, 10, 0);
             Attendances attendances = new Attendances(
-                    List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)));
+                    List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)),
+                    AttendanceController.START_DATE,
+                    AttendanceController.END_DATE);
 
             // when
             int attendanceCount = attendances.countAttendance();
@@ -49,7 +53,9 @@ class AttendancesTest {
             // given
             LocalDateTime attendanceDate = LocalDateTime.of(2025, 2, 25, 10, 30);
             Attendances attendances = new Attendances(
-                    List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)));
+                    List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)),
+                    AttendanceController.START_DATE,
+                    AttendanceController.END_DATE);
 
             // when
             int tardyCouont = attendances.countTardy();
@@ -64,7 +70,9 @@ class AttendancesTest {
             // given
             LocalDateTime attendanceDate = LocalDateTime.of(2025, 2, 25, 10, 31);
             Attendances attendances = new Attendances(
-                    List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)));
+                    List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)),
+                    AttendanceController.START_DATE,
+                    AttendanceController.END_DATE);
 
             // when
             int absenceCount = attendances.countAbsence(attendanceDate.plusDays(3).toLocalDate());
@@ -83,7 +91,9 @@ class AttendancesTest {
         // when & then
         Assertions.assertThatThrownBy(() -> new Attendances(List.of(
                         LocalDateTime.of(date, LocalTime.of(10, 0)),
-                        LocalDateTime.of(date, LocalTime.of(10, 5)))))
+                        LocalDateTime.of(date, LocalTime.of(10, 5))),
+                        AttendanceController.START_DATE,
+                        AttendanceController.END_DATE))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("동일한 날짜의 출석 기록은 등록할 수 없습니다");
     }
@@ -93,9 +103,9 @@ class AttendancesTest {
     void test5() {
         // given
         LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
-        Attendances attendances = new Attendances(List.of(
-                attendDateTime
-        ));
+        Attendances attendances = new Attendances(List.of(attendDateTime),
+                AttendanceController.START_DATE,
+                AttendanceController.END_DATE);
 
         // when & then
         Assertions.assertThatThrownBy(() -> attendances.attend(AttendanceController.END_DATE, attendDateTime))
@@ -108,8 +118,9 @@ class AttendancesTest {
     void test6() {
         // given
         Attendances attendances = new Attendances(List.of(
-                LocalDateTime.of(2024, 12, 2, 10, 0)
-        ));
+                LocalDateTime.of(2024, 12, 2, 10, 0)),
+                AttendanceController.START_DATE,
+                AttendanceController.END_DATE);
         LocalDate endDate = LocalDate.of(2025, 3, 3);
 
         // when & then
@@ -118,5 +129,4 @@ class AttendancesTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("미래에 출석할 수 없습니다");
     }
-
 }

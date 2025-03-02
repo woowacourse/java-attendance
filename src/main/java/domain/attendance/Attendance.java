@@ -16,7 +16,6 @@ public class Attendance {
                 dateTime.toLocalTime());
     }
 
-    // todo: 출석부 initialize
     public Attendance(LocalDate date) {
         validate(date);
         this.date = new EmptyAttendanceDate(date, AttendanceStatus.ABSENCE);
