@@ -42,7 +42,8 @@ public class AttendanceManagementController {
         Crews crews = new Crews(nicknameAttendanceDateTimes.keySet()
                 .stream()
                 .toList());
-        CrewAttendances crewAttendances = new CrewAttendances(changeKeyToCrew(nicknameAttendanceDateTimes));
+        CrewAttendances crewAttendances = new CrewAttendances(
+                changeKeyToCrew(nicknameAttendanceDateTimes), today.toLocalDate());
 
         startAttendanceManagementSystem(crews, crewAttendances);
     }
@@ -136,7 +137,10 @@ public class AttendanceManagementController {
         LocalDate yesterday = today.toLocalDate().minusDays(1L);
         Attendances attendancesUntilYesterday = crewAttendances.findAllCrewAttendanceUntilStandardDate(crew, yesterday);
         List<LocalDateTime> attendanceTimes = mapToLocalDateTimes(attendancesUntilYesterday.getAttendances());
-        List<Boolean> attendanceExistences = crewAttendances.findAttendanceExistsUntilStandardDate(crew, yesterday);
+        List<Boolean> attendanceExistences = attendancesUntilYesterday.getAttendances()
+                .stream()
+                .map(Attendance::isHasRecord)
+                .toList();
         List<String> attendanceStatuses = getAttendanceStatuses(attendancesUntilYesterday);
         resultView.printCrewAttendancesUntilYesterday(crew.getNickname(), attendanceTimes, attendanceExistences,
                 attendanceStatuses);

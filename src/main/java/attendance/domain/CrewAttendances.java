@@ -3,6 +3,8 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -14,19 +16,48 @@ public class CrewAttendances {
     private static final DateTimeFormatter MONTH_DAY_PATTERN = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREA);
     private final Map<Crew, Attendances> crewAttendances;
 
-    public CrewAttendances(final Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes) {
-        this.crewAttendances = toCrewAttendances(crewAttendanceDateTimes);
+    public CrewAttendances(final Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes, final LocalDate standardDate) {
+        this.crewAttendances = toCrewAttendances(crewAttendanceDateTimes, standardDate);
     }
 
-    private Map<Crew, Attendances> toCrewAttendances(final Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes) {
+    private Map<Crew, Attendances> toCrewAttendances(
+            final Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes, final LocalDate standardDate
+    ) {
         return crewAttendanceDateTimes.keySet().stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
-                        crew -> new Attendances(crewAttendanceDateTimes.get(crew)
-                                .stream()
-                                .map(Attendance::new)
-                                .collect(Collectors.toList()))
+                        crew -> createAttendancesWithFillEmptyDay(crewAttendanceDateTimes, crew, standardDate)
                 ));
+    }
+
+    private Attendances createAttendancesWithFillEmptyDay(
+            final Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes, final Crew crew, final LocalDate standardDate
+    ) {
+        List<LocalDateTime> ascendingAttendanceDateTimes = new ArrayList<>(crewAttendanceDateTimes.get(crew));
+        Collections.sort(ascendingAttendanceDateTimes);
+        List<Attendance> attendances = new ArrayList<>();
+        for (int day = 1; day <= standardDate.getDayOfMonth(); day++) {
+            LocalDate targetDate = standardDate.withDayOfMonth(day);
+            addAttendanceWithoutWeekendAndHoliday(targetDate, attendances, ascendingAttendanceDateTimes);
+        }
+        return new Attendances(attendances);
+    }
+
+    private void addAttendanceWithoutWeekendAndHoliday(final LocalDate targetDate, final List<Attendance> attendances,
+                                                       final List<LocalDateTime> ascendingAttendanceDateTimes
+    ) {
+        if (Holiday.isWeekend(targetDate) || Holiday.isExistsInPublicHolidays(targetDate)) {
+            return;
+        }
+        attendances.add(createAttendance(ascendingAttendanceDateTimes, targetDate));
+    }
+
+    private Attendance createAttendance(final List<LocalDateTime> attendanceDateTimes, final LocalDate targetDate) {
+        return attendanceDateTimes.stream()
+                .filter(dateTime -> dateTime.toLocalDate().isEqual(targetDate))
+                .findAny()
+                .map(Attendance::new)
+                .orElse(Attendance.absent(targetDate));
     }
 
     public boolean hasCrewAttendanceByLocalDate(final Crew crew, final LocalDate findDate) {
@@ -92,11 +123,6 @@ public class CrewAttendances {
     public int calculateAbsentCount(final Crew crew, final LocalDate standardDate) {
         Attendances attendances = crewAttendances.get(crew);
         return attendances.calculateAbsentCount(standardDate);
-    }
-
-    public List<Boolean> findAttendanceExistsUntilStandardDate(final Crew crew, final LocalDate standardDate) {
-        Attendances attendances = crewAttendances.get(crew);
-        return attendances.findAttendanceExistencesUntilStandardDate(standardDate);
     }
 
 }

@@ -27,17 +27,13 @@ public class Attendances {
     }
 
     public void modifyByModificationDateTime(final LocalDateTime modificationDateTime) {
-        if (hasAttendanceByLocalDate(modificationDateTime.toLocalDate())) {
-            Attendance originAttendance = attendances.stream()
-                    .filter(attendance -> attendance.isSameDate(modificationDateTime.toLocalDate()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석기록이 존재하지 않습니다."));
-            Attendance modificationAttendance = originAttendance.changeTime(modificationDateTime);
-            attendances.remove(originAttendance);
-            add(modificationAttendance);
-            return;
-        }
-        add(new Attendance(modificationDateTime));
+        Attendance originAttendance = attendances.stream()
+                .filter(attendance -> attendance.isSameDate(modificationDateTime.toLocalDate()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석기록이 존재하지 않습니다."));
+        Attendance modificationAttendance = originAttendance.changeTime(modificationDateTime);
+        attendances.remove(originAttendance);
+        add(modificationAttendance);
     }
 
     public void add(final Attendance attendance) {
@@ -54,23 +50,9 @@ public class Attendances {
     }
 
     public List<Attendance> findAllUntilStandardDate(final LocalDate standardDate) {
-        List<Attendance> beforeAttendances = new ArrayList<>();
-        for (int day = 1; day <= standardDate.getDayOfMonth(); day++) {
-            LocalDate date = LocalDate.of(standardDate.getYear(), standardDate.getMonthValue(), day);
-            addAttendanceEachDay(date, beforeAttendances);
-        }
-        return beforeAttendances;
-    }
-
-    private void addAttendanceEachDay(final LocalDate date, final List<Attendance> beforeAttendances) {
-        if (Holiday.isWeekend(date) || Holiday.isExistsInPublicHolidays(date)) {
-            return;
-        }
-        if (hasAttendanceByLocalDate(date)) {
-            beforeAttendances.add(findSameDateAttendance(date));
-            return;
-        }
-        beforeAttendances.add(Attendance.absent(date));
+        return attendances.stream()
+                .filter(attendance -> attendance.isBeforeOrEqualDate(standardDate))
+                .toList();
     }
 
     public int calculateAttendanceCount(final LocalDate standardDate) {
@@ -104,16 +86,6 @@ public class Attendances {
         Collections.sort(sortedAttendances);
         return sortedAttendances.getLast()
                 .getAttendanceLocalDate();
-    }
-
-    public List<Boolean> findAttendanceExistencesUntilStandardDate(final LocalDate standardDate) {
-        List<Boolean> attendanceExistences = new ArrayList<>();
-        for (int day = 1; day <= standardDate.getDayOfMonth(); day++) {
-            attendanceExistences.add(
-                    hasAttendanceByLocalDate(LocalDate.of(standardDate.getYear(), standardDate.getMonthValue(), day))
-            );
-        }
-        return attendanceExistences;
     }
 
     public List<Attendance> getAttendances() {

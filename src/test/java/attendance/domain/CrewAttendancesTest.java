@@ -18,10 +18,11 @@ class CrewAttendancesTest {
     private final Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes = Map.of(new Crew("빙봉"), List.of(
             LocalDateTime.of(2025, 2, 26, 10, 0)
     ));
+    private final LocalDate standardDate = LocalDate.of(2025, 2, 26);
 
     @Test
     void 전체_크루의_모든_출석_기록을_저장한다() {
-        assertDoesNotThrow(() -> new CrewAttendances(crewAttendanceDateTimes));
+        assertDoesNotThrow(() -> new CrewAttendances(crewAttendanceDateTimes, standardDate));
     }
 
     @CsvSource(value = {
@@ -29,7 +30,7 @@ class CrewAttendancesTest {
     })
     @ParameterizedTest
     void 크루와_날짜를_알려주면_해당_출석_기록의_존재_여부를_알려준다(int day, boolean expected) {
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         Crew crew = new Crew("빙봉");
 
         assertThat(crewAttendances.hasCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, day)))
@@ -38,7 +39,7 @@ class CrewAttendancesTest {
 
     @Test
     void 크루가_존재하지_않으면_출석_기록_존재_여부를_알려줄_수_없다() {
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         Crew crew = new Crew("비보");
 
         assertThatThrownBy(() -> crewAttendances.hasCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 26)))
@@ -47,7 +48,7 @@ class CrewAttendancesTest {
 
     @Test
     void 크루의_지정한_날짜_출석_기록을_조회한다() {
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         Crew crew = new Crew("빙봉");
 
         Attendance findAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 26));
@@ -57,7 +58,7 @@ class CrewAttendancesTest {
 
     @Test
     void 존재하지_않는_크루의_출석_기록을_조회할_수_없다() {
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         Crew crew = new Crew("비보");
 
         assertThatThrownBy(() -> crewAttendances.findCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 26)))
@@ -66,7 +67,7 @@ class CrewAttendancesTest {
 
     @Test
     void 크루의_출석_기록이_존재하지_않는_날짜의_출석_기록은_결석이다() {
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         Crew crew = new Crew("빙봉");
 
         Attendance absentAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 25));
@@ -78,7 +79,7 @@ class CrewAttendancesTest {
     void 크루와_수정_알자를_알려주면_해당_날짜의_출석_기록을_수정한다() {
         LocalDateTime modificationDateTime = LocalDateTime.of(2025, 2, 26, 9, 50);
         LocalDate today = LocalDate.of(2025, 2, 27);
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         Crew crew = new Crew("빙봉");
 
         crewAttendances.modifyCrewAttendanceByModificationDateTime(crew, modificationDateTime, today);
@@ -91,7 +92,7 @@ class CrewAttendancesTest {
     void 수정_일자가_미래의_날짜이면_출석_기록을_수정할_수_없다() {
         LocalDateTime modificationDateTime = LocalDateTime.of(2025, 2, 28, 9, 50);
         LocalDate today = LocalDate.of(2025, 2, 27);
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         Crew crew = new Crew("빙봉");
 
         assertThatThrownBy(
@@ -102,7 +103,7 @@ class CrewAttendancesTest {
 
     @Test
     void 크루의_출석_기록을_저장한다() {
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         LocalDateTime attendanceDateTime = LocalDateTime.of(2025, 2, 27, 10, 0);
         Attendance attendance = new Attendance(attendanceDateTime);
         Crew crew = new Crew("빙봉");
@@ -115,7 +116,7 @@ class CrewAttendancesTest {
 
     @Test
     void 지정한_날짜까지_크루의_모든_출석_기록을_조회한다() {
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 27, 10, 0));
         LocalDate standardDate = LocalDate.of(2025, 2, 27);
         Crew crew = new Crew("빙봉");
@@ -127,7 +128,7 @@ class CrewAttendancesTest {
 
     @Test
     void 지정한_날짜_까지의_출석_횟수를_계산한다() {
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         LocalDate standardDate = LocalDate.of(2025, 2, 26);
         Crew crew = new Crew("빙봉");
 
@@ -136,7 +137,7 @@ class CrewAttendancesTest {
 
     @Test
     void 지정한_날짜_까지의_지각_횟수를_계산한다() {
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         LocalDate standardDate = LocalDate.of(2025, 2, 27);
         Crew crew = new Crew("빙봉");
         crewAttendances.addAttendance(crew, new Attendance(standardDate.atTime(10, 6)));
@@ -146,10 +147,9 @@ class CrewAttendancesTest {
 
     @Test
     void 지정한_날짜_까지의_결석_횟수를_계산한다() {
-        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
-        LocalDate standardDate = LocalDate.of(2025, 2, 27);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
+        LocalDate standardDate = LocalDate.of(2025, 2, 3);
         Crew crew = new Crew("빙봉");
-        crewAttendances.addAttendance(crew, new Attendance(standardDate.atTime(10, 31)));
 
         assertThat(crewAttendances.calculateAbsentCount(crew, standardDate)).isEqualTo(1);
     }

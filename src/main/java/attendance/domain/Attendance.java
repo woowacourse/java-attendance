@@ -7,17 +7,25 @@ import java.util.Objects;
 
 public class Attendance implements Comparable<Attendance> {
 
-    private static final LocalTime ABSENT_TIME = LocalTime.of(23, 0);
+    private static final LocalTime NO_RECORD_ABSENT_TIME = LocalTime.of(18, 1);
     private final AttendanceDate attendanceDate;
     private final AttendanceTime attendanceTime;
+    private final boolean hasRecord;
 
     public Attendance(final LocalDateTime attendanceDateTime) {
         this.attendanceDate = new AttendanceDate(attendanceDateTime.toLocalDate());
         this.attendanceTime = new AttendanceTime(attendanceDateTime.toLocalTime());
+        this.hasRecord = true;
+    }
+
+    public Attendance(final LocalDateTime attendanceDateTime, final boolean hasRecord) {
+        this.attendanceDate = new AttendanceDate(attendanceDateTime.toLocalDate());
+        this.attendanceTime = new AttendanceTime(attendanceDateTime.toLocalTime());
+        this.hasRecord = hasRecord;
     }
 
     public static Attendance absent(final LocalDate absentDate) {
-        return new Attendance(LocalDateTime.of(absentDate, ABSENT_TIME));
+        return new Attendance(LocalDateTime.of(absentDate, NO_RECORD_ABSENT_TIME), false);
     }
 
     public boolean isSameDate(final LocalDate localDate) {
@@ -68,6 +76,10 @@ public class Attendance implements Comparable<Attendance> {
 
     public LocalTime getAttendanceLocalTime() {
         return attendanceTime.getAttendanceTime();
+    }
+
+    public boolean isHasRecord() {
+        return hasRecord;
     }
 
     @Override
