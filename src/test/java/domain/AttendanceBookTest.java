@@ -67,4 +67,18 @@ class AttendanceBookTest {
         assertThatCode(() -> attendanceBook.checkIn(historyByName, checkInDate, checkInTime))
                 .doesNotThrowAnyException();
     }
+
+    @Test
+    @DisplayName("특정 크루에 대해 체크인 시간 수정")
+    void modifyCheckInTimeTest() {
+        //given
+        Crew crew = Crew.of("조로");
+        CheckInDate checkInDate = CheckInDate.of(2024, 12, 3);
+        CheckInTime checkInTime = CheckInTime.of(10, 5);
+        CheckInHistory historyByName = attendanceBook.findHistoryByName(crew);
+        //when
+        //then
+        assertThatCode(() -> attendanceBook.modifyCheckInTime(historyByName, checkInDate, checkInTime))
+                .doesNotThrowAnyException();
+    }
 }
