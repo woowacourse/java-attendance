@@ -4,5 +4,5 @@ import domain.AttendanceRecord;
 import domain.CrewName;
 import java.util.Map;
 
-public record InitialInformation(Map<CrewName, AttendanceRecord> value) {
+public record InitialInformation(Map<CrewName, AttendanceRecord> initialInformation) {
 }

@@ -12,14 +12,14 @@ public class Attendance {
     private static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
     private static final List<Integer> HOLIDAY = List.of(25);
 
-    private final LocalDateTime value;
+    private final LocalDateTime dateAndTime;
 
-    public Attendance(LocalDateTime value) {
-        this.value = value;
+    public Attendance(LocalDateTime dateAndTime) {
+        this.dateAndTime = dateAndTime;
     }
 
     public Attendance(LocalDate date, LocalTime time) {
-        this.value = LocalDateTime.of(date, time);
+        this.dateAndTime = LocalDateTime.of(date, time);
     }
 
     public static boolean isInvalidTime(LocalTime time) {
@@ -34,19 +34,19 @@ public class Attendance {
     }
 
     public LocalDate getDate() {
-        return value.toLocalDate();
+        return dateAndTime.toLocalDate();
     }
 
     public DayOfWeek getDayOfWeek() {
-        return value.getDayOfWeek();
+        return dateAndTime.getDayOfWeek();
     }
 
     public LocalTime getTime() {
-        return value.toLocalTime();
+        return dateAndTime.toLocalTime();
     }
 
     public boolean isSameDateWith(Attendance attendance) {
-        return value.toLocalDate().equals(attendance.getDate());
+        return dateAndTime.toLocalDate().equals(attendance.getDate());
     }
 
     @Override
@@ -58,6 +58,6 @@ public class Attendance {
             return false;
         }
         Attendance other = (Attendance) object;
-        return Objects.equals(value, other.value);
+        return Objects.equals(dateAndTime, other.dateAndTime);
     }
 }

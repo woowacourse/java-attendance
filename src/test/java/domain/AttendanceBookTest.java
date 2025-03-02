@@ -7,7 +7,7 @@ import dto.AttendanceCount;
 import dto.AttendanceLog;
 import dto.InitialInformation;
 import dto.ModifyingResult;
-import dto.PenaltyInformation;
+import dto.PenaltyCrewsInformation;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -108,7 +108,7 @@ public class AttendanceBookTest {
                 LocalDateTime.of(2024, 12, 12, 15, 0));
 
         AttendanceLog attendanceLog = attendanceBook.findAttendanceLogUntilYesterday(mimi);
-        List<Attendance> sortedAttendance = attendanceLog.sortedValues();
+        List<Attendance> sortedAttendance = attendanceLog.sortedAttendanceLog();
 
         assertThat(sortedAttendance.getFirst()).isEqualTo(firstAttendance);
         assertThat(sortedAttendance.getLast()).isEqualTo(expectedLastAttendance);
@@ -141,8 +141,8 @@ public class AttendanceBookTest {
     void test10() {
         setAttendanceBook();
 
-        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewsSortedUntilYesterday();
-        List<CrewName> crewNames = penaltyInformation.sortedValue().stream()
+        PenaltyCrewsInformation penaltyCrewsInformation = attendanceBook.findPenaltyCrewsSortedUntilYesterday();
+        List<CrewName> crewNames = penaltyCrewsInformation.sortedPenaltyCrewsInformation().stream()
                 .map(AttendanceCount::crewName)
                 .toList();
 
@@ -155,8 +155,8 @@ public class AttendanceBookTest {
         setAttendanceBook();
         updateConsideredAbsent();
 
-        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewsSortedUntilYesterday();
-        List<CrewName> crewNames = penaltyInformation.sortedValue().stream()
+        PenaltyCrewsInformation penaltyCrewsInformation = attendanceBook.findPenaltyCrewsSortedUntilYesterday();
+        List<CrewName> crewNames = penaltyCrewsInformation.sortedPenaltyCrewsInformation().stream()
                 .map(AttendanceCount::crewName)
                 .toList();
 
@@ -169,8 +169,8 @@ public class AttendanceBookTest {
         setAttendanceBook();
         updateEqualAbsent();
 
-        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewsSortedUntilYesterday();
-        List<CrewName> crewNames = penaltyInformation.sortedValue().stream()
+        PenaltyCrewsInformation penaltyCrewsInformation = attendanceBook.findPenaltyCrewsSortedUntilYesterday();
+        List<CrewName> crewNames = penaltyCrewsInformation.sortedPenaltyCrewsInformation().stream()
                 .map(AttendanceCount::crewName)
                 .toList();
 

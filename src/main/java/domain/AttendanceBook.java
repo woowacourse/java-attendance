@@ -4,21 +4,21 @@ import dto.AttendanceCount;
 import dto.AttendanceLog;
 import dto.InitialInformation;
 import dto.ModifyingResult;
-import dto.PenaltyInformation;
+import dto.PenaltyCrewsInformation;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
-    private final Map<CrewName, AttendanceRecord> value;
+    private final Map<CrewName, AttendanceRecord> attendanceBook;
 
     public AttendanceBook(InitialInformation initialInformation) {
-        this.value = initialInformation.value();
+        this.attendanceBook = initialInformation.initialInformation();
     }
 
     public boolean isNotExistedName(CrewName crewName) {
-        AttendanceRecord attendanceRecord = value.get(crewName);
+        AttendanceRecord attendanceRecord = attendanceBook.get(crewName);
         return attendanceRecord == null;
     }
 
@@ -32,7 +32,7 @@ public class AttendanceBook {
     }
 
     public AttendanceRecord findAttendanceRecordBy(CrewName crewName) {
-        return value.get(crewName);
+        return attendanceBook.get(crewName);
     }
 
     public AttendanceLog findAttendanceLogUntilYesterday(CrewName crewName) {
@@ -43,16 +43,16 @@ public class AttendanceBook {
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
         return new AttendanceCount(
                 crewName,
-                attendanceRecord.calculateCountOf(AttendanceStatus.ATTEND),
-                attendanceRecord.calculateCountOf(AttendanceStatus.LATE),
-                attendanceRecord.calculateCountOf(AttendanceStatus.ABSENT),
-                attendanceRecord.calculateConsideredAbsentCount()
+                attendanceRecord.countByAttendanceStatus(AttendanceStatus.ATTEND),
+                attendanceRecord.countByAttendanceStatus(AttendanceStatus.LATE),
+                attendanceRecord.countByAttendanceStatus(AttendanceStatus.ABSENT),
+                attendanceRecord.countConsideredAbsent()
         );
     }
 
-    public PenaltyInformation findPenaltyCrewsSortedUntilYesterday() {
+    public PenaltyCrewsInformation findPenaltyCrewsSortedUntilYesterday() {
         List<AttendanceCount> penaltyInformation = new ArrayList<>();
-        for (CrewName crewName : value.keySet()) {
+        for (CrewName crewName : attendanceBook.keySet()) {
             penaltyInformation.add(findCountUntilYesterday(crewName));
         }
         penaltyInformation.sort(
@@ -60,6 +60,6 @@ public class AttendanceBook {
                         .reversed()
                         .thenComparing(AttendanceCount::crewName)
         );
-        return new PenaltyInformation(penaltyInformation);
+        return new PenaltyCrewsInformation(penaltyInformation);
     }
 }

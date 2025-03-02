@@ -15,7 +15,7 @@ public class FileReaderTest {
         FileReader fileReader = new FileReader();
 
         InitialInformation initialInformation = fileReader.readAttendanceData();
-        Set<CrewName> crewNames = initialInformation.value().keySet();
+        Set<CrewName> crewNames = initialInformation.initialInformation().keySet();
 
         assertThat(crewNames).hasSize(5);
     }

@@ -6,7 +6,7 @@ import domain.Penalty;
 import dto.AttendanceCount;
 import dto.AttendanceLog;
 import dto.ModifyingResult;
-import dto.PenaltyInformation;
+import dto.PenaltyCrewsInformation;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -26,7 +26,7 @@ public class OutputView {
 
     public void showAttendanceHistory(AttendanceLog attendanceLog, AttendanceCount attendanceCount) {
         System.out.println("\n이번 달 " + attendanceCount.crewName().value() + "의 출석 기록입니다.\n");
-        for (Attendance attendance : attendanceLog.sortedValues()) {
+        for (Attendance attendance : attendanceLog.sortedAttendanceLog()) {
             System.out.println(formatAttendance(attendance));
         }
         showCount(attendanceCount);
@@ -47,9 +47,9 @@ public class OutputView {
         }
     }
 
-    public void showPenaltyCrews(PenaltyInformation penaltyInformation) {
+    public void showPenaltyCrews(PenaltyCrewsInformation penaltyCrewsInformation) {
         System.out.println("\n제적 위험자 조회 결과");
-        for (AttendanceCount attendanceCount : penaltyInformation.sortedValue()) {
+        for (AttendanceCount attendanceCount : penaltyCrewsInformation.sortedPenaltyCrewsInformation()) {
             showPenaltyCrew(attendanceCount);
         }
         System.out.println();

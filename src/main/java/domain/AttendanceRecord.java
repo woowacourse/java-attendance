@@ -18,58 +18,58 @@ public class AttendanceRecord {
     private static final LocalTime ABSENT_CONSIDERING_TIME = LocalTime.of(15, 0);
     private static final int ABSENT_CONSIDERING_UNIT = 3;
 
-    private final Set<Attendance> value;
+    private final Set<Attendance> attendanceRecord;
 
     public AttendanceRecord() {
-        this.value = new HashSet<>();
+        this.attendanceRecord = new HashSet<>();
     }
 
     public boolean contains(Attendance targetAttendance) {
-        return value.stream()
+        return attendanceRecord.stream()
                 .anyMatch(attendance ->
                         attendance.isSameDateWith(targetAttendance));
     }
 
-    public int calculateCountOf(AttendanceStatus attendanceStatus) {
-        return (int) getSortedAllValueUntilYesterday().stream()
+    public int countByAttendanceStatus(AttendanceStatus attendanceStatus) {
+        return (int) getSortedAllAttendanceRecordUntilYesterday().stream()
                 .filter(attendance -> AttendanceStatus.from(attendance) == attendanceStatus)
                 .count();
     }
 
-    public int calculateConsideredAbsentCount() {
-        return calculateCountOf(AttendanceStatus.ABSENT)
-                + (calculateCountOf(AttendanceStatus.LATE) / ABSENT_CONSIDERING_UNIT);
+    public int countConsideredAbsent() {
+        return countByAttendanceStatus(AttendanceStatus.ABSENT)
+                + (countByAttendanceStatus(AttendanceStatus.LATE) / ABSENT_CONSIDERING_UNIT);
     }
 
     public void add(Attendance attendance) {
         if (contains(attendance)) {
             throw new IllegalArgumentException(ERROR_HEADER + ATTENDANCE_ALREADY_EXISTED_ERROR);
         }
-        value.add(attendance);
+        attendanceRecord.add(attendance);
     }
 
     public ModifyingResult modify(Attendance newAttendance) {
         Attendance originalAttendance = findSameDateAttendanceBy(newAttendance);
-        value.remove(originalAttendance);
-        value.add(newAttendance);
+        attendanceRecord.remove(originalAttendance);
+        attendanceRecord.add(newAttendance);
         return new ModifyingResult(originalAttendance, newAttendance);
     }
 
     public AttendanceLog findAllSortedUntilYesterday() {
-        return new AttendanceLog(getSortedAllValueUntilYesterday());
+        return new AttendanceLog(getSortedAllAttendanceRecordUntilYesterday());
     }
 
     private Attendance findSameDateAttendanceBy(Attendance targetAttendance) {
-        return value.stream()
+        return attendanceRecord.stream()
                 .filter(attendance ->
                         attendance.isSameDateWith(targetAttendance))
                 .findFirst()
                 .orElseThrow(IllegalStateException::new);
     }
 
-    private List<Attendance> getSortedAllValueUntilYesterday() {
+    private List<Attendance> getSortedAllAttendanceRecordUntilYesterday() {
         updateUntilYesterday();
-        return value.stream()
+        return attendanceRecord.stream()
                 .sorted(Comparator.comparing(Attendance::getDate))
                 .toList();
     }
@@ -98,6 +98,6 @@ public class AttendanceRecord {
             return false;
         }
         AttendanceRecord other = (AttendanceRecord) object;
-        return Objects.equals(value, other.value);
+        return Objects.equals(attendanceRecord, other.attendanceRecord);
     }
 }
