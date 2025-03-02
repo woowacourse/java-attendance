@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class AttendanceRecord {
     private final List<AttendanceTime> attendanceRecord;
@@ -47,44 +48,36 @@ public class AttendanceRecord {
     public AttendanceRecord modifyAttendanceTime(LocalDateTime inputTime) {
         List<AttendanceTime> newRecords = new ArrayList<>();
         for (AttendanceTime attendanceTime : attendanceRecord) {
-            if (attendanceTime.isSameDateTime(inputTime)) {
-                newRecords.add(attendanceTime.modifyAttendanceTime(inputTime));
-                continue;
-            }
-            newRecords.add(attendanceTime);
+            findSameDateTime(inputTime, attendanceTime, newRecords);
         }
         return new AttendanceRecord(newRecords);
     }
 
-    public int checkLateCounts() {
-        int totalLateCounts = 0;
-        for (AttendanceTime attendanceTime : attendanceRecord) {
-            totalLateCounts = calculateLateCounts(attendanceTime.isLate(), totalLateCounts);
+    private static void findSameDateTime(LocalDateTime inputTime, AttendanceTime attendanceTime,
+                                         List<AttendanceTime> newRecords) {
+        if (attendanceTime.isSameDateTime(inputTime)) {
+            newRecords.add(attendanceTime.modifyAttendanceTime(inputTime));
+            return;
         }
-        return totalLateCounts;
+        newRecords.add(attendanceTime);
+    }
+
+    public int checkLateCounts() {
+        return countMatchingRecords(AttendanceTime::isLate);
     }
 
     public int checkAbsenceCounts() {
-        int totalAbsenceCounts = 0;
-        for (AttendanceTime attendanceTime : attendanceRecord) {
-            totalAbsenceCounts = calculateLateCounts(attendanceTime.isAbsence(), totalAbsenceCounts);
-        }
-        return totalAbsenceCounts;
+        return countMatchingRecords(AttendanceTime::isAbsence);
     }
 
     public int checkAttendanceCounts() {
-        int totalAttendanceCounts = 0;
-        for (AttendanceTime attendanceTime : attendanceRecord) {
-            totalAttendanceCounts = calculateLateCounts(attendanceTime.isAttendance(), totalAttendanceCounts);
-        }
-        return totalAttendanceCounts;
+        return countMatchingRecords(AttendanceTime::isAttendance);
     }
 
-    private static int calculateLateCounts(boolean attendanceTime, int totalLateCounts) {
-        if (attendanceTime) {
-            totalLateCounts += 1;
-        }
-        return totalLateCounts;
+    private int countMatchingRecords(Predicate<AttendanceTime> condition) {
+        return (int) attendanceRecord.stream()
+                .filter(condition)
+                .count();
     }
 
     public List<AttendanceTime> getAttendanceRecord() {
