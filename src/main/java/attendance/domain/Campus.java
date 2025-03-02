@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public enum Campus {
@@ -19,5 +20,12 @@ public enum Campus {
     public static boolean isOperationTime(final LocalTime inputTime) {
         return (OPERATION.startTime.equals(inputTime) || OPERATION.startTime.isBefore(inputTime))
                 && (OPERATION.endTime.equals(inputTime) || OPERATION.endTime.isAfter(inputTime));
+    }
+
+    public static LocalTime getEducationStartTime(final DayOfWeek dayOfWeek) {
+        if (dayOfWeek == DayOfWeek.MONDAY) {
+            return EDUCATION_MONDAY.startTime;
+        }
+        return EDUCATION_EXCEPT_MONDAY.startTime;
     }
 }
