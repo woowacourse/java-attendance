@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,16 +20,16 @@ public class Attendances {
         }
     }
 
-    public Integer getLateCount() {
+    public Integer getLateCount(Clock clock) {
         return (int) attendances.stream()
-                .filter(attendance -> !attendance.has(new Day(LocalDate.of(2025, 2, 28))))
+                .filter(attendance -> !attendance.has(LocalDate.now(clock)))
                 .filter(Attendance::isLate)
                 .count();
     }
 
-    public Integer getAbsentCount() {
+    public Integer getAbsentCount(Clock clock) {
         return (int) attendances.stream()
-                .filter(attendance -> !attendance.has(new Day(LocalDate.of(2025, 2, 28))))
+                .filter(attendance -> !attendance.has(LocalDate.now(clock)))
                 .filter(Attendance::isAbsent)
                 .count();
     }
@@ -39,27 +40,27 @@ public class Attendances {
 
     public Attendance findByDay(Day day) {
         return attendances.stream()
-                .filter(attendance -> attendance.has(day))
+                .filter(attendance -> attendance.has(day.getDate()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("[ERROR] 해당일에 출석 기록이 없습니다."));
     }
 
     protected Boolean isAlreadyAttended(LocalDate date) {
         return attendances.stream()
-                .anyMatch(attendance -> attendance.has(new Day(date)));
+                .anyMatch(attendance -> attendance.has(date));
     }
 
-    public void recordAbsences() {
+    public void recordAbsences(Clock clock) {
         LocalDate.of(2025, 2, 1)
-                .datesUntil(LocalDate.now())
+                .datesUntil(LocalDate.now(clock))
                 .filter(CustomDayOfWeek::isWeekDay)
                 .filter(date -> !Holiday.isHoliday(date))
                 .filter(date -> !isAlreadyAttended(date))
                 .forEach(date -> add(new Attendance(new Day(date), null)));
     }
 
-    public Penalty getPenaltyStatus() {
-        Integer penaltyPoint = getAbsentCount() + getLateCount() / LATE_COUNT_FOR_ABSENCE;
+    public Penalty getPenaltyStatus(Clock clock) {
+        Integer penaltyPoint = getAbsentCount(clock) + getLateCount(clock) / LATE_COUNT_FOR_ABSENCE;
         return Penalty.getPenaltyOf(penaltyPoint);
     }
 

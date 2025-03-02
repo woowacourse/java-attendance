@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -57,8 +58,8 @@ public class Attendance {
         return day;
     }
 
-    public Boolean has(Day day) {
-        return this.day.equals(day);
+    public Boolean has(LocalDate date) {
+        return this.day.getDate().equals(date);
     }
 
     public void modifyTimeTo(LocalTime time) {

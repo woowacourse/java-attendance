@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,9 +8,9 @@ import java.util.Map;
 public class AttendanceBook {
     private final Map<Crew, Attendances> crewsAttendances = new HashMap<>();
 
-    private static void updatePenaltyHistory(Crew crew, Attendances attendances,
-                                             Map<Crew, Attendances> penaltyHistory) {
-        if (attendances.getPenaltyStatus() != null) {
+    private void updatePenaltyHistory(Crew crew, Attendances attendances,
+                                      Map<Crew, Attendances> penaltyHistory, Clock clock) {
+        if (attendances.getPenaltyStatus(clock) != null) {
             penaltyHistory.put(crew, attendances);
         }
     }
@@ -28,19 +29,20 @@ public class AttendanceBook {
         return crewsAttendances.get(crew);
     }
 
-    public void recordAllAbsences() {
-        crewsAttendances.forEach((crew, attendances) -> attendances.recordAbsences());
+    public void recordAllAbsences(Clock clock) {
+        crewsAttendances.forEach((crew, attendances) -> attendances.recordAbsences(clock));
     }
 
-    public Map<Crew, Attendances> getPenaltyHistory() {
+    public Map<Crew, Attendances> getPenaltyHistory(Clock clock) {
         Map<Crew, Attendances> penaltyHistory = new HashMap<>();
         crewsAttendances.forEach((nickname, attendances) ->
-                updatePenaltyHistory(nickname, attendances, penaltyHistory)
+                updatePenaltyHistory(nickname, attendances, penaltyHistory, clock)
         );
         return penaltyHistory;
     }
 
     public void isAlreadyAttended(Crew crew, LocalDate date) {
+        validateCrew(crew);
         if (crewsAttendances.get(crew).isAlreadyAttended(date)) {
             throw new IllegalStateException("[ERROR] 이미 출석이 완료되었습니다. 수정 기능을 이용하세요.");
         }

@@ -7,6 +7,7 @@ import domain.Crew;
 import domain.CustomDayOfWeek;
 import domain.Day;
 import domain.Holiday;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
@@ -18,26 +19,28 @@ public class AttendanceController {
     private final AttendanceBook attendanceBook;
     private final InputView inputView;
     private final OutputView outputView;
+    private final Clock clock;
 
-    public AttendanceController(AttendanceBook attendanceBook, InputView inputView, OutputView outputView) {
+    public AttendanceController(AttendanceBook attendanceBook, InputView inputView, OutputView outputView,
+                                Clock systemClock) {
         this.attendanceBook = attendanceBook;
         this.inputView = inputView;
         this.outputView = outputView;
+        this.clock = systemClock;
     }
 
     public void run() {
-        attendanceBook.recordAllAbsences();
-        LocalDate today = LocalDate.now();
+        attendanceBook.recordAllAbsences(clock);
         String option = "";
         while (!QUIT.equals(option)) {
-            option = inputView.getOption(today);
+            option = inputView.getOption(LocalDate.now(clock));
             Command.getCommand(option).excute(this);
         }
     }
 
     protected void attend() {
         validateToday();
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(clock);
         String nickname = inputView.getNickname();
         Crew crew = new Crew(nickname);
         attendanceBook.isAlreadyAttended(crew, today);
@@ -50,7 +53,7 @@ public class AttendanceController {
     }
 
     private void validateToday() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(clock);
         if (Holiday.isHoliday(today) || !CustomDayOfWeek.isWeekDay(today)) {
             throw new IllegalArgumentException(
                     "[ERROR] " + today.getMonth().getValue() + "월 " + today.getDayOfMonth() + "일 "
@@ -77,12 +80,12 @@ public class AttendanceController {
         String nickname = inputView.getNickname();
         Crew crew = new Crew(nickname);
         Attendances attendances = attendanceBook.getAttendances(crew);
-        outputView.printAttendanceHistory(nickname, attendances);
+        outputView.printAttendanceHistory(nickname, attendances, clock);
     }
 
     protected void readPenaltyHistory() {
-        Map<Crew, Attendances> penaltyCrews = attendanceBook.getPenaltyHistory();
-        outputView.printPenaltyCrews(penaltyCrews);
+        Map<Crew, Attendances> penaltyCrews = attendanceBook.getPenaltyHistory(clock);
+        outputView.printPenaltyCrews(penaltyCrews, clock);
     }
 
     protected void quit() {

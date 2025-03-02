@@ -4,6 +4,7 @@ import domain.Attendance;
 import domain.Attendances;
 import domain.Crew;
 import domain.CustomDayOfWeek;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,56 +38,56 @@ public class OutputView {
                 originalAttendanceTime, originalAttendanceStatus, modifiedAttendanceTime, modifiedAttendanceStatus);
     }
 
-    public void printAttendanceHistory(String nickname, Attendances attendances) {
+    public void printAttendanceHistory(String nickname, Attendances attendances, Clock clock) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", nickname);
         List<Attendance> attendanceHistory = attendances.getAttendances();
         attendanceHistory.sort(Comparator.comparing(attendance -> attendance.getDay().getDate()));
 
-        removeTodayHistory(attendanceHistory);
+        removeTodayHistory(attendanceHistory, clock);
 
         printAttendances(attendanceHistory);
 
-        printEachStatusCount(attendances);
-        printPenaltyStatus(attendances);
+        printEachStatusCount(attendances, clock);
+        printPenaltyStatus(attendances, clock);
     }
 
-    public void printPenaltyCrews(Map<Crew, Attendances> penaltyCrews) {
+    public void printPenaltyCrews(Map<Crew, Attendances> penaltyCrews, Clock clock) {
         List<Crew> crews = new ArrayList<>(penaltyCrews.keySet());
-        sortPenaltyCrews(penaltyCrews, crews);
+        sortPenaltyCrews(penaltyCrews, crews, clock);
 
         for (Crew crew : crews) {
-            int absentCount = penaltyCrews.get(crew).getAbsentCount();
-            int lateCount = penaltyCrews.get(crew).getLateCount();
-            String penaltyName = penaltyCrews.get(crew).getPenaltyStatus().getName();
+            int absentCount = penaltyCrews.get(crew).getAbsentCount(clock);
+            int lateCount = penaltyCrews.get(crew).getLateCount(clock);
+            String penaltyName = penaltyCrews.get(crew).getPenaltyStatus(clock).getName();
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", crew.getNickname(), absentCount, lateCount, penaltyName);
         }
     }
 
-    private void sortPenaltyCrews(Map<Crew, Attendances> penaltyCrews, List<Crew> crews) {
+    private void sortPenaltyCrews(Map<Crew, Attendances> penaltyCrews, List<Crew> crews, Clock clock) {
         crews.sort(
-                Comparator.comparing((Crew crew) -> penaltyCrews.get(crew).getPenaltyStatus().getPoint(),
+                Comparator.comparing((Crew crew) -> penaltyCrews.get(crew).getPenaltyStatus(clock).getPoint(),
                                 Comparator.reverseOrder())
                         .thenComparing(
-                                (Crew crew) -> penaltyCrews.get(crew).getLateCount() + penaltyCrews.get(
-                                        crew).getAbsentCount(),
+                                (Crew crew) -> penaltyCrews.get(crew).getLateCount(clock) + penaltyCrews.get(
+                                        crew).getAbsentCount(clock),
                                 Comparator.reverseOrder())
                         .thenComparing(Crew::getNickname));
     }
 
-    private void printEachStatusCount(Attendances attendances) {
-        int lateCount = attendances.getLateCount();
-        int absentCount = attendances.getAbsentCount();
+    private void printEachStatusCount(Attendances attendances, Clock clock) {
+        int lateCount = attendances.getLateCount(clock);
+        int absentCount = attendances.getAbsentCount(clock);
         int attendanceCount = attendances.getTotalCount() - lateCount - absentCount;
         System.out.printf("\n출석: %d회\n", attendanceCount);
         System.out.printf("지각: %d회\n", lateCount);
         System.out.printf("결석: %d회\n", absentCount);
     }
 
-    private void printPenaltyStatus(Attendances attendances) {
-        if (attendances.getPenaltyStatus() == null) {
+    private void printPenaltyStatus(Attendances attendances, Clock clock) {
+        if (attendances.getPenaltyStatus(clock) == null) {
             return;
         }
-        System.out.printf("\n%s 대상자입니다.\n\n", attendances.getPenaltyStatus().getName());
+        System.out.printf("\n%s 대상자입니다.\n\n", attendances.getPenaltyStatus(clock).getName());
     }
 
     private void printAttendances(List<Attendance> attendanceHistory) {
@@ -101,8 +102,8 @@ public class OutputView {
         }
     }
 
-    private void removeTodayHistory(List<Attendance> attendanceHistory) {
-        if (attendanceHistory.getLast().getDay().getDate().equals(LocalDate.now())) {
+    private void removeTodayHistory(List<Attendance> attendanceHistory, Clock clock) {
+        if (attendanceHistory.getLast().getDay().getDate().equals(LocalDate.now(clock))) {
             attendanceHistory.removeLast();
         }
     }
