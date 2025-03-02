@@ -1,6 +1,7 @@
 package domain.attendance;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public abstract class AttendanceDate {
     private final LocalDate date;
@@ -18,4 +19,6 @@ public abstract class AttendanceDate {
     public AttendanceStatus getStatus() {
         return status;
     }
+
+    public abstract LocalDateTime getDateTime();
 }
