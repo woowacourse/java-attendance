@@ -1,6 +1,13 @@
 package domain.attendance;
 
+import static domain.attendance.constant.AttendanceRiskLevel.COUNSELING;
+import static domain.attendance.constant.AttendanceRiskLevel.EXPULSION;
+import static domain.attendance.constant.AttendanceRiskLevel.NORMAL;
+import static domain.attendance.constant.AttendanceRiskLevel.WARNING;
+
 import domain.attendance.constant.AttendanceRiskLevel;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class AttendanceCounts {
 
@@ -14,22 +21,23 @@ public class AttendanceCounts {
         this.absenceCount = absenceCount;
     }
 
-    public static AttendanceCounts ofStatusCounts(final int attendanceCount, final int tardinessCount, final int absenceCount) {
+    public static AttendanceCounts ofStatusCounts(final int attendanceCount, final int tardinessCount,
+                                                  final int absenceCount) {
         return new AttendanceCounts(attendanceCount, tardinessCount, absenceCount);
     }
 
     public AttendanceRiskLevel calculateAttendanceRiskLevel() {
+        Map<AttendanceRiskLevel, Integer> riskLevels = new LinkedHashMap<>();
+        riskLevels.put(EXPULSION, 6);
+        riskLevels.put(COUNSELING, 3);
+        riskLevels.put(WARNING, 2);
         int totalRiskLimitCount = absenceCount + tardinessCount / 3;
-        if (totalRiskLimitCount > 5) {
-            return AttendanceRiskLevel.EXPULSION;
-        }
-        if (totalRiskLimitCount >= 3) {
-            return AttendanceRiskLevel.COUNSELING;
-        }
-        if (totalRiskLimitCount >= 2) {
-            return AttendanceRiskLevel.WARNING;
-        }
-        return AttendanceRiskLevel.NORMAL;
+
+        return riskLevels.entrySet().stream()
+                .filter(entry -> totalRiskLimitCount >= entry.getValue())
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElse(NORMAL);
     }
 
     public int getTardinessAndAbsenceCount() {
