@@ -165,18 +165,6 @@
     - 자신의 출석 시간이 value 가 비어 있는 null 한 시간인지 반환한다.
     - DayOfWeek 를 받아 해당 요일이 자신의 요일인지 반환한다.
 
-### CrewAttendanceLog (크루 출석 기록 Class)
-
-- **상태**
-    - Crew 크루
-    - AttendanceLogs 출석 기록 일급 컬렉션
-- **생성**
-    - 기본 생성자를 사용한다.
-- **동작**
-    - LocalDateTime 을 받아 출석 기록 생성 후, 출석 기록 리스트에 추가한다.
-    - LocalDateTime 을 받아 해당 날짜의 출석 기록을 업데이트한다.
-    - LocalDate 를 받아 해당 날짜의 크루 출석 기록을 반환한다.
-
 ### CrewAttendanceLogDeserializer (크루 출석 기록 역직렬화기 Class)
 
 - **상태**
@@ -184,12 +172,12 @@
 - **생성**
     - 기본 생성자를 사용한다.
 - **동작**
-    - Path 를 받아 해당 Path 의 파일에 있는 데이터를 읽어 크루 출석 기록 리스트를 반환한다.
+    - Path 를 받아 해당 Path 의 파일에 있는 데이터를 읽어 크루 출석 기록 Map 을 반환한다.
 
-### CrewAttendanceRepository (크루 출석 기록 일급 컬렉션 저장소 Class)
+### CrewAttendanceRepository (크루 출석 기록 저장소 Class)
 
 - **상태**
-    - List<CrewAttendanceLog>
+    - Map<Crew, AttendanceLogs> 크루 출석 기록
 - **생성**
     - 크루 출석 기록 역직렬화기와 크루 출석 데이터 Path 를 받아 생성된다.
 - **동작** (getter, equals, hashCode 제외)
