@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
@@ -9,33 +8,33 @@ public enum AttendanceStatus {
     TARDY,
     ABSENCE;
 
-    private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
-    private static final LocalTime START_TIME = LocalTime.of(10, 0);
+    private static final AttendanceTime MONDAY_START_TIME = new AttendanceTime(LocalTime.of(13, 0));
+    private static final AttendanceTime START_TIME = new AttendanceTime(LocalTime.of(10, 0));
 
 
-    private static LocalTime startTime(LocalDate date) {
-        if (date.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+    private static AttendanceTime startTime(AttendanceDate date) {
+        if (date.getDate().getDayOfWeek().equals(DayOfWeek.MONDAY)) {
             return MONDAY_START_TIME;
         }
         return START_TIME;
     }
 
-    public static AttendanceStatus getAttendanceStatus(LocalDate date, LocalTime attendanceTime) {
-        if(isAbsence(date, attendanceTime)) {
+    public static AttendanceStatus getAttendanceStatus(AttendanceDate date, AttendanceTime attendanceTime) {
+        if (isAbsence(date, attendanceTime)) {
             return ABSENCE;
         }
-        if(isTardy(date, attendanceTime)) {
+        if (isTardy(date, attendanceTime)) {
             return TARDY;
         }
         return ATTEND;
     }
 
-    private static boolean isAbsence(LocalDate date, LocalTime attendanceTime) {
-        return attendanceTime.isAfter(startTime(date).plusMinutes(30));
+    private static boolean isAbsence(AttendanceDate date, AttendanceTime attendanceTime) {
+        return attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(30));
     }
 
-    private static boolean isTardy(LocalDate date, LocalTime attendanceTime) {
-        return attendanceTime.isAfter(startTime(date).plusMinutes(5)) &&
-                        !attendanceTime.isAfter(startTime(date).plusMinutes(30));
+    private static boolean isTardy(AttendanceDate date, AttendanceTime attendanceTime) {
+        return attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(5)) &&
+                !attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(30));
     }
 }

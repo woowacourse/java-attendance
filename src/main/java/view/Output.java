@@ -26,6 +26,7 @@ public class Output {
             AttendanceStatus.TARDY, "지각",
             AttendanceStatus.ATTEND, "출석"
     );
+
     public String getAttendanceMessage(AttendanceResultDto attendanceResultDto) {
         if (attendanceResultDto.attendanceStatus().equals(AttendanceStatus.ABSENCE)) {
             return getAbsenceMessage(attendanceResultDto);

@@ -3,84 +3,77 @@ package domain;
 import util.Dates;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AttendanceBook {
-    private final Map<LocalDate, LocalTime> attendanceBook;
+    private final Map<AttendanceDate, AttendanceTime> attendanceBook;
 
     public AttendanceBook() {
         attendanceBook = new HashMap<>();
     }
 
-    public AttendanceBook(Map<LocalDate, LocalTime> attendanceBook) {
+    public AttendanceBook(Map<AttendanceDate, AttendanceTime> attendanceBook) {
         this.attendanceBook = attendanceBook;
     }
 
-    public LocalTime getAttendanceTimeByDate(LocalDate date) {
-        return attendanceBook.getOrDefault(date, Dates.DEFAULT_TIME);
+    public Optional<AttendanceTime> getAttendanceTimeByDate(AttendanceDate date) {
+        return Optional.ofNullable(attendanceBook.get(date));
     }
 
-    public void attendance(LocalDate date, LocalTime time) {
-        if (isNotOperatingHours(time)) {
-            throw new IllegalArgumentException();
-        }
-        if (Dates.isHoliday(date)) {
-            throw new IllegalArgumentException();
-        }
+    public void attendance(AttendanceDate date, AttendanceTime time) {
         attendanceBook.put(date, time);
     }
 
-    public boolean hasAttendanceRecord(LocalDate date) {
+    public boolean hasAttendanceRecord(AttendanceDate date) {
         return attendanceBook.containsKey(date);
-    }
-
-    private boolean isNotOperatingHours(LocalTime time) {
-        return time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(23, 0));
     }
 
     public int getAbsenceCount(LocalDate today) {
         return (int) LocalDate.of(2024, 12, 1)
                 .datesUntil(today.plusDays(1))
                 .filter(Dates::isNotHoliday)
+                .map(AttendanceDate::new)
                 .filter(this::isAbsence)
                 .count();
-    }
-
-    private boolean isAbsence(LocalDate date) {
-        return !attendanceBook.containsKey(date) ||
-                AttendanceStatus.getAttendanceStatus(date, attendanceBook.get(date))
-                        .equals(AttendanceStatus.ABSENCE);
-    }
-
-    public int getTardyCount(LocalDate today) {
-        return (int) LocalDate.of(2024, 12, 1)
-                .datesUntil(today.plusDays(1))
-                .filter(Dates::isNotHoliday)
-                .filter(attendanceBook::containsKey)
-                .filter(this::isTardy)
-                .count();
-    }
-
-    private boolean isTardy(LocalDate date) {
-        return !attendanceBook.containsKey(date) ||
-                AttendanceStatus.getAttendanceStatus(date, attendanceBook.get(date))
-                        .equals(AttendanceStatus.TARDY);
     }
 
     public int getAttendCount(LocalDate today) {
         return (int) LocalDate.of(2024, 12, 1)
                 .datesUntil(today.plusDays(1))
                 .filter(Dates::isNotHoliday)
+                .map(AttendanceDate::new)
                 .filter(attendanceBook::containsKey)
                 .filter(this::isAttend)
                 .count();
     }
 
-    private boolean isAttend(LocalDate date) {
+    public int getTardyCount(LocalDate today) {
+        return (int) LocalDate.of(2024, 12, 1)
+                .datesUntil(today.plusDays(1))
+                .filter(Dates::isNotHoliday)
+                .map(AttendanceDate::new)
+                .filter(attendanceBook::containsKey)
+                .filter(this::isTardy)
+                .count();
+    }
+
+    private boolean isAbsence(AttendanceDate date) {
+        return !attendanceBook.containsKey(date) ||
+                AttendanceStatus.getAttendanceStatus(date, attendanceBook.get(date))
+                        .equals(AttendanceStatus.ABSENCE);
+    }
+
+    private boolean isTardy(AttendanceDate date) {
+        return !attendanceBook.containsKey(date) ||
+                AttendanceStatus.getAttendanceStatus(date, attendanceBook.get(date))
+                        .equals(AttendanceStatus.TARDY);
+    }
+
+    private boolean isAttend(AttendanceDate date) {
         return !attendanceBook.containsKey(date) ||
                 AttendanceStatus.getAttendanceStatus(date, attendanceBook.get(date))
                         .equals(AttendanceStatus.ATTEND);
@@ -91,17 +84,17 @@ public class AttendanceBook {
     }
 
 
-
-    public AttendanceStatus getAttendanceStatus(LocalDate today) {
-        LocalTime dateTime = getAttendanceTimeByDate(today);
-        return AttendanceStatus.getAttendanceStatus(today, dateTime);
+    public AttendanceStatus getAttendanceStatus(AttendanceDate today) {
+        return getAttendanceTimeByDate(today)
+                .map(attendanceTime -> AttendanceStatus.getAttendanceStatus(today, attendanceTime))
+                .orElse(AttendanceStatus.ABSENCE);
     }
 
-    public Map<LocalDate, LocalTime> getAttendanceBook() {
+    public Map<AttendanceDate, AttendanceTime> getAttendanceBook() {
         return Collections.unmodifiableMap(attendanceBook);
     }
 
-    public Map<LocalDate, AttendanceStatus> getAttendanceStatuses() {
+    public Map<AttendanceDate, AttendanceStatus> getAttendanceStatuses() {
         return attendanceBook.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,

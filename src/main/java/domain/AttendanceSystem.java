@@ -1,7 +1,5 @@
 package domain;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,43 +13,32 @@ public class AttendanceSystem {
         attendanceBooks = new HashMap<>();
     }
 
-    public void attendance(Crew name, LocalTime time) {
-        if (attendanceBooks.get(name).hasAttendanceRecord(TODAY)) {
-            throw new IllegalArgumentException();
+    private boolean hasNoCrew(Crew crew) {
+        return !attendanceBooks.containsKey(crew);
+    }
+
+
+    public void editAttendance(Crew crew, AttendanceDate date, AttendanceTime time) {
+        if (hasNoCrew(crew)) {
+            attendanceBooks.put(crew, new AttendanceBook());
         }
-        attendanceBooks.get(name).attendance(TODAY, time);
+        attendanceBooks.get(crew).attendance(date, time);
     }
 
-    private boolean hasNoName(Crew name) {
-        return !attendanceBooks.containsKey(name);
+    public int getAbsenceCount(Crew crew) {
+        return attendanceBooks.get(crew).getAbsenceCount(TODAY);
     }
 
-
-    public LocalTime getAttendanceRecord(Crew name, LocalDate date) {
-        return attendanceBooks.get(name).getAttendanceTimeByDate(date);
+    public int getTardyCount(Crew crew) {
+        return attendanceBooks.get(crew).getTardyCount(TODAY);
     }
 
-    public void editAttendance(Crew name, LocalDate date, LocalTime time) {
-        if (hasNoName(name)) {
-            attendanceBooks.put(name, new AttendanceBook());
-        }
-        attendanceBooks.get(name).attendance(date, time);
+    public int getAttendCount(Crew crew) {
+        return attendanceBooks.get(crew).getAttendCount(TODAY);
     }
 
-    public int getAbsenceCount(Crew name) {
-        return attendanceBooks.get(name).getAbsenceCount(TODAY);
-    }
-
-    public int getTardyCount(Crew name) {
-        return attendanceBooks.get(name).getTardyCount(TODAY);
-    }
-
-    public int getAttendCount(Crew name) {
-        return attendanceBooks.get(name).getAttendCount(TODAY);
-    }
-
-    public RiskStatus getRisk(Crew name) {
-        return attendanceBooks.get(name).getRiskStatus(TODAY);
+    public RiskStatus getRisk(Crew crew) {
+        return attendanceBooks.get(crew).getRiskStatus(TODAY);
     }
 
     public Map<Crew, AttendanceBook> getRiskCrews() {
@@ -63,10 +50,10 @@ public class AttendanceSystem {
                 ));
     }
 
-    public AttendanceBook findByName(Crew name) {
-        if(hasNoName(name)) {
-            throw new IllegalArgumentException("존재하지 않는 이름입니다.");
+    public AttendanceBook findByCrew(Crew crew) {
+        if (hasNoCrew(crew)) {
+            throw new IllegalArgumentException("존재하지 않는 크루입니다.");
         }
-        return attendanceBooks.get(name);
+        return attendanceBooks.get(crew);
     }
 }

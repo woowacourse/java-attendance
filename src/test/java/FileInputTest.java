@@ -8,7 +8,6 @@ import view.FileInput;
 import java.util.List;
 
 public class FileInputTest {
-
     @DisplayName("파일에서 쿠키의 이름을 가져온다")
     @Test
     void file_input_test() {

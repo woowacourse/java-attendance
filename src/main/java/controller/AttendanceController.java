@@ -1,7 +1,10 @@
 package controller;
 
 import domain.AttendanceBook;
+import domain.AttendanceDate;
+import domain.AttendanceStatus;
 import domain.AttendanceSystem;
+import domain.AttendanceTime;
 import domain.Crew;
 import dto.AttendanceRecordDto;
 import dto.AttendanceResultDto;
@@ -16,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static util.Dates.TODAY;
 
@@ -64,7 +68,7 @@ public class AttendanceController {
         if (menuSelection.equals("Q")) {
             return false;
         }
-        if(menuOperations.containsKey(menuSelection)) {
+        if (menuOperations.containsKey(menuSelection)) {
             menuOperations.get(menuSelection).run();
             return true;
         }
@@ -85,22 +89,23 @@ public class AttendanceController {
 
     private void checkAttendanceRecord() {
         Crew crew = new Crew(input.getNameInput());
-        AttendanceBook attendanceBook = attendanceSystem.findByName(crew);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
         attendanceBook.getAttendanceBook();
         output.printAttendanceRecord(
                 crew.name(),
                 TODAY,
-                attendanceBook.getAttendanceBook(),
-                attendanceBook.getAttendanceStatuses());
+                getAttendanceBook(attendanceBook),
+                getAttendanceStatuses(attendanceBook));
     }
 
     private void editAttendance() {
         Crew crew = new Crew(input.getNameInput());
-        AttendanceBook attendanceBook = attendanceSystem.findByName(crew);
-        LocalDate date = getEditDate();
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        AttendanceDate date = new AttendanceDate(getEditDate());
         AttendanceResultDto beforeAttendanceResult = getAttendanceResult(date, attendanceBook);
         LocalTime time = Parser.stringToLocalTime(input.getEditTimeInput());
-        attendanceBook.attendance(date, time);
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        attendanceBook.attendance(date, attendanceTime);
         AttendanceResultDto afterAttendanceResult = getAttendanceResult(date, attendanceBook);
         output.printEditAttendanceResult(beforeAttendanceResult, afterAttendanceResult);
     }
@@ -111,36 +116,53 @@ public class AttendanceController {
                 Integer.parseInt(input.getEditDateInput()));
     }
 
-    private AttendanceResultDto getAttendanceResult(LocalDate date, AttendanceBook attendanceBook) {
+    private AttendanceResultDto getAttendanceResult(AttendanceDate date, AttendanceBook attendanceBook) {
+        LocalTime time = attendanceBook.getAttendanceTimeByDate(date)
+                .map(AttendanceTime::getTime)
+                .orElse(Dates.DEFAULT_TIME);
         return new AttendanceResultDto(
-                date,
-                attendanceBook.getAttendanceTimeByDate(date),
+                date.getDate(),
+                time,
                 attendanceBook.getAttendanceStatus(date)
         );
     }
 
-    private void attend() {
-        validateTodayIsHoliday();
-        Crew crew = new Crew(input.getNameInput());
-        AttendanceBook attendanceBook = attendanceSystem.findByName(crew);
-        LocalTime time = Parser.stringToLocalTime(input.getTimeInput());
-        attendanceBook.attendance(TODAY, time);
-        AttendanceResultDto attendanceResultDto = getAttendanceResult(TODAY, attendanceBook);
-        output.printAttendResult(attendanceResultDto);
-    }
 
-    private static void validateTodayIsHoliday() {
-        if (Dates.isHoliday(TODAY)) {
-            throw new IllegalArgumentException(String.format("%s는 등교일이 아닙니다", Parser.localDateToDateMessage(TODAY)));
+    private void attend() {
+        AttendanceDate attendanceDate = new AttendanceDate(TODAY);
+        Crew crew = new Crew(input.getNameInput());
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        if (attendanceBook.hasAttendanceRecord(attendanceDate)) {
+            throw new IllegalArgumentException("수정 기능을 사용해주세요.");
         }
+        LocalTime time = Parser.stringToLocalTime(input.getTimeInput());
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        attendanceBook.attendance(attendanceDate, attendanceTime);
+        AttendanceResultDto attendanceResultDto = getAttendanceResult(attendanceDate, attendanceBook);
+        output.printAttendResult(attendanceResultDto);
     }
 
     private void initCrew() {
         List<AttendanceRecordDto> attendanceRecords = fileInput.getFileInit();
-        attendanceRecords.forEach(attendanceRecordDto -> {
-            attendanceSystem.editAttendance(new Crew(attendanceRecordDto.nickname()),
-                    attendanceRecordDto.attendanceDateTime().toLocalDate(),
-                    attendanceRecordDto.attendanceDateTime().toLocalTime());
-        });
+        attendanceRecords.forEach(attendanceRecordDto ->
+                attendanceSystem.editAttendance(new Crew(attendanceRecordDto.nickname()),
+                        new AttendanceDate(attendanceRecordDto.attendanceDateTime().toLocalDate()),
+                        new AttendanceTime(attendanceRecordDto.attendanceDateTime().toLocalTime())));
+    }
+
+    private Map<LocalDate, LocalTime> getAttendanceBook(AttendanceBook attendanceBook) {
+        return attendanceBook.getAttendanceBook().entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().getDate(),
+                        entry -> entry.getValue().getTime()
+                ));
+    }
+
+    private Map<LocalDate, AttendanceStatus> getAttendanceStatuses(AttendanceBook attendanceBook) {
+        return attendanceBook.getAttendanceStatuses().entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().getDate(),
+                        Map.Entry::getValue
+                ));
     }
 }
