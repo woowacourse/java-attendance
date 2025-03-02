@@ -1,5 +1,6 @@
 package controller;
 
+import static view.UserCommandType.INITIAL;
 import static view.UserCommandType.QUIT;
 import static view.UserCommandType.getCommand;
 import static view.UserCommandType.validateInput;
@@ -13,6 +14,7 @@ import domain.DayOfMonth;
 import domain.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,8 +26,10 @@ import view.OutputView;
 import view.UserCommandType;
 
 public class AttendanceController {
-    private static final LocalDate today = LocalDate.of(2024, 12, 14);
-    private Map<UserCommandType, Command> commands = new HashMap<>();
+    private static final LocalDate today = LocalDate.of(2024, 12, 16);
+    private static final LocalTime startTime = LocalTime.of(8, 0);
+    private static final LocalTime endTime = LocalTime.of(23, 0);
+    private final Map<UserCommandType, Command> commands = new HashMap<>();
     private final InputView inputView;
     private final OutputView outputView;
 
@@ -38,13 +42,17 @@ public class AttendanceController {
     public void run() {
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.load(today);
+        UserCommandType userCommandType = INITIAL;
+        try {
+            while (userCommandType != QUIT) {
+                String userInput = inputView.insertCommandType(today);
+                validateInput(userInput);
+                userCommandType = getCommand(userInput);
 
-        String userInput = inputView.insertCommandType(today);
-        validateInput(userInput);
-        UserCommandType userCommandType = getCommand(userInput);
-
-        while (userCommandType != QUIT) {
-            executeCommand(userCommandType, crewGroup);
+                executeCommand(userCommandType, crewGroup);
+            }
+        } catch (Exception e) {
+            outputView.printExceptionLog(e);
         }
     }
 
@@ -58,6 +66,9 @@ public class AttendanceController {
     }
 
     public void markAttendance(CrewGroup crewGroup) {
+        Attendance attendanceValidator = new Attendance(LocalDateTime.of(today, LocalTime.of(10, 0)));
+        attendanceValidator.validateHoliday();
+
         String name = inputView.insertName();
         Attendances attendances = crewGroup.getSpecificAttendances(name);
 
@@ -67,6 +78,10 @@ public class AttendanceController {
 
         String rawTime = inputView.insertTime();
         Time time = new Time(rawTime);
+
+        if (!time.isBetweenTime(startTime, endTime)) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
+        }
 
         Attendance attendance = new Attendance(LocalDateTime.of(today, time.convertTime()));
         attendances.addAttendance(attendance);
@@ -84,8 +99,12 @@ public class AttendanceController {
 
         Attendance originalAttendance = attendances.getSpecificAttendance(dayOfMonth, today);
 
-        String rawTime = inputView.insertChangeName();
+        String rawTime = inputView.insertChangeTime();
         Time time = new Time(rawTime);
+
+        if (!time.isBetweenTime(startTime, endTime)) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
+        }
 
         Attendance changeAttendance = attendances.changeAttendance(dayOfMonth, today, time.convertTime());
         outputView.printChangeLog(originalAttendance, changeAttendance);

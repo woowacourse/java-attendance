@@ -7,6 +7,7 @@ import domain.AttendanceStatistics;
 import domain.Attendances;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import util.DayConverter;
@@ -17,9 +18,14 @@ public class OutputView {
     public void printAllLog(String name, Attendances attendances, AttendanceStatistics attendanceStatistics) {
         System.out.printf("\n이번 달 %s의 출석 기록입니다.\n\n", name);
 
-        attendances.getAttendances().stream()
+        List<Attendance> sortedAttendances = attendances.getAttendances().stream()
                 .sorted()
-                .forEach(this::printAttendanceLog);
+                .toList();
+
+        for (Attendance attendance : sortedAttendances) {
+            printAttendanceLog(attendance);
+            System.out.println();
+        }
 
         printAttendanceStatistic(attendanceStatistics);
     }
@@ -47,6 +53,7 @@ public class OutputView {
     }
 
     public void printAlertCrews(Map<String, AttendanceStatistics> alertCrews) {
+        System.out.println("제적 위험자 조회 결과");
         for (Entry<String, AttendanceStatistics> alertCrew : alertCrews.entrySet()) {
             printAlertCrew(alertCrew.getKey(), alertCrew.getValue());
         }
@@ -69,6 +76,11 @@ public class OutputView {
         }
 
         printAttendanceLog(originalAttendance);
-        System.out.printf(" -> %s (%s) 수정 완료!", time, changedAttendance.calculateAttendanceCode().getName());
+        System.out.printf(" -> %s (%s) 수정 완료!", time,
+                changedAttendance.calculateAttendanceCode().getName());
+    }
+
+    public void printExceptionLog(Exception e) {
+        System.out.println("\n[ERROR]" + e.getMessage());
     }
 }

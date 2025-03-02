@@ -9,7 +9,8 @@ public enum UserCommandType {
     ATTENDANCE_CHANGE("출석 수정", "2"),
     SHOWING_ATTENDANCE("크루별 출석 기록 확인", "3"),
     SHOWING_ALERT_CREWS("제적 위험자 확인", "4"),
-    QUIT("종료", "Q");
+    QUIT("종료", "Q"),
+    INITIAL("기본", "-1");
 
     private final String name;
     private final String commandCode;

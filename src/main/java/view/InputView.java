@@ -15,7 +15,7 @@ public class InputView {
     }
 
     public String insertCommandType(LocalDate today) {
-        System.out.printf("오늘은 %d월 %02d일 %s입니다. 기능을 선택해 주세요.\n",
+        System.out.printf("\n오늘은 %d월 %02d일 %s입니다. 기능을 선택해 주세요.\n",
                 today.getMonth().getValue(),
                 today.getDayOfMonth(),
                 DayConverter.getKoreanDayOfWeek(today));
@@ -31,7 +31,7 @@ public class InputView {
     }
 
     public String insertTime() {
-        System.out.println("등교 시간을 입력해 주세요.\n");
+        System.out.println("등교 시간을 입력해 주세요.");
         String rawTime = readLine();
         validateTime(rawTime);
         return rawTime;
@@ -52,12 +52,12 @@ public class InputView {
     public String insertChangeTime() {
         System.out.println("언제로 변경하겠습니까?");
         String rawTime = readLine();
-        validateInteger(rawTime);
+        validateTime(rawTime);
         return rawTime;
     }
 
     public String insertName() {
-        System.out.println("닉네임을 입력해 주세요.");
+        System.out.println("\n닉네임을 입력해 주세요.");
         return readLine();
     }
 }
