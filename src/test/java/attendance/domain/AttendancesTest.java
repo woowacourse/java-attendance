@@ -52,7 +52,7 @@ class AttendancesTest {
     void test_returnAttendanceStatusStatistic() {
         var attendance = LocalDateTime.of(2024, 12, 10, 10, 0);
         var late = LocalDateTime.of(2024, 12, 11, 10, 10);
-        var absence = LocalDateTime.of(2024, 12, 12, 10, 30);
+        var absence = LocalDateTime.of(2024, 12, 12, 10, 35);
         var attendances = new Attendances(systemDateTime);
         attendances.addAttendance(attendance);
         attendances.addAttendance(late);

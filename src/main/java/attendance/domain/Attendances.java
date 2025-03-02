@@ -55,4 +55,12 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
         isValidateSchedule(date);
         attendances.put(date, new Attendance(dateTime));
     }
+
+    public AttendanceStatusStatistics calculateStatics() {
+        AttendanceStatusStatistics statusStatics = new AttendanceStatusStatistics();
+        for (LocalDate date : attendances.keySet()) {
+            statusStatics.put(attendances.get(date).state());
+        }
+        return statusStatics;
+    }
 }
