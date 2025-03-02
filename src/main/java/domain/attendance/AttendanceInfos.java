@@ -99,7 +99,8 @@ public class AttendanceInfos {
         return !hasInfoByDate(campusDate);
     }
 
-    private AttendanceInfo modifyInfoIfSameDay(final CampusDate campusDate, final CampusTime campusTime, final AttendanceInfo info) {
+    private AttendanceInfo modifyInfoIfSameDay(final CampusDate campusDate, final CampusTime campusTime,
+                                               final AttendanceInfo info) {
         if (ifDayEqual(campusDate, info)) {
             return info.modifyInfoByTime(campusTime);
         }

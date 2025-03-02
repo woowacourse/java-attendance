@@ -1,12 +1,12 @@
 package view;
 
+import domain.Crew;
 import domain.attendance.AttendanceBook;
 import domain.attendance.AttendanceCounts;
 import domain.attendance.AttendanceInfo;
 import domain.attendance.AttendanceInfos;
 import domain.attendance.constant.AttendanceRiskLevel;
 import domain.datetime.CampusDate;
-import domain.Crew;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Comparator;
