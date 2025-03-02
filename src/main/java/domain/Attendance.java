@@ -10,9 +10,13 @@ public class Attendance {
     private final Crew crew;
     private final List<LocalDateTime> attendanceTime;
 
-    public Attendance(final Crew crew, final List<LocalDateTime> attendanceTime) {
+    private Attendance(final Crew crew) {
         this.crew = crew;
-        this.attendanceTime = attendanceTime;
+        this.attendanceTime = new ArrayList<>();
+    }
+
+    public static Attendance of(final Crew crew) {
+        return new Attendance(crew);
     }
 
     public void add(final LocalDateTime time) {

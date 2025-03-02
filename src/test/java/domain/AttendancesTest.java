@@ -224,14 +224,14 @@ class AttendancesTest {
     private Attendance createAttendance(final String name) {
         Crew crew = Crew.of(name);
 
-        List<LocalDateTime> attendanceTime = new ArrayList<>();
+        Attendance attendance = Attendance.of(crew);
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 2, 10, 10);
         LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 3, 11, 11);
 
-        attendanceTime.add(localDateTime);
-        attendanceTime.add(localDateTime1);
+        attendance.add(localDateTime);
+        attendance.add(localDateTime1);
 
-        return new Attendance(crew, attendanceTime);
+        return attendance;
     }
 
 }
