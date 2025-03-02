@@ -24,6 +24,10 @@ public class AttendanceDate {
         }
     }
 
+    public LocalDate getLocalDate() {
+        return localDate;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (!(o instanceof final AttendanceDate that)) {
