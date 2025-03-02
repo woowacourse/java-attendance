@@ -122,11 +122,18 @@
 
 ## 🛠 Util
 
-### Convertor
-- [x] 요일 한국어로 변환
-- [x] 날짜 및 시간 형식 변환
-  - [x] 날짜 숫자 유효성 검증 및 숫자로 변환
-  - [x] 시간 범위 유효성 검증 및 시간으로 변환
+### DateTimeConverter
+- [x] 문자열을 날짜와 시간으로 변환
+-
+### DayConverter
+- [x] 문자열을 숫자로 변환
+  - [x] 숫자 범위 유효성 검증
+  - 
+### DayOfWeekConverter
+- [x] 요일을 한국어로 변환
+
+### TimeConverter
+- [x] 문자열을 시간으로 변환
 
 ### CsvReader
 - [x] Csv 형식의 파일 로딩 및 처리

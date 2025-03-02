@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import util.Convertor;
 import util.CsvReader;
+import util.converter.DateTimeConverter;
 
 public class AttendanceCsvController implements AttendanceStoreController {
 
@@ -28,7 +28,7 @@ public class AttendanceCsvController implements AttendanceStoreController {
         String crewName = storeLine[0];
         AttendanceLogs crewAttendanceLogs = findCrewAttendanceLogs(crewsAttendanceLogs, crewName);
         String dateTime = storeLine[1];
-        crewAttendanceLogs.registerLog(Convertor.convertStringToDateTime(dateTime));
+        crewAttendanceLogs.registerLog(DateTimeConverter.convertStringToDateTime(dateTime));
     }
 
     private static AttendanceLogs findCrewAttendanceLogs(Map<Crew, AttendanceLogs> crewsAttendanceLogs,

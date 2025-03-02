@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.EnumMap;
 import java.util.Map;
-import util.Convertor;
 import util.Evaluator;
+import util.converter.DayOfWeekConverter;
 import view.InputView;
 
 public class AttendanceController {
@@ -82,7 +82,7 @@ public class AttendanceController {
         if (!Evaluator.isOpenDate(attendDate)) {
             throw new ErrorException(
                     String.format("%d월 %d일 %s요일은 등교일이 아닙니다.", attendDate.getMonthValue(), attendDate.getDayOfMonth(),
-                            Convertor.convertDayOfWeekToKorean(attendDate.getDayOfWeek())));
+                            DayOfWeekConverter.convertDayOfWeekToKorean(attendDate.getDayOfWeek())));
         }
     }
 }

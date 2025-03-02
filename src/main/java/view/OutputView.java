@@ -9,8 +9,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import util.Convertor;
 import util.Evaluator;
+import util.converter.DayOfWeekConverter;
 
 public class OutputView {
 
@@ -125,7 +125,7 @@ public class OutputView {
         return String.format("%02d월 %02d일 %s요일",
                 attendanceLogDate.getMonthValue(),
                 attendanceLogDate.getDayOfMonth(),
-                Convertor.convertDayOfWeekToKorean(attendanceLogDate.getDayOfWeek()));
+                DayOfWeekConverter.convertDayOfWeekToKorean(attendanceLogDate.getDayOfWeek()));
     }
 
     private static String formatAttendanceLogTime(LocalTime attendanceLogTime) {
