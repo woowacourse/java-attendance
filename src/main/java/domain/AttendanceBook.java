@@ -4,16 +4,10 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
     private final Map<Crew, Attendances> crewsAttendances = new HashMap<>();
-
-    private void updatePenaltyHistory(Crew crew, Attendances attendances,
-                                      Map<Crew, Attendances> penaltyHistory, Clock clock) {
-        if (attendances.getPenaltyStatus(clock) != null) {
-            penaltyHistory.put(crew, attendances);
-        }
-    }
 
     public void recordAttendance(Crew crew, Attendance attendance) {
         if (crewsAttendances.containsKey(crew)) {
@@ -34,11 +28,9 @@ public class AttendanceBook {
     }
 
     public Map<Crew, Attendances> getPenaltyHistory(Clock clock) {
-        Map<Crew, Attendances> penaltyHistory = new HashMap<>();
-        crewsAttendances.forEach((nickname, attendances) ->
-                updatePenaltyHistory(nickname, attendances, penaltyHistory, clock)
-        );
-        return penaltyHistory;
+        return crewsAttendances.entrySet().stream()
+                .filter(crew -> crew.getValue().getPenaltyStatus(clock) != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public void isAlreadyAttended(Crew crew, LocalDate date) {
