@@ -2,7 +2,10 @@ package attendance.domain;
 
 import attendance.view.TimeFormatter;
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class CampusScheduler {
 
@@ -10,6 +13,20 @@ public class CampusScheduler {
         if (isNotOperationDate(attendanceDate)) {
             throw new IllegalArgumentException(
                     "[ERROR] " + TimeFormatter.makeDateMessage(attendanceDate) + "은 등교일이 아닙니다.");
+        }
+    }
+
+    public AttendanceState calculateAttendanceState(final LocalDateTime attendanceTime) {
+        validateOperationTime(attendanceTime);
+        LocalTime startTime = Campus.getEducationStartTime(attendanceTime.getDayOfWeek());
+        long diff = Duration.between(startTime, attendanceTime).toMinutes();
+        return AttendanceState.from(diff);
+    }
+
+    private void validateOperationTime(final LocalDateTime attendanceTime) {
+        boolean isOperationTime = Campus.isOperationTime(LocalTime.from(attendanceTime));
+        if (!isOperationTime) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
         }
     }
 

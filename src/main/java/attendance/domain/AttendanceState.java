@@ -18,7 +18,7 @@ public enum AttendanceState {
         this.threshold = threshold;
     }
 
-    public static AttendanceState from(final int diff) {
+    public static AttendanceState from(final long diff) {
         return SORTED_ATTENDANCE_STATE.stream()
                 .filter(attendanceState -> attendanceState.threshold < diff)
                 .findAny()
