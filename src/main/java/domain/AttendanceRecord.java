@@ -7,11 +7,11 @@ import util.Current;
 
 public class AttendanceRecord {
     private final LocalDate date;
-    private final LocalTime attendingTime;
+    private final LocalTime time;
 
-    public AttendanceRecord(LocalDate date, LocalTime attendingTime) {
+    public AttendanceRecord(LocalDate date, LocalTime time) {
         this.date = date;
-        this.attendingTime = attendingTime;
+        this.time = time;
     }
 
     public static AttendanceRecord timeOf(String time) {
@@ -51,16 +51,16 @@ public class AttendanceRecord {
             return false;
         }
         AttendanceRecord that = (AttendanceRecord) o;
-        return Objects.equals(date, that.date) && Objects.equals(attendingTime, that.attendingTime);
+        return Objects.equals(date, that.date) && Objects.equals(time, that.time);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, attendingTime);
+        return Objects.hash(date, time);
     }
 
     @Override
     public String toString() {
-        return "AttendanceRecord{" + "date=" + date + ", attendingTime=" + attendingTime + '}';
+        return "AttendanceRecord{" + "date=" + date + ", attendingTime=" + time + '}';
     }
 }
