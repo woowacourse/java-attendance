@@ -53,4 +53,8 @@ public class Student {
     public StudentAttendanceHistory getStudentAttendanceHistory() {
         return studentAttendanceHistory;
     }
+
+    public String getName() {
+        return name;
+    }
 }
