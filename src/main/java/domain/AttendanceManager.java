@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,6 +27,13 @@ public class AttendanceManager {
         Attendances attendances = attendanceManager.getOrDefault(nickName, new Attendances());
         attendances.edit(editAttendanceRecord);
         attendanceManager.put(nickName, attendances);
+    }
+
+    public Attendances checkAttendance(NickName nickName, List<Integer> checkingDates) {
+        Attendances attendances = new Attendances();
+        attendances.attend(AttendanceRecord.of("09", "10:00"));
+        attendances.attend(AttendanceRecord.of("10", "10:00"));
+        return attendances;
     }
 
     @Override

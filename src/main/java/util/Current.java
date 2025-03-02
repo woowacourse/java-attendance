@@ -10,6 +10,15 @@ public class Current {
         return TODAY;
     }
 
+    public static int getDayOfToday() {
+        return TODAY.getDayOfMonth();
+    }
+
+    public static int getDayOfYesterday() {
+        return TODAY.minusDays(1)
+                .getDayOfMonth();
+    }
+
     public static String getStringOfThisMonth() {
         return TODAY.format(DateTimeFormatter.ofPattern("yyyy-MM"));
     }
