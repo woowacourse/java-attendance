@@ -1,6 +1,7 @@
 package view;
 
 import controller.Command;
+import util.DateTimeUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -70,6 +71,7 @@ public class InputView {
     }
 
     private static LocalTime inputValidateEditTime(){
+        System.out.println("언제로 변경하시겠습니까?");
         String inputTime = scanner.nextLine();
         return LocalTime.parse(inputTime, dateTimeFormatter);
     }
@@ -77,6 +79,9 @@ public class InputView {
     private static void validateEditDay(int day){
         if(day < 1 || day > 31){
             throw new IllegalArgumentException("입력한 날짜(일)이 옳바르지 않습니다.");
+        }
+        if(LocalDate.of(NOW_YEAR,NOW_MONTH,day).isAfter(TODAY_DATE_NOW)){
+            throw new IllegalArgumentException("미래의 날짜를 수정할 수 없습니다.");
         }
     }
 }
