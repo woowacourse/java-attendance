@@ -56,7 +56,7 @@ public class Attendance {
 
     public AttendanceDate findByLocalDate(LocalDate findLocalDate) {
         if(!has(findLocalDate)){
-            throw new IllegalArgumentException("존재하지 않는 LocalDate 입니다.");
+            throw new IllegalArgumentException("존재하지 않는 출석 입니다.");
         }
         return attendanceDates.get(findLocalDate);
     }
