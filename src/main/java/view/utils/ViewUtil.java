@@ -23,10 +23,7 @@ public class ViewUtil {
         if (attendanceStatus.equals(AttendanceStatus.TARDY)) {
             return "지각";
         }
-        if (attendanceStatus.equals(AttendanceStatus.ABSENCE)) {
-            return "결석";
-        }
-        return "";
+        return "결석";
     }
 
     public static String getRiskStatusMessage(RiskStatus riskStatus) {
