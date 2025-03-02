@@ -27,7 +27,7 @@ public class AttendanceController {
     }
 
     public void run() {
-        String menuSelection = inputView.readMenuSelection();
+        String menuSelection = inputView.readMenuSelection(currentDate);
         validateMenu(menuSelection);
 
         if (menuSelection.equals("1")) {

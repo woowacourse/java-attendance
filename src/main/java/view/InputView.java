@@ -2,23 +2,25 @@ package view;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class InputView {
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
     private final Scanner scanner;
 
     public InputView(Scanner scanner) {
         this.scanner = scanner;
     }
 
-    public String readMenuSelection() {
-        System.out.println("오늘은 12월 13일 금요일입니다. 기능을 선택해 주세요." + System.lineSeparator() +
+    public String readMenuSelection(LocalDate currentDate) {
+        System.out.printf("오늘은 %s입니다. 기능을 선택해 주세요." + System.lineSeparator() +
                 "1. 출석 확인" + System.lineSeparator() +
                 "2. 출석 수정" + System.lineSeparator() +
                 "3. 크루별 출석 기록 확인" + System.lineSeparator() +
                 "4. 제적 위험자 확인" + System.lineSeparator() +
-                "Q. 종료");
+                "Q. 종료" + System.lineSeparator(), dateFormatter.format(currentDate));
         return scanner.nextLine().toUpperCase();
     }
 
