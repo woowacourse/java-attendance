@@ -154,7 +154,7 @@ public class CrewTest {
 
             assertAll(
                 () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime()),
-                () ->assertThat(editedRecord.getStatus()).isEqualTo(PRESENT)
+                () -> assertThat(editedRecord.getStatus()).isEqualTo(PRESENT)
             );
         }
     }

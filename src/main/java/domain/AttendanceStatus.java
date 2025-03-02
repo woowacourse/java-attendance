@@ -28,7 +28,7 @@ public enum AttendanceStatus {
         statisticsResult.put(LATE, 0);
         statisticsResult.put(ABSENT, 0);
 
-        for(DailyRecord record : records.values()) {
+        for (DailyRecord record : records.values()) {
             AttendanceStatus status = record.getStatus();
             statisticsResult.put(status, (statisticsResult.get(status) + 1));
         }

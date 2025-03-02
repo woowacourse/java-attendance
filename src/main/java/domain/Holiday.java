@@ -18,20 +18,21 @@ public enum Holiday {
     }
 
     public static boolean isHoliday(LocalDate date) {
-        if(checkWeekend(date)) {
+        if (checkWeekend(date)) {
             return true;
         }
         return Arrays.stream(values())
-            .filter(holiday -> holiday.month == date.getMonthValue() && holiday.day == date.getDayOfMonth())
+            .filter(holiday -> holiday.month == date.getMonthValue()
+                && holiday.day == date.getDayOfMonth())
             .findAny()
             .isPresent();
     }
 
     private static boolean checkWeekend(LocalDate date) {
-        if(date.getDayOfWeek() == SATURDAY) {
+        if (date.getDayOfWeek() == SATURDAY) {
             return true;
         }
-        if(date.getDayOfWeek() == SUNDAY) {
+        if (date.getDayOfWeek() == SUNDAY) {
             return true;
         }
         return false;

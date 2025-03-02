@@ -10,7 +10,6 @@ import static util.parser.DateTimeParser.parseStringToDateTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -63,7 +62,7 @@ public class AttendanceBookTest {
 
             assertThatThrownBy(() -> attendanceBook.saveAttendanceRecord(name, dateTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("이미 출석 기록이 있으므로 수정만 가능합니다.");
+                .hasMessage("이미 출석 기록이 있으므로 수정만 가능합니다.");
         }
 
         @Test

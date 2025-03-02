@@ -21,7 +21,6 @@ import domain.Penalty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Map;
 import view.InputView;
 import view.OutputView;
@@ -87,7 +86,7 @@ public class AttendanceController {
         Map<String, Crew> warningCrews = attendanceBook.findWarningCrew(startDate, localDate);
 
         outputView.printWarningStartMessage();
-        for(String name : warningCrews.keySet()) {
+        for (String name : warningCrews.keySet()) {
             Crew crew = warningCrews.get(name);
             Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, localDate);
             Map<AttendanceStatus, Integer> statistic = AttendanceStatus.countStatus(records);
