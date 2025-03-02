@@ -2,7 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class Crew {
@@ -34,7 +34,7 @@ public class Crew {
         return attendanceMap.get(localDate);
     }
 
-    public Map<LocalDate, AttendanceRecord> getAttendanceMap() {
-        return Collections.unmodifiableMap(attendanceMap);
+    public List<AttendanceRecord> getAttendanceRecords() {
+        return attendanceMap.values().stream().toList();
     }
 }

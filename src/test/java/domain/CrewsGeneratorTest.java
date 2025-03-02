@@ -29,14 +29,10 @@ public class CrewsGeneratorTest {
                         .contains("빙봉")
                         .contains("이든")
                         .contains("짱수"),
-                () -> assertThat(crews.get("쿠키").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(),
-                        attendanceRecord),
-                () -> assertThat(crews.get("빙봉").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(),
-                        attendanceRecord),
-                () -> assertThat(crews.get("빙티").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(),
-                        attendanceRecord),
-                () -> assertThat(crews.get("이든").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(),
-                        attendanceRecord)
+                () -> assertThat(crews.get("쿠키").getAttendanceRecords()).contains(attendanceRecord),
+                () -> assertThat(crews.get("빙봉").getAttendanceRecords()).contains(attendanceRecord),
+                () -> assertThat(crews.get("빙티").getAttendanceRecords()).contains(attendanceRecord),
+                () -> assertThat(crews.get("이든").getAttendanceRecords()).contains(attendanceRecord)
         );
     }
 }
