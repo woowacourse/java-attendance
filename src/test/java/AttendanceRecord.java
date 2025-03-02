@@ -6,17 +6,17 @@ import java.util.List;
 
 public class AttendanceRecord {
 
+    private final AttendancePolicy attendancePolicy;
     private final DateProvider dateProvider;
     private List<LocalDateTime> attendanceTimes;
 
     public AttendanceRecord(DateProvider dateProvider) {
         this.dateProvider = dateProvider;
         this.attendanceTimes = new ArrayList<>();
+        this.attendancePolicy = new AttendancePolicy();
     }
 
     public LocalDateTime attend(String time) {
-        AttendancePolicy attendancePolicy = new AttendancePolicy();
-
         LocalDate today = dateProvider.getDate();
         LocalTime todayTime = LocalTime.of(
                 Integer.parseInt(time.split(":")[0]),
@@ -38,7 +38,6 @@ public class AttendanceRecord {
         }
     }
 
-
     public LocalDateTime findAttendanceTimeByDay(int dayOfMonth) {
         return attendanceTimes.stream()
                 .filter(time -> time.getDayOfMonth() == dayOfMonth)
@@ -48,12 +47,7 @@ public class AttendanceRecord {
 
     public AttendanceStatus getAttendanceStatus(int dayOfMonth) {
         LocalDateTime attendanceTime = findAttendanceTimeByDay(dayOfMonth);
-        if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10, 6))) {
-            return AttendanceStatus.ATTEND;
-        }
-        if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10, 31))) {
-            return AttendanceStatus.LATE;
-        }
-        return AttendanceStatus.ABSENCE;
+        return attendancePolicy.getAttendanceStatus(attendanceTime);
     }
+
 }

@@ -1,6 +1,6 @@
 public enum AttendanceStatus {
 
-    ATTEND("출석"),
+    ATTENDANCE("출석"),
     LATE("지각"),
     ABSENCE("결석");
 
