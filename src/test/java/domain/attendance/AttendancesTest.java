@@ -1,5 +1,6 @@
 package domain.attendance;
 
+import controller.AttendanceController;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -97,7 +98,23 @@ class AttendancesTest {
         ));
 
         // when & then
-        Assertions.assertThatThrownBy(() -> attendances.attend(attendDateTime))
+        Assertions.assertThatThrownBy(() -> attendances.attend(AttendanceController.END_DATE, attendDateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요");
+    }
+
+    @DisplayName("미래 날짜에 출석할 수 없다")
+    @Test
+    void test6() {
+        // given
+        Attendances attendances = new Attendances(List.of(
+                LocalDateTime.of(2024, 12, 2, 10, 0)
+        ));
+        LocalDate endDate = LocalDate.of(2025, 3, 3);
+
+        // when & then
+        Assertions.assertThatThrownBy(
+                        () -> attendances.attend(endDate, LocalDateTime.of(endDate.plusDays(1), LocalTime.of(10, 0))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요");
     }
