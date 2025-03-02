@@ -39,4 +39,11 @@ class DayConverterTest {
         LocalDate today = LocalDate.of(2024, 12, 2);
         Assertions.assertEquals(LocalDate.of(2024, 12, value), DayConverter.combineDayAndDate(dayOfMonth, today));
     }
+
+    @Test
+    @DisplayName("오늘 날짜를 받아 1일부터 오늘날짜 전까지 만드는지 확인합니다.")
+    void getUntilTodayTest() {
+        LocalDate today = LocalDate.of(2024, 12, 10);
+        Assertions.assertEquals(9, DayConverter.getUntilToday(today).size());
+    }
 }

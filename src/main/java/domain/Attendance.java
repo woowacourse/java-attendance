@@ -37,7 +37,6 @@ public class Attendance {
         return ABSENT;
     }
 
-
     public void validateHoliday(List<Integer> holidays) {
         DayOfMonth dayOfMonth = new DayOfMonth(attendanceTime.getDayOfMonth());
         if (dayOfMonth.isHoliday(holidays, attendanceTime.toLocalDate())) {
@@ -47,6 +46,10 @@ public class Attendance {
                             attendanceTime.getDayOfMonth(),
                             DayConverter.getKoreanDayOfWeek(attendanceTime.toLocalDate())));
         }
+    }
+
+    public LocalDateTime getAttendanceTime() {
+        return attendanceTime;
     }
 
     @Override
