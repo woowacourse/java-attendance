@@ -1,6 +1,8 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
@@ -13,13 +15,24 @@ public class AttendanceTest {
         LocalDateTime attendanceTime = attendanceRecord.attend(time);
 
         assertThat(attendanceTime).isEqualTo(LocalDateTime.of(
-                2024, 12, 13, 9, 59));
+                Today.TODAY,
+                LocalTime.of(
+                        Integer.parseInt(time.split(":")[0]),
+                        Integer.parseInt(time.split(":")[1])
+                )));
     }
 
-    private class AttendanceRecord {
+    class AttendanceRecord {
+
+        private List<LocalDateTime> attendanceTimes;
 
         public LocalDateTime attend(String time) {
-            return LocalDateTime.of(2024, 12, 13, 9, 59);
+            return LocalDateTime.of(
+                    Today.TODAY,
+                    LocalTime.of(
+                            Integer.parseInt(time.split(":")[0]),
+                            Integer.parseInt(time.split(":")[1])
+                    ));
         }
     }
 }
