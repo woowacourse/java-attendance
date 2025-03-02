@@ -12,7 +12,6 @@ public enum ErrorMessage {
     NOT_FIND_CREW("해당 크루를 찾을 수 없습니다."),
     FILE_NOT_PRESENCE("파일이 존재하지 않습니다.");
 
-
     private final String PREFIX = "[ERROR] ";
     private final String message;
 
@@ -23,4 +22,5 @@ public enum ErrorMessage {
     public String getMessage() {
         return this.message;
     }
+
 }

@@ -95,4 +95,5 @@ public class OutputView {
                     + lateCounts + "회 (" + writePenaltyStatus(penaltyType) + ")");
         }
     }
+
 }

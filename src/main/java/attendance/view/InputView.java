@@ -46,4 +46,5 @@ public class InputView {
         System.out.println("언제로 변경하겠습니까?");
         return scanner.nextLine();
     }
+
 }

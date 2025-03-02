@@ -42,4 +42,5 @@ public class Parser {
             throw CustomException.from(ErrorMessage.TIME_FORMAT_ERROR);
         }
     }
+
 }

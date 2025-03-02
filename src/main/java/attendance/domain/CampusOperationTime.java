@@ -18,4 +18,5 @@ public enum CampusOperationTime {
             throw CustomException.from(ErrorMessage.NOT_OPEN_CAMPUS);
         }
     }
+
 }

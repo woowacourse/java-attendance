@@ -10,4 +10,5 @@ public class Application {
         final AttendanceController attendanceController = new AttendanceController(new InputView(), new OutputView());
         attendanceController.start();
     }
+
 }

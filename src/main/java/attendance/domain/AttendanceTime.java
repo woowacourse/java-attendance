@@ -38,4 +38,5 @@ public class AttendanceTime {
     public AttendanceTime modifyAttendanceTime(LocalDateTime inputTime) {
         return new AttendanceTime(inputTime);
     }
+
 }
