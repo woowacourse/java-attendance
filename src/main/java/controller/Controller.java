@@ -92,7 +92,7 @@ public class Controller {
             Attendance originAttendance = attendanceBook.findAttendance(name, editDate);
             Attendance updatedAttendance = attendanceBook.editCrew(name, nowDate, editDate, editTime);
 
-            outputView.displayAttendanceEdit(editDate, originAttendance, updatedAttendance);
+            displayAttendanceEditResult(originAttendance, editDate, updatedAttendance);
         } catch (DateTimeParseException e) {
             System.out.println("[ERROR] 시간 형식이 일치하지 않습니다.");
         } catch (DateTimeException e) {
@@ -100,6 +100,18 @@ public class Controller {
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void displayAttendanceEditResult(Attendance originAttendance, LocalDate editDate,
+                                             Attendance updatedAttendance) {
+        if (originAttendance == null) {
+            outputView.displayAttendanceEditWithAbsence(editDate, updatedAttendance.getTime(),
+                    updatedAttendance.determineStatus().getDescription());
+            return;
+        }
+        outputView.displayAttendanceEdit(editDate, originAttendance.getTime(),
+                originAttendance.determineStatus().getDescription(), updatedAttendance.getTime(),
+                updatedAttendance.determineStatus().getDescription());
     }
 
     private void checkRecords(LocalDate nowDate) {
@@ -114,18 +126,31 @@ public class Controller {
         displayPenaltyStatus(nowDate, name);
     }
 
-    private void displayRecords(LocalDate nowDate, String name) {
-        LocalDate startDate = LocalDate.of(ATTENDANCE_YEAR, ATTENDANCE_MONTH, 1);
-
-        startDate.datesUntil(nowDate)
-                .filter(date -> !isHoliday(date))
-                .forEach(date -> outputView.displayRecord(date, attendanceBook.findAttendance(name, date)));
-    }
-
     private void displayPenaltyStatus(LocalDate nowDate, String name) {
         Penalty penalty = attendanceBook.determinePenaltyStatus(name, nowDate);
         if (penalty != Penalty.PASS) {
             outputView.displayPenaltyStatus(penalty.getDescription());
+        }
+    }
+
+    private void displayRecords(LocalDate nowDate, String name) {
+        LocalDate startDate = LocalDate.of(ATTENDANCE_YEAR, ATTENDANCE_MONTH, 1);
+
+        displayAttendanceRecord(nowDate, name, startDate);
+    }
+
+    private void displayAttendanceRecord(LocalDate nowDate, String name, LocalDate startDate) {
+        for (LocalDate date = startDate; date.isBefore(nowDate); date = date.plusDays(1)) {
+            if (isHoliday(date)) {
+                continue;
+            }
+
+            Attendance attendance = attendanceBook.findAttendance(name, date);
+            if (attendance == null) {
+                outputView.displayAbsenceRecord(date);
+                return;
+            }
+            outputView.displayRecord(date, attendance.getTime(), attendance.determineStatus().getDescription());
         }
     }
 

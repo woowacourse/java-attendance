@@ -1,6 +1,5 @@
 package view;
 
-import domain.Attendance;
 import domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,11 +15,21 @@ public class OutputView {
         System.out.println();
     }
 
-    public void displayAttendanceEdit(LocalDate date, Attendance originAttendance, Attendance updatedAttendance) {
+    public void displayAttendanceEdit(LocalDate date, LocalTime originTime, String originStatus, LocalTime updatedTime,
+                                      String updatedStatus) {
         System.out.println();
         printMonthAndDayOfMonth(date);
-        printAttendanceInfo(originAttendance);
-        printTimeAndMinute(updatedAttendance.getTime(), updatedAttendance.determineStatus().getDescription());
+        printTimeAndMinute(originTime, originStatus);
+        System.out.print(" -> ");
+        printTimeAndMinute(updatedTime, updatedStatus);
+        System.out.printf(" 수정 완료!%n");
+    }
+
+    public void displayAttendanceEditWithAbsence(LocalDate date, LocalTime updatedTime, String updatedStatus) {
+        System.out.println();
+        printMonthAndDayOfMonth(date);
+        System.out.printf("--:-- (%s) -> ", AttendanceStatus.ABSENCE.getDescription());
+        printTimeAndMinute(updatedTime, updatedStatus);
         System.out.printf(" 수정 완료!%n");
     }
 
@@ -28,9 +37,15 @@ public class OutputView {
         System.out.printf("%n이번 달 %s의 출석 기록입니다.%n", name);
     }
 
-    public void displayRecord(LocalDate nowDate, Attendance attendance) {
+    public void displayRecord(LocalDate nowDate, LocalTime time, String status) {
         printMonthAndDayOfMonth(nowDate);
-        printRecordInfo(attendance);
+        printTimeAndMinute(time, status);
+        System.out.println();
+    }
+
+    public void displayAbsenceRecord(LocalDate nowDate) {
+        printMonthAndDayOfMonth(nowDate);
+        System.out.printf("--:-- (%s)%n", AttendanceStatus.ABSENCE.getDescription());
     }
 
     public void displayPenaltyCount(int attendanceCount, int latenessCount, int absenceCount) {
@@ -49,24 +64,6 @@ public class OutputView {
 
     public void displayExpulsionRiskCrew(String name, int absenceCount, int latenessCount, String penaltyStatus) {
         System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", name, absenceCount, latenessCount, penaltyStatus);
-    }
-
-    private void printRecordInfo(Attendance attendance) {
-        if (attendance == null) {
-            System.out.printf("--:-- (%s)%n", AttendanceStatus.ABSENCE.getDescription());
-            return;
-        }
-        printTimeAndMinute(attendance.getTime(), attendance.determineStatus().getDescription());
-        System.out.println();
-    }
-
-    private void printAttendanceInfo(Attendance originAttendance) {
-        if (originAttendance == null) {
-            System.out.printf("--:-- (%s) -> ", AttendanceStatus.ABSENCE.getDescription());
-            return;
-        }
-        printTimeAndMinute(originAttendance.getTime(), originAttendance.determineStatus().getDescription());
-        System.out.print(" -> ");
     }
 
     private void printMonthAndDayOfMonth(LocalDate date) {
