@@ -4,10 +4,18 @@ import domain.Attendance;
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class CrewTest {
+
+    private Crew crew;
+
+    @BeforeEach
+    void setUp() {
+        crew = new Crew("빙티");
+    }
 
     @DisplayName("수정 날짜와 시간을 입력하면 이전 기록은 제거하고 새로운 기록을 추가한다.")
     @Test
@@ -15,21 +23,18 @@ public class CrewTest {
         LocalDate date = LocalDate.of(2024, 12, 13);
         LocalTime initialTime = LocalTime.of(9, 59);
         LocalTime updatedTime = LocalTime.of(10, 6);
-        Crew crew = new Crew("빙봉", date, initialTime);
-        Attendance initialAttendance = new Attendance(date, initialTime);
-        Attendance updatedAttendance = new Attendance(date, updatedTime);
 
+        crew.addAttendance(date, initialTime);
         crew.updateAttendance(date, updatedTime);
+
         Attendance actualAttendance = crew.findAttendanceByDate(date);
 
-        assertThat(actualAttendance).isNotEqualTo(initialAttendance);
-        assertThat(actualAttendance).isEqualTo(updatedAttendance);
+        assertThat(actualAttendance.getTime()).isEqualTo(updatedTime);
     }
 
     @DisplayName("전날까지의 출석 횟수를 정확하게 계산한다.")
     @Test
     void should_CalculateAttendanceCount_When_GivenAttendanceRecords() {
-        Crew crew = new Crew("빙티", LocalDate.of(2024, 12, 2), LocalTime.of(13, 6));
         crew.addAttendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 2)); // 출석
         crew.addAttendance(LocalDate.of(2024, 12, 6), LocalTime.of(10, 1)); // 출석
         crew.addAttendance(LocalDate.of(2024, 12, 10), LocalTime.of(10, 3)); // 출석
@@ -41,7 +46,6 @@ public class CrewTest {
     @DisplayName("전날까지의 지각 횟수를 정확하게 계산한다.")
     @Test
     void should_CalculateLatenessCount_When_GivenLatenessRecords() {
-        Crew crew = new Crew("빙티", LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
         crew.addAttendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 7)); // 지각
         crew.addAttendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 6)); // 지각
 
@@ -51,9 +55,9 @@ public class CrewTest {
     @DisplayName("전날까지의 결석 횟수를 정확하게 계산한다.")
     @Test
     void should_CalculateAbsenceCount_When_GivenAbsenceRecords() {
-        Crew crew = new Crew("빙티", LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
-        crew.addAttendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 31)); // 결석
+        crew.addAttendance(LocalDate.of(2024, 12, 2), LocalTime.of(13, 31)); // 결석
+        // 2024-12-3 결석
 
-        assertThat(crew.calculateAbsenceCount(LocalDate.of(2024, 12, 5))).isEqualTo(2);
+        assertThat(crew.calculateAbsenceCount(LocalDate.of(2024, 12, 4))).isEqualTo(2);
     }
 }

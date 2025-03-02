@@ -11,10 +11,9 @@ public class Crew {
     private final String name;
     private final List<Attendance> attendances;
 
-    public Crew(String name, LocalDate date, LocalTime time) {
+    public Crew(String name) {
         this.name = name;
         this.attendances = new ArrayList<>();
-        attendances.add(new Attendance(date, time));
     }
 
     public Attendance addAttendance(LocalDate date, LocalTime time) {

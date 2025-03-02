@@ -16,12 +16,8 @@ public class AttendanceBook {
     }
 
     public void addCrew(String name, LocalDate date, LocalTime time) {
-        Crew crew = crews.get(name);
-        if (crew == null) {
-            crews.put(name, new Crew(name, date, time));
-            return;
-        }
-        crew.addAttendance(date, time);
+        crews.putIfAbsent(name, new Crew(name));
+        crews.get(name).addAttendance(date, time);
     }
 
     public Attendance attendCrew(String name, LocalDate date, LocalTime time) {
