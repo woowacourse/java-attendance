@@ -33,4 +33,9 @@ public class DateTimeUtil {
     public static boolean isOutOfRunningTime(LocalTime time) {
         return time.isAfter(END_RUNNING_TIME) || time.isBefore(START_RUNNING_TIME);
     }
+
+    public static boolean isDateInAvailableAttendance(LocalDate date) {
+        LocalDate firstDayOfMonth = FIXED_RUNNING_DATE.withDayOfMonth(1).toLocalDate();
+        return !(date.isAfter(FIXED_RUNNING_DATE.toLocalDate()) || date.isBefore(firstDayOfMonth));
+    }
 }
