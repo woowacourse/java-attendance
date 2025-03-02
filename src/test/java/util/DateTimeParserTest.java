@@ -3,10 +3,15 @@ package util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import common.SystemDate;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class DateTimeParserTest {
@@ -43,6 +48,22 @@ public class DateTimeParserTest {
     void test7(final String dateTime) {
         //should
         assertThatIllegalArgumentException().isThrownBy(() -> DateTimeParser.parseToLocalTime(dateTime));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    @DisplayName("일을 LocalDate로 변환한다.")
+    void test8(final String dayOfMonth, final LocalDate expected) {
+        //should
+        assertThat(DateTimeParser.parseToLocalDate(dayOfMonth)).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> test8() {
+        return Stream.of(
+                Arguments.of("1", SystemDate.NOW.getDate().withDayOfMonth(1)),
+                Arguments.of("2", SystemDate.NOW.getDate().withDayOfMonth(2)),
+                Arguments.of("22", SystemDate.NOW.getDate().withDayOfMonth(22))
+        );
     }
 
 }
