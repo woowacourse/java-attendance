@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.domain.AttendanceState;
 import attendance.domain.CampusScheduler;
 import attendance.domain.CrewHistories;
 import attendance.domain.Nickname;
@@ -7,6 +8,7 @@ import attendance.view.InputView;
 import attendance.view.ResultView;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.Map;
 
 public class InquiryCrewCommand implements Command {
 
@@ -29,6 +31,9 @@ public class InquiryCrewCommand implements Command {
         Nickname nickname = makeNickname();
         crewHistories.validateKeyExists(nickname);
         resultView.showAttendanceHistory(nickname, crewHistories, nowDate, campusScheduler);
+        Map<AttendanceState, Integer> result = campusScheduler.countByAttendanceState(
+                crewHistories.findHistory(nickname), nowDate);
+        resultView.showCountByAttendanceState(result);
     }
 
     private Nickname makeNickname() {

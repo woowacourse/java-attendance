@@ -25,6 +25,10 @@ public class ResultView {
     private static final LocalTime DEFAULT_TIME = LocalTime.MAX;
     private static final String DEFAULT_FORMAT = "--:--";
     private static final String BLANK = " ";
+    private static final String TITLE_ATTENDANCE_STATE_COUNT = """
+            출석: %d회
+            지각: %d회
+            결석: %d회""";
 
     public void showBlankLine() {
         System.out.println();
@@ -56,6 +60,11 @@ public class ResultView {
         }
     }
 
+    public void showCountByAttendanceState(final Map<AttendanceState, Integer> result) {
+        System.out.printf(LINE + TITLE_ATTENDANCE_STATE_COUNT + LINE, result.get(AttendanceState.ATTENDANCE),
+                result.get(AttendanceState.TARDINESS), result.get(AttendanceState.ABSENCE));
+    }
+
     private void showEveryDateHistory(final Nickname nickname, final CrewHistories crewHistories,
                                       final CampusScheduler campusScheduler, LocalDate date) {
         if (campusScheduler.isNotOperationDate(date)) {
@@ -68,7 +77,7 @@ public class ResultView {
 
     private LocalDateTime getHistory(final Nickname nickname, final CrewHistories crewHistories,
                                      final LocalDate date) {
-        Optional<LocalDateTime> history = crewHistories.findHistory(nickname, date);
+        Optional<LocalDateTime> history = crewHistories.findDateHistory(nickname, date);
         return history.orElseGet(() -> LocalDateTime.of(date, DEFAULT_TIME));
     }
 
