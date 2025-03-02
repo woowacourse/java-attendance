@@ -12,8 +12,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CrewHistoriesTest {
@@ -137,5 +139,35 @@ class CrewHistoriesTest {
                 () -> assertThat(crewHistories).isEqualTo(
                         new CrewHistories(Map.of(nickname, makeCrewHistory(modifyingTime))))
         );
+    }
+
+    @Test
+    @DisplayName("출석 기록을 조회한다")
+    void 출석_기록을_조회한다() {
+        // Given
+        Nickname nickname = new Nickname("밍트");
+        LocalDateTime attendanceTime = makeDateTime(3, 10, 0);
+        crewHistories.addHistory(nickname, attendanceTime);
+
+        // When
+        Optional<LocalDateTime> history = crewHistories.findHistory(nickname, LocalDate.from(attendanceTime));
+
+        // Then
+        assertThat(history.get()).isEqualTo(attendanceTime);
+    }
+
+    @Test
+    void 출석_기록이_존재하지_않은_경우_빈값을_반환한다() {
+        // Given
+        Nickname nickname = new Nickname("밍트");
+        LocalDateTime yesterdayAttendanceTime = makeDateTime(3, 10, 0);
+        crewHistories.addHistory(nickname, yesterdayAttendanceTime);
+        LocalDate today = makeDecemberDate(4);
+
+        // When
+        Optional<LocalDateTime> history = crewHistories.findHistory(nickname, today);
+
+        // Then
+        assertThat(history.isEmpty()).isTrue();
     }
 }

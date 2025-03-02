@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -109,5 +110,32 @@ class CrewHistoryTest {
                 () -> assertThat(inquiringModifyingTime).isEqualTo(previousDateTime),
                 () -> assertThat(crewHistory).isEqualTo(makeCrewHistory(modifyingDateTime))
         );
+    }
+
+    @Test
+    void 출석_기록을_조회한다() {
+        // Given
+        LocalDateTime previousAttendance = makeDateTime(3, 10, 0);
+        crewHistory.add(previousAttendance);
+
+        // When
+        Optional<LocalDateTime> history = crewHistory.find(LocalDate.from(previousAttendance));
+
+        // Then
+        assertThat(history.get()).isEqualTo(previousAttendance);
+    }
+
+    @Test
+    void 출석_기록이_존재하지_않을_경우_빈값을_반환한다() {
+        // Given
+        LocalDateTime previousAttendance = makeDateTime(3, 10, 0);
+        crewHistory.add(previousAttendance);
+        LocalDate todayDate = makeDecemberDate(4);
+
+        // When
+        Optional<LocalDateTime> history = crewHistory.find(todayDate);
+
+        // Then
+        assertThat(history.isEmpty()).isTrue();
     }
 }

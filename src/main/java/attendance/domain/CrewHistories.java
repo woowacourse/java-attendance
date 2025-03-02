@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class CrewHistories {
 
@@ -42,6 +43,11 @@ public class CrewHistories {
         validateKeyExists(nickname);
         CrewHistory crewHistory = histories.get(nickname);
         return crewHistory.modify(modifyingDateTime);
+    }
+
+    public Optional<LocalDateTime> findHistory(final Nickname nickname, final LocalDate date) {
+        CrewHistory crewHistory = histories.get(nickname);
+        return crewHistory.find(date);
     }
 
     private void createIfNotExists(final Nickname nickname) {

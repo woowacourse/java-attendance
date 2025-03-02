@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class CrewHistory {
 
@@ -38,6 +39,10 @@ public class CrewHistory {
         LocalDateTime previousDateTime = history.get(modifyDate);
         history.put(modifyDate, modifyingDateTime);
         return previousDateTime;
+    }
+
+    public Optional<LocalDateTime> find(final LocalDate date) {
+        return Optional.ofNullable(history.get(date));
     }
 
     @Override
