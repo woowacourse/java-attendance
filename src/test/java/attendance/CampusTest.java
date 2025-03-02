@@ -43,4 +43,40 @@ public class CampusTest {
 
         assertThat(actual).isEqualTo(expected);
     }
+
+    @DisplayName("월요일 시작 시간 출석 테스트")
+    @ParameterizedTest
+    @CsvSource({"2,8,0,0", "2,12,59,59", "2,13,0,0", "2,13,5,0", "23,8,0,0", "23,12,59,59", "23,13,0,0", "23,13,5,0"})
+    void test4(int dayOfMonth, int hour, int minute, int second) {
+        LocalDateTime attendance = LocalDateTime.of(2024, 12, dayOfMonth, hour, minute, second);
+        AttendanceStatus expected = AttendanceStatus.PRESENT;
+
+        AttendanceStatus actual = Campus.calculateAttendanceStatus(attendance);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("월요일 시작 시간 지각 테스트")
+    @ParameterizedTest
+    @CsvSource({"2,13,5,1", "2,13,30,0", "2,13,17,59", "23,13,5,1", "23,13,30,0", "23,13,29,0"})
+    void test5(int dayOfMonth, int hour, int minute, int second) {
+        LocalDateTime attendance = LocalDateTime.of(2024, 12, dayOfMonth, hour, minute, second);
+        AttendanceStatus expected = AttendanceStatus.LATE;
+
+        AttendanceStatus actual = Campus.calculateAttendanceStatus(attendance);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("월요일 시작 시간 결석 테스트")
+    @ParameterizedTest
+    @CsvSource({"2,13,30,1", "2,13,31,0", "2,18,0,0", "2,23,0,0", "23,13,30,1", "23,13,31,0", "23,18,0,0", "23,23,0,0"})
+    void test6(int dayOfMonth, int hour, int minute, int second) {
+        LocalDateTime attendance = LocalDateTime.of(2024, 12, dayOfMonth, hour, minute, second);
+        AttendanceStatus expected = AttendanceStatus.ABSENT;
+
+        AttendanceStatus actual = Campus.calculateAttendanceStatus(attendance);
+
+        assertThat(actual).isEqualTo(expected);
+    }
 }
