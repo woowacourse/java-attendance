@@ -1,5 +1,4 @@
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.AttendanceBook;
 import domain.AttendanceHistoryLoader;
@@ -23,9 +22,8 @@ class PenaltyCheckTest {
 
         final var penaltyCrews = attendanceBook.getPenaltyHistory(testClock);
 
-        assertTrue(penaltyCrews.containsKey(new Crew("짱수")));
-        assertTrue(penaltyCrews.containsKey(new Crew("빙봉")));
-        assertTrue(penaltyCrews.containsKey(new Crew("빙티")));
-        assertFalse(penaltyCrews.containsKey(new Crew("이든")));
+        assertThat(penaltyCrews).containsKeys(new Crew("짱수"), new Crew("빙봉"), new Crew("빙티"));
+        assertThat(penaltyCrews).doesNotContainKeys(new Crew("이든"));
+
     }
 }

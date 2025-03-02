@@ -1,4 +1,4 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.Attendance;
 import domain.AttendanceBook;
@@ -33,7 +33,7 @@ class AttendanceUpdateTest {
         final var modifiedTime = LocalTime.of(10, 5);
         attendance.modifyTimeTo(modifiedTime);
 
-        assertEquals(modifiedTime, attendance.getTime());
+        assertThat(attendance.getTime()).isEqualTo(modifiedTime);
     }
 
     @ParameterizedTest
@@ -52,7 +52,7 @@ class AttendanceUpdateTest {
         Boolean isLate = attendance.isLate();
         Boolean isAbsent = attendance.isAbsent();
 
-        assertEquals(isLateExpected, isLate);
-        assertEquals(isAbsentExpected, isAbsent);
+        assertThat(isLate).isEqualTo(isLateExpected);
+        assertThat(isAbsent).isEqualTo(isAbsentExpected);
     }
 }

@@ -1,4 +1,4 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.AttendanceBook;
 import domain.AttendanceHistoryLoader;
@@ -32,9 +32,9 @@ class AttendanceHistoryReadTest {
         final var absentCount = attendances.getAbsentCount(testClock);
         final var attendanceCount = attendances.getTotalCount() - lateCount - absentCount;
 
-        assertEquals(1, lateCount);
-        assertEquals(2, absentCount);
-        assertEquals(12, attendanceCount);
+        assertThat(lateCount).isEqualTo(1);
+        assertThat(absentCount).isEqualTo(2);
+        assertThat(attendanceCount).isEqualTo(12);
     }
 
     @Test
@@ -46,7 +46,7 @@ class AttendanceHistoryReadTest {
         Attendances attendances = attendanceBook.getAttendances(crew);
 
         final var absentCount = attendances.getAbsentCount(testClock);
-        assertEquals(6, absentCount);
+        assertThat(absentCount).isEqualTo(6);
     }
 
     @Test
@@ -59,7 +59,7 @@ class AttendanceHistoryReadTest {
 
         final var penaltyStatus = attendances.getPenaltyStatus(testClock);
         final var expected = Penalty.EXPULSION;
-        assertEquals(expected, penaltyStatus);
+        assertThat(penaltyStatus).isEqualTo(expected);
 
     }
 

@@ -1,9 +1,10 @@
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import domain.Attendance;
 import domain.AttendanceBook;
+import domain.Attendances;
 import domain.Crew;
 import domain.Day;
 import java.time.LocalDate;
@@ -40,15 +41,16 @@ public class AttendanceCheckTest {
 
     @Test
     void 닉네임과_등교_시간을_입력하면_출석할_수_있다() {
-        final var crew = new Crew("에드");
-        final var attendanceTime = LocalTime.of(9, 59);
+        Crew crew = new Crew("에드");
+        LocalTime attendanceTime = LocalTime.of(9, 59);
 
         Attendance attendance = new Attendance(today, attendanceTime);
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.recordAttendance(crew, attendance);
-        final var attendances = attendanceBook.getAttendances(crew);
+        Attendances attendances = attendanceBook.getAttendances(crew);
 
-        assertDoesNotThrow(() -> attendances.findByDay(today));
+        assertThatCode(() -> attendances.findByDay(today))
+                .doesNotThrowAnyException();
     }
 
     @ParameterizedTest
@@ -60,14 +62,16 @@ public class AttendanceCheckTest {
         Crew crew = new Crew(nickname);
         attendanceBook.recordAttendance(crew, attendance);
 
-        final var attendances = attendanceBook.getAttendances(crew);
+        Attendances attendances = attendanceBook.getAttendances(crew);
         final var attendanceRecord = attendances.findByDay(today);
         final var attendanceTimeRecord = attendanceRecord.getTime();
         final var isLate = attendanceRecord.isLate();
         final var isAbsent = attendanceRecord.isAbsent();
-        assertEquals(attendanceTime, attendanceTimeRecord);
-        assertEquals(isLateExpected, isLate);
-        assertEquals(isAbsentExpected, isAbsent);
+
+        assertThat(attendanceTimeRecord).isEqualTo(attendanceTime);
+        assertThat(isLate).isEqualTo(isLateExpected);
+        assertThat(isAbsent).isEqualTo(isAbsentExpected);
+
     }
 
     @Test
@@ -98,8 +102,9 @@ public class AttendanceCheckTest {
 
         final var isLate = attendanceRecord.isLate();
         final var isAbsent = attendanceRecord.isAbsent();
-        assertEquals(isLateExpected, isLate);
-        assertEquals(isAbsentExpected, isAbsent);
+
+        assertThat(isLate).isEqualTo(isLateExpected);
+        assertThat(isAbsent).isEqualTo(isAbsentExpected);
     }
 
     @ParameterizedTest
@@ -121,7 +126,6 @@ public class AttendanceCheckTest {
             "23:01"
     })
     void 운영_시간을_벗어난_출석은_받지_않는다(String timeString) {
-        final var nickname = "에드";
         final var attendanceTime = LocalTime.parse(timeString);
 
         assertThatThrownBy(() -> new Attendance(today, attendanceTime))
