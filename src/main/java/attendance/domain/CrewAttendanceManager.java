@@ -40,7 +40,9 @@ public class CrewAttendanceManager {
         }
     }
 
-    public Attendance processAttendanceCheck(final String nickname, final LocalDateTime dateTime) {
+    public Attendance processAttendanceCheck(final String nickname, final LocalTime time) {
+        LocalDateTime dateTime = LocalDateTime.of(dateGenerator.generate(), time);
+
         Attendances attendances = crewAttendance.get(nickname);
         Attendances newAttendances = attendances.registerAttendance(dateTime);
         crewAttendance.put(nickname, newAttendances);
@@ -80,7 +82,7 @@ public class CrewAttendanceManager {
         if (!crewAttendance.containsKey(nickname)) {
             initDefaultAttendancesForCrew(nickname);
         }
-        processAttendanceCheck(nickname, dateTime);
+        processAttendanceUpdate(nickname, dateTime);
     }
 
     private void initDefaultAttendancesForCrew(final String nickname) {
