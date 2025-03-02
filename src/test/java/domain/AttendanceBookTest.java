@@ -48,6 +48,7 @@ class AttendanceBookTest {
         attendanceBook.addInfo(crew, attendanceInfo);
 
         // then
+        // TODO : Q3
         assertThat(attendanceBook.getBook().get(crew).getAttendanceInfos()).hasSize(1);
         assertThat(attendanceBook.getBook().get(crew).getAttendanceInfos().getFirst().getHour()).isEqualTo(10);
         assertThat(attendanceBook.getBook().get(crew).getAttendanceInfos().getFirst().getMinute()).isEqualTo(6);
