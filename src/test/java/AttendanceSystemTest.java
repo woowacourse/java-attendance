@@ -1,5 +1,6 @@
 import domain.AttendanceBook;
 import domain.AttendanceDate;
+import domain.AttendanceStatus;
 import domain.AttendanceSystem;
 import domain.AttendanceTime;
 import domain.Crew;
@@ -27,17 +28,6 @@ public class AttendanceSystemTest {
         AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
         assertThat(attendanceBook.getAttendanceTimeByDate(TODAY)).isPresent().contains(time);
     }
-
-//    @DisplayName("이미 출석한 경우 다시 출석할 수 없다")
-//    @Test
-//    void cannot_attend_if_already_attend() {
-//        Crew crew = new Crew("두리");
-//        AttendanceTime time = AttendanceTime.of(10, 0);
-//        attendanceSystem.editAttendance(crew, TODAY, time);
-//        assertThatThrownBy(() -> {
-//            attendanceSystem.attendance(crew, time);
-//        }).isInstanceOf(IllegalArgumentException.class);
-//    }
 
     @DisplayName("출석하려는 시간이 캠퍼스 운영시간이 아닌 경우 예외를 던진다")
     @Test
@@ -279,5 +269,81 @@ public class AttendanceSystemTest {
                 () -> assertThat(attendanceSystem.getAbsenceCount(crew) + attendanceSystem.getTardyCount(crew) / 3).isEqualTo(1),
                 () -> assertThat(attendanceSystem.getRisk(crew)).isEqualTo(RiskStatus.NONE)
         );
+    }
+
+    @DisplayName("해당 날짜에 출석 기록이 존재하는지 여부를 확인한다")
+    @Test
+    void has_attend_record() {
+        Crew crew = new Crew("두리");
+        attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 0));
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.hasAttendanceRecord(TODAY)).isTrue();
+    }
+
+    @DisplayName("getAttendanceStatus 가 올바른 값을 가지는지 테스트")
+    @Test
+    void get_attendance_status() {
+        Crew crew = new Crew("두리");
+        attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 0));
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertAll(
+                () -> assertThat(attendanceBook.getAttendanceStatus(TODAY)).isEqualTo(AttendanceStatus.ATTEND),
+                () -> assertThat(attendanceBook.getAttendanceStatus(AttendanceDate.of(2024, 12, 16))).isEqualTo(AttendanceStatus.ABSENCE)
+        );
+    }
+
+    @DisplayName("getAttendanceBook 가 올바른 값을 가지는지 테스트")
+    @Test
+    void get_attendance_book() {
+        Crew crew = new Crew("두리");
+        AttendanceTime time = AttendanceTime.of(10, 0);
+        attendanceSystem.editAttendance(crew, TODAY, time);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceBook()).containsEntry(TODAY, time);
+    }
+
+    @DisplayName("getAttendanceStatuses 가 올바른 값을 가지는지 테스트")
+    @Test
+    void get_attendance_statuses() {
+        Crew crew = new Crew("두리");
+        AttendanceTime time = AttendanceTime.of(10, 0);
+        attendanceSystem.editAttendance(crew, TODAY, time);
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook.getAttendanceStatuses()).containsEntry(TODAY, AttendanceStatus.ATTEND);
+    }
+
+    @DisplayName("제적 위험자 목록 출력 테스트")
+    @Test
+    void get_risk_crews() {
+        Crew crew = new Crew("두리");
+        attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 0));
+        for (LocalDate date = LocalDate.of(2024, 12, 1);
+             date.isBefore(TODAY.getDate());
+             date = date.plusDays(1)) {
+            try {
+                attendanceSystem.editAttendance(crew, new AttendanceDate(date), AttendanceTime.of(10, 0));
+            } catch (IllegalArgumentException ignored) {
+
+            }
+        }
+        assertThat(attendanceSystem.getRiskCrews()).isEmpty();
+    }
+
+    @DisplayName("제적 위험자 목록 출력 테스트2")
+    @Test
+    void get_risk_crews2() {
+        Crew crew = new Crew("두리");
+        attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 0));
+        assertThat(attendanceSystem.getRiskCrews()).containsKey(crew);
+    }
+
+    @DisplayName("크루원 찾기 테스트")
+    @Test
+    void find_by_name() {
+        Crew crew = new Crew("두리");
+        attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 0));
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(new Crew("두리"));
+        AttendanceBook attendanceBook2 = attendanceSystem.findByCrew(crew);
+        assertThat(attendanceBook).isEqualTo(attendanceBook2);
     }
 }
