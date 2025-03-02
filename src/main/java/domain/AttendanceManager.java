@@ -6,13 +6,13 @@ import java.util.Map;
 import java.util.Objects;
 
 public class AttendanceManager {
-    private final Map<String, List<String>> attendances;
+    private final Map<NickName, List<String>> attendances;
 
     public AttendanceManager() {
         this.attendances = new HashMap<>();
     }
 
-    public void attend(String name, String time) {
+    public void attend(NickName name, String time) {
         attendances.put(name, List.of(time));
     }
 
