@@ -64,24 +64,6 @@ public class Attendances {
                 .anyMatch(attendance -> attendance.isSameDate(date));
     }
 
-    public int calculatePresentCount() {
-        return (int) attendances.stream()
-                .filter(attendance -> attendance.getType() == AttendanceType.PRESENT)
-                .count();
-    }
-
-    public int calculateLateCount() {
-        return (int) attendances.stream()
-                .filter(attendance -> attendance.getType() == AttendanceType.LATE)
-                .count();
-    }
-
-    public int calculateAbsentCount() {
-        return (int) attendances.stream()
-                .filter(attendance -> attendance.getType() == AttendanceType.ABSENT)
-                .count();
-    }
-
     public void attend(final LocalDateTime dateTime) {
         attendances.add(new Attendance(dateTime, AttendanceType.of(dateTime)));
     }

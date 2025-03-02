@@ -29,8 +29,8 @@ public class AttendancesTest {
         cookieAttendances.initAttendances("쿠키", csvData);
 
         assertAll(
-                () -> assertThat(cookieAttendances.calculatePresentCount()).isEqualTo(4),
-                () -> assertThat(cookieAttendances.calculateLateCount()).isEqualTo(2)
+                () -> assertThat(cookieAttendances.getInfo().get(AttendanceType.PRESENT)).isEqualTo(4),
+                () -> assertThat(cookieAttendances.getInfo().get(AttendanceType.LATE)).isEqualTo(2)
         );
     }
 
