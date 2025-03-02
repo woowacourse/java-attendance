@@ -20,13 +20,14 @@ public class CrewAttendance {
     }
 
     private void validateDuplicateDate(final LocalDateTime attendance) {
-        if (hasRecord(attendance)) {
+        if (hasRecordAlready(attendance)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석 기록이 존재합니다. 출석 수정 기능을 이용해주세요.");
         }
     }
 
-    public boolean hasRecord(final LocalDateTime attendance) {
-        return attendances.containsKey(new AttendanceRecord(attendance));
+    public boolean hasRecordAlready(final LocalDateTime attendance) {
+        return attendances.keySet().stream()
+                .anyMatch(attendanceRecord -> attendanceRecord.date().equals(LocalDate.from(attendance)));
     }
 
     public void modify(final LocalDateTime newAttendance) {

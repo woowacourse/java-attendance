@@ -24,7 +24,7 @@ public class CrewAttendanceTest {
 
         crewAttendance.add(attendance);
 
-        assertThat(crewAttendance.hasRecord(attendance)).isTrue();
+        assertThat(crewAttendance.hasRecordAlready(attendance)).isTrue();
     }
 
     @DisplayName("신규 출석 기록 추가 시 출석 상태 계산 및 저장 성공")
@@ -39,7 +39,7 @@ public class CrewAttendanceTest {
         crewAttendance.add(attendance);
         Map<AttendanceRecord, AttendanceStatus> crewAttendances = crewAttendance.getAttendances();
 
-        assertThat(crewAttendance.hasRecord(attendance)).isTrue();
+        assertThat(crewAttendance.hasRecordAlready(attendance)).isTrue();
         assertThat(crewAttendances.get(new AttendanceRecord(attendance)))
                 .isEqualTo(AttendanceStatus.valueOf(expectedStatus));
     }
