@@ -3,8 +3,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.DateProvider;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +32,7 @@ public class AttendanceManagerTest {
     void 크루_출석_기록을_추가한다() {
         AttendanceManager attendanceManager = new AttendanceManager(() -> weekday);
 
-        attendanceManager.addCrew("이든", "2024-12-13 10:08");
+        attendanceManager.addCrew("이든", LocalDateTime.of(2024, 12, 13, 9, 59));
 
         assertThat(attendanceManager.getCrewSize()).isEqualTo(1);
     }
@@ -47,20 +49,34 @@ public class AttendanceManagerTest {
         }
 
         public void attend(String nickname, String time) {
-            if (crews.stream()
-                    .noneMatch(crew -> crew.getNickname().equals(nickname))) {
+            if (!existsByNickname(nickname)) {
                 throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
             }
 //            Crew crew = findCrewByNickname(nickname);
 //            crew.addAttendanceTime(time);
         }
 
+        private boolean existsByNickname(String nickname) {
+            return crews.stream()
+                    .anyMatch(crew -> crew.getNickname().equals(nickname));
+        }
+
         public int getCrewSize() {
             return crews.size();
         }
 
-        public void addCrew(String nickname, String time) {
-            
+        public void addCrew(String nickname, LocalDateTime time) {
+            findCrewByNickname(nickname)
+                    .ifPresentOrElse(
+                            crew -> crew.addAttendanceTime(time),
+                            () -> crews.add(new Crew(nickname, time.toLocalTime(), dateProvider))
+                    );
+        }
+
+        private Optional<Crew> findCrewByNickname(String nickname) {
+            return crews.stream()
+                    .filter(crew -> crew.getNickname().equals(nickname))
+                    .findAny();
         }
     }
 

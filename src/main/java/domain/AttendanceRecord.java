@@ -18,11 +18,8 @@ public class AttendanceRecord {
         this.attendancePolicy = new AttendancePolicy();
     }
 
-    public LocalDateTime attend(String time) {
+    public LocalDateTime attend(LocalTime todayTime) {
         LocalDate today = dateProvider.getDate();
-        LocalTime todayTime = LocalTime.of(
-                Integer.parseInt(time.split(":")[0]),
-                Integer.parseInt(time.split(":")[1]));
 
         validateAlreadyAttend(today);
         attendancePolicy.validateIsWeekDays(today);

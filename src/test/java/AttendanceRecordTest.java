@@ -21,22 +21,18 @@ public class AttendanceRecordTest {
 
     @Test
     void 출석하면_출석_시간을_추가한다() {
-        String time = "09:59";
+        LocalTime todayTime = LocalTime.of(9, 59);
         AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
-        LocalDateTime attendanceTime = attendanceRecord.attend(time);
+        LocalDateTime attendanceTime = attendanceRecord.attend(todayTime);
 
-        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(
-                weekday,
-                LocalTime.of(
-                        Integer.parseInt(time.split(":")[0]),
-                        Integer.parseInt(time.split(":")[1])
-                )));
+        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(weekday, todayTime));
     }
 
     @Test
     void 해당_날짜의_출석_시간을_확인한다() {
+        LocalTime todayTime = LocalTime.of(9, 59);
         AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
-        LocalDateTime attendanceTime = attendanceRecord.attend("09:59");
+        LocalDateTime attendanceTime = attendanceRecord.attend(todayTime);
 
         LocalDateTime targetAttendanceTime = attendanceRecord.findAttendanceTimeByDay(attendanceTime.getDayOfMonth());
         assertThat(targetAttendanceTime).isEqualTo(attendanceTime);
@@ -44,8 +40,9 @@ public class AttendanceRecordTest {
 
     @Test
     void 해당_날짜의_출석_시간이_없으면_예외가_발생한다() {
+        LocalTime todayTime = LocalTime.of(9, 59);
         AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
-        attendanceRecord.attend("09:59");
+        attendanceRecord.attend(todayTime);
 
         assertThatThrownBy(() -> attendanceRecord.findAttendanceTimeByDay(1))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -54,10 +51,11 @@ public class AttendanceRecordTest {
 
     @Test
     void 이미_출석한_날짜이면_예외가_발생한다() {
+        LocalTime todayTime = LocalTime.of(9, 59);
         AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
-        attendanceRecord.attend("09:59");
+        attendanceRecord.attend(todayTime);
 
-        assertThatThrownBy(() -> attendanceRecord.attend("10:06"))
+        assertThatThrownBy(() -> attendanceRecord.attend(todayTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 해당 날짜에는 이미 출석했습니다. 수정 기능을 이용해주세요.");
     }
