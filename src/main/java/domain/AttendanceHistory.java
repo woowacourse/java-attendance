@@ -82,11 +82,8 @@ public class AttendanceHistory {
     }
 
     private boolean isAttendanceDay(final LocalDate targetDate) {
-        if (DayOfWeeks.isWeekend(targetDate.getDayOfWeek())
-                || SolarCalendarHoliday.isHoliday(MonthDay.from(targetDate))) {
-            return false;
-        }
-        return true;
+        return !(DayOfWeeks.isWeekend(targetDate.getDayOfWeek())
+                || SolarCalendarHoliday.isHoliday(MonthDay.from(targetDate)));
     }
 
     public Map<AttendanceStatus, Integer> calculateAttendanceStatusStatistics(final LocalDate targetDate) {
