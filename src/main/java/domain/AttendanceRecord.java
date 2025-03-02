@@ -22,6 +22,10 @@ public class AttendanceRecord {
         attendanceDates.add(new AttendanceDate(dateTime));
     }
 
+    public void addAttendanceDate(LocalDate date, LocalTime time) {
+        attendanceDates.add(new AttendanceDate(date, time));
+    }
+
     public void editAttendanceDate(LocalDate date, LocalTime time) {
         AttendanceDate attendanceDate = getAttendanceDate(date);
         int index = attendanceDates.indexOf(attendanceDate);
