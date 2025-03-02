@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 class CrewRecordsGeneratorTest {
     @DisplayName("크루 이름과 출석 일시 문자열을 받아 해당 크루에 대한 기록 객체를 생성할 수 있다.")
@@ -19,14 +20,14 @@ class CrewRecordsGeneratorTest {
         CrewRecordsGenerator crewRecordsGenerator = new CrewRecordsGenerator();
 
         // when
-        CrewRecords actualValue = crewRecordsGenerator.generate(currentDate, attendances);
+        CrewRecords crewRecords = crewRecordsGenerator.generate(currentDate, attendances);
 
         // then
         for (String attendance : attendances) {
             Crew crew = new Crew(attendance.split(",")[0]);
             LocalDateTime dateTime = LocalDateTime.parse(attendance.split(",")[1].replace(" ", "T"));
 
-            assertThat(actualValue.getRecords().get(crew).hasRecordOnDate(dateTime.toLocalDate())).isTrue();
+            assertThatNoException().isThrownBy(() -> crewRecords.getRecordOnDate(crew, dateTime.toLocalDate()));
         }
     }
 
