@@ -1,3 +1,5 @@
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
@@ -22,8 +24,22 @@ public class AttendanceTypeCountTest {
 
         // then
         Assertions.assertAll(
-                () -> org.assertj.core.api.Assertions.assertThat(attendanceTypeCount.getAbsenceCount()).isEqualTo(1),
-                () -> org.assertj.core.api.Assertions.assertThat(attendanceTypeCount.getLateCount()).isEqualTo(2)
+                () -> assertThat(attendanceTypeCount.getAbsenceCount()).isEqualTo(1),
+                () -> assertThat(attendanceTypeCount.getLateCount()).isEqualTo(2)
         );
     }
+
+    @Test
+    @DisplayName("지각 횟수를 고려한 결석 횟수를 반환한다")
+    void test2() {
+        // given
+        AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.from(1, 6);
+
+        // when
+        int adjustedAbsenceCount = attendanceTypeCount.getAdjustedAbsenceCount();
+
+        // then
+        assertThat(adjustedAbsenceCount).isEqualTo(3);
+    }
+
 }
