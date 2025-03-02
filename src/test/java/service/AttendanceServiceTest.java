@@ -152,10 +152,20 @@ class AttendanceServiceTest {
 
             AttendanceService attendanceService = new AttendanceService(crews, new AttendanceRecords(allRecords));
             RiskCrewsRequest request = new RiskCrewsRequest(to.plusDays(1));
-            
+
             // when & then
             RiskCrewsResponse response = attendanceService.findRiskCrews(request);
             SoftAssertions.assertSoftly(softAssertions -> {
+                // 제적 위험자 순서: 부기, 미소, 우가, 포스티
+                softAssertions.assertThat(response.riskCrews().get(0).nickname())
+                        .isEqualTo("부기");
+                softAssertions.assertThat(response.riskCrews().get(1).nickname())
+                        .isEqualTo("미소");
+                softAssertions.assertThat(response.riskCrews().get(2).nickname())
+                        .isEqualTo("우가");
+                softAssertions.assertThat(response.riskCrews().get(3).nickname())
+                        .isEqualTo("포스티");
+
                 for (RiskCrew riskCrew : response.riskCrews()) {
                     if (riskCrew.nickname().equals("부기")) {
                         softAssertions.assertThat(riskCrew.riskRank()).isEqualByComparingTo(RiskRank.EXPELLED);
