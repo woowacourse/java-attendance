@@ -6,8 +6,6 @@ import static org.assertj.core.api.Assertions.entry;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +43,7 @@ class AttendancesTest {
         String name = "도기";
 
         //when
-        Attendance attendance = attendances.findCrewBy(name);
+        Attendance attendance = attendances.findAttendanceBy(name);
 
         //then
         assertThat(attendance).isEqualTo(attendances1);

@@ -18,26 +18,26 @@ public class Attendances {
     }
 
     public void add(final Attendance attendance) {
-        attendances.add(attendance);
+        this.attendances.add(attendance);
     }
 
     public void checkAttendance(final String name, final LocalDateTime time) {
-        Attendance crew = findCrewBy(name);
-        crew.add(time);
+        Attendance attendance = findAttendanceBy(name);
+        attendance.add(time);
     }
 
     public void updateAttendance(final String name, final LocalDateTime updateDateTime) {
-        Attendance crew = findCrewBy(name);
-        crew.update(updateDateTime);
+        Attendance attendance = findAttendanceBy(name);
+        attendance.update(updateDateTime);
     }
 
     public LocalDateTime getAttendanceRecordBy(final String name, final LocalDate date) {
-        Attendance crewBy = findCrewBy(name);
-        return crewBy.getAttendanceBy(date);
+        Attendance attendance = findAttendanceBy(name);
+        return attendance.getAttendanceBy(date);
     }
 
     public Map<LocalDateTime, AttendanceState> getHistory(final String name, final LocalDate dateTime) {
-        Attendance crewAttendance = findCrewBy(name);
+        Attendance crewAttendance = findAttendanceBy(name);
 
         Map<LocalDateTime, AttendanceState> attendanceHistory = new TreeMap<>();
         LocalDate date = LocalDate.of(2024, 12, 1);
@@ -91,7 +91,7 @@ public class Attendances {
         }
     }
 
-    public Attendance findCrewBy(final String name) {
+    public Attendance findAttendanceBy(final String name) {
         return attendances.stream()
                 .filter(attendance -> attendance.isSame(name))
                 .findFirst()
