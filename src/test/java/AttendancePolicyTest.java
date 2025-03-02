@@ -12,25 +12,15 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendancePolicyTest {
 
+    private LocalDate monday;
     private LocalDate weekday;
     private LocalDate weekend;
 
     @BeforeEach
     void setUp() {
+        monday = LocalDate.of(2024, 12, 9);
         weekday = LocalDate.of(2024, 12, 13);
         weekend = LocalDate.of(2024, 12, 14);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"09:59, 출석", "10:06, 지각", "10:31, 결석"})
-    void 해당_날짜의_출석_지각_결석_여부를_판단한다(String time, String expected) {
-        LocalTime todayTime = LocalTime.of(
-                Integer.parseInt(time.split(":")[0]),
-                Integer.parseInt(time.split(":")[1]));
-        LocalDateTime attendanceTime = LocalDateTime.of(weekday, todayTime);
-
-        AttendanceStatus status = new AttendancePolicy().getAttendanceStatus(attendanceTime);
-        assertThat(status.getStatus()).isEqualTo(expected);
     }
 
     @Test
@@ -50,4 +40,29 @@ public class AttendancePolicyTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
     }
+
+    @ParameterizedTest
+    @CsvSource(value = {"10:05, 출석", "10:06, 지각", "10:31, 결석"})
+    void 화요일에서_금요일의_출석_지각_결석_여부를_판단한다(String time, String expected) {
+        LocalTime todayTime = LocalTime.of(
+                Integer.parseInt(time.split(":")[0]),
+                Integer.parseInt(time.split(":")[1]));
+        LocalDateTime attendanceTime = LocalDateTime.of(weekday, todayTime);
+
+        AttendanceStatus status = new AttendancePolicy().getAttendanceStatus(attendanceTime);
+        assertThat(status.getStatus()).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"13:05, 출석", "13:06, 지각", "13:31, 결석"})
+    void 월요일의_출석_지각_결석_여부를_판단한다(String time, String expected) {
+        LocalTime todayTime = LocalTime.of(
+                Integer.parseInt(time.split(":")[0]),
+                Integer.parseInt(time.split(":")[1]));
+        LocalDateTime attendanceTime = LocalDateTime.of(monday, todayTime);
+
+        AttendanceStatus status = new AttendancePolicy().getAttendanceStatus(attendanceTime);
+        assertThat(status.getStatus()).isEqualTo(expected);
+    }
+
 }
