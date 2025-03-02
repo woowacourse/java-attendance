@@ -3,7 +3,6 @@ package domain.attendance.constant;
 import domain.datetime.CampusDate;
 import domain.datetime.CampusTime;
 import java.time.DayOfWeek;
-import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -36,12 +35,11 @@ public enum AttendanceStatus {
         status.put(ABSENCE, CampusTime.of(hourLimit, ABSENCE_LIMIT));
         status.put(TARDINESS, CampusTime.of(hourLimit, TARDINESS_LIMIT));
 
-        for (Map.Entry<AttendanceStatus, CampusTime> entry : status.entrySet()) {
-            if (time.isAfter(entry.getValue())) {
-                return entry.getKey();
-            }
-        }
-        return ATTENDANCE;
+        return status.entrySet().stream()
+                .filter(entry -> time.isAfter(entry.getValue()))
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElse(ATTENDANCE);
     }
 
     public String getValue() {
