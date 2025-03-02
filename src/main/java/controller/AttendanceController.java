@@ -1,12 +1,19 @@
 package controller;
 
+import static view.UserCommandType.QUIT;
+import static view.UserCommandType.getCommand;
+import static view.UserCommandType.validateInput;
+
+import controller.commands.Command;
 import domain.Attendance;
 import domain.AttendanceStatistics;
 import domain.Attendances;
 import domain.CrewGroup;
+import domain.DayOfMonth;
 import domain.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,9 +21,11 @@ import java.util.stream.Collectors;
 import service.CrewLoader;
 import view.InputView;
 import view.OutputView;
+import view.UserCommandType;
 
 public class AttendanceController {
     private static final LocalDate today = LocalDate.of(2024, 12, 14);
+    private Map<UserCommandType, Command> commands = new HashMap<>();
     private final InputView inputView;
     private final OutputView outputView;
 
@@ -30,9 +39,22 @@ public class AttendanceController {
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.load(today);
 
-        showAlertCrews(crewGroup);
-//        markAttendance(crewGroup);
-//        showCrewAttendanceLog(crewGroup);
+        String userInput = inputView.insertCommandType(today);
+        validateInput(userInput);
+        UserCommandType userCommandType = getCommand(userInput);
+
+        while (userCommandType != QUIT) {
+            executeCommand(userCommandType, crewGroup);
+        }
+    }
+
+    public void register(UserCommandType userCommandType, Command command) {
+        commands.put(userCommandType, command);
+    }
+
+    public void executeCommand(UserCommandType userCommandType, CrewGroup crewGroup) {
+        Command command = commands.get(userCommandType);
+        command.execute(crewGroup);
     }
 
     public void markAttendance(CrewGroup crewGroup) {
@@ -50,6 +72,23 @@ public class AttendanceController {
         attendances.addAttendance(attendance);
 
         outputView.printAttendanceLog(attendance);
+    }
+
+    public void changeAttendance(CrewGroup crewGroup) {
+        String name = inputView.insertChangeName();
+        crewGroup.validateCrewName(name);
+        Attendances attendances = crewGroup.getSpecificAttendances(name);
+
+        int changeDay = inputView.insertChangeDayOfMonth();
+        DayOfMonth dayOfMonth = new DayOfMonth(changeDay);
+
+        Attendance originalAttendance = attendances.getSpecificAttendance(dayOfMonth, today);
+
+        String rawTime = inputView.insertChangeName();
+        Time time = new Time(rawTime);
+
+        Attendance changeAttendance = attendances.changeAttendance(dayOfMonth, today, time.convertTime());
+        outputView.printChangeLog(originalAttendance, changeAttendance);
     }
 
     public void showCrewAttendanceLog(CrewGroup crewGroup) {
