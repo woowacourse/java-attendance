@@ -5,6 +5,7 @@ import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceTime;
 import attendance.domain.Attendances;
+import attendance.domain.CampusOperatingRule;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,7 +18,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AttendanceBookFactory {
-    private static final LocalTime DEFAULT_TIME = LocalTime.of(17, 59);
 
     private AttendanceBookFactory() {
     }
@@ -49,7 +49,7 @@ public class AttendanceBookFactory {
     private static List<Attendance> initAttendances(final LocalDate today) {
         List<Attendance> attendances = new ArrayList<>();
         for (int day = 1; day < today.getDayOfMonth(); day++) {
-            Attendance attendance = extracted(today, day);
+            Attendance attendance = initAttendance(today, day);
             attendances.add(attendance);
         }
         return attendances.stream()
@@ -57,10 +57,13 @@ public class AttendanceBookFactory {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private static Attendance extracted(LocalDate today, int day) {
+    private static Attendance initAttendance(LocalDate today, int day) {
         try {
             AttendanceDate attendanceDate = AttendanceDate.from(today.withDayOfMonth(day));
-            AttendanceTime attendanceTime = AttendanceTime.from(DEFAULT_TIME);
+
+            LocalTime absenceThreshold = CampusOperatingRule.getAbsenceThreshold(attendanceDate.isMonday());
+            AttendanceTime attendanceTime = AttendanceTime.from(absenceThreshold.plusMinutes(1));
+
             return Attendance.of(attendanceDate, attendanceTime);
         } catch (IllegalArgumentException e) {
             return null;
