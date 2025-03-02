@@ -1,6 +1,7 @@
 package util;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -12,7 +13,7 @@ import model.Student;
 public class AttendanceRecordFormatter {
     public static String attendanceRecordFormatter(Student student, LocalDate localDate) {
         LocalTime localTime = student.findAttendanceLocalTimeByLocalDate(localDate);
-        AttendanceStatus attendanceStatus = student.findAttendanceStatusByLocalDate(localDate);
+        AttendanceStatus attendanceStatus = AttendanceStatus.calculateAttendanceStatus(localDate, localTime);
         String attendanceTime = localTimeFormatter(localTime);
         return localDate.getMonthValue() + "월 " +
                 localDate.getDayOfMonth() + "일 " +
