@@ -51,7 +51,7 @@ public class AttendanceControllerImpl implements AttendanceController {
         var nickname = inputView.getAttendNickname();
         var time = inputView.getAttendTime();
         var today = todayProvider.today();
-        attendanceBook.attend(nickname, today, time);
+        attendanceBook.addAttendance(nickname, today, time);
         
         var attendanceStatus = attendanceBook.getAttendanceStatusOf(nickname, today);
         outputView.outputAttendResult(today, time, attendanceStatus);
@@ -68,7 +68,7 @@ public class AttendanceControllerImpl implements AttendanceController {
         
         var oldTime = attendanceBook.getAttendanceTimeOf(nickname, targetDate);
         var oldStatus = attendanceBook.getAttendanceStatusOf(nickname, targetDate);
-        attendanceBook.modify(nickname, targetDate, newTime);
+        attendanceBook.addAttendance(nickname, targetDate, newTime);
         var newStatus = attendanceBook.getAttendanceStatusOf(nickname, targetDate);
         
         if (oldTime.isEmpty()) {

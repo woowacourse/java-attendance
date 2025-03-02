@@ -36,7 +36,7 @@ public class AttendanceBookTest {
             var time = LocalTime.of(10, 5);
             
             //expected
-            assertThatCode(() -> sut.attend(nickname, notMonday, time))
+            assertThatCode(() -> sut.addAttendance(nickname, notMonday, time))
                     .doesNotThrowAnyException();
         }
 
@@ -48,7 +48,7 @@ public class AttendanceBookTest {
             var time = LocalTime.parse(timeValue);
             
             //when
-            sut.attend(nickname, monday, time);
+            sut.addAttendance(nickname, monday, time);
             
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, monday)).isEqualTo(AttendanceStatus.출석);
@@ -62,7 +62,7 @@ public class AttendanceBookTest {
             var time = LocalTime.parse(timeValue);
             
             //when
-            sut.attend(nickname, monday, time);
+            sut.addAttendance(nickname, monday, time);
             
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, monday)).isEqualTo(AttendanceStatus.지각);
@@ -76,7 +76,7 @@ public class AttendanceBookTest {
             var time = LocalTime.parse(timeValue);
             
             //when
-            sut.attend(nickname, monday, time);
+            sut.addAttendance(nickname, monday, time);
             
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, monday)).isEqualTo(AttendanceStatus.결석);
@@ -90,7 +90,7 @@ public class AttendanceBookTest {
             var time = LocalTime.parse(timeValue);
             
             //when
-            sut.attend(nickname, notMonday, time);
+            sut.addAttendance(nickname, notMonday, time);
             
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, notMonday)).isEqualTo(AttendanceStatus.출석);
@@ -104,7 +104,7 @@ public class AttendanceBookTest {
             var time = LocalTime.parse(timeValue);
             
             //when
-            sut.attend(nickname, notMonday, time);
+            sut.addAttendance(nickname, notMonday, time);
             
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, notMonday)).isEqualTo(AttendanceStatus.지각);
@@ -118,7 +118,7 @@ public class AttendanceBookTest {
             var time = LocalTime.parse(timeValue);
             
             //when
-            sut.attend(nickname, notMonday, time);
+            sut.addAttendance(nickname, notMonday, time);
             
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, notMonday)).isEqualTo(AttendanceStatus.결석);
@@ -132,7 +132,7 @@ public class AttendanceBookTest {
             var time = LocalTime.of(7, 59);
 
             //expected
-            assertThatThrownBy(() -> sut.attend(nickname, notMonday, time))
+            assertThatThrownBy(() -> sut.addAttendance(nickname, notMonday, time))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("캠퍼스 운영시간이 아닙니다. (08:00~23:00)");
         }
@@ -145,7 +145,7 @@ public class AttendanceBookTest {
             var time = LocalTime.of(7, 59);
 
             //expected
-            assertThatThrownBy(() -> sut.attend(nickname, notMonday, time))
+            assertThatThrownBy(() -> sut.addAttendance(nickname, notMonday, time))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("캠퍼스 운영시간이 아닙니다. (08:00~23:00)");
         }
@@ -158,7 +158,7 @@ public class AttendanceBookTest {
             var time = LocalTime.of(10, 5);
 
             //expected
-            assertThatThrownBy(() -> sut.attend(nickname, weekend, time))
+            assertThatThrownBy(() -> sut.addAttendance(nickname, weekend, time))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("출석할 수 없는 날짜입니다.");
         }
@@ -171,7 +171,7 @@ public class AttendanceBookTest {
             var time = LocalTime.of(10, 5);
 
             //expected
-            assertThatThrownBy(() -> sut.attend(nickname, holiday, time))
+            assertThatThrownBy(() -> sut.addAttendance(nickname, holiday, time))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("출석할 수 없는 날짜입니다.");
         }
@@ -183,7 +183,7 @@ public class AttendanceBookTest {
             var time = LocalTime.of(10, 5);
 
             //expected
-            assertThatThrownBy(() -> sut.attend(nickname, notMonday, time))
+            assertThatThrownBy(() -> sut.addAttendance(nickname, notMonday, time))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("등록되지 않은 닉네임입니다.");
         }
@@ -199,10 +199,10 @@ public class AttendanceBookTest {
             var targetDate = LocalDate.of(2024, 12, 5);
             var oldTime = LocalTime.of(10, 10);
             var newTime = LocalTime.of(9, 45);
-            sut.attend(nickname, targetDate, oldTime);
+            sut.addAttendance(nickname, targetDate, oldTime);
             
             //expected
-            assertThatCode(() -> sut.attend(nickname, targetDate, newTime))
+            assertThatCode(() -> sut.addAttendance(nickname, targetDate, newTime))
                     .doesNotThrowAnyException();
         }
 
@@ -214,7 +214,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.of(9, 45);
             
             //expected
-            assertThatCode(() -> sut.attend(nickname, targetDate, newTime))
+            assertThatCode(() -> sut.addAttendance(nickname, targetDate, newTime))
                     .doesNotThrowAnyException();
         }
 
@@ -226,7 +226,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.of(9, 45);
             
             //expected
-            assertThatThrownBy(() -> sut.modify(nickname, targetDate, newTime))
+            assertThatThrownBy(() -> sut.addAttendance(nickname, targetDate, newTime))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("등록되지 않은 닉네임입니다.");
         }
@@ -240,7 +240,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.parse(timeValue);
             
             //when
-            sut.modify(nickname, targetDate, newTime);
+            sut.addAttendance(nickname, targetDate, newTime);
 
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, targetDate)).isEqualTo(AttendanceStatus.출석);
@@ -255,7 +255,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.parse(timeValue);
             
             //when
-            sut.modify(nickname, targetDate, newTime);
+            sut.addAttendance(nickname, targetDate, newTime);
             
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, targetDate)).isEqualTo(AttendanceStatus.지각);
@@ -270,7 +270,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.parse(timeValue);
             
             //when
-            sut.modify(nickname, targetDate, newTime);
+            sut.addAttendance(nickname, targetDate, newTime);
             
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, targetDate)).isEqualTo(AttendanceStatus.결석);
@@ -285,7 +285,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.parse(timeValue);
             
             //when
-            sut.modify(nickname, targetDate, newTime);
+            sut.addAttendance(nickname, targetDate, newTime);
             
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, targetDate)).isEqualTo(AttendanceStatus.출석);
@@ -300,7 +300,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.parse(timeValue);
             
             //when
-            sut.modify(nickname, targetDate, newTime);
+            sut.addAttendance(nickname, targetDate, newTime);
             
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, targetDate)).isEqualTo(AttendanceStatus.지각);
@@ -315,7 +315,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.parse(timeValue);
             
             //when
-            sut.modify(nickname, targetDate, newTime);
+            sut.addAttendance(nickname, targetDate, newTime);
             
             //then
             assertThat(sut.getAttendanceStatusOf(nickname, targetDate)).isEqualTo(AttendanceStatus.결석);
@@ -329,7 +329,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.of(7, 59);
             
             //expected
-            assertThatThrownBy(() -> sut.modify(nickname, targetDate, newTime))
+            assertThatThrownBy(() -> sut.addAttendance(nickname, targetDate, newTime))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("캠퍼스 운영시간이 아닙니다. (08:00~23:00)");
         }
@@ -342,7 +342,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.of(23, 1);
             
             //expected
-            assertThatThrownBy(() -> sut.modify(nickname, targetDate, newTime))
+            assertThatThrownBy(() -> sut.addAttendance(nickname, targetDate, newTime))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("캠퍼스 운영시간이 아닙니다. (08:00~23:00)");
         }
@@ -355,7 +355,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.of(9, 45);
             
             //expected
-            assertThatThrownBy(() -> sut.modify(nickname, targetDate, newTime))
+            assertThatThrownBy(() -> sut.addAttendance(nickname, targetDate, newTime))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("출석할 수 없는 날짜입니다.");
         }
@@ -368,7 +368,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.of(9, 45);
             
             //expected
-            assertThatThrownBy(() -> sut.modify(nickname, targetDate, newTime))
+            assertThatThrownBy(() -> sut.addAttendance(nickname, targetDate, newTime))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("출석할 수 없는 날짜입니다.");
         }
@@ -381,7 +381,7 @@ public class AttendanceBookTest {
             var newTime = LocalTime.of(9, 45);
             
             //expected
-            assertThatThrownBy(() -> sut.modify(nickname, targetDate, newTime))
+            assertThatThrownBy(() -> sut.addAttendance(nickname, targetDate, newTime))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("출석할 수 없는 날짜입니다.");
         }
@@ -395,12 +395,12 @@ public class AttendanceBookTest {
             //given
             var nickname = "dompoo";
             sut = new AttendanceBook(crews, LocalDate.of(2024, 12, 10));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 3));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 15));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 6), LocalTime.of(10, 40));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 9), LocalTime.of(13, 3));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 3));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 15));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 6), LocalTime.of(10, 40));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 9), LocalTime.of(13, 3));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
             
             //when
             var result = sut.getAllAttendances(nickname);
@@ -472,18 +472,18 @@ public class AttendanceBookTest {
         void 전체_제적_위험자를_확인한다() {
             //given
             var sut = new AttendanceBook(crews, LocalDate.of(2024, 12, 5));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 15));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
-            sut.attend("lisa", LocalDate.of(2024, 12, 2), LocalTime.of(13, 45));
-            sut.attend("lisa", LocalDate.of(2024, 12, 3), LocalTime.of(10, 15));
-            sut.attend("lisa", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
-            sut.attend("lisa", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
-            sut.attend("neo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 45));
-            sut.attend("neo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 45));
-            sut.attend("neo", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
-            sut.attend("neo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 15));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
+            sut.addAttendance("lisa", LocalDate.of(2024, 12, 2), LocalTime.of(13, 45));
+            sut.addAttendance("lisa", LocalDate.of(2024, 12, 3), LocalTime.of(10, 15));
+            sut.addAttendance("lisa", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
+            sut.addAttendance("lisa", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
+            sut.addAttendance("neo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 45));
+            sut.addAttendance("neo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 45));
+            sut.addAttendance("neo", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
+            sut.addAttendance("neo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
             
             //when
             var result = sut.getExpelWarnings();
@@ -499,10 +499,10 @@ public class AttendanceBookTest {
         void 정상_범위의_크루는_포함되지_않는다() {
             //given
             var sut = new AttendanceBook(crews, LocalDate.of(2024, 12, 5));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 15));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
-            sut.attend("dompoo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 15));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
+            sut.addAttendance("dompoo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
             
             //when
             var result = sut.getExpelWarnings();
@@ -520,12 +520,12 @@ public class AttendanceBookTest {
             //given
             var nickname = "dompoo";
             var sut = new AttendanceBook(crews, LocalDate.of(2024, 12, 10));
-            sut.attend(nickname, LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 4), LocalTime.of(10, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 5), LocalTime.of(10, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 6), LocalTime.of(10, 15));
-            sut.attend(nickname, LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 4), LocalTime.of(10, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 5), LocalTime.of(10, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 6), LocalTime.of(10, 15));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
             
             //when
             var result = sut.countAttendanceStatusOf(nickname, AttendanceStatus.출석);
@@ -539,12 +539,12 @@ public class AttendanceBookTest {
             //given
             var nickname = "dompoo";
             var sut = new AttendanceBook(crews, LocalDate.of(2024, 12, 10));
-            sut.attend(nickname, LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 4), LocalTime.of(10, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 5), LocalTime.of(10, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 6), LocalTime.of(10, 15));
-            sut.attend(nickname, LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 4), LocalTime.of(10, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 5), LocalTime.of(10, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 6), LocalTime.of(10, 15));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
             
             //when
             var result = sut.countAttendanceStatusOf(nickname, AttendanceStatus.지각);
@@ -558,12 +558,12 @@ public class AttendanceBookTest {
             //given
             var nickname = "dompoo";
             var sut = new AttendanceBook(crews, LocalDate.of(2024, 12, 10));
-            sut.attend(nickname, LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 4), LocalTime.of(10, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 5), LocalTime.of(10, 0));
-            sut.attend(nickname, LocalDate.of(2024, 12, 6), LocalTime.of(10, 15));
-            sut.attend(nickname, LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 3), LocalTime.of(10, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 4), LocalTime.of(10, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 5), LocalTime.of(10, 0));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 6), LocalTime.of(10, 15));
+            sut.addAttendance(nickname, LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
             
             //when
             var result = sut.countAttendanceStatusOf(nickname, AttendanceStatus.결석);

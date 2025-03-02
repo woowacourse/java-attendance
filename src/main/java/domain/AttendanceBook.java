@@ -33,7 +33,7 @@ public class AttendanceBook {
         ));
     }
     
-    public void attend(final String nickname, final LocalDate date, final LocalTime time) {
+    public void addAttendance(final String nickname, final LocalDate date, final LocalTime time) {
         validateNicknameExist(nickname);
         
         crewAttendances.get(nickname).attend(date, time);
@@ -49,12 +49,6 @@ public class AttendanceBook {
         validateNicknameExist(nickname);
         
         return crewAttendances.get(nickname).findAttendanceStatusOf(date);
-    }
-    
-    public void modify(final String nickname, final LocalDate targetDate, final LocalTime newTime) {
-        validateNicknameExist(nickname);
-        
-        crewAttendances.get(nickname).modify(targetDate, newTime);
     }
     
     public Set<Attendance> getAllAttendances(final String nickname) {
