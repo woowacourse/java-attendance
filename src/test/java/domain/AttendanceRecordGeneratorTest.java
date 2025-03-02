@@ -11,16 +11,11 @@ public class AttendanceRecordGeneratorTest {
 
 
     @Test
-    @DisplayName("연도, 월, 일 기준으로 등교일 출석 기록을 초기화 한다")
+    @DisplayName("2024-12-01 기준으로 등교일 출석 기록을 초기화 한다")
     void test1() {
         //given
-        final int year = 2024;
-        final int month = 12;
-        final int day = 1;
-        final LocalDate localDate = LocalDate.of(year, month, day);
-
         //when
-        final Map<LocalDate, AttendanceRecord> attendanceMap = AttendanceRecordGenerator.generate(localDate);
+        final Map<LocalDate, AttendanceRecord> attendanceMap = AttendanceRecordGenerator.generate();
 
         //then
         assertThat(attendanceMap).containsKey(LocalDate.of(2024, 12, 2))
