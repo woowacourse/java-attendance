@@ -27,6 +27,7 @@ public abstract class AbstractAttendanceRecord {
     private void validateDate(LocalDate date) {
         Validator.validateNull(date);
         validateOffDate(date);
+        LectureTime.validateLectureDate(date);
     }
 
     private void validateOffDate(LocalDate date) {
