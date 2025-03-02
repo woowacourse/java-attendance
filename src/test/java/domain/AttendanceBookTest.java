@@ -24,7 +24,7 @@ public class AttendanceBookTest {
     void test1() {
         //given
         final String name = "쿠키";
-        final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 17, 10, 0);
+        final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 24, 10, 0);
         //when
         //then
         assertAll(

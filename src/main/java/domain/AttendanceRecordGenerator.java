@@ -15,13 +15,14 @@ public class AttendanceRecordGenerator {
     public static Map<LocalDate, AttendanceRecord> generate() {
         final List<LocalDate> attendanceDates = createAttendanceDates();
         Map<LocalDate, AttendanceRecord> attendanceRecords = new LinkedHashMap<>();
-        attendanceDates.forEach(attendanceDate -> attendanceRecords.put(attendanceDate, AttendanceRecord.of(attendanceDate)));
+        attendanceDates.forEach(
+                attendanceDate -> attendanceRecords.put(attendanceDate, AttendanceRecord.of(attendanceDate)));
         return attendanceRecords;
     }
 
     private static List<LocalDate> createAttendanceDates() {
         final LocalDate startDate = SystemDate.START_DATE.getDate();
-        return IntStream.rangeClosed(startDate.getDayOfMonth(), startDate.lengthOfMonth())
+        return IntStream.rangeClosed(startDate.getDayOfMonth(), SystemDate.NOW.getDate().getDayOfMonth() - 1)
                 .mapToObj(startDate::withDayOfMonth)
                 .filter(date -> !ClassDayOff.isDayOff(date))
                 .toList();

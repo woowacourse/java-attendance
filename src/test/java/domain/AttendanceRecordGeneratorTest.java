@@ -19,7 +19,8 @@ public class AttendanceRecordGeneratorTest {
 
         //then
         assertThat(attendanceMap).containsKey(LocalDate.of(2024, 12, 2))
-                .containsKey(LocalDate.of(2024, 12, 31))
+                .containsKey(LocalDate.of(2024, 12, 23))
+                .doesNotContainKey(LocalDate.of(2024, 12, 24))
                 .doesNotContainKey(LocalDate.of(2024, 12, 1))
                 .doesNotContainKey(LocalDate.of(2024, 12, 25))
                 .doesNotContainKey(LocalDate.of(2024, 12, 28));
