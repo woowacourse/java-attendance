@@ -1,6 +1,8 @@
 package domain;
 
 import fixture.AttendanceRecordsGenerator;
+import fixture.LocalDateFixture;
+import fixture.LocalTimeFixture;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -23,8 +25,8 @@ public class AttendanceRecordsTest {
             // given
             String nickname = "name";
             Crew crew = new Crew(nickname);
-            LocalDate checkedDate = LocalDate.of(2025, 2, 3);
-            LocalTime time = LocalTime.of(13, 0);
+            LocalDate checkedDate = LocalDateFixture.LECTURE_DATE1;
+            LocalTime time = LocalTimeFixture.CAMPUS_TIME;
             AttendanceRecord attendanceRecord = AttendanceRecord.of(crew, checkedDate, time);
 
             AttendanceRecords attendanceRecords = new AttendanceRecords(new ArrayList<>());
@@ -40,9 +42,9 @@ public class AttendanceRecordsTest {
             // given
             String nickname = "name";
             Crew crew = new Crew(nickname);
-            LocalDate date = LocalDate.of(2025, 2, 3);
-            LocalTime beforeTime = LocalTime.of(13, 0);
-            LocalTime afterTime = LocalTime.of(13, 2);
+            LocalDate date = LocalDateFixture.LECTURE_DATE1;
+            LocalTime beforeTime = LocalTimeFixture.LECTURE_TIME1;
+            LocalTime afterTime = LocalTimeFixture.LECTURE_TIME2;
             AttendanceRecord before = AttendanceRecord.of(crew, date, beforeTime);
             AttendanceRecord after = AttendanceRecord.of(crew, date, afterTime);
 
@@ -65,8 +67,8 @@ public class AttendanceRecordsTest {
             // given
             String nickname = "name";
             Crew crew = new Crew(nickname);
-            LocalDate checkedDate = LocalDate.of(2025, 2, 3);
-            LocalTime time = LocalTime.of(13, 0);
+            LocalDate checkedDate = LocalDateFixture.LECTURE_DATE1;
+            LocalTime time = LocalTimeFixture.LECTURE_TIME1;
             AttendanceRecord attendanceRecord = AttendanceRecord.of(crew, checkedDate, time);
             AttendanceRecords attendanceRecords = new AttendanceRecords(List.of(attendanceRecord));
 
@@ -80,12 +82,12 @@ public class AttendanceRecordsTest {
             // given
             String nickname = "name";
             Crew crew = new Crew(nickname);
-            LocalDate checkedDate = LocalDate.of(2025, 2, 3);
-            LocalTime time = LocalTime.of(13, 0);
+            LocalDate checkedDate = LocalDateFixture.LECTURE_DATE1;
+            LocalTime time = LocalTimeFixture.LECTURE_TIME1;
             AttendanceRecord attendanceRecord = AttendanceRecord.of(crew, checkedDate, time);
             AttendanceRecords attendanceRecords = new AttendanceRecords(List.of(attendanceRecord));
 
-            LocalDate uncheckedDate = LocalDate.of(2025, 2, 4);
+            LocalDate uncheckedDate = LocalDateFixture.LECTURE_DATE2;
 
             // when & then
             Assertions.assertThat(attendanceRecords.existsByCrewAndDate(crew, uncheckedDate)).isFalse();
@@ -97,8 +99,8 @@ public class AttendanceRecordsTest {
             // given
             String nickname = "name";
             Crew crew = new Crew(nickname);
-            LocalDate checkedDate = LocalDate.of(2025, 2, 3);
-            LocalTime time = LocalTime.of(13, 0);
+            LocalDate checkedDate = LocalDateFixture.LECTURE_DATE1;
+            LocalTime time = LocalTimeFixture.LECTURE_TIME1;
             AttendanceRecord attendanceRecord = AttendanceRecord.of(crew, checkedDate, time);
             AttendanceRecords attendanceRecords = new AttendanceRecords(List.of(attendanceRecord));
 
@@ -114,9 +116,9 @@ public class AttendanceRecordsTest {
             String nickname = "name";
             Crew crew = new Crew(nickname);
 
-            LocalDate checkedDate = LocalDate.of(2025, 2, 3);
-            LocalDate unCheckedDate = LocalDate.of(2025, 2, 4);
-            LocalTime time = LocalTime.of(13, 0);
+            LocalDate checkedDate = LocalDateFixture.LECTURE_DATE1;
+            LocalDate unCheckedDate = LocalDateFixture.LECTURE_DATE2;
+            LocalTime time = LocalTimeFixture.LECTURE_TIME1;
             AttendanceRecord attendanceRecord = AttendanceRecord.of(crew, checkedDate, time);
             AttendanceRecords attendanceRecords = new AttendanceRecords(List.of(attendanceRecord));
 
@@ -132,8 +134,8 @@ public class AttendanceRecordsTest {
             String nickname = "name";
             Crew crew = new Crew(nickname);
 
-            LocalDate checkedDate = LocalDate.of(2025, 2, 3);
-            LocalTime time = LocalTime.of(13, 0);
+            LocalDate checkedDate = LocalDateFixture.LECTURE_DATE1;
+            LocalTime time = LocalTimeFixture.LECTURE_TIME1;
             AttendanceRecord attendanceRecord = AttendanceRecord.of(crew, checkedDate, time);
             AttendanceRecords attendanceRecords = new AttendanceRecords(List.of(attendanceRecord));
 
@@ -172,8 +174,8 @@ public class AttendanceRecordsTest {
             // given
             String nickname = "name";
             Crew crew = new Crew(nickname);
-            LocalDate checkedDate = LocalDate.of(2025, 2, 3);
-            LocalTime time = LocalTime.of(13, 0);
+            LocalDate checkedDate = LocalDateFixture.LECTURE_DATE1;
+            LocalTime time = LocalTimeFixture.LECTURE_TIME1;
             AttendanceRecord attendanceRecord = AttendanceRecord.of(crew, checkedDate, time);
             AttendanceRecords attendanceRecords = new AttendanceRecords(List.of(attendanceRecord));
 
@@ -188,17 +190,17 @@ public class AttendanceRecordsTest {
         void getOneByCrewAndDate_test_exception() {
             // given
             String nickname = "name";
+            String nickname2 = "noname";
             Crew crew = new Crew(nickname);
-            LocalDate checkedDate = LocalDate.of(2025, 2, 3);
-            LocalTime time = LocalTime.of(13, 0);
+            LocalDate checkedDate = LocalDateFixture.LECTURE_DATE1;
+            LocalTime time = LocalTimeFixture.LECTURE_TIME1;
             AttendanceRecord attendanceRecord = AttendanceRecord.of(crew, checkedDate, time);
             AttendanceRecords attendanceRecords = new AttendanceRecords(List.of(attendanceRecord));
 
             // when & then
             Assertions.assertThatThrownBy(() -> {
-                attendanceRecords.getByCrewAndDate(new Crew("noname"), checkedDate);
+                attendanceRecords.getByCrewAndDate(new Crew(nickname2), checkedDate);
             }).isInstanceOf(IllegalArgumentException.class);
-
         }
     }
 }

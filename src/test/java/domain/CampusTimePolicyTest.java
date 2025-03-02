@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class CampusTimePolicyTest {
-    
+
     @Nested
     @DisplayName("예외 테스트")
     class Fail {
@@ -16,8 +16,8 @@ class CampusTimePolicyTest {
         @DisplayName("캠퍼스 운영 시간이 아니라면 예외가 발생한다")
         void validateCampusTime_test() {
             // given
-            LocalTime early = LocalTime.of(7, 59);
-            LocalTime over = LocalTime.of(23, 1);
+            LocalTime early = CampusTimePolicy.CAMPUS_OPEN_TIME.minusMinutes(1);
+            LocalTime over = CampusTimePolicy.CAMPUS_CLOSE_TIME.plusMinutes(1);
 
             // when & then
             SoftAssertions.assertSoftly(softAssertions -> {

@@ -3,6 +3,7 @@ package fixture;
 import java.time.LocalDate;
 
 public class LocalDateFixture {
+
     // DayOfWeek
     public static LocalDate MONDAY = LocalDate.of(2025, 2, 3);
     public static LocalDate TUESDAY = LocalDate.of(2025, 2, 4);
@@ -15,4 +16,8 @@ public class LocalDateFixture {
     // Holiday
     public static LocalDate CHRISTMAS = LocalDate.of(2025, 12, 25);
     public static LocalDate NOT_HOLIDAY = LocalDate.of(2025, 12, 10);
+
+    public static LocalDate LECTURE_DATE1 = TUESDAY;
+    public static LocalDate LECTURE_DATE2 = WEDNESDAY;
+    public static LocalDate NOT_LECTURE_DATE = SATURDAY;
 }

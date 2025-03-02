@@ -9,8 +9,8 @@ public enum AttendanceStatus {
     ABSENT("결석"),
     ;
 
-    private static final int LATE_LIMIT_IN_MINUTES = 5;
-    private static final int ABSENT_LIMIT_IN_MINUTES = 30;
+    public static final int LATE_LIMIT_IN_MINUTES = 5;
+    public static final int ABSENT_LIMIT_IN_MINUTES = 30;
     private final String description;
 
     AttendanceStatus(String description) {

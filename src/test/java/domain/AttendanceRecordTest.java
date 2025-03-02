@@ -1,5 +1,7 @@
 package domain;
 
+import fixture.LocalDateFixture;
+import fixture.LocalTimeFixture;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
@@ -18,15 +20,14 @@ public class AttendanceRecordTest {
             // given
             String nickname = "우가";
             Crew crew = new Crew(nickname);
-            LocalDate monday = LocalDate.of(2025, 2, 3);
-            LocalTime time = LocalTime.of(13, 5);
+            LocalDate lectureDate = LocalDateFixture.LECTURE_DATE1;
+            LocalTime time = LocalTimeFixture.MONDAY_LATE;
 
             // when && then
             Assertions.assertThatCode(() -> {
-                AttendanceRecord.of(crew, monday, time);
+                AttendanceRecord.of(crew, lectureDate, time);
             }).doesNotThrowAnyException();
         }
-
     }
 
     @Nested
@@ -34,13 +35,13 @@ public class AttendanceRecordTest {
     class Fail {
 
         @Test
-        @DisplayName("출석 기록 날짜가 주말 혹은 공휴일이면 예외가 발생한다")
-        void validateOffDate_test_exception() {
+        @DisplayName("출석 기록 날짜가 교육이 있는 날이 아니면 예외가 발생한다")
+        void validateDate_test_exception() {
             // given
             String nickname = "우가";
             Crew crew = new Crew(nickname);
-            LocalDate saturday = LocalDate.of(2025, 2, 1);
-            LocalTime time = LocalTime.of(13, 5);
+            LocalDate saturday = LocalDateFixture.NOT_LECTURE_DATE;
+            LocalTime time = LocalTimeFixture.CAMPUS_TIME;
 
             // when && then
             Assertions.assertThatThrownBy(() -> {
@@ -54,12 +55,12 @@ public class AttendanceRecordTest {
             // given
             String nickname = "우가";
             Crew crew = new Crew(nickname);
-            LocalDate date = LocalDate.of(2025, 2, 3);
-            LocalTime overCampusCloseTime = LocalTime.of(23, 5);
+            LocalDate date = LocalDateFixture.LECTURE_DATE1;
+            LocalTime notCampusTime = LocalTimeFixture.NOT_CAMPUS_TIME;
 
             // when && then
             Assertions.assertThatThrownBy(() -> {
-                AttendanceRecord.of(crew, date, overCampusCloseTime);
+                AttendanceRecord.of(crew, date, notCampusTime);
             }).isInstanceOf(IllegalArgumentException.class);
         }
     }

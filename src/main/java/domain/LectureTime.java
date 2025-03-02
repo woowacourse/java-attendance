@@ -65,4 +65,8 @@ public enum LectureTime {
     public LocalTime getStartTime() {
         return startTime;
     }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
 }
