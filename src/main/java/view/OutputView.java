@@ -24,7 +24,6 @@ public class OutputView {
         String status = attendanceInfo.getAttendanceStatus().getValue();
 
         System.out.println(String.format("%s월 %s일 %s %s:%s (%s)", month, day, dayOfWeek, hour, minute, status));
-        System.out.println();
     }
 
     public void writeModifiedAttendanceCheck(AttendanceInfo beforeInfo, AttendanceInfo afterInfo) {
@@ -106,7 +105,6 @@ public class OutputView {
         String dayOfWeek = parseDayOfWeekToKorean(campusDate.getDayOfWeek());
 
         System.out.println(String.format("%s월 %s일 %s --:-- (결석)", month, day, dayOfWeek));
-        System.out.println();
     }
 
     private static boolean isWeekend(LocalDate date, int day) {
