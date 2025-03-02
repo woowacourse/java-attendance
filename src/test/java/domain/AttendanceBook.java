@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDateTime;
+import util.DateTimeConvertor;
 import util.DateTimeParser;
 
 public class AttendanceBook {
@@ -24,7 +25,7 @@ public class AttendanceBook {
     private static void validateExistAttendance(final LocalDateTime localDateTime, final Crew crew) {
         if (crew.existAttendance(localDateTime)) {
             throw new IllegalArgumentException(
-                    String.format("[ERROR] %s 출석 기록이 존재합니다. 수정 기능을 이용해주세요", DateTimeParser.parseToLocalDateKoreanFormat(
+                    String.format("[ERROR] %s 출석 기록이 존재합니다. 수정 기능을 이용해주세요", DateTimeConvertor.convertToLocalDateKoreanFormat(
                             localDateTime.toLocalDate())));
         }
     }

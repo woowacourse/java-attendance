@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Objects;
+import util.DateTimeConvertor;
 import util.DateTimeParser;
 
 public enum ClassTime {
@@ -27,6 +28,6 @@ public enum ClassTime {
                 .map(classTime -> classTime.startTime)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException(String.format("[ERROR] %s 강의 시간을 찾을 수 없습니다.",
-                        DateTimeParser.parseToDayOfWeekKoreanFormat(dayOfWeek))));
+                        DateTimeConvertor.convertToDayOfWeekKoreanFormat(dayOfWeek))));
     }
 }
