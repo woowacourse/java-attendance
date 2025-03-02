@@ -96,7 +96,7 @@ public class CrewAttendanceTest {
             crewAttendance.add(attendance);
         }
 
-        Map<AttendanceStatus, Integer> attendanceStatusCounts = crewAttendance.countAttendanceStatusBefore(today);
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = crewAttendance.countAttendanceStatusesBefore(today);
 
         assertThat(attendanceStatusCounts.get(AttendanceStatus.PRESENT)).isEqualTo(5);
         assertThat(attendanceStatusCounts.get(AttendanceStatus.LATE)).isEqualTo(2);
