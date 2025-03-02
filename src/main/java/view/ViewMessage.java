@@ -17,14 +17,15 @@ public class ViewMessage {
     public static final String UPDATE_WHEN = "언제로 변경하겠습니까?";
 
     public static final String CURRENT_MONTH_ATTENDANCE_SHEET = "이번 달 %s의 출석 기록입니다.%n";
-    public static final String ATTENDANCE_FORMAT = "12월 %02d일 %s %02d:%02d (%s)%n";
+    public static final String ATTENDANCE_FORMAT = "12월 %02d일 %s %s (%s)%n";
+    public static final String TIME_FORMAT = "%02d:%02d";
+
     public static final String STATISTICS_FORMAT = """
             출석: %d회
             지각: %d회
             결석: %d회""";
     public static final String ABSENT_POLICY_FORMAT = "%s 대상자입니다%n";
     public static final String RISK_OF_EXPULSION_BANNER = "제적 위험자 조회 결과";
-    public static final String RISK_OF_EXPULSION_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n%n";
-    public static final String ABSENT_FORMAT = "12월 %02d일 %s --:-- (결석)%n";
+    public static final String RISK_OF_EXPULSION_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
 
 }

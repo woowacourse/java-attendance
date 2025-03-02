@@ -1,10 +1,9 @@
-package domain;
+package domain.policy;
 
 public enum AttendanceState {
-    ATTEND("출석"),
+    ATTENDANCE("출석"),
     LATE("지각"),
-    ABSENT("결석"),
-    ;
+    ABSENT("결석");
 
     public final String description;
 

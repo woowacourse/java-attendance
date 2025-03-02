@@ -1,40 +1,161 @@
 package domain;
 
+import static domain.policy.AttendanceState.ABSENT;
+import static domain.policy.AttendanceState.ATTENDANCE;
+import static domain.policy.AttendanceState.LATE;
+import static domain.policy.ExpellState.EXPELL;
+import static domain.policy.ExpellState.INTERVIEW;
+import static domain.policy.ExpellState.NONE;
+import static domain.policy.ExpellState.WARNING;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import java.time.LocalDateTime;
+import domain.policy.AbsentPolicy;
+import domain.policy.AttendanceState;
+import domain.policy.CampusTimePolicy;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@DisplayName("출석부 확인 테스트")
 public class AttendanceSheetTest {
+    AttendanceSheet attendanceSheet;
 
-    @Nested
-    @DisplayName("날짜 일치 테스트")
-    class DayEqualsTest {
-        @Test
-        @DisplayName("출석부를 비교하여 날짜 일치 여부를 테스트할 수 있다.")
-        void isDayCorrectTestFromSheet() {
-            //given
-            AttendanceSheet attendanceSheet = new AttendanceSheet("링크",
-                    AttendanceDateTime.from(LocalDateTime.of(2024, 12, 13, 10, 10)));
-            AttendanceSheet attendanceSheetToCompare = new AttendanceSheet("링크",
-                    AttendanceDateTime.from(LocalDateTime.of(2024, 12, 13, 11, 20)));
+    @BeforeEach
+    void setUp() {
+        attendanceSheet = new AttendanceSheet(new CampusTimePolicy(), new AbsentPolicy(),
+                new ArrayList<>(
+                        List.of(
+                                new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 6), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 9), LocalTime.of(10, 5), ATTENDANCE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 10), LocalTime.of(10, 10), LATE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 11), LocalTime.of(10, 10), LATE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 2), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 3), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 4), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 5), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 6), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 9), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 10), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 2), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 3), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 4), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 5), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 6), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 9), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 10), LocalTime.of(13, 5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 11), LocalTime.of(13, 5), ATTENDANCE)
+                        ))
+        );
+    }
 
-            //when
-            assertThat(attendanceSheet.isCorrectDay(attendanceSheetToCompare)).isTrue();
-        }
+    @Test
+    @DisplayName("닉네임과 등교 날짜, 등교 시간을 입력하면 출석 기록을 추가할 수 있다")
+    public void attendTest() {
+        //given
+        String nickname = "링크";
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalTime time = LocalTime.of(10, 0);
 
-        @Test
-        @DisplayName("날짜를 입력받아 날짜 일치 여부를 테스트할 수 있다.")
-        void isDayCorrectTestFromDay() {
-            //given
-            AttendanceSheet attendanceSheet = new AttendanceSheet("링크",
-                    AttendanceDateTime.from(LocalDateTime.of(2024, 12, 13, 10, 10)));
+        //when-then
+        assertDoesNotThrow(() -> attendanceSheet.add(nickname, date, time));
+    }
 
-            //when
-            assertThat(attendanceSheet.isCorrectDay(13)).isTrue();
-        }
+    @Test
+    @DisplayName("이미 출석한 경우 다시 출석할 수 없으며 수정 기능을 이용하도록 안내하는 예외가 발생한다")
+    public void alreadyAttendTest2() {
+        //given
+        String nickname = "링크";
+        LocalDate date = LocalDate.of(2024, 12, 10);
+        LocalTime time = LocalTime.of(10, 0);
+
+        //when-then
+        assertThatThrownBy(() -> attendanceSheet.add(nickname, date, time))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("출석 확인을 수정할 수 있다")
+    public void updateAttendanceTest() {
+        //given
+        String nickname = "링크";
+        int dayOfMonth = 10;
+        LocalTime updateTime = LocalTime.of(11, 0);
+
+        //when-then
+        assertDoesNotThrow(() -> attendanceSheet.update(nickname, dayOfMonth, updateTime));
+    }
+
+    @Test
+    @DisplayName("출석 기록이 없을 때 수정하려고 하면 예외가 발생한다")
+    public void attendNotFoundTest() {
+        //given
+        String nickname = "링크";
+        int dayOfMonth = 15;
+        LocalTime updateTime = LocalTime.of(11, 0);
+
+        //when-then
+        assertThatThrownBy(() -> attendanceSheet.update(nickname, dayOfMonth, updateTime))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @DisplayName("크루의 출석 상태 횟수를 계산할 수 있다")
+    @MethodSource("provideAttendanceStateForCount")
+    public void countAttendanceStateTest(AttendanceState state, int expected) {
+        assertThat(attendanceSheet.countAttendanceState("링크").get(state)).isEqualTo(expected);
+    }
+
+    static Stream<Arguments> provideAttendanceStateForCount() {
+        return Stream.of(
+                Arguments.of(ATTENDANCE, 1),
+                Arguments.of(LATE, 0),
+                Arguments.of(ABSENT, 8)
+        );
+    }
+
+    @Test
+    @DisplayName("모든 크루의 출석 상태 횟수를 계산할 수 있다")
+    public void countAttendancesStateTest() {
+        assertSoftly(softly -> {
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크").get(ATTENDANCE)).isEqualTo(1);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크").get(LATE)).isEqualTo(0);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크").get(ABSENT)).isEqualTo(8);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크2").get(ATTENDANCE)).isEqualTo(2);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크2").get(LATE)).isEqualTo(2);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크2").get(ABSENT)).isEqualTo(5);
+        });
+    }
+
+    @Test
+    @DisplayName("크루의 제적 상태를 알 수 있다")
+    public void countExpellTest() {
+        //given
+        Map<String, Map<AttendanceState, Long>> attendances = attendanceSheet.countAttendancesState();
+
+        //when-then
+        assertSoftly(softly -> {
+            softly.assertThat(attendanceSheet.calculateAllExpellStatus(attendances).get("링크")).isEqualTo(EXPELL);
+            softly.assertThat(attendanceSheet.calculateAllExpellStatus(attendances).get("링크2")).isEqualTo(INTERVIEW);
+            softly.assertThat(attendanceSheet.calculateAllExpellStatus(attendances).get("링크3")).isEqualTo(WARNING);
+            softly.assertThat(attendanceSheet.calculateAllExpellStatus(attendances).get("링크4")).isEqualTo(NONE);
+        });
+    }
+
+    @Test
+    @DisplayName("제적 상태를 알 수 있다")
+    public void calculateAllExpellStatusTest() {
+
     }
 }

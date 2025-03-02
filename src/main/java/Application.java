@@ -1,12 +1,9 @@
+import config.AppConfig;
 import controller.AttendanceController;
-import view.InputView;
-
-import java.io.IOException;
-import java.util.Scanner;
 
 public class Application {
     public static void main(String[] args){
-        AttendanceController attendanceController = new AttendanceController(new InputView(new Scanner(System.in)));
+        AttendanceController attendanceController = AppConfig.INSTANCE.createAttendanceController();
         attendanceController.start();
     }
 }

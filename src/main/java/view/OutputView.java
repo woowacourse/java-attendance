@@ -1,61 +1,126 @@
 package view;
 
-import domain.AbsentPolicy;
-import domain.AttendanceDateTime;
+import static config.AppConfig.TODAY;
+import static domain.policy.AttendanceState.ABSENT;
+import static domain.policy.AttendanceState.ATTENDANCE;
+import static domain.policy.AttendanceState.LATE;
+import static domain.policy.ExpellState.NONE;
+import static view.ViewMessage.ABSENT_POLICY_FORMAT;
+import static view.ViewMessage.ATTENDANCE_FORMAT;
+import static view.ViewMessage.RISK_OF_EXPULSION_FORMAT;
+import static view.ViewMessage.STATISTICS_FORMAT;
+import static view.ViewMessage.TIME_FORMAT;
+
+import domain.Attendance;
+import domain.policy.AbsentPolicy;
+import domain.policy.AttendanceState;
+import domain.policy.ExpellState;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class OutputView {
 
-    public static void printAttendanceSheetIntro(String nickname) {
+    public void printAttendanceSheetIntro(String nickname) {
         System.out.printf(ViewMessage.CURRENT_MONTH_ATTENDANCE_SHEET, nickname);
     }
 
-    public static void printAttendanceSheets(Map<Integer, AttendanceDateTime> dayToAttendanceDateTime, int todayDate) {
+    public void printAttendancesSheet(String nickname, List<Attendance> attendanceByNickname) {
+        List<Attendance> attendancesForPrint = new ArrayList<>(attendanceByNickname);
 
-        for (int day = 1; day < todayDate; day++) {
-            LocalDate date = LocalDate.of(2024, 12, day);
-            String koreanDayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        for (int day = 1; day < TODAY.getDayOfMonth(); day++) {
+            LocalDate date = LocalDate.of(TODAY.getYear(), TODAY.getMonth(), day);
 
-            printAttendanceSheet(dayToAttendanceDateTime, day, koreanDayOfWeek);
+            int finalDay = day;
+            if (attendancesForPrint.stream()
+                    .noneMatch(attendance -> attendance.getDate().getDayOfMonth() == finalDay)) {
+                attendancesForPrint.add(new Attendance(nickname, date, null, AttendanceState.ABSENT));
+            }
         }
 
+        printAttendanceSheet(attendancesForPrint);
         System.out.print(System.lineSeparator());
     }
 
-    private static void printAttendanceSheet(Map<Integer, AttendanceDateTime> dayToAttendanceDateTime, int day,
-                                             String koreanDayOfWeek) {
-        if (dayToAttendanceDateTime.containsKey(day)) {
-            AttendanceDateTime attendanceDateTime = dayToAttendanceDateTime.get(day);
-            LocalDateTime dateTime = attendanceDateTime.getAttendanceDateTime();
+    private void printAttendanceSheet(List<Attendance> attendancesForPrint) {
+        AbsentPolicy absentPolicy = new AbsentPolicy();
 
-            System.out.printf(ViewMessage.ATTENDANCE_FORMAT, day, koreanDayOfWeek, dateTime.getHour(),
-                    dateTime.getMinute(), attendanceDateTime.check().description);
-            return;
+        attendancesForPrint.stream()
+                .sorted(Comparator.comparing(Attendance::getDate))
+                .filter(attendance -> absentPolicy.isNotHoliday(attendance.getDate()))
+                .filter(attendance -> absentPolicy.isWeekday(attendance.getDate().getDayOfWeek()))
+                .map(this::printAttendance)
+                .forEach(System.out::print);
+    }
+
+    private String printAttendance(Attendance attendance) {
+        LocalDate date = attendance.getDate();
+        String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+
+        return String.format(ATTENDANCE_FORMAT,
+                date.getDayOfMonth(), dayOfWeek, getTime(attendance.getTime()), attendance.getState().description);
+    }
+
+    private String getTime(LocalTime time) {
+        if (time == null) {
+            return "--:--";
         }
-        System.out.printf(ViewMessage.ABSENT_FORMAT, day, koreanDayOfWeek);
+        return String.format(TIME_FORMAT, time.getHour(), time.getMinute());
     }
 
-    public static void printAttendanceStatistics(int attendCount, int latCount, int absentCount) {
-        System.out.printf(ViewMessage.STATISTICS_FORMAT, attendCount, latCount, absentCount);
-        System.out.print(System.lineSeparator());
+    public void printAttendanceStatistics(Map<AttendanceState, Long> attendanceState) {
+        System.out.printf(STATISTICS_FORMAT, attendanceState.get(ATTENDANCE), attendanceState.get(LATE),
+                attendanceState.get(ABSENT));
+        System.out.print(System.lineSeparator().repeat(2));
     }
 
-    public static void printAbsentPolicy(AbsentPolicy absentPolicy) {
-        if (absentPolicy == AbsentPolicy.NONE) {
-            return;
-        }
-        System.out.printf(ViewMessage.ABSENT_POLICY_FORMAT, absentPolicy.description);
+    public void printAbsentPolicy(ExpellState expellState) {
+        System.out.printf(ABSENT_POLICY_FORMAT, expellState.description);
     }
 
-    public static void printRiskOfExpulsionBanner() {
+    public void printRiskOfExpulsion(Map<String, Map<AttendanceState, Long>> attendanceStatus,
+                                     Map<String, ExpellState> expellStates) {
         System.out.println(ViewMessage.RISK_OF_EXPULSION_BANNER);
+
+        attendanceStatus.keySet().stream()
+                .filter(nickname -> expellStates.get(nickname) != NONE)
+                .sorted(createExpulsionRiskComparator(attendanceStatus, expellStates))
+                .forEach(nickname -> printStudentExpulsionRisk(nickname, attendanceStatus, expellStates));
     }
 
-    public static void printRiskOfExpulsion(String name, int lateCount, int absentCount, AbsentPolicy absentPolicy) {
-        System.out.printf(ViewMessage.RISK_OF_EXPULSION_FORMAT, name, absentCount, lateCount, absentPolicy.description);
+    private Comparator<String> createExpulsionRiskComparator(
+            Map<String, Map<AttendanceState, Long>> attendanceStatus,
+            Map<String, ExpellState> expellStates) {
+
+        return Comparator
+                .comparing((String nickname) -> expellStates.get(nickname))
+                .thenComparing((String nickname) -> calculateTotalAbsences(attendanceStatus.get(nickname)),
+                        Comparator.reverseOrder())
+                .thenComparing(Comparator.naturalOrder());
     }
+
+    private long calculateTotalAbsences(Map<AttendanceState, Long> attendance) {
+        long absentCount = attendance.getOrDefault(ABSENT, 0L);
+        long lateCount = attendance.getOrDefault(LATE, 0L);
+        return absentCount + (lateCount / 3);
+    }
+
+    private void printStudentExpulsionRisk(String nickname, Map<String, Map<AttendanceState, Long>> attendanceStatus,
+                                           Map<String, ExpellState> expellStates) {
+        Map<AttendanceState, Long> attendanceMap = attendanceStatus.get(nickname);
+        ExpellState expellState = expellStates.get(nickname);
+
+        Long absentCount = attendanceMap.getOrDefault(ABSENT, 0L);
+        Long lateCount = attendanceMap.getOrDefault(LATE, 0L);
+
+        System.out.printf(RISK_OF_EXPULSION_FORMAT,
+                nickname, absentCount, lateCount, expellState.description);
+    }
+
+
 }

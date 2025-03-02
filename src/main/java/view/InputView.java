@@ -1,21 +1,24 @@
 package view;
 
-import java.time.LocalDate;
+import static config.AppConfig.TODAY;
+
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
+import view.parser.DayParser;
+import view.parser.TimeParser;
 
 public class InputView {
-
     private final Scanner scanner;
 
     public InputView(Scanner scanner) {
         this.scanner = scanner;
     }
 
-    public String inputMenu(LocalDate today) {
-        String koreanDayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        System.out.printf(ViewMessage.SELECT_MENU_INTRO, today.getMonth().getValue(), today.getDayOfMonth(),
+    public String inputMenu() {
+        String koreanDayOfWeek = TODAY.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        System.out.printf(ViewMessage.SELECT_MENU_INTRO, TODAY.getMonth().getValue(), TODAY.getDayOfMonth(),
                 koreanDayOfWeek);
         System.out.println(ViewMessage.SELECT_MENU);
 
@@ -28,10 +31,10 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public String inputTime() {
+    public LocalTime inputTime() {
         System.out.println(ViewMessage.ATTENDANCE_TIME);
 
-        return scanner.nextLine();
+        return TimeParser.validateTimeFormat(scanner.nextLine());
     }
 
     public String inputUpdateNickname() {
@@ -40,15 +43,16 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public String inputUpdateDate() {
+    public int inputUpdateDate() {
         System.out.println(ViewMessage.UPDATE_DATE);
 
-        return scanner.nextLine();
+        return DayParser.validateDayFormat(scanner.nextLine());
     }
 
-    public String inputUpdateTime() {
+    public LocalTime inputUpdateTime() {
         System.out.println(ViewMessage.UPDATE_WHEN);
 
-        return scanner.nextLine();
+        return TimeParser.validateTimeFormat(scanner.nextLine());
     }
+
 }

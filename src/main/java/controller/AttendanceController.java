@@ -1,21 +1,15 @@
 package controller;
 
+import static config.AppConfig.TODAY;
+import static domain.policy.AttendanceState.ABSENT;
+import static domain.policy.AttendanceState.LATE;
 import static util.ExceptionHandler.runInputCommand;
 
-import domain.AbsentPolicy;
-import domain.AttendanceDateTime;
 import domain.AttendanceSheet;
-import domain.AttendanceSheets;
-import domain.AttendanceSheetsFactory;
-import domain.AttendanceState;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import domain.policy.AttendanceState;
+import domain.policy.ExpellState;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import parser.InputParser;
-import util.FileReaderUtil;
 import view.InputView;
 import view.OutputView;
 
@@ -27,28 +21,27 @@ public class AttendanceController {
     public static final String RISK_OF_EXPLUSTION = "4";
     public static final String QUIT = "Q";
 
-    public static final LocalDate DATE = LocalDate.of(2024, 12, 13);
+    private InputView inputView;
+    private OutputView outputView;
+    private AttendanceSheet attendanceSheet;
 
-    private final InputView inputView;
-
-    public AttendanceController(InputView inputView) {
+    public AttendanceController(InputView inputView, OutputView outputView, AttendanceSheet attendanceSheet) {
         this.inputView = inputView;
+        this.outputView = outputView;
+        this.attendanceSheet = attendanceSheet;
     }
 
     public void start() {
-        AttendanceSheetsFactory attendanceSheetsFactory = new AttendanceSheetsFactory(new FileReaderUtil());
-        AttendanceSheets attendanceSheets = attendanceSheetsFactory.create();
-
-        runInputCommand(() -> inputCommand(attendanceSheets));
+        runInputCommand(this::inputCommand);
     }
 
-    private String inputCommand(AttendanceSheets attendanceSheets) {
-        String select = inputView.inputMenu(DATE);
+    private String inputCommand() {
+        String select = inputView.inputMenu();
         switch (select) {
-            case CREATE_ATTENDANCE -> attend(attendanceSheets);
-            case UPDATE_ATTENDANCE -> updateAttendance(attendanceSheets);
-            case ATTENDANCE_SHEET -> printAttendance(attendanceSheets);
-            case RISK_OF_EXPLUSTION -> printRiskOfExpulsion(attendanceSheets);
+            case CREATE_ATTENDANCE -> attend();
+            case UPDATE_ATTENDANCE -> updateAttendance();
+            case ATTENDANCE_SHEET -> printAttendance();
+            case RISK_OF_EXPLUSTION -> printRiskOfExpulsion();
             case QUIT -> {
                 return QUIT;
             }
@@ -56,74 +49,39 @@ public class AttendanceController {
         return select;
     }
 
-    private void attend(AttendanceSheets attendanceSheets) {
+    private void attend() {
         String nickname = inputView.inputNickname();
-        LocalTime localTime = InputParser.timeParser(inputView.inputTime());
+        LocalTime attendanceTime = inputView.inputTime();
 
-        LocalDateTime localDateTime = LocalDateTime.of(DATE.getYear(), DATE.getMonth(), DATE.getDayOfMonth(),
-                localTime.getHour(), localTime.getMinute());
-
-        attendanceSheets.add(new AttendanceSheet(nickname, AttendanceDateTime.from(localDateTime)));
+        attendanceSheet.add(nickname, TODAY, attendanceTime);
     }
 
-    private void updateAttendance(AttendanceSheets attendanceSheets) {
+    private void updateAttendance() {
         String nickname = inputView.inputUpdateNickname();
-        List<AttendanceSheet> attendanceByNickname = attendanceSheets.findAttendanceByNickname(nickname);
-        int day = InputParser.dayParser(inputView.inputUpdateDate());
+        int day = inputView.inputUpdateDate();
+        LocalTime updateTime = inputView.inputUpdateTime();
 
-        AttendanceSheet attendanceSheetByNicknameAndDay = attendanceByNickname.stream()
-                .filter(attendanceSheet -> attendanceSheet.isCorrectDay(day))
-                .findFirst()
-                .orElseThrow();
-
-        LocalTime localTime = InputParser.timeParser(inputView.inputUpdateTime());
-        attendanceSheetByNicknameAndDay.getAttendanceDateTime().update(localTime);
+        attendanceSheet.update(nickname, day, updateTime);
     }
 
-    private void printAttendance(AttendanceSheets attendanceSheets) {
+    private void printAttendance() {
         String nickname = inputView.inputNickname();
-        OutputView.printAttendanceSheetIntro(nickname);
+        outputView.printAttendanceSheetIntro(nickname);
+        outputView.printAttendancesSheet(nickname, attendanceSheet.findAttendanceByNickname(nickname));
 
-        List<AttendanceSheet> attendancesByNickname = attendanceSheets.findAttendanceByNickname(nickname);
-        printAttendanceSheets(attendancesByNickname);
+        Map<AttendanceState, Long> attendanceState = attendanceSheet.countAttendanceState(nickname);
+        int lateCount = Math.toIntExact(attendanceState.get(LATE));
+        int absentCount = Math.toIntExact(attendanceState.get(ABSENT));
 
-        int attendCount = attendanceSheets.getStateCount(nickname, AttendanceState.ATTEND);
-        int lateCount = attendanceSheets.getStateCount(nickname, AttendanceState.LATE);
-        int absentCount = attendanceSheets.getStateCount(nickname, AttendanceState.ABSENT);
-
-        OutputView.printAttendanceStatistics(attendCount, lateCount, absentCount);
-        OutputView.printAbsentPolicy(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount));
+        outputView.printAttendanceStatistics(attendanceState);
+        outputView.printAbsentPolicy(ExpellState.checkExpellStatus(lateCount, absentCount));
     }
 
-    private void printRiskOfExpulsion(AttendanceSheets attendanceSheets) {
-        OutputView.printRiskOfExpulsionBanner();
+    private void printRiskOfExpulsion() {
+        Map<String, Map<AttendanceState, Long>> attendanceStatus = attendanceSheet.countAttendancesState();
 
-        List<String> allNames = attendanceSheets.findAllNames();
-
-        for (String name : allNames) {
-            printRiskOfExpulsionByName(attendanceSheets, name);
-        }
+        outputView.printRiskOfExpulsion(attendanceStatus, attendanceSheet.calculateAllExpellStatus(attendanceStatus));
     }
 
-    private static void printRiskOfExpulsionByName(AttendanceSheets attendanceSheets, String name) {
-        int lateCount = attendanceSheets.getStateCount(name, AttendanceState.LATE);
-        int absentCount = attendanceSheets.getStateCount(name, AttendanceState.ABSENT);
 
-        AbsentPolicy absentPolicy = AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount);
-        if (AbsentPolicy.isNotRiskOfExpulsion(absentPolicy)) {
-            return;
-        }
-
-        OutputView.printRiskOfExpulsion(name, lateCount, absentCount, absentPolicy);
-    }
-
-    private static void printAttendanceSheets(List<AttendanceSheet> attendancesByNickname) {
-        Map<Integer, AttendanceDateTime> dayToAttendanceDateTime = new HashMap<>();
-        attendancesByNickname.forEach(attendance ->
-                dayToAttendanceDateTime.put(
-                        attendance.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth(),
-                        attendance.getAttendanceDateTime()));
-
-        OutputView.printAttendanceSheets(dayToAttendanceDateTime, DATE.getDayOfMonth());
-    }
 }
