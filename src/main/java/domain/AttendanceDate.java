@@ -27,11 +27,6 @@ public class AttendanceDate {
         return this.date.equals(date);
     }
 
-    public void editAttendanceTime(LocalTime newTime) {
-        time = newTime;
-        saveAttendanceStatus();
-    }
-
     private void saveAttendanceStatus() {
         status = AttendanceStatus.evaluateAttendance(date, time);
     }

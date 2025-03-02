@@ -45,17 +45,4 @@ class AttendanceDateTest {
 
         assertThat(attendanceDate.getStatus()).isEqualTo(status);
     }
-
-    @Test
-    void 출석_수정이_정상적으로_이루어진다() {
-        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 10);
-        final LocalDateTime editedDateTime = LocalDateTime.of(2024, 12, 10,10, 3);
-
-        AttendanceDate attendanceDate = new AttendanceDate(dateTime);
-        attendanceDate.editAttendanceTime(editedDateTime.toLocalTime());
-        AttendanceStatus afterStatus = AttendanceStatus.evaluateAttendance(editedDateTime);
-
-        assertThat(attendanceDate.getStatus()).isEqualTo(afterStatus);
-        assertThat(attendanceDate.getTime()).isEqualTo(editedDateTime.toLocalTime());
-    }
 }

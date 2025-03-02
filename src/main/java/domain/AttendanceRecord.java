@@ -27,10 +27,8 @@ public class AttendanceRecord {
     }
 
     public void editAttendanceDate(LocalDate date, LocalTime time) {
-        AttendanceDate attendanceDate = getAttendanceDate(date);
-        int index = attendanceDates.indexOf(attendanceDate);
-        attendanceDate.editAttendanceTime(time);
-        attendanceDates.set(index, attendanceDate);
+        int index = attendanceDates.indexOf(getAttendanceDate(date));
+        attendanceDates.set(index, new AttendanceDate(date, time));
     }
 
     public boolean hasAttendanceDate(LocalDate date) {
