@@ -143,7 +143,7 @@ public class AttendanceManagerTest {
 
         // then
         AttendanceCheckResult expected = new AttendanceCheckResult("빙티",
-            List.of(new Attendance(second, null)),
+            List.of(new Attendance(second, Attendances.ABSENCE_TIME)),
             Map.of(
                 AttendanceStatus.LATE, 0,
                 AttendanceStatus.PRESENCE, 0,

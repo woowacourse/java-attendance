@@ -10,6 +10,7 @@ import java.util.Optional;
 public class Attendances {
 
     private static final LocalDate START_DATE_OF_DECEMBER = LocalDate.of(2024, 12, 1);
+    public static final LocalTime ABSENCE_TIME = LocalTime.of(22, 59, 59);
 
     private final List<Attendance> attendances;
 
@@ -88,7 +89,7 @@ public class Attendances {
         boolean hasDate = attendances.stream()
             .anyMatch(attendance -> attendance.hasAttendDate(currentDate));
         if(!hasDate) {
-            attendances.add(new Attendance(currentDate, null));
+            attendances.add(new Attendance(currentDate, ABSENCE_TIME));
         }
     }
 

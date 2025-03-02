@@ -141,7 +141,7 @@ public class AttendanceBooksTest {
         // then
         assertThat(attendancesUntilYesterday).containsExactlyElementsOf(
             List.of(
-                new Attendance(LocalDate.of(2024, 12, 2), null),
+                new Attendance(LocalDate.of(2024, 12, 2), Attendances.ABSENCE_TIME),
                 new Attendance(twodaysAgo, LocalTime.of(10, 1)),
                 new Attendance(yesterday, LocalTime.of(10, 2))
             )
