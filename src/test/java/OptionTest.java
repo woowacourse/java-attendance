@@ -19,11 +19,10 @@ public class OptionTest {
             "Q, QUIT",
             "q, QUIT"
     })
-    void should_ReturnCorrectSelectOption_When_ValidInputIsGiven(String inputNumber,
-                                                                 Option expectedOption) {
+    void should_ReturnCorrectSelectOption_When_ValidInputIsGiven(String inputNumber, Option expectedOption) {
         Option option = Option.from(inputNumber);
 
-        assertThat(expectedOption).isEqualTo(option);
+        assertThat(option).isEqualTo(expectedOption);
     }
 
     @DisplayName("유효하지 않은 입력을 받으면 예외를 발생시킨다.")

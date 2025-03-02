@@ -1,6 +1,6 @@
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import domain.Attendance;
 import domain.AttendanceBook;
@@ -11,14 +11,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceCheckTest {
-    AttendanceBook attendanceBook = new AttendanceBook();
+
+    private AttendanceBook attendanceBook;
 
     @BeforeEach
-    void initial() {
+    void setUp() {
+        attendanceBook = new AttendanceBook();
+
         String name = "빙봉";
         LocalDate initialDate = LocalDate.of(2024, 12, 13);
         LocalTime initialTime = LocalTime.of(12, 59);
-
         attendanceBook.addCrew(name, initialDate, initialTime);
     }
 
@@ -53,7 +55,7 @@ public class AttendanceCheckTest {
         LocalTime time = LocalTime.of(13, 0);
         Attendance attendance = new Attendance(date, time);
 
-        assertEquals(attendanceBook.attendCrew(name, date, time), attendance);
+        assertThat(attendanceBook.attendCrew(name, date, time)).isEqualTo(attendance);
     }
 
     @DisplayName("이미 출석한 경우 수정 기능 안내 예외를 발생한다.")

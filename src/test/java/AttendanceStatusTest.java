@@ -1,4 +1,4 @@
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import domain.AttendanceStatus;
 import java.time.LocalDate;
@@ -17,7 +17,7 @@ public class AttendanceStatusTest {
     void should_DetermineAttendanceStatus_When_WithinAttendanceTime(LocalDate date, LocalTime time) {
         AttendanceStatus attendanceStatus = AttendanceStatus.from(date, time);
 
-        assertSame(AttendanceStatus.ATTENDANCE, attendanceStatus);
+        assertThat(attendanceStatus).isSameAs(AttendanceStatus.ATTENDANCE);
     }
 
     @DisplayName("월요일은 13시 30분 이전, 다른 요일은 10시 30분 이전이면 지각으로 판단한다.")
@@ -26,7 +26,7 @@ public class AttendanceStatusTest {
     void should_decideByTime_When_WithinLatenessTime(LocalDate date, LocalTime time) {
         AttendanceStatus attendanceStatus = AttendanceStatus.from(date, time);
 
-        assertSame(AttendanceStatus.LATENESS, attendanceStatus);
+        assertThat(attendanceStatus).isSameAs(AttendanceStatus.LATENESS);
     }
 
     @DisplayName("월요일은 13시 31분 이후, 다른 요일은 10시 31분 이후이면 결석으로 판단한다.")
@@ -35,7 +35,7 @@ public class AttendanceStatusTest {
     void should_decideByTime_When_WithinAbsenceTime(LocalDate date, LocalTime time) {
         AttendanceStatus attendanceStatus = AttendanceStatus.from(date, time);
 
-        assertSame(AttendanceStatus.ABSENCE, attendanceStatus);
+        assertThat(attendanceStatus).isSameAs(AttendanceStatus.ABSENCE);
     }
 
     private static Stream<Arguments> attendanceDateAndTimeArguments() {

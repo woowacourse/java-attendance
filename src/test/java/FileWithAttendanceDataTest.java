@@ -18,6 +18,6 @@ public class FileWithAttendanceDataTest {
 
         fileReader.loadFile(filePath);
 
-        assertThat(attendanceBook.containsCrew(name)).isTrue();
+        assertThat(attendanceBook.findCrewByName(name).getName()).isEqualTo(name);
     }
 }

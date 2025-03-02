@@ -11,10 +11,12 @@ import org.junit.jupiter.api.Test;
 
 public class AttendanceEditTest {
 
-    AttendanceBook attendanceBook = new AttendanceBook();
+    private AttendanceBook attendanceBook;
 
     @BeforeEach
-    void initial() {
+    void setUp() {
+        attendanceBook = new AttendanceBook();
+
         String name = "빙봉";
         LocalDate initialDate = LocalDate.of(2024, 12, 13);
         LocalTime initialTime = LocalTime.of(12, 59);
@@ -32,8 +34,8 @@ public class AttendanceEditTest {
         LocalTime editTime = LocalTime.of(13, 6);
         Attendance expectedUpdatedAttendance = new Attendance(date, editTime);
 
-        assertThat(expectedInitalAttendance).isEqualTo(attendanceBook.findAttendance(name, date));
-        assertThat(expectedUpdatedAttendance).isEqualTo(attendanceBook.editCrew(name, date, date, editTime));
+        assertThat(attendanceBook.findAttendance(name, date)).isEqualTo(expectedInitalAttendance);
+        assertThat(attendanceBook.editCrew(name, date, date, editTime)).isEqualTo(expectedUpdatedAttendance);
     }
 
     @DisplayName("등록되지 않은 닉네임을 입력한 경우 예외를 발생한다.")

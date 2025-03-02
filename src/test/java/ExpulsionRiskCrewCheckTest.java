@@ -12,21 +12,24 @@ import org.junit.jupiter.api.Test;
 
 public class ExpulsionRiskCrewCheckTest {
 
-    AttendanceBook attendanceBook = new AttendanceBook();
+    private static final LocalDate nowDate = LocalDate.of(2024, 12, 13);
+    private AttendanceBook attendanceBook;
+
+    @BeforeEach
+    void setUp() {
+        attendanceBook = new AttendanceBook();
+        initialCrew();
+    }
 
     @DisplayName("전날까지의 크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
     @Test
     void should_IdentifyExpulsionRiskCrew_When_GivenAttendanceRecords() {
-        LocalDate nowDate = LocalDate.of(2024, 12, 13);
-
         assertThat(attendanceBook.checkExpulsionRiskCrew(nowDate).size()).isEqualTo(5);
     }
 
     @DisplayName("제적 대상자, 면담 대상자, 경고 대상자순으로 정렬한다.")
     @Test
     void should_SortRiskCrews_ByPenaltyStatus() {
-        LocalDate nowDate = LocalDate.of(2024, 12, 13);
-
         List<Crew> riskCrewResult = attendanceBook.checkExpulsionRiskCrew(nowDate);
 
         assertThat(riskCrewResult.getFirst().determinePenaltyStatus(nowDate)).isSameAs(Penalty.COUNSEL);
@@ -39,8 +42,6 @@ public class ExpulsionRiskCrewCheckTest {
     @DisplayName("대상 항목별 정렬 순서는 지각 3회를 결석 1회로 간주하여 내림차순한다.")
     @Test
     void should_SortRiskCrews_ByAdjustedAbsences() {
-        LocalDate nowDate = LocalDate.of(2024, 12, 13);
-
         List<Crew> riskCrewResult = attendanceBook.checkExpulsionRiskCrew(nowDate);
         Crew firstRankedCrew = riskCrewResult.getFirst();
         Crew secondRankedCrew = riskCrewResult.get(1);
@@ -67,8 +68,6 @@ public class ExpulsionRiskCrewCheckTest {
     @DisplayName("출석 상태가 같으면 닉네임으로 오름차순 정렬한다.")
     @Test
     void should_SortRiskCrews_ByName_When_SamePenaltyStatus() {
-        LocalDate nowDate = LocalDate.of(2024, 12, 13);
-
         List<Crew> riskCrewResult = attendanceBook.checkExpulsionRiskCrew(nowDate);
         Crew thirdRankedCrew = riskCrewResult.get(2);
         Crew fourthRankedCrew = riskCrewResult.get(3);
@@ -77,8 +76,7 @@ public class ExpulsionRiskCrewCheckTest {
         assertThat(fourthRankedCrew.getName()).isEqualTo("쿠키");
     }
 
-    @BeforeEach
-    void initialCrew() {
+    private void initialCrew() {
         String name1 = "빙티"; // 면담
         attendanceBook.addCrew(name1, LocalDate.of(2024, 12, 2), LocalTime.of(13, 6)); // 지각
         attendanceBook.addCrew(name1, LocalDate.of(2024, 12, 3), LocalTime.of(10, 7)); // 지각
