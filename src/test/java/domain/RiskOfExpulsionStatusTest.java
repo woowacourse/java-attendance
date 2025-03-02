@@ -14,10 +14,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class RiskOfExpulsionStatusTest {
 
     @Nested
-    @DisplayName("성공 테스트")
-    class SuccessCases {
+    @DisplayName("제적 대상자를 계산한다.")
+    class CalculateRiskOfExpulsionStatus {
 
-        @DisplayName("주어진 값으로, 제적 대상자의 상태를 반환하라")
+        @DisplayName("주어진 값으로, 제적 대상자의 상태를 올바르게 계산한다.")
         @ParameterizedTest
         @MethodSource("provideAbsenceCountAndRiskOfExpulsionStatus")
         public void calculateRiskOfExpulsionStatus(final int absenceCount, final RiskOfExpulsionStatus expected)
@@ -41,12 +41,6 @@ public class RiskOfExpulsionStatusTest {
             );
         }
 
-    }
-
-    @Nested
-    @DisplayName("실패 테스트")
-    class FailCases {
-
         @DisplayName("주어진 값이 음수라면 예외가 발생한다.")
         @Test
         public void calculateRiskOfExpulsionStatus() throws Exception {
@@ -58,4 +52,5 @@ public class RiskOfExpulsionStatusTest {
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
+
 }
