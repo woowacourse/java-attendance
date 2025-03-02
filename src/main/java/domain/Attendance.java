@@ -10,7 +10,6 @@ public class Attendance {
 
     private final static LocalTime OPEN_TIME = LocalTime.of(8, 0);
     private final static LocalTime CLOSE_TIME = LocalTime.of(23, 0);
-    private final static LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
 
     private final LocalDate date;
     private final LocalTime time;
@@ -45,9 +44,9 @@ public class Attendance {
     }
 
     private void validateDate(LocalDate date) {
-        String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        if (Holiday.isHoliday(date)) {
+            String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
 
-        if (dayOfWeek.equals("토요일") || dayOfWeek.equals("일요일") || date.equals(CHRISTMAS)) {
             throw new IllegalArgumentException(
                     String.format("[ERROR] %d월 %02d일 %s은(는) 등교일이 아닙니다.", date.getMonthValue(), date.getDayOfMonth(),
                             dayOfWeek));

@@ -4,10 +4,10 @@ import domain.Attendance;
 import domain.AttendanceBook;
 import domain.Crew;
 import domain.FileWithAttendanceData;
+import domain.Holiday;
 import domain.Option;
 import domain.Penalty;
 import java.time.DateTimeException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -142,7 +142,7 @@ public class Controller {
     }
 
     private void displayAttendanceRecord(String name, LocalDate date) {
-        if (isHoliday(date)) {
+        if (Holiday.isHoliday(date)) {
             return;
         }
 
@@ -171,10 +171,5 @@ public class Controller {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("[ERROR] 날짜 형식이 일치하지 않습니다.");
         }
-    }
-
-    private boolean isHoliday(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY ||
-                date.equals(LocalDate.of(2024, 12, 25));
     }
 }

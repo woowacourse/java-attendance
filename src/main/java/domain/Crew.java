@@ -1,6 +1,5 @@
 package domain;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -71,11 +70,6 @@ public class Crew {
     }
 
     private boolean isAbsentDay(LocalDate date) {
-        return !isHoliday(date) && !hasAlreadyAttended(date);
-    }
-
-    private boolean isHoliday(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY ||
-                date.equals(LocalDate.of(2024, 12, 25));
+        return !Holiday.isHoliday(date) && !hasAlreadyAttended(date);
     }
 }
