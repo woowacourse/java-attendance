@@ -237,7 +237,7 @@ public class AttendanceHistoriesTest {
 
     @Test
     @DisplayName("2.3 출석 기록이 없는 날짜를 입력한 경우 예외를 발생시킬 수 있다.")
-    void test() {
+    void testValidateDateWhenReplace() {
         // given
         // when
         Crew crew = new Crew("노랑");
