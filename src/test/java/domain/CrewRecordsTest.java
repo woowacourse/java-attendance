@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,6 +110,26 @@ class CrewRecordsTest {
 
         // then
         assertThat(actualValue).isEqualTo(expectedValue);
+    }
+
+    @DisplayName("제적 대상자인 크루들을 제적 위험 순서대로 반환한다.")
+    @Test
+    void getWarnedCrewsTest() {
+        // given
+        CrewRecords crewRecords = CrewRecordsFixture.createEmptyCrewRecords("네오", "저스틴", "솔라", "브리");
+        Crew neo = new Crew("네오");
+        Crew justin = new Crew("저스틴");
+
+        // when
+        crewRecords.addRecord(justin, new AttendanceRecord(LocalDate.of(2024, 12, 2)));
+        crewRecords.addRecord(justin, new AttendanceRecord(LocalDate.of(2024, 12, 3)));
+        crewRecords.addRecord(justin, new AttendanceRecord(LocalDate.of(2024, 12, 4)));
+        crewRecords.addRecord(neo, new AttendanceRecord(LocalDate.of(2024, 12, 2)));
+        crewRecords.addRecord(neo, new AttendanceRecord(LocalDate.of(2024, 12, 3)));
+        List<Crew> actualValue = crewRecords.getWarnedCrews();
+
+        // then
+        assertThat(actualValue).containsExactly(justin, neo);
     }
 
     static Stream<Arguments> warningStatusTestArgs() {
