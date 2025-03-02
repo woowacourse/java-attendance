@@ -1,16 +1,18 @@
-package presentation;
+package controller;
 
 import domain.AttendanceBook;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import presentation.command.AttendCommand;
-import presentation.command.CrewInfoCommand;
-import presentation.command.EditCommand;
-import presentation.command.WarningInfoCommand;
+import controller.command.AttendCommand;
+import controller.command.CrewInfoCommand;
+import controller.command.EditCommand;
+import controller.command.WarningInfoCommand;
+import java.util.stream.Collectors;
 import view.AttendanceFileReader;
 import view.InputView;
 import view.OutputView;
@@ -36,24 +38,28 @@ public class AttendanceController {
         while (!inputCommand.equalsIgnoreCase("Q")) {
             inputCommand = processCommand(inputCommand, commands, attendanceBook);
         }
-
         inputView.close();
     }
 
     private String processCommand(String inputCommand, Map<String, Consumer<AttendanceBook>> commands,
                                   AttendanceBook attendanceBook) {
         try {
+            // todo: 오늘 날짜 출력하는 부분 책임 분리
             inputCommand = inputView.inputCommand(LocalDate.now().format(DateTimeFormatter.ofPattern("MM월 dd일")));
             Consumer<AttendanceBook> command = commands.get(inputCommand);
+            validate(command);
 
-            if (command == null) {
-                throw new IllegalArgumentException("잘못된 형식을 입력하였습니다.");
-            }
             command.accept(attendanceBook);
         } catch (IllegalArgumentException exception) {
             outputView.printError(exception.getMessage());
         }
         return inputCommand;
+    }
+
+    private void validate(Consumer<AttendanceBook> command) {
+        if (command == null) {
+            throw new IllegalArgumentException("잘못된 형식을 입력하였습니다.");
+        }
     }
 
     private Map<String, Consumer<AttendanceBook>> initCommand() {
@@ -67,6 +73,17 @@ public class AttendanceController {
 
     private AttendanceBook initAttendanceBook() {
         Map<String, List<String>> crewsInfo = attendanceFileReader.getInfo();
-        return new AttendanceBook(crewsInfo.keySet().stream().toList());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        Map<String, List<LocalDateTime>> parsedCrewsInfo = crewsInfo.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().stream()
+                                .map(dateTime -> LocalDateTime.parse(dateTime, formatter))
+                                .toList()
+                ));
+        return new AttendanceBook(parsedCrewsInfo);
     }
 }

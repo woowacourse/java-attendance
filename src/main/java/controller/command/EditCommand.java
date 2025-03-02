@@ -1,9 +1,9 @@
-package presentation.command;
+package controller.command;
 
 import domain.AttendanceBook;
 import java.util.function.Consumer;
 
-public class AttendCommand implements Consumer<AttendanceBook> {
+public class EditCommand implements Consumer<AttendanceBook> {
     @Override
     public void accept(AttendanceBook attendanceBook) {
 
