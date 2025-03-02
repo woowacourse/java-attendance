@@ -241,4 +241,33 @@ public class CrewAttendanceStorageTest {
                 () -> assertThat(statistic.get(제적_대상자).getExpulsionRiskStatus()).isSameAs(ExpulsionRiskStatus.EXPELLED)
         );
     }
+
+    @DisplayName("제적 위험자가 아닌 경우에는 제적 위험자 목록에 포함하지 않는다.")
+    @Test
+    void test11() {
+        // given
+        LocalDate startDate = LocalDate.of(2025, 2, 24); // 월
+        LocalDate endDate = LocalDate.of(2025, 3, 1); // 토
+
+        String 모범생 = "모범생";
+        AttendanceStorage storageOf모범생 = AttendanceStorage.of(List.of(
+                new ExistAttendance(startDate, LocalTime.of(13, 0)), // 월 - 출석
+                new ExistAttendance(startDate.plusDays(1), LocalTime.of(10, 0)), // 화 - 출석
+                new ExistAttendance(startDate.plusDays(2), LocalTime.of(10, 30)), // 수 - 지각
+                new ExistAttendance(startDate.plusDays(3), LocalTime.of(10, 0)), // 목 - 출석
+                new ExistAttendance(startDate.plusDays(4), LocalTime.of(10, 0)) // 금 - 출석
+        ));
+
+        CrewAttendanceStorage crewAttendanceStorage = CrewAttendanceStorage.of(Map.of(
+                모범생, storageOf모범생
+        ));
+
+        // when
+        Map<String, AttendanceStatistic> statistic = crewAttendanceStorage.findRiskCrewStatistics(startDate, endDate);
+
+        // then
+        assertAll(
+                () -> assertThat(statistic).isEmpty()
+        );
+    }
 }
