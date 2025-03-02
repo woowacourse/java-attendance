@@ -48,6 +48,18 @@ public class AttendanceController {
         inputView.close();
     }
 
+    private AttendanceCommand inputCommand() {
+        try {
+            return AttendanceCommand.from(inputView.inputCommand());
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return inputCommand();
+        }
+    }
+
+    private void execute(AttendanceCommand command) {
+        commands.get(command).run();
+    }
 
     private void checkAttendance(AttendanceManager attendanceManager) {
         String crewName = inputView.inputCrewName();
@@ -82,19 +94,8 @@ public class AttendanceController {
     }
 
     private void viewWarningCrews(AttendanceManager attendanceManager) {
-
-    }
-
-    private void execute(AttendanceCommand command) {
-        commands.get(command).run();
-    }
-
-    private AttendanceCommand inputCommand() {
-        try {
-            return AttendanceCommand.from(inputView.inputCommand());
-        } catch (IllegalArgumentException e) {
-            outputView.printErrorMessage(e);
-            return inputCommand();
-        }
+        int today = LocalDate.now().getDayOfMonth();
+        Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount = attendanceManager.getCrewsStatusCount(today);
+        outputView.printWarningCrews(crewsStatusCount);
     }
 }

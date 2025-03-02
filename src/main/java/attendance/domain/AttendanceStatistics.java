@@ -15,7 +15,6 @@ public class AttendanceStatistics {
     public static Map<AttendanceStatus, Integer> getTotalStatusCount(Attendances attendances, int today) {
         Map<AttendanceStatus, Integer> statusCount = new EnumMap<>(AttendanceStatus.class);
         Map<LocalDate, Attendance> attendanceMap = attendances.getAttendances();
-
         List<Attendance> attendanceList = extractValidAttendances(attendanceMap);
         Arrays.stream(AttendanceStatus.values())
                 .forEach(status -> statusCount.put(status, getStatusCount(status, attendanceList)));

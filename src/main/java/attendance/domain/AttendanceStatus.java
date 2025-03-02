@@ -24,7 +24,7 @@ public enum AttendanceStatus {
         this.mondayCondition = mondayCondition;
     }
 
-    public static AttendanceStatus from(LocalDate date, LocalTime time) {
+    public static AttendanceStatus of(LocalDate date, LocalTime time) {
         if (isMonday(date)) {
             return calculateMondayStatus(time);
         }

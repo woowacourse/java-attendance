@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -50,12 +51,22 @@ public class AttendanceManager {
         return WarningLevel.from(statusCount);
     }
 
-    public Map<AttendanceStatus, Integer> calculateStatusCount(String crewName, int today){
+    public Map<AttendanceStatus, Integer> calculateStatusCount(String crewName, int today) {
         Attendances attendances = findAttendancesByName(crewName);
         return AttendanceStatistics.getTotalStatusCount(attendances, today);
     }
 
-    public WarningLevel calculateWarningLevel(String crewName, int today){
+    public Map<String, Map<AttendanceStatus, Integer>> getCrewsStatusCount(int today) {
+        Map<String, Map<AttendanceStatus, Integer>> result = new HashMap<>();
+        crewAttendances.keySet()
+                .forEach(name -> {
+                    Map<AttendanceStatus, Integer> statusCount = calculateStatusCount(name, today);
+                    result.put(name, statusCount);
+                });
+        return result;
+    }
+
+    public WarningLevel calculateWarningLevel(String crewName, int today) {
         return WarningLevel.from(calculateStatusCount(crewName, today));
     }
 

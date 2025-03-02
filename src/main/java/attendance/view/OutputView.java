@@ -1,5 +1,8 @@
 package attendance.view;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
+import static attendance.domain.AttendanceStatus.LATENESS;
+
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceStatus;
@@ -8,9 +11,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class OutputView {
@@ -23,11 +30,13 @@ public class OutputView {
     private static final String ATTENDANCE_RECORD_HEADER_FORMAT = "이번 달 %s의 출석 기록입니다.\n";
     private static final String ATTENDANCE_STATUS_COUNT_FORMAT = "%s: %d회\n";
     private static final String CREW_WARNING_LEVEL_FORMAT = "%s 대상자 입니다.\n\n";
+    private static final String WARNING_CREW_PRINT_HEADER = "제적 위험자 조회 결과\n";
+    private static final String WARNING_CREW_PRINT_FORMAT = "- %s: %s %d회, %s %d회 (%s)\n";
 
     public void printCheckAttendanceResult(LocalTime enterTime) {
         LocalDate now = LocalDate.now();
         System.out.print(
-                createAttendanceDescription(LocalDate.now(), enterTime, AttendanceStatus.from(now, enterTime)));
+                createAttendanceDescription(LocalDate.now(), enterTime, AttendanceStatus.of(now, enterTime)));
     }
 
     private String createAttendanceDescription(LocalDate date, LocalTime enterTime, AttendanceStatus status) {
@@ -67,7 +76,7 @@ public class OutputView {
         if (Optional.ofNullable(time).isEmpty()) {
             return EMPTY_ATTENDANCE_STATUS_MESSAGE;
         }
-        return AttendanceStatus.from(date, time).getStatus();
+        return AttendanceStatus.of(date, time).getStatus();
     }
 
     public void printAttendanceRecords(String crewName, Map<LocalDate, Attendance> crewAttendances) {
@@ -81,6 +90,14 @@ public class OutputView {
                     builder.append(toAttendanceRecordString(crewAttendances, date));
                 });
         System.out.println(builder);
+    }
+
+    private String toAttendanceRecordString(Map<LocalDate, Attendance> crewAttendances, LocalDate date) {
+        if (crewAttendances.containsKey(date)) {
+            Attendance attendance = crewAttendances.get(date);
+            return createAttendanceDescription(date, attendance.time(), attendance.status());
+        }
+        return createAttendanceDescription(date, null, ABSENCE);
     }
 
     public void printAttendanceStatusCount(Map<AttendanceStatus, Integer> statusCounts) {
@@ -100,12 +117,46 @@ public class OutputView {
         System.out.printf(CREW_WARNING_LEVEL_FORMAT, level.getDescription());
     }
 
-    private String toAttendanceRecordString(Map<LocalDate, Attendance> crewAttendances, LocalDate date) {
-        if (crewAttendances.containsKey(date)) {
-            Attendance attendance = crewAttendances.get(date);
-            return createAttendanceDescription(date, attendance.time(), attendance.status());
-        }
-        return createAttendanceDescription(date, null, AttendanceStatus.ABSENCE);
+    public void printWarningCrews(Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount) {
+        Map<String, Integer> totalAbsence = calculateTotalAbsence(crewsStatusCount);
+        StringBuilder builder = new StringBuilder();
+        builder.append(WARNING_CREW_PRINT_HEADER);
+        List<Entry<String, Integer>> sortedList = totalAbsence.entrySet().stream()
+                .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()))
+                .collect(Collectors.toList());
+
+        appendWarningCrew(builder, crewsStatusCount, sortedList);
+        System.out.println(builder);
+    }
+
+    private static void appendWarningCrew(StringBuilder builder,
+                                          Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount,
+                                          List<Entry<String, Integer>> sortedList) {
+        sortedList.stream()
+                .filter(entry -> WarningLevel.from(crewsStatusCount.get(entry.getKey())) != WarningLevel.NONE)
+                .forEach(entry -> {
+                    Map<AttendanceStatus, Integer> statusCount = crewsStatusCount.get(entry.getKey());
+                    builder.append(String.format(WARNING_CREW_PRINT_FORMAT,
+                            entry.getKey(),
+                            ABSENCE.getStatus(),
+                            statusCount.get(ABSENCE),
+                            LATENESS.getStatus(),
+                            statusCount.get(LATENESS),
+                            WarningLevel.from(statusCount)
+                    ));
+                });
+    }
+
+    private Map<String, Integer> calculateTotalAbsence(Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount) {
+        Map<String, Integer> totalAbsence = new HashMap<>();
+        crewsStatusCount.entrySet()
+                .forEach(entry -> {
+                    Map<AttendanceStatus, Integer> statusCount = entry.getValue();
+                    int absenceCount = statusCount.get(AttendanceStatus.PRESENT) +
+                            WarningLevel.calculateTotalAbsenceCount(statusCount.get(LATENESS));
+                    totalAbsence.put(entry.getKey(), absenceCount);
+                });
+        return totalAbsence;
     }
 
 
