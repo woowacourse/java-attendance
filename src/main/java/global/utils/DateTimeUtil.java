@@ -15,7 +15,6 @@ public class DateTimeUtil {
     private static final LocalDate CHRISTMAS_DATE = LocalDate.of(2024, 12, 25);
     public static final LocalTime START_RUNNING_TIME = LocalTime.of(8, 0);
     public static final LocalTime END_RUNNING_TIME = LocalTime.of(23, 0);
-
     public static final List<LocalDate> NATIONAL_HOLIDAYS = List.of(CHRISTMAS_DATE);
 
     public static LocalDate getFixedRunningDate() {
@@ -57,10 +56,6 @@ public class DateTimeUtil {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("올바르지 않은 형식입니다.");
         }
-    }
-
-    public static String convertDateTimeFormat(LocalDate dateTime) {
-        return DateTimeFormatter.ofPattern("MM월 dd일 HH:mm").format(dateTime);
     }
 
     public static String convertDateWithDayOfWeekFormat(LocalDate dateTime) {

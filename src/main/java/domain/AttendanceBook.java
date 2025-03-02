@@ -81,12 +81,12 @@ public class AttendanceBook {
         }
     }
 
-    public void validateBeforeAdd(String name) {
-        findAttendanceRecordByName(name).validateBeforeAdd(getFixedRunningDate());
-    }
-
     public void validateBeforeAdd(String name, LocalDate date) {
         findAttendanceRecordByName(name).validateBeforeAdd(date);
+    }
+
+    public void validateBeforeAdd(String name) {
+        validateBeforeAdd(name, getFixedRunningDate());
     }
 
     public void validateBeforeEdit(String name, LocalDate date) {
