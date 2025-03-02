@@ -217,9 +217,11 @@ public class AttendanceHistoriesTest {
         Crew crew = new Crew("노랑");
         LocalDateTime newAttendanceDateTime = LocalDateTime.of(2025, 2, 21, 10, 15);
         // when
-        LocalDateTime oldAttendanceDateTime = attendanceHistories.replaceAttendanceHistory(crew, newAttendanceDateTime);
+        AttendanceDateTime oldAttendanceDateTime = attendanceHistories.replaceAttendanceHistory(crew,
+                newAttendanceDateTime);
         // then
-        assertThat(oldAttendanceDateTime).isEqualTo(LocalDateTime.of(2025, 2, 21, 10, 0));
+        AttendanceDateTime expectedAttendanceDateTime = new AttendanceDateTime(LocalDateTime.of(2025, 2, 21, 10, 0));
+        assertThat(oldAttendanceDateTime).isEqualTo(expectedAttendanceDateTime);
     }
 
     @Test
