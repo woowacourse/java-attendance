@@ -8,11 +8,11 @@ public enum Penalty {
     WARNING("경고", 2),
     PASS("패스", 0);
 
-    private final String penalty;
+    private final String name;
     private final int count;
 
-    Penalty(String penalty, int count) {
-        this.penalty = penalty;
+    Penalty(String name, int count) {
+        this.name = name;
         this.count = count;
     }
 
@@ -25,11 +25,11 @@ public enum Penalty {
     }
 
     public static boolean isNotPass(int lateCount, int absentCount) {
-        // TODO: 패스인지 확인
-        return false;
+        Penalty penalty = of(lateCount, absentCount);
+        return penalty != PASS;
     }
 
-    public String getPenalty() {
-        return penalty;
+    public String getName() {
+        return name;
     }
 }

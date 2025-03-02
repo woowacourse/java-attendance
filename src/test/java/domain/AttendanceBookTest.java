@@ -11,6 +11,7 @@ import static util.parser.DateTimeParser.parseStringToDateTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -179,7 +180,7 @@ public class AttendanceBookTest {
             LocalDate startDate = parseStringToDate("2024-12-01");
             LocalDate endDate = parseStringToDate("2024-12-07");
 
-            List<Crew> warningCrew = attendanceBook.findWarningCrew(startDate, endDate);
+            Map<String, Crew> warningCrew = attendanceBook.findWarningCrew(startDate, endDate);
             assertThat(warningCrew.size()).isEqualTo(2);
         }
 
@@ -202,10 +203,10 @@ public class AttendanceBookTest {
             Crew crew1 = attendanceBook.findCrewByName("쿠키");
             Crew crew2 = attendanceBook.findCrewByName("이든");
 
-            List<Crew> warningCrew = attendanceBook.findWarningCrew(startDate, endDate);
+            Map<String, Crew> warningCrew = attendanceBook.findWarningCrew(startDate, endDate);
             assertAll(
-                () -> assertThat(warningCrew.getFirst()).isEqualTo(crew2),
-                () -> assertThat(warningCrew.getLast()).isEqualTo(crew1)
+                () -> assertThat(warningCrew.get("이든")).isEqualTo(crew2),
+                () -> assertThat(warningCrew.get("쿠키")).isEqualTo(crew1)
             );
         }
     }

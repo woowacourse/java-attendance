@@ -89,13 +89,13 @@ public class PenaltyTest {
     class CheckExpelledWarningTest {
 
         @ParameterizedTest
-        @MethodSource("provideExpelledCount")
+        @MethodSource("provideExpelledPenalty")
         @DisplayName("제적 위험 대상자를 확인한다.")
         void checkExpelled(int lateCount, int absentCount) {
             assertThat(Penalty.isNotPass(lateCount, absentCount)).isTrue();
         }
 
-        static Stream<Arguments> provideExpelledCount() {
+        static Stream<Arguments> provideExpelledPenalty() {
             return Stream.of(
                 Arguments.arguments(0, 6),
                 Arguments.arguments(7, 9),
@@ -104,17 +104,17 @@ public class PenaltyTest {
         }
 
         @ParameterizedTest
-        @MethodSource("provideNotExpelledCount")
+        @MethodSource("provideNotExpelledPenalty")
         @DisplayName("제적 위험 대상자가 아님을 확인한다.")
         void checkNotExpelled(int lateCount, int absentCount) {
             assertThat(Penalty.isNotPass(lateCount, absentCount)).isFalse();
         }
 
-        static Stream<Arguments> provideNotExpelledCount() {
+        static Stream<Arguments> provideNotExpelledPenalty() {
             return Stream.of(
                 Arguments.arguments(0, 0),
-                Arguments.arguments(0, 3),
-                Arguments.arguments(2, 4)
+                Arguments.arguments(0, 1),
+                Arguments.arguments(3, 0)
             );
         }
     }

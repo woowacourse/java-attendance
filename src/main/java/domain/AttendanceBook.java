@@ -1,14 +1,19 @@
 package domain;
 
+import static domain.AttendanceStatus.ABSENT;
+import static domain.AttendanceStatus.LATE;
 import static util.parser.DateTimeParser.parseStringToDateTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
 
@@ -32,9 +37,41 @@ public class AttendanceBook {
         return crewRecords.get(name);
     }
 
-    public List<Crew> findWarningCrew(LocalDate startDate, LocalDate endDate) {
-        // TODO: 제적 위험 대상자 반환
-        return null;
+    public Map<String, Crew> findWarningCrew(LocalDate startDate, LocalDate endDate) {
+        return crewRecords.entrySet().stream()
+            .filter(entry -> {
+                Crew crew = entry.getValue();
+                Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
+                Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
+                return Penalty.isNotPass(statisticsResult.get(LATE), statisticsResult.get(ABSENT));
+            })
+            .sorted(Comparator
+                .comparingInt((Map.Entry<String, Crew> entry) -> {
+                    Crew crew = entry.getValue();
+                    Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
+                    Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
+                    return (statisticsResult.get(LATE) / 3) + statisticsResult.get(ABSENT);
+                }).reversed()
+                .thenComparing((Map.Entry<String, Crew> entry) -> {
+                    Crew crew = entry.getValue();
+                    Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
+                    Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
+                    return statisticsResult.get(LATE) % 3;
+                }, Comparator.reverseOrder())
+                .thenComparing((Map.Entry<String, Crew> entry) -> {
+                    Crew crew = entry.getValue();
+                    Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
+                    Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
+                    return statisticsResult.get(ABSENT);
+                }, Comparator.reverseOrder())
+                .thenComparing(Map.Entry::getKey)
+            )
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (existing, replacement) -> existing,
+                LinkedHashMap::new
+            ));
     }
 
     public DailyRecord saveAttendanceRecord(String name, LocalDateTime dateTime) {

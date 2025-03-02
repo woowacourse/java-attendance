@@ -1,5 +1,8 @@
 package view;
 
+import static domain.AttendanceStatus.ABSENT;
+import static domain.AttendanceStatus.LATE;
+
 import domain.AttendanceStatus;
 import domain.DailyRecord;
 import domain.Penalty;
@@ -17,6 +20,8 @@ public class OutputView {
     private static final String CREW_RECORD_START_MESSAGE = "이번 달 %s의 출석 기록입니다.%n";
     private static final String STATUS_RECORD_FORMAT = "%s: %d회%n";
     private static final String PENALTY_FORMAT = "%s 대상자입니다.";
+    private static final String WARNING_RESULT_START_MESSAGE = "제적 위험자 조회 결과";
+    private static final String WARNING_CREW_FORMAT = "- %s: %s %d회, %s %d회 (%s)%n";
 
     public void printErrorMessage(IllegalArgumentException e) {
         System.out.println();
@@ -59,7 +64,16 @@ public class OutputView {
 
     public void printPenalty(Penalty penalty) {
         System.out.println();
-        System.out.printf(PENALTY_FORMAT, penalty.getPenalty());
+        System.out.printf(PENALTY_FORMAT, penalty.getName());
         System.out.println();
+    }
+
+    public void printWarningStartMessage() {
+        System.out.println(WARNING_RESULT_START_MESSAGE);
+    }
+
+    public void printWarningCrew(String name, int absent, int late, Penalty penalty) {
+        System.out.printf(WARNING_CREW_FORMAT, name, ABSENT.getName(), absent,
+            LATE.getName(), late, penalty.getName());
     }
 }

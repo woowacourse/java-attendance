@@ -21,6 +21,7 @@ import domain.Penalty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 import view.InputView;
 import view.OutputView;
@@ -82,8 +83,20 @@ public class AttendanceController {
     }
 
     protected void expelledWarningCheck() {
-        // TODO: 제적 위험자 확인 구현
-        System.out.println("제적 위험자 확인 기능");
+        LocalDate startDate = localDate.withDayOfMonth(1);
+        Map<String, Crew> warningCrews = attendanceBook.findWarningCrew(startDate, localDate);
+
+        outputView.printWarningStartMessage();
+        for(String name : warningCrews.keySet()) {
+            Crew crew = warningCrews.get(name);
+            Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, localDate);
+            Map<AttendanceStatus, Integer> statistic = AttendanceStatus.countStatus(records);
+            int lateCount = statistic.get(LATE);
+            int absentCount = statistic.get(ABSENT);
+
+            Penalty penalty = Penalty.of(lateCount, absentCount);
+            outputView.printWarningCrew(name, absentCount, lateCount, penalty);
+        }
     }
 
     protected Runnable selectFeature(String featureNumber) {
