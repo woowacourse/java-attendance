@@ -20,6 +20,7 @@ public class Attendance implements Comparable<Attendance> {
     }
 
     public boolean hasAttend(LocalDate attendanceDate, LocalTime attendanceTime) {
+        if (this.attendanceTime == null) return false;
         return this.attendanceDate.isEqual(attendanceDate)
             && this.attendanceTime.equals(attendanceTime);
     }
