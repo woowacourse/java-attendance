@@ -62,16 +62,6 @@ public class InputView {
         return convertToLocalTime(userInput);
     }
 
-    private LocalTime convertToLocalTime(String userInput) {
-        LocalTime attendanceTime;
-        try {
-            attendanceTime = LocalTime.parse(userInput, DateTimeFormatter.ofPattern("HH:mm"));
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("잘못된 형식의 입력입니다.");
-        }
-        return attendanceTime;
-    }
-
     public void todayDateMessage(LocalDate nowDate) {
         System.out.println(TODAY_DATE_MESSAGE.formatted(
             nowDate.getMonthValue(), nowDate.getDayOfMonth(),
@@ -85,5 +75,15 @@ public class InputView {
 
     private String userInput() {
         return scanner.nextLine();
+    }
+
+    private LocalTime convertToLocalTime(String userInput) {
+        LocalTime attendanceTime;
+        try {
+            attendanceTime = LocalTime.parse(userInput, DateTimeFormatter.ofPattern("HH:mm"));
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("잘못된 형식의 입력입니다.");
+        }
+        return attendanceTime;
     }
 }

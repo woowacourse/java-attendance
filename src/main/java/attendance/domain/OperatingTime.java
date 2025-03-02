@@ -21,5 +21,4 @@ public enum OperatingTime {
         }
         return true;
     }
-
 }

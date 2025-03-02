@@ -62,7 +62,7 @@ public class OutputView {
     }
 
     public void printAttendanceResult(AttendanceResult attendanceResult) {
-        Map<AttendanceType, Integer> calculateResult = attendanceResult.getAttendanceResult();
+        Map<AttendanceType, Long> calculateResult = attendanceResult.getAttendanceResult();
         for (AttendanceType attendanceType : AttendanceType.values()) {
             System.out.println(CREW_STATUS_INFO.formatted(
                 attendanceType.getType(), calculateResult.get(attendanceType)));
@@ -95,7 +95,7 @@ public class OutputView {
         System.out.println(DANGEROUS_CREW_MESSAGE);
         for (DangerousCrew dangerousCrew : sortedDangerousCrews) {
             AttendanceResult attendanceResult = dangerousCrew.getAttendanceResult();
-            Map<AttendanceType, Integer> result = attendanceResult.getAttendanceResult();
+            Map<AttendanceType, Long> result = attendanceResult.getAttendanceResult();
 
             System.out.println(DANGEROUS_CREW_INFO.formatted(
                 dangerousCrew.getNickname(), result.get(ABSENCE), result.get(LATE), dangerousCrew.getCrewStatus().getStatusName()

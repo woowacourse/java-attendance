@@ -46,21 +46,6 @@ public class AttendanceController {
         }
     }
 
-    private void startAttendanceProcess(String userChooseFunction) {
-        Runnable function = functionMap.get(userChooseFunction);
-        if (function == null) {
-            throw new IllegalArgumentException("잘못된 입력입니다.");
-        }
-        function.run();
-    }
-
-    private void initFunctionMap() {
-        functionMap.put("1", this::attendConfirm);
-        functionMap.put("2", this::modifyAttendance);
-        functionMap.put("3", this::confirmAttendanceHistory);
-        functionMap.put("4", this::showDangerousCrew);
-    }
-
     private void attendConfirm() {
         String inputNickname = inputView.inputNickname();
         attendanceHistory.isValidCrew(inputNickname);
@@ -79,7 +64,7 @@ public class AttendanceController {
         int modifyDate = inputView.inputModifyAttendanceDate();
         AttendanceTime attendanceTime = attendanceHistory.getAttendanceTimeByDate(
             inputNickname, modifyDate);
-        LocalTime modifyTime = inputView.inputAttendanceTime();
+        LocalTime modifyTime = inputView.inputModifyTime();
         AttendanceTime modifyAttendanceTime = attendanceHistory.modifyAttendance(inputNickname,
             attendanceTime, LocalDateTime.of(currentDate.now(), modifyTime));
         outputView.printModifyAttendaneTimeResult(attendanceTime, modifyAttendanceTime);
@@ -104,4 +89,18 @@ public class AttendanceController {
         outputView.printDangerousCrew(sortedDangerousCrews);
     }
 
+    private void startAttendanceProcess(String userChooseFunction) {
+        Runnable function = functionMap.get(userChooseFunction);
+        if (function == null) {
+            throw new IllegalArgumentException("잘못된 입력입니다.");
+        }
+        function.run();
+    }
+
+    private void initFunctionMap() {
+        functionMap.put("1", this::attendConfirm);
+        functionMap.put("2", this::modifyAttendance);
+        functionMap.put("3", this::confirmAttendanceHistory);
+        functionMap.put("4", this::showDangerousCrew);
+    }
 }

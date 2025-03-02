@@ -4,45 +4,39 @@ import static attendance.domain.DayOfWeek.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceResult {
 
-    private final Map<AttendanceType, Integer> attendanceResult;
+    private final Map<AttendanceType, Long> attendanceResult;
 
-    private AttendanceResult(Map<AttendanceType, Integer> attendanceResult) {
+    private AttendanceResult(Map<AttendanceType, Long> attendanceResult) {
         this.attendanceResult = attendanceResult;
     }
 
-    public static AttendanceResult from(Map<AttendanceType, Integer> attendanceResult) {
+    public static AttendanceResult from(Map<AttendanceType, Long> attendanceResult) {
         return new AttendanceResult(attendanceResult);
     }
 
     public static AttendanceResult calculateAttendanceResult(LocalDate currentDate,
         AttendanceTimes attendanceTimes) {
-        Map<AttendanceType, Integer> attendanceResult = new HashMap<>();
         calculateAbsenceDate(currentDate, attendanceTimes);
-
-        for (AttendanceTime attendanceTime : attendanceTimes.getAttendanceTimes()) {
-            AttendanceType attendanceType = AttendanceType.decideAttendanceType(attendanceTime);
-            attendanceResult.put(attendanceType,
-                attendanceResult.getOrDefault(attendanceType, 0) + 1);
-        }
+        Map<AttendanceType, Long> attendanceResult = attendanceTimes.getAttendanceTimes().stream()
+            .collect(Collectors.groupingBy(
+                AttendanceType::decideAttendanceType,
+                Collectors.counting()));
         return AttendanceResult.from(attendanceResult);
+    }
+
+    public Map<AttendanceType, Long> getAttendanceResult() {
+        return Collections.unmodifiableMap(attendanceResult);
     }
 
     private static void calculateAbsenceDate(LocalDate currentDate, AttendanceTimes attendanceTimes) {
         int day = currentDate.getDayOfMonth();
         for (int i = 1; i < day; i++) {
-            LocalDate findDate = currentDate.withDayOfMonth(i);
-            if (isDayOff(findDate)) {
-                continue;
-            }
-            if (!attendanceTimes.hasAttendanceOnDate(findDate)) {
-                AttendanceTime attendanceTime = AttendanceTime.from(findDate);
-                attendanceTimes.add(attendanceTime);
-            }
+            addAbsenceDate(currentDate, attendanceTimes, i);
         }
     }
 
@@ -57,7 +51,14 @@ public class AttendanceResult {
         return false;
     }
 
-    public Map<AttendanceType, Integer> getAttendanceResult() {
-        return Collections.unmodifiableMap(attendanceResult);
+    private static void addAbsenceDate(LocalDate currentDate, AttendanceTimes attendanceTimes, int i) {
+        LocalDate findDate = currentDate.withDayOfMonth(i);
+        if (isDayOff(findDate)) {
+            return;
+        }
+        if (!attendanceTimes.hasAttendanceOnDate(findDate)) {
+            AttendanceTime attendanceTime = AttendanceTime.from(findDate);
+            attendanceTimes.add(attendanceTime);
+        }
     }
 }

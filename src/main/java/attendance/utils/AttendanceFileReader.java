@@ -11,7 +11,6 @@ public class AttendanceFileReader {
     private static final String PATH = "src/main/resources/attendances.csv";
 
     public static List<String> readCrewAttendances() {
-
         List<String> fileReadResult = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(PATH))) {
             String readResult;

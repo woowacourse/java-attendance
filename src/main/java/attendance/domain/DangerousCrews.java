@@ -28,11 +28,7 @@ public class DangerousCrews {
             AttendanceTimes attendanceTimes = attendanceHistories.get(name);
             AttendanceResult attendanceResult = AttendanceResult.calculateAttendanceResult(
                 currentDate, attendanceTimes);
-            CrewStatus crewStatus = calculate(attendanceResult);
-            if (crewStatus != NORMAL) {
-                DangerousCrew dangerousCrew = DangerousCrew.of(name, crewStatus, attendanceResult);
-                addDangerousCrew(dangerousCrew);
-            }
+            ifNotNormalAddDangerousCrew(name, attendanceResult);
         }
     }
 
@@ -44,6 +40,14 @@ public class DangerousCrews {
     private void sortDangerousCrew() {
         dangerousCrews.sort(Comparator.comparing(DangerousCrew::getCrewStatus).reversed()
             .thenComparing(DangerousCrew::getNickname));
+    }
+
+    private void ifNotNormalAddDangerousCrew(String name, AttendanceResult attendanceResult) {
+        CrewStatus crewStatus = calculate(attendanceResult);
+        if (crewStatus != NORMAL) {
+            DangerousCrew dangerousCrew = DangerousCrew.of(name, crewStatus, attendanceResult);
+            addDangerousCrew(dangerousCrew);
+        }
     }
 
     private void addDangerousCrew(DangerousCrew dangerousCrew) {

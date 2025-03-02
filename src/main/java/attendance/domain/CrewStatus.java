@@ -7,22 +7,22 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 public enum CrewStatus {
-    WARING("경고", value -> value >= 2 && value < 3),
+    WARING("경고", value -> value == 2),
     INTERVIEW("면담", value -> value >= 3 && value < 5),
     FIRE("제적", value -> value >= 5),
     NORMAL("통과", value -> value < 2);
 
     private final String statusName;
-    private final Predicate<Integer> condition;
+    private final Predicate<Long> condition;
 
-    CrewStatus(String statusName, Predicate<Integer> condition) {
+    CrewStatus(String statusName, Predicate<Long> condition) {
         this.statusName = statusName;
         this.condition = condition;
     }
 
     public static CrewStatus calculate(AttendanceResult attendanceResult) {
-        Map<AttendanceType, Integer> calculateResult = attendanceResult.getAttendanceResult();
-        int statusDecisionValue = (calculateResult.getOrDefault(LATE, 0)  / 3) + calculateResult.get(ABSENCE);
+        Map<AttendanceType, Long> calculateResult = attendanceResult.getAttendanceResult();
+        long statusDecisionValue = (calculateResult.getOrDefault(LATE, 0L)  / 3) + calculateResult.get(ABSENCE);
         return Arrays.stream(CrewStatus.values())
             .filter(status -> status.condition.test(statusDecisionValue))
             .findFirst()
