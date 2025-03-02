@@ -13,9 +13,10 @@ public enum ClassSchedule {
     THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(10, 0)),
     FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(10, 0));
 
+    private static final List<LocalDate> HOLIDAYS = List.of(LocalDate.of(2024, 12, 25));
+
     private final DayOfWeek dayOfWeek;
     private final LocalTime startTime;
-    private static final List<LocalDate> holidays = List.of(LocalDate.of(2024, 12, 25));
 
     ClassSchedule(DayOfWeek dayOfWeek, LocalTime startTime) {
         this.dayOfWeek = dayOfWeek;
@@ -31,10 +32,10 @@ public enum ClassSchedule {
     }
 
     public static boolean isDayOff(LocalDate date) {
-        DayOfWeek targetDay = date.getDayOfWeek();
-        if (holidays.contains(date)) {
+        if (HOLIDAYS.contains(date)) {
             return true;
         }
+        DayOfWeek targetDay = date.getDayOfWeek();
         return Arrays.stream(ClassSchedule.values())
                 .noneMatch(schedule -> schedule.dayOfWeek == targetDay);
     }

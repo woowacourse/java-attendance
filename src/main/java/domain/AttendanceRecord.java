@@ -8,6 +8,7 @@ import java.util.Objects;
 
 public class AttendanceRecord implements Comparable<AttendanceRecord> {
     private static final LocalTime ABSENT_TIME = LocalTime.of(23, 59);
+
     private final LocalDateTime dateTime;
     private final AttendanceStatus attendanceStatus;
 
