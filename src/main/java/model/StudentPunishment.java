@@ -1,7 +1,7 @@
 package model;
 
 public enum StudentPunishment {
-    ABSENT(5),
+    DISMISSAl(5),
     INTERVIEW(3),
     WARNING(2),
     SAFE(1);
@@ -13,8 +13,8 @@ public enum StudentPunishment {
     }
 
     public static StudentPunishment calculatePunishment(int riskLevel) {
-        if (riskLevel >= ABSENT.absenceCount) {
-            return StudentPunishment.ABSENT;
+        if (riskLevel >= DISMISSAl.absenceCount) {
+            return StudentPunishment.DISMISSAl;
         }
         if (riskLevel >= INTERVIEW.absenceCount) {
             return StudentPunishment.INTERVIEW;

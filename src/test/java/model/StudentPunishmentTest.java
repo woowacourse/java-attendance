@@ -9,7 +9,7 @@ public class StudentPunishmentTest {
     @DisplayName("제적 결정 테스트")
     void test1() {
         Assertions.assertEquals(
-                StudentPunishment.ABSENT, StudentPunishment.calculatePunishment(5)
+                StudentPunishment.DISMISSAl, StudentPunishment.calculatePunishment(5)
         );
     }
 
