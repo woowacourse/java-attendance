@@ -29,6 +29,10 @@ public enum PenaltyStatus {
         return NONE;
     }
 
+    public static int convertAbsenceToLate(int lateCount, int absenceCount) {
+        return lateCount + (absenceCount * LATE_TO_ABSENCE_RATIO);
+    }
+
     private static int convertLateToAbsence(int lateCount, int absenceCount) {
         return absenceCount + (lateCount / LATE_TO_ABSENCE_RATIO);
     }

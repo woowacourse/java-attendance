@@ -73,4 +73,9 @@ public class CheckInHistory {
                 .count();
     }
 
+    public PenaltyStatus getPenaltyStatus(LocalDate now) {
+        int late = countLate(now);
+        int absence = countAbsence(now);
+        return PenaltyStatus.determinePenalty(late, absence);
+    }
 }
