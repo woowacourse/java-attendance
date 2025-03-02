@@ -12,7 +12,7 @@ public class AttendanceApplication {
 
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(
-        "yyyy-MM-dd HH:mm");
+        "yyyy-MM-dd");
 
     public static void main(String[] args) {
         final LocalDate currentDate = parseLocalDate(args);
