@@ -303,10 +303,12 @@ public class AttendanceSystemManagerTest {
                     new Crews(List.of()));
 
             // when
-            Map<Crew, AttendanceTypeCount> actual = attendanceSystemManager.findExpulsionCandidates(requestedAt);
+            List<PenaltyResultOfCrew> expulsionCandidates = attendanceSystemManager.findExpulsionCandidates(requestedAt);
 
             // then
-            assertThat(actual.keySet()).doesNotContain(moru);
+            assertThat(expulsionCandidates)
+                    .allSatisfy(candidate -> assertThat(candidate.penaltyType())
+                            .isIn(PenaltyType.ONE_ON_ONE, PenaltyType.WARNING, PenaltyType.BAN));
         }
     }
 

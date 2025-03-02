@@ -3,8 +3,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -45,21 +43,6 @@ public class InputParser {
             return "--:--";
         }
         return time.format(DateTimeFormatter.ofPattern("HH:mm", Locale.KOREAN));
-    }
-
-    public static List<String> parseExpulsionCandidates(Map<Crew, AttendanceTypeCount> attendanceTypeCountOfCrews) {
-        List<String> result = new ArrayList<>();
-
-        attendanceTypeCountOfCrews.forEach((crew, attendanceTypeCount) -> {
-            PenaltyType penaltyType = PenaltyType.findByAbsenceCount(attendanceTypeCount.getAdjustedAbsenceCount());
-
-            String s = "- " + crew.getName() + ": " + "결석 " + attendanceTypeCount.getAbsenceCount() + "회, 지각 "
-                    + attendanceTypeCount.getLateCount() + "회 (" + parsePenaltyType(penaltyType) + ")";
-
-            result.add(s);
-        });
-
-        return result;
     }
 
     public static String parseExpulsionCandidate(Crew crew, AttendanceTypeCount attendanceTypeCount) {

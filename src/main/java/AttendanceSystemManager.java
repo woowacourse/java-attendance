@@ -1,5 +1,5 @@
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,10 +46,10 @@ public class AttendanceSystemManager {
     }
 
 
-    public Map<Crew, AttendanceTypeCount> findExpulsionCandidates(LocalDateTime requestedAt) {
+    public List<PenaltyResultOfCrew> findExpulsionCandidates(LocalDateTime requestedAt) {
         List<Crew> registeredCrews = crews.getAll();
 
-        Map<Crew, AttendanceTypeCount> attendanceTypeCountOfExpulsionCandidates = new HashMap<>();
+        List<PenaltyResultOfCrew> expulsionCandidates = new ArrayList<>();
 
         for (Crew crew : registeredCrews) {
             List<AttendanceHistory> historiesOfCrew = attendanceHistories.findAllHistoriesOfCrewDateBefore(
@@ -63,10 +63,10 @@ public class AttendanceSystemManager {
             int adjustedAbsenceCount = attendanceTypeCount.getAdjustedAbsenceCount();
 
             if (PenaltyType.findByAbsenceCount(adjustedAbsenceCount).isAtExpulsionCandidateState()) {
-                attendanceTypeCountOfExpulsionCandidates.put(crew, attendanceTypeCount);
+                expulsionCandidates.add(PenaltyResultOfCrew.from(crew, attendanceTypeCount));
             }
         }
 
-        return attendanceTypeCountOfExpulsionCandidates;
+        return expulsionCandidates;
     }
 }
