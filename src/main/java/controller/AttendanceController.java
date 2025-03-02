@@ -1,6 +1,9 @@
 package controller;
 
-import domain.*;
+import domain.AttendanceRecord;
+import domain.Crew;
+import domain.CrewRecords;
+import domain.CrewRecordsGenerator;
 import util.FileReader;
 import view.InputView;
 import view.OutputView;
@@ -70,8 +73,7 @@ public class AttendanceController {
         String nickname = inputView.readNickname();
 
         Crew crew = new Crew(nickname);
-        AttendanceRecords attendanceRecords = crewRecords.getAttendanceRecordsOf(crew);
-        outputView.printCrewRecord(currentDate, crew, attendanceRecords);
+        outputView.printCrewRecord(currentDate, crewRecords, crew);
     }
 
     private void validateMenu(String input) {

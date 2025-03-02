@@ -1,9 +1,6 @@
 package view;
 
-import domain.AttendanceRecord;
-import domain.AttendanceRecords;
-import domain.AttendanceStatus;
-import domain.Crew;
+import domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -34,13 +31,15 @@ public class OutputView {
                 getDisplayTime(newAttendanceStatus, newTime) + " (" + newAttendanceStatus.getName() + ") 수정 완료!");
     }
 
-    public void printCrewRecord(LocalDate currentDate, Crew crew, AttendanceRecords attendanceRecords) {
+    public void printCrewRecord(LocalDate currentDate, CrewRecords crewRecords, Crew crew) {
+        AttendanceRecords attendanceRecords = crewRecords.getAttendanceRecordsOf(crew);
         System.out.printf("%n이번 달 %s의 출석 기록입니다.%n", crew.name());
         TreeSet<AttendanceRecord> records = attendanceRecords.getRecords();
         records.stream()
                 .filter(record -> record.getDate().isBefore(currentDate))
                 .forEach(this::printAttendanceRecord);
         printAttendanceStatus(attendanceRecords);
+        printWarningStatus(crewRecords, crew);
     }
 
     private void printAttendanceStatus(AttendanceRecords attendanceRecords) {
@@ -49,6 +48,15 @@ public class OutputView {
             int count = attendanceRecords.getAttendanceCount(status);
             System.out.printf("%s: %d회%n", status.getName(), count);
         }
+    }
+
+    private void printWarningStatus(CrewRecords crewRecords, Crew crew) {
+        WarningStatus warningStatus = crewRecords.getWarningStatus(crew);
+        if (warningStatus == WarningStatus.NONE) {
+            return;
+        }
+        System.out.println(System.lineSeparator());
+        System.out.printf("%s 대상자입니다.", warningStatus.getName());
     }
 
     private String getDisplayTime(AttendanceStatus attendanceStatus, LocalTime time) {
