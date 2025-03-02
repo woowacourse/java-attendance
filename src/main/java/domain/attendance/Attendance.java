@@ -33,8 +33,7 @@ public class Attendance {
     public void addAttendance(LocalDateTime  attendanceDateTime) {
         LocalDate attendanceDate = LocalDate.from(attendanceDateTime);
         validateAttendanceTime(attendanceDateTime);
-        if(isAttendanceDay(attendanceDate) &&
-                isOnCampusOperatingTime(LocalTime.of(attendanceDateTime.getHour(),attendanceDateTime.getMinute()))){
+        if(isAttendanceDay(attendanceDate)){
             attendanceDates.put(attendanceDate,new AttendanceDate(attendanceDateTime));
         }
     }
@@ -46,6 +45,9 @@ public class Attendance {
         }
         if(attendanceDateTime.isAfter(TODAY_DATE_TIME_NOW)){
             throw new IllegalArgumentException("출석 시간이 옳바르지 않습니다.");
+        }
+        if(!isOnCampusOperatingTime(LocalTime.from(attendanceDateTime))){
+            throw new IllegalArgumentException("캠퍼스 운영시간이 아닙니다.");
         }
     }
 
