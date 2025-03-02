@@ -58,7 +58,7 @@ public class OutputView {
     public void writeCrewHistory(LocalDate date, AttendanceInfos infos, AttendanceCounts counts,
                                  AttendanceRiskLevel riskLevel) {
 
-        for (int day = 1; day <= date.getDayOfMonth(); day++) {
+        for (int day = 1; day < date.getDayOfMonth(); day++) {
             if (isWeekend(date, day)) {
                 continue;
             }
@@ -67,8 +67,15 @@ public class OutputView {
                 writeAttendanceCheck(infos.findInfoByDate(currentDate));
                 continue;
             }
-            writeAbsenceAttendanceCheck(infos.findInfoByDate(currentDate));
+            writeAbsenceAttendanceCheck(currentDate);
         }
+
+        System.out.println(String.format("출석: %d회", counts.getAttendanceCount()));
+        System.out.println(String.format("지각: %d회", counts.getTardinessCount()));
+        System.out.println(String.format("결석: %d회", counts.getAbsenceCount()));
+        System.out.println();
+        System.out.println(String.format("%s 대상자입니다.", riskLevel.getStatus()));
+        System.out.println();
     }
 
     public void writeRiskCrewHistories(LocalDate date, AttendanceBook riskCrewBook) {
@@ -83,16 +90,17 @@ public class OutputView {
             String status = sortedCrew.getValue().countsByDate(date).calculateAttendanceRiskLevel().getStatus();
             System.out.println(String.format("- %s: 결석 %d회, 지각 %d회, (%s)", name, absenceCount, tardinessCount, status));
         }
+        System.out.println();
     }
 
     public void writeErrorMessage(Exception e) {
         System.out.println(e.getMessage());
     }
 
-    private void writeAbsenceAttendanceCheck(AttendanceInfo attendanceInfo) {
-        String month = parseWithLeadingZero(attendanceInfo.getMonth());
-        String day = parseWithLeadingZero(attendanceInfo.getDay());
-        String dayOfWeek = parseDayOfWeekToKorean(attendanceInfo.getDayOfWeek());
+    private void writeAbsenceAttendanceCheck(CampusDate campusDate) {
+        String month = parseWithLeadingZero(campusDate.getMonth());
+        String day = parseWithLeadingZero(campusDate.getDay());
+        String dayOfWeek = parseDayOfWeekToKorean(campusDate.getDayOfWeek());
 
         System.out.println(String.format("%s월 %s일 %s --:-- (결석)", month, day, dayOfWeek));
     }
