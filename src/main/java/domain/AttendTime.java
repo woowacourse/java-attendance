@@ -7,10 +7,11 @@ public class AttendTime {
 
     private final LocalDate localDate;
     private final LocalTime localTime;
-    public AttendTime(LocalDate localDate,LocalTime localTime) {
+
+    public AttendTime(LocalDate localDate, LocalTime localTime) {
         validate(localDate);
-      this.localDate=localDate;
-      this.localTime=localTime;
+        this.localDate = localDate;
+        this.localTime = localTime;
     }
 
     public void validate(LocalDate localDate) {
@@ -19,23 +20,25 @@ public class AttendTime {
     }
 
     private void validateWeekend(LocalDate localDate) {
-        if (localDate.getDayOfWeek().getValue() > 5)
+        if (December.isWeekend(localDate.getDayOfMonth())) {
             throw new IllegalArgumentException("주말은 출석 할 수 없습니다.");
+        }
     }
 
     private void validateHoliday(LocalDate localDate) {
-        if (December.checkHoliday(localDate.getDayOfMonth())) {
+        if (December.isHoliday(localDate.getDayOfMonth())) {
             throw new IllegalArgumentException("휴일은 출석 할 수 없습니다.");
         }
     }
 
     public AttendanceStatus checkAttendanceStatus() {
         int startingHour = AttendTimeOfWeekDay.getTimeByDayOfWeekDay(localDate.getDayOfWeek().getValue());
-        return AttendanceStatus.calculateStatus(LocalTime.of(startingHour, 5), LocalTime.of(startingHour, 30), localTime);
+        return AttendanceStatus.calculateStatus(LocalTime.of(startingHour, 5), LocalTime.of(startingHour, 30),
+                localTime);
     }
 
     public boolean checkSameDate(int date) {
-        return localDate.getDayOfMonth()==date;
+        return localDate.getDayOfMonth() == date;
     }
 
     public String getAttendanceStatus() {
