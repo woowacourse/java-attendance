@@ -1,11 +1,15 @@
 package attendance.domain;
 
 import static java.time.DayOfWeek.MONDAY;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Campus {
+    private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
     private static final LocalTime REGULAR_START_TIME = LocalTime.of(10, 0, 0);
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0, 0);
     private static final int PRESENT_LIMIT_MINUTES = 5;
@@ -27,5 +31,15 @@ public class Campus {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.PRESENT;
+    }
+
+    public static boolean isOffDay(final LocalDateTime attendance) {
+        if (attendance.getDayOfWeek() == SATURDAY || attendance.getDayOfWeek() == SUNDAY) {
+            return true;
+        }
+        if (CHRISTMAS.equals(LocalDate.from(attendance))) {
+            return true;
+        }
+        return false;
     }
 }
