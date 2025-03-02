@@ -1,13 +1,20 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-public record StatusStatistics(Map<AttendanceStatus, Integer> statistics) {
+public record StatusStatistics(Nickname nickname, Map<AttendanceStatus, Integer> statistics) {
     private static final int WEIGHT_DIVIDER_FOR_LATE = 3;
 
-    public StatusStatistics() {
-        this(new HashMap<>());
+    public StatusStatistics(Nickname nickname) {
+        this(nickname, new HashMap<>());
+    }
+
+    public void update(Map<LocalDate, Attendance> attendances) {
+        for (LocalDate date : attendances.keySet()) {
+            put(attendances.get(date).state());
+        }
     }
 
     public void put(AttendanceStatus state) {

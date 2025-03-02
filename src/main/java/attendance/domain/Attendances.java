@@ -56,11 +56,7 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
         attendances.put(date, new Attendance(dateTime));
     }
 
-    public StatusStatistics calculateStatics() {
-        StatusStatistics statusStatics = new StatusStatistics();
-        for (LocalDate date : attendances.keySet()) {
-            statusStatics.put(attendances.get(date).state());
-        }
-        return statusStatics;
+    public void updateStatics(StatusStatistics statusStatics) {
+        statusStatics.update(attendances);
     }
 }
