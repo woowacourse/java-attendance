@@ -15,7 +15,7 @@ public class AttendanceStatusRecord {
         for (LocalDateTime localDateTime : localDateTimes) {
             LocalDate localDate = LocalDate.from(localDateTime);
             LocalTime localTime = LocalTime.from(localDateTime);
-            map.put(localDate, AttendanceStatus.attendanceStatusCalculate(localDate, localTime));
+            map.put(localDate, AttendanceStatus.calculateAttendanceStatus(localDate, localTime));
         }
         this.attendanceStatusRecords = map;
     }

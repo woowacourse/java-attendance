@@ -14,7 +14,7 @@ public class AttendanceStatusTest {
         LocalTime input = LocalTime.parse("09:03");
 
         AttendanceStatus expect = AttendanceStatus.ATTENDANCE;
-        AttendanceStatus result = AttendanceStatus.attendanceStatusCalculate(today, input);
+        AttendanceStatus result = AttendanceStatus.calculateAttendanceStatus(today, input);
         Assertions.assertEquals(expect, result);
     }
 
@@ -25,7 +25,7 @@ public class AttendanceStatusTest {
         LocalTime input = LocalTime.parse("10:06");
 
         AttendanceStatus expect = AttendanceStatus.LATE;
-        AttendanceStatus result = AttendanceStatus.attendanceStatusCalculate(today, input);
+        AttendanceStatus result = AttendanceStatus.calculateAttendanceStatus(today, input);
         Assertions.assertEquals(expect, result);
     }
 
@@ -35,7 +35,7 @@ public class AttendanceStatusTest {
         LocalDate today = LocalDate.of(2024, 12, 13);
         LocalTime input = LocalTime.parse("10:31");
         AttendanceStatus expect = AttendanceStatus.ABSENT;
-        AttendanceStatus result = AttendanceStatus.attendanceStatusCalculate(today, input);
+        AttendanceStatus result = AttendanceStatus.calculateAttendanceStatus(today, input);
         Assertions.assertEquals(expect, result);
     }
 
@@ -46,7 +46,7 @@ public class AttendanceStatusTest {
         LocalTime input = LocalTime.parse("13:00");
 
         AttendanceStatus expect = AttendanceStatus.ATTENDANCE;
-        AttendanceStatus result = AttendanceStatus.attendanceStatusCalculate(today, input);
+        AttendanceStatus result = AttendanceStatus.calculateAttendanceStatus(today, input);
         Assertions.assertEquals(expect, result);
     }
 }
