@@ -44,10 +44,12 @@ public class AttendanceBook {
     }
 
     public void attend(String name, LocalDate date, LocalTime time) {
-        findAttendanceRecordByName(name).applyAttendanceDate(date , time);
+        validateIsInRunningTime(time);
+        findAttendanceRecordByName(name).applyAttendanceDate(date, time);
     }
 
     public void edit(String name, LocalDate date, LocalTime time) {
+        validateIsInRunningTime(time);
         findAttendanceRecordByName(name).applyAttendanceDate(date, time);
     }
 
@@ -77,6 +79,10 @@ public class AttendanceBook {
         if (!hasCrew(name)) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }
+    }
+
+    public void validateBeforeAdd(String name) {
+        findAttendanceRecordByName(name).validateBeforeAdd(getFixedRunningDate());
     }
 
     public void validateBeforeAdd(String name, LocalDate date) {

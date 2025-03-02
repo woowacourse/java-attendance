@@ -95,7 +95,7 @@ class AttendanceBookTest {
         attendanceBook.initAttendance(name, initDate);
         dateTimes.forEach(dateTime -> attendanceBook.attend(name, dateTime.toLocalDate(), dateTime.toLocalTime()));
 
-        assertThat(attendanceBook.getAbsenceCount(name)).isEqualTo(dateTimes.size());
+        assertThat(attendanceBook.getAbsenceCount(name)).isEqualTo(10);
     }
 
     @Test

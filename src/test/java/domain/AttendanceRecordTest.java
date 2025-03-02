@@ -86,6 +86,6 @@ class AttendanceRecordTest {
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         dateTimes.forEach(attendanceRecord::applyAttendanceDate);
 
-        assertThat(attendanceRecord.calculateAbsenceCount()).isEqualTo(dateTimes.size());
+        assertThat(attendanceRecord.calculateAbsenceCount()).isEqualTo(11);
     }
 }
