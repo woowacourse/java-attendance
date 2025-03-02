@@ -24,4 +24,8 @@ public enum StudentPunishment {
         }
         return StudentPunishment.SAFE;
     }
+
+    public int getAbsenceCount() {
+        return absenceCount;
+    }
 }
