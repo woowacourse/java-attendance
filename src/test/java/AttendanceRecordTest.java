@@ -32,8 +32,8 @@ public class AttendanceRecordTest {
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         LocalDateTime attendanceTime = attendanceRecord.attend(time);
 
-        String status = attendanceRecord.getAttendanceStatus(attendanceTime.getDayOfMonth());
-        assertThat(status).isEqualTo(expected);
+        AttendanceStatus status = attendanceRecord.getAttendanceStatus(attendanceTime.getDayOfMonth());
+        assertThat(status.getStatus()).isEqualTo(expected);
     }
 
     @Test
@@ -82,15 +82,16 @@ public class AttendanceRecordTest {
                     .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜의 출석 시간이 없습니다."));
         }
 
-        public String getAttendanceStatus(int dayOfMonth) {
+        public AttendanceStatus getAttendanceStatus(int dayOfMonth) {
             LocalDateTime attendanceTime = findAttendanceTimeByDay(dayOfMonth);
             if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10, 6))) {
-                return "출석";
+                return AttendanceStatus.ATTEND;
             }
             if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10, 31))) {
-                return "지각";
+                return AttendanceStatus.LATE;
             }
-            return "결석";
+            return AttendanceStatus.ABSENCE;
         }
     }
+
 }
