@@ -28,7 +28,6 @@ public class AttendancesLoaderTest {
 
     @Test
     void 크루의_출석부를_불러온다() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("testAttendance.csv"));
         String csvFileFormat = """
                 nickname,datetime
                 빙봉,2024-12-13 10:07
@@ -39,9 +38,8 @@ public class AttendancesLoaderTest {
                 짱수,2024-12-12 10:00
                 빙봉,2024-12-11 10:02
                 """;
-        writer.write(csvFileFormat);
-        writer.flush();
-        writer.close();
+        writeFile(csvFileFormat);
+
 
         AttendancesLoader loader = new AttendancesLoader();
         Attendances attendances = loader.load(new FileReader("testAttendance.csv"));
@@ -68,13 +66,17 @@ public class AttendancesLoaderTest {
             빙티-2024-12-13 10:07
             """})
     void 잘못된_포맷을_읽을_경우_예외를_발생시킨다(String csvFileFormat) throws IOException {
+        writeFile(csvFileFormat);
+
+        AttendancesLoader loader = new AttendancesLoader();
+        Assertions.assertThatThrownBy(() -> loader.load(new FileReader("testAttendance.csv"))).isInstanceOf(IOException.class).hasMessage("[ERROR] 출석 파일을 읽는 중 오류가 발생했습니다.");
+    }
+
+    private void writeFile(String csvFileFormat) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("testAttendance.csv"));
         writer.write(csvFileFormat);
         writer.flush();
         writer.close();
-
-        AttendancesLoader loader = new AttendancesLoader();
-        Assertions.assertThatThrownBy(() -> loader.load(new FileReader("testAttendance.csv"))).isInstanceOf(IOException.class).hasMessage("[ERROR] 출석 파일을 읽는 중 오류가 발생했습니다.");
     }
 
 
