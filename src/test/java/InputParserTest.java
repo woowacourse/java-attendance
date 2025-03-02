@@ -85,12 +85,11 @@ public class InputParserTest {
                 LocalDateTime.of(2024, 12, 4, 10, 6), AttendanceType.LATE,
                 LocalDateTime.of(2024, 12, 5, 10, 31), AttendanceType.ABSENCE
         );
-        Map<Crew, AttendanceTypeCount> input = Map.of(
-                new Crew("히로"), AttendanceTypeCount.createFrom(attendanceTypeOfDates)
-        );
 
         // when & then
-        assertThat(InputParser.parseExpulsionCandidates(input).getFirst()).isEqualTo("- 히로: 결석 2회, 지각 1회 (경고)");
+        assertThat(InputParser.parseExpulsionCandidate(new Crew("히로"),
+                AttendanceTypeCount.createFrom(attendanceTypeOfDates))).isEqualTo("- 히로: 결석 2회, 지각 1회 (경고)");
     }
+
 
 }

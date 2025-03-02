@@ -61,4 +61,12 @@ public class InputParser {
 
         return result;
     }
+
+    public static String parseExpulsionCandidate(Crew crew, AttendanceTypeCount attendanceTypeCount) {
+        PenaltyType penaltyType = PenaltyType.findByAbsenceCount(attendanceTypeCount.getAdjustedAbsenceCount());
+
+        return "- " + crew.getName() + ": " + "결석 " + attendanceTypeCount.getAbsenceCount() + "회, 지각 "
+                + attendanceTypeCount.getLateCount() + "회 (" + parsePenaltyType(penaltyType) + ")";
+
+    }
 }
