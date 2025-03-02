@@ -31,6 +31,14 @@ public class CrewRecords {
         return records.get(crew);
     }
 
+    public WarningStatus getWarningStatus(Crew crew) {
+        validateCrew(crew);
+        AttendanceRecords attendanceRecords = records.get(crew);
+        int tardyCount = attendanceRecords.getAttendanceCount(AttendanceStatus.TARDY);
+        int absentCount = attendanceRecords.getAttendanceCount(AttendanceStatus.ABSENT);
+        return WarningStatus.getStatus(tardyCount, absentCount);
+    }
+
     private void validateCrew(Crew crew) {
         if (!records.containsKey(crew)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다." + System.lineSeparator());
