@@ -65,6 +65,21 @@ public class AttendanceController {
         outputView.printAttendResultMessage(attendanceBook.findAttendanceDateByNameAndDate(name, getFixedRunningDate()));
     }
 
+    private void editMenu(AttendanceBook attendanceBook) {
+        attendanceBook.validateIsInRunningTime(DateTimeUtil.getFixedRunningTime());
+        String name = enterCrewNameForEdit(attendanceBook);
+        LocalDate date = enterAttendanceDateForEdit(attendanceBook, name);
+        AttendanceDate originalAttendanceDate = attendanceBook.findAttendanceDateByNameAndDate(name, date);
+        attendanceBook.edit(name, date, enterAttendanceTimeForEdit());
+        outputView.printEditResultMessage(originalAttendanceDate, attendanceBook.findAttendanceDateByNameAndDate(name, date));
+    }
+
+    private void retrieveAttendanceMenu(AttendanceBook attendanceBook) {
+        String name = enterCrewName(attendanceBook);
+        List<AttendanceDate> attendanceDates = attendanceBook.findAttendanceRecordByName(name).getAttendanceDates();
+        outputView.printAttendanceResult(name);
+        attendanceDates.forEach(outputView::printAttendResultMessage);
+    }
 
 
     private String enterCrewName(AttendanceBook attendanceBook) {
