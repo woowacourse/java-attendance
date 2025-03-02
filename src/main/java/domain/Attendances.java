@@ -45,7 +45,7 @@ public class Attendances {
 
     private AttendanceRecord getAttendanceRecord(Integer date) {
         return attendances.stream()
-                .filter(attendanceRecord -> attendanceRecord.isSameDate(AttendanceRecord.of(date.toString(), "10:00")))
+                .filter(attendanceRecord -> attendanceRecord.isSameDate(date))
                 .findFirst()
                 .orElse(AttendanceRecord.dateOf(date));
     }

@@ -38,6 +38,10 @@ public class AttendanceRecord {
         return date.equals(attendanceRecord.date);
     }
 
+    public boolean isSameDate(Integer dateInt) {
+        return date.getDayOfMonth() == dateInt;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

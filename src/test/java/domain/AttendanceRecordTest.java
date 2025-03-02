@@ -1,5 +1,6 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -70,20 +71,38 @@ class AttendanceRecordTest {
         }
     }
 
-    @Test
-    @DisplayName("출석 기록이 같은 날인지 확인한다")
-    void should_return_true_when_same_date() {
-        // given
-        String date = "11";
-        String time = "10:00";
-        String otherTime = "11:00";
-        AttendanceRecord attendanceRecord = AttendanceRecord.of(date, time);
-        AttendanceRecord otherAttendanceRecord = AttendanceRecord.of(date, otherTime);
+    @Nested
+    @DisplayName("출석 기록 비교 테스트")
+    class IsSameDateTest {
+        @Test
+        @DisplayName("출석 기록으로 같은 날인지 확인한다")
+        void should_return_true_when_same_date() {
+            // given
+            String date = "11";
+            String time = "10:00";
+            String otherTime = "11:00";
+            AttendanceRecord attendanceRecord = AttendanceRecord.of(date, time);
+            AttendanceRecord otherAttendanceRecord = AttendanceRecord.of(date, otherTime);
 
-        // when
-        boolean result = attendanceRecord.isSameDate(otherAttendanceRecord);
+            // when
+            boolean result = attendanceRecord.isSameDate(otherAttendanceRecord);
 
-        // then
-        assertTrue(result);
+            // then
+            assertTrue(result);
+        }
+
+        @ParameterizedTest
+        @DisplayName("날짜 숫자와 출석 기록으로 같은 날인지 확인한다")
+        @CsvSource(value = {"2, 10:00, 2, true", "2, 10:00, 3, false", "11, 10:00, 11, true", "10, 10:00, 11, false"})
+        void should_return_true_when_same_date_by_dateInt(String date, String time, Integer dateInt, boolean expected) {
+            // given
+            AttendanceRecord attendanceRecord = AttendanceRecord.of(date, time);
+
+            // when
+            boolean result = attendanceRecord.isSameDate(dateInt);
+
+            // then
+            assertThat(result).isEqualTo(expected);
+        }
     }
 }
