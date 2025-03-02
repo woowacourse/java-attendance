@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.TreeMap;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class AttendanceBookTest {
 
@@ -37,7 +36,7 @@ class AttendanceBookTest {
         //given
         String name = "조로";
         //when
-        CheckInHistory foundHistory = attendanceBook.findHistoryByName(name);
+        CheckInHistory foundHistory = attendanceBook.findHistoryByName(Crew.of(name));
         //then
         assertThat(foundHistory).isNotNull();
         assertThat(foundHistory.getCheckInCount()).isEqualTo(1);
@@ -50,8 +49,21 @@ class AttendanceBookTest {
         String name = "차니";
         //when
         //then
-        assertThatThrownBy(() -> attendanceBook.findHistoryByName(name))
+        assertThatThrownBy(() -> attendanceBook.findHistoryByName(Crew.of(name)))
                 .isInstanceOf(AppException.class)
                 .hasMessageContaining(AppException.PREFIX);
+    }
+
+    @Test
+    @DisplayName("특정 크루에 대해 체크인 수행")
+    void checkInTest() {
+        //given
+        Crew crew = Crew.of("조로");
+        CheckInDate checkInDate = CheckInDate.of(2024, 12, 4);
+        CheckInTime checkInTime = CheckInTime.of(10, 0);
+        //when
+        //then
+        assertThatCode(() -> attendanceBook.checkIn(crew, checkInDate, checkInTime))
+                .doesNotThrowAnyException();
     }
 }
