@@ -1,9 +1,11 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class CrewAttendance {
     private final Map<AttendanceRecord, AttendanceStatus> attendances;
@@ -25,6 +27,19 @@ public class CrewAttendance {
 
     public boolean hasRecord(final LocalDateTime attendance) {
         return attendances.containsKey(new AttendanceRecord(attendance));
+    }
+
+    public void modify(final LocalDateTime newAttendance) {
+        Entry<AttendanceRecord, AttendanceStatus> prevAttendance = getAttendanceOn(LocalDate.from(newAttendance));
+        attendances.remove(prevAttendance.getKey());
+        attendances.put(new AttendanceRecord(newAttendance), Campus.calculateAttendanceStatus(newAttendance));
+    }
+
+    public Entry<AttendanceRecord, AttendanceStatus> getAttendanceOn(final LocalDate date) {
+        return attendances.entrySet().stream()
+                .filter(entry -> entry.getKey().date().equals(date))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜의 출석 기록이 존재하지 않습니다."));
     }
 
     public Map<AttendanceRecord, AttendanceStatus> getAttendances() {
