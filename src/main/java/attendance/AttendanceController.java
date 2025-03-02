@@ -1,6 +1,7 @@
 package attendance;
 
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -9,8 +10,10 @@ import java.util.stream.Stream;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceFileReader;
+import attendance.domain.Nickname;
 import attendance.domain.SystemDateTime;
 import attendance.exception.AttendanceArgumentException;
+import attendance.exception.InputValidationException;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
@@ -70,6 +73,22 @@ public class AttendanceController {
     }
 
     private void registerAttendance() {
+        outputView.printRequestNickName();
+        var nickname = requestNickname();
+        outputView.printRequestAttendanceTime();
+        var time = handleInput(inputView::requestTime);
+        var date = systemDateTime.now().toLocalDate();
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
+        attendanceBook.attendance(nickname, dateTime);
+        String state = attendanceBook.getConvertedAttendanceState(nickname, date);
+        outputView.printAttendance(dateTime, state);
+    }
+
+    private Nickname requestNickname() {
+        return handleInput(() -> {
+            var nickname = inputView.inputString();
+            return new Nickname(nickname);
+        });
     }
 
     private void modifyAttendance() {
@@ -87,7 +106,7 @@ public class AttendanceController {
     private <T> T handleInput(Supplier<T> inputSupplier) {
         try {
             return inputSupplier.get();
-        } catch (AttendanceArgumentException e) {
+        } catch (AttendanceArgumentException | InputValidationException e) {
             outputView.printError(e.getMessage());
             return handleInput(inputSupplier);
         }

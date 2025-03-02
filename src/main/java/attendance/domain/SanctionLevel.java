@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 import attendance.exception.AttendanceArgumentException;
+import attendance.view.EnumTextConverter;
 
-public enum SanctionLevel {
+public enum SanctionLevel implements Displaier {
     DISMISS(weight -> weight > 5),
     NEED_MEETING(weight -> weight >= 3),
     WARNING(weight -> weight > 1),
@@ -35,5 +36,10 @@ public enum SanctionLevel {
         if (wight < 0) {
             throw new AttendanceArgumentException(WEIGHT_BE_POSITIVE + wight);
         }
+    }
+
+    @Override
+    public String convertMessage() {
+        return EnumTextConverter.convertLevel(this);
     }
 }

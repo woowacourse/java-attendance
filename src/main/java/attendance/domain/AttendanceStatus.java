@@ -2,7 +2,9 @@ package attendance.domain;
 
 import java.time.LocalTime;
 
-public enum AttendanceStatus {
+import attendance.view.EnumTextConverter;
+
+public enum AttendanceStatus implements Displaier {
     ATTENDANCE(0),
     LATE(5),
     ABSENCE(30);
@@ -25,5 +27,10 @@ public enum AttendanceStatus {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTENDANCE;
+    }
+
+    @Override
+    public String convertMessage() {
+        return EnumTextConverter.convertState(this);
     }
 }
