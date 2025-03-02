@@ -42,9 +42,10 @@ public class AttendanceService {
 
     public SaveAttendanceRecordResponse saveAttendanceRecord(SaveAttendanceRequest request) {
         Crew crew = crews.findByNickname(request.nickname());
-        AttendanceRecord saved = AttendanceRecord.of(crew, request.date(), request.time());
-        attendanceRecords.addIfAbsent(saved);
-        return SaveAttendanceRecordResponse.of(saved);
+        AttendanceRecord willBeSaved = AttendanceRecord.of(crew, request.date(), request.time());
+        attendanceRecords.addIfAbsent(willBeSaved);
+        AttendanceRecord found = attendanceRecords.getByCrewAndDate(crew, request.date());
+        return SaveAttendanceRecordResponse.of(found);
     }
 
     public ModifyAttendanceRecordResponse modifyAttendanceRecord(ModifyAttendanceRequest request) {
@@ -58,8 +59,8 @@ public class AttendanceService {
 
     public MonthAttendanceStatisticsResponse getMonthAttendanceStatistics(MonthAttendanceStatisticsRequest request) {
         Crew crew = crews.findByNickname(request.nickname());
-        LocalDate from = request.today().withDayOfMonth(1);
-        LocalDate to = request.today().minusDays(1);
+        LocalDate from = request.from();
+        LocalDate to = request.to();
 
         List<AbstractAttendanceRecord> records = attendanceRecords.getByCrewFromTo(crew, from, to);
         AttendanceStatusCount statusCount = attendanceRecords.calculateAttendanceStatusCount(crew, from, to);

@@ -24,6 +24,7 @@ import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.MonthAttendanceStatisticsResponse;
 import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
+import util.DateTimeUtil;
 
 class AttendanceServiceTest {
     @Nested
@@ -93,6 +94,8 @@ class AttendanceServiceTest {
             String nickname = "시소";
             Crew crew = new Crew(nickname);
             LocalDate today = LocalDate.of(2025, 2, 11);
+            LocalDate from = DateTimeUtil.getFirstDateOfMonth(today);
+            LocalDate to = DateTimeUtil.getYesterday(today);
             Crews crews = new Crews(List.of(crew));
             AttendanceRecords attendanceRecords = new AttendanceRecords();
             // 지각
@@ -107,7 +110,7 @@ class AttendanceServiceTest {
             // 총 출석 1, 지각 2, 결석 3
 
             AttendanceService attendanceService = new AttendanceService(crews, attendanceRecords);
-            MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(nickname, today);
+            MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(nickname, from, to);
             MonthAttendanceStatisticsResponse response = attendanceService.getMonthAttendanceStatistics(request);
 
             // when

@@ -35,6 +35,29 @@ class DateTimeUtilTest {
             );
         }
 
+        @Test
+        @DisplayName("해당 날짜의 달의 첫날을 반환한다")
+        void getFirstDateOfMonth_test() {
+            // given
+            LocalDate date = LocalDate.of(2025, 3, 5);
+            LocalDate expected = LocalDate.of(2025, 3, 1);
+
+            // when & then
+            Assertions.assertThat(DateTimeUtil.getFirstDateOfMonth(date))
+                    .isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("해당 날짜의 전날을 반환한다")
+        void getYesterday_test() {
+            // given
+            LocalDate date = LocalDate.of(2025, 2, 1);
+            LocalDate expected = LocalDate.of(2025, 1, 31);
+
+            // when & then
+            Assertions.assertThat(DateTimeUtil.getYesterday(date))
+                    .isEqualTo(expected);
+        }
 
         @Test
         @DisplayName("해당 날짜가 주말이면 true를 반환한다.")

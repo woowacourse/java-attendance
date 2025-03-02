@@ -15,7 +15,6 @@ import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-
     private final AttendanceService attendanceService;
     private boolean isRunning;
 
@@ -58,8 +57,10 @@ public class AttendanceController {
     public void printMonthAttendanceStatistics() {
         String nickname = InputView.scanNickname();
         LocalDate today = DateTimeUtil.nowDate();
+        LocalDate from = DateTimeUtil.getFirstDateOfMonth(today);
+        LocalDate to = DateTimeUtil.getYesterday(today);
 
-        MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(nickname, today);
+        MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(nickname, from, to);
         MonthAttendanceStatisticsResponse response = attendanceService.getMonthAttendanceStatistics(request);
 
         OutputView.printMonthAttendanceRecords(response.attendanceRecords());

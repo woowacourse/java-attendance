@@ -15,6 +15,16 @@ public class DateTimeUtil {
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM월 dd일 E요일",
             Locale.KOREAN);
     public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+    public static final int FIRST_DAY_OF_MONTH = 1;
+
+    public static LocalDate getFirstDateOfMonth(LocalDate date) {
+        return date.withDayOfMonth(FIRST_DAY_OF_MONTH);
+    }
+
+    public static LocalDate getYesterday(LocalDate date) {
+        return date.minusDays(1);
+    }
+
 
     public static boolean isWeekend(LocalDate date) {
         return date.getDayOfWeek() == DayOfWeek.SATURDAY

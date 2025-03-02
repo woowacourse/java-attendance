@@ -4,7 +4,8 @@ import java.time.LocalDate;
 
 public record MonthAttendanceStatisticsRequest(
         String nickname,
-        LocalDate today
+        LocalDate from,
+        LocalDate to
 ) {
 
 }
