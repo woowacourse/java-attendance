@@ -17,7 +17,7 @@ public class AttendanceHistories {
     public AttendanceStatus addAttendanceHistory(Crew crew, LocalDateTime attendanceDateTime) {
         LocalDate attendanceDate = attendanceDateTime.toLocalDate();
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
-        validateCrew(crew);
+        validateCrewPresence(crew);
         AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
         validateDuplicateAttendance(attendanceDateTimes, attendanceDate);
         validateDayOff(attendanceDate);
@@ -27,14 +27,14 @@ public class AttendanceHistories {
     }
 
     public LocalDateTime replaceAttendanceHistory(Crew crew, LocalDateTime newAttendanceDateTime) {
-        validateCrew(crew);
+        validateCrewPresence(crew);
         AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
         LocalDateTime oldAttendanceDateTime = attendanceDateTimes.remove(newAttendanceDateTime.toLocalDate());
         attendanceDateTimes.add(newAttendanceDateTime);
         return oldAttendanceDateTime;
     }
 
-    private void validateCrew(Crew crew) {
+    private void validateCrewPresence(Crew crew) {
         if (!attendanceHistories.containsKey(crew)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }

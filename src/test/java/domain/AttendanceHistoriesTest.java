@@ -132,7 +132,7 @@ public class AttendanceHistoriesTest {
 
     @Test
     @DisplayName("1.3 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
-    void testValidateCrew() {
+    void testValidateCrewPresenceWhenCheck() {
         // given
         // when
         Crew invalidCrew = new Crew("포비");
@@ -224,7 +224,7 @@ public class AttendanceHistoriesTest {
 
     @Test
     @DisplayName("2.2 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
-    void testValidateReplaceCrew() {
+    void testValidateCrewPresenceWhenReplace() {
         // given
         // when
         Crew invalidCrew = new Crew("포비");
