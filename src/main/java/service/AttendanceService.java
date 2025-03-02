@@ -63,7 +63,7 @@ public class AttendanceService {
         LocalDate to = request.today().minusDays(1);
 
         List<AbstractAttendanceRecord> records = attendanceRecords.getByCrewFromTo(crew, from, to);
-        Map<AttendanceStatus, Integer> statusCount = attendanceRecords.getAttendanceStatistics(crew, from, to);
+        Map<AttendanceStatus, Integer> statusCount = attendanceRecords.calculateAttendanceStatusCount(crew, from, to);
         RiskRank riskRank = RiskRank.from(statusCount);
         return new MonthAttendanceStatisticsResponse(records, AttendanceStatusCount.of(statusCount), riskRank);
     }
@@ -73,7 +73,7 @@ public class AttendanceService {
         LocalDate to = request.today().minusDays(1);
 
         List<RiskCrew> riskCrews = crews.findAllCrews().stream()
-                .map(crew -> RiskCrew.of(crew, attendanceRecords.getAttendanceStatistics(crew, from, to)))
+                .map(crew -> RiskCrew.of(crew, attendanceRecords.calculateAttendanceStatusCount(crew, from, to)))
                 .filter(crew -> crew.riskRank() != RiskRank.NOT_MANAGED)
                 .toList();
         return new RiskCrewsResponse(riskCrews);

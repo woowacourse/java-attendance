@@ -69,7 +69,7 @@ public class AttendanceRecords {
                 .toList();
     }
 
-    public Map<AttendanceStatus, Integer> getAttendanceStatistics(Crew crew, LocalDate from, LocalDate to) {
+    public Map<AttendanceStatus, Integer> calculateAttendanceStatusCount(Crew crew, LocalDate from, LocalDate to) {
         List<AbstractAttendanceRecord> records = getByCrewFromTo(crew, from, to);
         Map<AttendanceStatus, Integer> statusCount = new HashMap<>();
         Arrays.stream(AttendanceStatus.values()).forEach(status -> statusCount.put(status, 0));

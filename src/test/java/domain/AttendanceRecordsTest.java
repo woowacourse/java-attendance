@@ -154,7 +154,8 @@ public class AttendanceRecordsTest {
 
             AttendanceRecords attendanceRecords = new AttendanceRecords(AttendanceRecordsGenerator.generate(from, to,
                     crew, lateCount, absentCount));
-            Map<AttendanceStatus, Integer> statusCount = attendanceRecords.getAttendanceStatistics(crew, from, to);
+            Map<AttendanceStatus, Integer> statusCount = attendanceRecords.calculateAttendanceStatusCount(crew, from,
+                    to);
 
             SoftAssertions.assertSoftly(softAssertions -> {
                 softAssertions.assertThat(statusCount.get(AttendanceStatus.LATE)).isEqualTo(lateCount);
