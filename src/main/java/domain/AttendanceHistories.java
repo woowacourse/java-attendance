@@ -29,6 +29,7 @@ public class AttendanceHistories {
     }
 
     public AttendanceDateTimes getAttendanceDateTimes(Crew crew) {
+        validateCrew(crew);
         return attendanceHistories.get(crew);
     }
 
