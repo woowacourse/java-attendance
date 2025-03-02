@@ -11,6 +11,7 @@ import static util.parser.DateTimeParser.parseStringToTime;
 
 import domain.AttendanceBook;
 import domain.Coach;
+import domain.Crew;
 import domain.DailyRecord;
 import domain.Feature;
 import java.time.LocalDate;
@@ -62,8 +63,10 @@ public class AttendanceController {
     }
 
     protected void crewRecordsCheck() {
-        // TODO: 크루별 출석 기록 확인 구현
-        System.out.println("크루별 출석 기록 확인 기능");
+        String name = inputView.readAttendedName();
+
+        Crew crew = attendanceBook.findCrewByName(name);
+        // TODO: 12월 기록 찾아오기
     }
 
     protected void expelledWarningCheck() {
