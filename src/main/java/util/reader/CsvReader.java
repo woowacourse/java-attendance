@@ -1,4 +1,4 @@
-package util;
+package util.reader;
 
 import java.io.IOException;
 import java.nio.file.Files;

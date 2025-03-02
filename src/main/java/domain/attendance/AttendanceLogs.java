@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import util.Evaluator;
+import util.evaluator.DateEvaluator;
 
 public class AttendanceLogs {
 
@@ -105,6 +105,6 @@ public class AttendanceLogs {
     }
 
     private boolean isUnattendDate(LocalDate logDate) {
-        return !isAttendanceLog(logDate) && Evaluator.isOpenDate(logDate);
+        return !isAttendanceLog(logDate) && DateEvaluator.isOpenDate(logDate);
     }
 }

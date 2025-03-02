@@ -1,11 +1,11 @@
 package domain.attendance;
 
-import dto.AttendanceLogDto;
 import exception.ErrorException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import util.Evaluator;
+import util.evaluator.DateEvaluator;
+import util.evaluator.TimeEvaluator;
 
 public class AttendanceLog {
 
@@ -42,13 +42,13 @@ public class AttendanceLog {
     }
 
     private void verifyAttendDate(LocalDate attendDate) {
-        if (!Evaluator.isOpenDate(attendDate)) {
+        if (!DateEvaluator.isOpenDate(attendDate)) {
             throw new ErrorException("주말 또는 공휴일은 출석을 받지 않습니다.");
         }
     }
 
     private void verifyAttendTime(LocalTime attendTime) {
-        if (!Evaluator.isOpenTime(attendTime)) {
+        if (!TimeEvaluator.isOpenTime(attendTime)) {
             throw new ErrorException("운영 시간에 출석해야 합니다.");
         }
     }

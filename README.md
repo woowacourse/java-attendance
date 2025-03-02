@@ -138,9 +138,11 @@
 ### CsvReader
 - [x] Csv 형식의 파일 로딩 및 처리
 
-### Evaluator
+### DateEvaluator
 - [x] 운영 날짜 판별
   - [x] 주말 날짜 판별
   - [x] 공휴일 날짜 판별
+
+### TimeEvaluator
 - [x] 운영 시간 판별
 

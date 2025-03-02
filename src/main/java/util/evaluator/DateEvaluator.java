@@ -1,20 +1,15 @@
-package util;
+package util.evaluator;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
-public class Evaluator {
+public class DateEvaluator {
 
-    private Evaluator() {
+    private DateEvaluator() {
     }
 
     public static boolean isOpenDate(LocalDate date) {
         return !isWeekend(date.getDayOfWeek()) && !isHoliday(date);
-    }
-
-    public static boolean isOpenTime(LocalTime time) {
-        return time.isAfter(LocalTime.of(8, 0)) && time.isBefore(LocalTime.of(23, 0));
     }
 
     private static boolean isWeekend(DayOfWeek dayOfWeek) {

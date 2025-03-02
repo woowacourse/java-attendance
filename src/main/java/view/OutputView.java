@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import util.Evaluator;
+import util.evaluator.DateEvaluator;
 import util.converter.DayOfWeekConverter;
 
 public class OutputView {
@@ -96,7 +96,7 @@ public class OutputView {
     }
 
     private static void addLogDate(List<LocalDate> logDates, LocalDate logDate) {
-        if (Evaluator.isOpenDate(logDate)) {
+        if (DateEvaluator.isOpenDate(logDate)) {
             logDates.add(logDate);
         }
     }
