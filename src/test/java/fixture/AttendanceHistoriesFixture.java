@@ -4,6 +4,7 @@ import domain.AttendanceDateTime;
 import domain.AttendanceDateTimes;
 import domain.AttendanceHistories;
 import domain.Crew;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,9 +18,12 @@ public class AttendanceHistoriesFixture {
         return new AttendanceHistories(new HashMap<>(Map.of(crew, attendanceDateTimes)));
     }
 
-    public static AttendanceHistories createWithMultipleAttendance(Crew crew, int presentCount, int tardyCount,
+    public static AttendanceHistories createWithMultipleAttendance(Crew crew, LocalDate startDate,
+                                                                   int presentCount,
+                                                                   int tardyCount,
                                                                    int absentCount) {
-        AttendanceDateTimes attendanceDateTimes = AttendanceDateTimesFixture.of(presentCount, tardyCount, absentCount);
+        AttendanceDateTimes attendanceDateTimes = AttendanceDateTimesFixture.of(startDate, presentCount, tardyCount,
+                absentCount);
         return new AttendanceHistories(new HashMap<>(Map.of(crew, attendanceDateTimes)));
     }
 }

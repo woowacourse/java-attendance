@@ -45,6 +45,10 @@ public class AttendanceHistories {
         return attendanceDateTimes.getTardyCount(toDate);
     }
 
+    public int getAbsentCount(Crew crew, LocalDate toDate) {
+        return 0;
+    }
+
     private void validateCrewPresence(Crew crew) {
         if (!attendanceHistories.containsKey(crew)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");

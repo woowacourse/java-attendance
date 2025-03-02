@@ -232,15 +232,17 @@ public class AttendanceHistoriesTest {
     @Nested
     @DisplayName("3.2 닉네임을 입력하면 전날까지의 크루 출결 횟수를 확인할 수 있다.")
     public class GetAttendanceCountTest {
+        private static final LocalDate START_DATE = LocalDate.of(2025, 2, 11);
+        private static final LocalDate LAST_DATE = AttendanceDateTimeFixture.getNthValidDate(START_DATE, 12);
+
         AttendanceHistories attendanceHistoriesForCount = AttendanceHistoriesFixture.createWithMultipleAttendance(
-                DEFAULT_CREW, 3, 4, 5);
-        LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(12);
+                DEFAULT_CREW, START_DATE, 3, 4, 5);
 
         @Test
         @DisplayName("출석 횟수를 확인할 수 있다.")
         void testGetPresentCount() {
             // given & when
-            int presentCount = attendanceHistoriesForCount.getPresentCount(DEFAULT_CREW, lastDate);
+            int presentCount = attendanceHistoriesForCount.getPresentCount(DEFAULT_CREW, LAST_DATE);
             // then
             assertThat(presentCount).isEqualTo(3);
         }
@@ -249,9 +251,29 @@ public class AttendanceHistoriesTest {
         @DisplayName("지각 횟수를 확인할 수 있다.")
         void testGetTardyCount() {
             // given & when
-            int presentCount = attendanceHistoriesForCount.getTardyCount(DEFAULT_CREW, lastDate);
+            int tardyCount = attendanceHistoriesForCount.getTardyCount(DEFAULT_CREW, LAST_DATE);
             // then
-            assertThat(presentCount).isEqualTo(4);
+            assertThat(tardyCount).isEqualTo(4);
+        }
+
+        @Test
+        @DisplayName("결석 횟수를 확인할 수 있다.")
+        void testGetAbsentCount() {
+            // given & when
+            int absentCount = attendanceHistoriesForCount.getAbsentCount(DEFAULT_CREW, LAST_DATE);
+            // then
+            assertThat(absentCount).isEqualTo(5);
+        }
+
+        @Test
+        @DisplayName("기록이 없는 날짜는 결석 횟수로 기록된다.")
+        void testGetAbsentCountWithEmptyHistory() {
+            // given
+            LocalDate lastDate = LAST_DATE.plusDays(5);
+            // when
+            int absentCount = attendanceHistoriesForCount.getAbsentCount(DEFAULT_CREW, lastDate);
+            // then
+            assertThat(absentCount).isEqualTo(10);
         }
     }
 

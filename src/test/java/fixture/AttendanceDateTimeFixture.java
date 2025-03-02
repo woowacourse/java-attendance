@@ -7,7 +7,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public class AttendanceDateTimeFixture {
-    private static final LocalDate START_DATE = LocalDate.of(2025, 2, 11);
     private static final int PRESENT_THRESHOLD_MINUTE = 0;
     private static final int TARDY_THRESHOLD_MINUTE = 6;
     private static final int ABSENT_THRESHOLD_MINUTE = 31;
@@ -16,13 +15,13 @@ public class AttendanceDateTimeFixture {
 
     private LocalDate date;
 
-    public AttendanceDateTimeFixture() {
-        this.date = START_DATE.minusDays(1);
+    public AttendanceDateTimeFixture(LocalDate startDate) {
+        this.date = startDate.minusDays(1);
         moveToNextDate();
     }
 
-    public static LocalDate getNthValidDate(int n) {
-        LocalDate date = START_DATE;
+    public static LocalDate getNthValidDate(LocalDate startDate, int n) {
+        LocalDate date = startDate;
         int validDaysCount = 0;
         while (validDaysCount < n) {
             if (!isDayOff(date)) {
