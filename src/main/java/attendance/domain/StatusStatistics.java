@@ -3,8 +3,8 @@ package attendance.domain;
 import java.util.HashMap;
 import java.util.Map;
 
-public record AttendanceStatusStatistics(Map<AttendanceStatus, Integer> history) {
-    public AttendanceStatusStatistics() {
+public record StatusStatistics(Map<AttendanceStatus, Integer> history) {
+    public StatusStatistics() {
         this(new HashMap<>());
     }
 

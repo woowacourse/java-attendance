@@ -58,7 +58,7 @@ class AttendancesTest {
         attendances.addAttendance(late);
         attendances.addAttendance(absence);
 
-        AttendanceStatusStatistics statusStatics = attendances.calculateStatics();
+        StatusStatistics statusStatics = attendances.calculateStatics();
         Assertions.assertAll(
             () -> assertThat(statusStatics.get(AttendanceStatus.ATTENDANCE)).isEqualTo(1),
             () -> assertThat(statusStatics.get(AttendanceStatus.LATE)).isEqualTo(1),
