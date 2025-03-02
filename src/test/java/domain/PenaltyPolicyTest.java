@@ -29,4 +29,17 @@ class PenaltyPolicyTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "NONE, false",
+            "WARNING, true",
+            "MEETING, true",
+            "EXPULSION, true"
+    })
+    void 제적위험_상태인지_판단한다(PenaltyPolicy penalty, boolean expected) {
+        //when
+        boolean isDanger = penalty.isDanger();
+        //then
+        assertThat(isDanger).isEqualTo(expected);
+    }
 }
