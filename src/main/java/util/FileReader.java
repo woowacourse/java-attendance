@@ -9,7 +9,7 @@ import java.util.List;
 
 public class FileReader {
 
-    public static List<String> fileReadLine(String fileName) throws IOException {
+    public static List<String> fileReadLine(String fileName) {
         try (BufferedReader br = loadFile(fileName)) {
             List<String> items = new ArrayList<>();
             String line;
@@ -18,7 +18,10 @@ public class FileReader {
                 items.add(line);
             }
             return items;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     private static BufferedReader loadFile(String fileName) {
