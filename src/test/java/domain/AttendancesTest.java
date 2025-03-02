@@ -96,4 +96,22 @@ public class AttendancesTest {
         //then
         assertThat(actual).isEqualTo(expected);
     }
+
+    @Test
+    void 기존_출석기록을_삭제하고_새로운_출석기록을_등록한다() {
+        //given
+        Crew crew = new Crew("쿠키");
+        LocalDateTime time = LocalDateTime.of(2024, 12, 2, 9, 30);
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        Attendance attendance = Attendance.of(crew, attendanceTime);
+        Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
+
+        LocalDateTime newTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+        Attendance newAttendance = Attendance.of(crew, new AttendanceTime(newTime));
+        Attendances newAttendances = new Attendances(List.of(newAttendance));
+        //when
+        attendances.modifyAttendanceTime(crew, newTime);
+        //then
+        assertThat(attendances).isEqualTo(newAttendances);
+    }
 }
