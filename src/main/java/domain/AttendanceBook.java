@@ -3,7 +3,6 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +10,7 @@ import util.DateTimeConvertor;
 
 public class AttendanceBook {
 
+    private static final int LATES_COUNT_PER_ABSENCE = 3;
     private final Map<String, Crew> crews;
 
     private AttendanceBook(final Map<String, Crew> crews) {
@@ -68,5 +68,11 @@ public class AttendanceBook {
                 .collect(Collectors.groupingBy(
                         AttendanceRecord::status,
                         Collectors.counting()));
+    }
+
+    public Penalty calculatePenalty(final String name) {
+        final Map<AttendanceStatus, Long> countAttendanceStatus = countAttendanceStatus(name);
+        return Penalty.findByAbsenceCount((int) (countAttendanceStatus.get(AttendanceStatus.ABSENCE)
+                + countAttendanceStatus.get(AttendanceStatus.LATE) / LATES_COUNT_PER_ABSENCE));
     }
 }

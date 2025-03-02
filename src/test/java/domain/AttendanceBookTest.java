@@ -128,4 +128,17 @@ public class AttendanceBookTest {
                 () -> assertThat(countAttendanceStatus.get(AttendanceStatus.ABSENCE)).isGreaterThanOrEqualTo(2)
         );
     }
+
+    @Test
+    @DisplayName("크루별 패널티를 계산한다.")
+    void test7() {
+        //given
+        final String name = "쿠키";
+
+        //when
+        final Penalty penalty = attendanceBook.calculatePenalty(name);
+
+        //then
+        assertThat(penalty).isEqualTo(Penalty.INTERVIEW);
+    }
 }
