@@ -17,8 +17,10 @@ public class Student {
         studentAttendanceHistory.modifyStudentAttendanceHistory(attendanceDate, attendanceTime);
     }
 
-    public boolean isExistAttendanceDate(AttendanceDate attendanceDate) {
-        return studentAttendanceHistory.isExistSameAttendanceDate(attendanceDate);
+    public void isAlreadyExistAttendanceDate(AttendanceDate attendanceDate) {
+        if (studentAttendanceHistory.isExistSameAttendanceDate(attendanceDate)) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석한 요일입니다. 다시 출석하고 싶으면 수정 기능을 이용해 주세요.");
+        }
     }
 
     public boolean isSameName(String studentName) {
