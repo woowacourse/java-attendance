@@ -14,7 +14,7 @@ public class CrewAttendance {
 
     public void add(final LocalDateTime attendance) {
         validateDuplicateDate(attendance);
-        attendances.add(new Attendance(attendance));
+        attendances.add(Attendance.of(attendance));
     }
 
     private void validateDuplicateDate(final LocalDateTime attendance) {
@@ -25,13 +25,13 @@ public class CrewAttendance {
 
     public boolean isExistDay(final LocalDateTime targetDateTime) {
         return attendances.stream()
-                .anyMatch(attendance -> attendance.isSameDay(new Attendance(targetDateTime)));
+                .anyMatch(attendance -> attendance.isSameDay(Attendance.of(targetDateTime)));
     }
 
     public void modify(final LocalDateTime newAttendance) {
         Attendance prevAttendance = getAttendanceOn(LocalDate.from(newAttendance));
         attendances.remove(prevAttendance);
-        attendances.add(new Attendance(newAttendance));
+        attendances.add(Attendance.of(newAttendance));
     }
 
     public Attendance getAttendanceOn(final LocalDateTime targetDay) {

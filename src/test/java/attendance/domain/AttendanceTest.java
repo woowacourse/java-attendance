@@ -16,7 +16,7 @@ class AttendanceTest {
     void test1() {
         LocalDateTime attendance = LocalDateTime.of(2024, 12, 25, 8, 0);
 
-        assertThatThrownBy(() -> new Attendance(attendance))
+        assertThatThrownBy(() -> Attendance.of(attendance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 12월 %d일 %s은 등교일이 아닙니다.",
                         attendance.getDayOfMonth(),
@@ -29,8 +29,8 @@ class AttendanceTest {
     void test2() {
         LocalDateTime attendance = LocalDateTime.of(2024, 12, 24, 8, 0);
 
-        assertThatCode(() -> new Attendance(attendance)).doesNotThrowAnyException();
-        assertThat(new Attendance(attendance))
+        assertThatCode(() -> Attendance.of(attendance)).doesNotThrowAnyException();
+        assertThat(Attendance.of(attendance))
                 .isNotNull()
                 .isInstanceOf(Attendance.class);
     }

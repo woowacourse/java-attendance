@@ -21,7 +21,7 @@ public class CrewAttendanceTest {
         crewAttendance.add(attendance);
 
         assertThat(crewAttendance.isExistDay(attendance)).isTrue();
-        assertThat(crewAttendance.getAttendanceOn(attendance)).isEqualTo(new Attendance(attendance));
+        assertThat(crewAttendance.getAttendanceOn(attendance)).isEqualTo(Attendance.of(attendance));
     }
 
     @DisplayName("신규 출석 기록 추가 시 출석 상태 계산 및 저장 성공")
@@ -35,7 +35,7 @@ public class CrewAttendanceTest {
 
         crewAttendance.add(attendance);
 
-        assertThat(crewAttendance.getAttendanceOn(attendance)).isEqualTo(new Attendance(attendance));
+        assertThat(crewAttendance.getAttendanceOn(attendance)).isEqualTo(Attendance.of(attendance));
         assertThat(crewAttendance.getAttendanceOn(attendance).status())
                 .isEqualTo(AttendanceStatus.valueOf(expectedStatus));
     }
@@ -69,7 +69,7 @@ public class CrewAttendanceTest {
         crewAttendance.modify(newDateTime);
         Attendance newAttendance = crewAttendance.getAttendanceOn(date);
 
-        assertThat(prevAttendance).isEqualTo(new Attendance(prevDateTime));
-        assertThat(newAttendance).isEqualTo(new Attendance(newDateTime));
+        assertThat(prevAttendance).isEqualTo(Attendance.of(prevDateTime));
+        assertThat(newAttendance).isEqualTo(Attendance.of(newDateTime));
     }
 }
