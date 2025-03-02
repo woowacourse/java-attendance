@@ -32,22 +32,20 @@ public class Application {
 
     public static void main(String[] args) {
         initAttendances(attendanceManager);
-        while (true) {
+        boolean again = true;
+        while (again) {
             LocalDate today = now();
             String option = readOption(today);
-            boolean isExitOption = Options.isExitOption(option);
-            if (isExitOption) {
-                break;
-            }
-            run(option);
+            again = run(option);
         }
     }
 
-    private static void run(final String option) {
+    private static boolean run(final String option) {
         try {
-            Options.run(option);
+            return Options.run(option);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
+            return true;
         }
     }
 

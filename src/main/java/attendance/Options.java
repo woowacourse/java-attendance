@@ -22,15 +22,22 @@ public class Options {
     private Options() {
     }
 
-    public static void run(final String option) {
-        Runnable function = options.getOrDefault(option, null);
-        if (function == null) {
-            throw new IllegalArgumentException(NOT_EXISTS_OPTION.getMessage());
+    public static boolean run(final String option) {
+        if (isExitOption(option)) {
+            return false;
         }
+        Runnable function = getFunction(option);
         function.run();
+        return true;
     }
 
-    public static boolean isExitOption(final String option) {
+    private static boolean isExitOption(final String option) {
         return option.equals(QUIT_OPTION);
+    }
+
+    private static Runnable getFunction(String option) {
+        return options.getOrDefault(option, () -> {
+            throw new IllegalArgumentException(NOT_EXISTS_OPTION.getMessage());
+        });
     }
 }
