@@ -3,10 +3,14 @@ package domain;
 import fixture.CrewRecordsFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -18,7 +22,7 @@ class CrewRecordsTest {
     @Test
     void validateCrewTest() {
         // given
-        CrewRecords crewRecords = CrewRecordsFixture.of("솔라", "2024-12-02T13:00");
+        CrewRecords crewRecords = CrewRecordsFixture.createSingleCrewRecord("솔라", "2024-12-02T13:00");
         LocalDate date = LocalDate.of(2024, 12, 2);
 
         // when
@@ -32,7 +36,7 @@ class CrewRecordsTest {
     @Test
     void addRecordTest() {
         // given
-        CrewRecords crewRecords = CrewRecordsFixture.fromNicknames("브리");
+        CrewRecords crewRecords = CrewRecordsFixture.createEmptyCrewRecords("브리");
 
         // when
         Crew crew = new Crew("브리");
@@ -46,7 +50,7 @@ class CrewRecordsTest {
     @Test
     void addRecordExceptionTest() {
         // given
-        CrewRecords crewRecords = CrewRecordsFixture.fromNicknames("브리");
+        CrewRecords crewRecords = CrewRecordsFixture.createEmptyCrewRecords("브리");
 
         // when
         Crew crew = new Crew("솔라");
@@ -60,7 +64,7 @@ class CrewRecordsTest {
     @Test
     void updateRecordTest() {
         // given
-        CrewRecords crewRecords = CrewRecordsFixture.of("저스틴", "2024-12-02T13:35");
+        CrewRecords crewRecords = CrewRecordsFixture.createSingleCrewRecord("저스틴", "2024-12-02T13:35");
         Crew crew = new Crew("저스틴");
         AttendanceRecord oldRecord = new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:35"));
         LocalDate oldDate = LocalDate.of(2024, 12, 2);
@@ -81,7 +85,7 @@ class CrewRecordsTest {
     @Test
     void updateRecordExceptionTest() {
         // given
-        CrewRecords crewRecords = CrewRecordsFixture.of("저스틴", "2024-12-02T13:35");
+        CrewRecords crewRecords = CrewRecordsFixture.createSingleCrewRecord("저스틴", "2024-12-02T13:35");
 
         // when
         Crew crew = new Crew("브리");
@@ -90,5 +94,38 @@ class CrewRecordsTest {
 
         // then
         assertThatThrownBy(() -> crewRecords.updateRecord(crew, oldDate, newTime)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("입력 받은 크루의 제적 상태를 반환한다.")
+    @ParameterizedTest
+    @MethodSource("warningStatusTestArgs")
+    void getWarningStatusTest(WarningStatus expectedValue, String[] dateTimes) {
+        // given
+        CrewRecords crewRecords = CrewRecordsFixture.createSingleCrewRecord("네오", dateTimes);
+        Crew crew = new Crew("네오");
+
+        // when
+        WarningStatus actualValue = crewRecords.getWarningStatus(crew);
+
+        // then
+        assertThat(actualValue).isEqualTo(expectedValue);
+    }
+
+    static Stream<Arguments> warningStatusTestArgs() {
+        return Stream.of(
+                Arguments.of(WarningStatus.WARN, new String[]{"2024-12-02T14:00",
+                        "2024-12-03T10:10",
+                        "2024-12-04T10:10",
+                        "2024-12-05T10:10"}),
+                Arguments.of(WarningStatus.COUNSEL, new String[]{"2024-12-02T14:00",
+                        "2024-12-03T14:00",
+                        "2024-12-04T14:00"}),
+                Arguments.of(WarningStatus.EXPEL, new String[]{"2024-12-02T14:00",
+                        "2024-12-03T14:00",
+                        "2024-12-04T14:00",
+                        "2024-12-05T14:00",
+                        "2024-12-06T14:00",
+                        "2024-12-09T14:00",})
+        );
     }
 }

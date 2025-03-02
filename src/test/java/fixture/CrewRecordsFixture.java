@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CrewRecordsFixture {
-    public static CrewRecords fromNicknames(String... nicknames) {
+    public static CrewRecords createEmptyCrewRecords(String... nicknames) {
         Map<Crew, AttendanceRecords> crewRecords = new HashMap<>();
         for (String nickname : nicknames) {
             Crew crew = new Crew(nickname);
@@ -20,7 +20,7 @@ public class CrewRecordsFixture {
         return new CrewRecords(crewRecords);
     }
 
-    public static CrewRecords of(String nickname, String... dateTimes) {
+    public static CrewRecords createSingleCrewRecord(String nickname, String... dateTimes) {
         Crew crew = new Crew(nickname);
         AttendanceRecords attendanceRecords = new AttendanceRecords();
         for (String dateTime : dateTimes) {
