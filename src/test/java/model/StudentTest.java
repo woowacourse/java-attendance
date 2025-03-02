@@ -114,4 +114,16 @@ public class StudentTest {
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 출석하지 않은 요일입니다. 수정하고 싶으면 출석을 먼저 진행해 주세요.");
     }
+
+    @Test
+    @DisplayName("출석, 지각, 결석 횟수를 Map 담는 메서드 테스트")
+    void test10() {
+        Map<AttendanceStatus,Integer> result = student.calculateStudentAttendanceResult();
+
+        Assertions.assertTrue(
+                result.containsKey(AttendanceStatus.ATTENDANCE)
+        );
+
+        Assertions.assertEquals(1, (int) result.get(AttendanceStatus.ATTENDANCE));
+    }
 }

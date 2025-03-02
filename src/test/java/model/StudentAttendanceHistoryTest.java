@@ -2,6 +2,7 @@ package model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,6 +82,22 @@ public class StudentAttendanceHistoryTest {
         Assertions.assertEquals(
                 studentAttendanceHistory.findAttendanceTimeByAttendanceDate(new AttendanceDate(LocalDate.of(2024, 12, 11))),
                 new AttendanceTime(LocalTime.of(0, 0))
+        );
+    }
+
+    @Test
+    @DisplayName("출석, 결석, 지각에 대한 정보를 저장하는 메서드 테스트")
+    void test6() {
+        Map<AttendanceStatus, Integer> result = new HashMap<>();
+
+        studentAttendanceHistory.calculateStudentAttendanceResult(result);
+
+        Assertions.assertTrue(
+                result.containsKey(AttendanceStatus.ATTENDANCE)
+        );
+
+        Assertions.assertEquals(
+                1, result.get(AttendanceStatus.ATTENDANCE)
         );
     }
 
