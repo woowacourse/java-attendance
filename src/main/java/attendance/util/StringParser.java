@@ -19,7 +19,7 @@ public class StringParser {
         try {
             return LocalTime.parse(input, TIME_FORMATTER);
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("문자열 형식에 맞지 않습니다.");
+            throw new IllegalArgumentException("HH:mm 형식이 아닙니다.");
         }
     }
 
@@ -52,7 +52,7 @@ public class StringParser {
         try {
             return LocalDateTime.parse(input, DATE_TIME_FORMATTER);
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("문자열 형식에 맞지 않습니다.");
+            throw new IllegalArgumentException("yyyy-MM-dd HH:mm 형식에 맞춰 작성해주세요.");
         }
     }
 }

@@ -2,12 +2,12 @@ package attendance.util;
 
 import static attendance.fixture.TestFixture.makeDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class StringParserTest {
@@ -28,9 +28,9 @@ class StringParserTest {
         String input = "10:1";
 
         // When & Then
-        Assertions.assertThatThrownBy(() -> StringParser.parseLocalTime(input))
+        assertThatThrownBy(() -> StringParser.parseLocalTime(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("문자열 형식에 맞지 않습니다.");
+                .hasMessageContaining("HH:mm 형식이 아닙니다.");
     }
 
     @Test
@@ -61,5 +61,17 @@ class StringParserTest {
 
         // Then
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void 파일_데이터_형식이_맞지_않을_경우_예외가_발생한다() {
+        // Given
+        List<String> lines = List.of(
+                "짱수,2024-12-0213:00"
+        );
+        // When & Then
+        assertThatThrownBy(() -> StringParser.parseFile(lines))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("yyyy-MM-dd HH:mm 형식에 맞춰 작성해주세요.");
     }
 }
