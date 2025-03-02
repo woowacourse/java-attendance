@@ -7,6 +7,7 @@ import attendance.domain.AttendanceStatus;
 import attendance.domain.LocalDateProvider;
 import attendance.domain.WarningLevel;
 import attendance.util.DataLoader;
+import attendance.view.DataFileReader;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -28,7 +29,7 @@ public class AttendanceController {
     }
 
     private AttendanceManager initData(LocalDateProvider dateProvider, AttendanceStatistics statistics) {
-        return new AttendanceManager(DataLoader.loadAttendancesData(), dateProvider, statistics);
+        return new AttendanceManager(DataLoader.loadAttendancesData(DataFileReader.readFile()), dateProvider, statistics);
     }
 
     public Map<AttendanceCommand, Runnable> initCommands(AttendanceManager attendanceManager) {

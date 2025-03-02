@@ -12,8 +12,7 @@ public class DataLoader {
     private static final String NAME_DATE_DELIMITER = ",";
     private static final DateTimeFormatter CONVERT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static Map<String, Attendances> loadAttendancesData() {
-        List<String> readFile = DataFileReader.readFile();
+    public static Map<String, Attendances> loadAttendancesData(List<String> readFile) {
         Map<String, Attendances> crewAttendances = new HashMap<>();
 
         readFile
