@@ -1,8 +1,7 @@
 package domain;
 
-import java.util.ArrayList;
+import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -13,9 +12,9 @@ public class AttendanceManager {
         this.attendanceManager = new HashMap<>();
     }
 
-    public void attend(NickName name, String time) {
+    public void attend(NickName name, LocalTime attendingTime) {
         Attendances attendances = attendanceManager.getOrDefault(name, new Attendances());
-        attendances.attend(time);
+        attendances.attend(attendingTime);
         attendanceManager.put(name, attendances);
     }
 

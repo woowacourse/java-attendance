@@ -1,18 +1,19 @@
 package domain;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Attendances {
-    private final List<String> attendances;
+    private final List<LocalTime> attendances;
 
     public Attendances() {
         this.attendances = new ArrayList<>();
     }
 
-    public void attend(String time) {
-        attendances.add(time);
+    public void attend(LocalTime attendingTime) {
+        attendances.add(attendingTime);
     }
 
     @Override

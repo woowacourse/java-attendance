@@ -2,6 +2,8 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,11 +13,11 @@ public class AttendanceManagerTest {
     void should_attend_by_nickname_and_attending_time() {
         // given
         NickName nickName = new NickName("후우");
-        String time = "10:00";
+        LocalTime attendingTime = LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm"));
         AttendanceManager attendanceManager = new AttendanceManager();
 
         // when
-        attendanceManager.attend(nickName, time);
+        attendanceManager.attend(nickName, attendingTime);
 
         // then
         assertThat(attendanceManager).isNotEqualTo(new AttendanceManager());
