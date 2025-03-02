@@ -32,6 +32,7 @@ public class AttendanceBook {
         Student student = findStudentByNickName(name);
         return student.findAttendanceLocalTimeByLocalDate(localDate);
     }
+
     public AttendanceStatus findStudentAttendanceStatusRecord(String name, LocalDate localDate) {
         Student student = findStudentByNickName(name);
         return student.findAttendanceStatusByLocalDate(localDate);

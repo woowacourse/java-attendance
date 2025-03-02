@@ -55,6 +55,7 @@ public class Student {
             registerAsAbsentIfNoAttendance(date);
         }
     }
+
     public void updateAttendanceCount() {
         attendanceStatusCount.updateAttendanceCount(attendanceStatusRecord);
     }
@@ -64,12 +65,12 @@ public class Student {
         return attendanceStatusCount.getAbsentCount() + convertTardiesToAbsence();
     }
 
-    public long calculateAbsentCount(){
+    public long calculateAbsentCount() {
         updateAttendanceCount();
         return attendanceStatusCount.getAbsentCount();
     }
 
-    public long calculateLateCount(){
+    public long calculateLateCount() {
         updateAttendanceCount();
         return attendanceStatusCount.getLateCount();
     }
@@ -87,13 +88,14 @@ public class Student {
         }
     }
 
-    public Map<LocalDate, LocalTime> getAttendanceTimeRecords(){
+    public Map<LocalDate, LocalTime> getAttendanceTimeRecords() {
         return attendanceTimeRecord.getAttendanceTimeRecords();
     }
 
-    public Map<AttendanceStatus, Long> getAttendanceStatusCount(){
+    public Map<AttendanceStatus, Long> getAttendanceStatusCount() {
         return attendanceStatusCount.getAttendanceStatusCount();
     }
+
     public String getName() {
         return name;
     }

@@ -24,11 +24,11 @@ public class AttendanceStatusCount {
         return attendanceStatusCount;
     }
 
-    public long getAbsentCount(){
+    public long getAbsentCount() {
         return attendanceStatusCount.get(AttendanceStatus.ABSENT);
     }
 
-    public long getLateCount(){
+    public long getLateCount() {
         return attendanceStatusCount.get(AttendanceStatus.LATE);
     }
 }
