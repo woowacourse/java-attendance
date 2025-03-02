@@ -27,6 +27,7 @@ public class AttendanceHistories {
     }
 
     public LocalDateTime replaceAttendanceHistory(Crew crew, LocalDateTime newAttendanceDateTime) {
+        validateCrew(crew);
         AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
         LocalDateTime oldAttendanceDateTime = attendanceDateTimes.remove(newAttendanceDateTime.toLocalDate());
         attendanceDateTimes.add(newAttendanceDateTime);
