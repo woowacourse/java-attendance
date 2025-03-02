@@ -21,7 +21,7 @@ public class OutputView {
     private static final String ARROW = "-> ";
     private static final String TIME_FORMAT = "%02d:%02d (%s) ";
     private static final String MODIFY_COMPLETE = "수정 완료!%n";
-    private static final String ATTENDANCE_RECORD_HEADER_FORMAT = "이번 달 %s의 출석 기록입니다.%n";
+    private static final String ATTENDANCE_RECORD_HEADER_FORMAT = "이번 달 %s의 출석 기록입니다.%n%n";
     private static final String PENALTY_INFO_FORMAT = "%s 대상자입니다.%n";
     private static final String ATTENDANCE_COUNT = "%s: %d회%n";
     private static final String PENALTY_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
@@ -119,6 +119,7 @@ public class OutputView {
             );
             printEmptyLine();
         }
+        printEmptyLine();
 
         Map<AttendanceType, Integer> counts = attendances.countAttendanceType();
         for (AttendanceType type : counts.keySet()) {
@@ -128,10 +129,12 @@ public class OutputView {
                     counts.get(type)
             );
         }
+        printEmptyLine();
 
         if (PenaltyPolicy.judgePenalty(counts).isDanger()) {
             System.out.printf(PENALTY_INFO_FORMAT, convertToPenaltyString(PenaltyPolicy.judgePenalty(counts)));
         }
+        printEmptyLine();
     }
 
     public void printDangerCrews(Map<Crew, Attendances> dangerCrews, List<Crew> crewOrder) {
