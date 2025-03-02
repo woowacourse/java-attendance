@@ -3,6 +3,9 @@ package domain.attendance.constant;
 import domain.datetime.CampusDate;
 import domain.datetime.CampusTime;
 import java.time.DayOfWeek;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public enum AttendanceStatus {
     ATTENDANCE("출석"),
@@ -28,16 +31,17 @@ public enum AttendanceStatus {
     }
 
     private static AttendanceStatus calculateStatus(final int hourLimit, final CampusTime time) {
-        CampusTime absenceLimit = CampusTime.of(hourLimit, ABSENCE_LIMIT);
-        CampusTime tardinessLimit = CampusTime.of(hourLimit, TARDINESS_LIMIT);
+        // TODO : Q5
+        Map<AttendanceStatus, CampusTime> status = new LinkedHashMap<>();
+        status.put(ABSENCE, CampusTime.of(hourLimit, ABSENCE_LIMIT));
+        status.put(TARDINESS, CampusTime.of(hourLimit, TARDINESS_LIMIT));
 
-        if (time.isAfter(absenceLimit)) {
-            return AttendanceStatus.ABSENCE;
+        for (Map.Entry<AttendanceStatus, CampusTime> entry : status.entrySet()) {
+            if (time.isAfter(entry.getValue())) {
+                return entry.getKey();
+            }
         }
-        if (time.isAfter(tardinessLimit)) {
-            return AttendanceStatus.TARDINESS;
-        }
-        return AttendanceStatus.ATTENDANCE;
+        return ATTENDANCE;
     }
 
     public String getValue() {
