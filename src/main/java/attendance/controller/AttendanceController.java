@@ -2,12 +2,8 @@ package attendance.controller;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceManager;
-import attendance.domain.AttendanceStatistics;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.LocalDateProvider;
 import attendance.domain.WarningLevel;
-import attendance.util.DataLoader;
-import attendance.view.DataFileReader;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -20,16 +16,10 @@ public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
 
-    public AttendanceController(InputView inputView, OutputView outputView, LocalDateProvider dateProvider,
-                                AttendanceStatistics statistics) {
+    public AttendanceController(InputView inputView, OutputView outputView, AttendanceManager attendanceManager) {
         this.inputView = inputView;
         this.outputView = outputView;
-        AttendanceManager attendanceManager = initData(dateProvider, statistics);
         commands = initCommands(attendanceManager);
-    }
-
-    private AttendanceManager initData(LocalDateProvider dateProvider, AttendanceStatistics statistics) {
-        return new AttendanceManager(DataLoader.loadAttendancesData(DataFileReader.readFile()), dateProvider, statistics);
     }
 
     public Map<AttendanceCommand, Runnable> initCommands(AttendanceManager attendanceManager) {
