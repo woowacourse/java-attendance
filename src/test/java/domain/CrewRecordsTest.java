@@ -30,7 +30,7 @@ class CrewRecordsTest {
 
     @DisplayName("입력 받은 닉네임과 LocalDateTime으로 새 출석 기록을 저장할 수 있다.")
     @Test
-    void test() {
+    void addRecordTest() {
         // given
         CrewRecords crewRecords = CrewRecordsFixture.fromNicknames("브리");
 
@@ -42,6 +42,20 @@ class CrewRecordsTest {
         assertDoesNotThrow(() -> crewRecords.addRecord(crew, record));
     }
 
+    @DisplayName("존재하지 않는 크루의 출석 기록을 등록하려고 할 경우 예외가 발생한다.")
+    @Test
+    void addRecordExceptionTest() {
+        // given
+        CrewRecords crewRecords = CrewRecordsFixture.fromNicknames("브리");
+
+        // when
+        Crew crew = new Crew("솔라");
+        AttendanceRecord record = new AttendanceRecord(LocalDateTime.parse("2024-12-03T13:00"));
+
+        // then
+        assertThatThrownBy(() -> crewRecords.addRecord(crew, record)).isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("입력 받은 날짜의 출석 시간을 수정할 수 있다.")
     @Test
     void updateRecordTest() {
@@ -49,8 +63,8 @@ class CrewRecordsTest {
         CrewRecords crewRecords = CrewRecordsFixture.of("저스틴", "2024-12-02T13:35");
         Crew crew = new Crew("저스틴");
         AttendanceRecord oldRecord = new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:35"));
-        LocalTime newTime = LocalTime.of(13, 30);
         LocalDate oldDate = LocalDate.of(2024, 12, 2);
+        LocalTime newTime = LocalTime.of(13, 30);
 
         // when
         crewRecords.updateRecord(crew, oldDate, newTime);
@@ -61,5 +75,20 @@ class CrewRecordsTest {
                 () -> assertThat(oldRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.ABSENT),
                 () -> assertThat(newRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.TARDY)
         );
+    }
+
+    @DisplayName("존재하지 않는 크루의 출석 기록을 수정하려고 할 경우 예외가 발생한다.")
+    @Test
+    void updateRecordExceptionTest() {
+        // given
+        CrewRecords crewRecords = CrewRecordsFixture.of("저스틴", "2024-12-02T13:35");
+
+        // when
+        Crew crew = new Crew("브리");
+        LocalDate oldDate = LocalDate.of(2024, 12, 2);
+        LocalTime newTime = LocalTime.of(13, 30);
+
+        // then
+        assertThatThrownBy(() -> crewRecords.updateRecord(crew, oldDate, newTime)).isInstanceOf(IllegalArgumentException.class);
     }
 }
