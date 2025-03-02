@@ -17,6 +17,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 @DisplayName("캠퍼스 운영 여부")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class AttendanceCheckerTest {
+    private static final LocalDateProvider DATE_PROVIDER = LocalDateTestFixture.DATE_PROVIDER;
 
     @Test
     void 주말이면_예외가_발생한다() {
@@ -33,7 +34,7 @@ public class AttendanceCheckerTest {
     @EnumSource(Holiday.class)
     void 공휴일이면_예외가_발생한다(Holiday holiday) {
         AttendanceChecker attendanceChecker = new AttendanceChecker();
-        LocalDate holidayDate = holiday.toLocalDate();
+        LocalDate holidayDate = LocalDate.of(DATE_PROVIDER.now().getYear(), holiday.getMonth(), holiday.getDay());
         LocalTime time = LocalTime.of(10, 0);
 
         assertThatThrownBy(() -> attendanceChecker.checkCampusOpen(holidayDate, time))

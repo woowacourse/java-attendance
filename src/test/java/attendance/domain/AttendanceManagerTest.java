@@ -34,7 +34,8 @@ public class AttendanceManagerTest {
                     crewAttendances.put(name, new Attendances());
                 });
 
-        assertThat(new AttendanceManager(crewAttendances))
+        assertThat(new AttendanceManager(crewAttendances, LocalDateTestFixture.DATE_PROVIDER,
+                new DefaultAttendanceStatistics(LocalDateTestFixture.DATE_PROVIDER)))
                 .isInstanceOf(AttendanceManager.class);
     }
 
@@ -62,10 +63,9 @@ public class AttendanceManagerTest {
     void 출석_정보를_저장한다() {
         String crewName = "빙티";
         AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
-        LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(10, 0);
 
-        assertThatCode(() -> attendanceManager.attend(crewName, attendDate, attendTime))
+        assertThatCode(() -> attendanceManager.attend(crewName, attendTime))
                 .doesNotThrowAnyException();
     }
 
@@ -73,12 +73,11 @@ public class AttendanceManagerTest {
     void 출석_기록이_있는_경우_예외가_발생한다() {
         String crewName = "빙티";
         AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
-        LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(10, 0);
-        attendanceManager.attend(crewName, attendDate, attendTime);
+        attendanceManager.attend(crewName, attendTime);
 
         LocalTime newAttendTime = LocalTime.of(10, 4);
-        assertThatThrownBy(() -> attendanceManager.attend(crewName, attendDate, newAttendTime))
+        assertThatThrownBy(() -> attendanceManager.attend(crewName, newAttendTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 날짜에 출석 기록이 있습니다. 출석 수정 기능을 이용해주세요.");
     }
@@ -98,10 +97,9 @@ public class AttendanceManagerTest {
     void 캠퍼스_운영시간이_아니면_예외가_발생한다() {
         String crewName = "빙티";
         AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
-        LocalDate attendDate = LocalDateTestFixture.createRegularDate();
         LocalTime attendTime = LocalTime.of(23, 59);
 
-        assertThatThrownBy(() -> attendanceManager.attend(crewName, attendDate, attendTime))
+        assertThatThrownBy(() -> attendanceManager.attend(crewName, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("현재 캠퍼스 운영시간이 아닙니다.");
     }
@@ -109,11 +107,11 @@ public class AttendanceManagerTest {
     @Test
     void 캠퍼스_등교일이_아니면_예외가_발생한다() {
         String crewName = "빙티";
-        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(crewName);
-        LocalDate attendDate = LocalDateTestFixture.createWeekendDate();
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createEmptyManagerByName(
+                LocalDate.of(2024, 12, 25), "빙티");
         LocalTime attendTime = LocalTime.of(10, 0);
 
-        assertThatThrownBy(() -> attendanceManager.attend(crewName, attendDate, attendTime))
+        assertThatThrownBy(() -> attendanceManager.attend(crewName, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등교일이 아닙니다.");
     }
@@ -135,9 +133,9 @@ public class AttendanceManagerTest {
         String crewName = "빙티";
         Map<String, Attendances> crewAttendances = new HashMap<>();
         crewAttendances.put(crewName, AttendancesTestFixture.createAttendances(3, 5, endDate));
-        AttendanceManager attendanceManager = new AttendanceManager(crewAttendances);
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createByCrewAttendances(crewAttendances);
 
-        WarningLevel warningLevel = attendanceManager.calculateCrewWarningLevel(crewName, endDate);
+        WarningLevel warningLevel = attendanceManager.calculateCrewWarningLevel(crewName);
 
         assertThat(warningLevel).isEqualTo(WarningLevel.REMOVE);
     }
@@ -147,9 +145,9 @@ public class AttendanceManagerTest {
         String crewName = "빙티";
         Map<String, Attendances> crewAttendances = new HashMap<>();
         crewAttendances.put(crewName, AttendancesTestFixture.createAttendances(3, 5, 28));
-        AttendanceManager manager = new AttendanceManager(crewAttendances);
+        AttendanceManager attendanceManager = AttendanceManagerTestFixture.createByCrewAttendances(crewAttendances);
 
-        Map<LocalDate, Attendance> findAttendances = manager.getCrewAttendances(crewName);
+        Map<LocalDate, Attendance> findAttendances = attendanceManager.getCrewAttendances(crewName);
 
         assertThat(findAttendances).isNotNull();
     }

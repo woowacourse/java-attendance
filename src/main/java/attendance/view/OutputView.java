@@ -6,6 +6,7 @@ import static attendance.domain.AttendanceStatus.LATENESS;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.LocalDateProvider;
 import attendance.domain.WarningLevel;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,10 +34,16 @@ public class OutputView {
     private static final String WARNING_CREW_PRINT_HEADER = "제적 위험자 조회 결과\n";
     private static final String WARNING_CREW_PRINT_FORMAT = "- %s: %s %d회, %s %d회 (%s)\n";
 
+    private final LocalDateProvider dateProvider;
+
+    public OutputView(LocalDateProvider dateProvider) {
+        this.dateProvider = dateProvider;
+    }
+
     public void printCheckAttendanceResult(LocalTime enterTime) {
-        LocalDate now = LocalDate.now();
+        LocalDate now = dateProvider.now();
         System.out.print(
-                createAttendanceDescription(LocalDate.now(), enterTime, AttendanceStatus.of(now, enterTime)));
+                createAttendanceDescription(now, enterTime, AttendanceStatus.of(now, enterTime)));
     }
 
     private String createAttendanceDescription(LocalDate date, LocalTime enterTime, AttendanceStatus status) {
@@ -82,7 +89,7 @@ public class OutputView {
     public void printAttendanceRecords(String crewName, Map<LocalDate, Attendance> crewAttendances) {
         StringBuilder builder = new StringBuilder();
         builder.append(String.format(ATTENDANCE_RECORD_HEADER_FORMAT, crewName)).append("\n");
-        LocalDate now = LocalDate.now();
+        LocalDate now = dateProvider.now();
         IntStream.range(1, now.getDayOfMonth())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
                 .filter(AttendanceChecker::isCampusOpenDate)

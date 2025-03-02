@@ -1,7 +1,8 @@
 package attendance.domain.fixture;
 
-import attendance.domain.AttendanceChecker;
+import attendance.config.FixedLocalDateProvider;
 import attendance.domain.Holiday;
+import attendance.domain.LocalDateProvider;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
@@ -9,8 +10,16 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class LocalDateTestFixture {
+    public static final LocalDateProvider DATE_PROVIDER;
+    public static final LocalDate TEST_DATE;
+
+    static {
+        TEST_DATE = LocalDate.of(2024, 12, 31);
+        DATE_PROVIDER = new FixedLocalDateProvider(TEST_DATE);
+    }
+
     public static LocalDate createRegularDate() {
-        LocalDate now = LocalDate.now();
+        LocalDate now = DATE_PROVIDER.now();
         return IntStream.range(1, now.getMonth().maxLength())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
                 .filter(date -> !isMonday(date))
@@ -20,7 +29,7 @@ public class LocalDateTestFixture {
     }
 
     public static List<LocalDate> createRegularDates(int endDate) {
-        LocalDate now = LocalDate.now();
+        LocalDate now = DATE_PROVIDER.now();
         return IntStream.range(1, endDate)
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
                 .filter(date -> !Holiday.isHoliday(date))
@@ -29,7 +38,7 @@ public class LocalDateTestFixture {
     }
 
     public static LocalDate createMondayDate() {
-        LocalDate now = LocalDate.now();
+        LocalDate now = DATE_PROVIDER.now();
         return IntStream.range(1, now.getMonth().maxLength())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
                 .filter(LocalDateTestFixture::isMonday)
@@ -38,20 +47,12 @@ public class LocalDateTestFixture {
     }
 
     public static LocalDate createWeekendDate() {
-        LocalDate now = LocalDate.now();
+        LocalDate now = DATE_PROVIDER.now();
         return IntStream.range(1, now.getMonth().maxLength())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
                 .filter(LocalDateTestFixture::isWeekend)
                 .findFirst()
                 .orElseThrow();
-    }
-
-    public static int countOnCampusDay(int today) {
-        LocalDate now = LocalDate.now();
-        return (int) IntStream.range(1, today)
-                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
-                .filter(AttendanceChecker::isCampusOpenDate)
-                .count();
     }
 
     private static boolean isMonday(LocalDate date) {
@@ -61,4 +62,5 @@ public class LocalDateTestFixture {
     private static boolean isWeekend(LocalDate date) {
         return date.getDayOfWeek() == DayOfWeek.SUNDAY || date.getDayOfWeek() == DayOfWeek.SATURDAY;
     }
+
 }

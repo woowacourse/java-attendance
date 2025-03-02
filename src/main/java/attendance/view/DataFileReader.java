@@ -10,8 +10,9 @@ import java.util.stream.Collectors;
 public class DataFileReader {
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
     private static final int FILE_HEADER_LINE_COUNT = 1;
-    public static List<String> readFile(){
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))){
+
+    public static List<String> readFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             return reader.lines()
                     .skip(FILE_HEADER_LINE_COUNT)
                     .collect(Collectors.toList());

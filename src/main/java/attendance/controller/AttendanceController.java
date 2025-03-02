@@ -2,7 +2,9 @@ package attendance.controller;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceStatistics;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.LocalDateProvider;
 import attendance.domain.WarningLevel;
 import attendance.util.DataLoader;
 import attendance.view.InputView;
@@ -17,15 +19,16 @@ public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
 
-    public AttendanceController(InputView inputView, OutputView outputView) {
+    public AttendanceController(InputView inputView, OutputView outputView, LocalDateProvider dateProvider,
+                                AttendanceStatistics statistics) {
         this.inputView = inputView;
         this.outputView = outputView;
-        AttendanceManager attendanceManager = initData();
+        AttendanceManager attendanceManager = initData(dateProvider, statistics);
         commands = initCommands(attendanceManager);
     }
 
-    private AttendanceManager initData() {
-        return new AttendanceManager(DataLoader.loadAttendancesData());
+    private AttendanceManager initData(LocalDateProvider dateProvider, AttendanceStatistics statistics) {
+        return new AttendanceManager(DataLoader.loadAttendancesData(), dateProvider, statistics);
     }
 
     public Map<AttendanceCommand, Runnable> initCommands(AttendanceManager attendanceManager) {
@@ -65,7 +68,7 @@ public class AttendanceController {
         String crewName = inputView.inputCrewName();
         attendanceManager.validateExistCrew(crewName);
         LocalTime enterTime = inputView.inputEnterTime();
-        attendanceManager.attend(crewName, LocalDate.now(), enterTime);
+        attendanceManager.attend(crewName, enterTime);
 
         outputView.printCheckAttendanceResult(enterTime);
     }
@@ -82,11 +85,9 @@ public class AttendanceController {
 
     private void viewAttendanceRecord(AttendanceManager attendanceManager) {
         String crewName = inputView.inputCrewName();
-        int today = LocalDate.now().getDayOfMonth();
         Map<LocalDate, Attendance> crewAttendances = attendanceManager.getCrewAttendances(crewName);
-        Map<AttendanceStatus, Integer> statusCounts = attendanceManager.calculateStatusCount(crewName,
-                today);
-        WarningLevel level = attendanceManager.calculateWarningLevel(crewName, today);
+        Map<AttendanceStatus, Integer> statusCounts = attendanceManager.calculateStatusCount(crewName);
+        WarningLevel level = attendanceManager.calculateWarningLevel(crewName);
 
         outputView.printAttendanceRecords(crewName, crewAttendances);
         outputView.printAttendanceStatusCount(statusCounts);
@@ -94,8 +95,7 @@ public class AttendanceController {
     }
 
     private void viewWarningCrews(AttendanceManager attendanceManager) {
-        int today = LocalDate.now().getDayOfMonth();
-        Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount = attendanceManager.getCrewsStatusCount(today);
+        Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount = attendanceManager.getCrewsStatusCount();
         outputView.printWarningCrews(crewsStatusCount);
     }
 }

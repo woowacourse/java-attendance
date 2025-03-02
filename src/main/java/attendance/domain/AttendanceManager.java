@@ -8,9 +8,14 @@ import java.util.Optional;
 
 public class AttendanceManager {
     private final Map<String, Attendances> crewAttendances;
+    private final LocalDateProvider dateProvider;
+    private final AttendanceStatistics statistics;
 
-    public AttendanceManager(Map<String, Attendances> crewAttendances) {
+    public AttendanceManager(Map<String, Attendances> crewAttendances, LocalDateProvider dateProvider,
+                             AttendanceStatistics statistics) {
         this.crewAttendances = crewAttendances;
+        this.dateProvider = dateProvider;
+        this.statistics = statistics;
     }
 
     public void validateExistCrew(String crewName) {
@@ -19,12 +24,12 @@ public class AttendanceManager {
         }
     }
 
-    public void attend(String crewName, LocalDate date, LocalTime time) {
+    public void attend(String crewName, LocalTime time) {
         Attendances attendances = findAttendancesByName(crewName);
-        checkDuplicateAttendance(attendances, date);
-        AttendanceChecker.checkCampusOpen(date, time);
+        checkDuplicateAttendance(attendances, dateProvider.now());
+        AttendanceChecker.checkCampusOpen(dateProvider.now(), time);
 
-        attendances.addAttendance(date, time);
+        attendances.addAttendance(dateProvider.now(), time);
     }
 
     private void checkDuplicateAttendance(Attendances attendances, LocalDate date) {
@@ -44,30 +49,30 @@ public class AttendanceManager {
                 .orElse(null);
     }
 
-    public WarningLevel calculateCrewWarningLevel(String crewName, int today) {
+    public WarningLevel calculateCrewWarningLevel(String crewName) {
         Attendances attendances = findAttendancesByName(crewName);
-        Map<AttendanceStatus, Integer> statusCount = AttendanceStatistics.getTotalStatusCount(attendances, today);
+        Map<AttendanceStatus, Integer> statusCount = statistics.getTotalStatusCount(attendances);
 
         return WarningLevel.from(statusCount);
     }
 
-    public Map<AttendanceStatus, Integer> calculateStatusCount(String crewName, int today) {
+    public Map<AttendanceStatus, Integer> calculateStatusCount(String crewName) {
         Attendances attendances = findAttendancesByName(crewName);
-        return AttendanceStatistics.getTotalStatusCount(attendances, today);
+        return statistics.getTotalStatusCount(attendances);
     }
 
-    public Map<String, Map<AttendanceStatus, Integer>> getCrewsStatusCount(int today) {
+    public Map<String, Map<AttendanceStatus, Integer>> getCrewsStatusCount() {
         Map<String, Map<AttendanceStatus, Integer>> result = new HashMap<>();
         crewAttendances.keySet()
                 .forEach(name -> {
-                    Map<AttendanceStatus, Integer> statusCount = calculateStatusCount(name, today);
+                    Map<AttendanceStatus, Integer> statusCount = calculateStatusCount(name);
                     result.put(name, statusCount);
                 });
         return result;
     }
 
-    public WarningLevel calculateWarningLevel(String crewName, int today) {
-        return WarningLevel.from(calculateStatusCount(crewName, today));
+    public WarningLevel calculateWarningLevel(String crewName) {
+        return WarningLevel.from(calculateStatusCount(crewName));
     }
 
     private Attendances findAttendancesByName(String crewName) {

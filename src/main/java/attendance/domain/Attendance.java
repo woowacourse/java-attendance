@@ -5,6 +5,6 @@ import java.time.LocalTime;
 
 public record Attendance(LocalTime time, AttendanceStatus status) {
     public Attendance(LocalDate date, LocalTime time) {
-        this(time, AttendanceStatus.from(date, time));
+        this(time, AttendanceStatus.of(date, time));
     }
 }

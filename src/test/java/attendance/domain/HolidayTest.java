@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -29,14 +28,6 @@ public class HolidayTest {
         boolean result = Holiday.isHoliday(date);
 
         assertThat(result).isEqualTo(expected);
-    }
-
-
-    @Test
-    void Holiday를_LocalDate로_반환한다() {
-        Holiday holiday = Holiday.CHRISTMAS;
-
-        assertThat(holiday.toLocalDate()).isInstanceOf(LocalDate.class);
     }
 
 }

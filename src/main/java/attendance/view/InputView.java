@@ -1,6 +1,7 @@
 package attendance.view;
 
 import attendance.controller.AttendanceCommand;
+import attendance.domain.LocalDateProvider;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,11 +21,12 @@ public class InputView {
     private static final String MODIFY_DATE_PROMPT = "수정하려는 날짜(일)를 입력해 주세요.\n";
     private static final String MODIFY_TIME_PROMPT = "언제로 변경하겠습니까?\n";
 
-
+    private final LocalDateProvider dateProvider;
     private final BufferedReader bufferedReader;
 
 
-    public InputView() {
+    public InputView(LocalDateProvider dateProvider) {
+        this.dateProvider = dateProvider;
         this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
     }
 
@@ -34,7 +36,7 @@ public class InputView {
     }
 
     private String createCommandMessage() {
-        LocalDate now = LocalDate.now();
+        LocalDate now = dateProvider.now();
         StringBuilder builder = new StringBuilder();
         builder.append(String.format(COMMAND_MESSAGE_HEADER_FORMAT, now.getMonthValue(), now.getDayOfMonth(),
                 getDisplayName(now)));
@@ -92,7 +94,7 @@ public class InputView {
     public LocalDate inputModifyDate() {
         try {
             System.out.println(MODIFY_DATE_PROMPT);
-            LocalDate now = LocalDate.now();
+            LocalDate now = dateProvider.now();
             return LocalDate.of(now.getYear(), now.getMonthValue(), parseInt());
         } catch (DateTimeException e) {
             System.out.println("[ERROR] 날짜가 올바르지 않습니다. 다시 입력해 주세요.");

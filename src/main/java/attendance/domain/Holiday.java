@@ -27,8 +27,11 @@ public enum Holiday {
                 .anyMatch(holidayDate -> holidayDate.equals(date));
     }
 
-    public LocalDate toLocalDate() {
-        LocalDate now = LocalDate.now();
-        return LocalDate.of(now.getYear(), this.month, this.day);
+    public int getMonth() {
+        return month;
+    }
+
+    public int getDay() {
+        return day;
     }
 }
