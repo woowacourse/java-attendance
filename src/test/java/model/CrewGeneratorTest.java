@@ -16,6 +16,7 @@ class CrewGeneratorTest {
     void parseCrewAndAttendanceBook() {
 
         // given
+        final AttendanceDateTime todayDateTime = AttendanceDateTime.of("2024-12-14 10:00");
         // 쿠키 2, 빙봉 3, 빙티 2, 이든 2, 짱수 1
         final List<String[]> crewDatas = List.of(
                 new String[]{"쿠키", "2024-12-13 10:08"},
@@ -31,7 +32,7 @@ class CrewGeneratorTest {
         );
 
         // when
-        final AttendanceManager attendanceManager = CrewGenerator.parseCrewAndAttendanceBook(crewDatas);
+        final AttendanceManager attendanceManager = CrewGenerator.parseCrewAndAttendanceBook(todayDateTime, crewDatas);
         final Map<Crew, AttendanceBook> attendanceBooks = attendanceManager.getAttendanceBooks();
 
         // then

@@ -32,4 +32,12 @@ public class AttendanceManager {
     public AttendanceBook findAttendanceBookByCrew(final Crew crew) {
         return attendanceBooks.get(crew);
     }
+
+    public void updateAttendanceRecord(final int toDayOfMonth) {
+        for (final Crew crew : attendanceBooks.keySet()) {
+            final AttendanceBook attendanceBook = attendanceBooks.get(crew);
+            final int fromDayOfMonth = attendanceBook.getLastlyAttendance();
+            attendanceBook.updateRecordFromTo(fromDayOfMonth, toDayOfMonth);
+        }
+    }
 }

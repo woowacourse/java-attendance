@@ -28,6 +28,24 @@ public class AttendanceDateTime {
         return new AttendanceDateTime(dateTime);
     }
 
+    public static AttendanceDateTime of(final int year, final int month, final int dayOfMonth, final LocalTime localTime) {
+        try {
+            final LocalDate localDate = LocalDate.of(year, month, dayOfMonth);
+            final LocalDateTime dateTime = LocalDateTime.of(localDate, localTime);
+            return new AttendanceDateTime(dateTime);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public boolean isAfter(final AttendanceDateTime descDateTime) {
+        return dateTime.isAfter(descDateTime.getDateTime());
+    }
+
+    public LocalDate getDate() {
+        return dateTime.toLocalDate();
+    }
+
     public AttendanceTime getAttendanceTime() {
         return AttendanceTime.of(dateTime.toLocalTime());
     }

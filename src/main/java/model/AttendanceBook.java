@@ -1,5 +1,10 @@
 package model;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class AttendanceBook {
@@ -31,7 +36,59 @@ public class AttendanceBook {
         attendances.add(newAttendance);
     }
 
+    public void updateRecordFromTo(final int fromDayOfMonth, final int toDayOfMonth) {
+        final Set<Integer> datesFromTo = ValidManager.getInstance().getDatesFromTo(fromDayOfMonth, toDayOfMonth);
+        for (final int day : datesFromTo) {
+            final AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, day, LocalTime.of(0, 0));
+            final Attendance attendance = Attendance.of(attendanceDateTime);
+
+            add(attendance);
+        }
+    }
+
     public TreeSet<Attendance> getAttendances() {
         return attendances;
+    }
+
+    public AttendanceBook getBefore(final AttendanceDateTime todayDateTime) {
+        final List<Attendance> attendancesList = new ArrayList<>(attendances);
+        final int toIdx = findLargestIdxLessThan(attendancesList, todayDateTime);
+        final List<Attendance> attendances = attendancesList.subList(0, toIdx);
+        return new AttendanceBook(new TreeSet<>(attendances));
+    }
+
+    public int getLastlyAttendance() {
+        return attendances.getLast().getAttendanceDateTime().getDate().getDayOfMonth();
+    }
+
+    public Set<Integer> getAllDayOfMonth() {
+        final List<Integer> allDays = attendances.stream()
+                .map(Attendance::getAttendanceDateTime)
+                .map(AttendanceDateTime::getDateTime)
+                .map(LocalDateTime::getDayOfMonth)
+                .toList();
+        return Set.copyOf(allDays);
+    }
+
+    public List<AttendanceStatus> getStatuses() {
+        return attendances.stream()
+                .map(Attendance::getAttendanceStatus)
+                .toList();
+    }
+
+    private static int findLargestIdxLessThan(final List<Attendance> arr, final AttendanceDateTime target) {
+        int left = 0;
+        int right = arr.size() - 1;
+
+        while (left <= right) {
+            final int mid = (left + right) / 2;
+            final AttendanceDateTime midDateTime = arr.get(mid).getAttendanceDateTime();
+            if (target.isAfter(midDateTime)) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return right;
     }
 }

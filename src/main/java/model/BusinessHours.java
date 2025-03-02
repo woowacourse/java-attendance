@@ -3,7 +3,7 @@ package model;
 import java.time.DayOfWeek;
 import java.util.Arrays;
 
-enum BusinessHours {
+public enum BusinessHours {
 
     MONDAY(AttendanceTime.of(13, 0), AttendanceTime.of(18, 0)),
     TUESDAY(AttendanceTime.of(10, 0), AttendanceTime.of(18, 0)),
@@ -23,10 +23,6 @@ enum BusinessHours {
     }
 
     public static BusinessHours find(final AttendanceDateTime dateTime) {
-        if (withInOperatingTime(dateTime)) {
-            throw new IllegalArgumentException("영업시간이 아닌 시간에 출석을 할 수 없습니다.");
-        }
-
         final DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
         return Arrays.stream(BusinessHours.values())
                 .filter(value -> value.equalsName(dayOfWeek.name()))
@@ -34,9 +30,14 @@ enum BusinessHours {
                 .orElseThrow(() -> new IllegalArgumentException("주말에는 영업하지 않습니다"));
     }
 
-    private static boolean withInOperatingTime(final AttendanceDateTime dateTime) {
-        return dateTime.getTime().isBefore(OperatingStartTime.getTime()) || dateTime.getTime()
-                .isAfter(OperatingEndTime.getTime());
+    public static void validateOperatingTime(final AttendanceTime dateTime) {
+        if (notWithInOperatingTime(dateTime)) {
+            throw new IllegalArgumentException("영업시간이 아닌 시간에 출석을 할 수 없습니다.");
+        }
+    }
+
+    public static boolean notWithInOperatingTime(final AttendanceTime time) {
+        return time.isBefore(OperatingStartTime) || time.isAfter(OperatingEndTime);
     }
 
     public boolean equalsName(final String name) {

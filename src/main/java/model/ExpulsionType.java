@@ -5,8 +5,8 @@ import java.util.Arrays;
 public enum ExpulsionType {
 
     EXPULSION("제적", 5),
-    INTERVIEW("면담", 4),
-    WARNING("경고", 3),
+    INTERVIEW("면담", 2),
+    WARNING("경고", 1),
     NONE("없음", 0);
 
     private static final int ABSENCE_RATIO = 3;
@@ -20,7 +20,7 @@ public enum ExpulsionType {
         this.discriminationLimitCount = discriminationLimitCount;
     }
 
-    public static ExpulsionType find(final AttendanceCountDto dto) {
+    public static ExpulsionType find(final AttendanceCountsDto dto) {
         final int discriminationCount = calculateDiscriminationCount(dto);
 
         return Arrays.stream(values())
@@ -33,9 +33,9 @@ public enum ExpulsionType {
         return displayName;
     }
 
-    private static int calculateDiscriminationCount(final AttendanceCountDto dto) {
-        final int absenceCount = dto.absenceCount();
-        final int tardinessCount = dto.tardinessCount();
+    private static int calculateDiscriminationCount(final AttendanceCountsDto dto) {
+        final int absenceCount = dto.map().get(AttendanceStatus.ABSENCE);
+        final int tardinessCount = dto.map().get(AttendanceStatus.TARDINESS);
 
         return absenceCount + tardinessCount / ABSENCE_RATIO;
     }

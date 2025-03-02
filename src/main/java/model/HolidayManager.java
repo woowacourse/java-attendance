@@ -15,4 +15,8 @@ public final class HolidayManager {
         final int dayOfMonth = attendanceDateTime.getDateTime().getDayOfMonth();
         return holidays.contains(dayOfMonth);
     }
+
+    public static Set<Integer> getHolidays() {
+        return holidays;
+    }
 }

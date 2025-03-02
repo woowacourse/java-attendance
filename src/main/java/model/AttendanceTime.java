@@ -49,4 +49,12 @@ public class AttendanceTime {
     public LocalTime getTime() {
         return time;
     }
+
+    public boolean isBefore(final AttendanceTime time) {
+        return this.time.isBefore(time.getTime());
+    }
+
+    public boolean isAfter(final AttendanceTime time) {
+        return this.time.isAfter(time.getTime());
+    }
 }
