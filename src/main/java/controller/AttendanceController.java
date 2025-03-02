@@ -77,12 +77,8 @@ public class AttendanceController {
 
     private void checkIn(Crews crews, Attendances attendances) {
         LocalDate today = LocalDate.now();
-        String rawNickname = inputView.readNickname();
-        String rawCheckInTime = inputView.readCheckInTime();
-
-        Crew crew = crews.findByNickname(rawNickname);
-
-        Attendance attendance = converter.convertToAttendance(crew, rawCheckInTime, today);
+        Crew crew = crews.findByNickname(inputView.readNickname());
+        Attendance attendance = converter.convertToAttendance(crew, inputView.readCheckInTime(), today);
         attendances.add(attendance);
 
         outputView.printCheckInResult(attendance);
@@ -117,8 +113,11 @@ public class AttendanceController {
         outputView.printDangerCrews(dangerAttendances, crewOrder);
     }
 
-    private Map<Crew, Attendances> createAttendancesOfDangerCrews(List<Crew> crews, Attendances attendances,
-                                                                  LocalDate today) {
+    private Map<Crew, Attendances> createAttendancesOfDangerCrews(
+            List<Crew> crews,
+            Attendances attendances,
+            LocalDate today
+    ) {
         Map<Crew, Attendances> dangerAttendances = new HashMap<>();
         for (Crew crew : crews) {
             dangerAttendances.put(crew, attendances.createMonthlyAttendances(crew, today));
