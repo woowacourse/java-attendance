@@ -10,6 +10,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -24,6 +25,18 @@ class CrewAttendanceManagerTest {
     void 출석_파일을_읽어_출석_매니저를_생성한다() {
         assertThatNoException()
                 .isThrownBy(attendanceManager::initAttendanceFromFile);
+    }
+
+    @Test
+    @DisplayName("동일한 닉네임의 크루가 없으면 예외가 발생한다")
+    void 동일한_닉네임의_크루가_없으면_예외가_발생한다() {
+        // given
+        String nickname = "ERROR";
+
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceManager.validateNicknameExists(nickname))
+                .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
     @Test
