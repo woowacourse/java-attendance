@@ -62,9 +62,7 @@ public class AttendanceController {
     }
 
     void modifyAttendance() {
-        String nickname = inputView.getNicknameForModification();
-        Crew crew = new Crew(nickname);
-        Attendances attendances = attendanceBook.getAttendances(crew);
+        Attendances attendances = getAttendancesForModification();
 
         Integer datOfMonth = inputView.getDayOfMonth();
         Day day = Day.of(datOfMonth);
@@ -74,6 +72,12 @@ public class AttendanceController {
         LocalTime attendanceTime = inputView.getModifiedAttendanceTime();
         attendance.modifyTimeTo(attendanceTime);
         outputView.printModifiedAttendanceDetail(originAttendance, attendance);
+    }
+
+    private Attendances getAttendancesForModification() {
+        String nickname = inputView.getNicknameForModification();
+        Crew crew = new Crew(nickname);
+        return attendanceBook.getAttendances(crew);
     }
 
     void readAttendanceHistory() {
