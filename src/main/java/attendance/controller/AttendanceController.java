@@ -6,6 +6,7 @@ import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceTime;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
+import attendance.domain.PublicHolidays;
 import attendance.domain.RiskCrew;
 import attendance.exception.CustomException;
 import attendance.utils.AttendanceBookParser;
@@ -27,9 +28,9 @@ public class AttendanceController {
     }
 
     public void start() throws IOException {
-        LocalDateTime currentDateTime = LocalDateTime.now().withYear(2024).withMonth(12).withDayOfMonth(31);
-        AttendanceBookParser parser = new AttendanceBookParser(FileLoader.fileReadLine("attendances.csv"));
-        Crews crews = parser.getCrews();
+        final LocalDateTime currentDateTime = LocalDateTime.now().withYear(2024).withMonth(12).withDayOfMonth(29);
+        final AttendanceBookParser parser = new AttendanceBookParser(FileLoader.fileReadLine("attendances.csv"));
+        final Crews crews = parser.getCrews();
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
         initializeFileData(parser, attendanceBook);
 
@@ -67,17 +68,29 @@ public class AttendanceController {
         });
     }
 
-    //TODO : now가 주말,공휴일이면 출석확인 버튼 누르면 처리해줘야함 예외
     //TODO : now가 캠퍼스 운영시간이 아니면 예외 처리
     //TODO : 날짜 입력 범위 처리
     //TODO : 시간:분 형식 처리
     //TODO : 시간 숫자로 입력 안한거 처리
     //TODO : 분은 숫자로 입력 안한거 처리
     private void registerAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime, Crews crews) {
+        if (checkPublicHolidays(currentDateTime)) {
+            return;
+        }
         Crew inputCrewName = readCrewName(crews);
         LocalDateTime attendanceTime = readAttendanceTime(currentDateTime);
         AttendanceTime registerdAttendanceTime = attendanceBook.registerAttendance(inputCrewName, attendanceTime);
         outputView.writeAttendanceRegister(registerdAttendanceTime);
+    }
+
+    private boolean checkPublicHolidays(LocalDateTime currentDateTime) {
+        try {
+            PublicHolidays.checkPublicHolidays(currentDateTime.toLocalDate());
+        } catch (CustomException customException) {
+            outputView.writeErrorMessage(customException.getMessage());
+            return true;
+        }
+        return false;
     }
 
     private void modifyAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime, Crews crews) {

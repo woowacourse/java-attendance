@@ -33,7 +33,7 @@ public class AttendanceRecord {
 
     private void checkSameDateTime(LocalDateTime inputTime, AttendanceTime attendanceTime) {
         if (attendanceTime.isSameDateTime(inputTime)) {
-            throw CustomException.from(ErrorMessage.ALREDAY_PRESENCE_ATTENDANCE_RECORD);
+            throw CustomException.from(ErrorMessage.ALREADY_PRESENCE_ATTENDANCE_RECORD);
         }
     }
 

@@ -2,8 +2,9 @@ package attendance.exception;
 
 public enum ErrorMessage {
 
+    NOT_ATTENDANCE_WEEKEND("주말에는 출석을 할 수 없습니다."),
     NOT_PRESENCE_COMMAND_OPTION("제공하지 않는 기능입니다."),
-    ALREDAY_PRESENCE_ATTENDANCE_RECORD("이미 출석 기록이 있습니다."),
+    ALREADY_PRESENCE_ATTENDANCE_RECORD("이미 출석 기록이 있습니다."),
     NOT_ATTENDANCE_RECORD("출석 기록이 없습니다."),
     NOT_FIND_CREW("해당 크루를 찾을 수 없습니다."),
     FILE_NOT_PRESENCE("파일이 존재하지 않습니다.");
