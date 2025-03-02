@@ -25,7 +25,7 @@ public class AttendanceBookInitializerTest {
         AttendanceBook expected = new AttendanceBook(Map.of(cookie, cookieAttendanceDateTimes, bingbong, bingbongAttendanceDateTimes));
 
         // When
-        AttendanceBook crewAttendances = attendanceBookInitializer.parseTexts(crewAttendanceTexts);
+        AttendanceBook crewAttendances = attendanceBookInitializer.initialize(crewAttendanceTexts);
 
         // Then
         Assertions.assertThat(crewAttendances)
