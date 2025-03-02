@@ -1,5 +1,6 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +67,20 @@ public class AttendanceSystemManager {
                 expulsionCandidates.add(PenaltyResultOfCrew.from(crew, attendanceTypeCount));
             }
         }
+
+        return expulsionCandidates;
+    }
+
+    public List<PenaltyResultOfCrew> sortExpulsionCandidates(List<PenaltyResultOfCrew> expulsionCandidates) {
+        Map<PenaltyType, Integer> priorityOfPenaltyTypes = Map.of(
+                PenaltyType.BAN, 1,
+                PenaltyType.ONE_ON_ONE, 2,
+                PenaltyType.WARNING, 3
+        );
+
+        expulsionCandidates.sort(Comparator
+                .comparing(candidate -> priorityOfPenaltyTypes.getOrDefault(candidate.penaltyType(), 4))
+        );
 
         return expulsionCandidates;
     }

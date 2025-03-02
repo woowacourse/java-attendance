@@ -303,12 +303,42 @@ public class AttendanceSystemManagerTest {
                     new Crews(List.of()));
 
             // when
-            List<PenaltyResultOfCrew> expulsionCandidates = attendanceSystemManager.findExpulsionCandidates(requestedAt);
+            List<PenaltyResultOfCrew> expulsionCandidates = attendanceSystemManager.findExpulsionCandidates(
+                    requestedAt);
 
             // then
             assertThat(expulsionCandidates)
                     .allSatisfy(candidate -> assertThat(candidate.penaltyType())
                             .isIn(PenaltyType.ONE_ON_ONE, PenaltyType.WARNING, PenaltyType.BAN));
+        }
+    }
+
+    @Nested
+    @DisplayName("제적 위험 대상자를 정렬할 때")
+    class TestForSortExpulsionCandidates {
+        @Test
+        @DisplayName("패널티 타입이 제적, 면담, 경고 순으로 정렬한다")
+        void test1() {
+            // given
+
+            PenaltyResultOfCrew hero = PenaltyResultOfCrew.from(new Crew("히로"), AttendanceTypeCount.from(6, 0));
+            PenaltyResultOfCrew moru = PenaltyResultOfCrew.from(new Crew("모루"), AttendanceTypeCount.from(2, 0));
+            PenaltyResultOfCrew hippo = PenaltyResultOfCrew.from(new Crew("히포"), AttendanceTypeCount.from(4, 0));
+
+            List<PenaltyResultOfCrew> expulsionCandidates = new ArrayList<>(List.of(
+                    hero, moru, hippo
+            ));
+
+            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+                    new AttendanceHistories(List.of()), new Crews(List.of())
+            );
+
+            // when
+            List<PenaltyResultOfCrew> actual = attendanceSystemManager.sortExpulsionCandidates(
+                    expulsionCandidates);
+
+            // then
+            assertThat(actual).isEqualTo(List.of(hero, hippo, moru));
         }
     }
 
