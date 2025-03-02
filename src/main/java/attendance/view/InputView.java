@@ -23,13 +23,33 @@ public class InputView {
         return sc.nextLine();
     }
 
-    public String inputCrew() {
+    public String inputAttendanceCrew() {
         System.out.println("닉네임을 입력해 주세요.");
         return sc.nextLine();
     }
 
-    public String inputAttendanceTime() {
+    public String inputAttendanceDateTime() {
         System.out.println("등교 시간을 입력해 주세요.");
+        return sc.nextLine();
+    }
+
+    public String inputModifyCrew() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return sc.nextLine();
+    }
+
+    public String inputModifyDate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return sc.nextLine();
+    }
+
+    public String inputModifyTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        return sc.nextLine();
+    }
+
+    public String inputCheckCrew() {
+        System.out.println("닉네임을 입력해 주세요.");
         return sc.nextLine();
     }
 }

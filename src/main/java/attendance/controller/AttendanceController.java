@@ -1,16 +1,16 @@
 package attendance.controller;
 
-import static attendance.util.UserInputPaser.parseAttendanceTime;
-
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.Crew;
 import attendance.domain.FileReader;
 import attendance.domain.dto.AttendanceResult;
+import attendance.domain.dto.ModifyAttendanceResult;
+import attendance.util.UserInputParser;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class AttendanceController {
     private final InputView inputView = new InputView();
@@ -23,15 +23,15 @@ public class AttendanceController {
             String userChoice = inputView.displayMainMenu();
             switch (userChoice) {
                 case "1":
-                    createAttendance(); break;
+                    createAttendance();
                 case "2":
-                    modifyAttendance(); break;
+                    modifyAttendance();
                 case "3":
-                    checkCrewAttendanceRecord();break;
+                    checkCrewAttendanceRecord();
                 case "4":
-                    checkExpelledCrews();break;
+                    checkExpelledCrews();
                 case "Q":
-                    closeProgram();break;
+                    closeProgram();
                 default: break;
             }
         }
@@ -39,21 +39,33 @@ public class AttendanceController {
     }
 
     private void createAttendance() {
-        String inputCrewName = inputView.inputCrew();
+        String inputCrewName = inputView.inputAttendanceCrew();
         Crew crew = new Crew(inputCrewName);
 
-        String inputAttendanceTime = inputView.inputAttendanceTime();
-        LocalDateTime localDateTime = parseAttendanceTime(inputAttendanceTime);
-        Attendance attendance = attendanceBook.registerAttendance(crew, localDateTime);
+        String inputAttendanceDateTime = inputView.inputAttendanceDateTime();
+        LocalDateTime attendanceDateTime = UserInputParser.parseAttendanceTime(inputAttendanceDateTime);
+        Attendance attendance = attendanceBook.registerAttendance(crew, attendanceDateTime);
         AttendanceResult attendanceResult = AttendanceResult.from(attendance);
         outputView.displayAttendanceResult(attendanceResult);
-
     }
 
     private void modifyAttendance() {
+        String inputCrewName = inputView.inputModifyCrew();
+        Crew crew = new Crew(inputCrewName);
+
+        String inputModifyDate = inputView.inputModifyDate();
+        String inputModifyTime = inputView.inputModifyTime();
+        LocalDateTime localDateTime = attendance.util.UserInputParser.parseModifyDateTime(inputModifyDate,inputModifyTime);
+
+        List<Attendance> attendances = attendanceBook.modifyAttendance(crew, localDateTime);
+        ModifyAttendanceResult modifyAttendanceResult = ModifyAttendanceResult.of(attendances);
+        outputView.displayModifyResult(modifyAttendanceResult);
     }
 
     private void checkCrewAttendanceRecord() {
+        String inputCrewName = inputView.inputCheckCrew();
+        Crew crew = new Crew(inputCrewName);
+
     }
 
     private void checkExpelledCrews() {
