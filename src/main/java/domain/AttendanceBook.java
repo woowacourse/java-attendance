@@ -26,7 +26,8 @@ public class AttendanceBook {
     }
 
     public Crew findCrewByName(String name) {
-        // TODO: 등록된 닉네임인지 확인 추가
+        validateRegisteredCrew(name);
+
         return crewRecords.get(name);
     }
 

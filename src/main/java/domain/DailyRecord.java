@@ -2,6 +2,7 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.Optional;
 
 public class DailyRecord {
 
@@ -14,8 +15,9 @@ public class DailyRecord {
     }
 
     public String getFormattedTime() {
-        // TODO: null 값을 처리하여 시간의 String 타입을 반환
-        return null;
+        return Optional.ofNullable(attendedTime)
+            .map(LocalTime::toString)
+            .orElse("--:--");
     }
 
     public LocalTime getAttendedTime() {

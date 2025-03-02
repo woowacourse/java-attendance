@@ -4,6 +4,7 @@ import static util.parser.DateTimeParser.parseIntegerToTime;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.Optional;
 
 public enum AttendanceStatus {
     PRESENT("출석", 0),
@@ -19,10 +20,14 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus of(DayOfWeek dayOfWeek, LocalTime time) {
-        if (dayOfWeek == DayOfWeek.MONDAY) {
-            return findStatusOfMonday(time);
-        }
-        return findStatusOfDefault(time);
+        return Optional.ofNullable(time)
+            .map(t -> {
+                if (dayOfWeek == DayOfWeek.MONDAY) {
+                    return findStatusOfMonday(t);
+                }
+                return findStatusOfDefault(t);
+            })
+            .orElse(ABSENT);
     }
 
     private static AttendanceStatus findStatusOfMonday(LocalTime time) {
