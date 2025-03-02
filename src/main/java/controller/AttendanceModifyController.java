@@ -1,0 +1,29 @@
+package controller;
+
+import model.AttendanceDate;
+import model.AttendanceStatus;
+import model.AttendanceStatusEvaluator;
+import model.AttendanceTime;
+import model.Students;
+import util.AttendanceDateAttendanceTimeFormatter;
+import view.InputView;
+import view.OutputView;
+
+public class AttendanceModifyController {
+    public static void attendanceModify(Students students) {
+        String studentName = InputView.getStudentNameUntilValidateToModify(students);
+        AttendanceDate attendanceDate = InputView.getUserAttendanceDateUntilValidate();
+
+        AttendanceTime attendanceTimeBeforeModify = students.findStudentByName(studentName).findAttendanceTimeByAttendanceDate(attendanceDate);
+
+        AttendanceStatus attendanceStatusBeforeModify = AttendanceStatusEvaluator.calculateAttendanceStatus(attendanceDate, attendanceTimeBeforeModify);
+
+        AttendanceTime attendanceTimeToModify = InputView.getUserAttendanceTimeUntilValidateToModify();
+        students.findStudentByName(studentName).modifyAttendanceDateTime(attendanceDate, attendanceTimeToModify);
+
+        AttendanceStatus attendanceStatusAfterModify = AttendanceStatusEvaluator.calculateAttendanceStatus(attendanceDate, attendanceTimeToModify);
+
+        OutputView.printModifyComplete(attendanceDate, attendanceTimeBeforeModify, attendanceStatusBeforeModify,
+                AttendanceDateAttendanceTimeFormatter.createModifyCompleteMessage(attendanceTimeToModify, attendanceStatusAfterModify));
+    }
+}
