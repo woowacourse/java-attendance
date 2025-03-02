@@ -92,9 +92,8 @@ public class AttendanceStatusTest {
 
         @BeforeEach
         void initializeRecord() {
-            Crew crew = new Crew();
             List<LocalDateTime> crewRecords = List.of(
-                parseStringToDateTime("2024-12-02 10:08"), // 지각
+                parseStringToDateTime("2024-12-02 13:08"), // 지각
                 parseStringToDateTime("2024-12-03 10:02"), // 출석
                 parseStringToDateTime("2024-12-04 10:32"), // 결석
                 parseStringToDateTime("2024-12-05 09:30"), // 출석

@@ -1,5 +1,6 @@
 package view;
 
+import domain.AttendanceStatus;
 import domain.DailyRecord;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,6 +14,7 @@ public class OutputView {
     private static final String DATE_TIME_RECORD_FORMAT = "%02d월 %02d일 %s %s (%s)%n";
     private static final String EDITED_RECORD_FORMAT = "%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!%n";
     private static final String CREW_RECORD_START_MESSAGE = "이번 달 %s의 출석 기록입니다.%n";
+    private static final String STATUS_RECORD_FORMAT = "%s: %d회%n";
 
     public void printErrorMessage(IllegalArgumentException e) {
         System.out.println();
@@ -43,6 +45,13 @@ public class OutputView {
             System.out.printf(DATE_TIME_RECORD_FORMAT, date.getMonthValue(), date.getDayOfMonth(),
                 date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
                 record.getFormattedTime(), record.getStatus().getName());
+        }
+    }
+
+    public void printStatistics(Map<AttendanceStatus, Integer> statisticsResult) {
+        System.out.println();
+        for (AttendanceStatus status : statisticsResult.keySet()) {
+            System.out.printf(STATUS_RECORD_FORMAT, status.getName(), statisticsResult.get(status));
         }
     }
 }

@@ -10,6 +10,7 @@ import static util.parser.DateTimeParser.parseStringToDate;
 import static util.parser.DateTimeParser.parseStringToTime;
 
 import domain.AttendanceBook;
+import domain.AttendanceStatus;
 import domain.Coach;
 import domain.Crew;
 import domain.DailyRecord;
@@ -70,8 +71,9 @@ public class AttendanceController {
 
         Crew crew = attendanceBook.findCrewByName(name);
         Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, localDate);
+        Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
         outputView.printCrewRecords(name, records);
-        // TODO: 통계 출력
+        outputView.printStatistics(statisticsResult);
     }
 
     protected void expelledWarningCheck() {

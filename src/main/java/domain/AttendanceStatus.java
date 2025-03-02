@@ -5,6 +5,7 @@ import static util.parser.DateTimeParser.parseIntegerToTime;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,8 +27,16 @@ public enum AttendanceStatus {
     }
 
     public static Map<AttendanceStatus, Integer> countStatus(Map<LocalDate, DailyRecord> records) {
-        // TODO: 통계 계산
-        return null;
+        Map<AttendanceStatus, Integer> statisticsResult = new LinkedHashMap<>();
+        statisticsResult.put(PRESENT, 0);
+        statisticsResult.put(LATE, 0);
+        statisticsResult.put(ABSENT, 0);
+
+        for(DailyRecord record : records.values()) {
+            AttendanceStatus status = record.getStatus();
+            statisticsResult.put(status, (statisticsResult.get(status) + 1));
+        }
+        return statisticsResult;
     }
 
     public static AttendanceStatus of(DayOfWeek dayOfWeek, LocalTime time) {
