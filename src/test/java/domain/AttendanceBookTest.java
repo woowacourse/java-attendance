@@ -62,7 +62,7 @@ class AttendanceBookTest {
     @Test
     void 모든_출석_기록을_확인할_수_있다() {
         // when
-        List<Attendance> foraAttendanceBook = attendanceBook.getHistory();
+        List<Attendance> foraAttendanceBook = attendanceBook.getAttendanceBook();
 
         // then
         Assertions.assertThat(foraAttendanceBook).containsOnly(

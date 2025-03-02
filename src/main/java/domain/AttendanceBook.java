@@ -3,7 +3,6 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,8 +66,9 @@ public class AttendanceBook {
                 .orElse(null);
     }
 
-    public List<Attendance> getHistory() {
-        return Collections.unmodifiableList(attendanceBook);
+    public List<Attendance> getAttendanceBook() {
+        return attendanceBook;
+//        return Collections.unmodifiableList(attendanceBook);
     }
 
     public AttendanceStateCount calculateState() {
