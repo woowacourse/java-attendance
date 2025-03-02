@@ -11,10 +11,8 @@ class WarningStatusTest {
     @ParameterizedTest
     @CsvSource({"0,2", "3,1", "6,0"})
     void warnStatusTest(int tardyCount, int absentCount) {
-        // given
-        WarningStatus expectedValue = WarningStatus.WARN;
-
         // when
+        WarningStatus expectedValue = WarningStatus.WARN;
         WarningStatus actualValue = WarningStatus.getStatus(tardyCount, absentCount);
 
         // then
@@ -25,10 +23,8 @@ class WarningStatusTest {
     @ParameterizedTest
     @CsvSource({"0,3", "4,2", "9,0"})
     void counselStatusTest(int tardyCount, int absentCount) {
-        // given
-        WarningStatus expectedValue = WarningStatus.COUNSEL;
-
         // when
+        WarningStatus expectedValue = WarningStatus.COUNSEL;
         WarningStatus actualValue = WarningStatus.getStatus(tardyCount, absentCount);
 
         // then
@@ -39,11 +35,31 @@ class WarningStatusTest {
     @ParameterizedTest
     @CsvSource({"0,6", "3,5", "18,0"})
     void expelStatusTest(int tardyCount, int absentCount) {
-        // given
-        WarningStatus expectedValue = WarningStatus.EXPEL;
-
         // when
+        WarningStatus expectedValue = WarningStatus.EXPEL;
         WarningStatus actualValue = WarningStatus.getStatus(tardyCount, absentCount);
+
+        // then
+        assertThat(actualValue).isEqualTo(expectedValue);
+    }
+
+    @DisplayName("지각 3회를 결석 1회로 환산해 기존 결석 횟수에 더한 값을 반환한다.")
+    @ParameterizedTest
+    @CsvSource({"6,2,4", "5,1,2", "15,0,5"})
+    void convertTardiesToAbsencesTest(int tardyCount, int absentCount, int expectedValue) {
+        // when
+        int actualValue = WarningStatus.convertTardiesToAbsences(tardyCount, absentCount);
+
+        // then
+        assertThat(actualValue).isEqualTo(expectedValue);
+    }
+
+    @DisplayName("지각 3회를 결석으로 환산한 것을 제외한 나머지 지각 횟수를 반환한다.")
+    @ParameterizedTest
+    @CsvSource({"3,0", "4,1", "8,2"})
+    void getTardiesAfterConversionTest(int tardyCount, int expectedValue) {
+        // when
+        int actualValue = WarningStatus.getTardiesAfterConversion(tardyCount);
 
         // then
         assertThat(actualValue).isEqualTo(expectedValue);
