@@ -22,6 +22,10 @@ public enum AttendanceState {
     public static AttendanceState findStateBy(LocalDate localDate, LocalTime localTime) {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
 
+        if (checkAbsenceDay(localTime)) {
+            return AttendanceState.ABSENCE;
+        }
+
         if (dayOfWeek == DayOfWeek.MONDAY) {
             if (localTime.isAfter(LocalTime.of(13, 30))) {
                 return ABSENCE;
@@ -29,6 +33,7 @@ public enum AttendanceState {
             if (localTime.isAfter(LocalTime.of(13, 5))) {
                 return LATENESS;
             }
+            return ATTENDANCE;
         }
         if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
             if (localTime.isAfter(LocalTime.of(10, 30))) {
@@ -41,4 +46,7 @@ public enum AttendanceState {
         return ATTENDANCE;
     }
 
+    private static boolean checkAbsenceDay(LocalTime localTime) {
+        return localTime.equals(LocalTime.of(0, 0));
+    }
 }

@@ -2,12 +2,12 @@ package controller;
 
 import domain.Attendance;
 import domain.AttendanceBook;
-import domain.AttendanceState;
 import domain.Crew;
 import domain.CrewsAttendanceBook;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import util.AttendanceFileReader;
 import util.DateTimeUtil;
@@ -33,7 +33,7 @@ public class MainController {
                     attendanceUpdate();
                     break;
                 case "3":
-//                    attendanceHistory();
+                    attendanceHistory();
                     break;
                 case "4":
 //                    absenceHistory();
@@ -50,10 +50,9 @@ public class MainController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime localTime = LocalTime.parse(time, formatter);
 
-        crewsAttendanceBook.checkIn(crew, DateTimeUtil.getTodayLocalDate(), localTime);
+        Attendance attendance = crewsAttendanceBook.checkIn(crew, DateTimeUtil.getTodayLocalDate(), localTime);
 
-        AttendanceState state = AttendanceState.findStateBy(DateTimeUtil.getTodayLocalDate(), localTime);
-        OutputView.printAttendanceCheck(DateTimeUtil.getTodayLocalDate(), time, state);
+        OutputView.printAttendanceCheck(attendance);
     }
 
     private void attendanceUpdate() {
@@ -68,11 +67,18 @@ public class MainController {
         AttendanceBook attendanceBook = crewsAttendanceBook.getAttendanceBook(crew);
         Attendance beforeAttendance = attendanceBook.getBeforeAttendance(LocalDate.of(2024, 12, date));
 
-        crewsAttendanceBook.update(crew, LocalDate.of(2024, 12, date), localTime);
+        Attendance afterAttendance = crewsAttendanceBook.update(crew, LocalDate.of(2024, 12, date), localTime);
 
-        AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
-                beforeAttendance.getLocalTime());
-        AttendanceState afterState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(), localTime);
-        OutputView.printAttendanceUpdate(beforeAttendance, beforeState, time, afterState);
+        OutputView.printAttendanceUpdate(beforeAttendance, afterAttendance);
+    }
+
+    private void attendanceHistory() {
+        String name = InputView.inputNickname();
+        Crew crew = crewsAttendanceBook.getCrewByName(name);
+
+        AttendanceBook attendanceBook = crewsAttendanceBook.getAttendanceBook(crew);
+        List<Attendance> attendanceBookHistory = attendanceBook.getAttendanceBookHistory();
+
+        OutputView.printAttendanceHistory(attendanceBookHistory);
     }
 }

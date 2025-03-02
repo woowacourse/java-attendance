@@ -19,9 +19,7 @@ public class AttendanceBook {
     }
 
     public AttendanceBook update(LocalDate localDate, LocalTime localTime) {
-        // 여기부터
         Attendance beforeAttendance = getBeforeAttendance(localDate);
-        // 여기까지 컨트롤러로
         List<Attendance> newAttendances = getNewAttendances(localDate);
 
         newAttendances.add(beforeAttendance.updateTime(localTime));

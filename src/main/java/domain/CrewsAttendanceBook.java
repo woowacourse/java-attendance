@@ -28,15 +28,17 @@ public class CrewsAttendanceBook {
         return attendances.get(crew);
     }
 
-    public void checkIn(Crew crew, LocalDate localDate, LocalTime localTime) {
+    public Attendance checkIn(Crew crew, LocalDate localDate, LocalTime localTime) {
         AttendanceBook attendanceBook = attendances.get(crew);
         attendanceBook.validateWeekDay(localDate);
         attendanceBook.validateDuplicateCheckIn(localDate);
 
-        attendanceBook.checkIn(new Attendance(localDate, localTime));
+        Attendance attendance = new Attendance(localDate, localTime);
+        attendanceBook.checkIn(attendance);
+        return attendance;
     }
 
-    public void update(Crew crew, LocalDate localDate, LocalTime localTime) {
+    public Attendance update(Crew crew, LocalDate localDate, LocalTime localTime) {
         AttendanceBook attendanceBook = attendances.get(crew);
         attendanceBook.validateWeekDay(localDate);
         attendanceBook.validateAfterToday(localDate);
@@ -44,6 +46,7 @@ public class CrewsAttendanceBook {
         AttendanceBook newAttendanceBook = attendanceBook.update(localDate, localTime);
 
         attendances.put(crew, newAttendanceBook);
+        return new Attendance(localDate, localTime);
     }
 
     public Set<PenaltyBook> calculatePenaltyBooks() {
