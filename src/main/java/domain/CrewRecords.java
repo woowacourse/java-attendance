@@ -40,9 +40,7 @@ public class CrewRecords {
 
     public WarningStatus getWarningStatus(Crew crew) {
         AttendanceRecords attendanceRecords = records.get(crew);
-        int tardyCount = attendanceRecords.getAttendanceCount(AttendanceStatus.TARDY);
-        int absentCount = attendanceRecords.getAttendanceCount(AttendanceStatus.ABSENT);
-        return WarningStatus.getStatus(tardyCount, absentCount);
+        return attendanceRecords.getWarningStatus();
     }
 
     public List<Crew> getWarnedCrews() {
@@ -71,15 +69,12 @@ public class CrewRecords {
 
     private int getConvertedAbsences(Crew crew) {
         AttendanceRecords attendanceRecords = records.get(crew);
-        int tardyCount = attendanceRecords.getAttendanceCount(AttendanceStatus.TARDY);
-        int absentCount = attendanceRecords.getAttendanceCount(AttendanceStatus.ABSENT);
-        return WarningStatus.convertTardiesToAbsences(tardyCount, absentCount);
+        return attendanceRecords.getConvertedAbsences();
     }
 
     private int getTardiesAfterConversion(Crew crew) {
         AttendanceRecords attendanceRecords = records.get(crew);
-        int tardyCount = attendanceRecords.getAttendanceCount(AttendanceStatus.TARDY);
-        return WarningStatus.getTardiesAfterConversion(tardyCount);
+        return attendanceRecords.getTardiesAfterConversion();
     }
 
     private void validateCrew(Crew crew) {

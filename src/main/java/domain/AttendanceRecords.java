@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.TreeSet;
 
 public class AttendanceRecords {
@@ -40,7 +41,26 @@ public class AttendanceRecords {
                 .count();
     }
 
-    public TreeSet<AttendanceRecord> getRecords() {
-        return records;
+    public List<AttendanceRecord> getRecordsUntil(LocalDate currentDate) {
+        return records.stream()
+                .filter(record -> record.getDate().isBefore(currentDate))
+                .toList();
+    }
+
+    public WarningStatus getWarningStatus() {
+        int tardyCount = getAttendanceCount(AttendanceStatus.TARDY);
+        int absentCount = getAttendanceCount(AttendanceStatus.ABSENT);
+        return WarningStatus.getStatus(tardyCount, absentCount);
+    }
+
+    public int getConvertedAbsences() {
+        int tardyCount = getAttendanceCount(AttendanceStatus.TARDY);
+        int absentCount = getAttendanceCount(AttendanceStatus.ABSENT);
+        return WarningStatus.convertTardiesToAbsences(tardyCount, absentCount);
+    }
+
+    public int getTardiesAfterConversion() {
+        int tardyCount = getAttendanceCount(AttendanceStatus.TARDY);
+        return WarningStatus.getTardiesAfterConversion(tardyCount);
     }
 }
