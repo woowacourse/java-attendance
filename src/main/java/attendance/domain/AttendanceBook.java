@@ -79,17 +79,10 @@ public class AttendanceBook {
     }
 
     private void sortAcademicStatusResults(final List<AcademicStatusResultDTO> academicStatusResultDTOS) {
-        academicStatusResultDTOS.sort(new Comparator<AcademicStatusResultDTO>() {
-            @Override
-            public int compare(AcademicStatusResultDTO o1, AcademicStatusResultDTO o2) {
-                long absences1 = o1.absent() + o1.late();
-                long absences2 = o2.absent() + o2.late();
-
-                if (absences1 != absences2) {
-                    return Long.compare(absences2, absences1);
-                }
-                return o1.crewName().compareTo(o2.crewName());
-            }
-        });
+        academicStatusResultDTOS.sort(
+                Comparator.comparingLong((AcademicStatusResultDTO dto) -> dto.absent() + dto.late())
+                        .reversed()
+                        .thenComparing(AcademicStatusResultDTO::crewName)
+        );
     }
 }
