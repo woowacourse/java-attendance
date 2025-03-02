@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.controller.constant.CommandOption;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceTime;
@@ -11,7 +12,6 @@ import attendance.utils.AttendanceBookParser;
 import attendance.utils.FileLoader;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import attendance.view.constant.CommandOption;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,10 +33,10 @@ public class AttendanceController {
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
         initializeFileData(parser, attendanceBook);
 
-        CommandOption commandOption = inputView.readCommandOption(currentDateTime);
+        CommandOption commandOption = readCommandOption(currentDateTime);
         while (!commandOption.equals(CommandOption.QUIT)) {
             handleAttendanceCommand(commandOption, attendanceBook, currentDateTime, crews);
-            commandOption = inputView.readCommandOption(currentDateTime);
+            commandOption = readCommandOption(currentDateTime);
         }
     }
 
@@ -119,6 +119,10 @@ public class AttendanceController {
 
     private LocalDateTime readAttendanceTime(LocalDateTime currentDateTime) {
         return retryInput(() -> inputView.readAttendanceTime(currentDateTime));
+    }
+
+    private CommandOption readCommandOption(LocalDateTime currentDateTime) {
+        return retryInput(() -> CommandOption.from(inputView.readCommandOption(currentDateTime)));
     }
 
     private <T> T retryInput(final Supplier<T> supplier) {

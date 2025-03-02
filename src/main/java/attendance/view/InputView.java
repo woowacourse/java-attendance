@@ -1,6 +1,5 @@
 package attendance.view;
 
-import attendance.view.constant.CommandOption;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +10,7 @@ import java.util.Scanner;
 public class InputView {
     private static final Scanner scanner = new Scanner(System.in);
 
-    public CommandOption readCommandOption(LocalDateTime now) {
+    public String readCommandOption(LocalDateTime now) {
         int month = now.getMonthValue();
         int day = now.getDayOfMonth();
         String dayName = now.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA);
@@ -22,7 +21,7 @@ public class InputView {
         System.out.println("3. 크루별 출석 기록 확인");
         System.out.println("4. 제적 위험자 확인");
         System.out.println("Q. 종료");
-        return CommandOption.from(scanner.nextLine());
+        return scanner.nextLine();
     }
 
     public String readCrewName() {

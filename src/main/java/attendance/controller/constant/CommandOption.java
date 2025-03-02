@@ -1,5 +1,7 @@
-package attendance.view.constant;
+package attendance.controller.constant;
 
+import attendance.exception.CustomException;
+import attendance.exception.ErrorMessage;
 import java.util.Arrays;
 
 public enum CommandOption {
@@ -19,6 +21,6 @@ public enum CommandOption {
         return Arrays.stream(CommandOption.values())
                 .filter(commandOption -> commandOption.name.equals(input))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> CustomException.from(ErrorMessage.NOT_PRESENCE_COMMAND_OPTION));
     }
 }

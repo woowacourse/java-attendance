@@ -2,6 +2,7 @@ package attendance.exception;
 
 public enum ErrorMessage {
 
+    NOT_PRESENCE_COMMAND_OPTION("제공하지 않는 기능입니다."),
     ALREDAY_PRESENCE_ATTENDANCE_RECORD("이미 출석 기록이 있습니다."),
     NOT_ATTENDANCE_RECORD("출석 기록이 없습니다."),
     NOT_FIND_CREW("해당 크루를 찾을 수 없습니다."),
