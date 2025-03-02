@@ -53,16 +53,16 @@ public class AttendanceInfos {
         return new AttendanceInfos(modifiedList);
     }
 
-    public AttendanceCounts countsByDate(final CampusDate campusDate) {
+    public AttendanceCounts countsByDate(final LocalDate date) {
         int attendanceCount = 0;
         int tardinessCount = 0;
         int absenceCount = 0;
 
-        for (int day = 1; day < campusDate.getDay(); day++) {
-            if (isWeekend(LocalDate.of(campusDate.getYear(), campusDate.getMonth(), day))) {
+        for (int day = 1; day < date.getDayOfMonth(); day++) {
+            if (isWeekend(LocalDate.of(date.getYear(), date.getMonth(), day))) {
                 continue;
             }
-            CampusDate currentDate = campusDate.withDay(day);
+            CampusDate currentDate = CampusDate.ofDateWithDay(date, day);
             if (notHaveInfoByDate(currentDate)) {
                 absenceCount++;
                 continue;
