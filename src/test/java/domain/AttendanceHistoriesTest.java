@@ -212,7 +212,7 @@ public class AttendanceHistoriesTest {
 
     @DisplayName("2.1 닉네임, 수정하려는 날짜, 등교 시간을 입력하여 기록을 수정할 수 있다.")
     @Test
-    void test() {
+    void testReplaceAttendanceHistory() {
         // given
         Crew crew = new Crew("노랑");
         LocalDateTime newAttendanceDateTime = LocalDateTime.of(2025, 2, 21, 10, 15);
