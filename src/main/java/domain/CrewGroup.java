@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +25,25 @@ public class CrewGroup {
         return crews.get(name);
     }
 
-    public List<Crew> getAllCrews() {
-        return new ArrayList<>(crews.values());
+    public List<Crew> getCrewsAtRisk(LocalDate nowDate) {
+        List<Crew> crewsAtRisk = new ArrayList<>();
+        for (Crew crew : crews.values()) {
+            addCrewIfAtRisk(nowDate, crew, crewsAtRisk);
+        }
+        return crewsAtRisk;
     }
 
     public boolean containsCrew(String name) {
         return crews.containsKey(name);
+    }
+
+    private void addCrewIfAtRisk(LocalDate nowDate, Crew crew, List<Crew> crewsAtRisk) {
+        if (determinePenaltyStatus(crew.getName(), nowDate) != Penalty.PASS) {
+            crewsAtRisk.add(crew);
+        }
+    }
+
+    private Penalty determinePenaltyStatus(String name, LocalDate nowDate) {
+        return findCrewByName(name).determinePenaltyStatus(nowDate);
     }
 }

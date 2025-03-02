@@ -15,6 +15,9 @@ public class Crew {
     }
 
     public Attendance addAttendance(LocalDate date, LocalTime time) {
+        if (hasAlreadyAttended(date)) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석한 경우 수정 기능을 사용하세요.");
+        }
         Attendance attendance = new Attendance(date, time);
         attendances.addAttendance(attendance);
         return attendance;
