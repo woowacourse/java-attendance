@@ -5,13 +5,12 @@ import java.time.LocalTime;
 import java.util.List;
 import model.Attendance;
 import model.AttendanceBook;
+import model.AttendanceFileReader;
 import model.CrewAttendances;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-
-    public static final String ATTENDANCE_FILE_PATH = "src/main/resources/attendance.csv";
 
     private final LocalDate today;
     private final InputView inputView;
@@ -24,23 +23,8 @@ public class AttendanceController {
     }
 
     public void run() {
-        AttendanceBook book = new AttendanceBook(List.of(
-                new CrewAttendances("율무", List.of(
-                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
-                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 2)),
-                        new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 57))
-                )),
-                new CrewAttendances("열무", List.of(
-                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
-                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 6)),
-                        new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 57))
-                )),
-                new CrewAttendances("군자", List.of(
-                        new Attendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)),
-                        new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 6)),
-                        new Attendance(LocalDate.of(2024, 12, 5), LocalTime.of(10, 6))
-                ))
-        ));
+        AttendanceFileReader reader = new AttendanceFileReader();
+        AttendanceBook book = reader.read();
 
         while (true) {
             String select = inputView.inputMenu(today);
