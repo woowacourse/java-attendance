@@ -25,6 +25,10 @@ public class Attendance {
         return this.date.getDate().isEqual(day);
     }
 
+    public LocalDateTime getAttendanceDateTime() {
+        return this.date.getDateTime();
+    }
+
     public AttendanceStatus getStatus() {
         return this.date.getStatus();
     }

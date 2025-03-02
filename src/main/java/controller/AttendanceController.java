@@ -42,6 +42,22 @@ public class AttendanceController {
         inputView.close();
     }
 
+    private AttendanceBook initAttendanceBook() {
+        Map<String, List<String>> crewsInfo = attendanceFileReader.getInfo();
+
+        Map<String, List<LocalDateTime>> parsedCrewsInfo = parseCrewsDateTime(crewsInfo);
+        return new AttendanceBook(parsedCrewsInfo, START_DATE, END_DATE);
+    }
+
+    private Map<String, Consumer<AttendanceBook>> initCommand() {
+        Map<String, Consumer<AttendanceBook>> commands = new HashMap<>();
+        commands.put(Command.ATTEND_COMMAND.getCommand(), new AttendCommand(inputView, outputView));
+        commands.put(Command.EDIT_COMMAND.getCommand(), new EditCommand(inputView, outputView));
+        commands.put(Command.CREW_INFO_COMMAND.getCommand(), new CrewInfoCommand());
+        commands.put(Command.WARNING_CREW_COMMAND.getCommand(), new WarningInfoCommand());
+        return commands;
+    }
+
     private String processCommand(String inputCommand, Map<String, Consumer<AttendanceBook>> commands,
                                   AttendanceBook attendanceBook) {
         try {
@@ -67,22 +83,6 @@ public class AttendanceController {
         if (command == null) {
             throw new IllegalArgumentException("잘못된 형식을 입력하였습니다.");
         }
-    }
-
-    private Map<String, Consumer<AttendanceBook>> initCommand() {
-        Map<String, Consumer<AttendanceBook>> commands = new HashMap<>();
-        commands.put(Command.ATTEND_COMMAND.getCommand(), new AttendCommand(inputView, outputView));
-        commands.put(Command.EDIT_COMMAND.getCommand(), new EditCommand());
-        commands.put(Command.CREW_INFO_COMMAND.getCommand(), new CrewInfoCommand());
-        commands.put(Command.WARNING_CREW_COMMAND.getCommand(), new WarningInfoCommand());
-        return commands;
-    }
-
-    private AttendanceBook initAttendanceBook() {
-        Map<String, List<String>> crewsInfo = attendanceFileReader.getInfo();
-
-        Map<String, List<LocalDateTime>> parsedCrewsInfo = parseCrewsDateTime(crewsInfo);
-        return new AttendanceBook(parsedCrewsInfo, START_DATE, END_DATE);
     }
 
     private static Map<String, List<LocalDateTime>> parseCrewsDateTime(Map<String, List<String>> crewsInfo) {
