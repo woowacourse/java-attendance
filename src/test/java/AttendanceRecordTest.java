@@ -23,7 +23,6 @@ public class AttendanceRecordTest {
     @Test
     void 출석하면_출석_시간을_추가한다() {
         String time = "09:59";
-
         AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
         LocalDateTime attendanceTime = attendanceRecord.attend(time);
 
