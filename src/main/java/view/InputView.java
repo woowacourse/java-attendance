@@ -23,24 +23,12 @@ public class InputView {
     private static final String PROMPT_STUDENT_NAME_INPUT = "닉네임을 입력해 주세요.";
     private static final String PROMPT_START_TIME_INPUT = "등교 시간을 입력해 주세요.";
     private static final String MENU_OPTION = "[1-4]|Q";
-    private static final String PRINT_TODAY_FORMAT = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.\n";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final Scanner scanner = new Scanner(System.in);
 
-    private static void printMenu() {
-        System.out.println(ATTENDANCE_CHECK_MENU);
-        System.out.println(ATTENDANCE_MODIFY_MENU);
-        System.out.println(RECORD_PRINT_FOR_EACH_CREW_MENU);
-        System.out.println(DISMISSAL_CREW_CHECK_MENU);
-        System.out.println(QUIT);
-    }
-
-    private static String userInput(){
-        return scanner.nextLine();
-    }
-
     public static String getUserWantMenuUntilValidate(AttendanceDate todayAttendanceDate) {
         try {
+            printSpace();
             System.out.println(AttendanceDateAttendanceTimeFormatter.createTodayInformation(todayAttendanceDate));
             printMenu();
             String userMenu = userInput();
@@ -65,11 +53,13 @@ public class InputView {
     }
 
     public static String getStudentNameUntilValidateToAttendance(Students students) {
+        printSpace();
         System.out.println(PROMPT_STUDENT_NAME_INPUT);
         return getStudentNameUntilValidate(students);
     }
 
     public static String getStudentNameUntilValidateToModify(Students students) {
+        printSpace();
         System.out.println(PROMPT_STUDENT_NAME_INPUT_TO_MODIFY);
         return getStudentNameUntilValidate(students);
     }
@@ -121,5 +111,21 @@ public class InputView {
             System.out.println(e.getMessage());
             return getStudentNameUntilValidate(students);
         }
+    }
+
+    private static void printMenu() {
+        System.out.println(ATTENDANCE_CHECK_MENU);
+        System.out.println(ATTENDANCE_MODIFY_MENU);
+        System.out.println(RECORD_PRINT_FOR_EACH_CREW_MENU);
+        System.out.println(DISMISSAL_CREW_CHECK_MENU);
+        System.out.println(QUIT);
+    }
+
+    private static String userInput(){
+        return scanner.nextLine();
+    }
+
+    private static void printSpace() {
+        System.out.println();
     }
 }
