@@ -16,8 +16,11 @@ public class OutputView {
 
     public void printAllLog(String name, Attendances attendances, AttendanceStatistics attendanceStatistics) {
         System.out.printf("\n이번 달 %s의 출석 기록입니다.\n\n", name);
-        attendances.getAttendances().stream().sorted()
+
+        attendances.getAttendances().stream()
+                .sorted()
                 .forEach(this::printAttendanceLog);
+
         printAttendanceStatistic(attendanceStatistics);
     }
 
@@ -34,7 +37,7 @@ public class OutputView {
         if (attendance.calculateAttendanceCode() == ABSENT) {
             time = ABSENT_TIME;
         }
-        System.out.printf("%d월 %02d일 %s %s (%s)\n",
+        System.out.printf("%d월 %02d일 %s %s (%s)",
                 date.getMonth().getValue(),
                 date.getDayOfMonth(),
                 DayConverter.getKoreanDayOfWeek(date),
@@ -55,5 +58,17 @@ public class OutputView {
                 attendanceStatistics.absent(),
                 attendanceStatistics.late(),
                 attendanceStatistics.alertCode().getName());
+    }
+
+    public void printChangeLog(Attendance originalAttendance,
+                               Attendance changedAttendance) {
+
+        String time = changedAttendance.getAttendanceTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+        if (changedAttendance.calculateAttendanceCode() == ABSENT) {
+            time = ABSENT_TIME;
+        }
+
+        printAttendanceLog(originalAttendance);
+        System.out.printf(" -> %s (%s) 수정 완료!", time, changedAttendance.calculateAttendanceCode().getName());
     }
 }

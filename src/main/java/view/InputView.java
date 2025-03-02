@@ -27,7 +27,7 @@ public class InputView {
     public int insertChangeDayOfMonth() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         String rawDayOfMonth = readLine();
-        validateTime(rawDayOfMonth);
+        validateInteger(rawDayOfMonth);
         return Integer.parseInt(rawDayOfMonth);
     }
 
