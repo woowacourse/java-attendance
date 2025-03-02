@@ -22,4 +22,8 @@ public class Nickname {
     public int hashCode() {
         return Objects.hashCode(value);
     }
+
+    public String getValue() {
+        return value;
+    }
 }
