@@ -12,9 +12,9 @@ public class AttendanceManager {
         this.attendanceManager = new HashMap<>();
     }
 
-    public void attend(NickName nickName, LocalTime attendingTime) {
+    public void attend(NickName nickName, AttendanceRecord attendanceRecord) {
         Attendances attendances = attendanceManager.getOrDefault(nickName, new Attendances());
-        attendances.attend(attendingTime);
+        attendances.attend(attendanceRecord);
         attendanceManager.put(nickName, attendances);
     }
 

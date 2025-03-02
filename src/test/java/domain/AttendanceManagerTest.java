@@ -12,15 +12,17 @@ public class AttendanceManagerTest {
     @DisplayName("출석 등록 테스트")
     class AttendTest {
         @Test
-        @DisplayName("닉네임과 등교시간을 가지고 출석을 기록한다")
-        void should_attend_by_nickname_and_attending_time() {
+        @DisplayName("닉네임과 등교시간을 토대로 만들어진 출석 객체를 가지고 출석을 기록한다")
+        void should_attend_by_nickname_and_attendanceRecord() {
             // given
             NickName nickName = new NickName("후우");
-            LocalTime attendingTime = LocalTime.parse("10:00");
+            String time = "10:00";
+            AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
+                    LocalTime.parse(time));
             AttendanceManager attendanceManager = new AttendanceManager();
 
             // when
-            attendanceManager.attend(nickName, attendingTime);
+            attendanceManager.attend(nickName, attendanceRecord);
 
             // then
             assertThat(attendanceManager).isNotEqualTo(new AttendanceManager());
@@ -31,9 +33,10 @@ public class AttendanceManagerTest {
         void should_return_true_when_already_attended() {
             // given
             NickName nickName = new NickName("후우");
-            LocalTime attendingTime = LocalTime.parse("10:00");
+            AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
+                    LocalTime.parse("10:00"));
             AttendanceManager attendanceManager = new AttendanceManager();
-            attendanceManager.attend(nickName, attendingTime);
+            attendanceManager.attend(nickName, attendanceRecord);
 
             // when
             boolean result = attendanceManager.isAttended(nickName);
