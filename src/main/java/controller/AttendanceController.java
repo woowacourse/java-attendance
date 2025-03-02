@@ -43,7 +43,7 @@ public class AttendanceController {
 
     private CrewRecords loadCrewRecords() {
         CrewRecordsGenerator crewRecordsGenerator = new CrewRecordsGenerator();
-        return crewRecordsGenerator.generate(FileReader.read("src/main/resources/attendances.csv").stream().skip(1).toList());
+        return crewRecordsGenerator.generate(currentDate, FileReader.read("src/main/resources/attendances.csv").stream().skip(1).toList());
     }
 
     private void checkIn() {

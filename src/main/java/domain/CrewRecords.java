@@ -2,11 +2,14 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.Map;
 
 public class CrewRecords {
-    private final Map<Crew, AttendanceRecords> records = new HashMap<>();
+    private final Map<Crew, AttendanceRecords> records;
+
+    public CrewRecords(Map<Crew, AttendanceRecords> records) {
+        this.records = records;
+    }
 
     public void addCrewRecords(Crew crew, AttendanceRecords attendanceRecords) {
         records.put(crew, attendanceRecords);
