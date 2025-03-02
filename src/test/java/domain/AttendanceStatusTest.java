@@ -14,10 +14,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class AttendanceStatusTest {
 
     @Nested
-    @DisplayName("성공 테스트")
-    class SuccessCases {
+    @DisplayName("출석 상태를 계산한다.")
+    class CalculateStatus {
 
-        @DisplayName("화,수,목,금기준 출석 시간에 따라 상태를 계산한다.")
+        @DisplayName("화,수,목,금기준 출석 시간에 따라 상태를 올바르게 계산한다.")
         @ParameterizedTest
         @MethodSource("provideTimeAndAttendanceStatus")
         public void calculateStatus(final LocalTime time, final AttendanceStatus expected) throws Exception {
@@ -41,7 +41,7 @@ public class AttendanceStatusTest {
             );
         }
 
-        @DisplayName("월요일 기준 출석 시간에 따라 상태를 계산한다.")
+        @DisplayName("월요일 기준 출석 시간에 따라 상태를 올바르게 계산한다.")
         @ParameterizedTest
         @MethodSource("provideTimeAndAttendanceStatusForMonday")
         public void calculateStatusForMonday(final LocalTime time, final AttendanceStatus expected) throws Exception {
@@ -67,8 +67,4 @@ public class AttendanceStatusTest {
 
     }
 
-    @Nested
-    @DisplayName("실패 테스트")
-    class FailCases {
-    }
 }
