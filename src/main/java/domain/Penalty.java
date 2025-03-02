@@ -6,10 +6,10 @@ public enum Penalty {
     WARNING("경고"),
     PASS("통과");
 
-    private final String status;
+    private final String description;
 
-    Penalty(String status) {
-        this.status = status;
+    Penalty(String description) {
+        this.description = description;
     }
 
     public static Penalty from(int latenessCount, int absenceCount) {
@@ -27,6 +27,6 @@ public enum Penalty {
     }
 
     public String getDescription() {
-        return status;
+        return description;
     }
 }
