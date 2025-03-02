@@ -15,7 +15,7 @@ public class AttendanceApplication {
         "yyyy-MM-dd");
 
     public static void main(String[] args) {
-        final LocalDate currentDate = parseLocalDate(args);
+        final LocalDate currentDate = parseLocalDateOrDefault(args);
         final AttendanceBookRepository attendanceBookRepository = createAttendanceBookRepository();
         final AttendanceController attendanceController = createAttendanceController(
             attendanceBookRepository);
@@ -23,7 +23,7 @@ public class AttendanceApplication {
         attendanceController.run(currentDate);
     }
 
-    private static LocalDate parseLocalDate(final String[] args) {
+    private static LocalDate parseLocalDateOrDefault(final String[] args) {
         try {
             return LocalDate.parse(args[0], DATE_FORMATTER);
         } catch (Exception e) {
