@@ -1,5 +1,8 @@
 package domain;
 
+import static domain.AttendanceStatus.ABSENT_MINUTE;
+import static domain.AttendanceStatus.LATE_MINUTE;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -33,8 +36,8 @@ public class AttendTime {
 
     public AttendanceStatus checkAttendanceStatus() {
         int startingHour = AttendTimeOfWeekDay.getTimeByDayOfWeekDay(localDate.getDayOfWeek().getValue());
-        return AttendanceStatus.calculateStatus(LocalTime.of(startingHour, 5), LocalTime.of(startingHour, 30),
-                localTime);
+        return AttendanceStatus.calculateStatus(LocalTime.of(startingHour, LATE_MINUTE),
+                LocalTime.of(startingHour, ABSENT_MINUTE), localTime);
     }
 
     public boolean checkSameDate(int date) {

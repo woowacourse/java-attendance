@@ -8,6 +8,9 @@ public enum AttendanceStatus {
     LATE("지각"),
     ABSENT("결석");
 
+    public static final int LATE_MINUTE = 5;
+    public static final int ABSENT_MINUTE = 5;
+
     private final String status;
 
     AttendanceStatus(String status) {
@@ -15,10 +18,12 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus calculateStatus(LocalTime lateTime, LocalTime absentTime, LocalTime attendanceTime) {
-        if (attendanceTime.isAfter(absentTime))
+        if (attendanceTime.isAfter(absentTime)) {
             return ABSENT;
-        if (attendanceTime.isAfter(lateTime))
+        }
+        if (attendanceTime.isAfter(lateTime)) {
             return LATE;
+        }
         return ATTENDED;
     }
 

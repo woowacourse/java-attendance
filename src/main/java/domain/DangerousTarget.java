@@ -6,7 +6,7 @@ public enum DangerousTarget {
     DISMISSAL(5, "제적"),
     SAFE(0, "안전");
 
-    public static final int LateRateOfAbsent = 3;
+    public static final int LATE_RATE_OF_ABSENT = 3;
 
     private final int absentCount;
     private final String target;
@@ -17,7 +17,7 @@ public enum DangerousTarget {
     }
 
     public static DangerousTarget getWarningStatus(int lateCount, int absentCount) {
-        int count = lateCount / LateRateOfAbsent + absentCount;
+        int count = lateCount / LATE_RATE_OF_ABSENT + absentCount;
         if (count > DISMISSAL.absentCount) {
             return DISMISSAL;
         }

@@ -24,5 +24,4 @@ public enum AttendTimeOfWeekDay {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(""));
     }
-
 }

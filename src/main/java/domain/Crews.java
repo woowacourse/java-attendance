@@ -1,5 +1,7 @@
 package domain;
 
+import static domain.DangerousTarget.LATE_RATE_OF_ABSENT;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -38,33 +40,34 @@ public class Crews {
     }
 
     public List<Crew> findDismissalCrews() {
-         return crews.stream().filter(Crew::isDismissalCrew).collect(Collectors.toList());
+        return crews.stream().filter(Crew::isDismissalCrew).collect(Collectors.toList());
     }
 
     public List<Crew> findDismissalCrewsByImportance() {
-        List<Crew> crewList=findDismissalCrews();
+        List<Crew> crewList = findDismissalCrews();
         Comparator<Crew> comparator = new Comparator<Crew>() {
 
             @Override
             public int compare(Crew crew1, Crew crew2) {
 
-                int crew1Counts=crew1.getCrewLateCount()/3+crew1.getCrewAbsentCount();
-                int crew2Counts=crew2.getCrewLateCount()/3+crew2.getCrewAbsentCount();
+                int crew1Counts = crew1.getCrewLateCount() / LATE_RATE_OF_ABSENT + crew1.getCrewAbsentCount();
+                int crew2Counts = crew2.getCrewLateCount() / LATE_RATE_OF_ABSENT + crew2.getCrewAbsentCount();
 
-                if(crew1Counts==crew2Counts){
-                    int crew1Late=crew1.getCrewLateCount()%3;
-                    int crew2Late=crew2.getCrewLateCount()%3;
-                    if(crew1Late==crew2Late){
+                if (crew1Counts == crew2Counts) {
+                    int crew1Late = crew1.getCrewLateCount() % LATE_RATE_OF_ABSENT;
+                    int crew2Late = crew2.getCrewLateCount() % LATE_RATE_OF_ABSENT;
+                    if (crew1Late == crew2Late) {
                         return crew1.getNickname().compareTo(crew2.getNickname());
                     }
-                    return crew2Late-crew1Late;
+                    return crew2Late - crew1Late;
                 }
-                return crew2Counts-crew1Counts;
+                return crew2Counts - crew1Counts;
             }
         };
 
         return crewList.stream().sorted(comparator).collect(Collectors.toList());
     }
+
     public List<Crew> getCrews() {
         return crews;
     }

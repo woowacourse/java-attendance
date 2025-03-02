@@ -21,10 +21,6 @@ public enum Command {
         return Arrays.stream(Command.values())
                 .filter(command -> command.commands.contains(input))
                 .findAny()
-                .orElseThrow(()->new IllegalArgumentException("없는 커맨드입니다."));
-    }
-
-    public List<String> getCommands() {
-        return commands;
+                .orElseThrow(() -> new IllegalArgumentException("없는 커맨드입니다."));
     }
 }
