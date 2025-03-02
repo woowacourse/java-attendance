@@ -1,6 +1,8 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.AttendanceManager;
+import infrastructure.AttendanceFileReader;
+import infrastructure.SystemDateProvider;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceFileReaderTest {

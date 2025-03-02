@@ -5,6 +5,7 @@ import domain.AttendanceRecord;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.DangerousStatus;
+import infrastructure.AttendanceFileReader;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -66,7 +67,7 @@ public class DangerousStatusTest {
         attendanceFileReader.readFiles(attendanceManager);
 
         List<Crew> crews = attendanceManager.getCrews();
-        
+
         Comparator<Crew> comparator = (crew1, crew2) -> {
             int i = crew2.getAttendanceRecord().totalAbsenceCount() - crew1.getAttendanceRecord().totalAbsenceCount();
             if (i == 0) {
