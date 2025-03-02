@@ -1,6 +1,7 @@
 package attendance.controller.dto;
 
-import attendance.model.attendance.log.CrewAttendanceLog;
+import attendance.model.attendance.log.AttendanceLogs;
+import attendance.model.crew.Crew;
 
 public class WarningCrewResponse {
 
@@ -28,14 +29,14 @@ public class WarningCrewResponse {
         this.crewStatus = crewStatus;
     }
 
-    public static WarningCrewResponse from(final CrewAttendanceLog crewAttendanceLog) {
+    public static WarningCrewResponse from(final Crew crew, AttendanceLogs attendanceLogs) {
         return new WarningCrewResponse(
-                crewAttendanceLog.getCrewNickname(),
-                crewAttendanceLog.getAbsenceCount(),
-                crewAttendanceLog.getLateCount(),
-                crewAttendanceLog.getPolicyAppliedAbsenceCount(),
-                crewAttendanceLog.getPolicyAppliedLateCount(),
-                crewAttendanceLog.getCrewStatus().getName()
+                crew.getNickName(),
+                attendanceLogs.getAbsenceCount(),
+                attendanceLogs.getLateCount(),
+                attendanceLogs.getPolicyAppliedAbsenceCount(),
+                attendanceLogs.getPolicyAppliedLateCount(),
+                attendanceLogs.getCrewStatus().getName()
         );
     }
 

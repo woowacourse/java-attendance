@@ -17,7 +17,7 @@ public record CrewAttendanceResponse(
 
     public static CrewAttendanceResponse from(final Crew crew, final AttendanceLogs attendanceLogs,
                                               final Map<AttendanceStatus, Integer> attendanceStatusStatistics) {
-        final List<AttendanceResponse> attendanceResponses = attendanceLogs.getValues().stream()
+        final List<AttendanceResponse> attendanceResponses = attendanceLogs.values().stream()
                 .map(AttendanceResponse::fromAttendanceLog)
                 .toList();
 
@@ -33,7 +33,7 @@ public record CrewAttendanceResponse(
                 crew.getNickName(),
                 attendanceResponses,
                 simplifiedStatistics,
-                CrewStatus.fromAttendanceStatuses(attendanceLogs.getValues().stream()
+                CrewStatus.fromAttendanceStatuses(attendanceLogs.values().stream()
                         .map(AttendanceLog::getAttendanceStatus)
                         .toList()
                 ).getName()

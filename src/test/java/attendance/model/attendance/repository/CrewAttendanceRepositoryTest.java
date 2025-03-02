@@ -72,8 +72,7 @@ class CrewAttendanceRepositoryTest {
 
         // When
         crewAttendanceRepository.add(crew, attendanceLog);
-        boolean contains = crewAttendanceRepository.getCrewAttendanceLogs().stream()
-                .anyMatch(log -> log.isSameCrew(crew) && log.containsAttendanceLog(attendanceLog));
+        boolean contains = crewAttendanceRepository.getCrewAttendanceLogs().get(crew).contains(attendanceLog);
 
         // Then
         assertThat(contains).isTrue();
@@ -98,10 +97,8 @@ class CrewAttendanceRepositoryTest {
         crewAttendanceRepository.update(crew, from, to);
 
         // Then
-        boolean containsTo = crewAttendanceRepository.getCrewAttendanceLogs().stream()
-                .anyMatch(log -> log.isSameCrew(crew) && log.containsAttendanceLog(to));
-        boolean containsFrom = crewAttendanceRepository.getCrewAttendanceLogs().stream()
-                .anyMatch(log -> log.isSameCrew(crew) && log.containsAttendanceLog(from));
+        boolean containsTo = crewAttendanceRepository.getCrewAttendanceLogs().get(crew).contains(to);
+        boolean containsFrom = crewAttendanceRepository.getCrewAttendanceLogs().get(crew).contains(from);
 
         assertAll(
                 () -> assertThat(containsTo).isTrue(),
@@ -111,7 +108,7 @@ class CrewAttendanceRepositoryTest {
 
     @DisplayName("시작 LocalDate 부터 종료 LocalDate 까지 특정 크루의 CrewAttendanceLog 를 반환한다.")
     @Test
-    void findAllByCrew() {
+    void findByCrewFromTo() {
 
         // Given
         final Crew crew = new Crew("쿠키");
@@ -137,8 +134,8 @@ class CrewAttendanceRepositoryTest {
         );
 
         // When
-        final List<AttendanceLog> actual = crewAttendanceRepository.findAllByCrew(crew, from, to,
-                campusOperationPolicy).getValues();
+        final List<AttendanceLog> actual = crewAttendanceRepository.findByCrewFromTo(crew, from, to,
+                campusOperationPolicy).values();
 
         // Then
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);

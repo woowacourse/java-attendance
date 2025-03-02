@@ -2,19 +2,19 @@ package attendance.model.attendance.repository;
 
 import attendance.model.attendance.log.AttendanceLog;
 import attendance.model.attendance.log.AttendanceLogs;
-import attendance.model.attendance.log.CrewAttendanceLog;
 import attendance.model.attendance.log.CrewAttendanceLogDeserializer;
 import attendance.model.campus.CampusOperationPolicy;
 import attendance.model.crew.Crew;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CrewAttendanceRepository {
 
-    private final List<CrewAttendanceLog> crewAttendanceLogs;
+    private final Map<Crew, AttendanceLogs> crewAttendanceLogs;
 
     public CrewAttendanceRepository(
             final CrewAttendanceLogDeserializer crewAttendanceLogDeserializer,
@@ -26,57 +26,52 @@ public class CrewAttendanceRepository {
     }
 
     public void add(final Crew crew, final AttendanceLog attendanceLog) {
-        findByCrew(crew).addAttendanceLog(attendanceLog);
+        findByCrew(crew).add(attendanceLog);
     }
 
-    private CrewAttendanceLog findByCrew(final Crew crew) {
-        return crewAttendanceLogs.stream()
-                .filter(crewAttendanceLog -> crewAttendanceLog.isSameCrew(crew))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 크루가 존재하지 않습니다."));
+    private AttendanceLogs findByCrew(final Crew crew) {
+        return crewAttendanceLogs.computeIfAbsent(crew, none -> {
+            throw new IllegalArgumentException("해당 크루가 존재하지 않습니다.");
+        });
     }
 
     public void update(final Crew crew, final AttendanceLog from, final AttendanceLog to) {
-        findByCrew(crew).updateAttendanceLog(from, to);
+        findByCrew(crew).update(from, to);
     }
 
-    public AttendanceLogs findAllByCrew(
+    public AttendanceLogs findByCrewFromTo(
             final Crew crew,
             final LocalDate from,
             final LocalDate to,
             final CampusOperationPolicy campusOperationPolicy) {
 
-        return findByCrew(crew).getAllAttendanceLogs(from, to, campusOperationPolicy);
+        return findByCrew(crew).getAllAttendanceLogsFromTo(from, to, campusOperationPolicy);
     }
 
-    public List<CrewAttendanceLog> getCrewAttendanceLogs() {
-        return crewAttendanceLogs;
+    public Map<Crew, AttendanceLogs> getCrewAttendanceLogs() {
+        return Collections.unmodifiableMap(crewAttendanceLogs);
     }
 
-    public AttendanceLog findByCrewAndDate(final Crew crew, final LocalDate date) {
+    public AttendanceLog findAttendanceLogByDate(final Crew crew, final LocalDate date) {
         return findByCrew(crew).findAttendanceLogByDate(date);
     }
 
-    public List<Crew> getAllCrews() {
-        return crewAttendanceLogs.stream()
-                .map(crewAttendanceLog -> new Crew(crewAttendanceLog.getCrewNickname()))
-                .toList();
-    }
-
-    public List<CrewAttendanceLog> getWarningCrewAttendanceLogs(
+    public Map<Crew, AttendanceLogs> getWarningCrewAttendanceLogs(
             final LocalDate from,
             final LocalDate to,
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
-        Map<Crew, AttendanceLogs> crewAttendanceLogsMap = crewAttendanceLogs.stream()
-                .collect(HashMap::new,
-                        (map, crewAttendanceLog) -> map.put(new Crew(crewAttendanceLog.getCrewNickname()),
-                                crewAttendanceLog.getAllAttendanceLogs(from, to, campusOperationPolicy)), Map::putAll);
-
-        return crewAttendanceLogsMap.entrySet().stream()
-                .map(entry -> new CrewAttendanceLog(entry.getKey(), entry.getValue()))
-                .filter(CrewAttendanceLog::isWarning)
-                .toList();
+        return crewAttendanceLogs.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(),
+                        entry.getValue().getAllAttendanceLogsFromTo(from, to, campusOperationPolicy)))
+                .filter(entry -> entry.getValue().isWarning())
+                .collect(
+                        Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (existing, replacement) -> existing,
+                                HashMap::new)
+                );
     }
 }

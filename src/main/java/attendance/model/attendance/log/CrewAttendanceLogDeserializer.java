@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CrewAttendanceLogDeserializer {
@@ -21,7 +22,7 @@ public class CrewAttendanceLogDeserializer {
     private static final String CREW_DATETIME_DELIMITER = ",";
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public List<CrewAttendanceLog> deserializeFromCsv(
+    public Map<Crew, AttendanceLogs> deserializeFromCsv(
             final Path csvFilePath,
             final CampusOperationPolicy campusOperationPolicy
     ) {
@@ -32,13 +33,10 @@ public class CrewAttendanceLogDeserializer {
                     .collect(HashMap::new, this::addData, HashMap::putAll);
 
             return parsedData.keySet().stream()
-                    .map(crew ->
-                            new CrewAttendanceLog(
-                                    crew,
-                                    AttendanceLogs.fromLocalDateTimes(parsedData.get(crew), campusOperationPolicy)
-                            )
-                    )
-                    .toList();
+                    .collect(Collectors.toMap(
+                            crew -> crew,
+                            crew -> AttendanceLogs.fromLocalDateTimes(parsedData.get(crew), campusOperationPolicy)
+                    ));
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
         }

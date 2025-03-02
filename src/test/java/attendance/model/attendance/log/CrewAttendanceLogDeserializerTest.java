@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -43,44 +45,45 @@ class CrewAttendanceLogDeserializerTest {
     void deserializeFromCsv() {
 
         // Given
-        final List<CrewAttendanceLog> expected = List.of(
-                new CrewAttendanceLog(
-                        new Crew("쿠키"),
-                        new AttendanceLogs(
-                                List.of(
-                                        AttendanceLog.fromDateTime(
-                                                LocalDateTime.of(2024, 12, 2, 13, 40),
-                                                campusOperationPolicy
-                                        ),
-                                        AttendanceLog.fromDateTime(
-                                                LocalDateTime.of(2024, 12, 3, 10, 40),
-                                                campusOperationPolicy
-                                        )
+        final Map<Crew, AttendanceLogs> expected = new HashMap<>();
+
+        expected.put(
+                new Crew("쿠키"),
+                new AttendanceLogs(
+                        List.of(
+                                AttendanceLog.fromDateTime(
+                                        LocalDateTime.of(2024, 12, 2, 13, 40),
+                                        campusOperationPolicy
+                                ),
+                                AttendanceLog.fromDateTime(
+                                        LocalDateTime.of(2024, 12, 3, 10, 40),
+                                        campusOperationPolicy
                                 )
-                        )),
-                new CrewAttendanceLog(
-                        new Crew("워니"),
-                        new AttendanceLogs(
-                                List.of(
-                                        AttendanceLog.fromDateTime(
-                                                LocalDateTime.of(2024, 12, 2, 13, 40),
-                                                campusOperationPolicy
-                                        ),
-                                        AttendanceLog.fromDateTime(
-                                                LocalDateTime.of(2024, 12, 3, 10, 40),
-                                                campusOperationPolicy
-                                        )
+                        )
+                )
+        );
+
+        expected.put(
+                new Crew("워니"),
+                new AttendanceLogs(
+                        List.of(
+                                AttendanceLog.fromDateTime(
+                                        LocalDateTime.of(2024, 12, 2, 13, 40),
+                                        campusOperationPolicy
+                                ),
+                                AttendanceLog.fromDateTime(
+                                        LocalDateTime.of(2024, 12, 3, 10, 40),
+                                        campusOperationPolicy
                                 )
-                        ))
+                        )
+                )
         );
 
         // When
-        final List<CrewAttendanceLog> actual = new CrewAttendanceLogDeserializer().deserializeFromCsv(FILE_PATH,
+        final Map<Crew, AttendanceLogs> actual = new CrewAttendanceLogDeserializer().deserializeFromCsv(FILE_PATH,
                 campusOperationPolicy);
 
         // Then
-        assertThat(actual)
-                .usingRecursiveFieldByFieldElementComparator()
-                .containsExactlyInAnyOrderElementsOf(expected);
+        assertThat(actual).containsAllEntriesOf(expected);
     }
 }

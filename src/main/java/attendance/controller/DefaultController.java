@@ -4,7 +4,6 @@ import attendance.controller.dto.CrewAttendanceResponse;
 import attendance.controller.dto.WarningCrewResponse;
 import attendance.model.attendance.log.AttendanceLog;
 import attendance.model.attendance.log.AttendanceLogs;
-import attendance.model.attendance.log.CrewAttendanceLog;
 import attendance.model.attendance.repository.CrewAttendanceRepository;
 import attendance.model.attendance.status.AttendanceStatus;
 import attendance.model.campus.CampusOperationPolicy;
@@ -68,7 +67,7 @@ public class DefaultController implements Controller {
         try {
             final Crew crew = new Crew(inputView.inputUpdateCrewNickName());
             final LocalDateTime attendanceDateTime = LocalDateTime.of(TODAY, inputView.inputUpdateAttendanceTime());
-            final AttendanceLog from = crewAttendanceRepository.findByCrewAndDate(crew, TODAY);
+            final AttendanceLog from = crewAttendanceRepository.findAttendanceLogByDate(crew, TODAY);
             final AttendanceLog to = AttendanceLog.fromDateTime(attendanceDateTime, campusOperationPolicy);
 
             crewAttendanceRepository.update(crew, from, to);
@@ -83,14 +82,8 @@ public class DefaultController implements Controller {
         try {
             final Crew crew = new Crew(inputView.inputCrewNickName());
 
-            final AttendanceLogs crewAttendanceLog = crewAttendanceRepository.findAllByCrew(
+            final AttendanceLogs attendanceLogs = crewAttendanceRepository.findByCrewFromTo(
                     crew,
-                    START_DATE,
-                    TODAY,
-                    campusOperationPolicy
-            );
-
-            final Map<AttendanceStatus, Integer> attendanceStatusStatistics = crewAttendanceLog.getAttendanceStatusStatistics(
                     START_DATE,
                     TODAY,
                     campusOperationPolicy
@@ -98,8 +91,8 @@ public class DefaultController implements Controller {
 
             final CrewAttendanceResponse crewAttendanceResponse = CrewAttendanceResponse.from(
                     crew,
-                    crewAttendanceLog,
-                    attendanceStatusStatistics
+                    attendanceLogs,
+                    AttendanceStatus.getStatistics(attendanceLogs.getAllAttendanceStatuses())
             );
 
             outputView.printCrewAttendance(crewAttendanceResponse);
@@ -111,15 +104,14 @@ public class DefaultController implements Controller {
 
     @Override
     public void printRequiresManagementCrews() {
-        final List<Crew> crews = crewAttendanceRepository.getAllCrews();
-        final List<CrewAttendanceLog> warningCrewAttendanceLogs = crewAttendanceRepository.getWarningCrewAttendanceLogs(
+        final Map<Crew, AttendanceLogs> warningCrewAttendanceLogs = crewAttendanceRepository.getWarningCrewAttendanceLogs(
                 START_DATE,
                 TODAY,
                 campusOperationPolicy
         );
 
-        final List<WarningCrewResponse> warningCrewResponses = warningCrewAttendanceLogs.stream()
-                .map(WarningCrewResponse::from)
+        final List<WarningCrewResponse> warningCrewResponses = warningCrewAttendanceLogs.entrySet().stream()
+                .map(entry -> WarningCrewResponse.from(entry.getKey(), entry.getValue()))
                 .toList();
 
         outputView.printWarningCrewResponses(warningCrewResponses);
