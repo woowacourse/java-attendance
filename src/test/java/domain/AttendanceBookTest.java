@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -49,6 +50,37 @@ class AttendanceBookTest {
         attendanceBook.edit(name, dateTime.toLocalDate(), newTime);
         assertThat(attendanceBook.findAttendanceDateByNameAndDate(name, dateTime.toLocalDate()).getTime())
                 .isEqualTo(newTime);
+    }
+
+
+    @Test
+    void 크루의_지각_횟수를_계산한다() {
+        final String name = "시소";
+        final LocalDateTime initDate = LocalDateTime.of(2024, 12, 10, 10, 0);
+
+        final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 10, 10), LocalDateTime.of(2024, 12, 12, 10, 10),
+                LocalDateTime.of(2024, 12, 13, 10, 10), LocalDateTime.of(2024, 12, 14, 10, 10));
+
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.addAttendance(name, initDate);
+        dateTimes.forEach(dateTime -> attendanceBook.attend(name, dateTime.toLocalDate(), dateTime.toLocalTime()));
+
+        assertThat(attendanceBook.getTardyCount(name)).isEqualTo(dateTimes.size());
+    }
+
+    @Test
+    void 크루의_결석_횟수를_계산한다() {
+        final String name = "시소";
+        final LocalDateTime initDate = LocalDateTime.of(2024, 12, 10, 10, 0);
+
+        final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 15, 10), LocalDateTime.of(2024, 12, 12, 15, 10),
+                LocalDateTime.of(2024, 12, 13, 15, 10), LocalDateTime.of(2024, 12, 14, 15, 10));
+
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.addAttendance(name, initDate);
+        dateTimes.forEach(dateTime -> attendanceBook.attend(name, dateTime.toLocalDate(), dateTime.toLocalTime()));
+
+        assertThat(attendanceBook.getAbsenceCount(name)).isEqualTo(dateTimes.size());
     }
 
     @Test

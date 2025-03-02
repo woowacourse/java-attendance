@@ -50,4 +50,26 @@ class AttendanceRecordTest {
 
         assertThat(attendanceRecord.getAttendanceDates().size()).isEqualTo(dateTimes.size());
     }
+
+    @Test
+    void 지각_횟수를_계산한다() {
+        final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 10, 10), LocalDateTime.of(2024, 12, 12, 10, 10),
+                LocalDateTime.of(2024, 12, 13, 10, 10), LocalDateTime.of(2024, 12, 14, 10, 10));
+
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        dateTimes.forEach(attendanceRecord::addAttendanceDate);
+
+        assertThat(attendanceRecord.calculateTardyCount()).isEqualTo(dateTimes.size());
+    }
+
+    @Test
+    void 결석_횟수를_계산한다() {
+        final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 15, 10), LocalDateTime.of(2024, 12, 12, 15, 10),
+                LocalDateTime.of(2024, 12, 13, 15, 10), LocalDateTime.of(2024, 12, 14, 15, 10));
+
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        dateTimes.forEach(attendanceRecord::addAttendanceDate);
+
+        assertThat(attendanceRecord.calculateAbsenceCount()).isEqualTo(dateTimes.size());
+    }
 }

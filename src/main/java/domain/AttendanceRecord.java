@@ -48,6 +48,18 @@ public class AttendanceRecord {
         return new ArrayList<>(attendanceDates);
     }
 
+    public int calculateTardyCount() {
+        return (int) attendanceDates.stream()
+                .filter(attendanceDate -> attendanceDate.getStatus().equals(AttendanceStatus.TARDY))
+                .count();
+    }
+
+    public int calculateAbsenceCount() {
+        return (int) attendanceDates.stream()
+                .filter(attendanceDate -> attendanceDate.getStatus().equals(AttendanceStatus.ABSENCE))
+                .count();
+    }
+
     public void validateBeforeAdd(LocalDate date) {
         if (hasAttendanceDate(date)) {
             throw new IllegalArgumentException("이미 출석하여, 다시 출석할 수 없습니다. 수정 기능을 이용하십시오.");

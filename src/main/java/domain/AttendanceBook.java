@@ -44,6 +44,14 @@ public class AttendanceBook {
         findAttendanceRecordByName(name).editAttendanceDate(date, time);
     }
 
+    public int getTardyCount(String name) {
+        return findAttendanceRecordByName(name).calculateTardyCount();
+    }
+
+    public int getAbsenceCount(String name) {
+        return findAttendanceRecordByName(name).calculateAbsenceCount();
+    }
+
     public void validateHasCrew(String name) {
         if (!hasCrew(name)) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
