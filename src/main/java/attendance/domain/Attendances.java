@@ -2,8 +2,6 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Attendances {
@@ -73,19 +71,11 @@ public class Attendances {
                 .count();
     }
 
-    public ExpulsionStatus findExpulsionStatusUntilLastDate() {
-        LocalDate lastAttendanceLocalDate = findLastAttendanceLocalDate();
-        int absentCount = calculateAbsentCount(lastAttendanceLocalDate);
-        int lateCount = calculateLateCount(lastAttendanceLocalDate);
+    public ExpulsionStatus findExpulsionStatusUntilStandardDate(final LocalDate standardDate) {
+        int absentCount = calculateAbsentCount(standardDate);
+        int lateCount = calculateLateCount(standardDate);
         int totalAbsentCount = AttendanceStatus.calculateTotalAbsentCount(absentCount, lateCount);
         return ExpulsionStatus.findStatusByAbsentCount(totalAbsentCount);
-    }
-
-    private LocalDate findLastAttendanceLocalDate() {
-        List<Attendance> sortedAttendances = new ArrayList<>(attendances);
-        Collections.sort(sortedAttendances);
-        return sortedAttendances.getLast()
-                .getAttendanceLocalDate();
     }
 
     public List<Attendance> getAttendances() {

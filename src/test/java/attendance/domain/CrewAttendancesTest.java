@@ -6,19 +6,27 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class CrewAttendancesTest {
 
-    private final Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes = Map.of(new Crew("빙봉"), List.of(
-            LocalDateTime.of(2025, 2, 26, 10, 0)
-    ));
     private final LocalDate standardDate = LocalDate.of(2025, 2, 26);
+    private Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes;
+
+    @BeforeEach
+    void setUp() {
+        crewAttendanceDateTimes = new HashMap<>();
+        crewAttendanceDateTimes.put(new Crew("빙봉"), List.of(
+                LocalDateTime.of(2025, 2, 26, 10, 0)
+        ));
+    }
 
     @Test
     void 전체_크루의_모든_출석_기록을_저장한다() {
@@ -148,10 +156,36 @@ class CrewAttendancesTest {
     @Test
     void 지정한_날짜_까지의_결석_횟수를_계산한다() {
         CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
-        LocalDate standardDate = LocalDate.of(2025, 2, 3);
         Crew crew = new Crew("빙봉");
 
-        assertThat(crewAttendances.calculateAbsentCount(crew, standardDate)).isEqualTo(1);
+        assertThat(crewAttendances.calculateAbsentCount(crew, LocalDate.of(2025, 2, 3))).isEqualTo(1);
+    }
+
+    @Test
+    void 지정한_날짜_까지의_제적_위험_상태인_크루를_위험도_기준으로_정렬해_계산한다() {
+        Crew gaga = new Crew("가가");
+        crewAttendanceDateTimes.put(gaga, List.of(
+                LocalDateTime.of(2025, 2, 26, 10, 0)
+        ));
+        Crew kiki = new Crew("키키");
+        crewAttendanceDateTimes.put(kiki, List.of(
+                LocalDateTime.of(2025, 2, 25, 10, 0),
+                LocalDateTime.of(2025, 2, 26, 10, 0)
+        ));
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
+        Crew crew = new Crew("빙봉");
+
+        assertThat(crewAttendances.findPenaltyCrewsSortedByRisk(List.of(gaga, kiki, crew), standardDate))
+                .containsExactly(gaga, crew, kiki);
+    }
+
+    @Test
+    void 지정한_날짜_까지의_크루의_제적_상태를_계산한다() {
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
+        Crew crew = new Crew("빙봉");
+
+        assertThat(crewAttendances.calculateExpulsionStatus(crew, standardDate)).isEqualByComparingTo(
+                ExpulsionStatus.EXPULSION);
     }
 
 }

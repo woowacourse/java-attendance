@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
@@ -61,6 +60,13 @@ class AttendanceStatusTest {
         int lateCount = 5;
 
         assertThat(AttendanceStatus.calculateTotalAbsentCount(absentCount, lateCount)).isEqualTo(2);
+    }
+
+    @Test
+    void 결석_횟수를_지각_횟수로_치환해_알려준다() {
+        int absentCount = 1;
+
+        assertThat(AttendanceStatus.convertToLateCount(absentCount)).isEqualTo(3);
     }
 
 }

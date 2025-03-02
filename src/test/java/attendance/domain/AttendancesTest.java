@@ -121,20 +121,23 @@ class AttendancesTest {
 
     @MethodSource("provideAttendancesWithDateAndExpectedStatusInfo")
     @ParameterizedTest
-    void 현재_저장된_이번달_출석_기록을_통해_제적_위험자_상태를_알려준다(List<Attendance> attendanceGroup, ExpulsionStatus expectedStatus) {
+    void 현재_저장된_이번달_출석_기록을_통해_제적_위험자_상태를_알려준다(
+            List<Attendance> attendanceGroup, final LocalDate standardDate, ExpulsionStatus expectedStatus
+    ) {
         Attendances attendances = new Attendances(attendanceGroup);
 
-        assertThat(attendances.findExpulsionStatusUntilLastDate()).isEqualByComparingTo(expectedStatus);
+        assertThat(attendances.findExpulsionStatusUntilStandardDate(standardDate)).isEqualByComparingTo(expectedStatus);
     }
 
     private static Stream<Arguments> provideAttendancesWithDateAndExpectedStatusInfo() {
         List<Attendance> attendances = createOneAttendanceCompleteSixAbsent();
+        LocalDate standardDate = LocalDate.of(2025, 2, 26);
         return Stream.of(
-                Arguments.of(attendances, ExpulsionStatus.EXPULSION),
-                Arguments.of(attendances.subList(0, 6), ExpulsionStatus.INTERVIEW),
-                Arguments.of(attendances.subList(0, 4), ExpulsionStatus.INTERVIEW),
-                Arguments.of(attendances.subList(0, 3), ExpulsionStatus.WARNING),
-                Arguments.of(attendances.subList(0, 2), ExpulsionStatus.NONE)
+                Arguments.of(attendances, standardDate, ExpulsionStatus.EXPULSION),
+                Arguments.of(attendances.subList(0, 6), standardDate.minusDays(1L), ExpulsionStatus.INTERVIEW),
+                Arguments.of(attendances.subList(0, 4), standardDate.minusDays(3L), ExpulsionStatus.INTERVIEW),
+                Arguments.of(attendances.subList(0, 3), standardDate.minusDays(4L), ExpulsionStatus.WARNING),
+                Arguments.of(attendances.subList(0, 2), standardDate.minusDays(5L), ExpulsionStatus.NONE)
         );
     }
 

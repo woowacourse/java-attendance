@@ -39,4 +39,9 @@ public class Crews {
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
     }
 
+    public List<Crew> findAllCrew() {
+        return crews.stream()
+                .toList();
+    }
+
 }

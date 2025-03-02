@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 public enum ExpulsionStatus {
@@ -10,6 +11,7 @@ public enum ExpulsionStatus {
     WARNING("경고", (absentCount) -> absentCount == 2),
     NONE("없음", (absentCount) -> (absentCount < 2) && (absentCount >= 0));
 
+    private static final List<ExpulsionStatus> PENALTY_GROUP = List.of(EXPULSION, INTERVIEW, WARNING);
     private final String text;
     private final Predicate<Integer> condition;
 
@@ -23,6 +25,10 @@ public enum ExpulsionStatus {
                 .filter(expulsionStatus -> expulsionStatus.condition.test(totalAbsentCount))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 결석 횟수입니다."));
+    }
+
+    public boolean isPenaltyGroup() {
+        return PENALTY_GROUP.contains(this);
     }
 
     public String getText() {

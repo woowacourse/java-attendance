@@ -90,6 +90,9 @@ public class AttendanceManagementController {
             if (operationCommand.equals("3")) {
                 runCrewAttendancesInquiryOperation(crews, crewAttendances);
             }
+            if (operationCommand.equals("4")) {
+                runPenaltyCrewsInquiryOperation(crews, crewAttendances);
+            }
         } catch (IllegalArgumentException e) {
             resultView.printErrorMessage(e.getMessage());
         }
@@ -147,7 +150,8 @@ public class AttendanceManagementController {
         resultView.printAttendanceStatusCount(attendancesUntilYesterday.calculateAttendanceCount(yesterday),
                 attendancesUntilYesterday.calculateLateCount(yesterday),
                 attendancesUntilYesterday.calculateAttendanceCount(yesterday));
-        resultView.printExpulsionStatus(attendancesUntilYesterday.findExpulsionStatusUntilLastDate().getText());
+        resultView.printExpulsionStatus(
+                attendancesUntilYesterday.findExpulsionStatusUntilStandardDate(yesterday).getText());
 
     }
 
@@ -164,6 +168,17 @@ public class AttendanceManagementController {
                 .map(Attendance::calculateStatus)
                 .map(AttendanceStatus::getText)
                 .toList();
+    }
+
+    private void runPenaltyCrewsInquiryOperation(final Crews crews, final CrewAttendances crewAttendances) {
+        LocalDate yesterday = today.toLocalDate().minusDays(1L);
+        List<Crew> penaltyCrews = crewAttendances.findPenaltyCrewsSortedByRisk(crews.findAllCrew(), yesterday);
+        resultView.printPenaltyCrews();
+        penaltyCrews.forEach(penaltyCrew -> resultView.printPenaltyCrewInformation(penaltyCrew.getNickname(),
+                crewAttendances.calculateAbsentCount(penaltyCrew, yesterday),
+                crewAttendances.calculateLateCount(penaltyCrew, yesterday),
+                crewAttendances.calculateExpulsionStatus(penaltyCrew, yesterday).getText()
+        ));
     }
 
 }

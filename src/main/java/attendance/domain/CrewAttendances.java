@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -123,6 +124,35 @@ public class CrewAttendances {
     public int calculateAbsentCount(final Crew crew, final LocalDate standardDate) {
         Attendances attendances = crewAttendances.get(crew);
         return attendances.calculateAbsentCount(standardDate);
+    }
+
+    public List<Crew> findPenaltyCrewsSortedByRisk(final List<Crew> crews, final LocalDate standardDate) {
+        return crews.stream()
+                .filter(crew -> {
+                    Attendances attendances = crewAttendances.get(crew);
+                    ExpulsionStatus expulsionStatus = attendances.findExpulsionStatusUntilStandardDate(
+                            standardDate);
+                    return expulsionStatus.isPenaltyGroup();
+                }).sorted(sortByRiskCountAndNickname(standardDate))
+                .toList();
+    }
+
+    private Comparator<Crew> sortByRiskCountAndNickname(final LocalDate standardDate) {
+        return (o1, o2) -> {
+            int totalRiskCount = AttendanceStatus.convertToLateCount(calculateAbsentCount(o1, standardDate)) +
+                    calculateLateCount(o1, standardDate);
+            int otherTotalRiskCount = AttendanceStatus.convertToLateCount(calculateAbsentCount(o2, standardDate)) +
+                    calculateLateCount(o2, standardDate);
+            if (totalRiskCount != otherTotalRiskCount) {
+                return otherTotalRiskCount - totalRiskCount;
+            }
+            return o1.getNickname().compareTo(o2.getNickname());
+        };
+    }
+
+    public ExpulsionStatus calculateExpulsionStatus(final Crew crew, final LocalDate standardDate) {
+        Attendances attendances = crewAttendances.get(crew);
+        return attendances.findExpulsionStatusUntilStandardDate(standardDate);
     }
 
 }

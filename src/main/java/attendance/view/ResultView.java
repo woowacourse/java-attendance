@@ -95,4 +95,15 @@ public class ResultView {
         System.out.printf("%s 대상자입니다.%n", expulsionStatus);
     }
 
+    public void printPenaltyCrews() {
+        System.out.println();
+        System.out.println("제적 위험자 조회 결과");
+    }
+
+    public void printPenaltyCrewInformation(final String nickname, final int absentCount, final int lateCount,
+                                            final String expulsionStatus
+    ) {
+        System.out.printf("%s: 결석 %d회, 지각 %d회 (%s)%n", nickname, absentCount, lateCount, expulsionStatus);
+    }
+
 }
