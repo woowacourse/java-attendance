@@ -4,6 +4,8 @@ import static attendance.domain.AttendanceStatus.ABSENCE;
 import static attendance.domain.AttendanceStatus.ATTENDANCE;
 import static attendance.domain.AttendanceStatus.LATE;
 import static attendance.domain.AttendanceStatus.values;
+import static attendance.exception.ErrorMessage.DUPLICATED_ATTENDANCE;
+import static attendance.exception.ErrorMessage.NO_ATTENDANCE_TO_MODIFY;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -12,14 +14,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class AttendanceHistory {
     private final Set<Attendance> attendances = new HashSet<>();
 
     public Attendance addAttendance(final Attendance attendance) {
+        validateDuplicatedAttendance(attendance.getDate());
         attendances.add(attendance);
         return attendance;
+    }
+
+    public void validateDuplicatedAttendance(final LocalDate attendanceDate) {
+        findAttendance(attendanceDate).ifPresent(attendance -> {
+            throw new IllegalArgumentException(DUPLICATED_ATTENDANCE.getMessage());
+        });
     }
 
     public Optional<Attendance> findAttendance(final LocalDate date) {
@@ -30,15 +38,16 @@ public class AttendanceHistory {
 
     public Attendance modifyAttendance(final Attendance modifiedAttendance) {
         LocalDate attendanceDateToModify = modifiedAttendance.getDate();
-        Attendance beforeAttendance = findAttendance(attendanceDateToModify).get();
-        attendances.remove(beforeAttendance);
+        findAttendance(attendanceDateToModify).ifPresentOrElse(attendances::remove, () -> {
+            throw new IllegalArgumentException(NO_ATTENDANCE_TO_MODIFY.getMessage());
+        });
         return addAttendance(modifiedAttendance);
     }
 
     public List<Attendance> getMonthlyAttendances(final LocalDate today) {
         return attendances.stream()
                 .filter(attendance -> attendance.isYearMonthEquals(today))
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     public AttendanceStatistics getAttendanceStatistics(final LocalDate today) {

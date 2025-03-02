@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import static attendance.domain.AttendancePolicy.calculateAttendanceStatus;
-import static attendance.exception.ErrorMessage.DUPLICATED_ATTENDANCE;
 import static attendance.exception.ErrorMessage.NOT_EXISTS_CREW_NICKNAME;
 
 import java.time.LocalDate;
@@ -22,8 +21,8 @@ public class AttendanceManager {
     public Attendance addAttendance(final Nickname crewNickname,
                                     final LocalDate attendanceDate,
                                     final LocalTime attendanceTime) {
+        AttendanceHistory attendanceHistory = getAttendanceHistory(crewNickname);
         AttendanceStatus status = calculateAttendanceStatus(attendanceDate.getDayOfWeek(), attendanceTime);
-        AttendanceHistory attendanceHistory = attendanceBook.get(crewNickname);
         Attendance attendance = new Attendance(attendanceDate, attendanceTime, status);
         return attendanceHistory.addAttendance(attendance);
     }
@@ -31,37 +30,29 @@ public class AttendanceManager {
     public Attendance modifyAttendance(final Nickname crewNickname,
                                        final LocalDate dateToModify,
                                        final LocalTime modificationTime) {
+        AttendanceHistory attendanceHistory = getAttendanceHistory(crewNickname);
         AttendanceStatus modificationStatus = calculateAttendanceStatus(dateToModify.getDayOfWeek(), modificationTime);
-        AttendanceHistory attendanceHistory = attendanceBook.get(crewNickname);
         Attendance modifiedAttendance = new Attendance(dateToModify, modificationTime, modificationStatus);
         return attendanceHistory.modifyAttendance(modifiedAttendance);
     }
 
     public void validateDuplicatedAttendance(final Nickname crewNickname, final LocalDate attendanceDate) {
-        findAttendance(crewNickname, attendanceDate).ifPresent(attendance -> {
-            throw new IllegalArgumentException(DUPLICATED_ATTENDANCE.getMessage());
-        });
+        AttendanceHistory attendanceHistory = getAttendanceHistory(crewNickname);
+        attendanceHistory.validateDuplicatedAttendance(attendanceDate);
     }
 
     public Optional<Attendance> findAttendance(final Nickname crewNickname, final LocalDate attendanceDate) {
-        AttendanceHistory attendanceHistory = attendanceBook.get(crewNickname);
+        AttendanceHistory attendanceHistory = getAttendanceHistory(crewNickname);
         return attendanceHistory.findAttendance(attendanceDate);
     }
 
-    public void validateExistingCrew(final Nickname crewNickname) {
-        boolean isCrewExists = attendanceBook.containsKey(crewNickname);
-        if (!isCrewExists) {
-            throw new IllegalArgumentException(NOT_EXISTS_CREW_NICKNAME.getMessage());
-        }
-    }
-
     public List<Attendance> getMonthlyAttendances(final LocalDate today, final Nickname crewNickname) {
-        AttendanceHistory attendanceHistory = attendanceBook.get(crewNickname);
+        AttendanceHistory attendanceHistory = getAttendanceHistory(crewNickname);
         return attendanceHistory.getMonthlyAttendances(today);
     }
 
     public AttendanceStatistics getAttendanceStatistics(final LocalDate today, final Nickname crewNickname) {
-        AttendanceHistory attendanceHistory = attendanceBook.get(crewNickname);
+        AttendanceHistory attendanceHistory = getAttendanceHistory(crewNickname);
         return attendanceHistory.getAttendanceStatistics(today);
     }
 
@@ -76,5 +67,17 @@ public class AttendanceManager {
             }
         }
         return dangerousCrewsStatistics;
+    }
+
+    public void validateExistingCrew(final Nickname crewNickname) {
+        boolean isCrewExists = attendanceBook.containsKey(crewNickname);
+        if (!isCrewExists) {
+            throw new IllegalArgumentException(NOT_EXISTS_CREW_NICKNAME.getMessage());
+        }
+    }
+
+    private AttendanceHistory getAttendanceHistory(final Nickname crewNickname) {
+        validateExistingCrew(crewNickname);
+        return attendanceBook.get(crewNickname);
     }
 }
