@@ -30,4 +30,26 @@ class AttendanceTimeTest {
         assertThatThrownBy(() -> AttendanceTime.from(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("운영 시간이 아니면 예외 처리")
+    @ParameterizedTest
+    @ValueSource(strings = {"01:00", "07:59", "23:01"})
+    void invalidTime(final String input) {
+        // given
+        // when
+        // then
+        assertThatThrownBy(() -> AttendanceTime.from(input))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("운영 시간이면 객체 생성")
+    @ParameterizedTest
+    @ValueSource(strings = {"08:00", "10:01", "23:00"})
+    void validTime(final String input) {
+        // given
+        // when
+        // then
+        Assertions.assertThatCode(() -> AttendanceTime.from(input))
+                .doesNotThrowAnyException();
+    }
 }
