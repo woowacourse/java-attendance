@@ -26,6 +26,14 @@ public class AttendanceRecord {
                 LocalTime.parse(time));
     }
 
+    public static AttendanceRecord dateOf(Integer date) {
+        String dateStr = date.toString();
+        if (dateStr.length() < 2) {
+            dateStr = "0" + dateStr;
+        }
+        return new AttendanceRecord(LocalDate.parse(Current.getStringOfThisMonth() + "-" + dateStr), null);
+    }
+
     public boolean isSameDate(AttendanceRecord attendanceRecord) {
         return date.equals(attendanceRecord.date);
     }

@@ -12,6 +12,10 @@ public class Attendances {
         this.attendances = new ArrayList<>();
     }
 
+    private Attendances(List<AttendanceRecord> attendances) {
+        this.attendances = attendances;
+    }
+
     public void attend(AttendanceRecord attendanceRecord) {
         attendances.add(attendanceRecord);
     }
@@ -30,6 +34,20 @@ public class Attendances {
         attendances = attendances.stream()
                 .filter(attendanceRecord -> !attendanceRecord.isSameDate(targetAttendanceRecord))
                 .collect(Collectors.toList());
+    }
+
+    public Attendances checkAttendance(List<Integer> attendAbleDates) {
+        List<AttendanceRecord> result = attendAbleDates.stream()
+                .map(this::getAttendanceRecord)
+                .collect(Collectors.toList());
+        return new Attendances(result);
+    }
+
+    private AttendanceRecord getAttendanceRecord(Integer date) {
+        return attendances.stream()
+                .filter(attendanceRecord -> attendanceRecord.isSameDate(AttendanceRecord.of(date.toString(), "10:00")))
+                .findFirst()
+                .orElse(AttendanceRecord.dateOf(date));
     }
 
     @Override

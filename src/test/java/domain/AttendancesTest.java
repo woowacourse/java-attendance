@@ -2,11 +2,13 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import util.DateUtil;
 
 class AttendancesTest {
     @Nested
@@ -63,6 +65,28 @@ class AttendancesTest {
 
             // then
             assertThat(attendances.hashCode()).isNotEqualTo(prevHash);
+        }
+    }
+
+    @Nested
+    @DisplayName("크루별 출석 기록 확인 테스트")
+    class CheckAttendanceTest {
+        @Test
+        @DisplayName("날짜들로부터 출석 기록을 확인한다")
+        void should_check_attendance_by_dates() {
+            // given
+            Attendances attendances = new Attendances();
+            attendances.attend(AttendanceRecord.of("2", "10:00"));
+            attendances.attend(AttendanceRecord.of("3", "10:00"));
+            attendances.attend(AttendanceRecord.of("4", "10:00"));
+            attendances.attend(AttendanceRecord.of("5", "10:00"));
+            List<Integer> attendAbleDates = DateUtil.getAttendAbleDates(6);
+
+            // when
+            Attendances result = attendances.checkAttendance(attendAbleDates);
+
+            // then
+            assertThat(result).isNotEqualTo(attendances);
         }
     }
 }
