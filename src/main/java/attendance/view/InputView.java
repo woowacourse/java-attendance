@@ -30,6 +30,21 @@ public class InputView {
         return readLine();
     }
 
+    public String readModifyingNickname() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return readLine();
+    }
+
+    public String readModifyingDay() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return readLine();
+    }
+
+    public String readModifyingTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        return readLine();
+    }
+
     private String readLine() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
