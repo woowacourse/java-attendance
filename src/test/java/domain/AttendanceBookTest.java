@@ -19,19 +19,31 @@ import org.junit.jupiter.api.Test;
 public class AttendanceBookTest {
     AttendanceBook attendanceBook;
     AttendanceRecord attendanceRecord;
-    int day = 10;
-    Attendance dayOfTenAttendance = new Attendance(
-            LocalDateTime.of(2024, 12, day, 10, 0));
+
     CrewName mimi = new CrewName("미미");
     CrewName malone = new CrewName("말론");
     CrewName norang = new CrewName("노랑");
     CrewName pree = new CrewName("프리");
     CrewName river = new CrewName("리버");
 
+    LocalDateTime attendanceDayOf2 = LocalDateTime.of(2024, 12, 2, 13, 0);
+    LocalDateTime attendanceDayOf3 = LocalDateTime.of(2024, 12, 3, 10, 0);
+    LocalDateTime attendanceDayOf4 = LocalDateTime.of(2024, 12, 4, 10, 0);
+    LocalDateTime attendanceDayOf5 = LocalDateTime.of(2024, 12, 5, 10, 0);
+    LocalDateTime attendanceDayOf6 = LocalDateTime.of(2024, 12, 6, 10, 0);
+    LocalDateTime attendanceDayOf9 = LocalDateTime.of(2024, 12, 9, 13, 0);
+    LocalDateTime attendanceDayOf10 = LocalDateTime.of(2024, 12, 10, 10, 0);
+
+    LocalDateTime lateDayOf2 = LocalDateTime.of(2024, 12, 2, 13, 15);
+    LocalDateTime lateDayOf3 = LocalDateTime.of(2024, 12, 3, 10, 15);
+    LocalDateTime lateDayOf4 = LocalDateTime.of(2024, 12, 4, 10, 15);
+    LocalDateTime lateDayOf5 = LocalDateTime.of(2024, 12, 5, 10, 15);
+    LocalDateTime lateDayOf6 = LocalDateTime.of(2024, 12, 5, 10, 15);
+    LocalDateTime lateDayOf9 = LocalDateTime.of(2024, 12, 5, 13, 15);
+
     @BeforeEach
     void setUp() {
         attendanceRecord = new AttendanceRecord();
-        attendanceRecord.add(dayOfTenAttendance);
 
         Map<CrewName, AttendanceRecord> testData = new HashMap<>();
         testData.put(mimi, attendanceRecord);
@@ -43,8 +55,8 @@ public class AttendanceBookTest {
     @DisplayName("닉네임과 등교 시간을 입력하면 출석할 수 있다.")
     @Test
     void test1() {
-        Attendance todayAttendance = new Attendance(
-                LocalDateTime.of(2024, 12, 13, 9, 59));
+        LocalDateTime todayAttendanceDateTime = LocalDateTime.of(2024, 12, 13, 9, 59);
+        Attendance todayAttendance = new Attendance(todayAttendanceDateTime);
 
         Attendance savedAttendance = attendanceBook.addAttendance(mimi, todayAttendance);
 
@@ -55,8 +67,9 @@ public class AttendanceBookTest {
     @Test
     void test4() {
         CrewName crewName = new CrewName("미미");
-        Attendance attendance = new Attendance(
-                LocalDateTime.of(2024, 12, 10, 10, 31));
+        attendanceRecord.add(new Attendance(attendanceDayOf10));
+        LocalDateTime sameDateDifferentTime = LocalDateTime.of(2024, 12, 10, 10, 31);
+        Attendance attendance = new Attendance(sameDateDifferentTime);
 
         assertThatThrownBy(() -> attendanceBook.addAttendance(crewName, attendance))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -66,8 +79,9 @@ public class AttendanceBookTest {
     @DisplayName("닉네임, 수정하려는 날짜, 등교 시간을 입력하여 출석 기록을 수정할 수 있다.")
     @Test
     void test5() {
-        Attendance newAttendance = new Attendance(
-                LocalDateTime.of(2024, 12, day, 10, 6));
+        attendanceRecord.add(new Attendance(attendanceDayOf10));
+        LocalDateTime sameDateDifferentTime = LocalDateTime.of(2024, 12, 10, 10, 31);
+        Attendance newAttendance = new Attendance(sameDateDifferentTime);
 
         attendanceBook.modify(mimi, newAttendance);
 
@@ -79,12 +93,14 @@ public class AttendanceBookTest {
     @DisplayName("출석 수정 시, 기존 출석 기록과 업데이트된 출석 기록을 모두 확인할 수 있다.")
     @Test
     void test7() {
-        Attendance newAttendance = new Attendance(
-                LocalDateTime.of(2024, 12, day, 10, 6));
+        Attendance originalAttendance = new Attendance(attendanceDayOf10);
+        attendanceRecord.add(originalAttendance);
+        LocalDateTime sameDateDifferentTime = LocalDateTime.of(2024, 12, 10, 10, 31);
+        Attendance newAttendance = new Attendance(sameDateDifferentTime);
 
         ModifyingResult modifyingResult = attendanceBook.modify(mimi, newAttendance);
 
-        assertThat(modifyingResult.originalAttendance()).isEqualTo(dayOfTenAttendance);
+        assertThat(modifyingResult.originalAttendance()).isEqualTo(originalAttendance);
         assertThat(modifyingResult.modifiedAttendance()).isEqualTo(newAttendance);
     }
 
@@ -92,20 +108,18 @@ public class AttendanceBookTest {
     @Test
     void test8() {
         addAttendanceToBook(mimi,
-                LocalDateTime.of(2024, 12, 2, 13, 0),
-                LocalDateTime.of(2024, 12, 3, 10, 15),
-                LocalDateTime.of(2024, 12, 4, 10, 15),
-                LocalDateTime.of(2024, 12, 5, 10, 15),
-                LocalDateTime.of(2024, 12, 6, 10, 0),
-                LocalDateTime.of(2024, 12, 9, 13, 0)
-                // 10 이미 존재
+                attendanceDayOf2,
+                lateDayOf3,
+                lateDayOf4,
+                lateDayOf5,
+                attendanceDayOf6,
+                attendanceDayOf9,
+                attendanceDayOf10
                 // 11, 12 => 결석
                 // 결석 2, 지각 3, 출석 4
         );
-        Attendance firstAttendance = new Attendance(
-                LocalDateTime.of(2024, 12, 2, 13, 0));
-        Attendance expectedLastAttendance = new Attendance(
-                LocalDateTime.of(2024, 12, 12, 15, 0));
+        Attendance firstAttendance = new Attendance(attendanceDayOf2);
+        Attendance expectedLastAttendance = new Attendance(LocalDateTime.of(2024, 12, 12, 15, 0));
 
         AttendanceLog attendanceLog = attendanceBook.findAttendanceLogUntilYesterday(mimi);
         List<Attendance> sortedAttendance = attendanceLog.sortedAttendanceLog();
@@ -118,16 +132,15 @@ public class AttendanceBookTest {
     @Test
     void test9() {
         addAttendanceToBook(mimi,
-                LocalDateTime.of(2024, 12, 2, 13, 0),
-                LocalDateTime.of(2024, 12, 3, 10, 15),
-                LocalDateTime.of(2024, 12, 4, 10, 15),
-                LocalDateTime.of(2024, 12, 5, 10, 15),
-                LocalDateTime.of(2024, 12, 6, 10, 0),
-                LocalDateTime.of(2024, 12, 9, 13, 0)
-                // 10 이미 존재
+                attendanceDayOf2,
+                lateDayOf3,
+                lateDayOf4,
+                lateDayOf5,
+                attendanceDayOf6,
+                attendanceDayOf9,
+                attendanceDayOf10
                 // 11, 12 => 결석
                 // 결석 2, 지각 3, 출석 4
-
         );
         AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(mimi);
 
@@ -193,62 +206,62 @@ public class AttendanceBookTest {
         makeSecondExpulsion();
     }
 
-    void updateConsideredAbsent() { // 면담 4 (2 + 2)
+    void updateConsideredAbsent() { // 출석1 + 지각6(결석2 간주) + 결석2 => 면담
         updateAttendance(river,
-                LocalDateTime.of(2024, 12, 2, 13, 15),
-                LocalDateTime.of(2024, 12, 3, 10, 15),
-                LocalDateTime.of(2024, 12, 4, 10, 15),
-                LocalDateTime.of(2024, 12, 5, 10, 15),
-                LocalDateTime.of(2024, 12, 6, 10, 15),
-                LocalDateTime.of(2024, 12, 9, 13, 15),
-                LocalDateTime.of(2024, 12, 10, 10, 0)
+                lateDayOf2,
+                lateDayOf3,
+                lateDayOf4,
+                lateDayOf5,
+                lateDayOf6,
+                lateDayOf9,
+                attendanceDayOf10
         );
     }
 
-    void updateEqualAbsent() { // 면담 3 (2 + 1)
+    void updateEqualAbsent() { // 지각3(결석1 간주)
         updateAttendance(river,
-                LocalDateTime.of(2024, 12, 5, 10, 15),
-                LocalDateTime.of(2024, 12, 6, 10, 15),
-                LocalDateTime.of(2024, 12, 9, 13, 15));
+                lateDayOf5,
+                lateDayOf6,
+                lateDayOf9);
     }
 
-    void makeFirstExpulsion() { // 결석 6
+    void makeFirstExpulsion() { // 출석3 + 결석6 => 제적
         addAttendanceToBook(malone,
-                LocalDateTime.of(2024, 12, 2, 13, 0),
-                LocalDateTime.of(2024, 12, 3, 10, 0),
-                LocalDateTime.of(2024, 12, 10, 10, 0)
+                attendanceDayOf2,
+                attendanceDayOf3,
+                attendanceDayOf10
         );
     }
 
-    void makeSecondExpulsion() { // 결석 5
+    void makeSecondExpulsion() { // 출석4 + 결석5 => 제적
         addAttendanceToBook(norang,
-                LocalDateTime.of(2024, 12, 2, 13, 0),
-                LocalDateTime.of(2024, 12, 3, 10, 0),
-                LocalDateTime.of(2024, 12, 4, 10, 0),
-                LocalDateTime.of(2024, 12, 10, 10, 0)
+                attendanceDayOf2,
+                attendanceDayOf3,
+                attendanceDayOf4,
+                attendanceDayOf10
         );
     }
 
-    void makeFirstCounseling() { // 면담 3
+    void makeFirstCounseling() { // 출석6 + 결석3 => 면담
         addAttendanceToBook(pree,
-                LocalDateTime.of(2024, 12, 2, 13, 0),
-                LocalDateTime.of(2024, 12, 3, 10, 0),
-                LocalDateTime.of(2024, 12, 4, 10, 0),
-                LocalDateTime.of(2024, 12, 5, 10, 0),
-                LocalDateTime.of(2024, 12, 6, 10, 0),
-                LocalDateTime.of(2024, 12, 10, 10, 0)
+                attendanceDayOf2,
+                attendanceDayOf3,
+                attendanceDayOf4,
+                attendanceDayOf5,
+                attendanceDayOf6,
+                attendanceDayOf10
         );
     }
 
-    void makeFirstWarning() { // 경고 2
+    void makeFirstWarning() { // 출석7 + 결석2 => 경고
         addAttendanceToBook(river,
-                LocalDateTime.of(2024, 12, 2, 13, 0),
-                LocalDateTime.of(2024, 12, 3, 10, 0),
-                LocalDateTime.of(2024, 12, 4, 10, 0),
-                LocalDateTime.of(2024, 12, 5, 10, 0),
-                LocalDateTime.of(2024, 12, 6, 10, 0),
-                LocalDateTime.of(2024, 12, 9, 13, 0),
-                LocalDateTime.of(2024, 12, 10, 10, 0)
+                attendanceDayOf2,
+                attendanceDayOf3,
+                attendanceDayOf4,
+                attendanceDayOf5,
+                attendanceDayOf6,
+                attendanceDayOf9,
+                attendanceDayOf10
         );
     }
 
