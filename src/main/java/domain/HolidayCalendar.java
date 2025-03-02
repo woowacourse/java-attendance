@@ -21,7 +21,7 @@ public enum HolidayCalendar {
         final HolidayCalendar holidayCalender = findByDate(date);
 
         if (holidayCalender.holidays.contains(day)) {
-            throw new IllegalArgumentException("등교할 수 없습니다.");
+            throw new IllegalArgumentException("공휴일에는 등교할 수 없습니다.");
         }
     }
 
