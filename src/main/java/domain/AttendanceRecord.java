@@ -21,6 +21,10 @@ public record AttendanceRecord(
         return new AttendanceRecord(attendanceDate, attendanceTime, status);
     }
 
+    public static AttendanceRecord of(final LocalDate date) {
+        return new AttendanceRecord(new AttendanceDate(date), null, AttendanceStatus.ABSENCE);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (o == null || getClass() != o.getClass()) {

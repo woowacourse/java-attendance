@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 public class Crew {
     private final Long id;
@@ -25,7 +26,8 @@ public class Crew {
     }
 
     public boolean existAttendance(final LocalDateTime localDateTime) {
-        return attendanceMap.containsKey(localDateTime.toLocalDate());
+        return attendanceMap.containsKey(localDateTime.toLocalDate())
+                && !Objects.equals(attendanceMap.get(localDateTime.toLocalDate()).attendanceTime(), null);
     }
 
     public Map<LocalDate, AttendanceRecord> getAttendanceMap() {

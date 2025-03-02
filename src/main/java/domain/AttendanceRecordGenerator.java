@@ -16,7 +16,7 @@ public class AttendanceRecordGenerator {
     public static Map<LocalDate, AttendanceRecord> generate() {
         final List<LocalDate> attendanceDates = createAttendanceDates();
         Map<LocalDate, AttendanceRecord> attendanceRecords = new LinkedHashMap<>();
-        attendanceDates.forEach(attendanceDate -> attendanceRecords.put(attendanceDate, null));
+        attendanceDates.forEach(attendanceDate -> attendanceRecords.put(attendanceDate, AttendanceRecord.of(attendanceDate)));
         return attendanceRecords;
     }
 
