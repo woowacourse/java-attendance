@@ -17,6 +17,7 @@ import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Attendances;
 import attendance.domain.Nickname;
+import attendance.domain.SanctionStatistics;
 import attendance.domain.StatusStatistics;
 import attendance.domain.SystemDateTime;
 import attendance.exception.AttendanceArgumentException;
@@ -168,7 +169,16 @@ public class AttendanceController {
     }
 
     private void processSanctionsLevels() {
-
+        outputView.appendInitializeSanctionStatistic();
+        var sanctionStatistics = SanctionStatistics.sortedFrom(attendanceBook.getSanctionLevels());
+        for (StatusStatistics sanctionStatistic : sanctionStatistics) {
+            var nickname = sanctionStatistic.nickname().name();
+            var lateCount = sanctionStatistic.getCount(AttendanceStatus.LATE);
+            var absenceCount = sanctionStatistic.getCount(AttendanceStatus.ABSENCE);
+            String convertedSanctionLevel = sanctionStatistic.getConvertedSanctionLevel();
+            outputView.appendSanctionsStatistics(nickname, lateCount, absenceCount, convertedSanctionLevel);
+        }
+        outputView.flushStringBuilder();
     }
 
     private Nickname requestNickname() {

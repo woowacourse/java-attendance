@@ -2,7 +2,9 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -53,5 +55,16 @@ public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemD
     public void modify(Nickname nickname, LocalDateTime dateTime) {
         var attendances = getAttendances(nickname);
         attendances.modifyAttendance(dateTime);
+    }
+
+    public List<StatusStatistics> getSanctionLevels() {
+        List<StatusStatistics> sanctionLevels = new ArrayList<>();
+        for (Nickname nickname : attendancesBook.keySet()) {
+            var attendances = getAttendances(nickname);
+            var statistics = new StatusStatistics(nickname);
+            attendances.updateStatics(statistics);
+            sanctionLevels.add(statistics);
+        }
+        return sanctionLevels;
     }
 }

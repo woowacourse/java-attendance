@@ -83,6 +83,10 @@ public class OutputView {
         print(REQUEST_ATTENDANCE_MODIFY_TIME);
     }
 
+    public void appendInitializeSanctionStatistic() {
+        stringBuilder.append(INITIALIZE_SANCTION_STATISTIC);
+    }
+
     public void printAttendance(LocalDateTime dateTime, String status) {
         var format = String.format(ATTENDANCE_FORMAT, status);
         var formatted = DateTimeFormatter.ofPattern(format).format(dateTime);
@@ -132,4 +136,8 @@ public class OutputView {
         stringBuilder.append(formatted);
     }
 
+    public void appendSanctionsStatistics(String nickname, int lateCount, int absenceCount, String level) {
+        var formatted = String.format(FORMAT_SANCTION, nickname, lateCount, absenceCount, level);
+        stringBuilder.append(formatted);
+    }
 }
