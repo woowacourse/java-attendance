@@ -51,9 +51,10 @@ public class AttendanceService {
 
     public ModifyAttendanceRecordResponse modifyAttendanceRecord(ModifyAttendanceRequest request) {
         Crew crew = crews.findByNickname(request.nickname());
-        AbstractAttendanceRecord before = attendanceRecords.findOneByCrewAndDate(crew, request.date());
+        AbstractAttendanceRecord before = attendanceRecords.findByCrewAndDate(crew, request.date());
         AttendanceRecord after = AttendanceRecord.of(crew, request.date(), request.time());
-        attendanceRecords.overwriteAttendanceRecord(after);
+        attendanceRecords.updateOrAdd(after);
+
         return new ModifyAttendanceRecordResponse(before, after);
     }
 

@@ -48,11 +48,11 @@ public class AttendanceRecordsTest {
             AttendanceRecord after = AttendanceRecord.of(crew, date, afterTime);
 
             AttendanceRecords attendanceRecords = new AttendanceRecords(List.of(before));
-            attendanceRecords.overwriteAttendanceRecord(after);
+            attendanceRecords.updateOrAdd(after);
 
             // when & then
             SoftAssertions.assertSoftly(softAssertions -> {
-                AttendanceRecord found = attendanceRecords.getOneByCrewAndDate(crew, date);
+                AttendanceRecord found = attendanceRecords.getByCrewAndDate(crew, date);
                 softAssertions.assertThat(found.getCrew()).isEqualTo(after.getCrew());
                 softAssertions.assertThat(found.getDateTime()).isEqualTo(after.getDateTime());
                 softAssertions.assertThat(found.getStatus()).isEqualTo(after.getStatus());
@@ -104,7 +104,7 @@ public class AttendanceRecordsTest {
             AttendanceRecords attendanceRecords = new AttendanceRecords(List.of(attendanceRecord));
 
             // when & then
-            AttendanceRecord found = attendanceRecords.getOneByCrewAndDate(crew, checkedDate);
+            AttendanceRecord found = attendanceRecords.getByCrewAndDate(crew, checkedDate);
             Assertions.assertThat(found).isEqualTo(attendanceRecord);
         }
 
@@ -122,7 +122,7 @@ public class AttendanceRecordsTest {
             AttendanceRecords attendanceRecords = new AttendanceRecords(List.of(attendanceRecord));
 
             // when & then
-            AbstractAttendanceRecord found = attendanceRecords.findOneByCrewAndDate(crew, unCheckedDate);
+            AbstractAttendanceRecord found = attendanceRecords.findByCrewAndDate(crew, unCheckedDate);
             Assertions.assertThat(found instanceof EmptyAttendanceRecord).isTrue();
         }
 
@@ -139,7 +139,7 @@ public class AttendanceRecordsTest {
             AttendanceRecords attendanceRecords = new AttendanceRecords(List.of(attendanceRecord));
 
             // when & then
-            AbstractAttendanceRecord found = attendanceRecords.findOneByCrewAndDate(crew, checkedDate);
+            AbstractAttendanceRecord found = attendanceRecords.findByCrewAndDate(crew, checkedDate);
             Assertions.assertThat(found instanceof AttendanceRecord).isTrue();
         }
 
@@ -197,7 +197,7 @@ public class AttendanceRecordsTest {
 
             // when & then
             Assertions.assertThatThrownBy(() -> {
-                attendanceRecords.getOneByCrewAndDate(new Crew("noname"), checkedDate);
+                attendanceRecords.getByCrewAndDate(new Crew("noname"), checkedDate);
             }).isInstanceOf(IllegalArgumentException.class);
 
         }

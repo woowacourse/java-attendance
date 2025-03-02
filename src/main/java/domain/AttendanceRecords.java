@@ -27,10 +27,10 @@ public class AttendanceRecords {
         attendanceRecords.add(attendanceRecord);
     }
 
-    public void overwriteAttendanceRecord(AttendanceRecord after) {
-        attendanceRecords.removeIf(record ->
-                after.getCrew().equals(record.getCrew()) && after.getDate().equals(record.getDate()));
-        attendanceRecords.add(after);
+    public void updateOrAdd(AttendanceRecord attendanceRecord) {
+        attendanceRecords.removeIf(record -> attendanceRecord.getCrew().equals(record.getCrew())
+                && attendanceRecord.getDate().equals(record.getDate()));
+        attendanceRecords.add(attendanceRecord);
     }
 
     public boolean existsByCrewAndDate(Crew crew, LocalDate date) {
@@ -39,7 +39,7 @@ public class AttendanceRecords {
                         && date.equals(record.getDate()));
     }
 
-    public AttendanceRecord getOneByCrewAndDate(Crew crew, LocalDate date) {
+    public AttendanceRecord getByCrewAndDate(Crew crew, LocalDate date) {
         return attendanceRecords.stream()
                 .filter(record -> crew.equals(record.getCrew())
                         && date.equals(record.getDate()))
@@ -47,9 +47,9 @@ public class AttendanceRecords {
                 .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
     }
 
-    public AbstractAttendanceRecord findOneByCrewAndDate(Crew crew, LocalDate date) {
+    public AbstractAttendanceRecord findByCrewAndDate(Crew crew, LocalDate date) {
         if (existsByCrewAndDate(crew, date)) {
-            return getOneByCrewAndDate(crew, date);
+            return getByCrewAndDate(crew, date);
         }
         return EmptyAttendanceRecord.of(crew, date);
     }
@@ -65,7 +65,7 @@ public class AttendanceRecords {
         return Stream.iterate(from, date -> date.plusDays(1))
                 .limit(ChronoUnit.DAYS.between(from, to) + 1)
                 .filter(LectureTime::isLectureDate)
-                .map(date -> findOneByCrewAndDate(crew, date))
+                .map(date -> findByCrewAndDate(crew, date))
                 .toList();
     }
 
