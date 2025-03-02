@@ -4,6 +4,7 @@ import model.AttendanceDate;
 import model.AttendanceStatus;
 import model.AttendanceStatusEvaluator;
 import model.AttendanceTime;
+import model.Student;
 import model.Students;
 import util.AttendanceDateAttendanceTimeFormatter;
 import view.InputView;
@@ -12,9 +13,11 @@ import view.OutputView;
 public class AttendanceModifyController {
     public static void attendanceModify(Students students) {
         String studentName = InputView.getStudentNameUntilValidateToModify(students);
-        AttendanceDate attendanceDate = InputView.getUserAttendanceDateUntilValidate();
 
-        AttendanceTime attendanceTimeBeforeModify = students.findStudentByName(studentName).findAttendanceTimeByAttendanceDate(attendanceDate);
+        Student student = students.findStudentByName(studentName);
+        AttendanceDate attendanceDate = InputView.getUserAttendanceDateUntilValidate(student);
+
+        AttendanceTime attendanceTimeBeforeModify = student.findAttendanceTimeByAttendanceDate(attendanceDate);
 
         AttendanceStatus attendanceStatusBeforeModify = AttendanceStatusEvaluator.calculateAttendanceStatus(attendanceDate, attendanceTimeBeforeModify);
 
