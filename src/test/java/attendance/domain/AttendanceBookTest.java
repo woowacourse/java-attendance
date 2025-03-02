@@ -1,9 +1,9 @@
 package attendance.domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.ArrayList;
@@ -94,27 +94,27 @@ public class AttendanceBookTest {
     }
 
     @Test
-    void 크루와_day를_알려주면_해당_날짜의_출석시간_객체를_알려준다() {
+    void 크루와_date를_알려주면_해당_날짜의_출석시간_객체를_알려준다() {
         // Given
         Crew crew = new Crew("쿠키");
-        int day = 25;
+        LocalDate findDate = Year.of(2025).atMonth(2).atDay(25);
         AttendanceDateTime expected = new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(25).atTime(10, 4));
 
         // When
-        AttendanceDateTime actual = attendanceBook.findAttendanceDateTimeByCrewAndDay(crew, day);
+        AttendanceDateTime actual = attendanceBook.findAttendanceDateTimeByCrewAndDate(crew, findDate);
 
         // Then
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void 크루와_day를_알려주지만_해당_day에_출석하지_않았을_경우() {
+    void 크루와_date를_알려주지만_해당_date에_출석하지_않았을_경우() {
         // Given
         Crew crew = new Crew("쿠키");
-        int day = 28;
+        LocalDate findDate = Year.of(2025).atMonth(2).atDay(28);
 
         // Then
-        assertThatThrownBy(() -> attendanceBook.findAttendanceDateTimeByCrewAndDay(crew, day))
+        assertThatThrownBy(() -> attendanceBook.findAttendanceDateTimeByCrewAndDate(crew, findDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 일자에 출석하지 않았습니다.");
     }
