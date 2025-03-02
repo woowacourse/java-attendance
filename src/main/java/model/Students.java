@@ -27,4 +27,8 @@ public class Students {
             student.updateMissingAttendanceRecords(attendanceStartDate, todayDate);
         }
     }
+
+    public List<Student> getStudents() {
+        return students;
+    }
 }
