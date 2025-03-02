@@ -33,13 +33,13 @@ public class AttendanceHistories {
         return attendanceHistories.get(crew);
     }
 
-    public long getPresentCount(Crew crew, LocalDate toDate) {
+    public int getPresentCount(Crew crew, LocalDate toDate) {
         validateCrewPresence(crew);
         AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
         return attendanceDateTimes.getPresentCount(toDate);
     }
 
-    public long getTardyCount(Crew crew, LocalDate toDate) {
+    public int getTardyCount(Crew crew, LocalDate toDate) {
         validateCrewPresence(crew);
         AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
         return attendanceDateTimes.getTardyCount(toDate);

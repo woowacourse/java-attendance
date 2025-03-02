@@ -3,6 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import fixture.AttendanceDateTimeFixture;
 import fixture.AttendanceHistoriesFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -223,31 +224,34 @@ public class AttendanceHistoriesTest {
         // given & when
         AttendanceDateTimes actualAttendanceDateTimes = defaultAttendanceHistory.getAttendanceDateTimes(DEFAULT_CREW);
         // then
-        AttendanceDateTimes expectedAttendanceDateTimes = new AttendanceDateTimes(List.of(DEFAULT_DATE_TIME));
+        AttendanceDateTimes expectedAttendanceDateTimes = new AttendanceDateTimes(
+                List.of(new AttendanceDateTime(DEFAULT_DATE_TIME)));
         assertThat(actualAttendanceDateTimes).isEqualTo(expectedAttendanceDateTimes);
     }
 
     @Nested
     @DisplayName("3.2 닉네임을 입력하면 전날까지의 크루 출결 횟수를 확인할 수 있다.")
     public class GetAttendanceCountTest {
+        AttendanceHistories attendanceHistoriesForCount = AttendanceHistoriesFixture.createWithMultipleAttendance(
+                DEFAULT_CREW, 3, 4, 5);
+        LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(12);
+
         @Test
         @DisplayName("출석 횟수를 확인할 수 있다.")
         void testGetPresentCount() {
-            // given
-            // when
-            long presentCount = defaultAttendanceHistory.getPresentCount(DEFAULT_CREW, DEFAULT_DATE.plusDays(1));
+            // given & when
+            int presentCount = attendanceHistoriesForCount.getPresentCount(DEFAULT_CREW, lastDate);
             // then
-            assertThat(presentCount).isEqualTo(1);
+            assertThat(presentCount).isEqualTo(3);
         }
 
         @Test
         @DisplayName("지각 횟수를 확인할 수 있다.")
         void testGetTardyCount() {
-            // given
-            // when
-            long presentCount = defaultAttendanceHistory.getTardyCount(DEFAULT_CREW, DEFAULT_DATE.plusDays(1));
+            // given & when
+            int presentCount = attendanceHistoriesForCount.getTardyCount(DEFAULT_CREW, lastDate);
             // then
-            assertThat(presentCount).isEqualTo(0);
+            assertThat(presentCount).isEqualTo(4);
         }
     }
 
