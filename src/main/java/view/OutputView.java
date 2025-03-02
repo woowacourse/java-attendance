@@ -15,7 +15,11 @@ import util.converter.DayOfWeekConverter;
 public class OutputView {
 
     public static void printErrorMessage(String message) {
-        System.out.println("\n" + message + "\n");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(System.lineSeparator())
+                .append(message)
+                .append(System.lineSeparator());
+        System.out.println(stringBuilder);
     }
 
     public static void printAttendanceRegisterLog(AttendanceLogDto attendanceLogDto) {

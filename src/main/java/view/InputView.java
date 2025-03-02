@@ -21,7 +21,10 @@ public class InputView {
     }
 
     public static String readAttendanceRegisterCrewName() {
-        return prompt("\n닉네임을 입력해 주세요.");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(System.lineSeparator())
+                .append("닉네임을 입력해 주세요.");
+        return prompt(stringBuilder.toString());
     }
 
     public static LocalTime readAttendanceRegisterAttendTime() {
@@ -35,7 +38,10 @@ public class InputView {
     }
 
     public static String readAttendanceEditCrewName() {
-        return prompt("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(System.lineSeparator())
+                .append("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return prompt(stringBuilder.toString());
     }
 
     public static int readAttendanceEditAttendDay() {
@@ -49,7 +55,10 @@ public class InputView {
     }
 
     public static String readCrewAttendanceCrewName() {
-        return prompt("\n닉네임을 입력해 주세요.");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(System.lineSeparator())
+                .append("닉네임을 입력해 주세요.");
+        return prompt(stringBuilder.toString());
     }
 
     private static String generateAttendanceMenuOptions() {
