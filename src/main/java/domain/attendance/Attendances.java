@@ -40,9 +40,14 @@ public class Attendances {
         return startDate;
     }
 
-    private void editAttendanceDate(LocalDateTime dateTime) {
+    public Attendance editAttendanceDate(LocalDateTime dateTime) {
+        Attendance beforeDateTime = attendances.stream()
+                .filter(attendance -> attendance.has(dateTime.toLocalDate()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석이 존재하지 않습니다"));
         deleteAttendanceDate(dateTime.toLocalDate());
         attendances.add(new Attendance(dateTime));
+        return beforeDateTime;
     }
 
     private void deleteAttendanceDate(LocalDate date) {
