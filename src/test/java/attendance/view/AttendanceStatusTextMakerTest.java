@@ -16,11 +16,8 @@ public class AttendanceStatusTextMakerTest {
     })
     @ParameterizedTest
     void 출석상태를_알려주면_그에_해당하는_문자열을_알려준다(AttendanceStatus attendanceStatus, String expected) {
-        // Given
-        AttendanceStatusTextMaker attendanceStatusTextMaker = new AttendanceStatusTextMaker();
-
         // When
-        String actual = attendanceStatusTextMaker.make(attendanceStatus);
+        String actual = AttendanceStatusTextMaker.make(attendanceStatus);
 
         // Then
         assertThat(actual).isEqualTo(expected);

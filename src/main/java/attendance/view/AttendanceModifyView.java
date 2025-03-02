@@ -19,8 +19,7 @@ public class AttendanceModifyView {
     public int readDayToModify() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         String numberText = readOneLine();
-        NumberParser numberParser = new NumberParser();
-        return numberParser.parse(numberText);
+        return NumberParser.parse(numberText);
     }
 
     public LocalTime readTimeToModify() {
@@ -37,11 +36,10 @@ public class AttendanceModifyView {
                                             final AttendanceStatusChecker.AttendanceStatus originalAttendanceStatus,
                                             final AttendanceDateTime newDateTime,
                                             final AttendanceStatusChecker.AttendanceStatus newAttendanceStatus) {
-        AttendanceStatusTextMaker attendanceStatusTextMaker = new AttendanceStatusTextMaker();
         LocalDateTime originalLocalDateTime = originalDateTime.getLocalDateTime();
-        String originalAttendanceStatusText = attendanceStatusTextMaker.make(originalAttendanceStatus);
+        String originalAttendanceStatusText = AttendanceStatusTextMaker.make(originalAttendanceStatus);
         LocalDateTime newLocalDateTIme = newDateTime.getLocalDateTime();
-        String newAttendanceStatusText = attendanceStatusTextMaker.make(newAttendanceStatus);
+        String newAttendanceStatusText = AttendanceStatusTextMaker.make(newAttendanceStatus);
         System.out.printf(DATE_TIME_FORMATTER.format(originalLocalDateTime) + " (%s)".formatted(originalAttendanceStatusText)
                 + " -> " + TIME_FORMATTER.format(newLocalDateTIme) + " (%s)".formatted(newAttendanceStatusText)
                 + " 수정 완료!");

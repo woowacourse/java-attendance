@@ -2,7 +2,7 @@ package attendance.view;
 
 public class NumberParser {
 
-    public int parse(final String numberText) {
+    public static int parse(final String numberText) {
         try {
             return Integer.parseInt(numberText);
         } catch (NumberFormatException exception) {

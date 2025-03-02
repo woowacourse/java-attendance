@@ -12,11 +12,10 @@ public class CheckAllExpulsionCrewView {
 
     public void printCrewExpulsions(final List<CheckExpulsionResultDto> expulsionResults) {
         sortExpulsionResults(expulsionResults);
-        ExpulsionStatusTextMaker expulsionStatusTextMaker = new ExpulsionStatusTextMaker();
         for (CheckExpulsionResultDto expulsionResult : expulsionResults) {
             System.out.println("- %s: 결석 %d회, 지각 %d회 (%s)".formatted(expulsionResult.nickname(),
                     expulsionResult.absentCount(), expulsionResult.lateCount(),
-                    expulsionStatusTextMaker.make(expulsionResult.expulsionStatus())));
+                    ExpulsionStatusTextMaker.make(expulsionResult.expulsionStatus())));
         }
     }
 

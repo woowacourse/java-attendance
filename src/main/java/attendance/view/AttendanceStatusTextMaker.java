@@ -8,7 +8,7 @@ public class AttendanceStatusTextMaker {
     public static final String LATE_TEXT = "지각";
     public static final String ABSENT_TEXT = "결석";
 
-    public String make(final AttendanceStatus attendanceStatus) {
+    public static String make(final AttendanceStatus attendanceStatus) {
         if (attendanceStatus == AttendanceStatus.ABSENT) {
             return ABSENT_TEXT;
         }

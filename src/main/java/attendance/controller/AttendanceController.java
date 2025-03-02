@@ -48,8 +48,7 @@ public class AttendanceController {
     }
 
     private AttendanceBook initializeAttendanceBook() {
-        FileLineReader fileLineReader = new FileLineReader();
-        List<String> crewAttendanceTexts = fileLineReader.readAllLines(ATTENDANCE_FILE_PATH, ATTENDANCE_FILE_NAME);
+        List<String> crewAttendanceTexts = FileLineReader.readAllLines(ATTENDANCE_FILE_PATH, ATTENDANCE_FILE_NAME);
         crewAttendanceTexts.removeFirst();
         AttendanceBookInitializer attendanceBookInitializer = new AttendanceBookInitializer();
         return attendanceBookInitializer.parseTexts(crewAttendanceTexts);

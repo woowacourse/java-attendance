@@ -31,9 +31,8 @@ public class AttendanceConfirmView {
     }
 
     public void printAttendanceResult(final AttendanceDateTime attendanceDateTime, final AttendanceStatus attendanceStatus) {
-        AttendanceStatusTextMaker attendanceStatusTextMaker = new AttendanceStatusTextMaker();
         LocalDateTime attendanceLocalDateTime = attendanceDateTime.getLocalDateTime();
-        String attendanceStatusText = attendanceStatusTextMaker.make(attendanceStatus);
+        String attendanceStatusText = AttendanceStatusTextMaker.make(attendanceStatus);
         System.out.println(DATE_TIME_FORMATTER.format(attendanceLocalDateTime)
                 + " (%s)".formatted(attendanceStatusText));
     }

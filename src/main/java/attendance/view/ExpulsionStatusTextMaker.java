@@ -9,7 +9,7 @@ public class ExpulsionStatusTextMaker {
     public static final String EXPULSION_TEXT = "제적";
     public static final String NONE_TEXT = "없음";
 
-    public String make(final ExpulsionStatus expulsionStatus) {
+    public static String make(final ExpulsionStatus expulsionStatus) {
         if (expulsionStatus.equals(ExpulsionStatus.WARNING)) {
             return WARNING_TEXT;
         }

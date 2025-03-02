@@ -15,11 +15,8 @@ public class ExpulsionStatusTextMakerTest {
     })
     @ParameterizedTest
     void 제적상태를_알려주면_그에_해당하는_문자열을_알려준다(ExpulsionStatus expulsionStatus, String expected) {
-        // Given
-        ExpulsionStatusTextMaker expulsionStatusTextMaker = new ExpulsionStatusTextMaker();
-
         // When
-        String actual = expulsionStatusTextMaker.make(expulsionStatus);
+        String actual = ExpulsionStatusTextMaker.make(expulsionStatus);
 
         // Then
         assertThat(actual).isEqualTo(expected);
