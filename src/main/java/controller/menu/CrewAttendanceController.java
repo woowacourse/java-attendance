@@ -1,5 +1,7 @@
 package controller.menu;
 
+import controller.dto.AttendanceLogDtoConverter;
+import controller.dto.AttendanceResultDtoConverter;
 import domain.attendance.AttendanceBook;
 import domain.attendance.AttendanceLog;
 import domain.attendance.AttendanceResult;
@@ -24,10 +26,10 @@ public class CrewAttendanceController implements AttendanceMenuController {
         String crewName = fetchCrewAttendanceCrewName();
         List<AttendanceLog> attendanceLogHistory = attendanceBook.findCrewAttendanceLogHistory(crewName, runDate);
         List<AttendanceLogDto> attendanceLogDtos = attendanceLogHistory.stream()
-                .map(AttendanceLog::toDto)
+                .map(AttendanceLogDtoConverter::toDto)
                 .toList();
         AttendanceResult attendanceResult = attendanceBook.calculateCrewAttendanceResult(crewName, runDate);
-        AttendanceResultDto attendanceResultDto = attendanceResult.toDto();
+        AttendanceResultDto attendanceResultDto = AttendanceResultDtoConverter.toDto(attendanceResult);
         OutputView.printCrewAttendance(crewName, attendanceLogDtos, attendanceResultDto, runDate);
     }
 

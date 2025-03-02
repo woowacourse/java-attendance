@@ -1,5 +1,6 @@
 package controller.menu;
 
+import controller.dto.AttendanceLogDtoConverter;
 import domain.attendance.AttendanceBook;
 import domain.attendance.AttendanceLog;
 import exception.ExceptionHandler;
@@ -23,7 +24,7 @@ public class AttendanceRegisterController implements AttendanceMenuController {
         LocalTime attendTime = fetchAttendanceRegisterAttendTime();
         LocalDateTime attendDateTime = LocalDateTime.of(runDate, attendTime);
         AttendanceLog attendanceLog = attendanceBook.registerCrewAttendanceLog(crewName, attendDateTime);
-        OutputView.printAttendanceRegisterLog(attendanceLog.toDto());
+        OutputView.printAttendanceRegisterLog(AttendanceLogDtoConverter.toDto(attendanceLog));
     }
 
     private String fetchAttendanceRegisterCrewName() {

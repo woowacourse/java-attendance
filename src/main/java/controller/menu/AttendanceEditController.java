@@ -1,5 +1,6 @@
 package controller.menu;
 
+import controller.dto.AttendanceLogDtoConverter;
 import domain.attendance.AttendanceBook;
 import domain.attendance.AttendanceLog;
 import exception.ExceptionHandler;
@@ -23,7 +24,7 @@ public class AttendanceEditController implements AttendanceMenuController {
         LocalTime editTime = fetchAttendanceEditAttendTime();
         AttendanceLog oldAttendanceLog = attendanceBook.findCrewAttendanceLog(crewName, editDate);
         AttendanceLog newAttendanceLog = attendanceBook.editCrewAttendanceLog(crewName, editDate, editTime);
-        OutputView.printAttendanceEditLog(oldAttendanceLog.toDto(), newAttendanceLog.toDto());
+        OutputView.printAttendanceEditLog(AttendanceLogDtoConverter.toDto(oldAttendanceLog), AttendanceLogDtoConverter.toDto(newAttendanceLog));
     }
 
     private String fetchAttendanceEditCrewName() {

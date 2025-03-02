@@ -36,10 +36,6 @@ public class AttendanceLog {
         return this.attendanceDate.equals(attendDate);
     }
 
-    public AttendanceLogDto toDto() {
-        return new AttendanceLogDto(attendanceDate, attendanceTime, attendanceStatus);
-    }
-
     private void verifyAttendDateTime(LocalDateTime attendDateTime) {
         verifyAttendDate(attendDateTime.toLocalDate());
         verifyAttendTime(attendDateTime.toLocalTime());

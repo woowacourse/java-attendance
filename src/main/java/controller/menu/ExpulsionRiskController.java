@@ -1,5 +1,7 @@
 package controller.menu;
 
+import controller.dto.AttendanceResultDtoConverter;
+import controller.dto.CrewDtoConverter;
 import domain.attendance.AttendanceBook;
 import domain.attendance.AttendanceResult;
 import domain.crew.Crew;
@@ -25,8 +27,8 @@ public class ExpulsionRiskController implements AttendanceMenuController {
         List<Map.Entry<Crew, AttendanceResult>> expulsionRiskCrews = attendanceBook.findExpulsionRiskCrews(runDate);
         List<Map.Entry<CrewDto, AttendanceResultDto>> expulsionRiskCrewsDtos = new ArrayList<>();
         for (Map.Entry<Crew, AttendanceResult> entry : expulsionRiskCrews) {
-            CrewDto crewDto = entry.getKey().toDto();
-            AttendanceResultDto attendanceResultDto = entry.getValue().toDto();
+            CrewDto crewDto = CrewDtoConverter.toDto(entry.getKey());
+            AttendanceResultDto attendanceResultDto = AttendanceResultDtoConverter.toDto(entry.getValue());
             expulsionRiskCrewsDtos.add(new AbstractMap.SimpleEntry<>(crewDto, attendanceResultDto));
         }
         OutputView.printExpulsionRiskCrews(expulsionRiskCrewsDtos);
