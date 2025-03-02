@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -185,8 +186,8 @@ public class AttendanceHistoriesTest {
                 .hasMessageContaining("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
     }
 
-    @DisplayName("2.1 닉네임, 수정하려는 날짜, 등교 시간을 입력하여 기록을 수정할 수 있다.")
     @Test
+    @DisplayName("2.1 닉네임, 수정하려는 날짜, 등교 시간을 입력하여 기록을 수정할 수 있다.")
     void testReplaceAttendanceHistory() {
         // given
         LocalDateTime newAttendanceDateTime = DEFAULT_DATE_TIME.plusMinutes(5);
@@ -219,5 +220,16 @@ public class AttendanceHistoriesTest {
         assertThatThrownBy(() -> defaultAttendanceHistory.replaceAttendanceHistory(DEFAULT_CREW, dateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("3.1 닉네임을 입력하면 전날까지의 출결 기록을 확인할 수 있다.")
+    void test() {
+        // given
+        // when
+        AttendanceDateTimes actualAttendanceDateTimes = defaultAttendanceHistory.getAttendanceHistory(DEFAULT_DATE);
+        // then
+        AttendanceDateTimes expectedAttendanceDateTimes = new AttendanceDateTimes(List.of(DEFAULT_DATE_TIME));
+        assertThat(actualAttendanceDateTimes).isEqualTo(expectedAttendanceDateTimes);
     }
 }

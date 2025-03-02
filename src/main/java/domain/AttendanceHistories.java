@@ -2,7 +2,6 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Map;
 
 public class AttendanceHistories {
@@ -14,7 +13,6 @@ public class AttendanceHistories {
 
     public AttendanceStatus addAttendanceHistory(Crew crew, LocalDateTime attendanceDateTime) {
         LocalDate attendanceDate = attendanceDateTime.toLocalDate();
-        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
         validateCrew(crew);
         AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
         validateDuplicateAttendance(attendanceDateTimes, attendanceDate);
@@ -40,5 +38,9 @@ public class AttendanceHistories {
         if (attendanceDateTimes.contains(attendanceDate)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
         }
+    }
+
+    public AttendanceDateTimes getAttendanceHistory(LocalDate defaultDate) {
+        return null;
     }
 }
