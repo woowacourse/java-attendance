@@ -1,19 +1,22 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class AttendanceManager {
-    private final Map<NickName, List<String>> attendances;
+    private final Map<NickName, Attendances> attendanceManager;
 
     public AttendanceManager() {
-        this.attendances = new HashMap<>();
+        this.attendanceManager = new HashMap<>();
     }
 
     public void attend(NickName name, String time) {
-        attendances.put(name, List.of(time));
+        Attendances attendances = attendanceManager.getOrDefault(name, new Attendances());
+        attendances.attend(time);
+        attendanceManager.put(name, attendances);
     }
 
     @Override
@@ -25,11 +28,11 @@ public class AttendanceManager {
             return false;
         }
         AttendanceManager that = (AttendanceManager) o;
-        return Objects.equals(attendances, that.attendances);
+        return Objects.equals(attendanceManager, that.attendanceManager);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(attendances);
+        return Objects.hashCode(attendanceManager);
     }
 }
