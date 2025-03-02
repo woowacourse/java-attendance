@@ -14,7 +14,6 @@ public class AttendanceBook {
     }
 
     public void attend(final String nickname, final Attendance attendance) {
-        validateNickname(nickname);
         findByNickname(nickname).addIfAbsent(attendance);
     }
 
