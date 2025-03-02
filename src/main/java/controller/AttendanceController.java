@@ -51,7 +51,6 @@ public class AttendanceController {
         String time = inputView.readCheckInTime();
 
         Crew crew = new Crew(nickname);
-        crewRecords.validateCrew(crew);
         AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDateTime.of(currentDate, LocalTime.parse(time)));
         crewRecords.addRecord(crew, attendanceRecord);
         outputView.printCheckInResult(attendanceRecord);
@@ -63,7 +62,6 @@ public class AttendanceController {
         String time = inputView.readUpdateTime();
 
         Crew crew = new Crew(nickname);
-        crewRecords.validateCrew(crew);
         LocalDate date = LocalDate.of(2024, 12, Integer.parseInt(dateOfMonth));
         AttendanceRecord oldRecord = crewRecords.getRecordOnDate(crew, date);
         crewRecords.updateRecord(crew, date, LocalTime.parse(time));
@@ -75,7 +73,6 @@ public class AttendanceController {
         String nickname = inputView.readNickname();
 
         Crew crew = new Crew(nickname);
-        crewRecords.validateCrew(crew);
     }
 
     private void validateMenu(String input) {

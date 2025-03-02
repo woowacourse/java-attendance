@@ -11,29 +11,28 @@ public class CrewRecords {
         this.records = records;
     }
 
-    public void addCrewRecords(Crew crew, AttendanceRecords attendanceRecords) {
-        records.put(crew, attendanceRecords);
-    }
-
-    public void validateCrew(Crew crew) {
-        if (!records.containsKey(crew)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다." + System.lineSeparator());
-        }
-    }
-
     public void addRecord(Crew crew, AttendanceRecord record) {
+        validateCrew(crew);
         records.get(crew).add(record);
     }
 
     public void updateRecord(Crew crew, LocalDate oldDate, LocalTime newTime) {
+        validateCrew(crew);
         records.get(crew).update(oldDate, newTime);
     }
 
     public AttendanceRecord getRecordOnDate(Crew crew, LocalDate date) {
+        validateCrew(crew);
         return records.get(crew).getRecordOnDate(date);
     }
 
     public Map<Crew, AttendanceRecords> getRecords() {
         return records;
+    }
+
+    private void validateCrew(Crew crew) {
+        if (!records.containsKey(crew)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다." + System.lineSeparator());
+        }
     }
 }
