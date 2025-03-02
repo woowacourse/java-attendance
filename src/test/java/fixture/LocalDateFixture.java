@@ -14,4 +14,5 @@ public class LocalDateFixture {
 
     // Holiday
     public static LocalDate CHRISTMAS = LocalDate.of(2025, 12, 25);
+    public static LocalDate NOT_HOLIDAY = LocalDate.of(2025, 12, 10);
 }

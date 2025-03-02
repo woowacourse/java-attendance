@@ -15,6 +15,6 @@ class HolidayTest {
     @Test
     @DisplayName("공휴일이 아니면 false를 반환한다")
     void isHoliday_false() {
-        Assertions.assertThat(Holiday.isHoliday(LocalDateFixture.CHRISTMAS)).isFalse();
+        Assertions.assertThat(Holiday.isHoliday(LocalDateFixture.NOT_HOLIDAY)).isFalse();
     }
 }
