@@ -23,7 +23,7 @@ public enum ClassSchedule {
         this.startTime = startTime;
     }
 
-    public static LocalTime getStartTimeOf(DayOfWeek day) {
+    public static LocalTime getStartTime(DayOfWeek day) {
         return Arrays.stream(ClassSchedule.values())
                 .filter(schedule -> schedule.dayOfWeek == day)
                 .findAny()

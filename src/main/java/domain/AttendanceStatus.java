@@ -19,7 +19,7 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus getStatus(DayOfWeek dayOfWeek, LocalTime time) {
-        LocalTime startTime = ClassSchedule.getStartTimeOf(dayOfWeek);
+        LocalTime startTime = ClassSchedule.getStartTime(dayOfWeek);
         Duration lateness = Duration.between(startTime, time);
         return Arrays.stream(AttendanceStatus.values())
                 .filter(status -> lateness.toMinutes() > status.minutesAfter)

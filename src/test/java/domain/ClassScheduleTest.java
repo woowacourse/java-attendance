@@ -17,16 +17,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class ClassScheduleTest {
     @DisplayName("등교일을 입력 받아 교육 시작 시간을 반환한다.")
     @ParameterizedTest
-    @MethodSource("getStartTimeOfTestArgs")
-    void getStartTimeOfTest(DayOfWeek day, LocalTime expectedValue) {
-        assertThat(ClassSchedule.getStartTimeOf(day)).isEqualTo(expectedValue);
+    @MethodSource("getStartTimeTestArgs")
+    void getStartTimeTest(DayOfWeek day, LocalTime expectedValue) {
+        assertThat(ClassSchedule.getStartTime(day)).isEqualTo(expectedValue);
     }
 
     @DisplayName("등교하지 않는 요일의 교육 시작 시간을 확인할 경우 예외가 발생한다.")
     @ParameterizedTest
     @EnumSource(value = DayOfWeek.class, names = {"SATURDAY", "SUNDAY"})
-    void getStartTimeOfExceptionTest(DayOfWeek day) {
-        assertThatThrownBy(() -> ClassSchedule.getStartTimeOf(day)).isInstanceOf(IllegalStateException.class);
+    void getStartTimeExceptionTest(DayOfWeek day) {
+        assertThatThrownBy(() -> ClassSchedule.getStartTime(day)).isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("입력 받은 날짜의 휴일 여부를 반환한다.")
@@ -36,7 +36,7 @@ class ClassScheduleTest {
         assertThat(ClassSchedule.isDayOff(date)).isEqualTo(expectedValue);
     }
 
-    static Stream<Arguments> getStartTimeOfTestArgs() {
+    static Stream<Arguments> getStartTimeTestArgs() {
         return Stream.of(
                 Arguments.of(DayOfWeek.MONDAY, LocalTime.of(13, 0)),
                 Arguments.of(DayOfWeek.TUESDAY, LocalTime.of(10, 0)),
