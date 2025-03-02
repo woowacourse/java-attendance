@@ -234,4 +234,17 @@ public class AttendanceHistoriesTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
     }
+
+    @Test
+    @DisplayName("2.3 출석 기록이 없는 날짜를 입력한 경우 예외를 발생시킬 수 있다.")
+    void test() {
+        // given
+        // when
+        Crew crew = new Crew("노랑");
+        LocalDateTime dateTime = LocalDateTime.of(2025, 2, 20, 10, 0);
+        // then
+        assertThatThrownBy(() -> attendanceHistories.replaceAttendanceHistory(crew, dateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다.");
+    }
 }
