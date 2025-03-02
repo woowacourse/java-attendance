@@ -4,6 +4,7 @@ import exception.AppException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class CheckInDate implements Comparable<CheckInDate> {
     private final LocalDate checkInDate;
@@ -36,6 +37,14 @@ public class CheckInDate implements Comparable<CheckInDate> {
 
     public static boolean isNotWeekend(LocalDate checkInDate) {
         return !isWeekend(checkInDate);
+    }
+
+    public LocalDate toLocalDate() {
+        return checkInDate;
+    }
+
+    public LocalTime getClassStartTime() {
+        return ClassTime.getClassStartTime(checkInDate);
     }
 
     @Override
