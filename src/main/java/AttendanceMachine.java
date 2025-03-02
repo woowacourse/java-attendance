@@ -1,3 +1,4 @@
+import domain.Crew;
 import domain.attendance.AttendanceBook;
 import domain.attendance.AttendanceCounts;
 import domain.attendance.AttendanceInfo;
@@ -6,7 +7,6 @@ import domain.attendance.constant.AttendanceOperation;
 import domain.attendance.constant.AttendanceRiskLevel;
 import domain.datetime.CampusDate;
 import domain.datetime.CampusTime;
-import domain.Crew;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Map;
@@ -29,23 +29,25 @@ public class AttendanceMachine {
         AttendanceBook attendanceBook = AttendanceBook.createBookByAttendances(
                 FileReader.fileReadLine("attendances.csv"));
 
-        Map<AttendanceOperation, Runnable> operationHandlers = Map.of(
-                AttendanceOperation.CHECK_IN, () -> handleCheckIn(now, attendanceBook),
-                AttendanceOperation.MODIFY, () -> handleModify(now, attendanceBook),
-                AttendanceOperation.HISTORY, () -> handleHistory(now, attendanceBook),
-                AttendanceOperation.RISK_CREW, () -> handleRiskCrew(now, attendanceBook),
-                AttendanceOperation.QUIT, () -> {
-                }
-        );
+        Map<AttendanceOperation, Runnable> operationHandlers = initOperationMap(now, attendanceBook);
 
         while (true) {
             AttendanceOperation operation = AttendanceOperation.from(inputView.readOperationChoose(now));
             if (operation == AttendanceOperation.QUIT) {
                 break;
             }
-            operationHandlers.getOrDefault(operation, () -> {
-            }).run();
+            operationHandlers.getOrDefault(operation, () -> {}).run();
         }
+    }
+
+    private Map<AttendanceOperation, Runnable> initOperationMap(LocalDate now, AttendanceBook attendanceBook) {
+        return Map.of(
+                AttendanceOperation.CHECK_IN, () -> handleCheckIn(now, attendanceBook),
+                AttendanceOperation.MODIFY, () -> handleModify(now, attendanceBook),
+                AttendanceOperation.HISTORY, () -> handleHistory(now, attendanceBook),
+                AttendanceOperation.RISK_CREW, () -> handleRiskCrew(now, attendanceBook),
+                AttendanceOperation.QUIT, () -> {}
+        );
     }
 
     private void handleCheckIn(LocalDate now, AttendanceBook attendanceBook) {
@@ -63,13 +65,25 @@ public class AttendanceMachine {
                 () -> CampusDate.ofDateWithDay(now, Integer.parseInt(inputView.readModifyDay())));
         CampusTime campusTime = retryUntilValidInput(() -> CampusTime.from(inputView.readModifyTime()));
 
-        if (attendanceBook.hasInfoByCrewAndDate(crew, campusDate)) {
-            AttendanceInfo beforeInfo = attendanceBook.findInfoByCrew(crew).findInfoByDate(campusDate);
-            AttendanceInfo afterInfo = attendanceBook.modifyInfoWithDateAndTime(crew, campusDate, campusTime)
-                    .findInfoByDate(campusDate);
-            outputView.writeModifiedAttendanceCheck(beforeInfo, afterInfo);
+        if (attendanceInfoExists(attendanceBook, crew, campusDate)) {
+            writeModifyAttendanceInfo(attendanceBook, crew, campusDate, campusTime);
             return;
         }
+        writeCreateAttendanceInfo(attendanceBook, crew, campusDate, campusTime);
+    }
+
+    private static boolean attendanceInfoExists(AttendanceBook attendanceBook, Crew crew, CampusDate campusDate) {
+        return attendanceBook.hasInfoByCrewAndDate(crew, campusDate);
+    }
+
+    private void writeModifyAttendanceInfo(AttendanceBook attendanceBook, Crew crew, CampusDate campusDate, CampusTime campusTime) {
+        AttendanceInfo beforeInfo = attendanceBook.findInfoByCrew(crew).findInfoByDate(campusDate);
+        AttendanceInfo afterInfo = attendanceBook.modifyInfoWithDateAndTime(crew, campusDate, campusTime)
+                .findInfoByDate(campusDate);
+        outputView.writeModifiedAttendanceCheck(beforeInfo, afterInfo);
+    }
+
+    private void writeCreateAttendanceInfo(AttendanceBook attendanceBook, Crew crew, CampusDate campusDate, CampusTime campusTime) {
         attendanceBook.addInfoWithDateAndTime(crew, campusDate, campusTime);
         outputView.writeCreatedAttendanceCheck(AttendanceInfo.fromDateAndTime(campusDate, campusTime));
     }
