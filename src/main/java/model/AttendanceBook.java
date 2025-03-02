@@ -28,16 +28,6 @@ public class AttendanceBook {
         }
     }
 
-    public LocalTime findStudentAttendanceTimeRecord(String name, LocalDate localDate) {
-        Student student = findStudentByNickName(name);
-        return student.findAttendanceLocalTimeByLocalDate(localDate);
-    }
-
-    public AttendanceStatus findStudentAttendanceStatusRecord(String name, LocalDate localDate) {
-        Student student = findStudentByNickName(name);
-        return student.findAttendanceStatusByLocalDate(localDate);
-    }
-
     public Student findStudentByNickName(String name){
         return students.stream()
                 .filter(stu -> stu.getName().equals(name))
