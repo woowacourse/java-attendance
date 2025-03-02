@@ -4,8 +4,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+
+import static view.utils.ViewUtil.getDayOfWeekMessage;
 
 public class DateTimeUtil {
     public static final LocalDateTime FIXED_RUNNING_DATETIME = LocalDateTime.of(2024, 12, 14, 10, 0, 0);
@@ -50,7 +53,18 @@ public class DateTimeUtil {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("올바르지 않은 형식입니다.");
         }
+    }
 
+    public static String convertDateTimeFormat(LocalDate dateTime) {
+        return DateTimeFormatter.ofPattern("MM월 dd일 HH:mm").format(dateTime);
+    }
+
+    public static String convertDateWithDayOfWeekFormat(LocalDate dateTime) {
+        return DateTimeFormatter.ofPattern("MM월 dd일 ").format(dateTime) + getDayOfWeekMessage(dateTime.getDayOfWeek());
+    }
+
+    public static String convertTimeFormat(LocalTime time) {
+        return DateTimeFormatter.ofPattern("HH:mm").format(time);
     }
 
     private static boolean isWeekend(LocalDate date) {
