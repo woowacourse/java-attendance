@@ -221,4 +221,17 @@ public class AttendanceHistoriesTest {
         // then
         assertThat(oldAttendanceDateTime).isEqualTo(LocalDateTime.of(2025, 2, 21, 10, 0));
     }
+
+    @Test
+    @DisplayName("2.2 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+    void testValidateReplaceCrew() {
+        // given
+        // when
+        Crew invalidCrew = new Crew("포비");
+        LocalDateTime dateTime = MONDAY_DATE.atTime(10, 0);
+        // then
+        assertThatThrownBy(() -> attendanceHistories.replaceAttendanceHistory(invalidCrew, dateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
 }
