@@ -14,16 +14,8 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
         this.attendanceDate = attendanceDate;
     }
 
-    public DayOfWeek toDayOfWeek() {
-        return attendanceDate.getDayOfWeek();
-    }
-
     public boolean isHoliday() {
         return (isChristmas() || isWeekend());
-    }
-
-    public boolean isSameDate(AttendanceDate attendanceDate) {
-        return attendanceDate.toLocalDate().equals(this.attendanceDate);
     }
 
     public boolean isMonday() {
@@ -62,6 +54,10 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
 
     private boolean isChristmas() {
         return (this.toLocalDate().equals(CHRISTMAS));
+    }
+
+    private DayOfWeek toDayOfWeek() {
+        return attendanceDate.getDayOfWeek();
     }
 
     public LocalDate toLocalDate() {

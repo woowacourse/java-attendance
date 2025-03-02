@@ -36,16 +36,6 @@ public class AttendanceDateTest {
     }
 
     @Test
-    @DisplayName("같은 요일 비교하는 메서드 테스트")
-    void test7() {
-        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 12));
-        AttendanceDate attendanceDate1 = new AttendanceDate(LocalDate.of(2024, 12, 12));
-        Assertions.assertTrue(
-                attendanceDate.isSameDate(attendanceDate1)
-        );
-    }
-
-    @Test
     @DisplayName("12월인지 검사하는 메서드 테스트")
     void test9() {
         AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 11, 30));
