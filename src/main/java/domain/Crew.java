@@ -21,8 +21,10 @@ public class Crew {
         return name;
     }
 
-    public void putAttendance(final LocalDateTime localDateTime) {
-        attendanceMap.put(localDateTime.toLocalDate(), AttendanceRecord.of(localDateTime));
+    public AttendanceRecord putAttendance(final LocalDateTime localDateTime) {
+        final AttendanceRecord attendanceRecord = AttendanceRecord.of(localDateTime);
+        attendanceMap.put(localDateTime.toLocalDate(), attendanceRecord);
+        return attendanceRecord;
     }
 
     public boolean existAttendance(final LocalDateTime localDateTime) {
