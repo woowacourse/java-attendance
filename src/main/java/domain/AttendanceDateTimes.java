@@ -26,6 +26,6 @@ public class AttendanceDateTimes {
         return attendanceDateTimes.stream()
                 .filter(dateTime -> dateTime.toLocalDate().isEqual(targetDate))
                 .findAny()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다."));
     }
 }
