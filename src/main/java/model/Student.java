@@ -1,5 +1,8 @@
 package model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Student {
     private final String name;
     private final StudentAttendanceHistory studentAttendanceHistory;
@@ -40,6 +43,13 @@ public class Student {
     public void updateMissingAttendanceRecords(AttendanceDate attendanceStartDate, AttendanceDate today) {
         studentAttendanceHistory.updateMissingAttendanceRecords(attendanceStartDate, today);
     }
+
+    public Map<AttendanceStatus, Integer> calculateStudentAttendanceResult() {
+        Map<AttendanceStatus, Integer> attendanceCountMap = new HashMap<>();
+        studentAttendanceHistory.calculateStudentAttendanceResult(attendanceCountMap);
+        return attendanceCountMap;
+    }
+
     public StudentAttendanceHistory getStudentAttendanceHistory() {
         return studentAttendanceHistory;
     }

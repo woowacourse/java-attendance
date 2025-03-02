@@ -44,6 +44,15 @@ public class StudentAttendanceHistory {
         }
     }
 
+    public void calculateStudentAttendanceResult(Map<AttendanceStatus, Integer> attendanceCountMap) {
+        for (AttendanceDate attendanceDate : attendanceHistory.keySet()) {
+            AttendanceStatus attendanceStatus = AttendanceStatusEvaluator.calculateAttendanceStatus(attendanceDate, attendanceHistory.get(attendanceDate));
+            attendanceCountMap.merge(
+                    attendanceStatus, 1, Integer::sum
+            );
+        }
+    }
+
     public Map<AttendanceDate, AttendanceTime> getAttendanceHistory() {
         return attendanceHistory;
     }
