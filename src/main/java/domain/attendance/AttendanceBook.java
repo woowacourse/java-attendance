@@ -33,17 +33,7 @@ public class AttendanceBook {
             Crew crew = Crew.fromName(parsedAttendance.get(0));
             CampusDate date = CampusDate.from(parsedAttendance.get(1));
             CampusTime time = CampusTime.from(parsedAttendance.get(2));
-
-            if (book.containsKey(crew)) {
-                AttendanceInfos crewInfos = book.get(crew);
-                AttendanceInfos attendanceInfos = crewInfos.addInfoByDateAndTime(date, time);
-                book.put(crew, attendanceInfos);
-                continue;
-            }
-
-            AttendanceInfos initInfos = AttendanceInfos.initInfos();
-            AttendanceInfos attendanceInfos = initInfos.addInfoByDateAndTime(date, time);
-            book.put(crew, attendanceInfos);
+            registerCrewAndInfo(book, crew, date, time);
         }
         return new AttendanceBook(book);
     }
@@ -76,6 +66,29 @@ public class AttendanceBook {
         return new AttendanceBook(book.entrySet().stream()
                 .filter(entry -> isRiskCrew(date, entry))
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
+    }
+
+    private static void registerCrewAndInfo(Map<Crew, AttendanceInfos> book, Crew crew, CampusDate date,
+                                            CampusTime time) {
+        if (book.containsKey(crew)) {
+            addInfosWithExistCrew(book, crew, date, time);
+            return;
+        }
+        addInfosWithOutCrew(book, crew, date, time);
+    }
+
+    private static void addInfosWithExistCrew(Map<Crew, AttendanceInfos> book, Crew crew, CampusDate date,
+                                              CampusTime time) {
+        AttendanceInfos crewInfos = book.get(crew);
+        AttendanceInfos attendanceInfos = crewInfos.addInfoByDateAndTime(date, time);
+        book.put(crew, attendanceInfos);
+    }
+
+    private static void addInfosWithOutCrew(Map<Crew, AttendanceInfos> book, Crew crew, CampusDate date,
+                                            CampusTime time) {
+        AttendanceInfos initInfos = AttendanceInfos.initInfos();
+        AttendanceInfos attendanceInfos = initInfos.addInfoByDateAndTime(date, time);
+        book.put(crew, attendanceInfos);
     }
 
     private boolean isRiskCrew(final LocalDate date, final Entry<Crew, AttendanceInfos> entry) {
