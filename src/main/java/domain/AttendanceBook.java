@@ -34,4 +34,8 @@ public class AttendanceBook {
                             localDateTime.toLocalDate())));
         }
     }
+
+    public AttendanceRecord modifyAttendance(final String name, final LocalDateTime localDateTime) {
+        return null;
+    }
 }
