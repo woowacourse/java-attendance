@@ -21,4 +21,19 @@ class AttendancesTest {
         // then
         assertThat(attendances).isNotEqualTo(new Attendances());
     }
+
+    @Test
+    @DisplayName("이미 출석한 경우를 알 수 있다")
+    void should_return_true_when_already_attended() {
+        // given
+        LocalTime attendingTime = LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm"));
+        Attendances attendances = new Attendances();
+        attendances.attend(attendingTime);
+
+        // when
+        boolean result = attendances.isAttended();
+
+        // then
+        assertThat(result).isEqualTo(true);
+    }
 }

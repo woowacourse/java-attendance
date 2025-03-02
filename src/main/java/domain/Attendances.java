@@ -16,6 +16,10 @@ public class Attendances {
         attendances.add(attendingTime);
     }
 
+    public boolean isAttended() {
+        return !attendances.isEmpty();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

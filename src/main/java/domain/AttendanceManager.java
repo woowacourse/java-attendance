@@ -16,6 +16,10 @@ public class AttendanceManager {
         Attendances attendances = attendanceManager.getOrDefault(name, new Attendances());
         attendances.attend(attendingTime);
         attendanceManager.put(name, attendances);
+
+    public boolean isAttended(NickName nickName) {
+        Attendances attendances = attendanceManager.getOrDefault(nickName, new Attendances());
+        return attendances.isAttended();
     }
 
     @Override

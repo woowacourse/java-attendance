@@ -22,4 +22,20 @@ public class AttendanceManagerTest {
         // then
         assertThat(attendanceManager).isNotEqualTo(new AttendanceManager());
     }
+
+    @Test
+    @DisplayName("이미 출석한 경우를 알 수 있다")
+    void should_return_true_when_already_attended() {
+        // given
+        NickName nickName = new NickName("후우");
+        LocalTime attendingTime = LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm"));
+        AttendanceManager attendanceManager = new AttendanceManager();
+        attendanceManager.attend(nickName, attendingTime);
+
+        // when
+        boolean result = attendanceManager.isAttended(nickName);
+
+        // then
+        assertThat(result).isEqualTo(true);
+    }
 }
