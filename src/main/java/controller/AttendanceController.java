@@ -19,6 +19,11 @@ import view.OutputView;
 
 public class AttendanceController {
     private static final LocalDate START_DATE = LocalDate.of(2024, 12, 2);
+    private static final String ATTEND_COMMAND = "1";
+    private static final String EDIT_COMMAND = "2";
+    private static final String CREW_INFO_COMMAND = "3";
+    private static final String WARNING_CREW_COMMAND = "4";
+    private static final String EXIT_COMMAND = "Q";
 
     private final AttendanceFileReader attendanceFileReader;
     private final InputView inputView;
@@ -35,7 +40,7 @@ public class AttendanceController {
         Map<String, Consumer<AttendanceBook>> commands = initCommand();
         String inputCommand = "";
 
-        while (!inputCommand.equalsIgnoreCase("Q")) {
+        while (!inputCommand.equalsIgnoreCase(EXIT_COMMAND)) {
             inputCommand = processCommand(inputCommand, commands, attendanceBook);
         }
         inputView.close();
@@ -46,14 +51,21 @@ public class AttendanceController {
         try {
             // todo: 오늘 날짜 출력하는 부분 책임 분리
             inputCommand = inputView.inputCommand(LocalDate.now().format(DateTimeFormatter.ofPattern("MM월 dd일")));
-            Consumer<AttendanceBook> command = commands.get(inputCommand);
-            validate(command);
-
-            command.accept(attendanceBook);
+            if (inputCommand.equalsIgnoreCase(EXIT_COMMAND)) {
+                return inputCommand;
+            }
+            executeCommand(inputCommand, commands, attendanceBook);
         } catch (IllegalArgumentException exception) {
             outputView.printError(exception.getMessage());
         }
         return inputCommand;
+    }
+
+    private void executeCommand(String inputCommand, Map<String, Consumer<AttendanceBook>> commands,
+                                AttendanceBook attendanceBook) {
+        Consumer<AttendanceBook> command = commands.get(inputCommand);
+        validate(command);
+        command.accept(attendanceBook);
     }
 
     private void validate(Consumer<AttendanceBook> command) {
@@ -64,26 +76,32 @@ public class AttendanceController {
 
     private Map<String, Consumer<AttendanceBook>> initCommand() {
         Map<String, Consumer<AttendanceBook>> commands = new HashMap<>();
-        commands.put("1", new AttendCommand());
-        commands.put("2", new EditCommand());
-        commands.put("3", new CrewInfoCommand());
-        commands.put("4", new WarningInfoCommand());
+        commands.put(ATTEND_COMMAND, new AttendCommand());
+        commands.put(EDIT_COMMAND, new EditCommand());
+        commands.put(CREW_INFO_COMMAND, new CrewInfoCommand());
+        commands.put(WARNING_CREW_COMMAND, new WarningInfoCommand());
         return commands;
     }
 
     private AttendanceBook initAttendanceBook() {
         Map<String, List<String>> crewsInfo = attendanceFileReader.getInfo();
 
+        // todo: 날짜파싱 책임 분리
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        Map<String, List<LocalDateTime>> parsedCrewsInfo = crewsInfo.entrySet()
+        Map<String, List<LocalDateTime>> parsedCrewsInfo = parseCrewsDateTime(crewsInfo, formatter);
+        return new AttendanceBook(parsedCrewsInfo);
+    }
+
+    private static Map<String, List<LocalDateTime>> parseCrewsDateTime(Map<String, List<String>> crewsInfo,
+                                                                       DateTimeFormatter formatter) {
+        return crewsInfo.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> entry.getValue().stream()
+                        crewEntry -> crewEntry.getValue().stream()
                                 .map(dateTime -> LocalDateTime.parse(dateTime, formatter))
                                 .toList()
                 ));
-        return new AttendanceBook(parsedCrewsInfo);
     }
 }
