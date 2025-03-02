@@ -29,18 +29,23 @@ public class AttendanceDateTimes {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다."));
     }
 
-    public int getPresentCount(LocalDate toDate) {
+    public int getPresentCount(LocalDate lastDate) {
         return (int) attendanceDateTimes.stream()
-                .filter(attendanceDateTime -> attendanceDateTime.isDateBefore(toDate))
+                .filter(attendanceDateTime -> attendanceDateTime.isDateBefore(lastDate))
                 .filter(attendanceDateTime -> attendanceDateTime.isStatusOf(AttendanceStatus.PRESENT))
                 .count();
     }
 
-    public int getTardyCount(LocalDate toDate) {
+    public int getTardyCount(LocalDate lastDate) {
         return (int) attendanceDateTimes.stream()
-                .filter(attendanceDateTime -> attendanceDateTime.isDateBefore(toDate))
+                .filter(attendanceDateTime -> attendanceDateTime.isDateBefore(lastDate))
                 .filter(attendanceDateTime -> attendanceDateTime.isStatusOf(AttendanceStatus.TARDY))
                 .count();
+    }
+
+    public int getAbsentCount(LocalDate lastDate) {
+        int totalCount = AttendanceDateTime.countValidDays(lastDate);
+        return totalCount - getPresentCount(lastDate) - getTardyCount(lastDate);
     }
 
     @Override

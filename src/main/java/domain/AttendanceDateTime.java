@@ -8,12 +8,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class AttendanceDateTime {
+    private static final LocalDate START_DATE = LocalDate.of(2025, 2, 11);
+
     private final LocalDateTime attendanceDateTime;
 
     public AttendanceDateTime(LocalDateTime attendanceDateTime) {
         validateDayOff(attendanceDateTime.toLocalDate());
         validateOperatingTime(attendanceDateTime.toLocalTime());
         this.attendanceDateTime = attendanceDateTime;
+    }
+
+    public static int countValidDays(LocalDate lastDate) {
+        return (int) START_DATE.datesUntil(lastDate)
+                .filter(localDate -> !isDayOff(localDate))
+                .count();
     }
 
     public LocalDate toDate() {
@@ -30,14 +38,18 @@ public class AttendanceDateTime {
     }
 
     private void validateDayOff(LocalDate attendanceDate) {
-        if (attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY
-                || attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY
-                || LegalHoliday.isHoliday(attendanceDate)
-                || Vacation.isVacation(attendanceDate)) {
+        if (isDayOff(attendanceDate)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일");
             throw new IllegalArgumentException(
                     String.format("[ERROR] %s은 등교일이 아닙니다.", formatter.format(attendanceDate)));
         }
+    }
+
+    private static boolean isDayOff(LocalDate attendanceDate) {
+        return attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY
+                || attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY
+                || LegalHoliday.isHoliday(attendanceDate)
+                || Vacation.isVacation(attendanceDate);
     }
 
     private void validateOperatingTime(LocalTime attendanceTime) {

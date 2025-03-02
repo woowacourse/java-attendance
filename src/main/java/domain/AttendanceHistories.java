@@ -33,20 +33,22 @@ public class AttendanceHistories {
         return attendanceHistories.get(crew);
     }
 
-    public int getPresentCount(Crew crew, LocalDate toDate) {
+    public int getPresentCount(Crew crew, LocalDate lastDate) {
         validateCrewPresence(crew);
         AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
-        return attendanceDateTimes.getPresentCount(toDate);
+        return attendanceDateTimes.getPresentCount(lastDate);
     }
 
-    public int getTardyCount(Crew crew, LocalDate toDate) {
+    public int getTardyCount(Crew crew, LocalDate lastDate) {
         validateCrewPresence(crew);
         AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
-        return attendanceDateTimes.getTardyCount(toDate);
+        return attendanceDateTimes.getTardyCount(lastDate);
     }
 
-    public int getAbsentCount(Crew crew, LocalDate toDate) {
-        return 0;
+    public int getAbsentCount(Crew crew, LocalDate lastDate) {
+        validateCrewPresence(crew);
+        AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
+        return attendanceDateTimes.getAbsentCount(lastDate);
     }
 
     private void validateCrewPresence(Crew crew) {

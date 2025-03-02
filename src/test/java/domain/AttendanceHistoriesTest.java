@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 public class AttendanceHistoriesTest {
     private static final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
-    private static final LocalDate TUESDAY_DATE = LocalDate.of(2025, 2, 25);
+    private static final LocalDate FIRST_TUESDAY_DATE = LocalDate.of(2025, 2, 11);
     private static final LocalDate DEFAULT_DATE = LocalDate.of(2025, 2, 21);
     private static final LocalTime DEFAULT_TIME = LocalTime.of(10, 0);
     private static final Crew DEFAULT_CREW = new Crew("노랑");
@@ -38,7 +38,7 @@ public class AttendanceHistoriesTest {
             LocalTime time = LocalTime.of(10, 5);
             // when
             AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
-                    LocalDateTime.of(TUESDAY_DATE, time));
+                    LocalDateTime.of(FIRST_TUESDAY_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.PRESENT);
         }
@@ -50,7 +50,7 @@ public class AttendanceHistoriesTest {
             LocalTime time = LocalTime.of(10, 30);
             // when
             AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
-                    LocalDateTime.of(TUESDAY_DATE, time));
+                    LocalDateTime.of(FIRST_TUESDAY_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.TARDY);
         }
@@ -62,7 +62,7 @@ public class AttendanceHistoriesTest {
             LocalTime time = LocalTime.of(10, 30, 1);
             // when
             AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
-                    LocalDateTime.of(TUESDAY_DATE, time));
+                    LocalDateTime.of(FIRST_TUESDAY_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENT);
         }
@@ -269,11 +269,13 @@ public class AttendanceHistoriesTest {
         @DisplayName("기록이 없는 날짜는 결석 횟수로 기록된다.")
         void testGetAbsentCountWithEmptyHistory() {
             // given
-            LocalDate lastDate = LAST_DATE.plusDays(5);
+            AttendanceHistories singleAttendanceHistory = AttendanceHistoriesFixture.createWithSingleAttendance(
+                    DEFAULT_CREW, FIRST_TUESDAY_DATE.atTime(10, 31)); // 화요일 결석
+            LocalDate lastDate = FIRST_TUESDAY_DATE.plusDays(4); // 첫째 주 토요일
             // when
-            int absentCount = attendanceHistoriesForCount.getAbsentCount(DEFAULT_CREW, lastDate);
+            int absentCount = singleAttendanceHistory.getAbsentCount(DEFAULT_CREW, lastDate);
             // then
-            assertThat(absentCount).isEqualTo(10);
+            assertThat(absentCount).isEqualTo(4); // 화 ~ 금 4회 결석
         }
     }
 
