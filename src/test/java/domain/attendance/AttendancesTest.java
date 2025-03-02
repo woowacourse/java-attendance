@@ -1,6 +1,8 @@
 package domain.attendance;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -70,4 +72,19 @@ class AttendancesTest {
             Assertions.assertThat(absenceCount).isEqualTo(3);
         }
     }
+
+    @DisplayName("초기화 시 동일한 날짜의 출석 기록을 등록할 수 없다")
+    @Test
+    void test4() {
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 2);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> new Attendances(List.of(
+                        LocalDateTime.of(date, LocalTime.of(10, 0)),
+                        LocalDateTime.of(date, LocalTime.of(10, 5)))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("동일한 날짜의 출석 기록은 등록할 수 없습니다");
+    }
+
 }
