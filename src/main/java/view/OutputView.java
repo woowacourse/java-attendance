@@ -23,6 +23,7 @@ public class OutputView {
     private static final String DISMISSAL_SUBJECT = "제적 대상자입니다.";
     private static final String INTERVIEW_SUBJECT = "면담 대상자입니다.";
     private static final String WARNING_SUBJECT = "경고 대상자입니다.";
+    private static final String ATTENDANCE_RECORD_THIS_MONTH = "이번 달 %s의 출석 기록입니다.\n";
 
     public static void printAttendanceResult(AttendanceDate attendanceDate, AttendanceTime attendanceTime, AttendanceStatus attendanceStatus) {
         String dateAndTime = AttendanceDateAttendanceTimeFormatter.createAttendanceResultMessage(attendanceDate, attendanceTime);
@@ -35,12 +36,16 @@ public class OutputView {
     }
 
     public static void printModifyComplete(AttendanceDate attendanceDate, AttendanceTime attendanceTime, AttendanceStatus attendanceStatus, String modifyResult) {
+        printSpace();
         System.out.printf(AttendanceDateAttendanceTimeFormatter.createAttendanceResultMessage(attendanceDate, attendanceTime));
         System.out.printf(PARENTHESES_FORMATTER_NO_NEWLINE, attendanceStatus.getStatus());
         printModifyDone(modifyResult);
     }
 
-    public static void printRecordCheck(Map<AttendanceDate, AttendanceTime> studentRecordHistory) {
+    public static void printRecordCheck(Map<AttendanceDate, AttendanceTime> studentRecordHistory, String name) {
+        printSpace();
+        System.out.printf(ATTENDANCE_RECORD_THIS_MONTH, name);
+        printSpace();
         List<AttendanceDate> attendanceTimeRecord = new ArrayList<>(studentRecordHistory.keySet());
         Collections.sort(attendanceTimeRecord);
 
@@ -48,6 +53,7 @@ public class OutputView {
             AttendanceStatus attendanceStatus = AttendanceStatusEvaluator.calculateAttendanceStatus(attendanceDate, studentRecordHistory.get(attendanceDate));
             printAttendanceResult(attendanceDate, studentRecordHistory.get(attendanceDate), attendanceStatus);
         }
+        printSpace();
     }
 
 
@@ -87,5 +93,9 @@ public class OutputView {
         if (riskLevel >= StudentPunishment.WARNING.getAbsenceCount()) {
             System.out.printf(WARNING_LABEL_FORMATTER, name, studentRecord.get(AttendanceStatus.ABSENT), studentRecord.get(AttendanceStatus.LATE));
         }
+    }
+
+    private static void printSpace() {
+        System.out.println();
     }
 }
