@@ -3,7 +3,6 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ public class AttendanceManagerTest {
         void should_attend_by_nickname_and_attending_time() {
             // given
             NickName nickName = new NickName("후우");
-            LocalTime attendingTime = LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime attendingTime = LocalTime.parse("10:00");
             AttendanceManager attendanceManager = new AttendanceManager();
 
             // when
@@ -32,7 +31,7 @@ public class AttendanceManagerTest {
         void should_return_true_when_already_attended() {
             // given
             NickName nickName = new NickName("후우");
-            LocalTime attendingTime = LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime attendingTime = LocalTime.parse("10:00");
             AttendanceManager attendanceManager = new AttendanceManager();
             attendanceManager.attend(nickName, attendingTime);
 
