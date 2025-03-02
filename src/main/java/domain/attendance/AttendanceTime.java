@@ -80,7 +80,7 @@ public class AttendanceTime implements Comparable<AttendanceTime> {
     }
 
     public boolean isSameDate(AttendanceTime attendanceTime) {
-        return this.date.equals(attendanceTime.date);
+        return isSameDate(attendanceTime.date);
     }
 
     public boolean isSameDate(LocalDate date) {
