@@ -11,9 +11,9 @@ public class AttendanceDate {
     private LocalTime time;
     private AttendanceStatus status;
 
-    public AttendanceDate(LocalDateTime datetime) {
-        this.date = datetime.toLocalDate();
-        this.time = datetime.toLocalTime();
+    public AttendanceDate(LocalDateTime dateTime) {
+        this.date = dateTime.toLocalDate();
+        this.time = dateTime.toLocalTime();
         saveAttendanceStatus();
     }
 
