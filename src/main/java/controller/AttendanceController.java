@@ -50,7 +50,6 @@ public class AttendanceController {
                 String userInput = inputView.insertCommandType(today);
                 validateInput(userInput);
                 userCommandType = getCommand(userInput);
-
                 executeCommand(userCommandType, crewGroup);
             }
         } catch (Exception e) {
@@ -73,7 +72,10 @@ public class AttendanceController {
 
         String name = inputView.insertName();
         Attendances attendances = crewGroup.getSpecificAttendances(name);
-        attendances.validateAlreadyExist(today);
+        if (attendances.isExist(today)) {
+            outputView.printUseChange();
+            return;
+        }
 
         String rawTime = inputView.insertTime();
         Time time = new Time(rawTime);

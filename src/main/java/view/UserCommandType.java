@@ -42,10 +42,8 @@ public enum UserCommandType {
 
     public static void validateInput(String userInput) {
         if (!Arrays.stream(UserCommandType.values()).map(UserCommandType::getCommandCode).toList()
-                .contains(userInput)) {
+                .contains(userInput) || userInput.equals(INITIAL.getCommandCode())) {
             throw new IllegalArgumentException("올바른 기능 입력이 아닙니다.");
         }
     }
-
-
 }
