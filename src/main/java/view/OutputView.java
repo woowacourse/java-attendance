@@ -1,6 +1,8 @@
 package view;
 
 import domain.Attendance;
+import domain.AttendanceStateCount;
+import domain.PenaltyType;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
@@ -33,7 +35,7 @@ public class OutputView {
         return String.format("%02d:%02d", beforeTime.getHour(), beforeTime.getMinute());
     }
 
-    public static void printAttendanceHistory(List<Attendance> attendanceBookHistory) {
+    public static void printAttendanceRecordHistory(List<Attendance> attendanceBookHistory) {
         sortByDate(attendanceBookHistory)
                 .forEach(a -> System.out.printf("12월 %02d일 %s %s (%s)\n",
                         DateTimeUtil.getDateBy(a.getLocalDate()),
@@ -41,6 +43,7 @@ public class OutputView {
                         formatTime(a.getLocalTime()),
                         a.getState().getState()
                 ));
+        System.out.println();
     }
 
     private static List<Attendance> sortByDate(List<Attendance> attendances) {
@@ -50,4 +53,16 @@ public class OutputView {
     }
 
 
+    public static void printAttendancePenaltyHistory(AttendanceStateCount attendanceStateCount,
+                                                     PenaltyType penaltyType) {
+        System.out.printf("출석: %d회\n"
+                        + "지각: %d회\n"
+                        + "결석: %d회\n"
+                        + "\n"
+                        + "%s 대상자입니다.\n",
+                attendanceStateCount.attendance(),
+                attendanceStateCount.lateness(),
+                attendanceStateCount.absence(),
+                penaltyType.getValue());
+    }
 }

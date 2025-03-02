@@ -2,8 +2,10 @@ package controller;
 
 import domain.Attendance;
 import domain.AttendanceBook;
+import domain.AttendanceStateCount;
 import domain.Crew;
 import domain.CrewsAttendanceBook;
+import domain.PenaltyType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -79,6 +81,12 @@ public class MainController {
         AttendanceBook attendanceBook = crewsAttendanceBook.getAttendanceBook(crew);
         List<Attendance> attendanceBookHistory = attendanceBook.getAttendanceBookHistory();
 
-        OutputView.printAttendanceHistory(attendanceBookHistory);
+        OutputView.printAttendanceRecordHistory(attendanceBookHistory);
+
+        AttendanceStateCount attendanceStateCount = attendanceBook.calculateState();
+        PenaltyType penaltyType = attendanceBook.calculatePenaltyType(attendanceStateCount);
+
+        OutputView.printAttendancePenaltyHistory(attendanceStateCount, penaltyType);
+
     }
 }

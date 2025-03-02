@@ -22,4 +22,8 @@ public enum PenaltyType {
                 .findFirst()
                 .orElse(NONE);
     }
+
+    public String getValue() {
+        return value;
+    }
 }
