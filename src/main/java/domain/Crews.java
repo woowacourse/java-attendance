@@ -13,15 +13,12 @@ public class Crews {
         this.crews = crews;
     }
 
-    public void validateCrew(final Nickname nickname) {
-        if (!hasCrew(nickname)) {
-            throw new IllegalArgumentException("존재하지 않는 크루입니다.");
-        }
-    }
-
-    private boolean hasCrew(final Nickname nickname) {
+    public Crew findByNickname(final Nickname nickname) {
         return crews.stream()
-                .anyMatch(crew -> crew.isSameAs(nickname));
+                .filter(crew -> crew.isSameAs(nickname))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
+
     }
 
     public List<Crew> findSortedDisciplinaryCrews() {

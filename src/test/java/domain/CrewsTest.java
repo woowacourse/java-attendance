@@ -39,7 +39,7 @@ class CrewsTest {
         assertThat(sortedDisciplinaryCrews).containsExactlyElementsOf(expected);
     }
 
-    private static Crew generateCrew(final String nickname, final List<String> inputDateTimes) {
+    public static Crew generateCrew(final String nickname, final List<String> inputDateTimes) {
         final Nickname nickname1 = new Nickname(nickname);
         final List<AttendanceRecord> attendanceRecordGroup = new ArrayList<>();
 
@@ -59,7 +59,7 @@ class CrewsTest {
     }
 
 
-    @DisplayName("같은 이름은 가진 크루가 있다면 true 올바르지 않다면 false 반환")
+    @DisplayName("크루가 존재하면 해당 크루를 반환 존재하지않으면 예외 처리")
     @Test
     void validateCrew_WhenNicknameMatches_DoesNotThrowException_WhenNotMatches_ThrowsException() {
         final Nickname expectedTrueNickname = new Nickname("짱구");
@@ -71,9 +71,9 @@ class CrewsTest {
         final Crews crews = new Crews(crewGroup);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThatCode(() -> crews.validateCrew(expectedTrueNickname))
+            softly.assertThatCode(() -> crews.findByNickname(expectedTrueNickname))
                     .doesNotThrowAnyException();
-            softly.assertThatThrownBy(() -> crews.validateCrew(expectedFalseNickname))
+            softly.assertThatThrownBy(() -> crews.findByNickname(expectedFalseNickname))
                     .isInstanceOf(IllegalArgumentException.class);
         });
     }
