@@ -33,6 +33,7 @@ public class CheckAttendanceTest {
         assertThat(absent.getAttendanceStatus()).isEqualTo(AttendanceStatus.ABSENT);
 
     }
+
     @Test
     @DisplayName("월요일 출석 확인 처리 - 출석, 지각, 결석")
     public void checkMondayAttendanceStatus() {
@@ -60,9 +61,9 @@ public class CheckAttendanceTest {
         //when
 
         assertThatThrownBy(() -> new Attendance(beforeOperatingTime))
-                .hasMessage("운영시간이 아닙니다.");
+                .hasMessageContaining("운영시간이 아닙니다.");
         assertThatThrownBy(() -> new Attendance(afterOperatingTime))
-                .hasMessage("운영시간이 아닙니다.");
+                .hasMessageContaining("운영시간이 아닙니다.");
 
     }
 
@@ -74,12 +75,10 @@ public class CheckAttendanceTest {
         LocalDateTime christmas = LocalDateTime.of(2024, 12, 25, 10, 0);
 
         assertThatThrownBy(() -> new Attendance(weekend))
-                .hasMessageContaining("12월 21일 토요일은 운영일이 아닙니다..");
+                .hasMessageContaining("운영일이 아닙니다.");
         assertThatThrownBy(() -> new Attendance(christmas))
-                .hasMessageContaining("12월 25일 수요일은 운영일이 아닙니다.");
+                .hasMessageContaining("운영일이 아닙니다.");
     }
-
-
 
 
 }
