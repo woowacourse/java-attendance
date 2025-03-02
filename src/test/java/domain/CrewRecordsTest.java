@@ -97,6 +97,43 @@ class CrewRecordsTest {
         assertThatThrownBy(() -> crewRecords.updateRecord(crew, oldDate, newTime)).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("입력 받은 날짜에 해당하는 출석 기록 객체를 반환한다.")
+    @Test
+    void getRecordOnDateTest() {
+        // given
+        CrewRecords crewRecords = CrewRecordsFixture.createSingleCrewRecord("솔라", "2024-12-02T13:00");
+        Crew crew = new Crew("솔라");
+        LocalDateTime dateTime = LocalDateTime.parse("2024-12-02T13:00");
+
+        // when
+        AttendanceRecord expectedValue = new AttendanceRecord(dateTime);
+        AttendanceRecord actualValue = crewRecords.getRecordOnDate(crew, dateTime.toLocalDate());
+
+        // then
+        assertThat(actualValue).isEqualTo(expectedValue);
+    }
+
+    @DisplayName("입력 받은 크루의 전체 출석 기록을 반환한다.")
+    @Test
+    void getAttendanceRecordsOfTest() {
+        // given
+        CrewRecords crewRecords = CrewRecordsFixture.createSingleCrewRecord("솔라", "2024-12-02T13:00", "2024-12-03T10:00", "2024-12-04T10:10");
+        Crew crew = new Crew("솔라");
+
+        // when
+        AttendanceRecords attendanceRecords = crewRecords.getAttendanceRecordsOf(crew);
+
+        // then
+        assertAll(
+                () -> assertThat(attendanceRecords.getRecordOnDate(LocalDate.of(2024, 12, 2)))
+                        .isEqualTo(new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:00"))),
+                () -> assertThat(attendanceRecords.getRecordOnDate(LocalDate.of(2024, 12, 3)))
+                        .isEqualTo(new AttendanceRecord(LocalDateTime.parse("2024-12-03T10:00"))),
+                () -> assertThat(attendanceRecords.getRecordOnDate(LocalDate.of(2024, 12, 4)))
+                        .isEqualTo(new AttendanceRecord(LocalDateTime.parse("2024-12-04T10:10")))
+        );
+    }
+
     @DisplayName("입력 받은 크루의 제적 상태를 반환한다.")
     @ParameterizedTest
     @MethodSource("warningStatusTestArgs")
@@ -130,6 +167,36 @@ class CrewRecordsTest {
 
         // then
         assertThat(actualValue).containsExactly(justin, neo);
+    }
+
+    @DisplayName("입력 받은 크루의 지각 횟수를 반환한다.")
+    @Test
+    void getTardyCountTest() {
+        // given
+        CrewRecords crewRecords = CrewRecordsFixture.createSingleCrewRecord("솔라", "2024-12-02T13:00", "2024-12-03T10:20", "2024-12-04T10:10");
+        Crew crew = new Crew("솔라");
+
+        // when
+        int expectedValue = 2;
+        int actualValue = crewRecords.getTardyCount(crew);
+
+        // then
+        assertThat(actualValue).isEqualTo(expectedValue);
+    }
+
+    @DisplayName("입력 받은 크루의 결석 횟수를 반환한다.")
+    @Test
+    void getAbsentCountTest() {
+        // given
+        CrewRecords crewRecords = CrewRecordsFixture.createSingleCrewRecord("네오", "2024-12-02T13:40", "2024-12-03T10:31", "2024-12-04T11:00");
+        Crew crew = new Crew("네오");
+
+        // when
+        int expectedValue = 3;
+        int actualValue = crewRecords.getAbsentCount(crew);
+
+        // then
+        assertThat(actualValue).isEqualTo(expectedValue);
     }
 
     static Stream<Arguments> warningStatusTestArgs() {
