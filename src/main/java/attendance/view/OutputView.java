@@ -33,14 +33,14 @@ import java.util.Map;
 
 public class OutputView {
 
-    public void printConfirmResult(final LocalDateTime dateTime, final AttendanceStatus status) {
+    public void printConfirmResult(final LocalDateTime dateTime, final Attendance attendance) {
         System.out.printf(CONFIRM_RESULT_TILE,
                 dateTime.getMonthValue(),
                 dateTime.getDayOfMonth(),
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 dateTime.getHour(),
                 dateTime.getMinute(),
-                getStatusString(status));
+                getStatusName(attendance));
     }
 
     public void printUpdateResult(final Attendance beforeUpdateAttendance, final Attendance afterUpdateAttendance) {
@@ -52,10 +52,10 @@ public class OutputView {
                 beforeDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 beforeDateTime.getHour(),
                 beforeDateTime.getMinute(),
-                getStatusString(beforeUpdateAttendance.getStatus()),
+                getStatusName(beforeUpdateAttendance),
                 afterDateTime.getHour(),
                 afterDateTime.getMinute(),
-                getStatusString(afterUpdateAttendance.getStatus()));
+                getStatusName(afterUpdateAttendance));
     }
 
     public void printCrewAttendances(LocalDate today, Crew crew) {
@@ -94,7 +94,8 @@ public class OutputView {
         System.out.println(e.getMessage());
     }
 
-    private String getStatusString(final AttendanceStatus status) {
+    private String getStatusName(final Attendance attendance) {
+        AttendanceStatus status = attendance.getStatus();
         if (status.equals(AttendanceStatus.ATTEND)) {
             return ATTEND;
         }
@@ -121,7 +122,7 @@ public class OutputView {
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 dateTime.getHour(),
                 dateTime.getMinute(),
-                getStatusString(attendance.getStatus()));
+                getStatusName(attendance));
     }
 
     private String getAbsenceRuleString(final AbsenceRule absenceRule) {
