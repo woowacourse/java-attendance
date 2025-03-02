@@ -6,7 +6,7 @@
 
 ### 입력 기능
 
-- [ ] 프로그램을 시작하면 `src/main/resources/attendances.csv`를 통해 구현에 필요한 정보를 조회한다.
+- [X] 프로그램을 시작하면 `src/main/resources/attendances.csv`를 통해 구현에 필요한 정보를 조회한다.
     - 닉네임과 출석 일시가 기록되어 있다.
 
 ### 프로그램 실행 기능
