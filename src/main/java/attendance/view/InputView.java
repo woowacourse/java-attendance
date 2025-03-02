@@ -10,4 +10,8 @@ public class InputView implements Closeable {
     public void close() {
         scanner.close();
     }
+
+    public String inputString() {
+        return scanner.nextLine();
+    }
 }
