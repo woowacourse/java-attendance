@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Year;
+import java.time.*;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -97,17 +94,16 @@ public class AttendanceDateTimeTest {
     }
 
     @CsvSource({
-            "26, false",
-            "27, true"
+            "1, false",
+            "2, true"
     })
     @ParameterizedTest
     void 출석한_day가_주어진_day인지_확인한다(int day, boolean expected) {
         // Given
-        LocalDateTime localDateTime = Year.of(2025).atMonth(2).atDay(27).atTime(13, 30);
-        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(localDateTime);
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.createAbsentDateTime(Year.of(2025).atMonth(3).atDay(2));
 
         // When & Then
-        assertThat(attendanceDateTime.isDayInCurrentMonth(day))
+        assertThat(attendanceDateTime.isSameDate(LocalDate.now().withDayOfMonth(day)))
                 .isEqualTo(expected);
     }
 
