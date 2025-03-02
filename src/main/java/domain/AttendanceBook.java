@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import util.DateTimeConvertor;
 
 public class AttendanceBook {
@@ -34,8 +35,9 @@ public class AttendanceBook {
     public void validateExistAttendance(final LocalDate localDate, final String crewName) {
         if (crews.get(crewName).existAttendance(localDate)) {
             throw new IllegalArgumentException(
-                    String.format("[ERROR] %s 출석 기록이 존재합니다. 수정 기능을 이용해주세요", DateTimeConvertor.convertToLocalDateKoreanFormat(
-                            localDate)));
+                    String.format("[ERROR] %s 출석 기록이 존재합니다. 수정 기능을 이용해주세요",
+                            DateTimeConvertor.convertToLocalDateKoreanFormat(
+                                    localDate)));
         }
     }
 
@@ -46,7 +48,8 @@ public class AttendanceBook {
         }
     }
 
-    public AttendanceModification modifyAttendance(final String name, final LocalDate localDate, final AttendanceTime attendanceTime) {
+    public AttendanceModification modifyAttendance(final String name, final LocalDate localDate,
+                                                   final AttendanceTime attendanceTime) {
         final Crew crew = crews.get(name);
         final LocalTime localtime = attendanceTime.getLocalTime();
         final AttendanceRecord beforeAttendanceRecord = crew.getAttendanceRecordByDate(localDate);
@@ -59,7 +62,11 @@ public class AttendanceBook {
         return crews.get(name).getAttendanceRecords();
     }
 
-    public Map<AttendanceStatus, Integer> countAttendanceStatus(final String name) {
-        return null;
+    public Map<AttendanceStatus, Long> countAttendanceStatus(final String name) {
+        final List<AttendanceRecord> attendanceRecords = lookUpAttendanceHistory(name);
+        return attendanceRecords.stream()
+                .collect(Collectors.groupingBy(
+                        AttendanceRecord::status,
+                        Collectors.counting()));
     }
 }

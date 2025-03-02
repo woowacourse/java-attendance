@@ -103,7 +103,7 @@ public class AttendanceBookTest {
         final LocalDate localDate = SystemDate.NOW.getDate();
 
         //when
-        attendanceBook.addAttendance(name,LocalDateTime.of(localDate, LocalTime.of(10, 8)));
+        attendanceBook.addAttendance(name, LocalDateTime.of(localDate, LocalTime.of(10, 8)));
         final List<AttendanceRecord> attendanceRecords = attendanceBook.lookUpAttendanceHistory(name);
 
         //then
@@ -117,10 +117,15 @@ public class AttendanceBookTest {
         final String name = "쿠키";
 
         //when
-        final Map<AttendanceStatus, Integer> countAttendanceStatus = attendanceBook.countAttendanceStatus(name);
+        final Map<AttendanceStatus, Long> countAttendanceStatus = attendanceBook.countAttendanceStatus(name);
 
         //then
-        assertThat(countAttendanceStatus).isNotEmpty();
-
+        assertAll(
+                () -> assertThat(countAttendanceStatus).containsKey(AttendanceStatus.ATTENDANCE)
+                        .containsKey(AttendanceStatus.LATE)
+                        .containsKey(AttendanceStatus.ABSENCE),
+                () -> assertThat(countAttendanceStatus.get(AttendanceStatus.ATTENDANCE)).isGreaterThanOrEqualTo(2),
+                () -> assertThat(countAttendanceStatus.get(AttendanceStatus.ABSENCE)).isGreaterThanOrEqualTo(2)
+        );
     }
 }
