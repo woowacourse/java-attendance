@@ -1,10 +1,8 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class AttendanceRecord {
 
@@ -17,14 +15,16 @@ public class AttendanceRecord {
     }
 
     public LocalDateTime attend(String time) {
+        AttendancePolicy attendancePolicy = new AttendancePolicy();
+
         LocalDate today = dateProvider.getDate();
         LocalTime todayTime = LocalTime.of(
                 Integer.parseInt(time.split(":")[0]),
                 Integer.parseInt(time.split(":")[1]));
 
         validateAlreadyAttend(today);
-        validateIsWeekDays(today);
-        validateCampusOpen(todayTime);
+        attendancePolicy.validateIsWeekDays(today);
+        attendancePolicy.validateCampusOpen(todayTime);
 
         LocalDateTime attendanceTime = LocalDateTime.of(today, todayTime);
         attendanceTimes.add(attendanceTime);
@@ -38,21 +38,6 @@ public class AttendanceRecord {
         }
     }
 
-    private static void validateIsWeekDays(LocalDate today) {
-        if (today.getDayOfWeek().getValue() > 5) {
-            throw new IllegalArgumentException(
-                    String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
-                            today.getMonthValue(), today.getDayOfMonth(),
-                            today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
-        }
-    }
-
-    private void validateCampusOpen(LocalTime todayTime) {
-        if (todayTime.isBefore(LocalTime.of(8, 0))
-                || todayTime.isAfter(LocalTime.of(23, 0))) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
-        }
-    }
 
     public LocalDateTime findAttendanceTimeByDay(int dayOfMonth) {
         return attendanceTimes.stream()
