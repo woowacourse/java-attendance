@@ -15,11 +15,11 @@ import java.util.Locale;
 public class InputView {
     private static final String COMMAND_MESSAGE_HEADER_FORMAT = "오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.\n";
     private static final String COMMAND_PROMPT_FORMAT = "%s. %s\n";
-    private static final String NICK_NAME_PROMPT = "닉네임을 입력해 주세요.\n";
-    private static final String ENTER_ATTENDANCE_TIME_PROMPT = "등교 시간을 입력해 주세요.\n";
-    private static final String MODIFY_NICK_NAME_PROMPT = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.\n";
-    private static final String MODIFY_DATE_PROMPT = "수정하려는 날짜(일)를 입력해 주세요.\n";
-    private static final String MODIFY_TIME_PROMPT = "언제로 변경하겠습니까?\n";
+    private static final String NICK_NAME_PROMPT = "\n닉네임을 입력해 주세요.\n";
+    private static final String ENTER_ATTENDANCE_TIME_PROMPT = "\n등교 시간을 입력해 주세요.\n";
+    private static final String MODIFY_NICK_NAME_PROMPT = "\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.\n";
+    private static final String MODIFY_DATE_PROMPT = "\n수정하려는 날짜(일)를 입력해 주세요.\n";
+    private static final String MODIFY_TIME_PROMPT = "\n언제로 변경하겠습니까?\n";
 
     private final LocalDateProvider dateProvider;
     private final BufferedReader bufferedReader;
@@ -58,7 +58,7 @@ public class InputView {
     }
 
     public String inputModifyCrewName() {
-        System.out.println(MODIFY_NICK_NAME_PROMPT);
+        System.out.print(MODIFY_NICK_NAME_PROMPT);
         return readLine();
     }
 
@@ -93,7 +93,7 @@ public class InputView {
 
     public LocalDate inputModifyDate() {
         try {
-            System.out.println(MODIFY_DATE_PROMPT);
+            System.out.print(MODIFY_DATE_PROMPT);
             LocalDate now = dateProvider.now();
             return LocalDate.of(now.getYear(), now.getMonthValue(), parseInt());
         } catch (DateTimeException e) {

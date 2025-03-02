@@ -149,7 +149,7 @@ public class OutputView {
                             statusCount.get(ABSENCE),
                             LATENESS.getStatus(),
                             statusCount.get(LATENESS),
-                            WarningLevel.from(statusCount)
+                            WarningLevel.from(statusCount).getDescription()
                     ));
                 });
     }
