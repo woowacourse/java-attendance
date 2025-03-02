@@ -36,7 +36,7 @@ class AttendanceBookTest {
         //given
         String name = "조로";
         //when
-        CheckInHistory foundHistory = attendanceBook.findHistoryByName(Crew.of(name));
+        CheckInHistory foundHistory = attendanceBook.findHistoryByCrew(Crew.of(name));
         //then
         assertThat(foundHistory).isNotNull();
         assertThat(foundHistory.getCheckInCount()).isEqualTo(1);
@@ -49,7 +49,7 @@ class AttendanceBookTest {
         String name = "차니";
         //when
         //then
-        assertThatThrownBy(() -> attendanceBook.findHistoryByName(Crew.of(name)))
+        assertThatThrownBy(() -> attendanceBook.findHistoryByCrew(Crew.of(name)))
                 .isInstanceOf(AppException.class)
                 .hasMessageContaining(AppException.PREFIX);
     }
@@ -61,7 +61,7 @@ class AttendanceBookTest {
         Crew crew = Crew.of("조로");
         CheckInDate checkInDate = CheckInDate.of(2024, 12, 4);
         CheckInTime checkInTime = CheckInTime.of(10, 0);
-        CheckInHistory historyByName = attendanceBook.findHistoryByName(crew);
+        CheckInHistory historyByName = attendanceBook.findHistoryByCrew(crew);
         //when
         //then
         assertThatCode(() -> attendanceBook.checkIn(historyByName, checkInDate, checkInTime))
@@ -75,7 +75,7 @@ class AttendanceBookTest {
         Crew crew = Crew.of("조로");
         CheckInDate checkInDate = CheckInDate.of(2024, 12, 3);
         CheckInTime checkInTime = CheckInTime.of(10, 5);
-        CheckInHistory historyByName = attendanceBook.findHistoryByName(crew);
+        CheckInHistory historyByName = attendanceBook.findHistoryByCrew(crew);
         //when
         //then
         assertThatCode(() -> attendanceBook.modifyCheckInTime(historyByName, checkInDate, checkInTime))

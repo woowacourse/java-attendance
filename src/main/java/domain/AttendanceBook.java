@@ -18,7 +18,7 @@ public class AttendanceBook {
         return new AttendanceBook(book);
     }
 
-    public CheckInHistory findHistoryByName(Crew crew) {
+    public CheckInHistory findHistoryByCrew(Crew crew) {
         return Optional.ofNullable(book.get(crew))
                 .orElseThrow(() -> new AppException("해당 이름이 출석부에 존재하지 않습니다."));
     }
