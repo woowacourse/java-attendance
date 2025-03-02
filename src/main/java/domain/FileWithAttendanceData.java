@@ -2,14 +2,15 @@ package domain;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
 public class FileWithAttendanceData {
 
-    private static int REQUIRED_FIELDS_COUNT = 2;
     private final AttendanceBook attendanceBook;
 
     public FileWithAttendanceData(AttendanceBook attendanceBook) {
@@ -37,13 +38,20 @@ public class FileWithAttendanceData {
     }
 
     private boolean hasValidFieldCount(List<String> fields) {
+        int REQUIRED_FIELDS_COUNT = 2;
         return fields.size() == REQUIRED_FIELDS_COUNT;
     }
 
     private void addCrew(List<String> fields) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String name = fields.get(0);
-        LocalDateTime localDateTime = LocalDateTime.parse(fields.get(1), formatter);
-        attendanceBook.addCrew(name, localDateTime.toLocalDate(), localDateTime.toLocalTime());
+
+        String crewName = fields.get(0);
+        String dateTimeString = fields.get(1);
+
+        LocalDateTime attendanceDateTime = LocalDateTime.parse(dateTimeString, formatter);
+        LocalDate attendanceDate = attendanceDateTime.toLocalDate();
+        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
+
+        attendanceBook.addCrew(crewName, attendanceDate, attendanceTime);
     }
 }
