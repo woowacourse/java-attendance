@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -71,5 +73,33 @@ public class CrewAttendanceTest {
 
         assertThat(prevAttendance).isEqualTo(Attendance.of(prevDateTime));
         assertThat(newAttendance).isEqualTo(Attendance.of(newDateTime));
+    }
+
+    @DisplayName("전날까지의 출석, 지각, 결석 횟수 계산 테스트")
+    @Test
+    void test5() {
+        LocalDateTime today = LocalDateTime.of(2024, 12, 16, 13, 0);
+
+        List<LocalDateTime> attendances = List.of(
+                LocalDateTime.of(2024, 12, 2, 13, 0), //출석
+                LocalDateTime.of(2024, 12, 3, 10, 7), //지각
+                LocalDateTime.of(2024, 12, 4, 10, 2), //출석
+                LocalDateTime.of(2024, 12, 5, 10, 6), //지각
+                LocalDateTime.of(2024, 12, 6, 10, 1), //출석
+                LocalDateTime.of(2024, 12, 10, 10, 3), //출석
+                LocalDateTime.of(2024, 12, 13, 10, 2), //출석
+                today
+        ); //결석 3회
+
+        CrewAttendance crewAttendance = new CrewAttendance();
+        for (LocalDateTime attendance : attendances) {
+            crewAttendance.add(attendance);
+        }
+
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = crewAttendance.countAttendanceStatusBefore(today);
+
+        assertThat(attendanceStatusCounts.get(AttendanceStatus.PRESENT)).isEqualTo(5);
+        assertThat(attendanceStatusCounts.get(AttendanceStatus.LATE)).isEqualTo(2);
+        assertThat(attendanceStatusCounts.get(AttendanceStatus.ABSENT)).isEqualTo(3);
     }
 }
