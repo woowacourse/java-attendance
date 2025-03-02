@@ -72,18 +72,11 @@ public class AttendanceDateTime {
     }
 
     public boolean isSameDate(final AttendanceDateTime otherDateTime) {
-        LocalDate attendanceDate = this.dateTime.toLocalDate();
-        LocalDate otherDate = otherDateTime.getLocalDateTime().toLocalDate();
-        return attendanceDate.equals(otherDate);
+        return isSameDate(otherDateTime.getLocalDateTime().toLocalDate());
     }
 
-    public boolean isDayInCurrentMonth(final int day) {
-        int attendanceMonth = this.dateTime.getMonthValue();
-        int attendanceDay = this.dateTime.getDayOfMonth();
-        if (attendanceMonth == LocalDate.now().getMonthValue() && attendanceDay == day) {
-            return true;
-        }
-        return false;
+    public boolean isSameDate(final LocalDate date) {
+        return this.dateTime.toLocalDate().equals(date);
     }
 
     public AttendanceDateTime changeTime(final LocalTime newTime) {

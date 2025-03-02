@@ -93,7 +93,7 @@ public class AttendanceController {
     private void modifyAttendance(final AttendanceBook attendanceBook) {
         Crew crew = getCrewIfExistInAttendanceBook(attendanceModifyView.readCrewNickname(), attendanceBook);
         int dayToModify = attendanceModifyView.readDayToModify();
-        AttendanceDateTime originalDateTime = attendanceBook.findAttendanceDateTimeByCrewAndDay(crew, dayToModify);
+        AttendanceDateTime originalDateTime = attendanceBook.findAttendanceDateTimeByCrewAndDate(crew, LocalDate.now().withDayOfMonth(dayToModify));
         attendanceBook.removeAttendanceDateTime(crew, originalDateTime);
         LocalTime newTime = attendanceModifyView.readTimeToModify();
         AttendanceDateTime newDateTime = originalDateTime.changeTime(newTime);
@@ -118,7 +118,7 @@ public class AttendanceController {
         List<AttendanceDateTime> crewAttendanceDateTimes = new ArrayList<>();
         for (int day=1; day<=today.getDayOfMonth()-1; day++) {
             try {
-                crewAttendanceDateTimes.add(attendanceBook.findAttendanceDateTimeByCrewAndDay(crew, day));
+                crewAttendanceDateTimes.add(attendanceBook.findAttendanceDateTimeByCrewAndDate(crew, LocalDate.now().withDayOfMonth(day)));
             } catch (IllegalArgumentException exception) {
                 AttendanceDateTime absentDateTime = AttendanceDateTime.createAbsentDateTime(today.withDayOfMonth(day));
                 LocalDateTime absendLocalDateTime = absentDateTime.getLocalDateTime();

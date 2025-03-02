@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,10 +33,10 @@ public class AttendanceBook {
         attendances.add(attendanceDateTime);
     }
 
-    public AttendanceDateTime findAttendanceDateTimeByCrewAndDay(final Crew crew, final int day) {
+    public AttendanceDateTime findAttendanceDateTimeByCrewAndDate(final Crew crew, final LocalDate findDate) {
         List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
         return attendances.stream()
-                .filter(attendanceDateTime -> attendanceDateTime.isDayInCurrentMonth(day))
+                .filter(attendanceDateTime -> attendanceDateTime.isSameDate(findDate))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 일자에 출석하지 않았습니다."));
     }
