@@ -1,6 +1,5 @@
 package domain.attendance;
 
-import controller.AttendanceController;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,14 +22,16 @@ public class Attendances {
                 .anyMatch(attendance -> attendance.has(day));
     }
 
-    public void attend(LocalDate endDate, LocalDateTime attendDateTime) {
+    public AttendanceStatus attend(LocalDate endDate, LocalDateTime attendDateTime) {
         if (has(attendDateTime.toLocalDate())) {
             throw new IllegalArgumentException("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요");
         }
         if (attendDateTime.toLocalDate().isAfter(endDate)) {
             throw new IllegalArgumentException("미래에 출석할 수 없습니다");
         }
-        this.attendances.add(new Attendance(attendDateTime));
+        Attendance attendance = new Attendance(attendDateTime);
+        this.attendances.add(attendance);
+        return attendance.getStatus();
     }
 
     private void validate(List<LocalDateTime> dateTimes) {
@@ -41,13 +42,6 @@ public class Attendances {
         if (dateTimes.size() != dates.size()) {
             throw new IllegalArgumentException("동일한 날짜의 출석 기록은 등록할 수 없습니다");
         }
-    }
-
-    private Attendance findAttendanceByDate(LocalDate date) {
-        return attendances.stream()
-                .filter(attendance -> attendance.has(date))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(""));
     }
 
     public int countAttendance() {
