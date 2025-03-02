@@ -26,8 +26,9 @@ public class CrewRecords {
         return records.get(crew).getRecordOnDate(date);
     }
 
-    public Map<Crew, AttendanceRecords> getRecords() {
-        return records;
+    public AttendanceRecords getAttendanceRecordsOf(Crew crew) {
+        validateCrew(crew);
+        return records.get(crew);
     }
 
     private void validateCrew(Crew crew) {
