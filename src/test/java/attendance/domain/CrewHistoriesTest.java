@@ -91,4 +91,19 @@ class CrewHistoriesTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 이미 출석했습니다. 수정 기능을 이용해주세요.");
     }
+
+    @Test
+    void 출석_기록을_수정한다() {
+        // Given
+        Nickname nickname = new Nickname("밍트");
+        LocalDateTime attendanceTime = makeDateTime(3, 10, 0);
+        crewHistories.addHistory(nickname, attendanceTime);
+        LocalDateTime modifyingTime = makeDateTime(3, 11, 0);
+
+        // When
+        crewHistories.modify(nickname, modifyingTime);
+
+        // Then
+        assertThat(crewHistories).isEqualTo(new CrewHistories(Map.of(nickname, makeCrewHistory(modifyingTime))));
+    }
 }

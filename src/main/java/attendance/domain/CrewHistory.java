@@ -26,6 +26,20 @@ public class CrewHistory {
         }
     }
 
+    public void validateExists(final LocalDate attendanceDate) {
+        if (!history.containsKey(attendanceDate)) {
+            throw new IllegalArgumentException("[ERROR] 출석 기록이 존재하지 않습니다.");
+        }
+    }
+
+    public LocalDateTime modify(final LocalDateTime modifyingDateTime) {
+        LocalDate modifyDate = LocalDate.from(modifyingDateTime);
+        validateExists(modifyDate);
+        LocalDateTime previousDateTime = history.get(modifyDate);
+        history.put(modifyDate, modifyingDateTime);
+        return previousDateTime;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (!(o instanceof final CrewHistory that)) {

@@ -32,6 +32,12 @@ public class CrewHistories {
         }
     }
 
+    public void modify(final Nickname nickname, final LocalDateTime modifyingDateTime) {
+        validateKeyExists(nickname);
+        CrewHistory crewHistory = histories.get(nickname);
+        crewHistory.modify(modifyingDateTime);
+    }
+
     private void createIfNotExists(final Nickname nickname) {
         if (!histories.containsKey(nickname)) {
             histories.put(nickname, new CrewHistory(new HashMap<>()));
