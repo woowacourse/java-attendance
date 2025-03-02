@@ -18,22 +18,32 @@ public class AttendanceRecord {
 
     public LocalDateTime attend(String time) {
         LocalDate today = dateProvider.getDate();
-        
+        LocalTime todayTime = LocalTime.of(
+                Integer.parseInt(time.split(":")[0]),
+                Integer.parseInt(time.split(":")[1]));
+
+        validateIsWeekDays(today);
+        validateCampusOpen(todayTime);
+
+        LocalDateTime attendanceTime = LocalDateTime.of(today, todayTime);
+        attendanceTimes.add(attendanceTime);
+        return attendanceTime;
+    }
+
+    private static void validateIsWeekDays(LocalDate today) {
         if (today.getDayOfWeek().getValue() > 5) {
             throw new IllegalArgumentException(
                     String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
                             today.getMonthValue(), today.getDayOfMonth(),
                             today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
         }
+    }
 
-        LocalDateTime attendanceTime = LocalDateTime.of(
-                dateProvider.getDate(),
-                LocalTime.of(
-                        Integer.parseInt(time.split(":")[0]),
-                        Integer.parseInt(time.split(":")[1])
-                ));
-        attendanceTimes.add(attendanceTime);
-        return attendanceTime;
+    private void validateCampusOpen(LocalTime todayTime) {
+        if (todayTime.isBefore(LocalTime.of(8, 0))
+                || todayTime.isAfter(LocalTime.of(23, 0))) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+        }
     }
 
     public LocalDateTime findAttendanceTimeByDay(int dayOfMonth) {
