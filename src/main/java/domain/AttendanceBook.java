@@ -16,7 +16,12 @@ public class AttendanceBook {
     }
 
     public void initAttendance(String name, LocalDateTime dateTime) {
-        attendance.put(name, new AttendanceRecord(dateTime));
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        if (attendance.containsKey(name)) {
+            attendanceRecord = attendance.get(name);
+        }
+        attendanceRecord.applyAttendanceDate(dateTime);
+        attendance.put(name, attendanceRecord);
     }
 
     public boolean hasCrew(String name) {
@@ -36,11 +41,11 @@ public class AttendanceBook {
     }
 
     public void attend(String name, LocalDate date, LocalTime time) {
-        findAttendanceRecordByName(name).addAttendanceDate(date , time);
+        findAttendanceRecordByName(name).applyAttendanceDate(date , time);
     }
 
     public void edit(String name, LocalDate date, LocalTime time) {
-        findAttendanceRecordByName(name).editAttendanceDate(date, time);
+        findAttendanceRecordByName(name).applyAttendanceDate(date, time);
     }
 
     public int getTardyCount(String name) {

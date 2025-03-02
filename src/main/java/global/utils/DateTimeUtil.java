@@ -11,7 +11,7 @@ import java.util.List;
 import static view.utils.ViewUtil.getDayOfWeekMessage;
 
 public class DateTimeUtil {
-    public static final LocalDateTime FIXED_RUNNING_DATETIME = LocalDateTime.of(2024, 12, 14, 10, 0, 0);
+    public static final LocalDateTime FIXED_RUNNING_DATETIME = LocalDateTime.of(2024, 12, 16, 10, 0, 0);
     private static final LocalDate CHRISTMAS_DATE = LocalDate.of(2024, 12, 25);
     public static final LocalTime START_RUNNING_TIME = LocalTime.of(8, 0);
     public static final LocalTime END_RUNNING_TIME = LocalTime.of(23, 0);
@@ -35,8 +35,12 @@ public class DateTimeUtil {
     }
 
     public static boolean isDateInAvailableAttendance(LocalDate date) {
-        LocalDate firstDayOfMonth = FIXED_RUNNING_DATETIME.withDayOfMonth(1).toLocalDate();
+        LocalDate firstDayOfMonth = getFirstDayOfMonth(date);
         return !(date.isAfter(FIXED_RUNNING_DATETIME.toLocalDate()) || date.isBefore(firstDayOfMonth));
+    }
+
+    public static LocalDate getFirstDayOfMonth(LocalDate date) {
+        return FIXED_RUNNING_DATETIME.withDayOfMonth(1).toLocalDate();
     }
 
     public static LocalTime parseTime(String time) {

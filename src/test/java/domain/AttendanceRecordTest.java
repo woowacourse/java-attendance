@@ -12,7 +12,8 @@ class AttendanceRecordTest {
     void 출석일자와_시간을_입력하면_출석일시가_기록된다() {
         final LocalDateTime datetime = LocalDateTime.of(2024, 12, 14, 10, 5);
 
-        AttendanceRecord attendanceRecord = new AttendanceRecord(datetime);
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.applyAttendanceDate(datetime);
 
         assertThat(attendanceRecord.hasAttendanceDate(datetime.toLocalDate())).isEqualTo(true);
     }
@@ -22,8 +23,10 @@ class AttendanceRecordTest {
         final LocalDateTime beforeDatetime = LocalDateTime.of(2024, 12, 14, 10, 5);
         final LocalDateTime afterDatetime = LocalDateTime.of(2024, 12, 14, 10, 5);
 
-        AttendanceRecord attendanceRecord = new AttendanceRecord(beforeDatetime);
-        attendanceRecord.editAttendanceDate(afterDatetime.toLocalDate(), afterDatetime.toLocalTime());
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.applyAttendanceDate(beforeDatetime);
+        attendanceRecord.applyAttendanceDate(afterDatetime);
+
         assertThat(attendanceRecord.getAttendanceDate(beforeDatetime.toLocalDate()).getTime()).isEqualTo(afterDatetime.toLocalTime());
     }
 
@@ -31,7 +34,9 @@ class AttendanceRecordTest {
     void 출석이_정상적으로_기록되었는지_확인한다() {
         final LocalDateTime datetime = LocalDateTime.of(2024, 12, 14, 10, 5);
 
-        AttendanceRecord attendanceRecord = new AttendanceRecord(datetime);
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.applyAttendanceDate(datetime);
+
         AttendanceDate attendanceDate = attendanceRecord.getAttendanceDate(datetime.toLocalDate());
         AttendanceDate attendanceDateToCompare = new AttendanceDate(datetime);
 
@@ -42,13 +47,13 @@ class AttendanceRecordTest {
 
     @Test
     void 여러_일자의_출석이_정상적으로_기록된다() {
-        final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 10, 5), LocalDateTime.of(2024, 12, 12, 10, 5),
-                LocalDateTime.of(2024, 12, 13, 10, 5), LocalDateTime.of(2024, 12, 14, 10, 5));
+        final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 10, 15), LocalDateTime.of(2024, 12, 12, 10, 15),
+                LocalDateTime.of(2024, 12, 13, 10, 15), LocalDateTime.of(2024, 12, 14, 10, 15));
 
         AttendanceRecord attendanceRecord = new AttendanceRecord();
-        dateTimes.forEach(attendanceRecord::addAttendanceDate);
+        dateTimes.forEach(attendanceRecord::applyAttendanceDate);
 
-        assertThat(attendanceRecord.getAttendanceDates().size()).isEqualTo(dateTimes.size());
+        assertThat(attendanceRecord.calculateTardyCount()).isEqualTo(dateTimes.size());
     }
 
     @Test
@@ -57,7 +62,7 @@ class AttendanceRecordTest {
                 LocalDateTime.of(2024, 12, 13, 10, 10), LocalDateTime.of(2024, 12, 14, 10, 10));
 
         AttendanceRecord attendanceRecord = new AttendanceRecord();
-        dateTimes.forEach(attendanceRecord::addAttendanceDate);
+        dateTimes.forEach(attendanceRecord::applyAttendanceDate);
 
         assertThat(attendanceRecord.calculateTardyCount()).isEqualTo(dateTimes.size());
     }
@@ -68,7 +73,7 @@ class AttendanceRecordTest {
                 LocalDateTime.of(2024, 12, 13, 15, 10), LocalDateTime.of(2024, 12, 14, 15, 10));
 
         AttendanceRecord attendanceRecord = new AttendanceRecord();
-        dateTimes.forEach(attendanceRecord::addAttendanceDate);
+        dateTimes.forEach(attendanceRecord::applyAttendanceDate);
 
         assertThat(attendanceRecord.calculateAbsenceCount()).isEqualTo(dateTimes.size());
     }

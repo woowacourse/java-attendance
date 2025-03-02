@@ -6,32 +6,58 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static global.utils.DateTimeUtil.*;
+
 public class AttendanceRecord {
     private final List<AttendanceDate> attendanceDates;
 
     public AttendanceRecord() {
         attendanceDates = new ArrayList<>();
+        initRecord();
     }
 
-    public AttendanceRecord(LocalDateTime dateTime) {
-        attendanceDates = new ArrayList<>();
-        addAttendanceDate(dateTime);
+    public void initRecord() {
+        LocalDate targetDate = getFirstDayOfMonth(getFixedRunningDate());
+        while (targetDate.isBefore(getFixedRunningDate())) {
+            if (isWeekday(targetDate)) {
+                applyAttendanceDate(targetDate);
+            }
+            targetDate = targetDate.plusDays(1);
+        }
     }
 
-    public void addAttendanceDate(LocalDateTime dateTime) {
+    public void applyAttendanceDate(LocalDate date) {
+        if (isAlreadyAttend(date)) {
+            int index = attendanceDates.indexOf(getAttendanceDate(date));
+            attendanceDates.set(index, new AttendanceDate(date));
+            return;
+        }
+        attendanceDates.add(new AttendanceDate(date));
+    }
+
+    public void applyAttendanceDate(LocalDateTime dateTime) {
+        if (isAlreadyAttend(dateTime.toLocalDate())) {
+            int index = attendanceDates.indexOf(getAttendanceDate(dateTime.toLocalDate()));
+            attendanceDates.set(index, new AttendanceDate(dateTime));
+            return;
+        }
         attendanceDates.add(new AttendanceDate(dateTime));
     }
 
-    public void addAttendanceDate(LocalDate date, LocalTime time) {
-        attendanceDates.add(new AttendanceDate(date, time));
-    }
-
-    public void editAttendanceDate(LocalDate date, LocalTime time) {
-        int index = attendanceDates.indexOf(getAttendanceDate(date));
-        attendanceDates.set(index, new AttendanceDate(date, time));
+    public void applyAttendanceDate(LocalDate date, LocalTime time) {
+        if (isAlreadyAttend(date)) {
+            int index = attendanceDates.indexOf(getAttendanceDate(date));
+            attendanceDates.set(index, new AttendanceDate(date, time));
+            return;
+        }
+        attendanceDates.add(new AttendanceDate(date , time));
     }
 
     public boolean hasAttendanceDate(LocalDate date) {
+        return !getAttendanceDate(date).getStatus().equals(AttendanceStatus.NONE);
+    }
+
+    public boolean isAlreadyAttend(LocalDate date) {
         return getAttendanceDate(date) != null;
     }
 
@@ -65,7 +91,7 @@ public class AttendanceRecord {
     }
 
     public void validateBeforeEdit(LocalDate date) {
-        if (!hasAttendanceDate(date)) {
+        if (!(isAlreadyAttend(date) && hasAttendanceDate(date))) {
             throw new IllegalArgumentException("출석 기록이 없어 수정할 수 없습니다.");
         }
     }

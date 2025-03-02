@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class AttendanceDate {
+public class AttendanceDate implements Comparable<AttendanceDate> {
     private LocalDate date;
     private LocalTime time;
     private AttendanceStatus status;
@@ -19,6 +19,12 @@ public class AttendanceDate {
         this.date = date;
         this.time = time;
         saveAttendanceStatus();
+    }
+
+    public AttendanceDate(LocalDate date) {
+        this.date = date;
+        time = LocalTime.of(0, 0, 0);
+        status = AttendanceStatus.NONE;
     }
 
     public boolean isSameDate(LocalDate date) {
@@ -39,5 +45,10 @@ public class AttendanceDate {
 
     public AttendanceStatus getStatus() {
         return status;
+    }
+
+    @Override
+    public int compareTo(AttendanceDate attendanceDate) {
+        return date.compareTo(attendanceDate.getDate());
     }
 }

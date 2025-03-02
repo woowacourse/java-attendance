@@ -119,7 +119,7 @@ class AttendanceBookTest {
     void 출석기록이_없을_때_출석을_시도하는_경우_예외는_발생하지_않는다() {
         final String name = "시소";
         final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
-        final LocalDate newDate = LocalDate.of(2024, 12, 15);
+        final LocalDate newDate = LocalDate.of(2024, 12, 13);
 
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.initAttendance(name, dateTime);
@@ -131,7 +131,7 @@ class AttendanceBookTest {
     void 출석되지_않은_일자를_수정하려는_경우_예외가_발생한다() {
         final String name = "시소";
         final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
-        final LocalDate newDate = LocalDate.of(2024, 12, 15);
+        final LocalDate newDate = LocalDate.of(2024, 12, 13);
 
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.initAttendance(name, dateTime);
