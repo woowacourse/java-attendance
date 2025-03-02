@@ -89,7 +89,7 @@ public class AttendanceHistoryTest {
         }
 
     }
-    
+
     @Nested
     @DisplayName("날짜를 기준으로 출석 기록을 반환한다.")
     class FindAttendanceHistoryByDate {
@@ -119,6 +119,21 @@ public class AttendanceHistoryTest {
             });
         }
 
+        @DisplayName("기록이 없는 날짜의 출석을 찾는다면, 올바르게 Time이 빈 Record를 반환한다.")
+        @Test
+        public void findByDateFromNotRecord() throws Exception {
+            // given
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
+            final var targetDate = LocalDate.of(2024, 12, 5);
+
+            // when
+            final AttendanceRecord actual = attendanceHistory.findByDate(targetDate);
+
+            // then
+            assertThat(actual.getAttendanceTime()).isEmpty();
+        }
+
         @DisplayName("등교 날짜가 아닌 날짜의 출석 기록을 찾는다면, 예외가 발생한다.")
         @Test
         public void findByDateFromNotAttendanceDay() throws Exception {
@@ -131,13 +146,13 @@ public class AttendanceHistoryTest {
             assertThatThrownBy(() -> attendanceHistory.findByDate(findDate))
                     .isInstanceOf(IllegalArgumentException.class);
         }
-        
+
     }
-    
+
     @Nested
     @DisplayName("기존의 출석 기록을 새로운 시간으로 수정한다.")
     class UpdateRecordTimeByDate {
-        
+
         @DisplayName("기존의 출석 기록을 새로운 시간으로 올바르게 수정한다.")
         @Test
         public void updateTimeByDate() throws Exception {
@@ -192,7 +207,7 @@ public class AttendanceHistoryTest {
         }
 
     }
-    
+
     @Nested
     @DisplayName("주어진 날짜 이전날까지의 출석 기록을 반환한다.")
     class FindAllAttendanceHistoryUntilBeforeToday {
@@ -216,9 +231,9 @@ public class AttendanceHistoryTest {
                 s.assertThat(actual.getFirst().getAttendanceTime()).isEmpty();
             });
         }
-        
+
     }
-    
+
     @Nested
     @DisplayName("주어진 날짜의 이전날까지의 출석 통계를 계산한다.")
     class CalculateAttendanceStatusStatistics {
@@ -243,9 +258,9 @@ public class AttendanceHistoryTest {
             // then
             assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
         }
-        
+
     }
-    
+
     @Nested
     @DisplayName("출석 기록이 제적 위험이 존재하는지 여부를 반환한다.")
     class IsRiskOfExpulsion {
@@ -264,9 +279,9 @@ public class AttendanceHistoryTest {
             // then
             assertThat(actual).isTrue();
         }
-        
+
     }
-    
+
     @Nested
     @DisplayName("제적 위험 상태를 계산한다.")
     class CalculateRiskOfExpulsion {
@@ -297,9 +312,9 @@ public class AttendanceHistoryTest {
                     Arguments.of(10, RiskOfExpulsionStatus.EXPULSION)
             );
         }
-        
+
     }
-    
+
     @Nested
     @DisplayName("주어진 날짜에 출석이 존재하는지 여부를 반환한다.")
     class IsAlreadyAttendance {
