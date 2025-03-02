@@ -1,6 +1,7 @@
 package domain;
 
 import controller.command.AttendanceCheck;
+import controller.command.AttendanceCommand;
 import java.util.Arrays;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -32,7 +33,7 @@ public enum Command {
         }
     }
 
-    public controller.command.AttendanceCommand getCommandInstance() {
+    public AttendanceCommand getInstance() {
         if (mapper == null) {
             return null;
         }
