@@ -3,7 +3,9 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public class CrewAttendance {
     private final List<Attendance> attendances;
@@ -43,5 +45,30 @@ public class CrewAttendance {
                 .filter(attendance -> attendance.record().date().equals(targetDay))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜의 출석 기록이 존재하지 않습니다."));
+    }
+
+    public Map<AttendanceStatus, Integer> countAttendanceStatusBefore(final LocalDateTime today) {
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = new EnumMap<>(AttendanceStatus.class);
+
+        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
+            if (attendanceStatus.equals(AttendanceStatus.ABSENT)) {
+                int count = 0;
+                for (int day = 1; day < today.getDayOfMonth(); day++) {
+                    LocalDateTime targetDay = LocalDateTime.of(2024, 12, day, 0, 0);
+                    if (!Campus.isOffDay(targetDay) && !isExistDay(targetDay)) {
+                        count++;
+                    }
+                }
+                attendanceStatusCounts.put(attendanceStatus, count);
+            } else {
+                int count = (int) attendances.stream()
+                        .filter(attendance -> !attendance.isSameDay(Attendance.of(today)))
+                        .filter(attendance -> attendance.status().equals(attendanceStatus))
+                        .count();
+                attendanceStatusCounts.put(attendanceStatus, count);
+            }
+        }
+
+        return attendanceStatusCounts;
     }
 }
