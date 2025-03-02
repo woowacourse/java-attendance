@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceTest {
+public class AttendanceRecordTest {
 
     @Test
     void 출석하면_출석_시간을_추가한다() {
@@ -22,6 +22,19 @@ public class AttendanceTest {
                         Integer.parseInt(time.split(":")[1])
                 )));
     }
+
+    @Test
+    void 해당_날짜의_출석_지각_결석_여부를_판단한다() {
+        // 00:00 ~ 10:05 출석
+        // 10:06 ~ 10:30 지각
+        // 10:31 ~ 23:59 결석
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        LocalDateTime attendanceTime = attendanceRecord.attend("09:59");
+
+//        String status = attendanceRecord.getAttendanceStatus(attendanceTime.getDayOfMonth());
+//        assertThat(status).isEqualTo("출석");
+    }
+
 
     class AttendanceRecord {
 
