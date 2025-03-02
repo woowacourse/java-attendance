@@ -17,9 +17,9 @@ public class AttendanceManager {
         attendanceManager.put(nickName, attendances);
     }
 
-    public boolean isAttended(NickName nickName) {
+    public boolean isAttended(NickName nickName, AttendanceRecord checkAttendanceRecord) {
         Attendances attendances = attendanceManager.getOrDefault(nickName, new Attendances());
-        return attendances.isAttended();
+        return attendances.isAttended(checkAttendanceRecord);
     }
 
     public void edit(NickName nickName, AttendanceRecord editAttendanceRecord) {

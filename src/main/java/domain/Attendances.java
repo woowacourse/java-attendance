@@ -16,8 +16,9 @@ public class Attendances {
         attendances.add(attendanceRecord);
     }
 
-    public boolean isAttended() {
-        return !attendances.isEmpty();
+    public boolean isAttended(AttendanceRecord checkAttendanceRecord) {
+        return attendances.stream()
+                .anyMatch(attendanceRecord -> attendanceRecord.isSameDate(checkAttendanceRecord));
     }
 
     public void edit(AttendanceRecord attendanceRecord) {

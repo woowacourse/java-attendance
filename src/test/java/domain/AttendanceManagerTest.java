@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class AttendanceManagerTest {
     @Nested
@@ -26,20 +28,23 @@ public class AttendanceManagerTest {
             assertThat(attendanceManager).isNotEqualTo(new AttendanceManager());
         }
 
-        @Test
-        @DisplayName("이미 출석한 경우를 알 수 있다")
-        void should_return_true_when_already_attended() {
+        @ParameterizedTest
+        @DisplayName("이름, 확인할 출석 기록으로 출석 기록과 동일한 날짜의 출석 기록이 존재하는지 확인할 수 있다")
+        @CsvSource(value = {"11, 11, true", "10, 11, false"})
+        void should_return_true_when_same_date_attended_attendanceRecord(String attendedDate, String checkDate,
+                                                                         boolean expected) {
             // given
             NickName nickName = new NickName("후우");
-            AttendanceRecord attendanceRecord = AttendanceRecord.of("11", "10:00");
             AttendanceManager attendanceManager = new AttendanceManager();
-            attendanceManager.attend(nickName, attendanceRecord);
+            AttendanceRecord attendedAttendanceRecord = AttendanceRecord.of(attendedDate, "10:00");
+            attendanceManager.attend(nickName, attendedAttendanceRecord);
+            AttendanceRecord checkAttendanceRecord = AttendanceRecord.of(checkDate, "10:00");
 
             // when
-            boolean result = attendanceManager.isAttended(nickName);
+            boolean result = attendanceManager.isAttended(nickName, checkAttendanceRecord);
 
             // then
-            assertThat(result).isEqualTo(true);
+            assertThat(result).isEqualTo(expected);
         }
     }
 
