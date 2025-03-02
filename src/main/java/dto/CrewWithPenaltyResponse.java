@@ -4,17 +4,17 @@ import domain.AttendanceStatus;
 import domain.Crew;
 import domain.Penalty;
 
-public record CrewsWithPenaltyResponse(
+public record CrewWithPenaltyResponse(
         String name,
         int absentCount,
         int lateCount,
         String penalty
 ) {
-    public static CrewsWithPenaltyResponse fromCrew(Crew crew) {
+    public static CrewWithPenaltyResponse fromCrew(Crew crew) {
         int absentCount = crew.countAttendanceStatusInDecember(AttendanceStatus.ABSENT);
         int lateCount = crew.countAttendanceStatusInDecember(AttendanceStatus.LATE);
 
-        return new CrewsWithPenaltyResponse(
+        return new CrewWithPenaltyResponse(
                 crew.getName(),
                 absentCount,
                 lateCount,

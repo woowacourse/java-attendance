@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import util.OutputParser;
 
 public enum DayType {
     MONDAYS(List.of(2, 9, 16, 23, 30)),
@@ -28,6 +29,13 @@ public enum DayType {
                 .filter(dayType -> dayType.containsDay(day))
                 .findAny()
                 .orElse(WORKING_DAYS);
+    }
+
+    public static void validateIsWorkingDay(LocalDate date) {
+        if (findByDate(date) != WORKING_DAYS) {
+            throw new IllegalArgumentException(
+                    ErrorCode.DATE_NOT_ATTENDING_DATE.getFormattedMessage(OutputParser.parseDateInKorean(date)));
+        }
     }
 
     private boolean containsDay(int value) {

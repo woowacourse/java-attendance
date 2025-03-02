@@ -18,7 +18,13 @@ public class AttendanceBook {
         crews.add(newCrew);
     }
 
-    public boolean checkNameExists(String name) {
+    public void validateNameExists(String name) {
+        if (!checkNameExists(name)) {
+            throw new IllegalArgumentException(ErrorCode.CREW_NAME_NOT_FOUND.getMessage());
+        }
+    }
+
+    private boolean checkNameExists(String name) {
         return crews.stream()
                 .anyMatch(crew -> crew.hasName(name));
     }
@@ -36,7 +42,6 @@ public class AttendanceBook {
 
     public int getAttendanceStatusCountByName(String name, AttendanceStatus attendanceStatus) {
         Crew crew = findCrewByName(name);
-
         return crew.countAttendanceStatusInDecember(attendanceStatus);
     }
 
@@ -52,7 +57,6 @@ public class AttendanceBook {
 
     public LocalTime findTimeByNameAndDate(String name, LocalDate date) {
         Crew crew = findCrewByName(name);
-
         return crew.findTimeByDate(date);
     }
 
@@ -65,9 +69,18 @@ public class AttendanceBook {
         return crews.stream()
                 .filter(crew -> !crew.hasPenalty(Penalty.NONE))
                 .sorted(Comparator.comparing(Crew::getPenalty, Comparator.comparingInt(Penalty::getPriority))
-                        .thenComparing(crew -> crew.countAttendanceStatusInDecember(AttendanceStatus.ABSENT) +
-                                crew.countAttendanceStatusInDecember(AttendanceStatus.LATE), Comparator.reverseOrder())
+                        .thenComparing(crew ->
+                                        crew.countAttendanceStatusInDecember(AttendanceStatus.ABSENT) +
+                                                crew.countAttendanceStatusInDecember(AttendanceStatus.LATE),
+                                Comparator.reverseOrder())
                         .thenComparing(Crew::getName))
                 .toList();
+    }
+
+    public void validateAttendanceRecordExistsByDate(String name, LocalDate date) {
+        Crew crew = findCrewByName(name);
+        if (!crew.hasAttendanceRecordWithDate(date)) {
+            throw new IllegalArgumentException(ErrorCode.ATTENDANCE_DATE_NOT_FOUND.getMessage());
+        }
     }
 }
