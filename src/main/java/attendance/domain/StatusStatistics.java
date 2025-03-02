@@ -3,16 +3,20 @@ package attendance.domain;
 import java.util.HashMap;
 import java.util.Map;
 
-public record StatusStatistics(Map<AttendanceStatus, Integer> history) {
+public record StatusStatistics(Map<AttendanceStatus, Integer> statistics) {
     public StatusStatistics() {
         this(new HashMap<>());
     }
 
     public void put(AttendanceStatus state) {
-        history.put(state, this.get(state) + 1);
+        statistics.put(state, this.get(state) + 1);
     }
 
     public int get(AttendanceStatus state) {
-        return history.getOrDefault(state, 0);
+        return statistics.getOrDefault(state, 0);
+    }
+
+    public int getWeight() {
+        return statistics.get(AttendanceStatus.LATE) / 3 + statistics.get(AttendanceStatus.ABSENCE);
     }
 }
