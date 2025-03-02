@@ -5,15 +5,17 @@ import java.util.List;
 
 public class AttendanceRecord {
 
+    private final DateProvider dateProvider;
     private List<LocalDateTime> attendanceTimes;
 
-    public AttendanceRecord() {
+    public AttendanceRecord(DateProvider dateProvider) {
+        this.dateProvider = dateProvider;
         this.attendanceTimes = new ArrayList<>();
     }
 
     public LocalDateTime attend(String time) {
         LocalDateTime attendanceTime = LocalDateTime.of(
-                Today.TODAY,
+                dateProvider.getDate(),
                 LocalTime.of(
                         Integer.parseInt(time.split(":")[0]),
                         Integer.parseInt(time.split(":")[1])
