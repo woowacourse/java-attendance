@@ -13,6 +13,6 @@ public record AttendanceDetails(
 ) {
     public static AttendanceDetails of(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime,
                                        final AttendanceStatus attendanceStatus) {
-        return new AttendanceDetails(attendanceDate.getLocalDate(), attendanceTime.getLocaltime(), attendanceStatus.getCode());
+        return new AttendanceDetails(attendanceDate.getLocalDate(), attendanceTime.getLocalTime(), attendanceStatus.getCode());
     }
 }

@@ -3,14 +3,13 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import util.DateTimeConvertor;
-import util.DateTimeParser;
 
 public class AttendanceTime {
 
-    private final LocalTime localtime;
+    private final LocalTime localTime;
 
-    public AttendanceTime(final LocalTime localtime) {
-        this.localtime = localtime;
+    public AttendanceTime(final LocalTime localTime) {
+        this.localTime = localTime;
     }
 
     public static AttendanceTime of(final DayOfWeek dayOfWeek, final LocalTime localtime) {
@@ -27,7 +26,7 @@ public class AttendanceTime {
         }
     }
 
-    public LocalTime getLocaltime() {
-        return localtime;
+    public LocalTime getLocalTime() {
+        return localTime;
     }
 }

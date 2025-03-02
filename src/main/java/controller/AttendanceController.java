@@ -10,6 +10,7 @@ import dto.AttendanceDetails;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 import view.ConsoleInputView;
 import view.ConsoleOutputView;
@@ -55,6 +56,16 @@ public class AttendanceController {
                     convertToAttendanceDetails(attendanceModification.beforeAttendanceRecord()),
                     convertToAttendanceDetails(attendanceModification.afterAttendanceRecord()));
 
+        }
+        if (Objects.equals(attendanceCommand, AttendanceCommand.LOOK_UP)) {
+            outputView.askCrewNickName();
+            final String name = inputView.readCrewName();
+            attendanceBook.validateExistCrew(name);
+            final List<AttendanceRecord> attendanceRecords = attendanceBook.lookUpAttendanceHistory(name);
+            final List<AttendanceDetails> attendanceDetails = attendanceRecords.stream()
+                    .map(this::convertToAttendanceDetails)
+                    .toList();
+            outputView.printAttendanceHistory(name, attendanceDetails);
         }
         if (Objects.equals(attendanceCommand, AttendanceCommand.QUIT)) {
             return;

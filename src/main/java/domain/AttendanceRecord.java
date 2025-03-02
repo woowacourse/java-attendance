@@ -22,7 +22,7 @@ public record AttendanceRecord(
     }
 
     public static AttendanceRecord of(final LocalDate date) {
-        return new AttendanceRecord(new AttendanceDate(date), null, AttendanceStatus.ABSENCE);
+        return new AttendanceRecord(new AttendanceDate(date), new AttendanceTime(null), AttendanceStatus.ABSENCE);
     }
 
     @Override

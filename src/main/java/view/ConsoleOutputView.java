@@ -3,7 +3,9 @@ package view;
 import dto.AttendanceDetails;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import util.DateTimeConvertor;
 
 public class ConsoleOutputView {
@@ -58,6 +60,14 @@ public class ConsoleOutputView {
 
     public void printAttendanceDetails(final AttendanceDetails attendanceDetails) {
         printlnMessage(LINE_SEPARATOR + convertToAttendanceDetailsMessage(attendanceDetails));
+    }
+
+    public void printAttendanceHistory(final String crewName, final List<AttendanceDetails> attendanceDetails) {
+        final String historyHeader = String.format("이번 달 %s의 출석 기록입니다.", crewName);
+        final String message = attendanceDetails.stream()
+                .map(this::convertToAttendanceDetailsMessage)
+                .collect(Collectors.joining(LINE_SEPARATOR));
+        printlnMessage(LINE_SEPARATOR + historyHeader + LINE_SEPARATOR + message);
     }
 
     private String convertToAttendanceDetailsMessage(final AttendanceDetails attendanceDetails) {

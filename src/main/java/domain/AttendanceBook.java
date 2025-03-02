@@ -47,7 +47,7 @@ public class AttendanceBook {
 
     public AttendanceModification modifyAttendance(final String name, final LocalDate localDate, final AttendanceTime attendanceTime) {
         final Crew crew = crews.get(name);
-        final LocalTime localtime = attendanceTime.getLocaltime();
+        final LocalTime localtime = attendanceTime.getLocalTime();
         final AttendanceRecord beforeAttendanceRecord = crew.getAttendanceRecordByDate(localDate);
         crew.putAttendance(LocalDateTime.of(localDate, localtime));
         final AttendanceRecord afterAttendanceRecord = crew.getAttendanceRecordByDate(localDate);

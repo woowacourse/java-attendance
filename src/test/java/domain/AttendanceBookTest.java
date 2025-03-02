@@ -37,7 +37,7 @@ public class AttendanceBookTest {
         assertAll(
                 () -> assertThat(attendanceRecord.attendanceDate().getLocalDate()).isEqualTo(
                         localDateTime.toLocalDate()),
-                () -> assertThat(attendanceRecord.attendanceTime().getLocaltime()).isEqualTo(
+                () -> assertThat(attendanceRecord.attendanceTime().getLocalTime()).isEqualTo(
                         localDateTime.toLocalTime())
         );
     }
@@ -71,8 +71,8 @@ public class AttendanceBookTest {
         final AttendanceRecord beforeAttendanceRecord = attendanceModification.beforeAttendanceRecord();
         final AttendanceRecord afterAttendanceRecord = attendanceModification.afterAttendanceRecord();
         //then
-        assertThat(beforeAttendanceRecord.attendanceTime().getLocaltime()).isEqualTo(LocalTime.of(10, 8));
-        assertThat(afterAttendanceRecord.attendanceTime().getLocaltime()).isEqualTo(LocalTime.of(10, 31));
+        assertThat(beforeAttendanceRecord.attendanceTime().getLocalTime()).isEqualTo(LocalTime.of(10, 8));
+        assertThat(afterAttendanceRecord.attendanceTime().getLocalTime()).isEqualTo(LocalTime.of(10, 31));
 
     }
 
