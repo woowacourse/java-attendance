@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.fixture.TestFixture.makeAttendanceExceptMonday;
+import static attendance.fixture.TestFixture.makeAttendanceMonday;
 import static attendance.fixture.TestFixture.makeCrewHistory;
 import static attendance.fixture.TestFixture.makeDateTime;
 import static attendance.fixture.TestFixture.makeDecemberDate;
@@ -15,7 +17,6 @@ import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CrewHistoriesTest {
@@ -142,15 +143,14 @@ class CrewHistoriesTest {
     }
 
     @Test
-    @DisplayName("출석 기록을 조회한다")
-    void 출석_기록을_조회한다() {
+    void 하나의_출석_기록을_조회한다() {
         // Given
         Nickname nickname = new Nickname("밍트");
         LocalDateTime attendanceTime = makeDateTime(3, 10, 0);
         crewHistories.addHistory(nickname, attendanceTime);
 
         // When
-        Optional<LocalDateTime> history = crewHistories.findHistory(nickname, LocalDate.from(attendanceTime));
+        Optional<LocalDateTime> history = crewHistories.findDateHistory(nickname, LocalDate.from(attendanceTime));
 
         // Then
         assertThat(history.get()).isEqualTo(attendanceTime);
@@ -165,9 +165,26 @@ class CrewHistoriesTest {
         LocalDate today = makeDecemberDate(4);
 
         // When
-        Optional<LocalDateTime> history = crewHistories.findHistory(nickname, today);
+        Optional<LocalDateTime> history = crewHistories.findDateHistory(nickname, today);
 
         // Then
         assertThat(history.isEmpty()).isTrue();
+    }
+
+    @Test
+    void 출석_기록을_조회한다() {
+        // Given
+        Nickname nickname = new Nickname("밍트");
+        crewHistories.addHistory(nickname, makeAttendanceExceptMonday(2));
+        crewHistories.addHistory(nickname, makeAttendanceMonday(3));
+        crewHistories.addHistory(nickname, makeAttendanceMonday(4));
+        CrewHistory expected = makeCrewHistory(makeAttendanceExceptMonday(2), makeAttendanceMonday(3),
+                makeAttendanceMonday(4));
+
+        // When
+        CrewHistory history = crewHistories.findHistory(nickname);
+
+        // Then
+        assertThat(history).isEqualTo(expected);
     }
 }

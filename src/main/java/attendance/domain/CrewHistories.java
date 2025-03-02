@@ -45,9 +45,14 @@ public class CrewHistories {
         return crewHistory.modify(modifyingDateTime);
     }
 
-    public Optional<LocalDateTime> findHistory(final Nickname nickname, final LocalDate date) {
+    public Optional<LocalDateTime> findDateHistory(final Nickname nickname, final LocalDate date) {
         CrewHistory crewHistory = histories.get(nickname);
         return crewHistory.find(date);
+    }
+
+    public CrewHistory findHistory(final Nickname nickname) {
+        validateKeyExists(nickname);
+        return histories.get(nickname);
     }
 
     private void createIfNotExists(final Nickname nickname) {

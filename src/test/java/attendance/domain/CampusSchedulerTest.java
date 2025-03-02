@@ -2,16 +2,20 @@ package attendance.domain;
 
 import static attendance.fixture.TestFixture.makeAbsenceExceptMonday;
 import static attendance.fixture.TestFixture.makeAttendanceExceptMonday;
+import static attendance.fixture.TestFixture.makeAttendanceMonday;
+import static attendance.fixture.TestFixture.makeCrewHistory;
 import static attendance.fixture.TestFixture.makeDateTime;
 import static attendance.fixture.TestFixture.makeDecemberDate;
 import static attendance.fixture.TestFixture.makeTardinessExceptMonday;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.entry;
 
 import attendance.view.TimeFormatter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -97,13 +101,31 @@ class CampusSchedulerTest {
         // When & Then
         assertThatThrownBy(() -> campusScheduler.validateOperationTime(attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("캠퍼스 운영 시간이 아닙니다.");
+                .hasMessageContaining("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
     }
 
     private static Stream<Arguments> 캠퍼스_운영_시간이_아니면_예외가_발생한다() {
         return Stream.of(
                 Arguments.of(makeDateTime(3, 7, 59)),
                 Arguments.of(makeDateTime(3, 23, 1))
+        );
+    }
+
+    @Test
+    void 출석_상태별_횟수를_계산한다() {
+        // Given
+        CrewHistory crewHistory = makeCrewHistory(makeAttendanceMonday(2), makeTardinessExceptMonday(3),
+                makeTardinessExceptMonday(4),
+                makeAbsenceExceptMonday(5));
+        LocalDate nowDate = makeDecemberDate(6);
+
+        // When
+        Map<AttendanceState, Integer> result = campusScheduler.countByAttendanceState(crewHistory, nowDate);
+
+        // Then
+        assertThat(result).contains(entry(AttendanceState.ATTENDANCE, 1),
+                entry(AttendanceState.TARDINESS, 2),
+                entry(AttendanceState.ABSENCE, 1)
         );
     }
 }

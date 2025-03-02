@@ -6,6 +6,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class CampusScheduler {
 
@@ -25,12 +28,50 @@ public class CampusScheduler {
     public void validateOperationTime(final LocalDateTime attendanceTime) {
         boolean isOperationTime = Campus.isOperationTime(LocalTime.from(attendanceTime));
         if (!isOperationTime) {
-            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }
 
     public boolean isNotOperationDate(final LocalDate attendanceDate) {
         return isWeekend(attendanceDate) || isHoliday(attendanceDate);
+    }
+
+    public Map<AttendanceState, Integer> countByAttendanceState(final CrewHistory history,
+                                                                final LocalDate nowDate) {
+        Map<AttendanceState, Integer> result = initialize();
+        LocalDate date = nowDate.withDayOfMonth(1);
+        while (date.isBefore(nowDate)) {
+            countHistory(history, date, result);
+            date = date.plusDays(1);
+        }
+        return result;
+    }
+
+    private Map<AttendanceState, Integer> initialize() {
+        Map<AttendanceState, Integer> map = new EnumMap<>(AttendanceState.class);
+        for (AttendanceState attendanceState : AttendanceState.values()) {
+            map.put(attendanceState, 0);
+        }
+        return map;
+    }
+
+    private void countHistory(final CrewHistory history, LocalDate date,
+                              final Map<AttendanceState, Integer> result) {
+        if (isNotOperationDate(date)) {
+            return;
+        }
+        count(history, date, result);
+    }
+
+    private void count(final CrewHistory history, final LocalDate date,
+                           final Map<AttendanceState, Integer> result) {
+        Optional<LocalDateTime> time = history.find(date);
+        if (time.isEmpty()) {
+            result.merge(AttendanceState.ABSENCE, 1, Integer::sum);
+            return;
+        }
+        AttendanceState attendanceState = calculateAttendanceState(time.get());
+        result.merge(attendanceState, 1, Integer::sum);
     }
 
     private boolean isWeekend(final LocalDate attendanceDate) {
