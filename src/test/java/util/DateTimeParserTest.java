@@ -1,6 +1,7 @@
 package util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -8,6 +9,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class DateTimeParserTest {
 
@@ -81,6 +84,22 @@ public class DateTimeParserTest {
         //then
         assertThat(koreanFormat).isEqualTo("09:01");
 
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"2024/12/13 10:08", "2024-12-1310:08"})
+    @DisplayName("yyyy-MM-dd HH:mm 형식이 아니므로 예외가 발생한다.")
+    void test6(final String dateTime) {
+        //should
+        assertThatIllegalArgumentException().isThrownBy(() -> DateTimeParser.parseToLocalDateTime(dateTime));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"01/11", "9:59"})
+    @DisplayName("HH:mm 형식이 아니므로 예외가 발생한다.")
+    void test7(final String dateTime) {
+        //should
+        assertThatIllegalArgumentException().isThrownBy(() -> DateTimeParser.parseToLocalTime(dateTime));
     }
 
 }

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
@@ -20,7 +21,11 @@ public class DateTimeParser {
     }
 
     public static LocalDateTime parseToLocalDateTime(final String dateTime) {
-        return LocalDateTime.parse(dateTime, FORMATTER_1);
+        try {
+            return LocalDateTime.parse(dateTime, FORMATTER_1);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 일시는 yyyy-MM-dd HH:mm 형식이어야 합니다.");
+        }
     }
 
     public static String parseToLocalDateKoreanFormat(final LocalDate localDate) {
@@ -37,5 +42,13 @@ public class DateTimeParser {
 
     public static String parseToLocalTimeKoreanFormat(final LocalTime localTime) {
         return localTime.format(FORMATTER_4);
+    }
+
+    public static LocalTime parseToLocalTime(final String time) {
+        try {
+            return LocalTime.parse(time, FORMATTER_4);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 시간은 HH:mm 형식으로 입력해주세요.");
+        }
     }
 }
