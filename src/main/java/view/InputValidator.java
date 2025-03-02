@@ -4,8 +4,8 @@ import static util.Constants.ERROR_HEADER;
 import static util.Constants.TIME_FORMAT;
 import static util.Constants.TODAY;
 
-import domain.Attendance;
 import domain.AttendanceBook;
+import domain.AttendancePolicy;
 import domain.CrewName;
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -62,7 +62,7 @@ public class InputValidator {
     }
 
     private static void checkRunningTime(LocalTime time) {
-        if (Attendance.isInvalidTime(time)) {
+        if (AttendancePolicy.isInvalidTime(time)) {
             throw new IllegalArgumentException(ERROR_HEADER + NOT_RUNNING_TIME_ERROR);
         }
     }
@@ -71,7 +71,7 @@ public class InputValidator {
         if (date.isAfter(TODAY)) {
             throw new IllegalArgumentException(ERROR_HEADER + INVALID_DATE_ERROR);
         }
-        if (Attendance.isHoliday(date)) {
+        if (AttendancePolicy.isHoliday(date)) {
             throw new IllegalArgumentException(ERROR_HEADER + HOLIDAY_ERROR);
         }
     }

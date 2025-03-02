@@ -83,7 +83,7 @@ public class AttendanceRecord {
 
     private void addWhenNotExistedTo(LocalDate targetDate) {
         Attendance attendanceCandidate = new Attendance(targetDate, ABSENT_CONSIDERING_TIME);
-        if (contains(attendanceCandidate) || Attendance.isHoliday(targetDate)) {
+        if (contains(attendanceCandidate) || AttendancePolicy.isHoliday(targetDate)) {
             return;
         }
         add(attendanceCandidate);
