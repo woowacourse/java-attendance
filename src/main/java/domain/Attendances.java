@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,13 @@ public class Attendances {
         if (attendances.stream().anyMatch(attendance -> attendance.isSameCrewAndTime(newAttendance))) {
             throw new IllegalArgumentException("출석이 이미 존재합니다.");
         }
+    }
+
+    public void modifyAttendanceTime(Crew crew, LocalDateTime newTime) {
+        Attendance oldAttendance = findByCrewAndDate(crew, newTime.toLocalDate());
+        Attendance newAttendance = Attendance.of(crew, new AttendanceTime(newTime));
+        attendances.remove(oldAttendance);
+        add(newAttendance);
     }
 
     public Attendance findByCrewAndDate(Crew crew, LocalDate day) {
