@@ -57,7 +57,7 @@ public class InputView {
 
     private void validateDate(String input) {
         try {
-            LocalDate.parse(input);
+            LocalDate.parse(String.format("2024-12-%2s", input).replace(" ", "0"));
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("[ERROR] 유효한 날짜를 입력해 주세요." + System.lineSeparator());
         }
