@@ -2,14 +2,11 @@ package attendance.controller;
 
 import attendance.domain.CampusScheduler;
 import attendance.domain.CrewHistories;
-import attendance.domain.Nickname;
-import attendance.util.StringParser;
 import attendance.view.InputView;
 import attendance.view.ResultView;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.Map;
 
 public class AttendanceController {
 
@@ -17,6 +14,7 @@ public class AttendanceController {
     private final ResultView resultView;
     private final Clock clock;
     private final CampusScheduler campusScheduler;
+    private final Map<CommandStatus, Command> commandProcess;
 
     public AttendanceController(final InputView inputView, final ResultView resultView, final Clock clock,
                                 final CampusScheduler campusScheduler) {
@@ -24,33 +22,32 @@ public class AttendanceController {
         this.resultView = resultView;
         this.clock = clock;
         this.campusScheduler = campusScheduler;
+        this.commandProcess = initializeCommand();
     }
 
     public void run(final CrewHistories crewHistories) {
-        attend(crewHistories);
+        CommandStatus commandStatus = makeCommandStatus();
+        if (commandStatus == CommandStatus.QUIT) {
+            return;
+        }
+        Command command = commandProcess.get(commandStatus);
+        command.execute(crewHistories);
+        resultView.showBlank();
+        run(crewHistories);
     }
 
-    private void attend(final CrewHistories crewHistories) {
-        LocalDate now = getNow();
-        Nickname nickname = makeNickname();
-        crewHistories.validateHistoryNotExists(nickname, now);
-
-        LocalDateTime attendanceTime = LocalDateTime.of(now, parseAttendanceTime());
-        crewHistories.addHistory(nickname, attendanceTime);
-        resultView.showAttendance(attendanceTime, campusScheduler.calculateAttendanceState(attendanceTime));
+    private Map<CommandStatus, Command> initializeCommand() {
+        return Map.of(
+                CommandStatus.ATTEND, new AttendCommand(inputView, resultView, clock, campusScheduler),
+                CommandStatus.MODIFY, new ModifyCommand(),
+                CommandStatus.INQUIRY_CREW, new InQuiryCrewCommand(),
+                CommandStatus.FIND_DISMISSAL, new FindDismissalCommand()
+        );
     }
 
-    private LocalDate getNow() {
-        return LocalDate.now(clock);
-    }
-
-    private LocalTime parseAttendanceTime() {
-        String attendanceTime = inputView.readAttendanceTime();
-        return StringParser.parseLocalTime(attendanceTime);
-    }
-
-    private Nickname makeNickname() {
-        String nickname = inputView.readNickname();
-        return new Nickname(nickname);
+    private CommandStatus makeCommandStatus() {
+        LocalDate now = LocalDate.now(clock);
+        String commandInput = inputView.readCommand(now);
+        return CommandStatus.from(commandInput);
     }
 }

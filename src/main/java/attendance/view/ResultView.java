@@ -18,6 +18,10 @@ public class ResultView {
                 + String.format(" (%s)", ATTENDANCE_STATE_KOREAN.get(attendanceState)));
     }
 
+    public void showBlank() {
+        System.out.println();
+    }
+
     private void showln(String line) {
         System.out.println(line);
     }
