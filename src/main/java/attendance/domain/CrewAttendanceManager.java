@@ -34,6 +34,12 @@ public class CrewAttendanceManager {
         crewAttendance.put(nickname, attendances);
     }
 
+    public void validateNicknameExists(final String nickname) {
+        if (!crewAttendance.containsKey(nickname)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+    }
+
     public Attendance processAttendanceCheck(final String nickname, final LocalDateTime dateTime) {
         Attendances attendances = crewAttendance.get(nickname);
         Attendances newAttendances = attendances.registerAttendance(dateTime);
