@@ -46,4 +46,14 @@ public class PenaltyTypeTest {
         }
         assertThat(penaltyType.isAtExpulsionCandidateState()).isTrue();
     }
+
+    @Test
+    @DisplayName("결석 횟수가 5회인 경우 면담을 반환한다")
+    void test5() {
+        // given
+        PenaltyType actual = PenaltyType.findByAbsenceCount(5);
+
+        // when & then
+        assertThat(actual).isEqualTo(PenaltyType.ONE_ON_ONE);
+    }
 }

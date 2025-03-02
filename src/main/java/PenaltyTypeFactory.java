@@ -3,7 +3,7 @@ import java.util.function.Predicate;
 
 enum PenaltyType {
 
-    ONE_ON_ONE((absenceCount) -> absenceCount >= 3 && absenceCount < 5),
+    ONE_ON_ONE((absenceCount) -> absenceCount >= 3 && absenceCount <= 5),
 
     BAN((absenceCount) -> absenceCount > 5),
 
