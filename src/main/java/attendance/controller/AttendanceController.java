@@ -176,7 +176,7 @@ public class AttendanceController {
         return false;
     }
 
-    private void printCrewsByAcademicStatus(AcademicStatus status, LocalDate targetDate) {
+    private void printCrewsByAcademicStatus(final AcademicStatus status, final LocalDate targetDate) {
         List<String> crewNames = attendanceBook.getExpulsionCrews(status, targetDate);
 
         List<Object[]> sortedCrewsInfo = getSortedCrewsInfo(crewNames, status);
@@ -190,7 +190,7 @@ public class AttendanceController {
         }
     }
 
-    private List<Object[]> getSortedCrewsInfo(List<String> crewNames, AcademicStatus status) {
+    private List<Object[]> getSortedCrewsInfo(final List<String> crewNames, final AcademicStatus status) {
         return crewNames.stream()
                 .map(crewName -> {
                     Map<LocalDate, Attendance> monthlyAttendances =
