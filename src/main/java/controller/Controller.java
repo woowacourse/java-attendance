@@ -136,22 +136,22 @@ public class Controller {
     private void displayRecords(LocalDate nowDate, String name) {
         LocalDate startDate = LocalDate.of(ATTENDANCE_YEAR, ATTENDANCE_MONTH, 1);
 
-        displayAttendanceRecord(nowDate, name, startDate);
+        for (LocalDate date = startDate; date.isBefore(nowDate); date = date.plusDays(1)) {
+            displayAttendanceRecord(name, date);
+        }
     }
 
-    private void displayAttendanceRecord(LocalDate nowDate, String name, LocalDate startDate) {
-        for (LocalDate date = startDate; date.isBefore(nowDate); date = date.plusDays(1)) {
-            if (isHoliday(date)) {
-                continue;
-            }
-
-            Attendance attendance = attendanceBook.findAttendance(name, date);
-            if (attendance == null) {
-                outputView.displayAbsenceRecord(date);
-                return;
-            }
-            outputView.displayRecord(date, attendance.getTime(), attendance.determineStatus().getDescription());
+    private void displayAttendanceRecord(String name, LocalDate date) {
+        if (isHoliday(date)) {
+            return;
         }
+
+        Attendance attendance = attendanceBook.findAttendance(name, date);
+        if (attendance == null) {
+            outputView.displayAbsenceRecord(date);
+            return;
+        }
+        outputView.displayRecord(date, attendance.getTime(), attendance.determineStatus().getDescription());
     }
 
     private void checkExpulsionRiskCrew(LocalDate nowDate) {
