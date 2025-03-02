@@ -34,15 +34,26 @@ public class AttendanceController {
         String inputCommand = "";
 
         while (!inputCommand.equalsIgnoreCase("Q")) {
+            inputCommand = processCommand(inputCommand, commands, attendanceBook);
+        }
+
+        inputView.close();
+    }
+
+    private String processCommand(String inputCommand, Map<String, Consumer<AttendanceBook>> commands,
+                                  AttendanceBook attendanceBook) {
+        try {
             inputCommand = inputView.inputCommand(LocalDate.now().format(DateTimeFormatter.ofPattern("MM월 dd일")));
             Consumer<AttendanceBook> command = commands.get(inputCommand);
 
             if (command == null) {
-                continue;
+                throw new IllegalArgumentException("잘못된 형식을 입력하였습니다.");
             }
             command.accept(attendanceBook);
+        } catch (IllegalArgumentException exception) {
+            outputView.printError(exception.getMessage());
         }
-        inputView.close();
+        return inputCommand;
     }
 
     private Map<String, Consumer<AttendanceBook>> initCommand() {
