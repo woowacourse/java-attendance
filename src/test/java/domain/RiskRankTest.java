@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class RiskRankTest {
-    private static Stream<Arguments> ofCases() {
+    private static Stream<Arguments> fromCases() {
         return Stream.of(
                 Arguments.of(0, 0, RiskRank.NOT_MANAGED),
                 Arguments.of(2, 1, RiskRank.NOT_MANAGED),
@@ -32,10 +32,11 @@ class RiskRankTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = "ofCases")
+    @MethodSource(value = "fromCases")
     @DisplayName("결석 횟수에 맞는 제적 위험 등급을 반환한다")
-    void of_test(int lateCount, int absentCount, RiskRank riskRank) {
-        Assertions.assertThat(RiskRank.of(lateCount, absentCount)).isEqualTo(riskRank);
+    void from_test(int lateCount, int absentCount, RiskRank expected) {
+        RiskRank actual = RiskRank.from(new AttendanceStatusCount(0, lateCount, absentCount));
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     @ParameterizedTest
