@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class AttendanceRecordTest {
 
@@ -24,13 +26,14 @@ public class AttendanceRecordTest {
                 )));
     }
 
-    @Test
-    void 해당_날짜의_출석_지각_결석_여부를_판단한다() {
+    @ParameterizedTest
+    @CsvSource(value = {"09:59, 출석", "10:06, 지각", "10:31, 결석"})
+    void 해당_날짜의_출석_지각_결석_여부를_판단한다(String time, String expected) {
         AttendanceRecord attendanceRecord = new AttendanceRecord();
-        LocalDateTime attendanceTime = attendanceRecord.attend("10:06");
+        LocalDateTime attendanceTime = attendanceRecord.attend(time);
 
         String status = attendanceRecord.getAttendanceStatus(attendanceTime.getDayOfMonth());
-        assertThat(status).isEqualTo("지각");
+        assertThat(status).isEqualTo(expected);
     }
 
     @Test
