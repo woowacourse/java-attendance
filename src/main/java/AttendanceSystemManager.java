@@ -79,9 +79,13 @@ public class AttendanceSystemManager {
         );
 
         expulsionCandidates.sort(Comparator
-                .comparing((PenaltyResultOfCrew candidate) -> priorityOfPenaltyTypes.getOrDefault(candidate.penaltyType(), 4))
-                .thenComparing((PenaltyResultOfCrew candidate) -> candidate.attendanceTypeCount().getAdjustedAbsenceCount())
-                .reversed());
+                .comparing(
+                        (PenaltyResultOfCrew candidate) -> priorityOfPenaltyTypes.getOrDefault(candidate.penaltyType(),
+                                4))
+                .thenComparing(
+                        (PenaltyResultOfCrew candidate) -> candidate.attendanceTypeCount().getAdjustedAbsenceCount())
+                .reversed()
+                .thenComparing((PenaltyResultOfCrew candidate) -> candidate.crew().getName()));
 
         return expulsionCandidates;
     }

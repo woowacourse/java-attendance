@@ -363,6 +363,29 @@ public class AttendanceSystemManagerTest {
             // then
             assertThat(actual).isEqualTo(List.of(hero, moru, hippo));
         }
+
+        @Test
+        @DisplayName("PenaltyType 과 결석 횟수가 동일한 경우 닉네임 순으로 정렬한다.")
+        void test3() {
+            // given
+
+            PenaltyResultOfCrew hero = PenaltyResultOfCrew.from(new Crew("히로"), AttendanceTypeCount.from(2, 1));
+            PenaltyResultOfCrew moru = PenaltyResultOfCrew.from(new Crew("모루"), AttendanceTypeCount.from(2, 1));
+            PenaltyResultOfCrew razel = PenaltyResultOfCrew.from(new Crew("라젤"), AttendanceTypeCount.from(2, 1));
+
+            List<PenaltyResultOfCrew> expulsionCandidates = new ArrayList<>(List.of(hero, razel, moru));
+
+            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+                    new AttendanceHistories(List.of()), new Crews(List.of())
+            );
+
+            // when
+            List<PenaltyResultOfCrew> actual = attendanceSystemManager.sortExpulsionCandidates(
+                    expulsionCandidates);
+
+            // then
+            assertThat(actual).isEqualTo(List.of(razel, moru, hero));
+        }
     }
 }
 
