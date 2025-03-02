@@ -74,7 +74,7 @@ public class OutPutView {
     public static void displayCounselingCandidate(Student student) {
         long expulsionCount = student.calculateTotalAbsentCount();
         AttendancePenalty attendancePenalty = AttendancePenalty.findPenaltyByAbsentCount(expulsionCount);
-        if (attendancePenalty.getPenalty() != null) {
+        if (!attendancePenalty.equals(AttendancePenalty.NONE)) {
             System.out.println(attendancePenalty.getPenalty() + "대상자 입니다.");
         }
     }

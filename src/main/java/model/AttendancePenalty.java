@@ -1,6 +1,7 @@
 package model;
 
 public enum AttendancePenalty {
+    NONE("없음", 0),
     WARNING("경고", 2),
     COUNSELING("면담", 3),
     EXPULSION("제적", 5);
@@ -23,7 +24,7 @@ public enum AttendancePenalty {
         if (count >= AttendancePenalty.WARNING.penaltyCount) {
             return AttendancePenalty.WARNING;
         }
-        return null;
+        return NONE;
     }
 
     public String getPenalty() {
