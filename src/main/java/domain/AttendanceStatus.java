@@ -3,54 +3,47 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 public enum AttendanceStatus {
-    ATTENDANCE("출석"),
-    LATENESS("지각"),
-    ABSENCE("결석");
+    ATTENDANCE("출석", LocalTime.of(10, 5), LocalTime.of(13, 5)),
+    LATENESS("지각", LocalTime.of(10, 30), LocalTime.of(13, 30)),
+    ABSENCE("결석", LocalTime.MAX, LocalTime.MAX);
 
-    private final static DayOfWeek ATTENDANCE_START_1PM_DAY = DayOfWeek.MONDAY;
-    private final static List<DayOfWeek> ATTENDANCE_START_10AM_DAYS = List.of(
-            DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY);
-    private static final LocalTime ATTENDANCE_CUTOFF_1PM = LocalTime.of(13, 5);
-    private static final LocalTime LATENESS_CUTOFF_1PM = LocalTime.of(13, 30);
-    private static final LocalTime ATTENDANCE_CUTOFF_10AM = LocalTime.of(10, 5);
-    private static final LocalTime LATENESS_CUTOFF_10AM = LocalTime.of(10, 30);
+    private final String description;
+    private final LocalTime morningSessionCutoff;
+    private final LocalTime afternoonSessionCutoff;
 
-    private final String status;
-
-    AttendanceStatus(String status) {
-        this.status = status;
+    AttendanceStatus(String description, LocalTime morningSessionCutoff, LocalTime afternoonSessionCutoff) {
+        this.description = description;
+        this.morningSessionCutoff = morningSessionCutoff;
+        this.afternoonSessionCutoff = afternoonSessionCutoff;
     }
 
     public static AttendanceStatus from(LocalDate date, LocalTime time) {
-        return determineStatus(date, time);
-    }
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        LocalTime attendanceCutoff = ATTENDANCE.morningSessionCutoff;
+        LocalTime latenessCutoff = LATENESS.morningSessionCutoff;
 
-    public static AttendanceStatus determineStatus(LocalDate date, LocalTime time) {
-        if (date.getDayOfWeek() == ATTENDANCE_START_1PM_DAY) {
-            return decideByTime(time, ATTENDANCE_CUTOFF_1PM, LATENESS_CUTOFF_1PM);
+        if (dayOfWeek == DayOfWeek.MONDAY) {
+            attendanceCutoff = ATTENDANCE.afternoonSessionCutoff;
+            latenessCutoff = LATENESS.afternoonSessionCutoff;
         }
 
-        if (ATTENDANCE_START_10AM_DAYS.contains(date.getDayOfWeek())) {
-            return decideByTime(time, ATTENDANCE_CUTOFF_10AM, LATENESS_CUTOFF_10AM);
-        }
-
-        return null;
+        return determineStatus(time, attendanceCutoff, latenessCutoff);
     }
 
-    public String getDescription() {
-        return status;
-    }
-
-    private static AttendanceStatus decideByTime(LocalTime time, LocalTime attendanceCutoff, LocalTime latenessCutoff) {
-        if (time.isAfter(attendanceCutoff) && time.isBefore(latenessCutoff.plusMinutes(1))) {
-            return LATENESS;
-        }
+    private static AttendanceStatus determineStatus(LocalTime time, LocalTime attendanceCutoff,
+                                                    LocalTime latenessCutoff) {
         if (time.isAfter(latenessCutoff)) {
             return ABSENCE;
         }
+        if (time.isAfter(attendanceCutoff)) {
+            return LATENESS;
+        }
         return ATTENDANCE;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
