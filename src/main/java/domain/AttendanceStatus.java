@@ -10,6 +10,9 @@ public enum AttendanceStatus {
 
     private static final AttendanceTime MONDAY_START_TIME = new AttendanceTime(LocalTime.of(13, 0));
     private static final AttendanceTime START_TIME = new AttendanceTime(LocalTime.of(10, 0));
+    private final static int TARDY_TIME_LOWER_BOUND = 5;
+    private final static int TARDY_TIME_UPPER_BOUND = 30;
+    private final static int ABSENCE_LOWER_BOUND = 30;
 
 
     private static AttendanceTime startTime(AttendanceDate date) {
@@ -30,11 +33,11 @@ public enum AttendanceStatus {
     }
 
     private static boolean isAbsence(AttendanceDate date, AttendanceTime attendanceTime) {
-        return attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(30));
+        return attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(ABSENCE_LOWER_BOUND));
     }
 
     private static boolean isTardy(AttendanceDate date, AttendanceTime attendanceTime) {
-        return attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(5)) &&
-                !attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(30));
+        return attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(TARDY_TIME_LOWER_BOUND)) &&
+                !attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(TARDY_TIME_UPPER_BOUND));
     }
 }

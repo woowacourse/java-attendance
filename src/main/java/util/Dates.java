@@ -27,4 +27,11 @@ public class Dates {
     private static boolean isWeekend(DayOfWeek day) {
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }
+
+    public static int getWorkingDays() {
+        return (int) LocalDate.of(TODAY.getYear(), TODAY.getMonth(), 1)
+                .datesUntil(TODAY.plusDays(1))
+                .filter(Dates::isNotHoliday)
+                .count();
+    }
 }

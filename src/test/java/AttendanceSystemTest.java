@@ -309,7 +309,7 @@ public class AttendanceSystemTest {
         AttendanceTime time = AttendanceTime.of(10, 0);
         attendanceSystem.editAttendance(crew, TODAY, time);
         AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
-        assertThat(attendanceBook.getAttendanceStatuses()).containsEntry(TODAY, AttendanceStatus.ATTEND);
+        assertThat(attendanceBook.getAttendanceStatuses().getAttendanceStatuses()).containsEntry(TODAY, AttendanceStatus.ATTEND);
     }
 
     @DisplayName("제적 위험자 목록 출력 테스트")

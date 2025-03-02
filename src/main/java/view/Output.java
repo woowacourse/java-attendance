@@ -3,6 +3,7 @@ package view;
 import domain.AttendanceStatus;
 import domain.RiskStatus;
 import dto.AttendanceResultDto;
+import dto.AttendanceStatusesDto;
 import dto.RiskCrewDto;
 import util.Dates;
 
@@ -13,7 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import static util.Parser.localDateToDateMessage;
+import static view.Parser.localDateToDateMessage;
 
 public class Output {
     private static final Map<RiskStatus, String> RISK_STATUS_MESSAGE = Map.of(
@@ -56,15 +57,38 @@ public class Output {
         System.out.println(getAttendanceMessage(attendanceResultDto));
     }
 
-    public void printAttendanceRecord(String name, LocalDate today, Map<LocalDate, LocalTime> attendanceBook, Map<LocalDate, AttendanceStatus> attendanceStatuses) {
+    public void printAttendanceRecord(String name,
+                                      LocalDate today,
+                                      Map<LocalDate, LocalTime> attendanceBook,
+                                      AttendanceStatusesDto attendanceStatuses) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", name);
         today.withDayOfMonth(1).datesUntil(today.plusDays(1))
                 .filter(Dates::isNotHoliday)
                 .forEach(date -> System.out.println(getAttendanceMessage(new AttendanceResultDto(
                         date,
                         attendanceBook.getOrDefault(date, Dates.DEFAULT_TIME),
-                        attendanceStatuses.getOrDefault(date, AttendanceStatus.ABSENCE)
+                        attendanceStatuses.attendanceStatuses().getOrDefault(date, AttendanceStatus.ABSENCE)
                 ))));
+        System.out.println(getAttendanceStatusesMessage(attendanceStatuses));
+        printIfHasRisk(attendanceStatuses.riskStatus());
+    }
+
+    private String getAttendanceStatusesMessage(AttendanceStatusesDto attendanceStatuses) {
+        return String.format("""
+
+                        출석: %d회
+                        지각: %d회
+                        결석: %d회
+                        """, attendanceStatuses.attendCount(),
+                attendanceStatuses.tardyCount(),
+                attendanceStatuses.absenceCount()
+        );
+    }
+
+    private void printIfHasRisk(RiskStatus riskStatus) {
+        if (riskStatus != RiskStatus.NONE) {
+            System.out.printf("%s 대상자입니다.\n\n", getRiskStatusMessage(riskStatus));
+        }
     }
 
     public void printRiskCrews(List<RiskCrewDto> riskCrews) {

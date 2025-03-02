@@ -1,7 +1,6 @@
 package view;
 
 import dto.AttendanceRecordDto;
-import util.Parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,12 +19,13 @@ public class FileInput {
         try (BufferedReader reader = createBufferedReader()) {
             return getAttendanceRecords(reader);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException("파일 읽기 오류");
         }
     }
 
     private BufferedReader createBufferedReader() {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FILE_PATH);
+        assert inputStream != null;
         return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
     }
 

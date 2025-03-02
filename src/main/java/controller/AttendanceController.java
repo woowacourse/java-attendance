@@ -2,15 +2,15 @@ package controller;
 
 import domain.AttendanceBook;
 import domain.AttendanceDate;
-import domain.AttendanceStatus;
+import domain.AttendanceStatuses;
 import domain.AttendanceSystem;
 import domain.AttendanceTime;
 import domain.Crew;
 import dto.AttendanceRecordDto;
 import dto.AttendanceResultDto;
+import dto.AttendanceStatusesDto;
 import dto.RiskCrewDto;
 import util.Dates;
-import util.Parser;
 import view.FileInput;
 import view.Input;
 import view.Output;
@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static util.Dates.TODAY;
 
@@ -79,23 +78,30 @@ public class AttendanceController {
         List<RiskCrewDto> riskCrews = attendanceSystem.getRiskCrews().entrySet().stream()
                 .map(entry -> new RiskCrewDto(
                         entry.getKey().name(),
-                        entry.getValue().getAbsenceCount(TODAY),
-                        entry.getValue().getTardyCount(TODAY),
-                        entry.getValue().getRiskStatus(TODAY)
+                        entry.getValue().getAbsenceCount(),
+                        entry.getValue().getTardyCount(),
+                        entry.getValue().getRiskStatus()
                 )).toList();
         output.printRiskCrews(riskCrews);
-
     }
 
     private void checkAttendanceRecord() {
         Crew crew = new Crew(input.getNameInput());
         AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
         attendanceBook.getAttendanceBook();
+
+        AttendanceStatuses attendanceStatuses = attendanceBook.getAttendanceStatuses();
         output.printAttendanceRecord(
                 crew.name(),
                 TODAY,
-                getAttendanceBook(attendanceBook),
-                getAttendanceStatuses(attendanceBook));
+                Parser.getAttendanceBook(attendanceBook),
+                new AttendanceStatusesDto(
+                        Parser.getAttendanceStatuses(attendanceStatuses),
+                        attendanceStatuses.getAttendCount(),
+                        attendanceStatuses.getTardyCount(),
+                        attendanceStatuses.getAbsenceCount(),
+                        attendanceStatuses.getRiskStatus()
+                ));
     }
 
     private void editAttendance() {
@@ -132,9 +138,7 @@ public class AttendanceController {
         AttendanceDate attendanceDate = new AttendanceDate(TODAY);
         Crew crew = new Crew(input.getNameInput());
         AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
-        if (attendanceBook.hasAttendanceRecord(attendanceDate)) {
-            throw new IllegalArgumentException("수정 기능을 사용해주세요.");
-        }
+        validateHasNoAttendRecordToday(attendanceBook, attendanceDate);
         LocalTime time = Parser.stringToLocalTime(input.getTimeInput());
         AttendanceTime attendanceTime = new AttendanceTime(time);
         attendanceBook.attendance(attendanceDate, attendanceTime);
@@ -150,19 +154,9 @@ public class AttendanceController {
                         new AttendanceTime(attendanceRecordDto.attendanceDateTime().toLocalTime())));
     }
 
-    private Map<LocalDate, LocalTime> getAttendanceBook(AttendanceBook attendanceBook) {
-        return attendanceBook.getAttendanceBook().entrySet().stream()
-                .collect(Collectors.toMap(
-                        entry -> entry.getKey().getDate(),
-                        entry -> entry.getValue().getTime()
-                ));
-    }
-
-    private Map<LocalDate, AttendanceStatus> getAttendanceStatuses(AttendanceBook attendanceBook) {
-        return attendanceBook.getAttendanceStatuses().entrySet().stream()
-                .collect(Collectors.toMap(
-                        entry -> entry.getKey().getDate(),
-                        Map.Entry::getValue
-                ));
+    private void validateHasNoAttendRecordToday(AttendanceBook attendanceBook, AttendanceDate attendanceDate) {
+        if (attendanceBook.hasAttendanceRecord(attendanceDate)) {
+            throw new IllegalArgumentException("수정 기능을 사용해주세요.");
+        }
     }
 }

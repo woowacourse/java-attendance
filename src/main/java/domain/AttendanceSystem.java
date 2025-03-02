@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static util.Dates.TODAY;
-
 public class AttendanceSystem {
     private final Map<Crew, AttendanceBook> attendanceBooks;
 
@@ -26,28 +24,29 @@ public class AttendanceSystem {
     }
 
     public int getAbsenceCount(Crew crew) {
-        return attendanceBooks.get(crew).getAbsenceCount(TODAY);
+        return attendanceBooks.get(crew).getAbsenceCount();
     }
 
     public int getTardyCount(Crew crew) {
-        return attendanceBooks.get(crew).getTardyCount(TODAY);
+        return attendanceBooks.get(crew).getTardyCount();
     }
 
     public int getAttendCount(Crew crew) {
-        return attendanceBooks.get(crew).getAttendCount(TODAY);
+        return attendanceBooks.get(crew).getAttendCount();
     }
 
     public RiskStatus getRisk(Crew crew) {
-        return attendanceBooks.get(crew).getRiskStatus(TODAY);
+        return attendanceBooks.get(crew).getRiskStatus();
     }
 
     public Map<Crew, AttendanceBook> getRiskCrews() {
         return attendanceBooks.entrySet().stream()
-                .filter(entry -> !entry.getValue().getRiskStatus(TODAY).equals(RiskStatus.NONE))
+                .filter(entry -> !entry.getValue().getRiskStatus().equals(RiskStatus.NONE))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> new AttendanceBook(entry.getValue().getAttendanceBook())
-                ));
+                        entry -> new AttendanceBook(entry.getValue().getAttendanceBook(),
+                                entry.getValue().getAttendanceStatuses().getAttendanceStatuses()))
+                );
     }
 
     public AttendanceBook findByCrew(Crew crew) {

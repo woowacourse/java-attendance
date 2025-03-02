@@ -2,8 +2,8 @@ import dto.AttendanceRecordDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.Parser;
 import view.FileInput;
+import view.Parser;
 
 import java.util.List;
 
