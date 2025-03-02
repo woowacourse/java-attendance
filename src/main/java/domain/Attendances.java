@@ -111,10 +111,4 @@ public class Attendances {
                 calculateAbsent(),
                 calucateAlertCode());
     }
-
-    public void validateAlreadyExist(LocalDate today) {
-        if (isExist(today)) {
-            throw new IllegalArgumentException("이미 출석했습니다. 수정 기능을 이용하세요");
-        }
-    }
 }

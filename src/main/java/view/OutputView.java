@@ -83,4 +83,8 @@ public class OutputView {
     public void printExceptionLog(Exception e) {
         System.out.println("\n[ERROR]" + e.getMessage());
     }
+
+    public void printUseChange() {
+        System.out.println("이미 출석했습니다. 출석 수정 기능을 이용해주세요.");
+    }
 }
