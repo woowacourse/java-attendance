@@ -12,6 +12,7 @@ import attendance.domain.RiskCrew;
 import attendance.exception.CustomException;
 import attendance.utils.AttendanceBookParser;
 import attendance.utils.FileLoader;
+import attendance.utils.Parser;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class AttendanceController {
     }
 
     public void start() throws IOException {
-        final LocalDateTime currentDateTime = LocalDateTime.now().withYear(2024).withMonth(12).withDayOfMonth(29);
+        final LocalDateTime currentDateTime = LocalDateTime.now().withYear(2024).withMonth(12).withDayOfMonth(31);
         final AttendanceBookParser parser = new AttendanceBookParser(FileLoader.fileReadLine("attendances.csv"));
         final Crews crews = parser.getCrews();
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
@@ -69,8 +70,6 @@ public class AttendanceController {
         });
     }
 
-    //TODO : now가 캠퍼스 운영시간이 아니면 예외 처리
-    //TODO : 날짜 입력 범위 처리
     //TODO : 시간:분 형식 처리
     //TODO : 시간 숫자로 입력 안한거 처리
     //TODO : 분은 숫자로 입력 안한거 처리
@@ -130,7 +129,7 @@ public class AttendanceController {
     }
 
     private LocalDateTime readModifyDay(LocalDateTime currentDateTime) {
-        return retryInput(() -> inputView.readModifyDay(currentDateTime));
+        return retryInput(() -> Parser.toDateTime(inputView.readModifyDay(), currentDateTime));
     }
 
     private LocalDateTime readModifyTime(LocalDateTime modifyDayTime) {

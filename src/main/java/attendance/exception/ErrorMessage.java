@@ -2,6 +2,8 @@ package attendance.exception;
 
 public enum ErrorMessage {
 
+    INVALID_DATE_RANGE("일 범위를 잘못 입력하셨습니다."),
+    DATE_NUMBER_FORMAT("날짜는 숫자로 입력하셔야 합니다."),
     NOT_OPEN_CAMPUS("캠퍼스 운영 시간이 아닙니다"),
     NOT_ATTENDANCE_WEEKEND("주말에는 출석을 할 수 없습니다."),
     NOT_PRESENCE_COMMAND_OPTION("제공하지 않는 기능입니다."),

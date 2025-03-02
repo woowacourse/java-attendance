@@ -42,9 +42,9 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public LocalDateTime readModifyDay(LocalDateTime currentDateTime) {
+    public String readModifyDay() {
         System.out.println("수정하려는 날짜(일)을 입력해 주세요.");
-        return currentDateTime.withDayOfMonth(Integer.parseInt(scanner.nextLine()));
+        return scanner.nextLine();
     }
 
     public LocalDateTime readModifyTime(LocalDateTime modifyDayTime) {

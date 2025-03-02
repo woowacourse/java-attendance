@@ -83,9 +83,6 @@ public class AttendanceBookTest {
                 .isEqualTo(attendanceStatus);
     }
 
-    //출석부한테 출석 수정 하기 위해 펼쳐봄
-    //출석부가 크루 확인을함
-
     @Test
     void 출석_수정_크루_없으면_예외_발생() {
         //given
