@@ -15,7 +15,6 @@ public class AttendanceStatusCounts {
         this.late = late;
         this.attendance = attendance;
         this.adjustedAbsence = calculateAdjustedAbsenceCount(absence, late);
-        System.out.println(adjustedAbsence);
     }
 
     private int calculateAdjustedAbsenceCount(final int absenceCount, final int latenessCount) {
