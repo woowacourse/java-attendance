@@ -12,7 +12,10 @@ import attendance.util.UserInputParser;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceController {
     private final InputView inputView = new InputView();
@@ -25,15 +28,15 @@ public class AttendanceController {
             String userChoice = inputView.displayMainMenu();
             switch (userChoice) {
                 case "1":
-                    createAttendance();
+                    createAttendance(); break;
                 case "2":
-                    modifyAttendance();
+                    modifyAttendance(); break;
                 case "3":
-                    checkCrewAttendanceRecord();
+                    checkCrewAttendanceRecord(); break;
                 case "4":
-                    checkExpelledCrews();
+                    checkExpelledCrews(); break;
                 case "Q":
-                    closeProgram();
+                    closeProgram(); break;
                 default: break;
             }
         }
@@ -84,7 +87,17 @@ public class AttendanceController {
     }
 
     private void checkExpelledCrews() {
-        
+        Map<Crew, AttendanceStatus> crewAttendanceStatuses = attendanceBook.checkExpelledCrews();
+        Map<String, AttendanceStatusResult> crewAttendanceStatusResults = crewAttendanceStatuses.entrySet().stream()
+            .collect(Collectors.toMap(
+                entry -> entry.getKey().getName(),
+                entry -> new AttendanceStatusResult(
+                    entry.getValue().getAttendanceCount(),
+                    entry.getValue().getLateCount(),
+                    entry.getValue().getAbsentCount(),
+                    entry.getValue().getSubjectStatus())
+            ));
+        outputView.displayExpelldCrews(crewAttendanceStatusResults);
     }
 
     private void closeProgram() {

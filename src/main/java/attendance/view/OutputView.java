@@ -4,6 +4,7 @@ import attendance.domain.dto.AttendanceResult;
 import attendance.domain.dto.AttendanceStatusResult;
 import attendance.domain.dto.ModifyAttendanceResult;
 import java.util.List;
+import java.util.Map;
 
 public class OutputView {
 
@@ -51,11 +52,7 @@ public class OutputView {
                 attendanceResult.attendanceStatus()
             );
         }
-        //출석: 5회
-        //지각: 2회
-        //결석: 3회
-        //
-        //면담 대상자입니다.
+
         String outputStatus = """
             출석: %d회
             지각: %d회
@@ -67,7 +64,26 @@ public class OutputView {
             attendanceStatusResult.attendanceCount(),
             attendanceStatusResult.lateCount(),
             attendanceStatusResult.absentCount(),
-            attendanceStatusResult.subjectStatus()
+            checkStatusResult(attendanceStatusResult)
             );
+    }
+
+    private String checkStatusResult(AttendanceStatusResult attendanceStatusResult) {
+        if (attendanceStatusResult.subjectStatus() == null) {
+            return "";
+        }
+        return attendanceStatusResult.subjectStatus() + "대상자 입니다";
+    }
+
+    public void displayExpelldCrews(Map<String, AttendanceStatusResult> crewAttendanceStatusResults) {
+        String outputStatus = "-%s: 결석 %d회, 지각 %d회  (%s)\n";
+        System.out.println("제적 위험자 조회 결과");
+
+        crewAttendanceStatusResults.forEach((key, value) -> System.out.printf(outputStatus,
+            key,
+            value.absentCount(),
+            value.lateCount(),
+            value.subjectStatus()
+        ));
     }
 }
