@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AttendanceRecord {
-
     private final LocalDateTime attendanceDateTime;
     private final boolean isEmpty;
 

@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class InputView {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
     private final Scanner sc;
 
     public InputView() {

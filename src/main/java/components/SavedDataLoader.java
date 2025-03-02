@@ -17,6 +17,7 @@ public class SavedDataLoader {
     private static final String SAVED_ATTENDANCE_LINE_DELIMITER = ",";
     private static final DateTimeFormatter SAVED_ATTENDANCE_DATE_TIME_FORMATTER = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm");
+
     private final List<String[]> loadedData;
 
     public SavedDataLoader() {

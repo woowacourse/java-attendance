@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public class OutputView {
-
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm");
     private static final DateTimeFormatter EMPTY_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--");
     private static final DateTimeFormatter INTRO_DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일");

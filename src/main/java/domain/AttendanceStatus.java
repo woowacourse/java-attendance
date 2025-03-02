@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum AttendanceStatus {
-
     ATTENDANCE(0),
     LATE(5),
     ABSENCE(30);
 
     private static final LocalTime MONDAY_START_CAMPUS = LocalTime.of(13, 0);
     private static final LocalTime BESIDE_MONDAY_START_CAMPUS = LocalTime.of(10, 0);
+
     private final int boundaryMinute;
 
     AttendanceStatus(final int boundaryMinute) {
