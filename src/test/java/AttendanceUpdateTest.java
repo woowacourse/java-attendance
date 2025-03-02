@@ -23,14 +23,14 @@ class AttendanceUpdateTest {
 
     @Test
     void 닉네임_수정날짜_등교시간을_입력하여_기록을_수정한다() {
-        final var crew = new Crew("에드");
-        final var day = new Day(LocalDate.of(2025, 2, 27));
-        final var originTime = LocalTime.of(10, 0);
-        final var attendance = new Attendance(day, originTime);
+        Crew crew = new Crew("에드");
+        Day day = new Day(LocalDate.of(2025, 2, 27));
+        LocalTime originTime = LocalTime.of(10, 0);
+        Attendance attendance = new Attendance(day, originTime);
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.recordAttendance(crew, attendance);
 
-        final var modifiedTime = LocalTime.of(10, 5);
+        LocalTime modifiedTime = LocalTime.of(10, 5);
         attendance.modifyTimeTo(modifiedTime);
 
         assertThat(attendance.getTime()).isEqualTo(modifiedTime);
@@ -41,8 +41,8 @@ class AttendanceUpdateTest {
     void 수정된_시간에_따라_출석_상태도_함께_변경된다(String nickname, LocalTime originTime, LocalTime modifiedTime,
                                    Boolean isLateExpected,
                                    Boolean isAbsentExpected) {
-        final var day = new Day(LocalDate.of(2025, 2, 27));
-        final var attendance = new Attendance(day, originTime);
+        Day day = new Day(LocalDate.of(2025, 2, 27));
+        Attendance attendance = new Attendance(day, originTime);
         Crew crew = new Crew(nickname);
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.recordAttendance(crew, attendance);

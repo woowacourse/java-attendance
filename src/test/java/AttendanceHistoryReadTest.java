@@ -26,11 +26,11 @@ class AttendanceHistoryReadTest {
     void 닉네임에_따라_각_출석_상태_횟수를_확인한다() throws IOException {
         setUpAttendances();
 
-        final var crew = new Crew("짱수");
+        Crew crew = new Crew("짱수");
         Attendances attendances = attendanceBook.getAttendances(crew);
-        final var lateCount = attendances.getLateCount(testClock);
-        final var absentCount = attendances.getAbsentCount(testClock);
-        final var attendanceCount = attendances.getTotalCount() - lateCount - absentCount;
+        Integer lateCount = attendances.getLateCount(testClock);
+        Integer absentCount = attendances.getAbsentCount(testClock);
+        Integer attendanceCount = attendances.getTotalCount() - lateCount - absentCount;
 
         assertThat(lateCount).isEqualTo(1);
         assertThat(absentCount).isEqualTo(2);
@@ -39,26 +39,26 @@ class AttendanceHistoryReadTest {
 
     @Test
     void 등교를_하지_않은_날은_결석으로_처리한다() throws IOException {
-        final var crew = new Crew("짱수");
+        Crew crew = new Crew("짱수");
         setUpAttendances();
 
         attendanceBook.recordAllAbsences(testClock);
         Attendances attendances = attendanceBook.getAttendances(crew);
 
-        final var absentCount = attendances.getAbsentCount(testClock);
+        Integer absentCount = attendances.getAbsentCount(testClock);
         assertThat(absentCount).isEqualTo(6);
     }
 
     @Test
     void 지각_3회를_결석_1회로_간주하여_어떤_제제의_대상자인지_확인한다() throws IOException {
-        final var crew = new Crew("짱수");
+        Crew crew = new Crew("짱수");
         setUpAttendances();
 
         attendanceBook.recordAllAbsences(testClock);
         Attendances attendances = attendanceBook.getAttendances(crew);
 
-        final var penaltyStatus = attendances.getPenaltyStatus(testClock);
-        final var expected = Penalty.EXPULSION;
+        Penalty penaltyStatus = attendances.getPenaltyStatus(testClock);
+        Penalty expected = Penalty.EXPULSION;
         assertThat(penaltyStatus).isEqualTo(expected);
 
     }

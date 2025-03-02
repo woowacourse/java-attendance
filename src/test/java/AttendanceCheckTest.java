@@ -63,10 +63,10 @@ public class AttendanceCheckTest {
         attendanceBook.recordAttendance(crew, attendance);
 
         Attendances attendances = attendanceBook.getAttendances(crew);
-        final var attendanceRecord = attendances.findByDay(today);
-        final var attendanceTimeRecord = attendanceRecord.getTime();
-        final var isLate = attendanceRecord.isLate();
-        final var isAbsent = attendanceRecord.isAbsent();
+        Attendance attendanceRecord = attendances.findByDay(today);
+        LocalTime attendanceTimeRecord = attendanceRecord.getTime();
+        Boolean isLate = attendanceRecord.isLate();
+        Boolean isAbsent = attendanceRecord.isAbsent();
 
         assertThat(attendanceTimeRecord).isEqualTo(attendanceTime);
         assertThat(isLate).isEqualTo(isLateExpected);
@@ -76,8 +76,8 @@ public class AttendanceCheckTest {
 
     @Test
     void 이미_출석한_상태에서_출석을_시도하면_예외처리() {
-        final var crew = new Crew("에드");
-        final var attendanceTime = LocalTime.of(9, 59);
+        Crew crew = new Crew("에드");
+        LocalTime attendanceTime = LocalTime.of(9, 59);
         Attendance attendance = new Attendance(today, attendanceTime);
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.recordAttendance(crew, attendance);
@@ -97,11 +97,11 @@ public class AttendanceCheckTest {
         Crew crew = new Crew(nickname);
         attendanceBook.recordAttendance(crew, attendance);
 
-        final var attendances = attendanceBook.getAttendances(crew);
-        final var attendanceRecord = attendances.findByDay(today);
+        Attendances attendances = attendanceBook.getAttendances(crew);
+        Attendance attendanceRecord = attendances.findByDay(today);
 
-        final var isLate = attendanceRecord.isLate();
-        final var isAbsent = attendanceRecord.isAbsent();
+        Boolean isLate = attendanceRecord.isLate();
+        Boolean isAbsent = attendanceRecord.isAbsent();
 
         assertThat(isLate).isEqualTo(isLateExpected);
         assertThat(isAbsent).isEqualTo(isAbsentExpected);
@@ -126,7 +126,7 @@ public class AttendanceCheckTest {
             "23:01"
     })
     void 운영_시간을_벗어난_출석은_받지_않는다(String timeString) {
-        final var attendanceTime = LocalTime.parse(timeString);
+        LocalTime attendanceTime = LocalTime.parse(timeString);
 
         assertThatThrownBy(() -> new Attendance(today, attendanceTime))
                 .isInstanceOf(IllegalStateException.class)
