@@ -6,6 +6,7 @@ import domain.AttendanceStatus;
 import domain.Crew;
 import domain.DangerousStatus;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -60,18 +61,29 @@ public class DangerousStatusTest {
 
     @Test
     void 제적_위험자_조회_정렬_테스트() {
-        AttendanceManager attendanceManager = new AttendanceManager(() -> LocalDate.of(2024, 12, 13));
+        AttendanceManager attendanceManager = new AttendanceManager(() -> LocalDate.of(2024, 12, 14));
         AttendanceFileReader attendanceFileReader = new AttendanceFileReader();
         attendanceFileReader.readFiles(attendanceManager);
 
         List<Crew> crews = attendanceManager.getCrews();
-        crews.forEach(crew -> {
-            DangerousStatus dangerousStatus = DangerousStatus.of(
-                    crew.getAttendanceRecord().countStatus(AttendanceStatus.LATE),
-                    crew.getAttendanceRecord().countStatus(AttendanceStatus.ABSENCE));
-            System.out.println(crew.getNickname() + " : " + dangerousStatus);
-        });
+        
+        Comparator<Crew> comparator = (crew1, crew2) -> {
+            int i = crew2.getAttendanceRecord().totalAbsenceCount() - crew1.getAttendanceRecord().totalAbsenceCount();
+            if (i == 0) {
+                int j = crew2.getAttendanceRecord().countStatus(AttendanceStatus.LATE)
+                        % DangerousStatus.LATE_TO_ABSENCE_RATE
+                        - crew1.getAttendanceRecord().countStatus(AttendanceStatus.LATE)
+                        % DangerousStatus.LATE_TO_ABSENCE_RATE;
+                if (j == 0) {
+                    return crew1.getNickname().compareTo(crew2.getNickname());
+                }
+                return j;
+            }
+            return i;
+        };
 
+        crews.sort(comparator);
+        crews.forEach(crew -> System.out.println(crew.getNickname()));
     }
 
 

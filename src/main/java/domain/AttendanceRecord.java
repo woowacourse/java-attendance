@@ -1,5 +1,7 @@
 package domain;
 
+import static domain.DangerousStatus.LATE_TO_ABSENCE_RATE;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -57,6 +59,13 @@ public class AttendanceRecord {
         LocalDateTime modifyDateTime = LocalDateTime.of(dateProvider.getDate(), modifyTime);
         attendanceTimes.removeIf(time -> time.getDayOfMonth() == modifyDay);
         attendanceTimes.add(modifyDateTime);
+    }
+
+    public int totalAbsenceCount() {
+        int absence = countStatus(AttendanceStatus.ABSENCE);
+        int late = countStatus(AttendanceStatus.LATE);
+
+        return late / LATE_TO_ABSENCE_RATE + absence;
     }
 
     public int countStatus(AttendanceStatus type) {

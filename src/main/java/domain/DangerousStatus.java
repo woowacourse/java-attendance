@@ -7,7 +7,7 @@ public enum DangerousStatus {
     WARNING("경고", 2),
     GOOD("모범", 0);
 
-    private static final int LATE_TO_ABSENCE_RATE = 3;
+    public static final int LATE_TO_ABSENCE_RATE = 3;
 
     private final String status;
     private final int count;
