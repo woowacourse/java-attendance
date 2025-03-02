@@ -93,8 +93,9 @@ public class AttendanceMachine {
     private void writeModifyAttendanceInfo(AttendanceBook attendanceBook, Crew crew, CampusDate campusDate,
                                            CampusTime campusTime) {
         AttendanceInfo beforeInfo = attendanceBook.findInfoByCrew(crew).findInfoByDate(campusDate);
-        AttendanceInfo afterInfo = attendanceBook.modifyInfoWithDateAndTime(crew, campusDate, campusTime)
-                .findInfoByDate(campusDate);
+        AttendanceInfos modifiedInfos = attendanceBook.modifyInfoWithDateAndTime(crew, campusDate, campusTime);
+        AttendanceInfo afterInfo = modifiedInfos.findInfoByDate(campusDate);
+        attendanceBook.updateCrewAttendanceInfos(crew, modifiedInfos);
         outputView.writeModifiedAttendanceCheck(beforeInfo, afterInfo);
     }
 

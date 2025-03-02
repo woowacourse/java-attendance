@@ -58,6 +58,7 @@ public class AttendanceBook {
         return AttendanceInfos.from(book.get(crew).getAttendanceInfos());
     }
 
+
     public boolean hasInfoByCrewAndDate(final Crew crew, final CampusDate date) {
         return book.get(crew).hasInfoByDate(date);
     }
@@ -66,6 +67,10 @@ public class AttendanceBook {
         return new AttendanceBook(book.entrySet().stream()
                 .filter(entry -> isRiskCrew(date, entry))
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
+    }
+
+    public void updateCrewAttendanceInfos(Crew crew, AttendanceInfos modifiedInfos) {
+        book.put(crew, modifiedInfos);
     }
 
     private static void registerCrewAndInfo(Map<Crew, AttendanceInfos> book, Crew crew, CampusDate date,
