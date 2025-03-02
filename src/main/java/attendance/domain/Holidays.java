@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.util.DateTimeParser;
 import attendance.util.FileUtil;
 
 import java.time.DayOfWeek;
@@ -7,21 +8,20 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 public class Holidays {
 
+    public static final String HOLIDAYS_CSV_FILE_NAME = "attendances.csv";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final Set<LocalDate> holidays = new HashSet<>();
 
-    public void initHoliday() {
-        List<String> lineComponents = FileUtil.readFile("holidays.csv");
-
-        lineComponents.stream()
-                .map(line -> LocalDate.parse(line, DATE_FORMATTER))
+    public void initFromFile() {
+        FileUtil.readFile(HOLIDAYS_CSV_FILE_NAME)
+                .stream()
+                .map(line -> DateTimeParser.parseDate(line, DATE_FORMATTER))
                 .forEach(holidays::add);
     }
 
