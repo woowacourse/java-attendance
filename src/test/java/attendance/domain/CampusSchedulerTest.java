@@ -79,7 +79,7 @@ class CampusSchedulerTest {
         // Given
 
         // When & Then
-        assertThatThrownBy(() -> campusScheduler.calculateAttendanceState(attendanceTime))
+        assertThatThrownBy(() -> campusScheduler.validateOperationTime(attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("캠퍼스 운영 시간이 아닙니다.");
     }

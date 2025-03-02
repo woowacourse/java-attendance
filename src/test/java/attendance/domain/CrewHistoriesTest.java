@@ -1,13 +1,13 @@
 package attendance.domain;
 
 import static attendance.fixture.TestFixture.makeCrewHistory;
+import static attendance.fixture.TestFixture.makeDateTime;
 import static attendance.fixture.TestFixture.makeDecemberDate;
 import static attendance.fixture.TestFixture.makeDefaultAttendanceTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.fixture.TestFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ class CrewHistoriesTest {
         LocalDateTime yesterdayAttendanceTime = makeDefaultAttendanceTime();
         crewHistories.addHistory(nickname, yesterdayAttendanceTime);
 
-        LocalDateTime todayAttendanceTime = TestFixture.makeDateTime(4, 10, 0);
+        LocalDateTime todayAttendanceTime = makeDateTime(4, 10, 0);
 
         // When
         crewHistories.addHistory(nickname, todayAttendanceTime);
@@ -71,10 +71,9 @@ class CrewHistoriesTest {
     void 존재하지_않은_닉네임으로_조회하는_경우_예외가_발생한다() {
         // Given
         Nickname nickname = new Nickname("밍트");
-        LocalDate today = makeDecemberDate(4);
 
         // When & Then
-        assertThatThrownBy(() -> crewHistories.validateHistoryNotExists(nickname, today))
+        assertThatThrownBy(() -> crewHistories.validateKeyExists(nickname))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
     }

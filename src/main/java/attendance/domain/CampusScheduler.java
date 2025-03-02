@@ -23,7 +23,7 @@ public class CampusScheduler {
         return AttendanceState.from(diff);
     }
 
-    private void validateOperationTime(final LocalDateTime attendanceTime) {
+    public void validateOperationTime(final LocalDateTime attendanceTime) {
         boolean isOperationTime = Campus.isOperationTime(LocalTime.from(attendanceTime));
         if (!isOperationTime) {
             throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
