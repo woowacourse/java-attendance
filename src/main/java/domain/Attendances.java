@@ -48,4 +48,9 @@ public class Attendances {
     public int hashCode() {
         return Objects.hashCode(attendances);
     }
+
+    @Override
+    public String toString() {
+        return "Attendances{" + "attendances=" + attendances + '}';
+    }
 }

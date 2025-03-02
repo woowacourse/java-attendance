@@ -44,4 +44,9 @@ public class AttendanceManager {
     public int hashCode() {
         return Objects.hashCode(attendanceManager);
     }
+
+    @Override
+    public String toString() {
+        return "AttendanceManager{" + "attendanceManager=" + attendanceManager + '}';
+    }
 }

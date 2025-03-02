@@ -25,4 +25,9 @@ public class NickName {
     public int hashCode() {
         return Objects.hashCode(nickName);
     }
+
+    @Override
+    public String toString() {
+        return "NickName{" + "nickName='" + nickName + '\'' + '}';
+    }
 }

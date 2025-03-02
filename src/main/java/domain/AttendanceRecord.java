@@ -43,4 +43,9 @@ public class AttendanceRecord {
     public int hashCode() {
         return Objects.hash(date, attendingTime);
     }
+
+    @Override
+    public String toString() {
+        return "AttendanceRecord{" + "date=" + date + ", attendingTime=" + attendingTime + '}';
+    }
 }
