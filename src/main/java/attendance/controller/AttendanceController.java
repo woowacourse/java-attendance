@@ -1,16 +1,20 @@
 package attendance.controller;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceCheckResult;
+import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceStatus;
 import attendance.dto.AttendanceCheckDto;
 import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceInfoDto;
 import attendance.dto.PenaltyCrewDto;
-import attendance.domain.AttendanceManager;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AttendanceController {
 
@@ -55,7 +59,9 @@ public class AttendanceController {
     private void remarkAttendance(LocalDate today) {
         String name = inputView.readAttendanceName();
         LocalTime attendanceTime = inputView.readRemarkAttendanceTime();
-        AttendanceInfoDto attendanceInfoDto = attendanceManager.remarkAttendance(name, today, attendanceTime);
+        Attendance attendance = attendanceManager.remarkAttendance(name, today, attendanceTime);
+        AttendanceStatus attendanceStatus = attendanceManager.getAttendanceStatus(today, attendanceTime);
+        AttendanceInfoDto attendanceInfoDto = AttendanceInfoDto.of(attendance.getAttendanceDate(), attendance.getAttendanceTime(), attendanceStatus);
         outputView.printRemarkAttendanceResult(attendanceInfoDto);
     }
 
@@ -63,18 +69,40 @@ public class AttendanceController {
         String name = inputView.readEditAttendanceName();
         LocalDate editAttendanceDate = inputView.readEditAttendanceDate();
         LocalTime editAttendanceTime = inputView.readEditAttendanceTime();
-        AttendanceEditDto attendanceEditDto = attendanceManager.editAttendance(name, editAttendanceDate, editAttendanceTime);
+        Attendance beforeEditAttendance = attendanceManager.editAttendance(name, editAttendanceDate, editAttendanceTime);
+        AttendanceEditDto attendanceEditDto = convertToAttendanceEditDto(editAttendanceDate, beforeEditAttendance, editAttendanceTime);
         outputView.printEditAttendanceResult(attendanceEditDto);
+    }
+
+    private AttendanceEditDto convertToAttendanceEditDto(LocalDate editAttendanceDate, Attendance beforeEditAttendance, LocalTime editAttendanceTime) {
+        return AttendanceEditDto.of(
+            editAttendanceDate, beforeEditAttendance.getAttendanceTime(),
+            AttendanceStatus.findAttendanceStatus(editAttendanceDate, beforeEditAttendance.getAttendanceTime()),
+            editAttendanceTime,
+            AttendanceStatus.findAttendanceStatus(editAttendanceDate, editAttendanceTime));
     }
 
     private void checkAttendance(LocalDate today) {
         String name = inputView.readAttendanceName();
-        AttendanceCheckDto attendanceCheckDto = attendanceManager.checkAttendance(name, today);
+        AttendanceCheckResult checkResult = attendanceManager.checkAttendance(name, today);
+        List<AttendanceInfoDto> attendanceDtos = convertToAttendanceInfoDto(checkResult);
+        AttendanceCheckDto attendanceCheckDto = AttendanceCheckDto.of(
+            checkResult.name(), attendanceDtos, checkResult.attendanceStatusCount(), checkResult.attendancePenalty()
+        );
         outputView.printCheckAttendanceResult(attendanceCheckDto);
     }
 
+    private static List<AttendanceInfoDto> convertToAttendanceInfoDto(AttendanceCheckResult checkResult) {
+        return checkResult.attendanceUntilYesterday().stream()
+            .map(att -> AttendanceInfoDto.of(att.getAttendanceDate(), att.getAttendanceTime(),
+                AttendanceStatus.findAttendanceStatus(att.getAttendanceDate(), att.getAttendanceTime())))
+            .collect(Collectors.toList());
+    }
+
     private void findPenaltyCrews(LocalDate today) {
-        List<PenaltyCrewDto> penaltyCrewsDto = attendanceManager.findPenaltyCrews(today);
+        List<PenaltyCrewDto> penaltyCrewsDto = attendanceManager.findPenaltyCrews(today).stream()
+            .map(PenaltyCrewDto::of)
+            .collect(Collectors.toList());
         outputView.printPenaltyCrews(penaltyCrewsDto);
     }
 }

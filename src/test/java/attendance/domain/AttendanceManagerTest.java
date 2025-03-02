@@ -1,9 +1,5 @@
 package attendance.domain;
 
-import attendance.dto.AttendanceCheckDto;
-import attendance.dto.AttendanceEditDto;
-import attendance.dto.AttendanceInfoDto;
-import attendance.dto.PenaltyCrewDto;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -39,7 +35,7 @@ public class AttendanceManagerTest {
     }
 
     @Test
-    void 출석_성공시_dto객체를_반환한다() {
+    void 출석_성공시_Attendance_객체를_반환한다() {
         // given
         AttendanceManager service = new AttendanceManager(
             new AttendanceFileParser("src/test/java/resources/testAttendances.csv")
@@ -48,10 +44,11 @@ public class AttendanceManagerTest {
         LocalTime attendanceTime = LocalTime.of(12, 50);
 
         // when
-        AttendanceInfoDto dto = service.remarkAttendance("빙봉", attendanceDate, attendanceTime);
+        Attendance result = service.remarkAttendance("빙봉", attendanceDate, attendanceTime);
 
         // then
-        assertThat(dto).isEqualTo(AttendanceInfoDto.of(attendanceDate, attendanceTime, AttendanceStatus.PRESENCE));
+        Attendance expectedAttendance = new Attendance(attendanceDate, attendanceTime);
+        assertThat(result).isEqualTo(expectedAttendance);
     }
 
     @Test
@@ -85,21 +82,21 @@ public class AttendanceManagerTest {
     }
 
     @Test
-    void 출석_수정이_성공하면_dto를_반환한다() {
+    void 출석_수정이_성공하면_변경전_Attendance_객체를_반환한다() {
         // given
         AttendanceManager service = new AttendanceManager(
             new AttendanceFileParser("src/test/java/resources/testAttendances.csv")
         );
         LocalDate editDate = LocalDate.of(2024, 12, 13);
         LocalTime editTime = LocalTime.of(12, 50);
+        LocalTime beforeEditTime = LocalTime.of(10, 7);
 
         // when
-        AttendanceEditDto dto = service.editAttendance("빙봉", editDate, editTime);
+        Attendance beforeEditAttendance = service.editAttendance("빙봉", editDate, editTime);
 
         // then
-        LocalTime beforeEditTime = LocalTime.of(10, 7);
-        assertThat(dto).isEqualTo(
-            AttendanceEditDto.of(editDate, beforeEditTime, AttendanceStatus.LATE, editTime, AttendanceStatus.ABSENCE));
+        Attendance expectedAttendance = new Attendance(editDate, beforeEditTime);
+        assertThat(beforeEditAttendance).isEqualTo(expectedAttendance);
     }
 
     @Test
@@ -133,7 +130,7 @@ public class AttendanceManagerTest {
     }
 
     @Test
-    void 출석_조회시_dto를_반환한다() {
+    void 출석_조회시_AttendanceCheckResult_를_반환한다() {
         // given
         AttendanceManager service = new AttendanceManager(
             new AttendanceFileParser("src/test/java/resources/testAttendances.csv")
@@ -142,22 +139,18 @@ public class AttendanceManagerTest {
         LocalDate today = LocalDate.of(2024, 12, 3);
 
         // when
-        AttendanceCheckDto dto = service.checkAttendance("빙티", today);
+        AttendanceCheckResult result = service.checkAttendance("빙티", today);
 
         // then
-        AttendanceCheckDto expectedDto = AttendanceCheckDto.of("빙티",
-            List.of(
-                AttendanceInfoDto.of(second, null, AttendanceStatus.ABSENCE)
-            ),
+        AttendanceCheckResult expected = new AttendanceCheckResult("빙티",
+            List.of(new Attendance(second, null)),
             Map.of(
                 AttendanceStatus.LATE, 0,
                 AttendanceStatus.PRESENCE, 0,
                 AttendanceStatus.ABSENCE, 1
             ),
-            AttendancePenalty.NONE
-        );
-
-        assertThat(dto).isEqualTo(expectedDto);
+            AttendancePenalty.NONE);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -169,20 +162,15 @@ public class AttendanceManagerTest {
         LocalDate today = LocalDate.of(2024, 12, 5);
 
         // when
-        List<PenaltyCrewDto> dto = service.findPenaltyCrews(today);
+        List<PenaltyCrew> result = service.findPenaltyCrews(today);
 
         // then
-        List<PenaltyCrewDto> expectedDto = List.of(
-            PenaltyCrewDto.of(
-                new PenaltyCrew("빙봉", Map.of(AttendanceStatus.PRESENCE, 0, AttendanceStatus.ABSENCE, 3, AttendanceStatus.LATE, 0))),
-            PenaltyCrewDto.of(
-                new PenaltyCrew("빙티", Map.of(AttendanceStatus.PRESENCE, 0, AttendanceStatus.ABSENCE, 3, AttendanceStatus.LATE, 0))),
-            PenaltyCrewDto.of(
-                new PenaltyCrew("이든", Map.of(AttendanceStatus.PRESENCE, 0, AttendanceStatus.ABSENCE, 3, AttendanceStatus.LATE, 0))),
-            PenaltyCrewDto.of(
-                new PenaltyCrew("쿠키", Map.of(AttendanceStatus.PRESENCE, 0, AttendanceStatus.ABSENCE, 3, AttendanceStatus.LATE, 0)))
+        List<PenaltyCrew> expected = List.of(
+            new PenaltyCrew("빙티", Map.of(AttendanceStatus.PRESENCE, 0, AttendanceStatus.ABSENCE, 3, AttendanceStatus.LATE, 0)),
+            new PenaltyCrew("이든", Map.of(AttendanceStatus.PRESENCE, 0, AttendanceStatus.ABSENCE, 3, AttendanceStatus.LATE, 0)),
+            new PenaltyCrew("빙봉", Map.of(AttendanceStatus.PRESENCE, 0, AttendanceStatus.ABSENCE, 3, AttendanceStatus.LATE, 0)),
+            new PenaltyCrew("쿠키", Map.of(AttendanceStatus.PRESENCE, 0, AttendanceStatus.ABSENCE, 3, AttendanceStatus.LATE, 0))
         );
-
-        assertThat(dto).isEqualTo(expectedDto);
+        assertThat(result).isEqualTo(expected);
     }
 }

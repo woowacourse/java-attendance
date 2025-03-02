@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class PenaltyCount {
 
@@ -34,5 +35,17 @@ public class PenaltyCount {
 
     public int getWeightedLateAndAbsencePoint() {
         return weightedLateAndAbsencePoint;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        PenaltyCount that = (PenaltyCount) o;
+        return lateCount == that.lateCount && absenceCount == that.absenceCount && weightedLateAndAbsencePoint == that.weightedLateAndAbsencePoint;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lateCount, absenceCount, weightedLateAndAbsencePoint);
     }
 }
