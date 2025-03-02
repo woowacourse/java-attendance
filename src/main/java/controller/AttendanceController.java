@@ -19,7 +19,8 @@ import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-    private static final LocalDate START_DATE = LocalDate.of(2024, 12, 2);
+    public static final LocalDate START_DATE = LocalDate.of(2024, 12, 2);
+    public static final LocalDate END_DATE = LocalDate.now();
 
     private final AttendanceFileReader attendanceFileReader;
     private final InputView inputView;
@@ -45,8 +46,7 @@ public class AttendanceController {
     private String processCommand(String inputCommand, Map<String, Consumer<AttendanceBook>> commands,
                                   AttendanceBook attendanceBook) {
         try {
-            // todo: 오늘 날짜 출력하는 부분 책임 분리
-            inputCommand = inputView.inputCommand(LocalDate.now().format(DateTimeFormatter.ofPattern("MM월 dd일")));
+            inputCommand = inputView.inputCommand(DateTimeConverter.convertLocalDateToString(END_DATE));
             if (inputCommand.equalsIgnoreCase(Command.EXIT_COMMAND.getCommand())) {
                 return inputCommand;
             }
@@ -72,7 +72,7 @@ public class AttendanceController {
 
     private Map<String, Consumer<AttendanceBook>> initCommand() {
         Map<String, Consumer<AttendanceBook>> commands = new HashMap<>();
-        commands.put(Command.ATTEND_COMMAND.getCommand(), new AttendCommand());
+        commands.put(Command.ATTEND_COMMAND.getCommand(), new AttendCommand(inputView, outputView));
         commands.put(Command.EDIT_COMMAND.getCommand(), new EditCommand());
         commands.put(Command.CREW_INFO_COMMAND.getCommand(), new CrewInfoCommand());
         commands.put(Command.WARNING_CREW_COMMAND.getCommand(), new WarningInfoCommand());
@@ -82,21 +82,17 @@ public class AttendanceController {
     private AttendanceBook initAttendanceBook() {
         Map<String, List<String>> crewsInfo = attendanceFileReader.getInfo();
 
-        // todo: 날짜파싱 책임 분리
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-        Map<String, List<LocalDateTime>> parsedCrewsInfo = parseCrewsDateTime(crewsInfo, formatter);
+        Map<String, List<LocalDateTime>> parsedCrewsInfo = parseCrewsDateTime(crewsInfo);
         return new AttendanceBook(parsedCrewsInfo);
     }
 
-    private static Map<String, List<LocalDateTime>> parseCrewsDateTime(Map<String, List<String>> crewsInfo,
-                                                                       DateTimeFormatter formatter) {
+    private static Map<String, List<LocalDateTime>> parseCrewsDateTime(Map<String, List<String>> crewsInfo) {
         return crewsInfo.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         crewEntry -> crewEntry.getValue().stream()
-                                .map(dateTime -> LocalDateTime.parse(dateTime, formatter))
+                                .map(DateTimeConverter::convertStringToLocalDateTime)
                                 .toList()
                 ));
     }

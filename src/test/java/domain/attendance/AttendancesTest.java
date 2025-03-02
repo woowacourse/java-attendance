@@ -116,7 +116,7 @@ class AttendancesTest {
         Assertions.assertThatThrownBy(
                         () -> attendances.attend(endDate, LocalDateTime.of(endDate.plusDays(1), LocalTime.of(10, 0))))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요");
+                .hasMessage("미래에 출석할 수 없습니다");
     }
 
 }

@@ -1,19 +1,21 @@
 package domain.attendance;
 
+import controller.AttendanceController;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Attendances {
-    private final List<Attendance> attendances;
+    private final List<Attendance> attendances = new ArrayList<>();
 
     public Attendances(List<LocalDateTime> attendances) {
         validate(attendances);
-        this.attendances = attendances.stream()
+        this.attendances.addAll(attendances.stream()
                 .map(Attendance::new)
-                .toList();
+                .toList());
     }
 
     public boolean has(LocalDate day) {
@@ -21,12 +23,12 @@ public class Attendances {
                 .anyMatch(attendance -> attendance.has(day));
     }
 
-    public void attend(LocalDateTime attendDateTime) {
+    public void attend(LocalDate endDate, LocalDateTime attendDateTime) {
         if (has(attendDateTime.toLocalDate())) {
             throw new IllegalArgumentException("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요");
         }
-        if (AttendanceTime.isAttendance(attendDateTime)) {
-            throw new IllegalArgumentException("미래에는 출석할 수 없습니다");
+        if (attendDateTime.toLocalDate().isAfter(endDate)) {
+            throw new IllegalArgumentException("미래에 출석할 수 없습니다");
         }
         this.attendances.add(new Attendance(attendDateTime));
     }
