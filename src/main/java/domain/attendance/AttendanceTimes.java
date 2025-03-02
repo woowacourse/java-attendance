@@ -19,11 +19,6 @@ public class AttendanceTimes {
         return new AttendanceTimes(attendanceTimes);
     }
 
-    public boolean contains(LocalDate date) {
-        return attendanceLog.stream()
-                .anyMatch(attendanceTime -> attendanceTime.isSameDate(date));
-    }
-
     public void addAttendance(AttendanceTime time) {
         boolean exist = attendanceLog.stream()
                 .anyMatch(attendanceTime -> attendanceTime.isSameDate(time));

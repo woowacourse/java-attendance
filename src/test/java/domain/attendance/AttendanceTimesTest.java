@@ -25,25 +25,6 @@ class AttendanceTimesTest {
     }
 
     @Test
-    @DisplayName("해당 날짜의 출석이 이미 존재하는지 반환")
-    void containsAttendanceInAttendancesTest() {
-        // given
-        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
-
-        // when
-        boolean b1 = attendanceTimes.contains(
-                LocalDate.of(2024, 12, 10)
-        );
-        boolean b2 = attendanceTimes.contains(
-                LocalDate.of(2024, 12, 3)
-        );
-
-        // then
-        assertThat(b1).isTrue();
-        assertThat(b2).isFalse();
-    }
-
-    @Test
     @DisplayName("출석 기록 추가")
     void addAttendanceTest() {
         // given
