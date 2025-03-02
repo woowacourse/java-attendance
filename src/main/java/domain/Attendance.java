@@ -7,9 +7,11 @@ import static domain.DayOfWeek.MONDAY;
 import static domain.DayOfWeek.TUESDAY;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 import util.DayConverter;
 
 public class Attendance {
@@ -45,5 +47,26 @@ public class Attendance {
                             attendanceTime.getDayOfMonth(),
                             DayConverter.getKoreanDayOfWeek(attendanceTime.toLocalDate())));
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attendance that = (Attendance) o;
+        return Objects.equals(attendanceTime, that.attendanceTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendanceTime);
+    }
+
+    public boolean isSameDay(LocalDate localDate) {
+        return attendanceTime.toLocalDate().equals(localDate);
     }
 }

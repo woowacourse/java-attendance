@@ -56,4 +56,14 @@ class AttendanceTest {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> new Attendance(attendanceTime).validateHoliday(holidays));
     }
+
+    @Test
+    @DisplayName("출석이 특정 날짜와 동일하면 참을 반환합니다.")
+    void isSameDayTest() {
+        LocalDateTime testDate = LocalDateTime.of(2024, 12, 2, 10, 0);
+        Attendance attendance = new Attendance(testDate);
+
+        Assertions.assertTrue(attendance.isSameDay(testDate.toLocalDate()));
+
+    }
 }
