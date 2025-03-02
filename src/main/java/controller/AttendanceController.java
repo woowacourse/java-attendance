@@ -7,6 +7,10 @@ import domain.CrewGroup;
 import domain.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import service.CrewLoader;
 import view.InputView;
 import view.OutputView;
@@ -26,8 +30,9 @@ public class AttendanceController {
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.load(today);
 
-        markAttendance(crewGroup);
-        showCrewAttendanceLog(crewGroup);
+        showAlertCrews(crewGroup);
+//        markAttendance(crewGroup);
+//        showCrewAttendanceLog(crewGroup);
     }
 
     public void markAttendance(CrewGroup crewGroup) {
@@ -50,9 +55,23 @@ public class AttendanceController {
     public void showCrewAttendanceLog(CrewGroup crewGroup) {
         String name = inputView.insertName();
         Attendances attendances = crewGroup.getSpecificAttendances(name);
-        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendances.calculatePresent(),
-                attendances.calculateLate(), attendances.calculateAbsent(), attendances.calucateAlertCode());
+        AttendanceStatistics attendanceStatistics = attendances.makeStatistics();
 
         outputView.printAllLog(name, attendances, attendanceStatistics);
+    }
+
+    public void showAlertCrews(CrewGroup crewGroup) {
+        Map<String, Attendances> alertCrews = crewGroup.getAlertCrews();
+
+        Map<String, AttendanceStatistics> alertCrewStatistics = alertCrews.entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey, v -> v.getValue().makeStatistics()));
+
+        alertCrewStatistics = alertCrewStatistics.entrySet().stream()
+                .sorted(Map.Entry.<String, AttendanceStatistics>comparingByValue()
+                        .thenComparing(Map.Entry::getKey))
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+        outputView.printAlertCrews(alertCrewStatistics);
     }
 }

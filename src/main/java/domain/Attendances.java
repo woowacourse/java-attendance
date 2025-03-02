@@ -103,4 +103,12 @@ public class Attendances {
     public List<Attendance> getAttendances() {
         return Collections.unmodifiableList(attendances);
     }
+
+    public AttendanceStatistics makeStatistics() {
+        return new AttendanceStatistics(
+                calculatePresent(),
+                calculateLate(),
+                calculateAbsent(),
+                calucateAlertCode());
+    }
 }

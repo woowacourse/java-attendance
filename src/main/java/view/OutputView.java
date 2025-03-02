@@ -7,6 +7,8 @@ import domain.AttendanceStatistics;
 import domain.Attendances;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.Map.Entry;
 import util.DayConverter;
 
 public class OutputView {
@@ -39,5 +41,19 @@ public class OutputView {
                 time,
                 attendance.calculateAttendanceCode().getName()
         );
+    }
+
+    public void printAlertCrews(Map<String, AttendanceStatistics> alertCrews) {
+        for (Entry<String, AttendanceStatistics> alertCrew : alertCrews.entrySet()) {
+            printAlertCrew(alertCrew.getKey(), alertCrew.getValue());
+        }
+    }
+
+    public void printAlertCrew(String name, AttendanceStatistics attendanceStatistics) {
+        System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                name,
+                attendanceStatistics.absent(),
+                attendanceStatistics.late(),
+                attendanceStatistics.alertCode().getName());
     }
 }
