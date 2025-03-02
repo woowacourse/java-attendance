@@ -3,9 +3,7 @@ package model;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,27 +12,14 @@ import util.FileInformationProvider;
 
 public class AttendanceBookTest {
     @Test
-    @DisplayName("특정 학생의 출석 시간 가져오기 구현")
+    @DisplayName("학생 이름으로 학생 찾기 구현 테스트")
     void 특정_학생의_출석_시간_가져오기_구현() throws IOException {
-        String name = "빙티";
+        String expect = "빙티";
         FileInformationProvider fileProvider = new FileInformationProvider();
         AttendanceBook attendanceBook = new AttendanceBook(fileProvider.loadStudentAttendance());
-        LocalTime result = attendanceBook.findStudentAttendanceTimeRecord(name, LocalDate.of(2024, 12, 2));
-        LocalTime expect = LocalTime.of(13, 0);
+        String result = attendanceBook.findStudentByNickName(expect).getName();
         assertThat(expect).isEqualTo(result);
     }
-
-    @Test
-    @DisplayName("특정 학생의 출석 상태 가져오기 구현")
-    void 특정_학생의_출석_상태_가져오기_구현() throws IOException {
-        String name = "빙티";
-        FileInformationProvider fileProvider = new FileInformationProvider();
-        AttendanceBook attendanceBook = new AttendanceBook(fileProvider.loadStudentAttendance());
-        AttendanceStatus result = attendanceBook.findStudentAttendanceStatusRecord(name, LocalDate.of(2024, 12, 2));
-        AttendanceStatus expect = AttendanceStatus.ATTENDANCE;
-        assertThat(expect).isEqualTo(result);
-    }
-
 
     @Test
     @DisplayName("제적 위험자 조건에 맞는 크루 찾기 테스트")
