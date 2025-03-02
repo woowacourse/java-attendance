@@ -66,6 +66,10 @@ public class Attendances {
         return Collections.unmodifiableMap(counts);
     }
 
+    public List<Attendance> getAttendances() {
+        return attendances;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

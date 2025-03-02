@@ -63,6 +63,9 @@ public class AttendanceController {
         if (command.isTwo()) {
             modify(crews, attendances);
         }
+        if (command.isThree()) {
+            showAttendancesByCrew(crews, attendances);
+        }
     }
 
     private void checkIn(Crews crews, Attendances attendances) {
@@ -91,5 +94,14 @@ public class AttendanceController {
         Attendance newAttendance = attendances.findByCrewAndDate(crew, newTime.toLocalDate());
 
         outputView.printModifiedResult(oldAttendance, newAttendance);
+    }
+
+    private void showAttendancesByCrew(Crews crews, Attendances attendances) {
+        LocalDate today = LocalDate.of(2025, 2, 25);
+        String rawNickname = inputView.readNickname();
+        Crew crew = crews.findByNickname(rawNickname);
+        Attendances filteredAttendances = attendances.createMonthlyAttendances(crew, today);
+
+        outputView.printAttendanceRecord(crew, filteredAttendances, today);
     }
 }

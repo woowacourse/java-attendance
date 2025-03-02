@@ -31,4 +31,8 @@ public enum Command {
     public boolean isTwo() {
         return this == TWO;
     }
+
+    public boolean isThree() {
+        return this == THREE;
+    }
 }

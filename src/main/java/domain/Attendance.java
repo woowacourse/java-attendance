@@ -42,6 +42,10 @@ public class Attendance {
         return attendanceTime;
     }
 
+    public Crew getCrew() {
+        return crew;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

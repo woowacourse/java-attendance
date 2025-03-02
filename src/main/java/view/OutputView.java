@@ -2,9 +2,14 @@ package view;
 
 import domain.Attendance;
 import domain.AttendanceType;
+import domain.Attendances;
+import domain.Crew;
+import domain.PenaltyPolicy;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Map;
 
 public class OutputView {
 
@@ -15,9 +20,15 @@ public class OutputView {
     private static final String ARROW = "-> ";
     private static final String TIME_FORMAT = "%02d:%02d (%s) ";
     private static final String MODIFY_COMPLETE = "수정 완료!%n";
+    private final String ATTENDANCE_RECORD_HEADER_FORMAT = "이번 달 %s의 출석 기록입니다.%n";
+    private final String PENALTY_INFO_FORMAT = "%s 대상자입니다.%n";
+    private final String ATTENDANCE_COUNT = "%s: %d회%n";
     private static final String SUCCESS = "출석";
     private static final String LATE = "지각";
     private static final String ABSENCE = "결석";
+    private final String WARNING = "경고";
+    private final String MEETING = "면담";
+    private final String EXPULSION = "제적";
 
     public void printErrorMessage(RuntimeException e) {
         printEmptyLine();
@@ -82,6 +93,55 @@ public class OutputView {
             );
         }
         System.out.printf(MODIFY_COMPLETE);
+    }
+
+    public void printAttendanceRecord(Crew crew, Attendances attendances, LocalDate today) {
+        System.out.printf(ATTENDANCE_RECORD_HEADER_FORMAT, crew.getNickname());
+        for (Attendance attendance : attendances.getAttendances()) {
+            System.out.printf(
+                    DATE_FORMAT,
+                    today.getMonthValue(),
+                    attendance.getAttendanceTime().getTime().getDayOfMonth(),
+                    attendance.getAttendanceTime().getTime().toLocalDate().getDayOfWeek()
+                            .getDisplayName(TextStyle.FULL, Locale.getDefault()));
+            if (attendance.judgeType().equals(AttendanceType.ABSENCE)) {
+                System.out.println(ABSENCE_FORMAT);
+                continue;
+            }
+            System.out.printf(
+                    TIME_FORMAT,
+                    attendance.getAttendanceTime().getTime().getHour(),
+                    attendance.getAttendanceTime().getTime().getMinute(),
+                    convertToAttendanceTypeString(attendance.judgeType())
+            );
+            printEmptyLine();
+        }
+
+        Map<AttendanceType, Integer> counts = attendances.countAttendanceType();
+        for (AttendanceType type : counts.keySet()) {
+            System.out.printf(
+                    ATTENDANCE_COUNT,
+                    convertToAttendanceTypeString(type),
+                    counts.get(type)
+            );
+        }
+
+        if (PenaltyPolicy.judgePenalty(counts).isDanger()) {
+            System.out.printf(PENALTY_INFO_FORMAT, convertToPunishmentTypeString(PenaltyPolicy.judgePenalty(counts)));
+        }
+    }
+
+    private String convertToPunishmentTypeString(PenaltyPolicy punishmentType) {
+        if (punishmentType.equals(PenaltyPolicy.WARNING)) {
+            return WARNING;
+        }
+        if (punishmentType.equals(PenaltyPolicy.MEETING)) {
+            return MEETING;
+        }
+        if (punishmentType.equals(PenaltyPolicy.EXPULSION)) {
+            return EXPULSION;
+        }
+        return "";
     }
 
     private void printEmptyLine() {
