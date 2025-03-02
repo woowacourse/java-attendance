@@ -36,7 +36,7 @@ public class AttendCommand implements Consumer<AttendanceBook> {
     }
 
     private String getNickname(AttendanceBook attendanceBook) {
-        String nickname = inputView.inputNickname();
+        String nickname = inputView.inputAttendNickname();
         if (!attendanceBook.has(nickname)) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다");
         }
