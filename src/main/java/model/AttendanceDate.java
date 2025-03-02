@@ -4,7 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class AttendanceDate {
+public class AttendanceDate implements Comparable<AttendanceDate> {
     private final LocalDate attendanceDate;
     private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
     private static final LocalDate DECEMBER_START_DATE = LocalDate.of(2024, 12, 1);
@@ -36,6 +36,11 @@ public class AttendanceDate {
 
     public AttendanceDate plusOneDay() {
         return new AttendanceDate(attendanceDate.plusDays(1));
+    }
+
+    @Override
+    public int compareTo(AttendanceDate other) {
+        return this.attendanceDate.compareTo(other.attendanceDate);
     }
 
     @Override
