@@ -3,6 +3,7 @@ package domain.attendance;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -15,25 +16,12 @@ public enum TimeTable {
             LocalTime.of(18,0)),
     WEEKDAYS_EXCEPT_MON_ATTENDANCE_TIME(EnumSet.of(TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
             LocalTime.of(10,0),
-            LocalTime.of(18,0)),
-    CAMPUS_OPERATING_TIME(EnumSet.allOf(DayOfWeek.class),
-            LocalTime.of(8,0),
-            LocalTime.of(23,0));
+            LocalTime.of(18,0));
 
-    public static final int MON_ATTENDANCE_START_HOUR = 13;
-    public static final int WEEKDAYS_EXCEPT_MON_ATTENDANCE_START_HOUR = 10;
     public static final int CAMPUS_OPERATING_OPENING_HOUR = 8;
     public static final int CAMPUS_OPERATING_CLOSING_HOUR = 23;
     public static final int OPERATING_MINUTE = 0;
 
-    public static final LocalTime MON_ATTENDANCE_START = LocalTime.of(
-            MON_ATTENDANCE_START_HOUR,
-            OPERATING_MINUTE
-    );
-    public static final LocalTime WEEKDAYS_EXCEPT_MON_ATTENDANCE_START = LocalTime.of(
-            WEEKDAYS_EXCEPT_MON_ATTENDANCE_START_HOUR,
-            OPERATING_MINUTE
-    );
     public static final LocalTime CAMPUS_OPERATING_START = LocalTime.of(
             CAMPUS_OPERATING_OPENING_HOUR,
             OPERATING_MINUTE
@@ -63,32 +51,31 @@ public enum TimeTable {
     }
 
     public static boolean isBeforeTardyTimeLimit(DayOfWeek dayOfWeek, LocalTime attendTime){
-        if(dayOfWeek == MONDAY){
-            LocalTime tardyTime = MON_ATTENDANCE_START.plusMinutes(TARDY_LIMIT_MIN);
-            return attendTime.isBefore(tardyTime) || attendTime.equals(tardyTime);
-        }
-        LocalTime tardyTime = WEEKDAYS_EXCEPT_MON_ATTENDANCE_START.plusMinutes(TARDY_LIMIT_MIN);
-        return attendTime.isBefore(tardyTime) || attendTime.equals(tardyTime);
+        return Arrays.stream(values())
+                .filter(timeTable -> timeTable.getDays().contains(dayOfWeek))
+                .anyMatch(timeTable -> {
+                    LocalTime tardyTime = timeTable.getOpeningTime().plusMinutes(TARDY_LIMIT_MIN);
+                    return attendTime.isBefore(tardyTime) || attendTime.equals(tardyTime);
+                });
     }
 
     public static boolean isOverTardyTimeLimit(DayOfWeek dayOfWeek, LocalTime attendTime){
-        if(dayOfWeek == MONDAY){
-            LocalTime tardyTime = MON_ATTENDANCE_START.plusMinutes(TARDY_LIMIT_MIN);
-            LocalTime absenceTime = MON_ATTENDANCE_START.plusMinutes(ABSENCE_LIMIT_MIN);
-            return attendTime.isAfter(tardyTime) || attendTime.equals(absenceTime);
-        }
-        LocalTime tardyTime = WEEKDAYS_EXCEPT_MON_ATTENDANCE_START.plusMinutes(TARDY_LIMIT_MIN);
-        LocalTime absenceTime = WEEKDAYS_EXCEPT_MON_ATTENDANCE_START.plusMinutes(ABSENCE_LIMIT_MIN);
-        return attendTime.isAfter(tardyTime) || attendTime.equals(absenceTime);
+        return Arrays.stream(values())
+                .filter(timeTable -> timeTable.getDays().contains(dayOfWeek))
+                .anyMatch(timeTable -> {
+                    LocalTime tardyTime = timeTable.getOpeningTime().plusMinutes(TARDY_LIMIT_MIN);
+                    LocalTime absenceTime = timeTable.getOpeningTime().plusMinutes(ABSENCE_LIMIT_MIN);
+                    return attendTime.isAfter(tardyTime) || attendTime.equals(absenceTime);
+                });
     }
 
     public static boolean isOverAbsenceTimeLimit(DayOfWeek dayOfWeek, LocalTime attendTime){
-        if(dayOfWeek == MONDAY){
-            LocalTime absenceTime = MON_ATTENDANCE_START.plusMinutes(ABSENCE_LIMIT_MIN);
-            return attendTime.isAfter(absenceTime);
-        }
-        LocalTime absenceTime = WEEKDAYS_EXCEPT_MON_ATTENDANCE_START.plusMinutes(ABSENCE_LIMIT_MIN);
-        return attendTime.isAfter(absenceTime);
+        return Arrays.stream(values())
+                .filter(timeTable -> timeTable.getDays().contains(dayOfWeek))
+                .anyMatch(timeTable -> {
+                    LocalTime absenceTime = timeTable.getOpeningTime().plusMinutes(ABSENCE_LIMIT_MIN);
+                    return attendTime.isAfter(absenceTime);
+                });
     }
 
     public static boolean isAttendanceDay(LocalDate date){
@@ -97,5 +84,17 @@ public enum TimeTable {
 
     private static boolean isWeekend(LocalDate date){
         return date.getDayOfWeek() == SATURDAY || date.getDayOfWeek() == SUNDAY;
+    }
+
+    public Set<DayOfWeek> getDays() {
+        return days;
+    }
+
+    public LocalTime getOpeningTime() {
+        return openingTime;
+    }
+
+    public LocalTime getClosingTime() {
+        return closingTime;
     }
 }
