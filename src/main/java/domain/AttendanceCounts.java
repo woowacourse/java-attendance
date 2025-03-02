@@ -30,6 +30,10 @@ public class AttendanceCounts {
         return AttendanceRiskLevel.NORMAL;
     }
 
+    public int getTardinessAndAbsenceCount() {
+        return tardinessCount + absenceCount;
+    }
+
     public int getAttendanceCount() {
         return attendanceCount;
     }
