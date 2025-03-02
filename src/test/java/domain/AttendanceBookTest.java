@@ -52,6 +52,21 @@ class AttendanceBookTest {
                 .isEqualTo(newTime);
     }
 
+    @Test
+    void 크루의_출석_횟수를_계산한다() {
+        final String name = "시소";
+        final LocalDateTime initDate = LocalDateTime.of(2024, 12, 10, 10, 0);
+
+        final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 10, 0), LocalDateTime.of(2024, 12, 12, 10, 0),
+                LocalDateTime.of(2024, 12, 13, 10, 0), LocalDateTime.of(2024, 12, 14, 10, 0));
+
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.initAttendance(name, initDate);
+        dateTimes.forEach(dateTime -> attendanceBook.attend(name, dateTime.toLocalDate(), dateTime.toLocalTime()));
+
+        assertThat(attendanceBook.getAttendanceCount(name)).isEqualTo(1 + dateTimes.size());
+    }
+
 
     @Test
     void 크루의_지각_횟수를_계산한다() {

@@ -72,6 +72,12 @@ public class AttendanceRecord {
         return new ArrayList<>(attendanceDates);
     }
 
+    public int calculateAttendanceCount() {
+        return (int) attendanceDates.stream()
+                .filter(attendanceDate -> attendanceDate.getStatus().equals(AttendanceStatus.ATTENDANCE))
+                .count();
+    }
+
     public int calculateTardyCount() {
         return (int) attendanceDates.stream()
                 .filter(attendanceDate -> attendanceDate.getStatus().equals(AttendanceStatus.TARDY))
@@ -80,7 +86,7 @@ public class AttendanceRecord {
 
     public int calculateAbsenceCount() {
         return (int) attendanceDates.stream()
-                .filter(attendanceDate -> attendanceDate.getStatus().equals(AttendanceStatus.ABSENCE))
+                .filter(attendanceDate -> attendanceDate.getStatus().equals(AttendanceStatus.ABSENCE) || attendanceDate.getStatus().equals(AttendanceStatus.NONE))
                 .count();
     }
 

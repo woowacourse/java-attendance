@@ -57,6 +57,17 @@ class AttendanceRecordTest {
     }
 
     @Test
+    void 출석_횟수를_계산한다() {
+        final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 10, 0), LocalDateTime.of(2024, 12, 12, 10, 0),
+                LocalDateTime.of(2024, 12, 13, 10, 0), LocalDateTime.of(2024, 12, 14, 10, 0));
+
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        dateTimes.forEach(attendanceRecord::applyAttendanceDate);
+
+        assertThat(attendanceRecord.calculateAttendanceCount()).isEqualTo(dateTimes.size());
+    }
+
+    @Test
     void 지각_횟수를_계산한다() {
         final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 10, 10), LocalDateTime.of(2024, 12, 12, 10, 10),
                 LocalDateTime.of(2024, 12, 13, 10, 10), LocalDateTime.of(2024, 12, 14, 10, 10));

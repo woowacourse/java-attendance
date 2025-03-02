@@ -48,6 +48,11 @@ public class AttendanceBook {
         findAttendanceRecordByName(name).applyAttendanceDate(date, time);
     }
 
+    public int getAttendanceCount(String name) {
+        return findAttendanceRecordByName(name).calculateAttendanceCount();
+    }
+
+
     public int getTardyCount(String name) {
         return findAttendanceRecordByName(name).calculateTardyCount();
     }
