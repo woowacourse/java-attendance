@@ -21,4 +21,11 @@ public class AttendanceDateTimes {
                 .map(LocalDateTime::toLocalDate)
                 .anyMatch(attendanceDate::isEqual);
     }
+
+    public LocalDateTime remove(LocalDate targetDate) {
+        return attendanceDateTimes.stream()
+                .filter(dateTime -> dateTime.toLocalDate().isEqual(targetDate))
+                .findAny()
+                .orElse(null);
+    }
 }

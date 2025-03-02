@@ -26,6 +26,13 @@ public class AttendanceHistories {
         return AttendanceStatus.of(attendanceDateTime);
     }
 
+    public LocalDateTime replaceAttendanceHistory(Crew crew, LocalDateTime newAttendanceDateTime) {
+        AttendanceDateTimes attendanceDateTimes = attendanceHistories.get(crew);
+        LocalDateTime oldAttendanceDateTime = attendanceDateTimes.remove(newAttendanceDateTime.toLocalDate());
+        attendanceDateTimes.add(newAttendanceDateTime);
+        return oldAttendanceDateTime;
+    }
+
     private void validateCrew(Crew crew) {
         if (!attendanceHistories.containsKey(crew)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
