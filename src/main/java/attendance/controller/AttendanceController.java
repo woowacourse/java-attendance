@@ -70,9 +70,6 @@ public class AttendanceController {
         });
     }
 
-    //TODO : 시간:분 형식 처리
-    //TODO : 시간 숫자로 입력 안한거 처리
-    //TODO : 분은 숫자로 입력 안한거 처리
     private void registerAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime, Crews crews) {
         if (checkPublicHolidays(currentDateTime) || checkCampusOperationTime(currentDateTime)) {
             return;
@@ -81,26 +78,6 @@ public class AttendanceController {
         LocalDateTime attendanceTime = readAttendanceTime(currentDateTime);
         AttendanceTime registerdAttendanceTime = attendanceBook.registerAttendance(inputCrewName, attendanceTime);
         outputView.writeAttendanceRegister(registerdAttendanceTime);
-    }
-
-    private boolean checkCampusOperationTime(LocalDateTime currentDateTime) {
-        try {
-            CampusOperationTime.isOperation(currentDateTime.getHour());
-        } catch (CustomException customException) {
-            outputView.writeErrorMessage(customException.getMessage());
-            return true;
-        }
-        return false;
-    }
-
-    private boolean checkPublicHolidays(LocalDateTime currentDateTime) {
-        try {
-            PublicHolidays.checkPublicHolidays(currentDateTime.toLocalDate());
-        } catch (CustomException customException) {
-            outputView.writeErrorMessage(customException.getMessage());
-            return true;
-        }
-        return false;
     }
 
     private void modifyAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime, Crews crews) {
@@ -133,7 +110,7 @@ public class AttendanceController {
     }
 
     private LocalDateTime readModifyTime(LocalDateTime modifyDayTime) {
-        return retryInput(() -> inputView.readModifyTime(modifyDayTime));
+        return retryInput(() -> Parser.toTime(inputView.readModifyTime(), modifyDayTime));
     }
 
     private Crew readCrewName(Crews crews) {
@@ -141,11 +118,31 @@ public class AttendanceController {
     }
 
     private LocalDateTime readAttendanceTime(LocalDateTime currentDateTime) {
-        return retryInput(() -> inputView.readAttendanceTime(currentDateTime));
+        return retryInput(() -> Parser.toTime(inputView.readAttendanceTime(), currentDateTime));
     }
 
     private CommandOption readCommandOption(LocalDateTime currentDateTime) {
         return retryInput(() -> CommandOption.from(inputView.readCommandOption(currentDateTime)));
+    }
+
+    private boolean checkCampusOperationTime(LocalDateTime currentDateTime) {
+        try {
+            CampusOperationTime.isOperation(currentDateTime.getHour());
+        } catch (CustomException customException) {
+            outputView.writeErrorMessage(customException.getMessage());
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkPublicHolidays(LocalDateTime currentDateTime) {
+        try {
+            PublicHolidays.checkPublicHolidays(currentDateTime.toLocalDate());
+        } catch (CustomException customException) {
+            outputView.writeErrorMessage(customException.getMessage());
+            return true;
+        }
+        return false;
     }
 
     private <T> T retryInput(final Supplier<T> supplier) {

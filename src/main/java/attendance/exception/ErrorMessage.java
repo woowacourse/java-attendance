@@ -1,7 +1,7 @@
 package attendance.exception;
 
 public enum ErrorMessage {
-
+    TIME_FORMAT_ERROR("시간 형식을 잘못 입력하셨습니다."),
     INVALID_DATE_RANGE("일 범위를 잘못 입력하셨습니다."),
     DATE_NUMBER_FORMAT("날짜는 숫자로 입력하셔야 합니다."),
     NOT_OPEN_CAMPUS("캠퍼스 운영 시간이 아닙니다"),

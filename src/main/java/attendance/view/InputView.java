@@ -1,8 +1,6 @@
 package attendance.view;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
@@ -29,12 +27,9 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public LocalDateTime readAttendanceTime(LocalDateTime currentDateTime) {
+    public String readAttendanceTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime inputTime = LocalTime.parse(scanner.nextLine(), dateTimeFormatter);
-
-        return currentDateTime.withHour(inputTime.getHour()).withMinute(inputTime.getMinute());
+        return scanner.nextLine();
     }
 
     public String readModifyCrewName() {
@@ -47,10 +42,8 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public LocalDateTime readModifyTime(LocalDateTime modifyDayTime) {
+    public String readModifyTime() {
         System.out.println("언제로 변경하겠습니까?");
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime inputTime = LocalTime.parse(scanner.nextLine(), dateTimeFormatter);
-        return modifyDayTime.withHour(inputTime.getHour()).withMinute(inputTime.getMinute());
+        return scanner.nextLine();
     }
 }

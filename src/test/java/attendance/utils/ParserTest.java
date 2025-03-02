@@ -41,4 +41,42 @@ class ParserTest {
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorMessage.INVALID_DATE_RANGE.getMessage());
     }
+
+    @Test
+    void 이전_타임_대체() {
+        //given
+        String inputTime = "12:59";
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 24, 13, 31);
+
+        //when
+        LocalDateTime parsedLocalDateTime = Parser.toTime(inputTime, localDateTime);
+
+        //then
+        Assertions.assertThat(parsedLocalDateTime.getHour()).isEqualTo(12);
+        Assertions.assertThat(parsedLocalDateTime.getMinute()).isEqualTo(59);
+    }
+
+    @Test
+    void 시간_숫자_예외() {
+        //given
+        String inputTime = "우:가";
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 24, 13, 31);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> Parser.toTime(inputTime, localDateTime))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorMessage.TIME_FORMAT_ERROR.getMessage());
+    }
+
+    @Test
+    void 시간_숫자_포멧_예외() {
+        //given
+        String inputTime = "25:00";
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> Parser.toTime(inputTime, localDateTime))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorMessage.TIME_FORMAT_ERROR.getMessage());
+    }
 }
