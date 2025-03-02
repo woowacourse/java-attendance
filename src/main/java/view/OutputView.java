@@ -2,6 +2,7 @@ package view;
 
 import domain.AttendanceStatus;
 import domain.DailyRecord;
+import domain.Penalty;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
@@ -15,6 +16,7 @@ public class OutputView {
     private static final String EDITED_RECORD_FORMAT = "%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!%n";
     private static final String CREW_RECORD_START_MESSAGE = "이번 달 %s의 출석 기록입니다.%n";
     private static final String STATUS_RECORD_FORMAT = "%s: %d회%n";
+    private static final String PENALTY_FORMAT = "%s 대상자입니다.";
 
     public void printErrorMessage(IllegalArgumentException e) {
         System.out.println();
@@ -53,5 +55,11 @@ public class OutputView {
         for (AttendanceStatus status : statisticsResult.keySet()) {
             System.out.printf(STATUS_RECORD_FORMAT, status.getName(), statisticsResult.get(status));
         }
+    }
+
+    public void printPenalty(Penalty penalty) {
+        System.out.println();
+        System.out.printf(PENALTY_FORMAT, penalty.getPenalty());
+        System.out.println();
     }
 }

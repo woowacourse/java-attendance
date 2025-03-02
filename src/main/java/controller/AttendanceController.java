@@ -1,5 +1,7 @@
 package controller;
 
+import static domain.AttendanceStatus.ABSENT;
+import static domain.AttendanceStatus.LATE;
 import static domain.Feature.ATTENDANCE_CHECK;
 import static domain.Feature.ATTENDANCE_EDIT;
 import static domain.Feature.CREW_RECORDS_CHECK;
@@ -15,10 +17,10 @@ import domain.Coach;
 import domain.Crew;
 import domain.DailyRecord;
 import domain.Feature;
+import domain.Penalty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Map;
 import view.InputView;
 import view.OutputView;
@@ -72,9 +74,11 @@ public class AttendanceController {
         Crew crew = attendanceBook.findCrewByName(name);
         Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, localDate);
         Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
+        Penalty penalty = Penalty.of(statisticsResult.get(LATE), statisticsResult.get(ABSENT));
+
         outputView.printCrewRecords(name, records);
         outputView.printStatistics(statisticsResult);
-        // TODO: 패널티 계산
+        outputView.printPenalty(penalty);
     }
 
     protected void expelledWarningCheck() {

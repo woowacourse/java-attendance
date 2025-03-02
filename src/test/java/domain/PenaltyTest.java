@@ -37,7 +37,7 @@ public class PenaltyTest {
 
         @ParameterizedTest
         @MethodSource("provideCounselingCount")
-        @DisplayName("제적 대상자를 반환한다.")
+        @DisplayName("면담 대상자를 반환한다.")
         void pickCounseling(int lateCount, int absentCount) {
             Penalty penalty = Penalty.of(lateCount, absentCount);
             assertThat(penalty).isEqualTo(COUNSELING);
@@ -53,7 +53,7 @@ public class PenaltyTest {
 
         @ParameterizedTest
         @MethodSource("provideWarningCount")
-        @DisplayName("제적 대상자를 반환한다.")
+        @DisplayName("경고 대상자를 반환한다.")
         void pickWarning(int lateCount, int absentCount) {
             Penalty penalty = Penalty.of(lateCount, absentCount);
             assertThat(penalty).isEqualTo(WARNING);
@@ -69,7 +69,7 @@ public class PenaltyTest {
 
         @ParameterizedTest
         @MethodSource("providePassCount")
-        @DisplayName("제적 대상자를 반환한다.")
+        @DisplayName("패스 대상자를 반환한다.")
         void pickPass(int lateCount, int absentCount) {
             Penalty penalty = Penalty.of(lateCount, absentCount);
             assertThat(penalty).isEqualTo(PASS);

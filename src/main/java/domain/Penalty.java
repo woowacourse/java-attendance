@@ -1,5 +1,7 @@
 package domain;
 
+import java.util.Arrays;
+
 public enum Penalty {
     EXPELLED("제적", 6),
     COUNSELING("면담", 3),
@@ -15,7 +17,14 @@ public enum Penalty {
     }
 
     public static Penalty of(int lateCount, int absentCount) {
-        // TODO: 패널티 계산 구현
-        return null;
+        int totalAbsences = absentCount + lateCount / 3;
+        return Arrays.stream(values())
+            .filter(penalty -> totalAbsences >= penalty.count)
+            .findFirst()
+            .orElse(PASS);
+    }
+
+    public String getPenalty() {
+        return penalty;
     }
 }
