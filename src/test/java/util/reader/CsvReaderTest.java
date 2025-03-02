@@ -1,5 +1,6 @@
 package util.reader;
 
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -25,30 +26,37 @@ public class CsvReaderTest {
 
     @Test
     @DisplayName("CSV 파일 데이터 로딩 기능 테스트")
-    void CSV_파일_데이터_로딩_기능_테스트() throws IOException {
+    void CSV_파일_데이터_로딩_기능_테스트() {
         // then
-        assertNotNull(csvLines, "CSV 파일 데이터가 null이어서는 안 됩니다.");
-        assertEquals(46, csvLines.size(), "CSV 파일의 라인 수가 예상과 다릅니다.");
+        assertSoftly(softly -> {
+            assertNotNull(csvLines, "CSV 파일 데이터가 null이어서는 안 됩니다.");
+            assertEquals(46, csvLines.size(), "CSV 파일의 라인 수가 예상과 다릅니다.");
+        });
     }
+
 
     @Test
     @DisplayName("CSV 파일 데이터 헤더 파싱 기능 테스트")
-    void CSV_파일_데이터_헤더_파싱_기능_테스트() throws IOException {
+    void CSV_파일_데이터_헤더_파싱_기능_테스트() {
         // then
         String[] header = csvLines.getFirst();
-        assertEquals(2, header.length, "헤더의 컬럼 수가 예상과 다릅니다.");
-        assertEquals("nickname", header[0], "첫 번째 컬럼은 'nickname'이어야 합니다.");
-        assertEquals("datetime", header[1], "두 번째 컬럼은 'datetime'이어야 합니다.");
+        assertSoftly(softly -> {
+            assertEquals(2, header.length, "헤더의 컬럼 수가 예상과 다릅니다.");
+            assertEquals("nickname", header[0], "첫 번째 컬럼은 'nickname'이어야 합니다.");
+            assertEquals("datetime", header[1], "두 번째 컬럼은 'datetime'이어야 합니다.");
+        });
     }
 
     @Test
     @DisplayName("CSV 파일 데이터 데이터 파싱 기능 테스트")
-    void CSV_파일_데이터_데이터_파싱_기능_테스트() throws IOException {
+    void CSV_파일_데이터_데이터_파싱_기능_테스트() {
         // then
         String[] firstDataRow = csvLines.get(1);
-        assertEquals(2, firstDataRow.length, "첫 번째 데이터의 컬럼 수가 예상과 다릅니다.");
-        assertEquals("쿠키", firstDataRow[0], "첫 번째 데이터의 닉네임이 예상과 다릅니다.");
-        assertEquals("2024-12-13 10:08", firstDataRow[1], "첫 번째 데이터의 날짜 및 시간이 예상과 다릅니다.");
+        assertSoftly(softly -> {
+            assertEquals(2, firstDataRow.length, "첫 번째 데이터의 컬럼 수가 예상과 다릅니다.");
+            assertEquals("쿠키", firstDataRow[0], "첫 번째 데이터의 닉네임이 예상과 다릅니다.");
+            assertEquals("2024-12-13 10:08", firstDataRow[1], "첫 번째 데이터의 날짜 및 시간이 예상과 다릅니다.");
+        });
     }
 }
 
