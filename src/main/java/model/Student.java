@@ -23,6 +23,12 @@ public class Student {
         }
     }
 
+    public void validateAttendanceBeforeModification(AttendanceDate attendanceDate) {
+        if (!studentAttendanceHistory.isExistSameAttendanceDate(attendanceDate)) {
+            throw new IllegalArgumentException("[ERROR] 출석하지 않은 요일입니다. 수정하고 싶으면 출석을 먼저 진행해 주세요.");
+        }
+    }
+
     public boolean isSameName(String studentName) {
         return studentName.equals(name);
     }
