@@ -2,6 +2,7 @@ package attendance.domain.dto;
 
 import attendance.domain.Attendance;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public record ModifyAttendanceResult(
@@ -16,7 +17,9 @@ public record ModifyAttendanceResult(
         String modifyNewStatus
 
 ) {
-    public static ModifyAttendanceResult of(Attendance oldAttendance, Attendance newAttendance) {
+    public static ModifyAttendanceResult of(List<Attendance> attendances) {
+        Attendance oldAttendance = attendances.getFirst();
+        Attendance newAttendance = attendances.getLast();
         return new ModifyAttendanceResult(
                 oldAttendance.getAttendanceDate().getMonthValue(),
                 oldAttendance.getAttendanceDate().getDayOfMonth(),
