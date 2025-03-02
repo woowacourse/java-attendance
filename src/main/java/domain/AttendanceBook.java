@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class AttendanceBook {
     Map<Crew, CheckInHistory> book;
@@ -19,8 +18,8 @@ public class AttendanceBook {
         return new AttendanceBook(book);
     }
 
-    public CheckInHistory findHistoryByName(String name) {
-        return Optional.ofNullable(book.get(Crew.of(name)))
+    public CheckInHistory findHistoryByName(Crew crew) {
+        return Optional.ofNullable(book.get(crew))
                 .orElseThrow(() -> new AppException("해당 이름이 출석부에 존재하지 않습니다."));
     }
 
@@ -29,6 +28,14 @@ public class AttendanceBook {
                 .filter(entry -> entry.getValue().getPenaltyStatus(now) != PenaltyStatus.NONE)
                 .map(entry ->
                         DangerCrew.of(entry.getKey(), entry.getValue().countLate(now), entry.getValue().countAbsence(now)))
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    public void checkIn(Crew crew, CheckInDate checkInDate, CheckInTime checkInTime) {
+        CheckInHistory historyByName = findHistoryByName(crew);
+        if (historyByName == null) {
+            throw new AppException("해당 이름이 존재하지 않습니다.");
+        }
+        historyByName.checkIn(checkInDate, checkInTime);
     }
 }
