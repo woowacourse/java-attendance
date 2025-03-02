@@ -1,6 +1,7 @@
 package domain.attendance;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -51,7 +52,8 @@ public class AttendanceBookTest {
                 .collect(Collectors.toList());
     }
 
-    private Map<Crew, AttendanceLogs> createCrewAttendances(List<String> crewNames, List<List<LocalDateTime>> logDates) {
+    private Map<Crew, AttendanceLogs> createCrewAttendances(List<String> crewNames,
+                                                            List<List<LocalDateTime>> logDates) {
         Map<Crew, AttendanceLogs> crewAttendances = new LinkedHashMap<>();
         for (int i = 0; i < crewNames.size(); i++) {
             Crew crew = new Crew(crewNames.get(i));
@@ -177,5 +179,39 @@ public class AttendanceBookTest {
                 .orElseThrow(() -> new NoSuchElementException("크루 " + crewName + "을 찾을 수 없습니다."));
         // then
         assertEquals(CrewStatus.valueOf(crewStatus), attendanceResult.getCrewStatus());
+    }
+
+    @Test
+    @DisplayName("크루의 해당 날짜 출석 로그 검색 기능 테스트")
+    void 크루의_해당_날짜_출석_로그_검색_기능_테스트() {
+        // when
+        String crewName = crews.getFirst().getName();
+        LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+        AttendanceLog attendanceLog = new AttendanceLog(attendDateTime);
+        // then
+        AttendanceLog crewAttendanceLog = attendanceBook.findCrewAttendanceLog(crewName, attendDateTime.toLocalDate());
+        // given
+        assertAll(
+                () -> assertEquals(attendanceLog.getAttendanceDate(), crewAttendanceLog.getAttendanceDate()),
+                () -> assertEquals(attendanceLog.getAttendanceTime(), crewAttendanceLog.getAttendanceTime()),
+                () -> assertEquals(attendanceLog.getAttendanceStatus(), crewAttendanceLog.getAttendanceStatus())
+        );
+    }
+
+    @Test
+    @DisplayName("크루의 해당 날짜까지 출석 로그 기록 검색 기능 테스트")
+    void 크루의_해당_날짜까지_출석_로그_기록_검색_기능_테스트() {
+        // when
+        String crewName = crews.getLast().getName();
+        LocalDate todayDate = LocalDate.of(2024, 12, 5);
+        // then
+        List<AttendanceLog> attendanceLogHistory = attendanceBook.findCrewAttendanceLogHistory(crewName, todayDate);
+        // given
+        assertAll(
+                () -> assertEquals(3, attendanceLogHistory.size()),
+                () -> assertTrue(attendanceLogHistory.get(0).getAttendanceDate().equals(LocalDate.of(2024, 12, 2))),
+                () -> assertTrue(attendanceLogHistory.get(1).getAttendanceDate().equals(LocalDate.of(2024, 12, 3))),
+                () -> assertTrue(attendanceLogHistory.get(2).getAttendanceDate().equals(LocalDate.of(2024, 12, 4)))
+        );
     }
 }

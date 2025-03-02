@@ -32,4 +32,14 @@ public class CrewStatusTest {
                 .isInstanceOf(ErrorException.class)
                 .hasMessageContaining("[ERROR]");
     }
+
+    @ParameterizedTest
+    @CsvSource({"1,정상", "2,경고", "3,면담", "6,제적"})
+    @DisplayName("크루 상태 설명 기능 테스트")
+    void 크루_상태_설명_기능_테스트(int absentCount, String crewStatus) {
+        // given
+        int lateCount = 0;
+        // when & then
+        assertEquals(crewStatus, CrewStatus.findStatus(lateCount, absentCount).getDescription());
+    }
 }

@@ -28,4 +28,14 @@ public class AttendanceStatusTest {
         // when & then
         assertEquals(AttendanceStatus.valueOf(attendanceStatus), AttendanceStatus.findStatus(attendanceTime));
     }
+
+    @ParameterizedTest
+    @CsvSource({"4,59,출석", "5,0,지각", "30,0,결석"})
+    @DisplayName("출결 상태 설명 기능 테스트")
+    void 출결_상태_설명_기능_테스트(int minute, int second, String attendanceStatus) {
+        // given
+        LocalDateTime attendanceTime = LocalDateTime.of(2025, 2, 25, 10, minute, second);
+        // when & then
+        assertEquals(attendanceStatus, AttendanceStatus.findStatus(attendanceTime).getDescription());
+    }
 }
