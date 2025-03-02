@@ -209,4 +209,16 @@ public class AttendanceHistoriesTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
     }
+
+    @DisplayName("2.1 닉네임, 수정하려는 날짜, 등교 시간을 입력하여 기록을 수정할 수 있다.")
+    @Test
+    void test() {
+        // given
+        Crew crew = new Crew("노랑");
+        LocalDateTime newAttendanceDateTime = LocalDateTime.of(2025, 2, 21, 10, 15);
+        // when
+        LocalDateTime oldAttendanceDateTime = attendanceHistories.replaceAttendanceHistory(crew, newAttendanceDateTime);
+        // then
+        assertThat(oldAttendanceDateTime).isEqualTo(LocalDateTime.of(2025, 2, 21, 10, 0));
+    }
 }
