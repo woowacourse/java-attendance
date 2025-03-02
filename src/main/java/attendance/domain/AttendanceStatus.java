@@ -15,10 +15,10 @@ public class AttendanceStatus {
 
     private String determineSubjectStatus() {
         int adjustedAbsences = absentCount + lateCount / 3;
-        if (adjustedAbsences > 5) return "제적 대상자";
-        if (adjustedAbsences >= 3) return "면담 대상자";
-        if (adjustedAbsences >= 2) return "경고 대상자";
-        return "정상";
+        if (adjustedAbsences > 5) return "제적 대상자입니다.";
+        if (adjustedAbsences >= 3) return "면담 대상자입니다.";
+        if (adjustedAbsences >= 2) return "경고 대상자입니다.";
+        return "대상자에 해당하지 않습니다.";
     }
 
     public int getAttendanceCount() {

@@ -2,9 +2,11 @@ package attendance.controller;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceStatus;
 import attendance.domain.Crew;
 import attendance.domain.FileReader;
 import attendance.domain.dto.AttendanceResult;
+import attendance.domain.dto.AttendanceStatusResult;
 import attendance.domain.dto.ModifyAttendanceResult;
 import attendance.util.UserInputParser;
 import attendance.view.InputView;
@@ -66,9 +68,23 @@ public class AttendanceController {
         String inputCrewName = inputView.inputCheckCrew();
         Crew crew = new Crew(inputCrewName);
 
+        List<Attendance> attendances = attendanceBook.checkAttendancesRecord(crew);
+        AttendanceStatus attendanceStatus = attendanceBook.checkAttendanceCrewStatus(crew);
+        List<AttendanceResult> attendanceResults = attendances.stream()
+            .map(AttendanceResult::from)
+            .toList();
+        AttendanceStatusResult attendanceStatusResult = new AttendanceStatusResult(
+            attendanceStatus.getAttendanceCount(),
+            attendanceStatus.getLateCount(),
+            attendanceStatus.getAbsentCount(),
+            attendanceStatus.getSubjectStatus()
+            );
+
+        outputView.displayAttendanceRecord(attendanceResults,attendanceStatusResult);
     }
 
     private void checkExpelledCrews() {
+        
     }
 
     private void closeProgram() {

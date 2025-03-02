@@ -1,7 +1,9 @@
 package attendance.view;
 
 import attendance.domain.dto.AttendanceResult;
+import attendance.domain.dto.AttendanceStatusResult;
 import attendance.domain.dto.ModifyAttendanceResult;
+import java.util.List;
 
 public class OutputView {
 
@@ -35,5 +37,37 @@ public class OutputView {
             modifyAttendanceResult.modifyOldStatus()
             );
 
+    }
+
+    public void displayAttendanceRecord(List<AttendanceResult> attendanceResults, AttendanceStatusResult attendanceStatusResult) {
+        String outputResult = "%d월 %02d일 %s %02d:%02d (%s)\n";
+        for (AttendanceResult attendanceResult : attendanceResults) {
+            System.out.printf(outputResult,
+                attendanceResult.attendanceMonth(),
+                attendanceResult.attendanceDay(),
+                attendanceResult.attendanceDayOfWeek(),
+                attendanceResult.attendanceHour(),
+                attendanceResult.attendanceMinute(),
+                attendanceResult.attendanceStatus()
+            );
+        }
+        //출석: 5회
+        //지각: 2회
+        //결석: 3회
+        //
+        //면담 대상자입니다.
+        String outputStatus = """
+            출석: %d회
+            지각: %d회
+            결석: %d회
+            
+            %s
+            """;
+        System.out.printf(outputStatus,
+            attendanceStatusResult.attendanceCount(),
+            attendanceStatusResult.lateCount(),
+            attendanceStatusResult.absentCount(),
+            attendanceStatusResult.subjectStatus()
+            );
     }
 }

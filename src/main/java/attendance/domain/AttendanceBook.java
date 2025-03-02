@@ -38,6 +38,14 @@ public class AttendanceBook {
         return attendanceLog.checkAttendancesRecord();
     }
 
+    public AttendanceStatus checkAttendanceCrewStatus(Crew crew) {
+        AttendanceLog attendanceLog = attendanceRecord.get(crew);
+        int attendanceCount = attendanceLog.countAttendanceStatus(Subject.ATTENDANCE);
+        int lateCount = attendanceLog.countAttendanceStatus(Subject.LATE);
+        int absentCount = attendanceLog.countAttendanceStatus(Subject.ABSENT);
+        return new AttendanceStatus(attendanceCount, lateCount, absentCount);
+    }
+
     // 4. 제적 위험자 확인
     public Map<Crew, AttendanceStatus> checkExpelledCrews() {
         return attendanceRecord.entrySet().stream()
