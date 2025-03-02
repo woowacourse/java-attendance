@@ -70,8 +70,8 @@ public class AttendanceController {
         validateDate(systemDate);
         Crew crew = getCrew(InputView.readNickname());
 
-        String inputAttendTime = InputView.readAttendTimeForRecord();
-        Attendance attendance = new Attendance(systemDate, LocalTime.parse(inputAttendTime));
+        LocalTime inputAttendTime = InputView.readAttendTimeForRecord();
+        Attendance attendance = new Attendance(systemDate, inputAttendTime);
 
         attendanceBook.add(crew, attendance);
         OutputView.printRecordAttendanceResult(attendance);

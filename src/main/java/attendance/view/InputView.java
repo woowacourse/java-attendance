@@ -31,9 +31,9 @@ public class InputView {
         return validateInput(scanner.nextLine());
     }
 
-    public static String readAttendTimeForRecord() {
+    public static LocalTime readAttendTimeForRecord() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return validateInput(scanner.nextLine());
+        return parseTime(validateInput(scanner.nextLine()));
     }
 
     public static String readNicknameForEdit() {
@@ -63,7 +63,7 @@ public class InputView {
         try {
             return Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 날짜는 숫자로 입력해주세요.");
+            throw new IllegalArgumentException(ErrorMessage.INVALID_NUMBER_FORMAT_ERROR.getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ public class InputView {
         try {
             return LocalTime.parse(input);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 시간은 10:00 형식으로 입력해주세요.");
+            throw new IllegalArgumentException(ErrorMessage.INVALID_TIME_FORMAT_ERROR.getMessage());
         }
     }
 }
