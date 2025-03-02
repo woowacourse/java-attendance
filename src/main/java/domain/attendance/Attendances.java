@@ -21,6 +21,16 @@ public class Attendances {
                 .anyMatch(attendance -> attendance.has(day));
     }
 
+    public void attend(LocalDateTime attendDateTime) {
+        if (has(attendDateTime.toLocalDate())) {
+            throw new IllegalArgumentException("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요");
+        }
+        if (AttendanceTime.isAttendance(attendDateTime)) {
+            throw new IllegalArgumentException("미래에는 출석할 수 없습니다");
+        }
+        this.attendances.add(new Attendance(attendDateTime));
+    }
+
     private void validate(List<LocalDateTime> dateTimes) {
         Set<LocalDate> dates = dateTimes
                 .stream()
@@ -54,8 +64,5 @@ public class Attendances {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.getStatus() == AttendanceStatus.ABSENCE)
                 .count();
-    }
-
-    public void attend(LocalDateTime attendDateTime) {
     }
 }

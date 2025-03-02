@@ -19,7 +19,17 @@ public class InputView {
         return inputValue();
     }
 
-    public String inputValue() {
+    public String inputNickname() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return inputValue();
+    }
+
+    public String getAttendTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        return inputValue();
+    }
+
+    private String inputValue() {
         return scanner.next().trim();
     }
 
