@@ -28,6 +28,15 @@ public class AttendanceRecords {
         return new AttendanceStatusCounts(absenceCount, lateCount, attendanceCount);
     }
 
+    public boolean hasAttendanceDateTime(final AttendanceDateTime attendanceDateTime) {
+        return attendanceRecords.stream()
+                .anyMatch(attendanceRecord -> attendanceRecord.hasAttendanceDateTime(attendanceDateTime));
+    }
+
+    public void add(final AttendanceRecord attendanceRecord) {
+        attendanceRecords.add(attendanceRecord);
+    }
+
     public AttendanceStatusCounts getAttendanceStatusCounts() {
         return attendanceStatusCounts;
     }
