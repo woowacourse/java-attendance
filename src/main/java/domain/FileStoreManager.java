@@ -17,7 +17,7 @@ public class FileStoreManager {
         this.storage = storage;
     }
     public void save(String file) {
-        List<String> lines = readLines(file);
+        List<String> lines = getLines(file);
         Set<String> crews = getCrews(lines);
         for (String crew : crews) {
             storage.create(crew);
@@ -25,24 +25,25 @@ public class FileStoreManager {
         registerAttendances(lines);
     }
 
-    private List<String> readLines(String file) {
-        List<String> lines = new ArrayList<>();
+    private List<String> getLines(String file) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            reader.readLine();
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                lines.add(line);
-            }
-            return lines;
+            return readLines(file);
         } catch (IOException e) {
             throw new RuntimeException("파일 로드 중에 오류가 발생했습니다.");
         }
     }
 
+    private List<String> readLines(String file) throws IOException {
+        List<String> lines = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        reader.readLine();
+        String line = reader.readLine();
+        while (line != null) {
+            lines.add(line);
+            line = reader.readLine();
+        }
+        return lines;
+    }
 
     private Set<String> getCrews(List<String> lines) {
         Set<String> crews = new HashSet<>();
