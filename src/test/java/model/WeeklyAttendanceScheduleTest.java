@@ -56,6 +56,30 @@ class WeeklyAttendanceScheduleTest {
     }
 
     @Test
+    @DisplayName("토요일의 경우 true 처리")
+    void 토요일의_경우_true_처리() {
+        LocalDate localDate = LocalDate.of(2024, 12, 14);
+        boolean result = WeeklyAttendanceSchedule.checkHoliday(localDate);
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("일요일의 경우 true 처리")
+    void 일요일의_경우_ture_처리() {
+        LocalDate localDate = LocalDate.of(2024, 12, 15);
+        boolean result = WeeklyAttendanceSchedule.checkHoliday(localDate);
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("크리스마스의 경우 true 처리")
+    void 크리스마스의_경우_ture_처리() {
+        LocalDate localDate = LocalDate.of(2024, 12, 25);
+        boolean result = WeeklyAttendanceSchedule.checkHoliday(localDate);
+        assertTrue(result);
+    }
+
+    @Test
     @DisplayName("토요일의 경우 예외 처리")
     void 토요일의_경우_예외_처리() {
         LocalDate localDate = LocalDate.of(2024, 12, 14);
