@@ -105,4 +105,13 @@ public class StudentTest {
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 이미 출석한 요일입니다. 다시 출석하고 싶으면 수정 기능을 이용해 주세요.");
     }
+
+    @Test
+    @DisplayName("출석하지 않은 요일을 수정하고자 할때 예외 발생 테스트")
+    void test9() {
+        org.assertj.core.api.Assertions.assertThatThrownBy(
+                () -> student.validateAttendanceBeforeModification(new AttendanceDate(LocalDate.of(2024, 12, 31)))
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 출석하지 않은 요일입니다. 수정하고 싶으면 출석을 먼저 진행해 주세요.");
+    }
 }
