@@ -39,6 +39,9 @@ public class AttendanceController {
         if (menuSelection.equals("3")) {
             viewRecord();
         }
+        if (menuSelection.equals("4")) {
+            viewWarnedCrews();
+        }
     }
 
     private CrewRecords loadCrewRecords() {
@@ -74,6 +77,10 @@ public class AttendanceController {
 
         Crew crew = new Crew(nickname);
         outputView.printCrewRecord(currentDate, crewRecords, crew);
+    }
+
+    private void viewWarnedCrews() {
+        outputView.printWarnedCrews(crewRecords);
     }
 
     private void validateMenu(String input) {

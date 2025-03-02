@@ -5,6 +5,7 @@ import domain.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.TreeSet;
 
 public class OutputView {
@@ -40,6 +41,17 @@ public class OutputView {
                 .forEach(this::printAttendanceRecord);
         printAttendanceStatus(attendanceRecords);
         printWarningStatus(crewRecords, crew);
+    }
+
+    public void printWarnedCrews(CrewRecords crewRecords) {
+        System.out.println("제적 위험자 조회 결과");
+        List<Crew> warnedCrews = crewRecords.getWarnedCrews();
+        for (Crew warnedCrew : warnedCrews) {
+            int tardyCount = crewRecords.getTardyCount(warnedCrew);
+            int absentCount = crewRecords.getAbsentCount(warnedCrew);
+            String warningStatus = crewRecords.getWarningStatus(warnedCrew).getName();
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", warnedCrew.name(), absentCount, tardyCount, warningStatus);
+        }
     }
 
     private void printAttendanceStatus(AttendanceRecords attendanceRecords) {

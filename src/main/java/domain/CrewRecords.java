@@ -48,6 +48,16 @@ public class CrewRecords {
         return sortWarnedCrews(warnedCrews);
     }
 
+    public int getTardyCount(Crew crew) {
+        AttendanceRecords attendanceRecords = records.get(crew);
+        return attendanceRecords.getAttendanceCount(AttendanceStatus.TARDY);
+    }
+
+    public int getAbsentCount(Crew crew) {
+        AttendanceRecords attendanceRecords = records.get(crew);
+        return attendanceRecords.getAttendanceCount(AttendanceStatus.ABSENT);
+    }
+
     private List<Crew> sortWarnedCrews(Stream<Crew> warnedCrews) {
         return warnedCrews.sorted(Comparator.comparing((Crew crew) -> getConvertedAbsences(crew) * -1)
                         .thenComparing(crew -> getTardiesAfterConversion(crew) * -1)
