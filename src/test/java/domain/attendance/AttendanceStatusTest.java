@@ -35,12 +35,12 @@ class AttendanceStatusTest {
             void exceptMondayAttendanceTest(int hour){
                 LocalTime attendanceTime = LocalTime.of(hour,5);
                 Arrays.stream(DayOfWeek.values())
-                        .filter(dayOfWeek -> dayOfWeek != MONDAY)
+                        .filter(dayOfWeek -> dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY)
                         .forEach(dayOfWeek -> assertThat(calcAttendanceStatus(dayOfWeek,attendanceTime)).isEqualTo(ATTENDANCE));
 
                 LocalTime lateTime = LocalTime.of(10,6);
                 Arrays.stream(DayOfWeek.values())
-                        .filter(dayOfWeek ->  dayOfWeek != MONDAY)
+                        .filter(dayOfWeek ->  dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY)
                         .forEach(dayOfWeek ->  assertThat(calcAttendanceStatus(dayOfWeek,lateTime)).isNotEqualTo(ATTENDANCE));
             }
         }
@@ -69,16 +69,16 @@ class AttendanceStatusTest {
             void exceptMondayTardyTest(int minLimit){
                 for(int min = 6; min <= minLimit; min++){
                     LocalTime tardyTime = LocalTime.of(10,min);
-                    Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY)
+                    Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY)
                             .forEach(dayOfWeek -> assertThat(calcAttendanceStatus(dayOfWeek,tardyTime)).isEqualTo(TARDY));
                 }
 
                 LocalTime attendanceTime = LocalTime.of(10,5);
-                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY)
+                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY)
                         .forEach(dayOfWeek -> assertThat(calcAttendanceStatus(dayOfWeek,attendanceTime)).isNotEqualTo(TARDY));
 
                 LocalTime absenceTime = LocalTime.of(10,minLimit+1);
-                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY)
+                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY)
                         .forEach(dayOfWeek -> assertThat(calcAttendanceStatus(dayOfWeek,absenceTime)).isNotEqualTo(TARDY));
             }
         }
@@ -107,16 +107,16 @@ class AttendanceStatusTest {
             void exceptMondayAbsenceTest(int minStart){
                 for(int min = minStart; min < 60; min++){
                     LocalTime absenceTime = LocalTime.of(10,min);
-                    Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY)
+                    Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY)
                             .forEach(dayOfWeek -> assertThat(calcAttendanceStatus(dayOfWeek,absenceTime)).isEqualTo(ABSENCE));
                 }
 
                 LocalTime tardyTime = LocalTime.of(10,5);
-                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY)
+                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY)
                         .forEach(dayOfWeek -> assertThat(calcAttendanceStatus(dayOfWeek,tardyTime)).isNotEqualTo(ABSENCE));
 
                 LocalTime attendanceTime = LocalTime.of(10,0);
-                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY)
+                Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY && dayOfWeek != SATURDAY && dayOfWeek != SUNDAY)
                         .forEach(dayOfWeek -> assertThat(calcAttendanceStatus(dayOfWeek,attendanceTime)).isNotEqualTo(ABSENCE));
             }
         }

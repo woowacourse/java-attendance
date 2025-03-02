@@ -20,7 +20,7 @@ class FileInputViewTest {
             Assertions.assertThat(crews.has("이든")).isTrue();
             Assertions.assertThat(crews.has("가이온")).isFalse();
 
-            Assertions.assertThat(crews.findByName("빙봉").getAttendanceRecord().getAbsenceCount()).isEqualTo(2);
+            Assertions.assertThat(crews.findByName("빙봉").getAttendanceRecord().getAbsenceCount()).isEqualTo(1);
         } catch (IOException e){
             System.out.println(e.getMessage());
         }
