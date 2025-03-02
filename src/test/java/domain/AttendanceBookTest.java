@@ -14,10 +14,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class AttendanceBookTest {
 
     @Nested
-    @DisplayName("성공 테스트")
-    class SuccessCases {
+    @DisplayName("크루에 해당하는 출석 하기")
+    class FindByCrew {
 
-        @DisplayName("크루에 해당하는 출석 기록을 반환한다.")
+        @DisplayName("크루에 해당하는 출석 기록을 올바르게 반환한다.")
         @Test
         public void findByCrew() throws Exception {
             // given
@@ -32,7 +32,25 @@ public class AttendanceBookTest {
             assertThat(actual.getCrew()).isEqualTo(crew);
         }
 
-        @DisplayName("제적 위험자들의 통계를 반환한다.")
+        @DisplayName("존재하지 않는 크루에 대해 AttendaceHistory를 요구하면, 예외가 발생한다.")
+        @Test
+        public void findByCrewInNotContainsCrew() throws Exception {
+            // given
+            final var crew = new Crew("헤일러");
+            final var attendanceBook = new AttendanceBook();
+
+            // when & then
+            assertThatThrownBy(() -> attendanceBook.findByCrew(crew))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("제적 위험자들의 통계 계산하기")
+    class CalculateRiskOfExpulsionCrewStatistics {
+
+        @DisplayName("제적 위험자들의 통계를 올바르게 계산한다.")
         @ParameterizedTest
         @ValueSource(ints = {4, 5, 7, 10})
         public void calculateRiskOfExpulsionCrewStatistics(final int dayOfMonth) throws Exception {
@@ -51,7 +69,7 @@ public class AttendanceBookTest {
 
         @DisplayName("제적 위험자가 아니라면, 통계에 포함되지 않는다.")
         @Test
-        public void calculateRiskOfExpulsionCrewStatisticsForNormal() throws Exception{
+        public void calculateRiskOfExpulsionCrewStatisticsForNormal() throws Exception {
             // given
             final var crew = new Crew("헤일러");
             final var attendanceBook = new AttendanceBook();
@@ -64,6 +82,11 @@ public class AttendanceBookTest {
             // then
             assertThat(actual).isEmpty();
         }
+    }
+
+    @Nested
+    @DisplayName("크루가 출석부에 등록되었는지 여부를 검사")
+    class ContainsCrew {
 
         @DisplayName("크루가 출석부에 등록되어 있는지 여부를 검사한다.")
         @Test
@@ -82,15 +105,30 @@ public class AttendanceBookTest {
             assertThat(actual1).isTrue();
             assertThat(actual2).isFalse();
         }
+
     }
 
     @Nested
-    @DisplayName("실패 테스트")
-    class FailCases {
+    @DisplayName("크루를 출석부에 등록하기")
+    class RegisterCrew {
+
+        @DisplayName("크루를 출석부에 등록하면 올바르게 등록된다.")
+        @Test
+        public void registerCrew() throws Exception {
+            // given
+            final var crew = new Crew("헤일러");
+            final var attendanceBook = new AttendanceBook();
+
+            // when
+            attendanceBook.registerCrew(crew);
+
+            // then
+            assertThat(attendanceBook.containsCrew(crew)).isTrue();
+        }
 
         @DisplayName("이미 존재하는 크루에 대해서 새롭게 register하면, 예외가 발생한다.")
         @Test
-        public void register() throws Exception {
+        public void registerCrewInContainsCrew() throws Exception {
             // given
             final var crew = new Crew("헤일러");
             final var attendanceBook = new AttendanceBook();
@@ -101,16 +139,6 @@ public class AttendanceBookTest {
                     .isInstanceOf(IllegalStateException.class);
         }
 
-        @DisplayName("존재하지 않는 크루에 대해 AttendaceHistory를 요구하면, 예외가 발생한다.")
-        @Test
-        public void findByCrew() throws Exception {
-            // given
-            final var crew = new Crew("헤일러");
-            final var attendanceBook = new AttendanceBook();
-
-            // when & then
-            assertThatThrownBy(() -> attendanceBook.findByCrew(crew))
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
     }
+
 }
