@@ -16,7 +16,6 @@ public class AttendanceBook {
     }
 
     public void initAttendance(String name, LocalDateTime dateTime) {
-        validateIsWeekday(dateTime.toLocalDate());
         attendance.put(name, new AttendanceRecord(dateTime));
     }
 
@@ -68,13 +67,19 @@ public class AttendanceBook {
 
     public void validateIsWeekday(LocalDate date) {
         if (!isWeekday(date)) {
-            throw new IllegalArgumentException("12월 14일 토요일은 등교일이 아닙니다.");
+            throw new IllegalArgumentException(String.format("%s은 등교일이 아닙니다.", convertDateWithDayOfWeekFormat(date)));
         }
     }
 
     public void validateIsInRunningTime(LocalTime time) {
         if (isOutOfRunningTime(time)) {
             throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
+        }
+    }
+
+    public void validateIsAvailableAttendance(LocalDate date) {
+        if (!isDateInAvailableAttendance(date)) {
+            throw new IllegalArgumentException("허용되지 않는 날짜입니다.");
         }
     }
 }

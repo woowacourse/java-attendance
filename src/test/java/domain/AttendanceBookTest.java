@@ -188,4 +188,23 @@ class AttendanceBookTest {
 
         assertThatNoException().isThrownBy(() -> attendanceBook.validateIsInRunningTime(dateTime.toLocalTime()));
     }
+
+    @Test
+    void 이번달_시작일부터_오늘까지에_포함되지_않는_날짜인_경우_예외가_발생한다() {
+        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 20, 7, 5);
+
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        assertThatThrownBy(() -> attendanceBook.validateIsAvailableAttendance(dateTime.toLocalDate()))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 이번달_시작일부터_오늘까지에_포함되는_날짜인_경우_예외가_발생하지_않는다() {
+        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
+
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        assertThatNoException().isThrownBy(() -> attendanceBook.validateIsAvailableAttendance(dateTime.toLocalDate()));
+    }
 }
