@@ -1,11 +1,13 @@
 package model;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +28,7 @@ public class StudentTest {
 
         student.registerAttendanceRecord(todayDate, attendanceTime);
         LocalTime result = student.findAttendanceLocalTimeByLocalDate(todayDate);
-        Assertions.assertEquals(expect, result);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -39,7 +41,7 @@ public class StudentTest {
 
         student.registerAttendanceRecord(todayDate, attendanceTime);
         AttendanceStatus result = student.findAttendanceStatusByLocalDate(todayDate);
-        Assertions.assertEquals(expect, result);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -58,7 +60,7 @@ public class StudentTest {
         student.modifyAttendanceRecord(modifyDate, modifyTime);
         //then
         LocalTime result = student.findAttendanceLocalTimeByLocalDate(recordData);
-        Assertions.assertEquals(expect, result);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -77,7 +79,7 @@ public class StudentTest {
         student.modifyAttendanceRecord(modifyDate, modifyTime);
         //then
         AttendanceStatus result = student.findAttendanceStatusByLocalDate(recordData);
-        Assertions.assertEquals(expect, result);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -87,7 +89,7 @@ public class StudentTest {
         student.updateAttendanceCount();
         long result = student.getAttendanceStatusCount().get(AttendanceStatus.ATTENDANCE);
 
-        Assertions.assertEquals(expect, result);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -98,7 +100,7 @@ public class StudentTest {
         student.updateAttendanceCount();
         long result = student.getAttendanceStatusCount().get(AttendanceStatus.LATE);
 
-        Assertions.assertEquals(expect, result);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -114,7 +116,7 @@ public class StudentTest {
         student.registerAttendanceRecord(todayDate3, attendanceTime1);
 
         long result = student.convertTardiesToAbsence();
-        Assertions.assertEquals(expect, result);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -137,7 +139,7 @@ public class StudentTest {
         student.registerAttendanceRecord(todayDate6, attendanceTime);
 
         long result = student.convertTardiesToAbsence();
-        Assertions.assertEquals(expect, result);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -147,7 +149,7 @@ public class StudentTest {
         AttendanceStatus expect = AttendanceStatus.ABSENT;
         student.updateNonAttendanceRecordStatusIsAbsent(today);
         AttendanceStatus result = student.findAttendanceStatusByLocalDate(LocalDate.of(2024,12,12));
-        Assertions.assertEquals(expect, result);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -163,4 +165,51 @@ public class StudentTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 출석기록이 존재합니다.");
     }
+
+    @Test
+    @DisplayName("지각 횟수 가져오기 테스트")
+    void 지각_횟수_확인_테스트(){
+        List<LocalDateTime> testLocalDateTime = List.of(
+                LocalDateTime.of(2024,12,13,10,7),
+                LocalDateTime.of(2024,12,12,10,6),
+                LocalDateTime.of(2024,12,11,10,0),
+                LocalDateTime.of(2024,12,10,10,8)
+        );
+        Student testStudent = new Student("테스트", testLocalDateTime);
+        long expect = 3;
+        long result = testStudent.calculateLateCount();
+        assertEquals(expect, result);
+    }
+
+    @Test
+    @DisplayName("순수 결석 횟수 가져오기 테스트")
+    void 순수_결석_횟수_확인_테스트(){
+        List<LocalDateTime> testLocalDateTime = List.of(
+                LocalDateTime.of(2024,12,13,10,31),
+                LocalDateTime.of(2024,12,12,10,6),
+                LocalDateTime.of(2024,12,11,10,31),
+                LocalDateTime.of(2024,12,10,10,8)
+        );
+        Student testStudent = new Student("테스트", testLocalDateTime);
+        long expect = 2;
+        long result = testStudent.calculateAbsentCount();
+        assertEquals(expect, result);
+    }
+
+    @Test
+    @DisplayName("지각 3회는 결석1회로 전환해서 결석 횟수 가져오기 테스트")
+    void 지각_3회_결석_1회로_전환_후_결석_횟수_확인_테스트(){
+        List<LocalDateTime> testLocalDateTime = List.of(
+                LocalDateTime.of(2024,12,13,10,31),
+                LocalDateTime.of(2024,12,12,10,6),
+                LocalDateTime.of(2024,12,11,10,9),
+                LocalDateTime.of(2024,12,10,10,8),
+                LocalDateTime.of(2024,12,9,10,10)
+        );
+        Student testStudent = new Student("테스트", testLocalDateTime);
+        long expect = 2;
+        long result = testStudent.calculateTotalAbsentCount();
+        assertEquals(expect, result);
+    }
+
 }
