@@ -229,7 +229,7 @@ public class AttendanceHistoriesTest {
 
     @Test
     @DisplayName("3.4 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
-    void test() {
+    void validateCrewPresenceWhenGetHistory() {
         assertThatThrownBy(() -> defaultAttendanceHistory.getAttendanceDateTimes(INVALID_CREW))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
