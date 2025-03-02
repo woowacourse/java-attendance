@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Student {
-    final String name;
-    final AttendanceTimeRecord attendanceTimeRecord;
-    final AttendanceStatusRecord attendanceStatusRecord;
-    final AttendanceStatusCount attendanceStatusCount;
+    private final String name;
+    private final AttendanceTimeRecord attendanceTimeRecord;
+    private final AttendanceStatusRecord attendanceStatusRecord;
+    private final AttendanceStatusCount attendanceStatusCount;
 
     public Student(String name, List<LocalDateTime> localDateTime) {
         this.attendanceStatusRecord = new AttendanceStatusRecord(localDateTime);

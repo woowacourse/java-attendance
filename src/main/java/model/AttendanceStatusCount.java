@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceStatusCount {
-    final Map<AttendanceStatus, Long> attendanceStatusCount;
+    private final Map<AttendanceStatus, Long> attendanceStatusCount;
 
     public AttendanceStatusCount() {
         this.attendanceStatusCount = new HashMap<>();

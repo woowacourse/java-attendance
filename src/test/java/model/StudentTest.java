@@ -85,7 +85,7 @@ public class StudentTest {
     void 학생의_출석_횟수_확인_테스트() {
         long expect = 1;
         student.updateAttendanceCount();
-        long result = student.attendanceStatusCount.attendanceStatusCount.get(AttendanceStatus.ATTENDANCE);
+        long result = student.getAttendanceStatusCount().get(AttendanceStatus.ATTENDANCE);
 
         Assertions.assertEquals(expect, result);
     }
@@ -96,7 +96,7 @@ public class StudentTest {
         long expect = 1;
 
         student.updateAttendanceCount();
-        long result = student.attendanceStatusCount.attendanceStatusCount.get(AttendanceStatus.LATE);
+        long result = student.getAttendanceStatusCount().get(AttendanceStatus.LATE);
 
         Assertions.assertEquals(expect, result);
     }
