@@ -33,7 +33,7 @@ public class AttendanceDate {
     }
 
     private void saveAttendanceStatus() {
-        status = AttendanceStatus.evaluateAttendance(DateTimeUtil.assembleDateAndTime(date, time));
+        status = AttendanceStatus.evaluateAttendance(date, time);
     }
 
     public LocalTime getTime() {

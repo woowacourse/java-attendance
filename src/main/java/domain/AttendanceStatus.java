@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -22,8 +23,11 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus evaluateAttendance(LocalDateTime dateTime) {
-        LocalTime time = dateTime.toLocalTime();
-        final LocalTime referenceTime = getAttendanceReferenceTime(dateTime);
+        return evaluateAttendance(dateTime.toLocalDate(), dateTime.toLocalTime());
+    }
+
+    public static AttendanceStatus evaluateAttendance(LocalDate date, LocalTime time) {
+        final LocalTime referenceTime = getAttendanceReferenceTime(date);
 
         if (time.isAfter(referenceTime.plusMinutes(ABSENCE_THRESHOLD_MINUTES))) {
             return ABSENCE;
@@ -34,8 +38,8 @@ public enum AttendanceStatus {
         return ATTENDANCE;
     }
 
-    private static LocalTime getAttendanceReferenceTime(LocalDateTime dateTime) {
-        if (DayOfWeek.MONDAY.equals(dateTime.getDayOfWeek())) {
+    private static LocalTime getAttendanceReferenceTime(LocalDate date) {
+        if (DayOfWeek.MONDAY.equals(date.getDayOfWeek())) {
             return MONDAY_ATTENDANCE_REFERENCE_TIME;
         }
         return NORMAL_ATTENDANCE_REFERENCE_TIME;

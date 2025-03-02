@@ -14,10 +14,6 @@ public class DateTimeUtil {
 
     public static final List<LocalDate> NATIONAL_HOLIDAYS = List.of(CHRISTMAS_DATE);
 
-    public static LocalDateTime assembleDateAndTime(LocalDate date, LocalTime time) {
-        return LocalDateTime.of(date, time);
-    }
-
     public static DayOfWeek getDayOfWeek(LocalDate date) {
         return date.getDayOfWeek();
     }
