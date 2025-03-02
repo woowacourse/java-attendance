@@ -227,15 +227,30 @@ public class AttendanceHistoriesTest {
         assertThat(actualAttendanceDateTimes).isEqualTo(expectedAttendanceDateTimes);
     }
 
-    @Test
+    @Nested
     @DisplayName("3.2 닉네임을 입력하면 전날까지의 크루 출결 횟수를 확인할 수 있다.")
-    void testGetPresentCount() {
-        // given
-        // when
-        long presentCount = defaultAttendanceHistory.getPresentCount(DEFAULT_CREW, DEFAULT_DATE.plusDays(1));
-        // then
-        assertThat(presentCount).isEqualTo(1);
+    public class GetAttendanceCountTest {
+        @Test
+        @DisplayName("출석 횟수를 확인할 수 있다.")
+        void testGetPresentCount() {
+            // given
+            // when
+            long presentCount = defaultAttendanceHistory.getPresentCount(DEFAULT_CREW, DEFAULT_DATE.plusDays(1));
+            // then
+            assertThat(presentCount).isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("지각 횟수를 확인할 수 있다.")
+        void testGetTardyCount() {
+            // given
+            // when
+            long presentCount = defaultAttendanceHistory.getTardyCount(DEFAULT_CREW, DEFAULT_DATE.plusDays(1));
+            // then
+            assertThat(presentCount).isEqualTo(0);
+        }
     }
+
 
     @Test
     @DisplayName("3.4 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
