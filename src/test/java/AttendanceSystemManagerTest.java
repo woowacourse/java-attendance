@@ -20,8 +20,7 @@ public class AttendanceSystemManagerTest {
         @DisplayName("이미 존재하는 출석기록을 등록하고자 하면 수정 기능을 사용하도록 안내하는 예외가 발생한다.")
         void test1() {
             // given
-            String nickname = "히로";
-            Crew crew = new Crew(nickname);
+            Crew crew = new Crew("히로");
             Crews crews = new Crews(List.of(crew));
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
             AttendanceHistory attendanceHistory = new AttendanceHistory(crew, attendAt);
@@ -29,7 +28,7 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistories(List.of(attendanceHistory)), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(nickname, attendAt))
+            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(crew, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("이미 존재하는 출석 기록입니다. 수정 기능을 이용해주세요.");
         }
@@ -38,15 +37,14 @@ public class AttendanceSystemManagerTest {
         @DisplayName("주말에 출석을 시도하는 경우 예외가 발생한다.")
         void test2() {
             // given
-            String nickname = "히로";
-            Crew crew = new Crew(nickname);
+            Crew crew = new Crew("히로");
             Crews crews = new Crews(List.of(crew));
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 1, 10, 0);
             AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(nickname, attendAt))
+            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(crew, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("평일이거나 공휴일이 아닌 경우에만 출석할 수 있습니다.");
         }
@@ -55,42 +53,23 @@ public class AttendanceSystemManagerTest {
         @DisplayName("운영 시간이 아닌 시각에 출석을 시도하면 예외가 발생한다.")
         void test3() {
             // given
-            String nickname = "히로";
-            Crew crew = new Crew(nickname);
+            Crew crew = new Crew("히로");
             Crews crews = new Crews(List.of(crew));
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 7, 0);
             AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(nickname, attendAt))
+            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(crew, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 닉네임으로 출석 수정을 시도하는 경우 예외가 발생한다.")
-        void test4() {
-            // given
-            String nickname = "히로";
-            Crew crew = new Crew(nickname);
-            Crews crews = new Crews(List.of(crew));
-            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
-                    new AttendanceHistories(new ArrayList<>()), crews);
-
-            // when
-            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance("없음", attendAt))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("등록되지 않은 닉네임입니다.");
         }
 
         @Test
         @DisplayName("중복되지 않고 유효한 닉네임과 날짜를 입력하면 정상적으로 출석할 수 있다.")
         void test5() {
             // given
-            String nickname = "히로";
-            Crew crew = new Crew(nickname);
+            Crew crew = new Crew("히로");
             Crews crews = new Crews(List.of(crew));
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
 
@@ -99,15 +78,14 @@ public class AttendanceSystemManagerTest {
 
             // when
             assertThatCode(
-                    () -> attendanceSystemManager.registerNewAttendance(nickname, attendAt)).doesNotThrowAnyException();
+                    () -> attendanceSystemManager.registerNewAttendance(crew, attendAt)).doesNotThrowAnyException();
         }
 
         @Test
         @DisplayName("정상적으로 출석 기록이 저장된다.")
         void test6() {
             // given
-            String nickname = "히로";
-            Crew crew = new Crew(nickname);
+            Crew crew = new Crew("히로");
             Crews crews = new Crews(List.of(crew));
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
 
@@ -115,7 +93,7 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            AttendanceHistory attendanceHistory = attendanceSystemManager.registerNewAttendance(nickname, attendAt);
+            AttendanceHistory attendanceHistory = attendanceSystemManager.registerNewAttendance(crew, attendAt);
 
             // then
             Assertions.assertAll(

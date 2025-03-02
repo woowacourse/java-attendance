@@ -1,6 +1,5 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
@@ -13,14 +12,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class InputParserTest {
     @Test
-    @DisplayName("시간 형태의 문자열을 입력하면 LocalDateTime 으로 반환한다")
+    @DisplayName("시간 형태의 문자열을 입력하면 LocalDate 로 반환한다")
     void test1() {
         // given
         String input = "13:45";
 
         // when & then
         assertThat(InputParser.parseTime(input))
-                .isEqualTo(LocalDateTime.of(LocalDate.now(), LocalTime.of(13, 45)));
+                .isEqualTo(LocalTime.of(13, 45));
     }
 
     @Test

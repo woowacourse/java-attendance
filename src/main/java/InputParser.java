@@ -7,11 +7,11 @@ import java.util.Locale;
 import java.util.Map;
 
 public class InputParser {
-    public static LocalDateTime parseTime(String input) {
+    public static LocalTime parseTime(String input) {
         String[] splitInput = input.split(":");
         int hour = Integer.parseInt(splitInput[0]);
         int minute = Integer.parseInt(splitInput[1]);
-        return LocalDateTime.of(LocalDate.now(), LocalTime.of(hour, minute));
+        return LocalTime.of(hour, minute);
     }
 
     public static String parseDateTimeToString(LocalDateTime dateTime) {
