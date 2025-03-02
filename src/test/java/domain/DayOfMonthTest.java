@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDate;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,8 +18,7 @@ class DayOfMonthTest {
     @DisplayName("해당 날짜가 공휴일인지 확인합니다.")
     @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 28, 25, 29})
     void isHolidayTest(int value) {
-        List<Integer> holidays = List.of(25);
         LocalDate today = LocalDate.of(2024, 12, 2);
-        Assertions.assertTrue(new DayOfMonth(value).isHoliday(holidays, today));
+        Assertions.assertTrue(new DayOfMonth(value).isHoliday(today));
     }
 }

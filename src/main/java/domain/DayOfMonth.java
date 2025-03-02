@@ -4,13 +4,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record DayOfMonth(int dayOfMonth) {
+    public static final List<Integer> HOLIDAYS = List.of(25);
 
     public DayOfMonth {
         isInvalidDayOfMonth(dayOfMonth);
     }
 
-    public boolean isHoliday(List<Integer> holidays, LocalDate today) {
-        if (holidays.contains(dayOfMonth)) {
+    public boolean isHoliday(LocalDate today) {
+        if (HOLIDAYS.contains(dayOfMonth)) {
             return true;
         }
         LocalDate newDay = LocalDate.of(today.getYear(), today.getMonth().getValue(), dayOfMonth);

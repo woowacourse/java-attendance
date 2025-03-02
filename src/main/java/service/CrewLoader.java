@@ -52,7 +52,7 @@ public class CrewLoader {
 
             List<Attendance> absentAttendances = allDate.stream()
                     .map(date -> new Attendance(LocalDateTime.of(date, ABSENT_TIME)))
-                    .filter(attendance -> !attendance.isHoliday(HOLIDAYS))
+                    .filter(attendance -> !attendance.isHoliday())
                     .toList();
 
             rawCrewGroup.get(name).addAll(absentAttendances);
