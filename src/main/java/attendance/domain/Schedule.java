@@ -8,8 +8,8 @@ public enum Schedule {
     CAMPUS_OPEN(LocalTime.of(8, 0)),
     CAMPUS_CLOSE(LocalTime.of(23, 0)),
     LESSON_MONDAY(LocalTime.of(13, 0)),
-    LESSON_DEFAULT_DAY(LocalTime.of(10, 0)),
-    ;
+    LESSON_DEFAULT_DAY(LocalTime.of(10, 0));
+    
     private final LocalTime time;
 
     Schedule(LocalTime time) {

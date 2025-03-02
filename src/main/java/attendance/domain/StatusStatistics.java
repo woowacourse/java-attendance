@@ -32,16 +32,16 @@ public record StatusStatistics(Nickname nickname, EnumMap<AttendanceStatus, Inte
             + getCount(AttendanceStatus.ABSENCE);
     }
 
+    public String getConvertedSanctionLevel() {
+        return getSanctionLevel().convertMessage();
+    }
+
     private int compareWeight() {
         return getCount(AttendanceStatus.LATE) + getCount(AttendanceStatus.ABSENCE);
     }
 
     private SanctionLevel getSanctionLevel() {
         return SanctionLevel.matchLevel(getWeight());
-    }
-
-    public String getConvertedSanctionLevel() {
-        return getSanctionLevel().convertMessage();
     }
 
     @Override

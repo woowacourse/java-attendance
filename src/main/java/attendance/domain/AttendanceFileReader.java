@@ -10,8 +10,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AttendanceFileReader {
-    private static final String CANT_FIND_FILE = "[ERROR] 파일을 찾을 수 없습니다: ";
-    private static final String CANT_READ_FILE = "[ERROR] 파일을 읽는 과정에서 예상치 못한 오류가 발생했습니다: ";
+    private static final String CANNOT_FIND_FILE = "[ERROR] 파일을 찾을 수 없습니다: ";
+    private static final String CANNOT_READ_FILE = "[ERROR] 파일을 읽는 과정에서 예상치 못한 오류가 발생했습니다: ";
+
     private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
     private static final String REGEX = ",";
 
@@ -31,14 +32,14 @@ public class AttendanceFileReader {
             inputStream.close();
             return generateAttendanceBook(lines);
         } catch (IOException e) {
-            throw new RuntimeException(CANT_READ_FILE + fileName);
+            throw new RuntimeException(CANNOT_READ_FILE + fileName);
         }
     }
 
     private InputStream getInputStream() throws FileNotFoundException {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
         if (inputStream == null) {
-            throw new FileNotFoundException(CANT_FIND_FILE + fileName);
+            throw new FileNotFoundException(CANNOT_FIND_FILE + fileName);
         }
         return inputStream;
     }

@@ -4,14 +4,13 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 import attendance.exception.AttendanceArgumentException;
-import attendance.utill.EnumTextConverter;
+import attendance.view.EnumTextConverter;
 
-public enum SanctionLevel implements Displaier {
+public enum SanctionLevel implements Displayer {
     DISMISS(weight -> weight > 5),
     NEED_MEETING(weight -> weight >= 3),
     WARNING(weight -> weight > 1),
-    NONE(weight -> weight <= 1),
-    ;
+    NONE(weight -> weight <= 1);
 
     public static final String WEIGHT_BE_POSITIVE = "가중치는 음수가 될 수 없습니다: ";
     private final Predicate<Integer> condition;

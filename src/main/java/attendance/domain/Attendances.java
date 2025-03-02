@@ -13,8 +13,8 @@ import attendance.exception.AttendanceArgumentException;
 
 public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime systemDateTime) {
     private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
+    private static final String CANNOT_FIND_ATTENDANCE = "출석 기록이 없습니다.";
     private static final String DUPLICATE_ATTENDANCE = "이미 출석하였습니다. 수정 기능을 이용해주세요.";
-    private static final String CANT_FIND_ATTENDANCE = "출석 기록이 없습니다.";
 
     public Attendances(SystemDateTime systemDateTime) {
         this(new HashMap<>(), systemDateTime);
@@ -44,7 +44,7 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
     public Attendance getAttendance(LocalDate date) {
         Optional<Attendance> attendance = getOptionalAttendance(date);
         if (attendance.isEmpty() || attendance.get().isTruancy()) {
-            throw new AttendanceArgumentException(CANT_FIND_ATTENDANCE);
+            throw new AttendanceArgumentException(CANNOT_FIND_ATTENDANCE);
         }
         return attendance.get();
     }

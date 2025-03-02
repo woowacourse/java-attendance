@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class AttendanceDateTime implements SystemDateTime {
-    private static final LocalDate CAMPUS_START_DAY
-        = LocalDate.of(2024, Month.DECEMBER, 1);
+    private static final LocalDate CAMPUS_START_DAY = LocalDate.of(2024, Month.DECEMBER, 1);
     private static final LocalDateTime NOW_DATETIME
         = LocalDateTime.of(2024, Month.DECEMBER, 26, 10, 4);
+
     private static final List<Integer> DAT_OF_HOLIDAY = List.of(25);
 
     @Override

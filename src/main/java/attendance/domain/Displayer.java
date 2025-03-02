@@ -1,5 +1,5 @@
 package attendance.domain;
 
-public interface Displaier {
+public interface Displayer {
     String convertMessage();
 }
