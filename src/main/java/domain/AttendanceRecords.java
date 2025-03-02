@@ -9,9 +9,6 @@ public class AttendanceRecords {
     private final TreeSet<AttendanceRecord> records = new TreeSet<>();
 
     public void add(AttendanceRecord record) {
-        if (records.contains(record)) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석하였습니다." + System.lineSeparator());
-        }
         records.add(record);
     }
 
@@ -19,9 +16,9 @@ public class AttendanceRecords {
         records.remove(record);
     }
 
-    public void update(LocalDate oldDate, LocalTime newTime) {
-        AttendanceRecord oldRecord = getRecordOnDate(oldDate);
-        AttendanceRecord newRecord = new AttendanceRecord(LocalDateTime.of(oldDate, newTime));
+    public void update(LocalDate date, LocalTime newTime) {
+        AttendanceRecord oldRecord = getRecordOnDate(date);
+        AttendanceRecord newRecord = new AttendanceRecord(LocalDateTime.of(date, newTime));
         remove(oldRecord);
         add(newRecord);
     }

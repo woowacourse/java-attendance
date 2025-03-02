@@ -16,7 +16,11 @@ public class CrewRecords {
 
     public void addRecord(Crew crew, AttendanceRecord record) {
         validateCrew(crew);
-        records.get(crew).add(record);
+        AttendanceRecords attendanceRecords = records.get(crew);
+        if (attendanceRecords.hasRecordOnDate(record.getDate())) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석하였습니다. 수정 기능을 이용해 주세요." + System.lineSeparator());
+        }
+        attendanceRecords.add(record);
     }
 
     public void updateRecord(Crew crew, LocalDate oldDate, LocalTime newTime) {
