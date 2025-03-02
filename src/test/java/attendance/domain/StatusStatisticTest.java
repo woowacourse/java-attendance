@@ -4,7 +4,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +17,7 @@ class StatusStatisticTest {
     void test_updateStatusStatistic() {
         var nickname = new Nickname("이든");
         var status = new StatusStatistics(nickname);
-        Map<LocalDate, Attendance> attendances = createStandardAttendanceMap();
+        Map<LocalDate, AttendanceStatus> attendances = createStandardAttendanceMap();
         status.update(attendances);
 
         assertAll(
@@ -33,7 +32,7 @@ class StatusStatisticTest {
     void test_returnWeightOfStatusStatistics() {
         var nickname = new Nickname("이든");
         var status = new StatusStatistics(nickname);
-        Map<LocalDate, Attendance> attendances = createStandardAttendanceMap();
+        Map<LocalDate, AttendanceStatus> attendances = createStandardAttendanceMap();
         status.update(attendances);
 
         assertThat(status.getWeight()).isEqualTo(1);
@@ -61,12 +60,12 @@ class StatusStatisticTest {
     void test_compareWeightOfStatusStatistics() {
         var nickname = new Nickname("이든");
 
-        Map<LocalDate, Attendance> attendances = createStandardAttendanceMap();
+        Map<LocalDate, AttendanceStatus> attendances = createStandardAttendanceMap();
         var status = new StatusStatistics(nickname);
         status.update(attendances);
 
-        var late = LocalDateTime.of(2024, 12, 17, 10, 10);
-        attendances.put(late.toLocalDate(), new Attendance(late));
+        var late = LocalDate.of(2024, 12, 17);
+        attendances.put(late, AttendanceStatus.LATE);
         var statusMoreWeight = new StatusStatistics(nickname);
         statusMoreWeight.update(attendances);
 
@@ -76,7 +75,7 @@ class StatusStatisticTest {
     @Test
     @DisplayName("가중치가 같을 경우, 이름 비교해 정렬할 수 있다.")
     void test_compareNameOfStatusStatistics() {
-        Map<LocalDate, Attendance> attendances = createStandardAttendanceMap();
+        Map<LocalDate, AttendanceStatus> attendances = createStandardAttendanceMap();
         var status = new StatusStatistics(new Nickname("나"));
         status.update(attendances);
 
@@ -88,24 +87,24 @@ class StatusStatisticTest {
 
     private StatusStatistics createStatusWithAttendance(Nickname nickname, int attendanceCount) {
         var status = new StatusStatistics(nickname);
-        Map<LocalDate, Attendance> attendances = new HashMap<>();
+        Map<LocalDate, AttendanceStatus> attendances = new HashMap<>();
         for (int i = 0; i < attendanceCount; i++) {
-            LocalDateTime dateTime = LocalDateTime.of(2024, 12, 16 + i, 15, 0);
-            attendances.put(dateTime.toLocalDate(), new Attendance(dateTime));
+            LocalDate date = LocalDate.of(2024, 12, 16 + i);
+            attendances.put(date, AttendanceStatus.ABSENCE);
         }
         status.update(attendances);
         return status;
     }
 
-    private Map<LocalDate, Attendance> createStandardAttendanceMap() {
-        var attendance = LocalDateTime.of(2024, 12, 10, 10, 0);
-        var late = LocalDateTime.of(2024, 12, 11, 10, 10);
-        var absence = LocalDateTime.of(2024, 12, 13, 10, 35);
+    private Map<LocalDate, AttendanceStatus> createStandardAttendanceMap() {
+        var attendance = LocalDate.of(2024, 12, 10);
+        var late = LocalDate.of(2024, 12, 11);
+        var absence = LocalDate.of(2024, 12, 13);
 
-        Map<LocalDate, Attendance> attendances = new HashMap<>();
-        attendances.put(attendance.toLocalDate(), new Attendance(attendance));
-        attendances.put(late.toLocalDate(), new Attendance(late));
-        attendances.put(absence.toLocalDate(), new Attendance(absence));
+        Map<LocalDate, AttendanceStatus> attendances = new HashMap<>();
+        attendances.put(attendance, AttendanceStatus.ATTENDANCE);
+        attendances.put(late, AttendanceStatus.LATE);
+        attendances.put(absence, AttendanceStatus.ABSENCE);
         return attendances;
     }
 }

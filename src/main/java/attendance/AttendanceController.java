@@ -9,10 +9,15 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceFileReader;
+import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.Attendances;
 import attendance.domain.Nickname;
+import attendance.domain.StatusStatistics;
 import attendance.domain.SystemDateTime;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.InputValidationException;
@@ -125,7 +130,41 @@ public class AttendanceController {
     }
 
     private void processCrewStatistics() {
+        outputView.printRequestNickNameForModify();
+        var nickname = requestNickname();
+        outputView.appendCrewNickname(nickname.name());
+        var attendances = attendanceBook.getAttendances(nickname);
+        displayHistory(attendances);
 
+        var statistics = new StatusStatistics(nickname);
+        attendances.updateStatics(statistics);
+        displayCrewStatistics(statistics);
+    }
+
+    private void displayHistory(Attendances attendances) {
+        var attendanceHistory = new AttendanceHistory(attendances.getAttendancesWithTruancy());
+        for (Attendance attendance : attendanceHistory) {
+            displaySingleAttendance(attendance);
+        }
+    }
+
+    private void displaySingleAttendance(Attendance attendance) {
+        var dateTime = attendance.dateTime();
+        if (attendance.isTruancy()) {
+            outputView.appendCrewHistoryTruancy(dateTime.toLocalDate());
+            return;
+        }
+        outputView.appendCrewHistory(dateTime, attendance.getConvertedStatus());
+    }
+
+    private void displayCrewStatistics(StatusStatistics statistics) {
+        int attendanceCount = statistics.getCount(AttendanceStatus.ATTENDANCE);
+        int lateCount = statistics.getCount(AttendanceStatus.LATE);
+        int absenceCount = statistics.getCount(AttendanceStatus.ABSENCE);
+        outputView.appendCrewStatistics(attendanceCount, lateCount, absenceCount);
+
+        outputView.appendSanctionLevel(statistics.getConvertedSanctionLevel());
+        outputView.flushStringBuilder();
     }
 
     private void processSanctionsLevels() {

@@ -13,6 +13,11 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus status) {
         this(validateDateTime(dateTime), judgeStatus(dateTime));
     }
 
+    public static Attendance generateTruancy(LocalDate date) {
+        LocalDateTime midnight = date.atStartOfDay();
+        return new Attendance(midnight, AttendanceStatus.TRUANCY);
+    }
+
     private static LocalDateTime validateDateTime(LocalDateTime dateTime) {
         if (Schedule.isDuringCampus(dateTime.toLocalTime())) {
             throw new AttendanceArgumentException(OUT_OF_SCHEDULE);
@@ -29,5 +34,9 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus status) {
 
     public String getConvertedStatus() {
         return status.convertMessage();
+    }
+
+    public boolean isTruancy() {
+        return status.equals(AttendanceStatus.TRUANCY);
     }
 }

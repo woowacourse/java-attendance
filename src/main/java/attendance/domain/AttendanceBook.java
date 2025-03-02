@@ -42,10 +42,10 @@ public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemD
 
     public String getConvertedAttendanceState(Nickname nickname, LocalDate date) {
         Attendance attendance = getAttendance(nickname, date);
-        return attendance.status().convertMessage();
+        return attendance.getConvertedStatus();
     }
 
-    private Attendances getAttendances(Nickname nickname) {
+    public Attendances getAttendances(Nickname nickname) {
         return Optional.ofNullable(attendancesBook.get(nickname))
             .orElseThrow(() -> new AttendanceArgumentException(NOT_REGISTERED_NICKNAME));
     }

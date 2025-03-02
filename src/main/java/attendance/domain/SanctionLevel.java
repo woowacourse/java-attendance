@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 import attendance.exception.AttendanceArgumentException;
-import attendance.view.EnumTextConverter;
+import attendance.utill.EnumTextConverter;
 
 public enum SanctionLevel implements Displaier {
     DISMISS(weight -> weight > 5),

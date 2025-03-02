@@ -13,9 +13,9 @@ public record StatusStatistics(Nickname nickname, EnumMap<AttendanceStatus, Inte
         this(nickname, new EnumMap<>(AttendanceStatus.class));
     }
 
-    public void update(Map<LocalDate, Attendance> attendances) {
+    public void update(Map<LocalDate, AttendanceStatus> attendances) {
         for (LocalDate date : attendances.keySet()) {
-            put(attendances.get(date).status());
+            put(attendances.get(date));
         }
     }
 
@@ -38,6 +38,10 @@ public record StatusStatistics(Nickname nickname, EnumMap<AttendanceStatus, Inte
 
     private SanctionLevel getSanctionLevel() {
         return SanctionLevel.matchLevel(getWeight());
+    }
+
+    public String getConvertedSanctionLevel() {
+        return getSanctionLevel().convertMessage();
     }
 
     @Override

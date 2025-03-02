@@ -2,12 +2,13 @@ package attendance.domain;
 
 import java.time.LocalTime;
 
-import attendance.view.EnumTextConverter;
+import attendance.utill.EnumTextConverter;
 
 public enum AttendanceStatus implements Displaier {
     ATTENDANCE(0),
     LATE(5),
-    ABSENCE(30);
+    ABSENCE(30),
+    TRUANCY(0);
 
     private final int value;
 

@@ -23,9 +23,13 @@ public class OutputView {
     private static final String FORMAT_ATTENDANCE_NOT_EXISTING = "\nMM월 dd일 E요일 --:-- (결석) ";
     private static final String MODIFY_TIME_FORM = "-> HH:mm (%s)";
 
-    private static final String INITIALIZE_HISTORY = "\n이번 달 %s의 출석 기록입니다.";
-    private static final String FORMAT_STATE = "\n%s: %d회";
-    private static final String SANCTION_LEVEL = "\n%s 대상자입니다.\n";
+    private static final String INITIALIZE_HISTORY = "\n이번 달 %s의 출석 기록입니다.\n";
+    private static final String FORMAT_STATE = """
+        출석: %d회
+        지각: %d회
+        결석: %d회
+        """;
+    private static final String SANCTION_LEVEL = "\n%s 대상자입니다.";
 
     private static final String INITIALIZE_SANCTION_STATISTIC = "\n제적 위험자 조회 결과";
     private static final String FORMAT_SANCTION = "\n- %s: 결석 %d회, 지각 %d회 (%s)";
@@ -38,6 +42,16 @@ public class OutputView {
 
     public void printError(String error) {
         print(error);
+        flush();
+    }
+
+    public void flushStringBuilder() {
+        print(stringBuilder.toString());
+        flush();
+    }
+
+    private void flush() {
+        stringBuilder.setLength(0);
     }
 
     public void printRequestMessage(LocalDateTime dateTime) {
@@ -75,11 +89,6 @@ public class OutputView {
         print(formatted);
     }
 
-    public void flushStringBuilder() {
-        print(stringBuilder.toString());
-        stringBuilder.setLength(0);
-    }
-
     public void appendOldAttendance(LocalDateTime dateTime, String status) {
         var format = String.format(ATTENDANCE_FORMAT, status);
         var formatted = DateTimeFormatter.ofPattern(format).format(dateTime);
@@ -96,4 +105,31 @@ public class OutputView {
         var formatted = DateTimeFormatter.ofPattern(format).format(time);
         stringBuilder.append(formatted);
     }
+
+    public void appendCrewNickname(String name) {
+        var formatted = String.format(INITIALIZE_HISTORY, name);
+        stringBuilder.append(formatted);
+    }
+
+    public void appendCrewHistoryTruancy(LocalDate date) {
+        var formatted = DateTimeFormatter.ofPattern(FORMAT_ATTENDANCE_NOT_EXISTING).format(date);
+        stringBuilder.append(formatted);
+    }
+
+    public void appendCrewHistory(LocalDateTime dateTime, String convertedStatus) {
+        var format = String.format(ATTENDANCE_FORMAT, convertedStatus);
+        var formatted = DateTimeFormatter.ofPattern(format).format(dateTime);
+        stringBuilder.append(formatted);
+    }
+
+    public void appendCrewStatistics(int attendance, int late, int absence) {
+        var formatted = String.format(FORMAT_STATE, attendance, late, absence);
+        stringBuilder.append(formatted);
+    }
+
+    public void appendSanctionLevel(String sanctionLevel) {
+        var formatted = String.format(SANCTION_LEVEL, sanctionLevel);
+        stringBuilder.append(formatted);
+    }
+
 }

@@ -1,4 +1,4 @@
-package attendance.view;
+package attendance.utill;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +15,7 @@ public class EnumTextConverter {
         ATTENDANCE_STATUS_TEXT.put(AttendanceStatus.ABSENCE, "결석");
         ATTENDANCE_STATUS_TEXT.put(AttendanceStatus.LATE, "지각");
         ATTENDANCE_STATUS_TEXT.put(AttendanceStatus.ATTENDANCE, "출석");
+        ATTENDANCE_STATUS_TEXT.put(AttendanceStatus.TRUANCY, "결석");
 
         SANCTION_LEVEL_TEXT.put(SanctionLevel.DISMISS, "제적");
         SANCTION_LEVEL_TEXT.put(SanctionLevel.NEED_MEETING, "면담");
