@@ -166,4 +166,17 @@ class AttendancesTest {
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {3, 4, 5, 6, 7, 10, 12, 13, 14, 17, 18, 19, 20, 21, 24, 25, 26, 27})
+    void 출석_기록에_비어있는_부분을_결석_처리한다(int dayOfMonth) {
+        Attendances attendanceLogs = new Attendances(new HashMap<>());
+        attendanceLogs.addAttendanceLog(new Nickname("짱수"), LocalDateTime.of(2025, 2, 28, 10, 0));
+
+        attendanceLogs.recordAllAbsences();
+        Attendance attendance = attendanceLogs.findLogWithNameAndDate(new Nickname("짱수"), LocalDate.of(2025, 2, dayOfMonth));
+        LocalTime localTime = attendance.getLocalDateTime().toLocalTime();
+
+        assertThat(localTime).isEqualTo(LocalTime.MAX);
+    }
+
 }
