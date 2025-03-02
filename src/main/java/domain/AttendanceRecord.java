@@ -53,4 +53,9 @@ public class AttendanceRecord {
         return attendancePolicy.getAttendanceStatus(attendanceTime);
     }
 
+    public void modifyAttendanceTime(int modifyDay, LocalTime modifyTime) {
+        LocalDateTime modifyDateTime = LocalDateTime.of(dateProvider.getDate(), modifyTime);
+        attendanceTimes.removeIf(time -> time.getDayOfMonth() == modifyDay);
+        attendanceTimes.add(modifyDateTime);
+    }
 }

@@ -60,4 +60,17 @@ public class AttendanceRecordTest {
                 .hasMessage("[ERROR] 해당 날짜에는 이미 출석했습니다. 수정 기능을 이용해주세요.");
     }
 
+    @Test
+    void 수정하려는_날짜의_출석_시간을_수정한다() {
+        LocalTime time = LocalTime.of(9, 58);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
+        attendanceRecord.attend(time);
+        int modifyDay = 13;
+        LocalTime modifyTime = LocalTime.of(10, 31);
+
+        attendanceRecord.modifyAttendanceTime(modifyDay, modifyTime);
+
+        assertThat(attendanceRecord.findAttendanceTimeByDay(modifyDay).toLocalTime()).isEqualTo(modifyTime);
+    }
+
 }
