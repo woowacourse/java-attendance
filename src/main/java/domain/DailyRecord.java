@@ -13,6 +13,11 @@ public class DailyRecord {
         this.status = AttendanceStatus.of(dayOfWeek, attendedTime);
     }
 
+    public String getFormattedTime() {
+        // TODO: null 값을 처리하여 시간의 String 타입을 반환
+        return null;
+    }
+
     public LocalTime getAttendedTime() {
         return attendedTime;
     }

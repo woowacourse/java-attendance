@@ -123,4 +123,33 @@ public class AttendanceBookTest {
                 .hasMessage("등록되지 않은 크루입니다.");
         }
     }
+
+    @Nested
+    @DisplayName("기록 확인 테스트")
+    class RecordCheckTest {
+
+        @Test
+        @DisplayName("등록된 크루는 기록을 확인할 수 있다.")
+        void recordCheckCrew() {
+            AttendanceBook attendanceBook = new AttendanceBook();
+            attendanceBook.initializeCrewRecords(loadCSV("src/test/resources/attendances.csv"));
+            String name = "빙봉";
+
+            Crew crew = attendanceBook.findCrewByName(name);
+            assertThat(crew.countRecord()).isEqualTo(5);
+        }
+
+        @Test
+        @DisplayName("등록되지 않은 크루는 기록을 확인할 수 없다.")
+        void recordNotCheckCrew() {
+            AttendanceBook attendanceBook = new AttendanceBook();
+            attendanceBook.initializeCrewRecords(loadCSV("src/test/resources/attendances.csv"));
+
+            String name = "사나";
+
+            assertThatThrownBy(() -> attendanceBook.findCrewByName(name))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등록되지 않은 크루입니다.");
+        }
+    }
 }
