@@ -5,7 +5,6 @@ import domain.CrewGroup;
 import domain.attendance.Attendance;
 import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceStatus;
-import domain.attendance.TimeTable;
 import view.FileInputView;
 import view.InputView;
 import view.OutputView;
@@ -23,14 +22,14 @@ import static domain.attendance.TimeTable.*;
 import static util.DateTimeUtils.*;
 
 public class AttendanceController {
-    private CrewGroup crews;
-    private Command currentCommand;
+    private static CrewGroup crews;
+    private static Command currentCommand;
 
     public AttendanceController() {
         crews = new CrewGroup();
     }
 
-    public void run(){
+    public static void run(){
         loadFile();
         OutputView.printWelcomeMessage();
         while((currentCommand = InputView.getCommand()) != EXIT){
@@ -39,33 +38,22 @@ public class AttendanceController {
         }
     }
 
-    private void operateCommand(){
+    private static void operateCommand(){
         try{
-            if(currentCommand == ATTEND){
-                attendCommand();
-            }
-            if(currentCommand == EDIT){
-                editCrewAttendance();
-            }
-            if(currentCommand == FIND_CREW_RECORD){
-                findCrewCommand();
-            }
-            if(currentCommand == FIND_WARNING_CREWS){
-                findWarningCrews();
-            }
+            currentCommand.execute();
         }catch (IllegalArgumentException e){
             OutputView.printErrorMessage(e.getMessage());
         }
     }
 
-    private void validateAttendDate(){
+    private static void validateAttendDate(){
         if(!isAttendanceDay(TODAY_DATE_NOW)){
             throw new IllegalArgumentException(TODAY_DATE_NOW.format(localDayFormatter)
                     + TODAY_DATE_NOW.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + "은 등교일이 아닙니다.");
         }
     }
 
-    private void attendCommand(){
+    public static void attendCommand(){
         validateAttendDate();
 
         String attendCrewName = InputView.getCrewName();
@@ -80,20 +68,20 @@ public class AttendanceController {
         OutputView.printAddAttendance(attendTime,status);
     }
 
-    private void validateAttendTime(LocalDateTime attendTime){
+    private static void validateAttendTime(LocalDateTime attendTime){
         if(!isOnCampusOperatingTime(LocalTime.from(attendTime))){
             throw new IllegalArgumentException(attendTime.getHour() + "시 " + attendTime.getMinute() + "분은 캠퍼스 운영시간이 아닙니다.");
         }
     }
 
-    private void findCrewCommand(){
+    public static void findCrewCommand(){
         String findCrewName = InputView.getCrewName();
         Crew findCrew = crews.findByName(findCrewName);
 
         OutputView.printCrewAttendance(findCrewName ,findCrew.getAttendanceRecord());
     }
 
-    private void editCrewAttendance(){
+    public static void editCrewAttendance(){
         String findCrewName = InputView.getEditCrewName();
         Crew findCrew = crews.findByName(findCrewName);
         Attendance crewRecord = findCrew.getAttendanceRecord();
@@ -106,12 +94,12 @@ public class AttendanceController {
         OutputView.printEditResult(oldRecord, findDate);
     }
 
-    private void findWarningCrews(){
+    public static void findWarningCrews(){
         List<Crew> warningCrews = crews.getSortedWarningCrews();
         OutputView.printWarningCrews(warningCrews);
     }
 
-    private void loadFile(){
+    private static void loadFile(){
         try {
             crews = FileInputView.loadInitFileData();
         }catch (IOException e){
