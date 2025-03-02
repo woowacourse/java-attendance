@@ -14,14 +14,14 @@ public enum AttendancePenalty {
         this.thresholdAbsenceCount = penaltyCount;
     }
 
-    public static AttendancePenalty findPenaltyByAbsentCount(long count) {
-        if (count > AttendancePenalty.EXPULSION.thresholdAbsenceCount) {
+    public static AttendancePenalty findPenaltyByAbsentCount(long absentCount) {
+        if (absentCount > AttendancePenalty.EXPULSION.thresholdAbsenceCount) {
             return AttendancePenalty.EXPULSION;
         }
-        if (count >= AttendancePenalty.COUNSELING.thresholdAbsenceCount) {
+        if (absentCount >= AttendancePenalty.COUNSELING.thresholdAbsenceCount) {
             return AttendancePenalty.COUNSELING;
         }
-        if (count >= AttendancePenalty.WARNING.thresholdAbsenceCount) {
+        if (absentCount >= AttendancePenalty.WARNING.thresholdAbsenceCount) {
             return AttendancePenalty.WARNING;
         }
         return NONE;
