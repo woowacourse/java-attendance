@@ -68,7 +68,7 @@ public class AttendanceBook {
         return attendanceBook.keySet().stream()
                 .filter(crew -> crew.isCrew(crewName))
                 .findFirst()
-                .orElseThrow(() -> new ErrorException("등록되지 않은 닉네임입니다."));
+                .orElseThrow(() -> new ErrorException("등록되지 않은 닉네임입니다. 등록되지 않은 닉네임 : " + crewName));
     }
 
     public AttendanceResult calculateCrewAttendanceResult(String crewName, LocalDate todayDate) {

@@ -23,7 +23,7 @@ public enum CrewStatus {
         return Arrays.stream(CrewStatus.values())
                 .filter(crewStatus -> crewStatus.minimumAbsence <= absenceCount)
                 .findFirst()
-                .orElseThrow(() -> new ErrorException("해당하는 크루 상태가 없습니다."));
+                .orElseThrow(() -> new ErrorException("해당하는 크루 상태가 없습니다. 지각 횟수 : " + lateCount + ", 결석 횟수: " + absentCount));
     }
 
     public String getDescription() {

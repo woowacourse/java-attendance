@@ -15,7 +15,7 @@ public class DateTimeConverter {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             return LocalDateTime.parse(dateTime, formatter);
         } catch (DateTimeParseException e) {
-            throw new ErrorException("올바른 날짜와 시간 형식이 아닙니다.");
+            throw new ErrorException("올바른 날짜와 시간 형식이 아닙니다. 입력 값 : " +  dateTime);
         }
     }
 }

@@ -23,12 +23,12 @@ public class AttendanceLogs {
         return attendanceLogs.stream()
                 .filter(attendanceLog -> attendanceLog.isAttendDate(attendDate))
                 .findFirst()
-                .orElseThrow(() -> new ErrorException("해당 날짜의 출석 기록이 없습니다."));
+                .orElseThrow(() -> new ErrorException("해당 날짜의 출석 기록이 없습니다. 검색 날짜 : " + attendDate));
     }
 
     public AttendanceLog registerLog(LocalDateTime attendDateTime) {
         if (isAttendanceLog(attendDateTime.toLocalDate())) {
-            throw new ErrorException("출석 기록이 이미 등록되었습니다.");
+            throw new ErrorException("출석 기록이 이미 등록되었습니다. 출석 날짜와 시간 : " + attendDateTime);
         }
         AttendanceLog attendanceLog = new AttendanceLog(attendDateTime);
         this.attendanceLogs.add(attendanceLog);

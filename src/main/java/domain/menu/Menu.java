@@ -23,7 +23,7 @@ public enum Menu {
         return Arrays.stream(values())
                 .filter(menu -> menu.code.equals(code))
                 .findFirst()
-                .orElseThrow(() -> new ErrorException("존재하지 않는 메뉴입니다."));
+                .orElseThrow(() -> new ErrorException("존재하지 않는 메뉴입니다. 입력 값 : " + code));
     }
 
     public String getCode() {

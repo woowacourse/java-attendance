@@ -43,13 +43,13 @@ public class AttendanceLog {
 
     private void verifyAttendDate(LocalDate attendDate) {
         if (!DateEvaluator.isOpenDate(attendDate)) {
-            throw new ErrorException("주말 또는 공휴일은 출석을 받지 않습니다.");
+            throw new ErrorException("주말 또는 공휴일은 출석을 받지 않습니다. 출석 날짜 : " + attendDate);
         }
     }
 
     private void verifyAttendTime(LocalTime attendTime) {
         if (!TimeEvaluator.isOpenTime(attendTime)) {
-            throw new ErrorException("운영 시간에 출석해야 합니다.");
+            throw new ErrorException("운영 시간에 출석 해야 합니다. 출석 시간 : " + attendTime);
         }
     }
 }

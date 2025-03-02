@@ -13,7 +13,7 @@ public class TimeConverter {
         try {
             return LocalTime.parse(time);
         } catch (DateTimeParseException e) {
-            throw new ErrorException("올바른 시간 형식이 아닙니다.");
+            throw new ErrorException("올바른 시간 형식이 아닙니다. 입력 값 : " + time);
         }
     }
 }
