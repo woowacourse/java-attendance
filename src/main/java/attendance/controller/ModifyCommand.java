@@ -31,13 +31,16 @@ public class ModifyCommand implements Command {
     @Override
     public void execute(final CrewHistories crewHistories) {
         LocalDate now = LocalDate.now(clock);
+
         Nickname nickname = makeNickname();
         crewHistories.validateKeyExists(nickname);
-        LocalDate modifyingDate = makeDate(now);
-        campusScheduler.validateOperationDate(modifyingDate);
-        validatePreviousDate(modifyingDate, now);
-        crewHistories.validateHistoryExists(nickname, modifyingDate);
 
+        LocalDate modifyingDate = getModifyingDate(now);
+        crewHistories.validateHistoryExists(nickname, modifyingDate);
+        modify(crewHistories, modifyingDate, nickname);
+    }
+
+    private void modify(final CrewHistories crewHistories, final LocalDate modifyingDate, final Nickname nickname) {
         LocalTime modifyingTime = makeTime();
         LocalDateTime modifyingDateTime = LocalDateTime.of(modifyingDate, modifyingTime);
         campusScheduler.validateOperationTime(modifyingDateTime);
@@ -45,6 +48,13 @@ public class ModifyCommand implements Command {
         LocalDateTime previousDateTime = crewHistories.modify(nickname, modifyingDateTime);
         resultView.showModifyingAttendance(previousDateTime, campusScheduler.calculateAttendanceState(previousDateTime),
                 modifyingTime, campusScheduler.calculateAttendanceState(modifyingDateTime));
+    }
+
+    private LocalDate getModifyingDate(final LocalDate now) {
+        LocalDate modifyingDate = makeDate(now);
+        campusScheduler.validateOperationDate(modifyingDate);
+        validatePreviousDate(modifyingDate, now);
+        return modifyingDate;
     }
 
     private void validatePreviousDate(final LocalDate date, final LocalDate nowDate) {
