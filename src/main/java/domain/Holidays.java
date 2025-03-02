@@ -5,18 +5,16 @@ import java.util.Arrays;
 
 public enum Holidays {
 
-    CHRISTMAS(12, 25);
+    CHRISTMAS(LocalDate.of(2024, 12, 25));
 
-    private final int month;
-    private final int day;
+    private final LocalDate date;
 
-    Holidays(int month, int day) {
-        this.month = month;
-        this.day = day;
+    Holidays(LocalDate date) {
+        this.date = date;
     }
 
     public static boolean isHoliday(LocalDate today) {
         return Arrays.stream(values())
-                .anyMatch(holiday -> holiday.month == today.getMonthValue() && holiday.day == today.getDayOfMonth());
+                .anyMatch(holiday -> holiday.date.equals(today));
     }
 }
