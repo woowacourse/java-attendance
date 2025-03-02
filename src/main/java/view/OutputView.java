@@ -24,6 +24,7 @@ public class OutputView {
     private static final String INTERVIEW_SUBJECT = "면담 대상자입니다.";
     private static final String WARNING_SUBJECT = "경고 대상자입니다.";
     private static final String ATTENDANCE_RECORD_THIS_MONTH = "이번 달 %s의 출석 기록입니다.\n";
+    private static final String RESULT_INDICATOR = " -> ";
 
     public static void printAttendanceResult(AttendanceDate attendanceDate, AttendanceTime attendanceTime, AttendanceStatus attendanceStatus) {
         String dateAndTime = AttendanceDateAttendanceTimeFormatter.createAttendanceResultMessage(attendanceDate, attendanceTime);
@@ -32,7 +33,7 @@ public class OutputView {
     }
 
     public static void printModifyDone(String modifyResult) {
-        System.out.println(" -> " + modifyResult);
+        System.out.println(RESULT_INDICATOR + modifyResult);
     }
 
     public static void printModifyComplete(AttendanceDate attendanceDate, AttendanceTime attendanceTime, AttendanceStatus attendanceStatus, String modifyResult) {
