@@ -92,6 +92,10 @@ public enum TimeTable {
     }
 
     public static boolean isAttendanceDay(LocalDate date){
-        return date.getDayOfWeek() != SATURDAY && date.getDayOfWeek() != SUNDAY;
+        return !isWeekend(date) && !Holiday.isHoliday(date);
+    }
+
+    private static boolean isWeekend(LocalDate date){
+        return date.getDayOfWeek() == SATURDAY || date.getDayOfWeek() == SUNDAY;
     }
 }

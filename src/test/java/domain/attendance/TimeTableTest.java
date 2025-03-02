@@ -159,6 +159,7 @@ class TimeTableTest {
 
     @Nested
     class AttendanceDayTest{
+        @DisplayName("주말인 경우 false, 평일인 경우 true를 반환한다.")
         @Test
         void attendanceDayTest(){
             for(int i=1; i<=28; i++){ // 2월 1일은 토요일
@@ -168,6 +169,12 @@ class TimeTableTest {
                     assertThat(isAttendanceDay(LocalDate.of(2025,2,i))).isTrue();
                 }
             }
+        }
+
+        @DisplayName("공휴일인 경우 false를 반환한다.")
+        @Test
+        void isHoliday(){
+            assertThat(isAttendanceDay(LocalDate.of(2024,12,25))).isFalse();
         }
     }
 }
