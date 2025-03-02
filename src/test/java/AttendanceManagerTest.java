@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import domain.DateProvider;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +24,19 @@ public class AttendanceManagerTest {
 
     @Test
     void 등록되지_않은_닉네임의_출석을_등록하면_예외가_발생한다() {
-        assertThatThrownBy(() -> new AttendanceManager(() -> weekday).attend("이든", "09:59"))
+        assertThatThrownBy(() -> new AttendanceManager(() -> weekday).attend("이든", LocalTime.of(9, 59)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
+
+    @Test
+    void 크루의_출석을_등록한다() {
+        AttendanceManager attendanceManager = new AttendanceManager(() -> weekday);
+        attendanceManager.addCrew("이든", LocalDateTime.of(2024, 12, 12, 10, 0));
+
+        LocalDateTime attendanceTime = attendanceManager.attend("이든", LocalTime.of(9, 59));
+
+        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(2024, 12, 13, 9, 59));
     }
 
     @Test
@@ -46,7 +57,6 @@ public class AttendanceManagerTest {
         assertThat(attendanceManager.getCrewSize()).isEqualTo(2);
     }
 
-
     class AttendanceManager {
 
         private final DateProvider dateProvider;
@@ -57,29 +67,22 @@ public class AttendanceManagerTest {
             this.dateProvider = dateProvider;
         }
 
-        public void attend(String nickname, String time) {
-            if (!existsByNickname(nickname)) {
-                throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-            }
-//            Crew crew = findCrewByNickname(nickname);
-//            crew.addAttendanceTime(time);
+        public LocalDateTime attend(String nickname, LocalTime todayTime) {
+            return findCrewByNickname(nickname)
+                    .map(crew -> crew.attend(todayTime))
+                    .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
         }
 
-        private boolean existsByNickname(String nickname) {
-            return crews.stream()
-                    .anyMatch(crew -> crew.getNickname().equals(nickname));
+        public void addCrew(String nickname, LocalDateTime attendanceTime) {
+            findCrewByNickname(nickname)
+                    .ifPresentOrElse(
+                            crew -> crew.addAttendanceTime(attendanceTime),
+                            () -> crews.add(new Crew(nickname, attendanceTime, dateProvider))
+                    );
         }
 
         public int getCrewSize() {
             return crews.size();
-        }
-
-        public void addCrew(String nickname, LocalDateTime time) {
-            findCrewByNickname(nickname)
-                    .ifPresentOrElse(
-                            crew -> crew.addAttendanceTime(time),
-                            () -> crews.add(new Crew(nickname, time.toLocalTime(), dateProvider))
-                    );
         }
 
         private Optional<Crew> findCrewByNickname(String nickname) {

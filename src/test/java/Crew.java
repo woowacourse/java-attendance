@@ -8,14 +8,18 @@ public class Crew {
     private final String nickname;
     private final AttendanceRecord attendanceRecord;
 
-    public Crew(String nickname, LocalTime time, DateProvider dateProvider) {
+    public Crew(String nickname, LocalDateTime attendanceTime, DateProvider dateProvider) {
         this.nickname = nickname;
         this.attendanceRecord = new AttendanceRecord(dateProvider);
-        this.attendanceRecord.attend(time);
+        addAttendanceTime(attendanceTime);
     }
 
     public String getNickname() {
         return nickname;
+    }
+
+    public LocalDateTime attend(LocalTime todayTime) {
+        return attendanceRecord.attend(todayTime);
     }
 
     public void addAttendanceTime(LocalDateTime attendanceTime) {
