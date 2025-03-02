@@ -75,6 +75,19 @@ public class AttendanceHistoryTest {
                     .isInstanceOf(IllegalStateException.class);
         }
 
+        @DisplayName("출석 시간이 아니라면, 예외가 발생한다.")
+        @Test
+        public void notAttendanceTimeAttendance() throws Exception {
+            // given
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
+            final var attendanceDateTime = LocalDateTime.of(2024, 12, 13, 1, 5);
+
+            // when & then
+            assertThatThrownBy(() -> attendanceHistory.attendance(attendanceDateTime))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+
     }
     
     @Nested

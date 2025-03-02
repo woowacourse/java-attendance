@@ -28,6 +28,7 @@ public class AttendanceHistory {
 
     public AttendanceRecord attendance(final LocalDateTime attendanceDateTime) {
         validateAttendanceDay(attendanceDateTime);
+        validateAttendanceTime(attendanceDateTime);
         validateAlreadyAttendance(attendanceDateTime);
         final AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceDateTime);
         attendanceHistory.put(attendanceDateTime.toLocalDate(), attendanceRecord);
