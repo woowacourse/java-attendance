@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,9 +34,8 @@ public class CrewAttendanceTest {
         CrewAttendance crewAttendance = new CrewAttendance();
 
         crewAttendance.add(attendance);
-        List<Attendance> crewAttendances = crewAttendance.getAttendances();
 
-        assertThat(crewAttendances).contains(new Attendance(attendance));
+        assertThat(crewAttendance.getAttendanceOn(attendance)).isEqualTo(new Attendance(attendance));
         assertThat(crewAttendance.getAttendanceOn(attendance).status())
                 .isEqualTo(AttendanceStatus.valueOf(expectedStatus));
     }

@@ -3,7 +3,6 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CrewAttendance {
@@ -44,9 +43,5 @@ public class CrewAttendance {
                 .filter(attendance -> attendance.record().date().equals(targetDay))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜의 출석 기록이 존재하지 않습니다."));
-    }
-
-    public List<Attendance> getAttendances() {
-        return Collections.unmodifiableList(attendances);
     }
 }
