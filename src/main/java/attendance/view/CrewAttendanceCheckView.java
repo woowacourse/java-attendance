@@ -1,6 +1,7 @@
 package attendance.view;
 
 import attendance.domain.AttendanceDateTime;
+import attendance.domain.AttendanceStatusChecker;
 import attendance.domain.Crew;
 import attendance.domain.ExpulsionStatus;
 
@@ -20,16 +21,20 @@ public class CrewAttendanceCheckView {
     public void printCrewAttendances(final Crew crew, final List<AttendanceDateTime> crewAttendanceDateTimes) {
         System.out.println("이번 달 %s의 출석 기록입니다.\n".formatted(crew.getNickname()));
         for (AttendanceDateTime crewAttendanceDateTime : crewAttendanceDateTimes) {
-            LocalDateTime dateTime = crewAttendanceDateTime.getLocalDateTime();
-            if (dateTime.toLocalTime().equals(AttendanceDateTime.ABSENT_TIME)) {
-                System.out.println(DATE_FORMATTER.format(dateTime) + " --:-- (결석)");
-                continue;
-            }
-            AttendanceStatus attendanceStatus = checkStatus(crewAttendanceDateTime);
-            System.out.println(DATE_TIME_FORMATTER.format(dateTime)
-                    + " (%s)".formatted(AttendanceStatusTextMaker.make(attendanceStatus)));
+            AttendanceStatus attendanceStatus = AttendanceStatusChecker.checkStatus(crewAttendanceDateTime);
+            printAttendanceDateTimeAndAttendanceStatus(crewAttendanceDateTime, attendanceStatus);
         }
         System.out.println();
+    }
+
+    private void printAttendanceDateTimeAndAttendanceStatus(AttendanceDateTime crewAttendanceDateTime, AttendanceStatus attendanceStatus) {
+        LocalDateTime dateTime = crewAttendanceDateTime.getLocalDateTime();
+        if (dateTime.toLocalTime().equals(AttendanceDateTime.ABSENT_TIME)) {
+            System.out.println(DATE_FORMATTER.format(dateTime) + " --:-- (결석)");
+            return;
+        }
+        System.out.println(DATE_TIME_FORMATTER.format(dateTime)
+                + " (%s)".formatted(AttendanceStatusTextMaker.make(attendanceStatus)));
     }
 
     public void printAttendanceStatuses(final Map<AttendanceStatus, Long> attendanceStatuses) {
