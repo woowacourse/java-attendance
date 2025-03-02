@@ -16,14 +16,14 @@ public class CrewGroup {
 
     public void addCrew(String crewName){
         if(has(crewName)){
-            throw new IllegalArgumentException("[ERROR] 중복 되는 닉네임입니다.");
+            throw new IllegalArgumentException("중복 되는 닉네임입니다.");
         }
         crews.put(crewName,new Crew(crewName));
     }
 
     public Crew findByName(String crewName){
         if(!has(crewName)){
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }
         return crews.get(crewName);
     }
