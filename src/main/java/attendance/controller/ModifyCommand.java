@@ -38,11 +38,13 @@ public class ModifyCommand implements Command {
         validatePreviousDate(modifyingDate, now);
         crewHistories.validateHistoryExists(nickname, modifyingDate);
 
-        LocalTime time = makeTime();
-        LocalDateTime modifyingDateTime = LocalDateTime.of(modifyingDate, time);
+        LocalTime modifyingTime = makeTime();
+        LocalDateTime modifyingDateTime = LocalDateTime.of(modifyingDate, modifyingTime);
         campusScheduler.validateOperationTime(modifyingDateTime);
 
-        crewHistories.modify(nickname, modifyingDateTime);
+        LocalDateTime previousDateTime = crewHistories.modify(nickname, modifyingDateTime);
+        resultView.showModifyingAttendance(previousDateTime, campusScheduler.calculateAttendanceState(previousDateTime),
+                modifyingTime, campusScheduler.calculateAttendanceState(modifyingDateTime));
     }
 
     private void validatePreviousDate(final LocalDate date, final LocalDate nowDate) {

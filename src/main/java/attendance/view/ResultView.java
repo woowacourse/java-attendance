@@ -2,6 +2,7 @@ package attendance.view;
 
 import attendance.domain.AttendanceState;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 
 public class ResultView {
@@ -12,17 +13,30 @@ public class ResultView {
             AttendanceState.TARDINESS, "지각",
             AttendanceState.ABSENCE, "결석"
     );
-
-    public void showAttendance(final LocalDateTime attendanceTime, final AttendanceState attendanceState) {
-        showln(LINE + TimeFormatter.makeDateTimeMessage(attendanceTime)
-                + String.format(" (%s)", ATTENDANCE_STATE_KOREAN.get(attendanceState)));
-    }
+    private static final String TITLE_ATTENDANCE = "%s (%s)";
+    private static final String TITLE_MODIFYING = "%s (%s) -> %s (%s) 수정 완료!";
 
     public void showBlank() {
         System.out.println();
     }
 
-    private void showln(String line) {
-        System.out.println(line);
+    public void showAttendance(final LocalDateTime attendanceTime, final AttendanceState attendanceState) {
+        showBlank();
+        System.out.printf(TITLE_ATTENDANCE, TimeFormatter.makeDateTimeMessage(attendanceTime),
+                getAttendanceState(attendanceState));
+    }
+
+    public void showModifyingAttendance(final LocalDateTime previousDateTime,
+                                        final AttendanceState previousAttendanceState,
+                                        final LocalTime modifyingTime,
+                                        final AttendanceState afterAttendanceState) {
+        showBlank();
+        System.out.printf(TITLE_MODIFYING, TimeFormatter.makeDateTimeMessage(previousDateTime),
+                getAttendanceState(previousAttendanceState), TimeFormatter.makeTimeMessage(modifyingTime),
+                getAttendanceState(afterAttendanceState));
+    }
+
+    private String getAttendanceState(final AttendanceState attendanceState) {
+        return ATTENDANCE_STATE_KOREAN.get(attendanceState);
     }
 }
