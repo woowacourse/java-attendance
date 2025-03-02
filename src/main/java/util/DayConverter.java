@@ -1,5 +1,6 @@
 package util;
 
+import domain.DayOfMonth;
 import domain.Time;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -16,5 +17,9 @@ public class DayConverter {
 
     public static LocalDateTime combineTimeAndDate(Time time, LocalDate today) {
         return LocalDateTime.of(today, time.convertTime());
+    }
+
+    public static LocalDate combineDayAndDate(DayOfMonth dayOfMonth, LocalDate today) {
+        return LocalDate.of(today.getYear(), today.getMonth().getValue(), dayOfMonth.dayOfMonth());
     }
 }

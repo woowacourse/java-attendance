@@ -1,5 +1,6 @@
 package util;
 
+import domain.DayOfMonth;
 import domain.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class DayConverterTest {
 
@@ -27,5 +29,14 @@ class DayConverterTest {
         LocalDate today = LocalDate.of(2024, 12, 2);
 
         Assertions.assertEquals(LocalDateTime.of(2024, 12, 2, 12, 0), DayConverter.combineTimeAndDate(time, today));
+    }
+
+    @ParameterizedTest
+    @DisplayName("오늘 날짜를 특정 날짜로 변경 가능한지 확인합니다.")
+    @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 28, 25, 29})
+    void combineDayAndDateTest(int value) {
+        DayOfMonth dayOfMonth = new DayOfMonth(value);
+        LocalDate today = LocalDate.of(2024, 12, 2);
+        Assertions.assertEquals(LocalDate.of(2024, 12, value), DayConverter.combineDayAndDate(dayOfMonth, today));
     }
 }
