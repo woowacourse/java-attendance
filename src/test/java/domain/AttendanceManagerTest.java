@@ -2,8 +2,6 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,8 +16,7 @@ public class AttendanceManagerTest {
             // given
             NickName nickName = new NickName("후우");
             String time = "10:00";
-            AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
-                    LocalTime.parse(time));
+            AttendanceRecord attendanceRecord = AttendanceRecord.timeOf(time);
             AttendanceManager attendanceManager = new AttendanceManager();
 
             // when
@@ -34,8 +31,7 @@ public class AttendanceManagerTest {
         void should_return_true_when_already_attended() {
             // given
             NickName nickName = new NickName("후우");
-            AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
-                    LocalTime.parse("10:00"));
+            AttendanceRecord attendanceRecord = AttendanceRecord.of("11", "10:00");
             AttendanceManager attendanceManager = new AttendanceManager();
             attendanceManager.attend(nickName, attendanceRecord);
 
@@ -56,11 +52,9 @@ public class AttendanceManagerTest {
             // given
             NickName nickName = new NickName("후우");
             AttendanceManager attendanceManager = new AttendanceManager();
-            AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
-                    LocalTime.parse("10:00"));
+            AttendanceRecord attendanceRecord = AttendanceRecord.of("11", "10:00");
             attendanceManager.attend(nickName, attendanceRecord);
-            AttendanceRecord editAttendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
-                    LocalTime.parse("11:00"));
+            AttendanceRecord editAttendanceRecord = AttendanceRecord.of("11", "11:00");
             int prevHash = attendanceManager.hashCode();
 
             // when

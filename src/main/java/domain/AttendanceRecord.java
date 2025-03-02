@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
+import util.Current;
 
 public class AttendanceRecord {
     private final LocalDate date;
@@ -11,6 +12,15 @@ public class AttendanceRecord {
     public AttendanceRecord(LocalDate date, LocalTime attendingTime) {
         this.date = date;
         this.attendingTime = attendingTime;
+    }
+
+    public static AttendanceRecord timeOf(String time) {
+        return new AttendanceRecord(Current.getToday(), LocalTime.parse(time));
+    }
+
+    public static AttendanceRecord of(String date, String time) {
+        return new AttendanceRecord(LocalDate.parse(Current.getStringOfThisMonth() + "-" + date),
+                LocalTime.parse(time));
     }
 
     public boolean isSameDate(AttendanceRecord attendanceRecord) {
