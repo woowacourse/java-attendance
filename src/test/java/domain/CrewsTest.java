@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 class CrewsTest {
 
-
     @DisplayName("처벌 관련 데이터를 정렬해서 리턴한다")
     @Test
     void sortCrewsByDisciplinaryStatus() {
