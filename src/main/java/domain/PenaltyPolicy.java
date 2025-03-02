@@ -1,5 +1,7 @@
 package domain;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public enum PenaltyPolicy {
@@ -10,6 +12,8 @@ public enum PenaltyPolicy {
     private static final int MEETING_STANDARD = 3;
     private static final int WARNING_STANDARD = 2;
     private static final int LATE_COUNT_PER_ABSENCE = 3;
+
+    private static final List<PenaltyPolicy> dangerTypes = Arrays.asList(WARNING, MEETING, EXPULSION);
 
     public static PenaltyPolicy judgePenalty(Map<AttendanceType, Integer> counts) {
 
@@ -25,5 +29,9 @@ public enum PenaltyPolicy {
             return WARNING;
         }
         return NONE;
+    }
+
+    public boolean isDanger() {
+        return dangerTypes.contains(this);
     }
 }
