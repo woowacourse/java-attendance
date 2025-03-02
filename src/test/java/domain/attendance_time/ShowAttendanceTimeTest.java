@@ -38,7 +38,7 @@ class ShowAttendanceTimeTest {
             var time = LocalTime.parse(timeStringValue);
             
             //expected
-            assertThatThrownBy(() -> Attendance.of(date, time))
+            assertThatThrownBy(() -> Attendance.show(date, time))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("캠퍼스 운영시간이 아닙니다. (08:00~23:00)");
         }
@@ -51,7 +51,7 @@ class ShowAttendanceTimeTest {
             var time = LocalTime.parse(timeStringValue);
             
             //expected
-            assertThatThrownBy(() -> Attendance.of(date, time))
+            assertThatThrownBy(() -> Attendance.show(date, time))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("캠퍼스 운영시간이 아닙니다. (08:00~23:00)");
         }

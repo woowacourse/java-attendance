@@ -1,10 +1,5 @@
 package domain;
 
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -12,6 +7,11 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class AttendanceTest {
     
@@ -25,7 +25,7 @@ class AttendanceTest {
             var time = LocalTime.of(10, 5);
             
             //when
-            var result = Attendance.of(date, time);
+            var result = Attendance.show(date, time);
             
             //then
             assertAll(
@@ -67,7 +67,7 @@ class AttendanceTest {
             var time = LocalTime.parse(timeStringValue);
             
             //when
-            var result = Attendance.of(date, time);
+            var result = Attendance.show(date, time);
             
             //then
             assertThat(result.getStatus()).isEqualTo(AttendanceStatus.출석);
@@ -81,7 +81,7 @@ class AttendanceTest {
             var time = LocalTime.parse(timeStringValue);
             
             //when
-            var result = Attendance.of(date, time);
+            var result = Attendance.show(date, time);
             
             //then
             assertThat(result.getStatus()).isEqualTo(AttendanceStatus.지각);
@@ -95,7 +95,7 @@ class AttendanceTest {
             var time = LocalTime.parse(timeStringValue);
             
             //when
-            var result = Attendance.of(date, time);
+            var result = Attendance.show(date, time);
             
             //then
             assertThat(result.getStatus()).isEqualTo(AttendanceStatus.결석);
@@ -109,7 +109,7 @@ class AttendanceTest {
             var time = LocalTime.parse(timeStringValue);
             
             //when
-            var result = Attendance.of(date, time);
+            var result = Attendance.show(date, time);
             
             //then
             assertThat(result.getStatus()).isEqualTo(AttendanceStatus.출석);
@@ -123,7 +123,7 @@ class AttendanceTest {
             var time = LocalTime.parse(timeStringValue);
             
             //when
-            var result = Attendance.of(date, time);
+            var result = Attendance.show(date, time);
             
             //then
             assertThat(result.getStatus()).isEqualTo(AttendanceStatus.지각);
@@ -137,7 +137,7 @@ class AttendanceTest {
             var time = LocalTime.parse(timeStringValue);
             
             //when
-            var result = Attendance.of(date, time);
+            var result = Attendance.show(date, time);
             
             //then
             assertThat(result.getStatus()).isEqualTo(AttendanceStatus.결석);
@@ -151,7 +151,7 @@ class AttendanceTest {
             var time = LocalTime.parse(timeStringValue);
             
             //expected
-            assertThatThrownBy(() -> Attendance.of(date, time))
+            assertThatThrownBy(() -> Attendance.show(date, time))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("캠퍼스 운영시간이 아닙니다. (08:00~23:00)");
         }
@@ -164,7 +164,7 @@ class AttendanceTest {
             var time = LocalTime.parse(timeStringValue);
             
             //expected
-            assertThatThrownBy(() -> Attendance.of(date, time))
+            assertThatThrownBy(() -> Attendance.show(date, time))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("캠퍼스 운영시간이 아닙니다. (08:00~23:00)");
         }
@@ -176,7 +176,7 @@ class AttendanceTest {
             var time = LocalTime.of(10, 5);
             
             //expected
-            assertThatThrownBy(() -> Attendance.of(date, time))
+            assertThatThrownBy(() -> Attendance.show(date, time))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("주말에는 출석할 수 없습니다.");
         }
@@ -188,7 +188,7 @@ class AttendanceTest {
             var time = LocalTime.of(10, 5);
             
             //expected
-            assertThatThrownBy(() -> Attendance.of(date, time))
+            assertThatThrownBy(() -> Attendance.show(date, time))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("공휴일에는 출석할 수 없습니다.");
         }

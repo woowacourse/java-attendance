@@ -20,7 +20,7 @@ public class CrewAttendance {
     public CrewAttendance(final LocalDate today, final Map<LocalDate, LocalTime> attendances) {
         this(today);
         attendances.forEach((date, time) ->
-                this.attendances.put(date, Attendance.of(date, time)));
+                this.attendances.put(date, Attendance.show(date, time)));
     }
     
     private Map<LocalDate, Attendance> generateCalendar(final LocalDate today) {
@@ -36,13 +36,13 @@ public class CrewAttendance {
     public void attend(final LocalDate date, final LocalTime time) {
         validateIsInCalender(date);
         
-        attendances.put(date, Attendance.of(date, time));
+        attendances.put(date, Attendance.show(date, time));
     }
     
     public void modify(final LocalDate targetDate, final LocalTime newTime) {
         validateIsInCalender(targetDate);
         
-        attendances.put(targetDate, Attendance.of(targetDate, newTime));
+        attendances.put(targetDate, Attendance.show(targetDate, newTime));
     }
     
     private void validateIsInCalender(final LocalDate date) {

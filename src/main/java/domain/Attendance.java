@@ -23,7 +23,7 @@ public class Attendance {
         this.status = status;
     }
     
-    public static Attendance of(final LocalDate attendDate, final LocalTime attendTime) {
+    public static Attendance show(final LocalDate attendDate, final LocalTime attendTime) {
         return new Attendance(
                 new AttendanceDate(attendDate),
                 new ShowAttendanceTime(attendTime),
