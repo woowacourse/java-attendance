@@ -6,6 +6,8 @@ import java.util.Map;
 
 public class StudentAttendanceHistory {
     private final Map<AttendanceDate, AttendanceTime> attendanceHistory;
+    private static final int ZERO_COUNT = 0;
+    private static final int ONE_MORE_COUNT = 1;
 
     public StudentAttendanceHistory(Map<AttendanceDate, AttendanceTime> studentAttendanceHistory) {
         this.attendanceHistory = new HashMap<>(studentAttendanceHistory);
@@ -45,10 +47,13 @@ public class StudentAttendanceHistory {
     }
 
     public void calculateStudentAttendanceResult(Map<AttendanceStatus, Integer> attendanceCountMap) {
+        attendanceCountMap.putIfAbsent(AttendanceStatus.ATTENDANCE, ZERO_COUNT);
+        attendanceCountMap.putIfAbsent(AttendanceStatus.LATE, ZERO_COUNT);
+        attendanceCountMap.putIfAbsent(AttendanceStatus.ABSENT, ZERO_COUNT);
         for (AttendanceDate attendanceDate : attendanceHistory.keySet()) {
             AttendanceStatus attendanceStatus = AttendanceStatusEvaluator.calculateAttendanceStatus(attendanceDate, attendanceHistory.get(attendanceDate));
             attendanceCountMap.merge(
-                    attendanceStatus, 1, Integer::sum
+                    attendanceStatus, ONE_MORE_COUNT, Integer::sum
             );
         }
     }
