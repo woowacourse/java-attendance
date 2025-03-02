@@ -12,14 +12,15 @@ class AttendancesTest {
     @DisplayName("출석 등록 테스트")
     class AttendTest {
         @Test
-        @DisplayName("출석 시간을 가지고 출석을 기록한다")
-        void should_attend_by_attending_time() {
+        @DisplayName("출석 기록을 가지고 출석을 기록한다")
+        void should_attend_by_attendanceRecord() {
             // given
-            LocalTime attendingTime = LocalTime.parse("10:00");
+            AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
+                    LocalTime.parse("10:00"));
             Attendances attendances = new Attendances();
 
             // when
-            attendances.attend(attendingTime);
+            attendances.attend(attendanceRecord);
 
             // then
             assertThat(attendances).isNotEqualTo(new Attendances());
@@ -29,9 +30,10 @@ class AttendancesTest {
         @DisplayName("이미 출석한 경우를 알 수 있다")
         void should_return_true_when_already_attended() {
             // given
-            LocalTime attendingTime = LocalTime.parse("10:00");
+            AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
+                    LocalTime.parse("10:00"));
             Attendances attendances = new Attendances();
-            attendances.attend(attendingTime);
+            attendances.attend(attendanceRecord);
 
             // when
             boolean result = attendances.isAttended();

@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Objects;
 
 public class Attendances {
-    private final List<LocalTime> attendances;
+    private List<AttendanceRecord> attendances;
 
     public Attendances() {
         this.attendances = new ArrayList<>();
     }
 
-    public void attend(LocalTime attendingTime) {
-        attendances.add(attendingTime);
+    public void attend(AttendanceRecord attendanceRecord) {
+        attendances.add(attendanceRecord);
     }
 
     public boolean isAttended() {
