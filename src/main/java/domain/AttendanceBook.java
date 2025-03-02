@@ -13,8 +13,12 @@ public class AttendanceBook {
     }
 
     public void addCrew(String name, LocalDate date, LocalTime time) {
-        crews.computeIfAbsent(name, key -> new Crew(name, date, time))
-                .addAttendance(date, time);
+        Crew crew = crews.get(name);
+        if (crew == null) {
+            crews.put(name, new Crew(name, date, time));
+            return;
+        }
+        crew.addAttendance(date, time);
     }
 
     public Attendance attendCrew(String name, LocalDate date, LocalTime time) {
@@ -30,6 +34,27 @@ public class AttendanceBook {
             throw new IllegalArgumentException("[ERROR] 현재보다 이전 날짜만 수정 가능합니다.");
         }
         return findCrewByName(name).updateAttendance(date, time);
+    }
+
+    public int calculateAttendanceCount(String name, LocalDate nowDate) {
+        Crew crew = findCrewByName(name);
+        return crew.calculateAttendanceCount(nowDate);
+    }
+
+    public int calculateLatenessCount(String name, LocalDate nowDate) {
+        Crew crew = findCrewByName(name);
+        return crew.calculateLatenessCount(nowDate);
+    }
+
+    public int calculateAbsenceCount(String name, LocalDate nowDate) {
+        Crew crew = findCrewByName(name);
+        return crew.calculateAbsenceCount(nowDate);
+    }
+
+    public Penalty determinePenaltyStatus(String name, LocalDate nowDate) {
+        int latenessCount = calculateLatenessCount(name, nowDate);
+        int absenceCount = calculateAbsenceCount(name, nowDate);
+        return Penalty.from(latenessCount, absenceCount);
     }
 
     public Attendance findAttendance(String name, LocalDate date) {

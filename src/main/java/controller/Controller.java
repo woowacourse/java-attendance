@@ -4,7 +4,9 @@ import domain.Attendance;
 import domain.AttendanceBook;
 import domain.FileWithAttendanceData;
 import domain.Option;
+import domain.Penalty;
 import java.time.DateTimeException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -57,7 +59,7 @@ public class Controller {
                 edit(nowDate);
             }
             if (option == Option.CHECK_RECORDS) {
-                checkRecords();
+                checkRecords(nowDate);
             }
             if (option == Option.CHECK_EXPULSION_RISK_CREW) {
                 checkExpulsionRiskCrew();
@@ -106,10 +108,35 @@ public class Controller {
         }
     }
 
-    private void checkRecords() {
+    private void checkRecords(LocalDate nowDate) {
+        LocalDate startDate = LocalDate.of(ATTENDANCE_YEAR, ATTENDANCE_MONTH, 1);
 
+        String name = inputView.readName();
+        outputView.displayRecordMessage(name);
+
+        for (LocalDate date = startDate; date.isBefore(nowDate); date = date.plusDays(1)) {
+            Attendance attendance = attendanceBook.findAttendance(name, date);
+            if (!isHoliday(date)) {
+                outputView.displayRecord(date, attendance);
+            }
+        }
+
+        outputView.displayPenaltyCount(attendanceBook.calculateAttendanceCount(name, nowDate),
+                attendanceBook.calculateLatenessCount(name, nowDate),
+                attendanceBook.calculateAbsenceCount(name, nowDate)
+        );
+
+        Penalty penalty = attendanceBook.determinePenaltyStatus(name, nowDate);
+        if (penalty != Penalty.PASS) {
+            outputView.displayPenaltyStatus(penalty.getDescription());
+        }
     }
 
     private void checkExpulsionRiskCrew() {
+    }
+
+    private boolean isHoliday(LocalDate date) {
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY ||
+                date.equals(LocalDate.of(2024, 12, 25));
     }
 }

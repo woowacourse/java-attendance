@@ -25,6 +25,36 @@ public class OutputView {
                 updatedAttendance.getTime().getMinute(), updatedAttendance.determineStatus().getDescription());
     }
 
+    public void displayRecordMessage(String name) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", name);
+    }
+
+    public void displayRecord(LocalDate nowDate, Attendance attendance) {
+        String dayOfWeek = nowDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+
+        System.out.printf("%d월 %02d일 %s ", nowDate.getMonthValue(), nowDate.getDayOfMonth(), dayOfWeek);
+        printRecordInfo(attendance);
+    }
+
+    public void displayPenaltyCount(int attendanceCount, int latenessCount, int absenceCount) {
+        System.out.printf("%n출석: %d회%n", attendanceCount);
+        System.out.printf("지각: %d회%n", latenessCount);
+        System.out.printf("결석: %d회%n", absenceCount);
+    }
+
+    public void displayPenaltyStatus(String status) {
+        System.out.printf("%n%s 대상자입니다.%n", status);
+    }
+
+    private void printRecordInfo(Attendance attendance) {
+        if (attendance == null) {
+            System.out.printf("--:-- (%s)%n", AttendanceStatus.ABSENCE.getDescription());
+            return;
+        }
+        System.out.printf("%02d:%02d (%s)%n", attendance.getTime().getHour(),
+                attendance.getTime().getMinute(), attendance.determineStatus().getDescription());
+    }
+
     private void printAttendanceInfo(Attendance originAttendance) {
         if (originAttendance == null) {
             System.out.printf("--:-- (%s) -> ", AttendanceStatus.ABSENCE.getDescription());
