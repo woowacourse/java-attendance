@@ -20,8 +20,6 @@ public class Attendance {
     private final AttendanceStatus attendanceStatus;
 
     public Attendance(LocalDateTime attendanceTime) {
-        validateOperatingDay(attendanceTime);
-        validateOperatingTime(LocalTime.from(attendanceTime));
         this.attendanceTime = attendanceTime;
         this.attendanceStatus = checkAttendanceStatus(attendanceTime);
     }
@@ -41,18 +39,15 @@ public class Attendance {
         return AttendanceStatus.ABSENT;
     }
 
-    private void validateOperatingTime(LocalTime attendanceTime) {
-        if (attendanceTime.isBefore(OPERATING_START_TIME) || attendanceTime.isAfter(OPERATING_END_TIME)) {
-            throw new IllegalArgumentException("운영시간이 아닙니다.");
-        }
-
+    public static boolean isOperatingTime(LocalTime attendanceTime) {
+        return !attendanceTime.isBefore(OPERATING_START_TIME) && !attendanceTime.isAfter(OPERATING_END_TIME);
     }
 
-    private void validateOperatingDay(LocalDateTime attendanceTime) {
+    public static boolean isOperatingDay(LocalDateTime attendanceTime) {
         if (WEEKENDS.contains(DayOfWeek.from(attendanceTime)) || HOLIDAYS.contains(MonthDay.from(attendanceTime))) {
-            throw new IllegalArgumentException("운영일이 아닙니다.");
+            return false;
         }
-
+        return true;
     }
 
 
