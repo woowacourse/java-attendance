@@ -179,21 +179,21 @@ public class AttendanceController {
     }
 
     private Time createTime(final LocalDate date, final String attendanceTime) {
-        if (!attendanceTime.matches(TIME_REGEX)) {
-            throw new IllegalArgumentException("[ERROR] 올바른 시간 형식(HH:mm)으로 입력해주세요.");
+        if (attendanceTime.matches(TIME_REGEX)) {
+            String[] split = attendanceTime.split(":");
+            return new Time(LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
+                    Parser.parseToInt(split[0]), Parser.parseToInt(split[1])));
         }
-        String[] split = attendanceTime.split(":");
-        return new Time(LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
-                Parser.parseToInt(split[0]), Parser.parseToInt(split[1])));
+        throw new IllegalArgumentException("[ERROR] 올바른 시간 형식(HH:mm)으로 입력해주세요.");
+
     }
 
     private LocalTime createLocalTime(final String time) {
-        if (!time.matches(TIME_REGEX)) {
-            throw new IllegalArgumentException("[ERROR] 올바른 시간 형식(HH:mm)으로 입력해주세요.");
+        if (time.matches(TIME_REGEX)) {
+            String[] split = time.split(":");
+            return LocalTime.of(Parser.parseToInt(split[0]), Parser.parseToInt(split[1]));
         }
-
-        String[] split = time.split(":");
-        return LocalTime.of(Parser.parseToInt(split[0]), Parser.parseToInt(split[1]));
+        throw new IllegalArgumentException("[ERROR] 올바른 시간 형식(HH:mm)으로 입력해주세요.");
     }
 
     private LocalDate createLocalDate(final int year, final int month, final int day) {

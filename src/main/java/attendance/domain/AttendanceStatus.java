@@ -15,11 +15,11 @@ public enum AttendanceStatus {
     }),
     LATE("지각", (arrivalTime, startTime) -> {
         Duration duration = Duration.between(startTime, arrivalTime);
-        return !duration.isNegative() && duration.toMinutes() > 5 && duration.toMinutes() <= 30;
+        return duration.isPositive() && duration.toMinutes() > 5 && duration.toMinutes() <= 30;
     }),
     ABSENT("결석", (arrivalTime, startTime) -> {
         Duration duration = Duration.between(startTime, arrivalTime);
-        return !duration.isNegative() && duration.toMinutes() > 30;
+        return duration.isPositive() && duration.toMinutes() > 30;
     });
 
     private final String status;

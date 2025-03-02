@@ -21,9 +21,10 @@ public class AttendanceBook {
     }
 
     public void hasCrew(final String crewName) {
-        if (!crewNames.contains(crewName)) {
-            throw new IllegalArgumentException("[ERROR] 출석부에 존재하지 않는 닉네임입니다.");
+        if (crewNames.contains(crewName)) {
+            return;
         }
+        throw new IllegalArgumentException("[ERROR] 출석부에 존재하지 않는 닉네임입니다.");
     }
 
     public long getCountAttendanceStatus(final Map<LocalDate, Attendance> monthlyAttendances,

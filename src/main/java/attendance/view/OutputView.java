@@ -49,7 +49,7 @@ public class OutputView {
         LocalDate currentDate = LocalDate.of(year, month, 1);
         LocalDate lastDayOfMonth = currentDate.withDayOfMonth(currentDate.lengthOfMonth());
 
-        while (!currentDate.isAfter(lastDayOfMonth)) {
+        while (currentDate.isBefore(lastDayOfMonth)) {
             if (currentDate.getDayOfWeek().equals(DayOfWeek.SUNDAY) || currentDate.getDayOfWeek()
                     .equals(DayOfWeek.SATURDAY)) {
                 currentDate = currentDate.plusDays(1);
