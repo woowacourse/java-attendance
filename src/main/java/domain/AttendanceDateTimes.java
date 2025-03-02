@@ -31,4 +31,22 @@ public class AttendanceDateTimes {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다."));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AttendanceDateTimes that = (AttendanceDateTimes) o;
+        return attendanceDateTimes.equals(that.attendanceDateTimes);
+    }
+
+    @Override
+    public int hashCode() {
+        return attendanceDateTimes.hashCode();
+    }
 }

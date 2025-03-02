@@ -227,7 +227,7 @@ public class AttendanceHistoriesTest {
     void test() {
         // given
         // when
-        AttendanceDateTimes actualAttendanceDateTimes = defaultAttendanceHistory.getAttendanceHistory(DEFAULT_DATE);
+        AttendanceDateTimes actualAttendanceDateTimes = defaultAttendanceHistory.getAttendanceHistory(DEFAULT_CREW);
         // then
         AttendanceDateTimes expectedAttendanceDateTimes = new AttendanceDateTimes(List.of(DEFAULT_DATE_TIME));
         assertThat(actualAttendanceDateTimes).isEqualTo(expectedAttendanceDateTimes);
