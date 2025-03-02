@@ -6,7 +6,6 @@ import static util.DateTimeUtil.TIME_FORMAT;
 
 import domain.AbstractAttendanceRecord;
 import domain.AttendanceRecord;
-import domain.EmptyAttendanceRecord;
 import domain.RiskRank;
 import java.util.List;
 import service.dto.ModifyAttendanceRecordResponse;
@@ -71,9 +70,9 @@ public class OutputView {
     }
 
     private static String convertToTime(AbstractAttendanceRecord record) {
-        if (record instanceof EmptyAttendanceRecord) {
-            return "--:--";
+        if (record.isPresent()) {
+            return ((AttendanceRecord) record).getTime().format(TIME_FORMAT);
         }
-        return ((AttendanceRecord) record).getTime().format(TIME_FORMAT);
+        return "--:--";
     }
 }

@@ -23,6 +23,11 @@ public class AttendanceRecord extends AbstractAttendanceRecord {
         CampusTimePolicy.validateCampusTime(time);
     }
 
+    @Override
+    public boolean isPresent() {
+        return true;
+    }
+
     public LocalDateTime getDateTime() {
         return LocalDateTime.of(getDate(), time);
     }

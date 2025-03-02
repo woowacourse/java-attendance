@@ -11,4 +11,9 @@ public class EmptyAttendanceRecord extends AbstractAttendanceRecord {
     public static AbstractAttendanceRecord of(Crew crew, LocalDate date) {
         return new EmptyAttendanceRecord(crew, date);
     }
+
+    @Override
+    public boolean isPresent() {
+        return false;
+    }
 }
