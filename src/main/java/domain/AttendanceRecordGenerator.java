@@ -1,5 +1,6 @@
 package domain;
 
+import common.SystemDate;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -7,8 +8,6 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 public class AttendanceRecordGenerator {
-
-    private static final LocalDate START_DATE = LocalDate.of(2024, 12, 1);
 
     private AttendanceRecordGenerator() {
     }
@@ -21,8 +20,9 @@ public class AttendanceRecordGenerator {
     }
 
     private static List<LocalDate> createAttendanceDates() {
-        return IntStream.rangeClosed(START_DATE.getDayOfMonth(), START_DATE.lengthOfMonth())
-                .mapToObj(START_DATE::withDayOfMonth)
+        final LocalDate startDate = SystemDate.START_DATE.getDate();
+        return IntStream.rangeClosed(startDate.getDayOfMonth(), startDate.lengthOfMonth())
+                .mapToObj(startDate::withDayOfMonth)
                 .filter(date -> !ClassDayOff.isDayOff(date))
                 .toList();
     }
