@@ -17,6 +17,8 @@ class AttendanceRecordsTest {
         // given
         AttendanceRecords attendanceRecords = new AttendanceRecords();
         LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 10);
+
+        // when
         AttendanceRecord attendanceRecord = new AttendanceRecord(dateTime);
 
         // then
@@ -143,6 +145,8 @@ class AttendanceRecordsTest {
     void updateExceptionTest() {
         // given
         AttendanceRecords attendanceRecords = new AttendanceRecords();
+
+        // when
         LocalDate date = LocalDate.of(2024, 12, 3);
         LocalTime time = LocalTime.of(10, 0);
 
