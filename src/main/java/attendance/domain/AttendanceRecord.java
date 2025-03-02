@@ -19,11 +19,12 @@ public class AttendanceRecord {
         return PenaltyType.fetchPenaltyType(checkAbsenceCounts(), checkLateCounts());
     }
 
-    public AttendanceTime registerAttendance(LocalDateTime inputTime) {
+    public AttendanceRecord registerAttendance(LocalDateTime inputTime) {
         validateSameTime(inputTime);
         AttendanceTime attendanceTime = new AttendanceTime(inputTime);
-        attendanceRecord.add(attendanceTime);
-        return attendanceRecord.getLast();
+        List<AttendanceTime> newAttendanceRecord = new ArrayList<>(attendanceRecord);
+        newAttendanceRecord.add(attendanceTime);
+        return new AttendanceRecord(newAttendanceRecord);
     }
 
     private void validateSameTime(LocalDateTime inputTime) {
@@ -83,5 +84,4 @@ public class AttendanceRecord {
     public List<AttendanceTime> getAttendanceRecord() {
         return Collections.unmodifiableList(attendanceRecord);
     }
-
 }
