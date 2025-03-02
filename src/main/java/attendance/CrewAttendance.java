@@ -13,10 +13,14 @@ public class CrewAttendance {
     }
 
     public void add(final LocalDateTime attendance) {
+        validateDuplicateDate(attendance);
+        attendances.put(new AttendanceRecord(attendance), Campus.calculateAttendanceStatus(attendance));
+    }
+
+    private void validateDuplicateDate(final LocalDateTime attendance) {
         if (hasRecord(attendance)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석 기록이 존재합니다. 출석 수정 기능을 이용해주세요.");
         }
-        attendances.put(new AttendanceRecord(attendance), Campus.calculateAttendanceStatus(attendance));
     }
 
     public boolean hasRecord(final LocalDateTime attendance) {
