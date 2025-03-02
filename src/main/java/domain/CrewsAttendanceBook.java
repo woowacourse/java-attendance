@@ -24,6 +24,10 @@ public class CrewsAttendanceBook {
                 .orElseThrow(() -> new IllegalArgumentException("존재하는 크루의 닉네임을 입력해주세요."));
     }
 
+    public AttendanceBook getAttendanceBook(Crew crew) {
+        return attendances.get(crew);
+    }
+
     public void checkIn(Crew crew, LocalDate localDate, LocalTime localTime) {
         AttendanceBook attendanceBook = attendances.get(crew);
         attendanceBook.validateWeekDay(localDate);
@@ -33,8 +37,6 @@ public class CrewsAttendanceBook {
     }
 
     public void update(Crew crew, LocalDate localDate, LocalTime localTime) {
-        validateExistingCrew(crew);
-
         AttendanceBook attendanceBook = attendances.get(crew);
         attendanceBook.validateWeekDay(localDate);
         attendanceBook.validateAfterToday(localDate);
@@ -42,13 +44,6 @@ public class CrewsAttendanceBook {
         AttendanceBook newAttendanceBook = attendanceBook.update(localDate, localTime);
 
         attendances.put(crew, newAttendanceBook);
-    }
-
-
-    private void validateExistingCrew(Crew crew) {
-        if (!attendances.containsKey(crew)) {
-            throw new IllegalArgumentException("존재하는 크루의 닉네임을 입력해주세요.");
-        }
     }
 
     public Set<PenaltyBook> calculatePenaltyBooks() {

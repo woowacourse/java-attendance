@@ -20,25 +20,32 @@ public class AttendanceBook {
 
     public AttendanceBook update(LocalDate localDate, LocalTime localTime) {
         // 여기부터
-        Attendance beforeAttendance = getBeforeAttendance(localDate, attendanceBook);
+        Attendance beforeAttendance = getBeforeAttendance(localDate);
         // 여기까지 컨트롤러로
-        List<Attendance> newAttendances = getNewAttendances(localDate, attendanceBook);
+        List<Attendance> newAttendances = getNewAttendances(localDate);
 
         newAttendances.add(beforeAttendance.updateTime(localTime));
         return new AttendanceBook(newAttendances);
     }
 
-    private static Attendance getBeforeAttendance(LocalDate localDate, List<Attendance> crewAttendances) {
-        return crewAttendances.stream()
+    public Attendance getBeforeAttendance(LocalDate localDate) {
+        return attendanceBook.stream()
                 .filter(a -> a.getLocalDate().equals(localDate))
                 .findFirst()
                 .orElse(null);
     }
 
-    private static List<Attendance> getNewAttendances(LocalDate localDate, List<Attendance> crewAttendances) {
-        return crewAttendances.stream()
+    private List<Attendance> getNewAttendances(LocalDate localDate) {
+        return attendanceBook.stream()
                 .filter(a -> !a.getLocalDate().equals(localDate))
                 .collect(Collectors.toList());
+    }
+
+
+    public void validateDuplicateCheckIn(LocalDate localDate) {
+        if (attendanceBook.stream().anyMatch(attendance -> attendance.getLocalDate().equals(localDate))) {
+            throw new IllegalArgumentException("이미 출석한 크루입니다.");
+        }
     }
 
     public void validateWeekDay(LocalDate localDate) {
@@ -47,15 +54,9 @@ public class AttendanceBook {
         }
     }
 
-    private boolean isWeekDay(LocalDate localDate) {
+    public boolean isWeekDay(LocalDate localDate) {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || Holiday.isHoliday(localDate);
-    }
-
-    public void validateDuplicateCheckIn(LocalDate localDate) {
-        if (attendanceBook.stream().anyMatch(attendance -> attendance.getLocalDate().equals(localDate))) {
-            throw new IllegalArgumentException("이미 출석한 크루입니다.");
-        }
     }
 
     public void validateAfterToday(LocalDate localDate) {

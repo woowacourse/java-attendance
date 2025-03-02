@@ -47,4 +47,43 @@ public class InputView {
 
         return correctPattern.matcher(input).find();
     }
+
+    public static String inputUpdateNickname() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return Console.readLine();
+    }
+
+    public static String inputDate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        String date = Console.readLine();
+        validateDateFormat(date);
+        return date;
+    }
+
+    private static void validateDateFormat(String date) {
+        validateInteger(date);
+        validateDateSize(date);
+    }
+
+    private static void validateInteger(final String input) {
+        try {
+            Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("숫자만 입력해 주세요.");
+        }
+    }
+
+    private static void validateDateSize(final String input) {
+        int date = Integer.parseInt(input);
+        if (date > 31 || date < 1) {
+            throw new IllegalArgumentException("날짜는 1부터 31일까지만 입력할 수 있습니다.");
+        }
+    }
+
+    public static String inputAfterTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        String time = Console.readLine();
+        validateTimeFormat(time);
+        return time;
+    }
 }
