@@ -2,7 +2,9 @@ package attendance.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class DateTimeParser {
 
@@ -14,5 +16,13 @@ public class DateTimeParser {
 
     public static LocalDate parseDate(final String input, final DateTimeFormatter formatter) {
         return LocalDate.parse(input, formatter);
+    }
+
+    public static LocalTime parseTime(final String input, final DateTimeFormatter formatter) {
+        try {
+            return LocalTime.parse(input, formatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 잘못된 형식의 시간 입력입니다.");
+        }
     }
 }
