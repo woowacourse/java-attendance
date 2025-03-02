@@ -30,7 +30,7 @@ public class AttendanceController {
     private static final LocalTime startTime = LocalTime.of(8, 0);
     private static final LocalTime endTime = LocalTime.of(23, 0);
     private static final LocalTime INITIAL_TIME = LocalTime.of(10, 0);
-    
+
     private final Map<UserCommandType, Command> commands = new HashMap<>();
     private final InputView inputView;
     private final OutputView outputView;
@@ -73,17 +73,11 @@ public class AttendanceController {
 
         String name = inputView.insertName();
         Attendances attendances = crewGroup.getSpecificAttendances(name);
-
-        if (attendances.isExist(today)) {
-            throw new IllegalArgumentException("이미 출석했습니다. 수정 기능을 이용하세요");
-        }
+        attendances.validateAlreadyExist(today);
 
         String rawTime = inputView.insertTime();
         Time time = new Time(rawTime);
-
-        if (!time.isBetweenTime(startTime, endTime)) {
-            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
-        }
+        time.validateTime(startTime, endTime);
 
         Attendance attendance = new Attendance(LocalDateTime.of(today, time.convertTime()));
         attendances.addAttendance(attendance);
@@ -98,15 +92,11 @@ public class AttendanceController {
 
         int changeDay = inputView.insertChangeDayOfMonth();
         DayOfMonth dayOfMonth = new DayOfMonth(changeDay);
-
         Attendance originalAttendance = attendances.getSpecificAttendance(dayOfMonth, today);
 
         String rawTime = inputView.insertChangeTime();
         Time time = new Time(rawTime);
-
-        if (!time.isBetweenTime(startTime, endTime)) {
-            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
-        }
+        time.validateTime(startTime, endTime);
 
         Attendance changeAttendance = attendances.changeAttendance(dayOfMonth, today, time.convertTime());
         outputView.printChangeLog(originalAttendance, changeAttendance);

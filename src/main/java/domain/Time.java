@@ -33,4 +33,10 @@ public class Time {
     public boolean isBetweenTime(LocalTime startTime, LocalTime endTime) {
         return isBeforeAndSame(startTime) && isAfterAndSame(endTime);
     }
+
+    public void validateTime(LocalTime startTime, LocalTime endTime) {
+        if (!isBetweenTime(startTime, endTime)) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
+        }
+    }
 }
