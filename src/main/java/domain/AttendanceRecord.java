@@ -19,6 +19,9 @@ public class AttendanceRecord {
     }
 
     public static AttendanceRecord of(String date, String time) {
+        if (date.length() < 2) {
+            date = "0" + date;
+        }
         return new AttendanceRecord(LocalDate.parse(Current.getStringOfThisMonth() + "-" + date),
                 LocalTime.parse(time));
     }
