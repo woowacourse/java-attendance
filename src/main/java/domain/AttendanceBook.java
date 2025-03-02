@@ -1,49 +1,85 @@
 package domain;
 
-import dto.result.*;
-import util.exception.CrewNotExistException;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
     
-    private final Map<String, MemberAttendances> memberAttendances;
+    private final Map<String, CrewAttendance> crewAttendances;
     
-    public AttendanceBook(Map<String, MemberAttendances> memberAttendances) {
-        this.memberAttendances = memberAttendances;
+    public AttendanceBook(final List<String> crews, final LocalDate today) {
+        this.crewAttendances = crews.stream()
+                .collect(Collectors.toMap(crew -> crew, crew -> new CrewAttendance(today)));
     }
     
-    public AttendResult addAttendance(String name, LocalDateTime attendDateTime) {
-        validateName(name);
-        MemberAttendances memberAttendance = memberAttendances.get(name);
-        return memberAttendance.attend(attendDateTime);
+    public AttendanceBook(final Map<String, Set<LocalDateTime>> attendances, final LocalDate today) {
+        this.crewAttendances = attendances.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        (entry) -> new CrewAttendance(today, parseDateTimeToMap(entry.getValue()))
+                ));
     }
     
-    public MemberAttendanceModifyResult editAttendance(String name, LocalDate date, LocalTime time) {
-        validateName(name);
-        MemberAttendances memberAttendance = memberAttendances.get(name);
-        AttendanceModifyResult result = memberAttendance.modifyAttendance(date, time);
-        return new MemberAttendanceModifyResult(name, result.attendanceDate(), result.oldAttendanceTime(), result.oldAttendanceStatus(), result.newAttendanceTime(), result.newAttendanceStatus());
+    private Map<LocalDate, LocalTime> parseDateTimeToMap(final Set<LocalDateTime> dateTime) {
+        return dateTime.stream().collect(Collectors.toMap(
+                LocalDateTime::toLocalDate,
+                LocalDateTime::toLocalTime
+        ));
     }
     
-    private void validateName(String name) {
-        if (memberAttendances.get(name) == null) {
-            throw new CrewNotExistException(name);
+    public void addAttendance(final String nickname, final LocalDate date, final LocalTime time) {
+        validateNicknameExist(nickname);
+        
+        crewAttendances.get(nickname).attend(date, time);
+    }
+    
+    public Optional<LocalTime> getAttendanceTimeOf(final String nickname, final LocalDate date) {
+        validateNicknameExist(nickname);
+        
+        return crewAttendances.get(nickname).findAttendanceTimeOf(date);
+    }
+    
+    public AttendanceStatus getAttendanceStatusOf(final String nickname, final LocalDate date) {
+        validateNicknameExist(nickname);
+        
+        return crewAttendances.get(nickname).findAttendanceStatusOf(date);
+    }
+    
+    public Set<Attendance> getAllAttendances(final String nickname) {
+        validateNicknameExist(nickname);
+        
+        return crewAttendances.get(nickname).getAllAttendances();
+    }
+    
+    public Map<String, ExpelWarning> getExpelWarnings() {
+        return crewAttendances.entrySet().stream()
+                .filter(entry -> entry.getValue().isExpelWarningNotNormal())
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().calculateExpelWarning()));
+    }
+    
+    public ExpelWarning getExpelWarningOf(final String nickname) {
+        return crewAttendances.get(nickname).calculateExpelWarning();
+    }
+    
+    public int countAttendanceStatusOf(final String nickname, final AttendanceStatus status) {
+        validateNicknameExist(nickname);
+        
+        return crewAttendances.get(nickname).countAttendanceStatusOf(status);
+    }
+    
+    private void validateNicknameExist(final String nickname) {
+        if (!isNicknameExist(nickname)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }
     }
     
-    public MemberAttendResult getAttendanceResult(String name) {
-        MemberAttendances oneMemberAttendances = memberAttendances.get(name);
-        return oneMemberAttendances.getAttendanceResult();
-    }
-    
-    public List<ExpelMeasurementResult> createExpelWarnings() {
-        return memberAttendances.values().stream()
-                .map(MemberAttendances::measureExpelRisk)
-                .toList();
+    private boolean isNicknameExist(final String nickname) {
+        return crewAttendances.containsKey(nickname);
     }
 }

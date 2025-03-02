@@ -5,10 +5,14 @@ plugins {
 version '1.0-SNAPSHOT'
 
 repositories {
+    maven { url 'https://jitpack.io' }
     mavenCentral()
 }
 
 dependencies {
+    // 한국 음력 라이브러리
+    implementation('com.github.usingsky:KoreanLunarCalendar:0.3.1')
+
     testImplementation platform('org.junit:junit-bom:5.11.4')
     testImplementation platform('org.assertj:assertj-bom:3.27.3')
     testImplementation('org.junit.jupiter:junit-jupiter')

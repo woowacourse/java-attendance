@@ -1,61 +1,53 @@
 package domain;
 
-import dto.result.AttendResult;
-import util.exception.IllegalAttendTimeException;
-import util.exception.WeekendAttendException;
-
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
+
+import domain.attendance_time.AttendanceTime;
+import domain.attendance_time.NoShowAttendanceTime;
+import domain.attendance_time.ShowAttendanceTime;
 
 public class Attendance {
     
-    private static final List<DayOfWeek> WEEKEND = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
-    private static final LocalTime MIN_ATTENDANCE_TIME = LocalTime.of(8, 0);
-    private static final LocalTime MAX_ATTENDANCE_TIME = LocalTime.of(23, 0);
-    private static final LocalTime NOT_MONDAY_ATTENDANCE_TIME = LocalTime.of(10, 0);
-    private static final LocalTime MONDAY_ATTENDANCE_TIME = LocalTime.of(13, 0);
+    private final AttendanceDate attendDate;
+    private final AttendanceTime attendTime;
+    private final AttendanceStatus status;
     
-    private final LocalDateTime attendanceDateTime;
-    private final AttendanceStatus attendanceStatus;
-    
-    public Attendance(LocalDateTime attendanceDateTime) {
-        validateDate(attendanceDateTime.toLocalDate());
-        validateTime(attendanceDateTime.toLocalTime());
-        this.attendanceDateTime = attendanceDateTime;
-        this.attendanceStatus = determineAttendanceStatus(attendanceDateTime);
+    private Attendance(
+            final AttendanceDate attendDate,
+            final AttendanceTime attendTime,
+            final AttendanceStatus status
+    ) {
+        this.attendDate = attendDate;
+        this.attendTime = attendTime;
+        this.status = status;
     }
     
-    private void validateDate(LocalDate date) {
-        if (WEEKEND.contains(date.getDayOfWeek())) {
-            throw new WeekendAttendException();
-        }
+    public static Attendance show(final LocalDate attendDate, final LocalTime attendTime) {
+        return new Attendance(
+                new AttendanceDate(attendDate),
+                new ShowAttendanceTime(attendTime),
+                AttendanceStatus.of(attendDate.getDayOfWeek(), attendTime)
+        );
     }
     
-    private void validateTime(LocalTime time) {
-        if (time.isBefore(MIN_ATTENDANCE_TIME) || time.isAfter(MAX_ATTENDANCE_TIME)) {
-            throw new IllegalAttendTimeException(MIN_ATTENDANCE_TIME.toString(), MAX_ATTENDANCE_TIME.toString());
-        }
+    public static Attendance noShow(LocalDate noShowDate) {
+        return new Attendance(
+                new AttendanceDate(noShowDate),
+                new NoShowAttendanceTime(),
+                AttendanceStatus.결석
+        );
     }
     
-    private AttendanceStatus determineAttendanceStatus(LocalDateTime attendanceDateTime) {
-        if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return AttendanceStatus.of(MONDAY_ATTENDANCE_TIME, attendanceDateTime.toLocalTime());
-        }
-        return AttendanceStatus.of(NOT_MONDAY_ATTENDANCE_TIME, attendanceDateTime.toLocalTime());
+    public LocalDate getAttendDate() {
+        return attendDate.getAttendDate();
     }
     
-    public AttendResult createAttendanceResult() {
-        return new AttendResult(attendanceDateTime, attendanceStatus, true);
+    public AttendanceTime getAttendTime() {
+        return attendTime;
     }
     
-    public Attendance withNewAttendanceTime(LocalTime newAttendanceTime) {
-        return new Attendance(LocalDateTime.of(attendanceDateTime.toLocalDate(), newAttendanceTime));
-    }
-    
-    public boolean isSameDay(LocalDate date) {
-        return attendanceDateTime.toLocalDate().equals(date);
+    public AttendanceStatus getStatus() {
+        return status;
     }
 }
