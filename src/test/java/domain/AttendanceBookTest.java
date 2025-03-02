@@ -21,8 +21,8 @@ public class AttendanceBookTest {
 
         //then
         assertAll(
-                () -> assertThatCode(() -> attendanceBook.checkAttendance(name, localDateTime)).doesNotThrowAnyException(),
-                () -> assertThatIllegalArgumentException().isThrownBy(() -> attendanceBook.checkAttendance(name, localDateTime))
+                () -> assertThatCode(() -> attendanceBook.addAttendance(name, localDateTime)).doesNotThrowAnyException(),
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> attendanceBook.addAttendance(name, localDateTime))
         );
     }
 }

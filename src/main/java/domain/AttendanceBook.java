@@ -2,7 +2,6 @@ package domain;
 
 import java.time.LocalDateTime;
 import util.DateTimeConvertor;
-import util.DateTimeParser;
 
 public class AttendanceBook {
 
@@ -16,13 +15,19 @@ public class AttendanceBook {
         return new AttendanceBook(new CrewGroup(CrewsGenerator.generate()));
     }
 
-    public void checkAttendance(final String crewName, final LocalDateTime localDateTime) {
+    public AttendanceRecord addAttendance(final String crewName, final LocalDateTime localDateTime) {
         final Crew crew = crewGroup.findByName(crewName);
         validateExistAttendance(localDateTime, crew);
-        crew.putAttendance(localDateTime);
+        return crew.putAttendance(localDateTime);
     }
 
-    private static void validateExistAttendance(final LocalDateTime localDateTime, final Crew crew) {
+    public void validateExistCrew(final String crewName) {
+        if (!crewGroup.containsCrew(crewName)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+    }
+
+    public void validateExistAttendance(final LocalDateTime localDateTime, final Crew crew) {
         if (crew.existAttendance(localDateTime)) {
             throw new IllegalArgumentException(
                     String.format("[ERROR] %s 출석 기록이 존재합니다. 수정 기능을 이용해주세요", DateTimeConvertor.convertToLocalDateKoreanFormat(
