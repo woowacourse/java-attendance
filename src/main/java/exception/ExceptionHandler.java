@@ -9,7 +9,6 @@ public class ExceptionHandler {
         while (true) {
             try {
                 return supplier.get();
-            } catch (IllegalStateException ignored) {
             } catch (IllegalArgumentException e) {
                 OutputView.printErrorMessage(e.getMessage());
             }
