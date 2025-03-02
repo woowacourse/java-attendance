@@ -3,8 +3,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -55,43 +53,11 @@ public class AttendanceRecordTest {
                 .hasMessage("[ERROR] 해당 날짜의 출석 시간이 없습니다.");
     }
 
-
-    class AttendanceRecord {
-
-        private List<LocalDateTime> attendanceTimes;
-
-        public AttendanceRecord() {
-            this.attendanceTimes = new ArrayList<>();
-        }
-
-        public LocalDateTime attend(String time) {
-            LocalDateTime attendanceTime = LocalDateTime.of(
-                    Today.TODAY,
-                    LocalTime.of(
-                            Integer.parseInt(time.split(":")[0]),
-                            Integer.parseInt(time.split(":")[1])
-                    ));
-            attendanceTimes.add(attendanceTime);
-            return attendanceTime;
-        }
-
-        public LocalDateTime findAttendanceTimeByDay(int dayOfMonth) {
-            return attendanceTimes.stream()
-                    .filter(time -> time.getDayOfMonth() == dayOfMonth)
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜의 출석 시간이 없습니다."));
-        }
-
-        public AttendanceStatus getAttendanceStatus(int dayOfMonth) {
-            LocalDateTime attendanceTime = findAttendanceTimeByDay(dayOfMonth);
-            if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10, 6))) {
-                return AttendanceStatus.ATTEND;
-            }
-            if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10, 31))) {
-                return AttendanceStatus.LATE;
-            }
-            return AttendanceStatus.ABSENCE;
-        }
+    @Test
+    void 출석_날짜가_주말이면_예외를_발생한다() {
+        assertThatThrownBy(() -> new AttendanceRecord().attend("09:59"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 주말에는 출석할 수 없습니다.");
     }
 
 }
