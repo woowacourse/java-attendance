@@ -21,7 +21,7 @@ public class AttendanceManagementController {
         String userInput = "";
 
         while (!userInput.equals(MenuOption.QUIT.getOption())){
-            userInput = InputView.getUserWantMenuUntilValidate();
+            userInput = InputView.getUserWantMenuUntilValidate(today);
             if (userInput.equals(MenuOption.ATTENDANCE_CHECK.getOption())) {
                 AttendanceCheckController.attendanceCheck(students, today);
             }
@@ -29,8 +29,10 @@ public class AttendanceManagementController {
                 AttendanceModifyController.attendanceModify(students);
             }
             if (userInput.equals(MenuOption.STUDENT_RECORD_CHECK.getOption())) {
+                StudentRecordCheckController.studentRecordCheck(students);
             }
             if (userInput.equals(MenuOption.DISMISSAL_SUBJECT_CHECK.getOption())) {
+                DismissalSubjectCheckController.dismissalSubjectCheck(students);
             }
         }
     }
