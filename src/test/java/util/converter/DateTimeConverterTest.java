@@ -14,7 +14,7 @@ public class DateTimeConverterTest {
     @DisplayName("문자열 날짜 및 시간 변환 기능 테스트")
     void 문자열_날짜_및_시간_변환_기능_테스트() {
         // given
-        String dateTimeStr = "2024-12-20 10:05:00";
+        String dateTimeStr = "2024-12-20 10:05";
         LocalDateTime dateTime = LocalDateTime.of(2024, 12, 20, 10, 5);
         // when
         LocalDateTime convertedDateTime = DateTimeConverter.convertStringToDateTime(dateTimeStr);
