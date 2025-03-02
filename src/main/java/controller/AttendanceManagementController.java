@@ -26,6 +26,7 @@ public class AttendanceManagementController {
                 AttendanceCheckController.attendanceCheck(students, today);
             }
             if (userInput.equals(MenuOption.ATTENDANCE_MODIFY.getOption())) {
+                AttendanceModifyController.attendanceModify(students);
             }
             if (userInput.equals(MenuOption.STUDENT_RECORD_CHECK.getOption())) {
             }
