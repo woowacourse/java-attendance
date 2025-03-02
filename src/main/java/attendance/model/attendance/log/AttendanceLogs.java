@@ -12,9 +12,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class AttendanceLogs {
-
-    private final List<AttendanceLog> values;
+public record AttendanceLogs(
+        List<AttendanceLog> values
+) {
 
     public AttendanceLogs(final List<AttendanceLog> values) {
         this.values = new ArrayList<>(values);
