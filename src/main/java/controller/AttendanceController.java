@@ -77,6 +77,7 @@ public class AttendanceController {
     private void checkAttendance() {
         DayType.validateIsWorkingDay(nowDate);
         String name = retrySupplierUntilValid(this::readName);
+        retryRunnableUntilValid(() -> AttendanceStatus.validateIsOperationHour(nowTime));
         outputView.printCheckAttendanceResult(checkAttendance(name, nowDate, nowTime));
     }
 
@@ -104,10 +105,16 @@ public class AttendanceController {
     }
 
     private void modifyAttendance() {
-        String name = retrySupplierUntilValid(this::readNameToModify);
-        LocalDate date = retrySupplierUntilValid(() -> readDateToModify(name));
-        LocalTime time = inputView.readTimeToModify();
+        String name = retrySupplierUntilValid(this::askNameToModify);
+        LocalDate date = retrySupplierUntilValid(() -> askDateToModify(name));
+        LocalTime time = retrySupplierUntilValid(this::askTimeToModify);
         outputView.printModifyAttendanceResult(modifyAttendance(name, date, time));
+    }
+
+    private LocalTime askTimeToModify() {
+        LocalTime time = inputView.readTimeToModify();
+        AttendanceStatus.validateIsOperationHour(time);
+        return time;
     }
 
     private void getAttendanceRecords() {
@@ -121,13 +128,13 @@ public class AttendanceController {
         outputView.printCrewWithPenaltyResponses(getCrewWithPenaltyResponses());
     }
 
-    private LocalDate readDateToModify(String name) {
+    private LocalDate askDateToModify(String name) {
         LocalDate date = inputView.readDateToModify();
         attendanceBook.validateAttendanceRecordExistsByDate(name, date);
         return date;
     }
 
-    private String readNameToModify() {
+    private String askNameToModify() {
         String name = inputView.readNameToModify();
         attendanceBook.validateNameExists(name);
         return name;

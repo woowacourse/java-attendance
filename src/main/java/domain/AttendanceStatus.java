@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import util.OutputParser;
 
 public enum AttendanceStatus {
     ATTEND("출석"),
@@ -57,7 +58,14 @@ public enum AttendanceStatus {
         return !target.isBefore(start) && !target.isAfter(end);
     }
 
-    public static boolean isOperationHour(LocalTime time) {
+    public static void validateIsOperationHour(LocalTime time) {
+        if (!isOperationHour(time)) {
+            throw new IllegalArgumentException(
+                    ErrorCode.TIME_NOT_OPERATION_HOUR.getFormattedMessage(OutputParser.parseTimeToString(time)));
+        }
+    }
+
+    private static boolean isOperationHour(LocalTime time) {
         return isBetween(time, CAMPUS_OPERATION_HOUR_START, CAMPUS_OPERATION_HOUR_END);
     }
 
