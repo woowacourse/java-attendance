@@ -27,8 +27,8 @@ public class Time {
     }
 
     private void validateHoliday(final LocalDateTime attendanceTime) {
-        if (attendanceTime.getDayOfWeek().equals(DayOfWeek.SATURDAY) || attendanceTime.getDayOfWeek()
-                .equals(DayOfWeek.SUNDAY)) {
+        if (attendanceTime.getDayOfWeek() == DayOfWeek.SATURDAY
+                || attendanceTime.getDayOfWeek() == DayOfWeek.SUNDAY) {
             throw new IllegalArgumentException("[ERROR] 주말 및 공휴일은 출석할 수 없습니다.");
         }
     }
