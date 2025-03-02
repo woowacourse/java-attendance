@@ -12,7 +12,7 @@ public class InputView {
     public String readOptionNumber(LocalDate nowDate) {
         String dayOfWeek = nowDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
 
-        System.out.printf("오늘은 %d월 %02d일 %s입니다. 기능을 선택해 주세요.%n", nowDate.getMonthValue(), nowDate.getDayOfMonth(),
+        System.out.printf("%n오늘은 %d월 %02d일 %s입니다. 기능을 선택해 주세요.%n", nowDate.getMonthValue(), nowDate.getDayOfMonth(),
                 dayOfWeek);
         System.out.printf("1. 출석 확인%n"
                 + "2. 출석 수정%n"
@@ -23,7 +23,7 @@ public class InputView {
     }
 
     public String readName() {
-        System.out.println("닉네임을 입력해 주세요.");
+        System.out.printf("%n닉네임을 입력해 주세요.%n");
         return readLine();
     }
 
@@ -33,7 +33,7 @@ public class InputView {
     }
 
     public String readEditName() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        System.out.printf("%n출석을 수정하려는 크루의 닉네임을 입력해 주세요.%n");
         return readLine();
     }
 

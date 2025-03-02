@@ -40,6 +40,10 @@ public enum AttendanceStatus {
         return null;
     }
 
+    public String getDescription() {
+        return status;
+    }
+
     private static AttendanceStatus decideByTime(LocalTime time, LocalTime attendanceCutoff, LocalTime latenessCutoff) {
         if (time.isAfter(attendanceCutoff) && time.isBefore(latenessCutoff.plusMinutes(1))) {
             return LATENESS;
@@ -48,9 +52,5 @@ public enum AttendanceStatus {
             return ABSENCE;
         }
         return ATTENDANCE;
-    }
-
-    public String getDescription() {
-        return status;
     }
 }

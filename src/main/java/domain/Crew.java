@@ -35,11 +35,6 @@ public class Crew {
                 .orElse(null);
     }
 
-    public boolean hasAlreadyAttended(LocalDate date) {
-        return attendances.stream()
-                .anyMatch(attendance -> attendance.hasSameDate(date));
-    }
-
     public int calculateAttendanceCount(LocalDate nowDate) {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.determineStatus() == AttendanceStatus.ATTENDANCE)
@@ -71,12 +66,13 @@ public class Crew {
         return Penalty.from(latenessCount, absenceCount);
     }
 
-    public String getName() {
-        return name;
+    public boolean hasAlreadyAttended(LocalDate date) {
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.hasSameDate(date));
     }
 
-    private boolean isAbsentDay(LocalDate date) {
-        return !isHoliday(date) && !attendanceExists(date);
+    public String getName() {
+        return name;
     }
 
     private int countManualAbsences(LocalDate nowDate) {
@@ -84,6 +80,10 @@ public class Crew {
                 .filter(attendance -> attendance.determineStatus() == AttendanceStatus.ABSENCE)
                 .filter(attendance -> attendance.isBeforeDate(nowDate))
                 .count();
+    }
+
+    private boolean isAbsentDay(LocalDate date) {
+        return !isHoliday(date) && !attendanceExists(date);
     }
 
     private boolean attendanceExists(LocalDate date) {

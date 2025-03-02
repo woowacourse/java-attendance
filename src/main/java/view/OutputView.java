@@ -10,29 +10,26 @@ import java.util.Locale;
 public class OutputView {
 
     public void displayAttendanceCheck(LocalDate nowDate, LocalTime attendTime, String status) {
-        String dayOfWeek = nowDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-
-        System.out.printf("%d월 %02d일 %s ", nowDate.getMonthValue(), nowDate.getDayOfMonth(), dayOfWeek);
-        System.out.printf("%02d:%02d (%s)%n", attendTime.getHour(), attendTime.getMinute(), status);
+        System.out.println();
+        printMonthAndDayOfMonth(nowDate);
+        printTimeAndMinute(attendTime, status);
+        System.out.println();
     }
 
     public void displayAttendanceEdit(LocalDate date, Attendance originAttendance, Attendance updatedAttendance) {
-        String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-
-        System.out.printf("%d월 %02d일 %s ", date.getMonthValue(), date.getDayOfMonth(), dayOfWeek);
+        System.out.println();
+        printMonthAndDayOfMonth(date);
         printAttendanceInfo(originAttendance);
-        System.out.printf("%02d:%02d (%s) 수정 완료!%n", updatedAttendance.getTime().getHour(),
-                updatedAttendance.getTime().getMinute(), updatedAttendance.determineStatus().getDescription());
+        printTimeAndMinute(updatedAttendance.getTime(), updatedAttendance.determineStatus().getDescription());
+        System.out.printf(" 수정 완료!%n");
     }
 
     public void displayRecordMessage(String name) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", name);
+        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n", name);
     }
 
     public void displayRecord(LocalDate nowDate, Attendance attendance) {
-        String dayOfWeek = nowDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-
-        System.out.printf("%d월 %02d일 %s ", nowDate.getMonthValue(), nowDate.getDayOfMonth(), dayOfWeek);
+        printMonthAndDayOfMonth(nowDate);
         printRecordInfo(attendance);
     }
 
@@ -47,11 +44,11 @@ public class OutputView {
     }
 
     public void displayExpulsionRiskCrewMessage() {
-        System.out.println("제적 위험자 조회 결과");
+        System.out.printf("%n제적 위험자 조회 결과%n");
     }
 
     public void displayExpulsionRiskCrew(String name, int absenceCount, int latenessCount, String penaltyStatus) {
-        System.out.printf("%s: 결석 %d회, 지각 %d회 (%s)%n", name, absenceCount, latenessCount, penaltyStatus);
+        System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", name, absenceCount, latenessCount, penaltyStatus);
     }
 
     private void printRecordInfo(Attendance attendance) {
@@ -59,8 +56,8 @@ public class OutputView {
             System.out.printf("--:-- (%s)%n", AttendanceStatus.ABSENCE.getDescription());
             return;
         }
-        System.out.printf("%02d:%02d (%s)%n", attendance.getTime().getHour(),
-                attendance.getTime().getMinute(), attendance.determineStatus().getDescription());
+        printTimeAndMinute(attendance.getTime(), attendance.determineStatus().getDescription());
+        System.out.println();
     }
 
     private void printAttendanceInfo(Attendance originAttendance) {
@@ -68,7 +65,16 @@ public class OutputView {
             System.out.printf("--:-- (%s) -> ", AttendanceStatus.ABSENCE.getDescription());
             return;
         }
-        System.out.printf("%02d:%02d (%s) -> ", originAttendance.getTime().getHour(),
-                originAttendance.getTime().getMinute(), originAttendance.determineStatus().getDescription());
+        printTimeAndMinute(originAttendance.getTime(), originAttendance.determineStatus().getDescription());
+        System.out.print(" -> ");
+    }
+
+    private void printMonthAndDayOfMonth(LocalDate date) {
+        String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        System.out.printf("%d월 %02d일 %s ", date.getMonthValue(), date.getDayOfMonth(), dayOfWeek);
+    }
+
+    private void printTimeAndMinute(LocalTime time, String status) {
+        System.out.printf("%02d:%02d (%s)", time.getHour(), time.getMinute(), status);
     }
 }

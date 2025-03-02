@@ -62,12 +62,26 @@ public class AttendanceBook {
     public List<Crew> checkExpulsionRiskCrew(LocalDate nowDate) {
         List<Crew> resultCrew = new ArrayList<>();
         for (String name : crews.keySet()) {
-            Penalty penalty = determinePenaltyStatus(name, nowDate);
-            if (penalty != Penalty.PASS) {
-                resultCrew.add(crews.get(name));
-            }
+            addCrewIfAtRisk(nowDate, name, resultCrew);
         }
         return sortCrews(resultCrew, nowDate);
+    }
+
+    public Crew findCrewByName(String name) {
+        if (!crews.containsKey(name)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+        return crews.get(name);
+    }
+
+    public Attendance findAttendance(String name, LocalDate date) {
+        return findCrewByName(name).findAttendanceByDate(date);
+    }
+
+    private void addCrewIfAtRisk(LocalDate nowDate, String name, List<Crew> resultCrew) {
+        if (determinePenaltyStatus(name, nowDate) != Penalty.PASS) {
+            resultCrew.add(crews.get(name));
+        }
     }
 
     private List<Crew> sortCrews(List<Crew> crews, LocalDate nowDate) {
@@ -86,20 +100,5 @@ public class AttendanceBook {
 
     private int calculateRemainingLateness(Crew crew, LocalDate nowDate) {
         return crew.calculateLatenessCount(nowDate) % 3;
-    }
-
-    public Attendance findAttendance(String name, LocalDate date) {
-        return findCrewByName(name).findAttendanceByDate(date);
-    }
-
-    public boolean containsCrew(String name) {
-        return crews.containsKey(name);
-    }
-
-    public Crew findCrewByName(String name) {
-        if (!crews.containsKey(name)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
-        return crews.get(name);
     }
 }

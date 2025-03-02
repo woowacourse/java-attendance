@@ -10,7 +10,6 @@ import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import view.InputView;
@@ -21,8 +20,6 @@ public class Controller {
     private static final int ATTENDANCE_YEAR = 2024;
     private static final int ATTENDANCE_MONTH = 12;
     private static final int ATTENDANCE_DAY_OF_MONTH = 16;
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd");
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -75,9 +72,10 @@ public class Controller {
     private void attend(LocalDate nowDate) {
         try {
             String name = inputView.readName();
-            String attendTime = inputView.readAttendTime();
-            LocalTime time = LocalTime.parse(attendTime, TIME_FORMATTER);
-            Attendance attendance = attendanceBook.attendCrew(name, nowDate, time);
+            LocalTime attendTime = LocalTime.parse(inputView.readAttendTime());
+
+            Attendance attendance = attendanceBook.attendCrew(name, nowDate, attendTime);
+
             outputView.displayAttendanceCheck(nowDate, attendance.getTime(),
                     attendance.determineStatus().getDescription());
         } catch (DateTimeParseException e) {
@@ -88,11 +86,13 @@ public class Controller {
     private void edit(LocalDate nowDate) {
         try {
             String name = inputView.readEditName();
-            LocalDate date = parseDate(inputView.readEditDayOfMonth());
-            LocalTime time = LocalTime.parse(inputView.readEditTime(), TIME_FORMATTER);
-            Attendance originAttendance = attendanceBook.findAttendance(name, date);
-            Attendance updatedAttendance = attendanceBook.editCrew(name, nowDate, date, time);
-            outputView.displayAttendanceEdit(date, originAttendance, updatedAttendance);
+            LocalDate editDate = parseDate(inputView.readEditDayOfMonth());
+            LocalTime editTime = LocalTime.parse(inputView.readEditTime());
+
+            Attendance originAttendance = attendanceBook.findAttendance(name, editDate);
+            Attendance updatedAttendance = attendanceBook.editCrew(name, nowDate, editDate, editTime);
+
+            outputView.displayAttendanceEdit(editDate, originAttendance, updatedAttendance);
         } catch (DateTimeParseException e) {
             System.out.println("[ERROR] 시간 형식이 일치하지 않습니다.");
         } catch (DateTimeException e) {
@@ -102,32 +102,27 @@ public class Controller {
         }
     }
 
-    private LocalDate parseDate(String editDayOfMonth) {
-        try {
-            return LocalDate.of(ATTENDANCE_YEAR, ATTENDANCE_MONTH, Integer.parseInt(editDayOfMonth));
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 날짜 형식이 일치하지 않습니다.");
-        }
-    }
-
     private void checkRecords(LocalDate nowDate) {
-        LocalDate startDate = LocalDate.of(ATTENDANCE_YEAR, ATTENDANCE_MONTH, 1);
-
         String name = inputView.readName();
+
         outputView.displayRecordMessage(name);
-
-        for (LocalDate date = startDate; date.isBefore(nowDate); date = date.plusDays(1)) {
-            Attendance attendance = attendanceBook.findAttendance(name, date);
-            if (!isHoliday(date)) {
-                outputView.displayRecord(date, attendance);
-            }
-        }
-
+        displayRecords(nowDate, name);
         outputView.displayPenaltyCount(attendanceBook.calculateAttendanceCount(name, nowDate),
                 attendanceBook.calculateLatenessCount(name, nowDate),
                 attendanceBook.calculateAbsenceCount(name, nowDate)
         );
+        displayPenaltyStatus(nowDate, name);
+    }
 
+    private void displayRecords(LocalDate nowDate, String name) {
+        LocalDate startDate = LocalDate.of(ATTENDANCE_YEAR, ATTENDANCE_MONTH, 1);
+
+        startDate.datesUntil(nowDate)
+                .filter(date -> !isHoliday(date))
+                .forEach(date -> outputView.displayRecord(date, attendanceBook.findAttendance(name, date)));
+    }
+
+    private void displayPenaltyStatus(LocalDate nowDate, String name) {
         Penalty penalty = attendanceBook.determinePenaltyStatus(name, nowDate);
         if (penalty != Penalty.PASS) {
             outputView.displayPenaltyStatus(penalty.getDescription());
@@ -136,11 +131,20 @@ public class Controller {
 
     private void checkExpulsionRiskCrew(LocalDate nowDate) {
         List<Crew> riskCrewResult = attendanceBook.checkExpulsionRiskCrew(nowDate);
+
         outputView.displayExpulsionRiskCrewMessage();
 
         for (Crew crew : riskCrewResult) {
             outputView.displayExpulsionRiskCrew(crew.getName(), crew.calculateAbsenceCount(nowDate),
                     crew.calculateLatenessCount(nowDate), crew.determinePenaltyStatus(nowDate).getDescription());
+        }
+    }
+
+    private LocalDate parseDate(String editDayOfMonth) {
+        try {
+            return LocalDate.of(ATTENDANCE_YEAR, ATTENDANCE_MONTH, Integer.parseInt(editDayOfMonth));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("[ERROR] 날짜 형식이 일치하지 않습니다.");
         }
     }
 

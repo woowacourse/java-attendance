@@ -22,20 +22,20 @@ public class Attendance {
         this.time = time;
     }
 
-    public boolean hasSameDate(LocalDate date) {
-        return this.date.equals(date);
-    }
-
     public AttendanceStatus determineStatus() {
         return AttendanceStatus.from(date, time);
     }
 
-    public LocalTime getTime() {
-        return time;
-    }
-
     public boolean isBeforeDate(LocalDate date) {
         return this.date.isBefore(date);
+    }
+
+    public boolean hasSameDate(LocalDate date) {
+        return this.date.equals(date);
+    }
+
+    public LocalTime getTime() {
+        return time;
     }
 
     private void validateTime(LocalTime time) {
