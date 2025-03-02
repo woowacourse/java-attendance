@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class AttandanceHistoryLoaderTest {
+class AttendanceHistoryLoaderTest {
     private File createTempFile(String csvData) throws IOException {
         Path tempFile = Files.createTempFile("tempAttendances", ".csv");
         Files.write(tempFile, csvData.getBytes());

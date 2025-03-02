@@ -7,10 +7,14 @@ import domain.Crew;
 import domain.Penalty;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import org.junit.jupiter.api.Test;
 
 class AttendanceHistoryReadTest {
     AttendanceBook attendanceBook;
+    Clock testClock = Clock.fixed(Instant.parse("2025-02-28T10:00:00Z"), ZoneId.of("Asia/Seoul"));
 
     void setUpAttendances() throws IOException {
         AttendanceHistoryLoader attendanceHistoryLoader = new AttendanceHistoryLoader();
@@ -24,8 +28,8 @@ class AttendanceHistoryReadTest {
 
         final var crew = new Crew("짱수");
         Attendances attendances = attendanceBook.getAttendances(crew);
-        final var lateCount = attendances.getLateCount();
-        final var absentCount = attendances.getAbsentCount();
+        final var lateCount = attendances.getLateCount(testClock);
+        final var absentCount = attendances.getAbsentCount(testClock);
         final var attendanceCount = attendances.getTotalCount() - lateCount - absentCount;
 
         assertEquals(1, lateCount);
@@ -38,10 +42,10 @@ class AttendanceHistoryReadTest {
         final var crew = new Crew("짱수");
         setUpAttendances();
 
-        attendanceBook.recordAllAbsences();
+        attendanceBook.recordAllAbsences(testClock);
         Attendances attendances = attendanceBook.getAttendances(crew);
 
-        final var absentCount = attendances.getAbsentCount();
+        final var absentCount = attendances.getAbsentCount(testClock);
         assertEquals(6, absentCount);
     }
 
@@ -50,10 +54,10 @@ class AttendanceHistoryReadTest {
         final var crew = new Crew("짱수");
         setUpAttendances();
 
-        attendanceBook.recordAllAbsences();
+        attendanceBook.recordAllAbsences(testClock);
         Attendances attendances = attendanceBook.getAttendances(crew);
 
-        final var penaltyStatus = attendances.getPenaltyStatus();
+        final var penaltyStatus = attendances.getPenaltyStatus(testClock);
         final var expected = Penalty.EXPULSION;
         assertEquals(expected, penaltyStatus);
 
