@@ -30,7 +30,7 @@ public class AttendanceHistory {
         validateAttendanceDay(attendanceDateTime);
         validateAttendanceTime(attendanceDateTime);
         validateAlreadyAttendance(attendanceDateTime);
-        final AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceDateTime);
+        final AttendanceRecord attendanceRecord = AttendanceRecord.of(attendanceDateTime);
         attendanceHistory.put(attendanceDateTime.toLocalDate(), attendanceRecord);
         return attendanceRecord;
     }
@@ -55,7 +55,7 @@ public class AttendanceHistory {
         validateAttendanceDay(afterTime);
         validateAttendanceTime(afterTime);
         final AttendanceRecord prevRecord = attendanceHistory.get(afterTime.toLocalDate());
-        final AttendanceRecord newRecord = new AttendanceRecord(afterTime);
+        final AttendanceRecord newRecord = AttendanceRecord.of(afterTime);
         attendanceHistory.put(afterTime.toLocalDate(), newRecord);
         return prevRecord;
     }
