@@ -4,6 +4,7 @@ import domain.Attendance;
 import domain.AttendanceTime;
 import domain.Crew;
 import domain.Crews;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -52,6 +53,29 @@ public class StringConverter {
         validateLocalDateTimeFormat(rawDateTime);
         return LocalDateTime.parse(rawDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
+
+    public LocalDateTime convertToLocalDateTime(String rawDay, String rawTime, LocalDate today) {
+        try {
+            validateDateFormat(rawDay);
+            LocalDate date = LocalDate.of(today.getYear(), today.getMonthValue(), Integer.parseInt(rawDay));
+
+            validateTimeFormat(rawTime);
+            LocalTime time = LocalTime.parse(rawTime + ":00");
+
+            return LocalDateTime.of(date, time);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("잘못된 형식입니다.", e);
+        }
+    }
+
+    private void validateDateFormat(String rawDay) {
+        try {
+            Integer.parseInt(rawDay);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("날짜 형식이 아닙니다.");
+        }
+    }
+
 
     private void validateLocalDateTimeFormat(String dateTime) {
         validateNullOrBlank(dateTime);

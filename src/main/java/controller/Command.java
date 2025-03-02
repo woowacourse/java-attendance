@@ -27,4 +27,8 @@ public enum Command {
     public boolean isOne() {
         return this == ONE;
     }
+
+    public boolean isTwo() {
+        return this == TWO;
+    }
 }

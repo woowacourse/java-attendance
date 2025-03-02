@@ -7,6 +7,7 @@ import domain.Crew;
 import domain.Crews;
 import file.DataReader;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import view.InputView;
@@ -59,6 +60,9 @@ public class AttendanceController {
         if (command.isOne()) {
             checkIn(crews, attendances);
         }
+        if (command.isTwo()) {
+            modify(crews, attendances);
+        }
     }
 
     private void checkIn(Crews crews, Attendances attendances) {
@@ -72,5 +76,20 @@ public class AttendanceController {
         attendances.add(attendance);
 
         outputView.printCheckInResult(attendance);
+    }
+
+    private void modify(Crews crews, Attendances attendances) {
+        LocalDate today = LocalDate.now();
+        String rawNickname = inputView.readNickname();
+        Crew crew = crews.findByNickname(rawNickname);
+
+        String rawDate = inputView.readDate();
+        String rawNewTime = inputView.readTime();
+        LocalDateTime newTime = converter.convertToLocalDateTime(rawDate, rawNewTime, today);
+        Attendance oldAttendance = attendances.findByCrewAndDate(crew, newTime.toLocalDate());
+        attendances.modifyAttendanceTime(crew, newTime);
+        Attendance newAttendance = attendances.findByCrewAndDate(crew, newTime.toLocalDate());
+
+        outputView.printModifiedResult(oldAttendance, newAttendance);
     }
 }
