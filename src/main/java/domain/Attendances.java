@@ -1,9 +1,9 @@
 package domain;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Attendances {
     private List<AttendanceRecord> attendances;
@@ -18,6 +18,17 @@ public class Attendances {
 
     public boolean isAttended() {
         return !attendances.isEmpty();
+    }
+
+    public void edit(AttendanceRecord attendanceRecord) {
+        removeAttendanceRecordOfSameDate(attendanceRecord);
+        attendances.add(attendanceRecord);
+    }
+
+    private void removeAttendanceRecordOfSameDate(AttendanceRecord targetAttendanceRecord) {
+        attendances = attendances.stream()
+                .filter(attendanceRecord -> !attendanceRecord.isSameDate(targetAttendanceRecord))
+                .collect(Collectors.toList());
     }
 
     @Override

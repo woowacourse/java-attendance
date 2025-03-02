@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -43,6 +44,30 @@ public class AttendanceManagerTest {
 
             // then
             assertThat(result).isEqualTo(true);
+        }
+    }
+
+    @Nested
+    @DisplayName("출석 수정 테스트")
+    class EdieTest {
+        @Test
+        @DisplayName("닉네임, 수정할 날짜, 등교 시간을 가지고 출석을 수정한다")
+        void should_edit_by_nickname_and_attendanceRecord_to_edit() {
+            // given
+            NickName nickName = new NickName("후우");
+            AttendanceManager attendanceManager = new AttendanceManager();
+            AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
+                    LocalTime.parse("10:00"));
+            attendanceManager.attend(nickName, attendanceRecord);
+            AttendanceRecord editAttendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
+                    LocalTime.parse("11:00"));
+            int prevHash = attendanceManager.hashCode();
+
+            // when
+            attendanceManager.edit(nickName, editAttendanceRecord);
+
+            // then
+            assertThat(attendanceManager.hashCode()).isNotEqualTo(prevHash);
         }
     }
 }

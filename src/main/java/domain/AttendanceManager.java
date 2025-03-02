@@ -1,6 +1,5 @@
 package domain;
 
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -21,6 +20,12 @@ public class AttendanceManager {
     public boolean isAttended(NickName nickName) {
         Attendances attendances = attendanceManager.getOrDefault(nickName, new Attendances());
         return attendances.isAttended();
+    }
+
+    public void edit(NickName nickName, AttendanceRecord editAttendanceRecord) {
+        Attendances attendances = attendanceManager.getOrDefault(nickName, new Attendances());
+        attendances.edit(editAttendanceRecord);
+        attendanceManager.put(nickName, attendances);
     }
 
     @Override

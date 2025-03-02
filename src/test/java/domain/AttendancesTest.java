@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -40,6 +41,29 @@ class AttendancesTest {
 
             // then
             assertThat(result).isEqualTo(true);
+        }
+    }
+
+    @Nested
+    @DisplayName("출석 수정 테스트")
+    class EditTest {
+        @Test
+        @DisplayName("수정할 출석 기록을 가지고 출석을 수정한다")
+        void should_edit_by_attendanceRecord_to_edit() {
+            // given
+            Attendances attendances = new Attendances();
+            AttendanceRecord attendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
+                    LocalTime.parse("10:00"));
+            attendances.attend(attendanceRecord);
+            AttendanceRecord editAttendanceRecord = new AttendanceRecord(LocalDate.parse("2024-12-11"),
+                    LocalTime.parse("11:00"));
+            int prevHash = attendances.hashCode();
+
+            // when
+            attendances.edit(editAttendanceRecord);
+
+            // then
+            assertThat(attendances.hashCode()).isNotEqualTo(prevHash);
         }
     }
 }
