@@ -1,6 +1,6 @@
 package domain;
 
-import static controller.AttendanceController.REFERENCE_DATE_TIME;
+import static controller.AttendanceCommandController.SYSTEM_DATE_TIME;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -31,7 +31,7 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
     }
 
     public static AttendanceDateTime from(final AttendanceTime attendanceTime) {
-        final LocalDate date = REFERENCE_DATE_TIME.toLocalDate();
+        final LocalDate date = SYSTEM_DATE_TIME.toLocalDate();
         final LocalDateTime dateTime = LocalDateTime.of(date, attendanceTime.getTime());
         return new AttendanceDateTime(dateTime);
     }
@@ -42,6 +42,10 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
         } catch (final DateTimeParseException e) {
             throw new IllegalArgumentException("날짜 형식은 yyyy-mm-dd- hh:mm으로 작성해주세요.");
         }
+    }
+
+    public void validateDateTime(LocalDateTime dateTime) {
+
     }
 
     public boolean isEqualToDayOfWeek(final String inputDayOfWeek) {
