@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 public class AttendanceController {
 
@@ -51,7 +52,7 @@ public class AttendanceController {
         List<String> crewAttendanceTexts = FileLineReader.readAllLines(ATTENDANCE_FILE_PATH, ATTENDANCE_FILE_NAME);
         crewAttendanceTexts.removeFirst();
         AttendanceBookInitializer attendanceBookInitializer = new AttendanceBookInitializer();
-        return attendanceBookInitializer.parseTexts(crewAttendanceTexts);
+        return attendanceBookInitializer.initialize(crewAttendanceTexts);
     }
 
     private void branchByFeatureCommand(final FeatureCommand featureCommand, final AttendanceBook attendanceBook) {
@@ -103,7 +104,7 @@ public class AttendanceController {
 
     private void checkCrewAttendance(final AttendanceBook attendanceBook) {
         Crew crew = getCrewIfExistInAttendanceBook(crewAttendanceCheckView.readCrewNickname(), attendanceBook);
-        List<AttendanceDateTime> crewAttendanceDateTimes = findCrewAttendancesThisMonth(attendanceBook, crew);
+        List<AttendanceDateTime> crewAttendanceDateTimes = attendanceBook.findCrewAttendancesThisMonth(crew);
         crewAttendanceCheckView.printCrewAttendances(crew, crewAttendanceDateTimes);
         Map<AttendanceStatus, Long> attendanceStatuses = AttendanceStatusChecker.checkStatuses(crewAttendanceDateTimes);
         crewAttendanceCheckView.printAttendanceStatuses(attendanceStatuses);
@@ -111,34 +112,16 @@ public class AttendanceController {
         crewAttendanceCheckView.printExpulsionStatus(expulsionStatus);
     }
 
-    private List<AttendanceDateTime> findCrewAttendancesThisMonth(final AttendanceBook attendanceBook, final Crew crew) {
-        LocalDate today = LocalDate.now();
-        List<AttendanceDateTime> crewAttendanceDateTimes = new ArrayList<>();
-        for (int day=1; day<=today.getDayOfMonth()-1; day++) {
-            try {
-                crewAttendanceDateTimes.add(attendanceBook.findAttendanceDateTimeByCrewAndDate(crew, LocalDate.now().withDayOfMonth(day)));
-            } catch (IllegalArgumentException exception) {
-                AttendanceDateTime absentDateTime = AttendanceDateTime.createAbsentDateTime(today.withDayOfMonth(day));
-                LocalDateTime absendLocalDateTime = absentDateTime.getLocalDateTime();
-                if (AttendanceDateTime.isWeekend(absendLocalDateTime) || Holiday.isHoliday(absendLocalDateTime)) {
-                    continue;
-                }
-                crewAttendanceDateTimes.add(absentDateTime);
-            }
-        }
-        return crewAttendanceDateTimes;
-    }
-
     private void checkAllExpulsionCrews(final AttendanceBook attendanceBook) {
         checkAllExpulsionCrewView.printTitle();
         List<CheckExpulsionResultDto> expulsionResults = new ArrayList<>();
         Set<Crew> allCrews = attendanceBook.getAllCrews();
         for (Crew crew : allCrews) {
-            List<AttendanceDateTime> attendancesThisMonth = findCrewAttendancesThisMonth(attendanceBook, crew);
-            Map<AttendanceStatus, Long> attendanceStatuses = AttendanceStatusChecker.checkStatuses(attendancesThisMonth);
+            List<AttendanceDateTime> attendancesThisMonth = attendanceBook.findCrewAttendancesThisMonth(crew);
             long allAbsents = AttendanceStatusChecker.calculateAllAbsent(attendancesThisMonth);
-            ExpulsionStatus expulsionStatus = ExpulsionStatus.from(AttendanceStatusChecker.calculateAllAbsent(attendancesThisMonth));
-            if (!expulsionStatus.equals(ExpulsionStatus.NONE)) {
+            ExpulsionStatus expulsionStatus = ExpulsionStatus.from(allAbsents);
+            if (ExpulsionStatus.isExpulsionCrew(expulsionStatus)) {
+                Map<AttendanceStatus, Long> attendanceStatuses = AttendanceStatusChecker.checkStatuses(attendancesThisMonth);
                 expulsionResults.add(new CheckExpulsionResultDto(crew.getNickname(), attendanceStatuses.get(AttendanceStatus.ABSENT),
                         attendanceStatuses.get(AttendanceStatus.LATE), allAbsents, expulsionStatus));
             }

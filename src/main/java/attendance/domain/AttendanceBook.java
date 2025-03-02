@@ -1,13 +1,13 @@
 package attendance.domain;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.IntStream;
 
 public class AttendanceBook {
 
+    public static final int START_DAY_OF_MONTH = 1;
     private final Map<Crew, List<AttendanceDateTime>> crewAttedances;
 
     public AttendanceBook(final Map<Crew, List<AttendanceDateTime>> crewAttendances) {
@@ -45,6 +45,26 @@ public class AttendanceBook {
     public void removeAttendanceDateTime(final Crew crew, final AttendanceDateTime attendanceDateTime) {
         List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
         attendances.remove(attendanceDateTime);
+    }
+
+    public List<AttendanceDateTime> findCrewAttendancesThisMonth(final Crew crew) {
+        final int dayOfToday = LocalDate.now().getDayOfMonth();
+        List<AttendanceDateTime> crewAttendanceDateTimes = new ArrayList<>();
+        IntStream.range(START_DAY_OF_MONTH, dayOfToday)
+                .mapToObj(day -> LocalDateTime.now().withDayOfMonth(day))
+                .filter(dateTime -> !AttendanceDateTime.isWeekend(dateTime))
+                .filter(dateTime -> !Holiday.isHoliday(dateTime))
+                .map(dateTime -> findAttendanceDateTimeByCrewAndDateOrAbsent(crew, dateTime.toLocalDate()))
+                .forEach(crewAttendanceDateTimes::add);
+        return crewAttendanceDateTimes;
+    }
+
+    private AttendanceDateTime findAttendanceDateTimeByCrewAndDateOrAbsent(final Crew crew, final LocalDate findDate) {
+        try {
+            return findAttendanceDateTimeByCrewAndDate(crew, findDate);
+        } catch (IllegalArgumentException exception) {
+            return AttendanceDateTime.createAbsentDateTime(findDate);
+        }
     }
 
     public Set<Crew> getAllCrews() {
