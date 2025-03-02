@@ -1,5 +1,6 @@
 package domain;
 
+import controller.AttendanceController;
 import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -12,7 +13,8 @@ public class AttendanceBookTest {
     void test2() {
         // given
         String nickname = "수양";
-        AttendanceBook attendanceBook = new AttendanceBook(Map.of("수양", List.of(), "빙봉", List.of()));
+        AttendanceBook attendanceBook = new AttendanceBook(Map.of("수양", List.of(), "빙봉", List.of()),
+                AttendanceController.START_DATE, AttendanceController.END_DATE);
 
         // when
         boolean isContain = attendanceBook.has(nickname);
