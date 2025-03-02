@@ -16,7 +16,7 @@ public class AttendanceCheckController {
             students.findStudentByName(studentName).isAlreadyExistAttendanceDate(today);
             students.findStudentByName(studentName).addAttendanceDateTime(today, attendanceTime);
             AttendanceStatus studentAttendanceStatus = AttendanceStatusEvaluator.calculateAttendanceStatus(today, attendanceTime);
-            OutputView.printTodayAttendanceResult(today, attendanceTime, studentAttendanceStatus);
+            OutputView.printAttendanceResult(today, attendanceTime, studentAttendanceStatus);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
