@@ -17,6 +17,9 @@ public class DangerousStatusTest {
                 attendanceRecord.countStatus(AttendanceStatus.ABSENCE));
 
         assertThat(dangerousStatus).isEqualTo(DangerousStatus.DISMISSAL);
+
+        DangerousStatus dangerousStatus1 = DangerousStatus.of(3, 5);
+        assertThat(dangerousStatus1).isEqualTo(DangerousStatus.DISMISSAL);
     }
 
     @Test
