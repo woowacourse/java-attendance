@@ -28,6 +28,7 @@ public class InputValidator {
     }
 
     static void validateTime(String rawTime) {
+        validateTimeFormat(rawTime);
         validateHour(rawTime);
         validateMinute(rawTime);
     }

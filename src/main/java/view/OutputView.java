@@ -1,0 +1,43 @@
+package view;
+
+import static domain.AttendanceCode.ABSENT;
+
+import domain.Attendance;
+import domain.AttendanceStatistics;
+import domain.Attendances;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import util.DayConverter;
+
+public class OutputView {
+    private static final String ABSENT_TIME = "--:--";
+
+    public void printAllLog(String name, Attendances attendances, AttendanceStatistics attendanceStatistics) {
+        System.out.printf("\n이번 달 %s의 출석 기록입니다.\n\n", name);
+        attendances.getAttendances().stream().sorted()
+                .forEach(this::printAttendanceLog);
+        printAttendanceStatistic(attendanceStatistics);
+    }
+
+    public void printAttendanceStatistic(AttendanceStatistics attendanceStatistics) {
+        System.out.printf("\n출석: %d회\n", attendanceStatistics.present());
+        System.out.printf("지각: %d회\n", attendanceStatistics.late());
+        System.out.printf("결석: %d회\n", attendanceStatistics.absent());
+        System.out.printf("\n%s 대상자입니다.", attendanceStatistics.alertCode().getName());
+    }
+
+    public void printAttendanceLog(Attendance attendance) {
+        String time = attendance.getAttendanceTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+        LocalDate date = attendance.getAttendanceTime().toLocalDate();
+        if (attendance.calculateAttendanceCode() == ABSENT) {
+            time = ABSENT_TIME;
+        }
+        System.out.printf("%d월 %02d일 %s %s (%s)\n",
+                date.getMonth().getValue(),
+                date.getDayOfMonth(),
+                DayConverter.getKoreanDayOfWeek(date),
+                time,
+                attendance.calculateAttendanceCode().getName()
+        );
+    }
+}
