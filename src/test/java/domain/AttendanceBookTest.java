@@ -116,7 +116,6 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.addAttendance(name, dateTime);
 
-        assertThatThrownBy(() -> attendanceBook.validateBeforeEdit(name, dateTime.toLocalDate()))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatNoException().isThrownBy(() -> attendanceBook.validateBeforeEdit(name, dateTime.toLocalDate()));
     }
 }
