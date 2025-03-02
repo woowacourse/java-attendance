@@ -1,9 +1,6 @@
 package view;
 
-import domain.Attendance;
-import domain.AttendanceStatus;
-import domain.Attendances;
-import domain.PenaltyStatus;
+import domain.*;
 import domain.constant.StandardDate;
 
 import java.time.LocalDate;
@@ -33,7 +30,7 @@ public class OutputView {
     public void printAttendanceCheckMessage(LocalDateTime localDateTime) {
         String dayOfWeekName = localDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         LocalTime attendanceTime = localDateTime.toLocalTime();
-        AttendanceStatus attendanceStatus = AttendanceStatus.judge(localDateTime);
+        AttendanceStatus attendanceStatus = StandardTime.judge(localDateTime);
 
         System.out.println();
         System.out.printf("%d월 %02d일 %s %s (%s)\n", localDateTime.getMonthValue(), localDateTime.getDayOfMonth(), dayOfWeekName, attendanceTime, attendanceStatus.getName());
@@ -42,11 +39,11 @@ public class OutputView {
     public void printUpdatedAttendanceMessage(LocalDateTime originalDateTime, LocalDateTime updatedDateTime) {
         String originalDayOfWeekName = originalDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         LocalTime originalAttendanceTime = originalDateTime.toLocalTime();
-        AttendanceStatus originalStatus = AttendanceStatus.judge(originalDateTime);
+        AttendanceStatus originalStatus = StandardTime.judge(originalDateTime);
 
         String updatedDayOfWeekName = updatedDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         LocalTime updatedAttendanceTime = updatedDateTime.toLocalTime();
-        AttendanceStatus updatedStatus = AttendanceStatus.judge(updatedDateTime);
+        AttendanceStatus updatedStatus = StandardTime.judge(updatedDateTime);
 
         System.out.printf("%d월 %02d일 %s %s (%s) ", originalDateTime.getMonthValue(), originalDateTime.getDayOfMonth(), originalDayOfWeekName, originalAttendanceTime, originalStatus.getName());
         System.out.printf("-> %d월 %02d일 %s %s (%s) 수정 완료!\n", updatedDateTime.getMonthValue(), updatedDateTime.getDayOfMonth(), updatedDayOfWeekName, updatedAttendanceTime, updatedStatus.getName());
@@ -70,7 +67,7 @@ public class OutputView {
             LocalDate date = localDateTime.toLocalDate();
             String attendanceTime = convertAbsenceTime(localDateTime);
             String dayOfWeekName = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-            System.out.printf("%d월 %02d일 %s %s (%s)\n", date.getMonthValue(), date.getDayOfMonth(), dayOfWeekName, attendanceTime, AttendanceStatus.judge(localDateTime).getName());
+            System.out.printf("%d월 %02d일 %s %s (%s)\n", date.getMonthValue(), date.getDayOfMonth(), dayOfWeekName, attendanceTime, StandardTime.judge(localDateTime).getName());
         }
     }
 

@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 
@@ -27,6 +28,17 @@ public enum StandardTime {
                 .filter(standardTime -> standardTime.dayOfWeek == dayOfWeek)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 요일의 기준 시간 정보가 없습니다."));
+    }
+
+    public static AttendanceStatus judge(LocalDateTime localDateTime) {
+        LocalTime attendanceTime = localDateTime.toLocalTime();
+        StandardTime standardTime = findByDayOfWeek(localDateTime.toLocalDate().getDayOfWeek());
+
+        if (attendanceTime.isAfter(standardTime.getAbsentTime())) return AttendanceStatus.ABSENCE;
+
+        if (attendanceTime.isAfter(standardTime.getLateTime())) return AttendanceStatus.LATENESS;
+
+        return AttendanceStatus.ATTENDANCE;
     }
 
     public LocalTime getAbsentTime() {

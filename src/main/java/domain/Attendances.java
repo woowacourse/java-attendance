@@ -46,21 +46,21 @@ public class Attendances {
     public int calculateAttendanceCount(String nickname) {
         List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
-                .filter(attendance -> AttendanceStatus.judge(attendance.getLocalDateTime()) == AttendanceStatus.ATTENDANCE)
+                .filter(attendance -> StandardTime.judge(attendance.getLocalDateTime()) == AttendanceStatus.ATTENDANCE)
                 .count();
     }
 
     public int calculateLateCount(String nickname) {
         List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
-                .filter(attendance -> AttendanceStatus.judge(attendance.getLocalDateTime()) == AttendanceStatus.LATENESS)
+                .filter(attendance -> StandardTime.judge(attendance.getLocalDateTime()) == AttendanceStatus.LATENESS)
                 .count();
     }
 
     public int calculateAbsentCount(String nickname) {
         List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
-                .filter(attendance -> AttendanceStatus.judge(attendance.getLocalDateTime()) == AttendanceStatus.ABSENCE)
+                .filter(attendance -> StandardTime.judge(attendance.getLocalDateTime()) == AttendanceStatus.ABSENCE)
                 .count();
     }
 
