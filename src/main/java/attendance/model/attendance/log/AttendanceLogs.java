@@ -82,10 +82,6 @@ public class AttendanceLogs {
         values.add(attendanceLog);
     }
 
-    public List<AttendanceLog> getValues() {
-        return values;
-    }
-
     public int getPolicyAppliedAbsenceCount() {
         return getAbsenceCount() + getLateCount() / 3;
     }
