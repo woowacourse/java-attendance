@@ -18,24 +18,6 @@ public class AttendanceTimeTest {
     }
 
     @Test
-    @DisplayName("시간이 더 이른 걸 계산하는 테스트")
-    void test2() {
-        AttendanceTime wantToCompareTime = new AttendanceTime(LocalTime.of(8, 7));
-        Assertions.assertTrue(
-                attendanceTime.isBefore(wantToCompareTime)
-        );
-    }
-
-    @Test
-    @DisplayName("시간이 같은 걸 계산하는 테스트")
-    void test3() {
-        AttendanceTime wantToCompareTime = new AttendanceTime(LocalTime.of(8, 6));
-        Assertions.assertTrue(
-                attendanceTime.isEqual(wantToCompareTime)
-        );
-    }
-
-    @Test
     @DisplayName("캠퍼스 운영 시간이 아닌 경우를 판단하는 테스트")
     void test4() {
         AttendanceTime attendanceTime1 = new AttendanceTime(LocalTime.of(7, 59));

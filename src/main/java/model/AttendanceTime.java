@@ -16,14 +16,6 @@ public class AttendanceTime {
         return attendanceTime.isAfter(wantToCompareAttendanceTime.toLocalTime());
     }
 
-    public boolean isBefore(AttendanceTime wantToCompareAttendanceTime){
-        return attendanceTime.isBefore(wantToCompareAttendanceTime.toLocalTime());
-    }
-
-    public boolean isEqual(AttendanceTime wantToCompareAttendanceTime) {
-        return attendanceTime.equals(wantToCompareAttendanceTime.toLocalTime());
-    }
-
     public boolean isNotOpeningTime() {
         return attendanceTime.isBefore(OPEN_TIME) || attendanceTime.isAfter(END_TIME);
     }
