@@ -7,7 +7,15 @@ import java.util.List;
 
 public class Attendances {
     private static final Integer LATE_COUNT_FOR_ABSENCE = 3;
-    private final List<Attendance> attendances = new ArrayList<>();
+    private final List<Attendance> attendances;
+
+    public Attendances() {
+        attendances = new ArrayList<>();
+    }
+
+    private Attendances(List<Attendance> attendances) {
+        this.attendances = attendances;
+    }
 
     public void add(Attendance attendance) {
         validateAttendance(attendance);
@@ -63,6 +71,17 @@ public class Attendances {
         Integer penaltyPoint = getAbsentCount(clock) + getLateCount(clock) / LATE_COUNT_FOR_ABSENCE;
         return Penalty.getPenaltyOf(penaltyPoint);
     }
+
+    public Attendances toImmutable() {
+        return new Attendances(
+                List.copyOf(
+                        attendances.stream()
+                                .map(Attendance::toImmutable)
+                                .toList()
+                )
+        );
+    }
+
 
     public List<Attendance> getAttendances() {
         return new ArrayList<>(attendances);

@@ -2,6 +2,7 @@ package domain;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,9 +29,14 @@ public class AttendanceBook {
     }
 
     public Map<Crew, Attendances> getPenaltyHistory(Clock clock) {
-        return crewsAttendances.entrySet().stream()
-                .filter(crew -> crew.getValue().getPenaltyStatus(clock) != null)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return Collections.unmodifiableMap(
+                crewsAttendances.entrySet().stream()
+                        .filter(crew -> crew.getValue().getPenaltyStatus(clock) != null)
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                entry -> entry.getValue().toImmutable()
+                        ))
+        );
     }
 
     public void isAlreadyAttended(Crew crew, LocalDate date) {

@@ -68,6 +68,15 @@ public class Attendance {
         updateStatus();
     }
 
+    public Attendance toImmutable() {
+        return new Attendance(this.day, this.time) {
+            @Override
+            public void modifyTimeTo(LocalTime time) {
+                throw new UnsupportedOperationException("[ERROR] 수정할 수 없는 Attendance 객체입니다.");
+            }
+        };
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
