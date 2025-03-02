@@ -61,9 +61,10 @@ class AttendanceBookTest {
         Crew crew = Crew.of("조로");
         CheckInDate checkInDate = CheckInDate.of(2024, 12, 4);
         CheckInTime checkInTime = CheckInTime.of(10, 0);
+        CheckInHistory historyByName = attendanceBook.findHistoryByName(crew);
         //when
         //then
-        assertThatCode(() -> attendanceBook.checkIn(crew, checkInDate, checkInTime))
+        assertThatCode(() -> attendanceBook.checkIn(historyByName, checkInDate, checkInTime))
                 .doesNotThrowAnyException();
     }
 }

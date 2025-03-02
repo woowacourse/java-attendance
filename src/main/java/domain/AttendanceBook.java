@@ -31,11 +31,7 @@ public class AttendanceBook {
                 .toList();
     }
 
-    public void checkIn(Crew crew, CheckInDate checkInDate, CheckInTime checkInTime) {
-        CheckInHistory historyByName = findHistoryByName(crew);
-        if (historyByName == null) {
-            throw new AppException("해당 이름이 존재하지 않습니다.");
-        }
-        historyByName.checkIn(checkInDate, checkInTime);
+    public void checkIn(CheckInHistory checkInHistory, CheckInDate checkInDate, CheckInTime checkInTime) {
+        checkInHistory.checkIn(checkInDate, checkInTime);
     }
 }
