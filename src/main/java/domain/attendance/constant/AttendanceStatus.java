@@ -1,5 +1,7 @@
-package domain;
+package domain.attendance.constant;
 
+import domain.datetime.CampusDate;
+import domain.datetime.CampusTime;
 import java.time.DayOfWeek;
 
 public enum AttendanceStatus {

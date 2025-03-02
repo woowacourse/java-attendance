@@ -1,5 +1,9 @@
-package domain;
+package domain.attendance;
 
+import domain.Crew;
+import domain.attendance.constant.AttendanceRiskLevel;
+import domain.datetime.CampusDate;
+import domain.datetime.CampusTime;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;

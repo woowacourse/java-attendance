@@ -1,11 +1,11 @@
 package view;
 
-import domain.AttendanceBook;
-import domain.AttendanceCounts;
-import domain.AttendanceInfo;
-import domain.AttendanceInfos;
-import domain.AttendanceRiskLevel;
-import domain.CampusDate;
+import domain.attendance.AttendanceBook;
+import domain.attendance.AttendanceCounts;
+import domain.attendance.AttendanceInfo;
+import domain.attendance.AttendanceInfos;
+import domain.attendance.constant.AttendanceRiskLevel;
+import domain.datetime.CampusDate;
 import domain.Crew;
 import java.time.DayOfWeek;
 import java.time.LocalDate;

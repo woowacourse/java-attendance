@@ -1,5 +1,8 @@
 package domain;
 
+import domain.attendance.constant.AttendanceStatus;
+import domain.datetime.CampusDate;
+import domain.datetime.CampusTime;
 import java.time.LocalDate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;

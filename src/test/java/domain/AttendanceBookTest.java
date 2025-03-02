@@ -2,6 +2,11 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import domain.attendance.AttendanceBook;
+import domain.attendance.AttendanceInfo;
+import domain.attendance.AttendanceInfos;
+import domain.datetime.CampusDate;
+import domain.datetime.CampusTime;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 

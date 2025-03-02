@@ -1,4 +1,4 @@
-package domain;
+package domain.attendance.constant;
 
 public enum AttendanceRiskLevel {
     EXPULSION("제적"),

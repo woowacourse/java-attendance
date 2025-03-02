@@ -1,4 +1,4 @@
-package domain;
+package domain.datetime;
 
 import java.time.DateTimeException;
 import java.time.DayOfWeek;

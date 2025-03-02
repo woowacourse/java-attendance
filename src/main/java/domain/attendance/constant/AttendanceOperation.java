@@ -1,4 +1,4 @@
-package domain;
+package domain.attendance.constant;
 
 import java.util.Arrays;
 

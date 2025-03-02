@@ -1,4 +1,6 @@
-package domain;
+package domain.attendance;
+
+import domain.attendance.constant.AttendanceRiskLevel;
 
 public class AttendanceCounts {
 

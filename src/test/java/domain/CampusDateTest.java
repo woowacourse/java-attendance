@@ -3,6 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import domain.datetime.CampusDate;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;

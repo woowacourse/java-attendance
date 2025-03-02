@@ -1,5 +1,8 @@
-package domain;
+package domain.attendance;
 
+import domain.attendance.constant.AttendanceStatus;
+import domain.datetime.CampusDate;
+import domain.datetime.CampusTime;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
