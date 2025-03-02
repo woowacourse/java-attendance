@@ -14,19 +14,19 @@ import java.util.Map;
 
 public class OutputView {
 
-    public void printErrorMessage(String message) {
+    public void printErrorMessage(final String message) {
         System.out.println(message);
     }
 
-    public void printAttendance(Time attendanceTime, String attendanceStatus) {
+    public void printAttendance(final Time attendanceTime, final String attendanceStatus) {
         System.out.printf("%02d월 %02d일 %s %02s:%02s (%s)%n",
                 attendanceTime.getMonth(), attendanceTime.getDay(),
                 attendanceTime.getDayOfWeek(), attendanceTime.getHour(), attendanceTime.getMinute(),
                 attendanceStatus);
     }
 
-    public void printModifyAttendanceResult(Time originTime, String originAttendanceStatus,
-                                            Time modifyTime, String modifyAttendanceStatus) {
+    public void printModifyAttendanceResult(final Time originTime, final String originAttendanceStatus,
+                                            final Time modifyTime, final String modifyAttendanceStatus) {
         System.out.printf("%02d월 %02d일 %s %02s:%02s (%s)",
                 originTime.getMonth(), originTime.getDay(),
                 originTime.getDayOfWeek(), originTime.getHour(), originTime.getMinute(),
@@ -41,8 +41,9 @@ public class OutputView {
         System.out.println(" 수정 완료!");
     }
 
-    public void printNameAndAttendances(Map<LocalDate, Attendance> monthlyAttendances, String crewName, int year,
-                                        int month) {
+    public void printNameAndAttendances(final Map<LocalDate, Attendance> monthlyAttendances, final String crewName,
+                                        final int year,
+                                        final int month) {
         System.out.println("이번 달 " + crewName + "의 출석 기록입니다.");
 
         LocalDate currentDate = LocalDate.of(year, month, 1);
@@ -84,7 +85,7 @@ public class OutputView {
         }
     }
 
-    public void printAcademicStatusResult(AcademicStatusResultDTO attendanceCountAndAcademicStatusDTO) {
+    public void printAcademicStatusResult(final AcademicStatusResultDTO attendanceCountAndAcademicStatusDTO) {
         System.out.println("출석: " + attendanceCountAndAcademicStatusDTO.attend() + "회");
         System.out.println("지각: " + attendanceCountAndAcademicStatusDTO.late() + "회");
         System.out.println("결석: " + attendanceCountAndAcademicStatusDTO.absent() + "회");
@@ -96,7 +97,7 @@ public class OutputView {
         System.out.println(attendanceCountAndAcademicStatusDTO.academicStatus().getValue() + " 대상자입니다.");
     }
 
-    public void printCrewsAtRiskOfExpulsion(List<AcademicStatusResultDTO> crewNameAndAcademicStatusDTOList) {
+    public void printCrewsAtRiskOfExpulsion(final List<AcademicStatusResultDTO> crewNameAndAcademicStatusDTOList) {
         for (AcademicStatusResultDTO crewNameAndAcademicStatusDTO : crewNameAndAcademicStatusDTOList) {
             System.out.print("- " + crewNameAndAcademicStatusDTO.crewName() + ": ");
             System.out.print("결석: " + crewNameAndAcademicStatusDTO.absent() + "회, ");

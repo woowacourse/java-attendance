@@ -20,7 +20,7 @@ public class AttendanceBook {
         this.attendances = attendances;
     }
 
-    public void hasCrew(String crewName) {
+    public void hasCrew(final String crewName) {
         if (!crewNames.contains(crewName)) {
             throw new IllegalArgumentException("[ERROR] 출석부에 존재하지 않는 닉네임입니다.");
         }
@@ -47,19 +47,20 @@ public class AttendanceBook {
         return attendances.findByCrewNameAndLocalDate(crewName, localDate);
     }
 
-    public Map<LocalDate, Attendance> findAttendancesByCrewNameAndYearAndMonth(String crewName, final int year,
+    public Map<LocalDate, Attendance> findAttendancesByCrewNameAndYearAndMonth(final String crewName, final int year,
                                                                                final int month) {
         return attendances.getMonthlyAttendanceMap(crewName, year, month);
     }
 
-    public List<AcademicStatusResultDTO> getExpulsionCrews(final AcademicStatus academicStatus, LocalDate localDate) {
+    public List<AcademicStatusResultDTO> getExpulsionCrews(final AcademicStatus academicStatus,
+                                                           final LocalDate localDate) {
         List<AcademicStatusResultDTO> academicStatusResultDTOS = filterCrewsByAcademicStatus(academicStatus, localDate);
         sortAcademicStatusResults(academicStatusResultDTOS);
         return academicStatusResultDTOS;
     }
 
     private List<AcademicStatusResultDTO> filterCrewsByAcademicStatus(final AcademicStatus academicStatus,
-                                                                      LocalDate localDate) {
+                                                                      final LocalDate localDate) {
         return crewNames.stream()
                 .map(crewName -> {
                     Map<LocalDate, Attendance> monthlyAttendances = findAttendancesByCrewNameAndYearAndMonth(

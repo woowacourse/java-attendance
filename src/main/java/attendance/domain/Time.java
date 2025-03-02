@@ -19,21 +19,21 @@ public class Time {
         this.attendanceTime = attendanceTime;
     }
 
-    private void validateCampusOperationTime(LocalDateTime attendanceTime) {
+    private void validateCampusOperationTime(final LocalDateTime attendanceTime) {
         if (attendanceTime.getHour() < CAMPUS_OPEN_HOUR || (attendanceTime.getHour() == CAMPUS_CLOSE_HOUR
                 && attendanceTime.getMinute() > 0)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }
 
-    private void validateHoliday(LocalDateTime attendanceTime) {
+    private void validateHoliday(final LocalDateTime attendanceTime) {
         if (attendanceTime.getDayOfWeek().equals(DayOfWeek.SATURDAY) || attendanceTime.getDayOfWeek()
                 .equals(DayOfWeek.SUNDAY)) {
             throw new IllegalArgumentException("[ERROR] 주말 및 공휴일은 출석할 수 없습니다.");
         }
     }
 
-    public boolean isSameLocalDate(LocalDate time) {
+    public boolean isSameLocalDate(final LocalDate time) {
         return this.attendanceTime.getYear() == time.getYear()
                 && this.attendanceTime.getMonth() == time.getMonth()
                 && this.attendanceTime.getDayOfMonth() == time.getDayOfMonth();
@@ -44,7 +44,7 @@ public class Time {
                 && this.attendanceTime.getMonthValue() == month;
     }
 
-    public void modify(LocalTime modifyTime) {
+    public void modify(final LocalTime modifyTime) {
         attendanceTime = attendanceTime
                 .withHour(modifyTime.getHour())
                 .withMinute(modifyTime.getMinute());

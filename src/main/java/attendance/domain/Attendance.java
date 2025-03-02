@@ -9,21 +9,21 @@ public class Attendance {
     private final String crewName;
     private final Time attendanceTime;
 
-    public Attendance(String crewName, final Time attendanceTime) {
+    public Attendance(final String crewName, final Time attendanceTime) {
         this.crewName = crewName;
         this.attendanceTime = attendanceTime;
     }
 
-    public Attendance modifyAttendanceTime(LocalTime modifyTime) {
+    public Attendance modifyAttendanceTime(final LocalTime modifyTime) {
         attendanceTime.modify(modifyTime);
         return this;
     }
 
-    public boolean isSameNameAndLocalDate(String crewName, LocalDate localDate) {
+    public boolean isSameNameAndLocalDate(final String crewName, final LocalDate localDate) {
         return this.crewName.equals(crewName) && attendanceTime.isSameLocalDate(localDate);
     }
 
-    public boolean isSameCrewName(String crewName) {
+    public boolean isSameCrewName(final String crewName) {
         return this.crewName.equals(crewName);
     }
 
