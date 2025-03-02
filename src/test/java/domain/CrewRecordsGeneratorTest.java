@@ -42,7 +42,7 @@ class CrewRecordsGeneratorTest {
 
         // when
         LocalDate missingDate = LocalDate.of(2024, 12, 3);
-        AttendanceRecord expectedValue = new AttendanceRecord(LocalDateTime.parse("2024-12-03T23:59"));
+        AttendanceRecord expectedValue = new AttendanceRecord(missingDate);
         CrewRecords crewRecords = crewRecordsGenerator.generate(currentDate, attendances);
 
         // then

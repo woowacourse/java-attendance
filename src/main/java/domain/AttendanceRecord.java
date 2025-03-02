@@ -7,11 +7,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class AttendanceRecord implements Comparable<AttendanceRecord> {
+    private static final LocalTime ABSENT_TIME = LocalTime.of(23, 59);
     private final LocalDateTime dateTime;
     private final AttendanceStatus attendanceStatus;
 
+    public AttendanceRecord(LocalDate date) {
+        this(LocalDateTime.of(date, ABSENT_TIME));
+    }
+
     public AttendanceRecord(LocalDateTime dateTime) {
-        validate(dateTime);
+        validate(dateTime.toLocalDate());
         this.dateTime = dateTime;
         this.attendanceStatus = AttendanceStatus.getStatus(dateTime.getDayOfWeek(), dateTime.toLocalTime());
     }
@@ -28,10 +33,10 @@ public class AttendanceRecord implements Comparable<AttendanceRecord> {
         return this.attendanceStatus;
     }
 
-    private void validate(LocalDateTime dateTime) {
-        if (ClassSchedule.isDayOff(dateTime.toLocalDate())) {
+    private void validate(LocalDate date) {
+        if (ClassSchedule.isDayOff(date)) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
-            throw new IllegalArgumentException(String.format("[ERROR] %s은 등교일이 아닙니다.%n", dateFormatter.format(dateTime)));
+            throw new IllegalArgumentException(String.format("[ERROR] %s은 등교일이 아닙니다.%n", dateFormatter.format(date)));
         }
     }
 

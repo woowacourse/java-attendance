@@ -2,7 +2,6 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,7 @@ public class CrewRecordsGenerator {
                 if (ClassSchedule.isDayOff(targetDate) || attendanceRecords.hasRecordOnDate(targetDate)) {
                     continue;
                 }
-                attendanceRecords.add(new AttendanceRecord(LocalDateTime.of(targetDate, LocalTime.of(23, 59))));
+                attendanceRecords.add(new AttendanceRecord(targetDate));
             }
         });
         return new CrewRecords(crewRecords);
