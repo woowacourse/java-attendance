@@ -4,7 +4,6 @@ import static util.Constants.ERROR_HEADER;
 import static util.Constants.TIME_FORMAT;
 import static util.Constants.TODAY;
 
-import domain.AttendanceBook;
 import domain.AttendancePolicy;
 import domain.CrewName;
 import java.time.DateTimeException;
@@ -36,7 +35,7 @@ public class InputValidator {
         }
     }
 
-    public static void validateName(String name, AttendanceBook attendanceBook) {
+    public static void validateName(String name) {
         if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
             throw new IllegalArgumentException(ERROR_HEADER + NAME_FORMAT_ERROR);
         }

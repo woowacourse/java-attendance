@@ -190,6 +190,16 @@ public class AttendanceBookTest {
         assertThat(crewNames).isEqualTo(List.of(malone, norang, river, pree));
     }
 
+    @DisplayName("출석부에 존재하지 않는 닉네임일 경우 예외가 발생한다.")
+    @Test
+    void test13() {
+        CrewName notExistedName = new CrewName("없는이름");
+
+        assertThatThrownBy(() -> attendanceBook.findAttendanceRecordBy(notExistedName))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ERROR_HEADER);
+    }
+
     void setAttendanceBook() {
         Map<CrewName, AttendanceRecord> testData = new HashMap<>();
         testData.put(malone, new AttendanceRecord());
