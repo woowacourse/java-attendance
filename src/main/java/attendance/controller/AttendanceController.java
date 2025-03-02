@@ -39,7 +39,7 @@ public class AttendanceController {
     private Map<CommandStatus, Command> initializeCommand() {
         return Map.of(
                 CommandStatus.ATTEND, new AttendCommand(inputView, resultView, clock, campusScheduler),
-                CommandStatus.MODIFY, new ModifyCommand(),
+                CommandStatus.MODIFY, new ModifyCommand(inputView, resultView, clock, campusScheduler),
                 CommandStatus.INQUIRY_CREW, new InQuiryCrewCommand(),
                 CommandStatus.FIND_DISMISSAL, new FindDismissalCommand()
         );
