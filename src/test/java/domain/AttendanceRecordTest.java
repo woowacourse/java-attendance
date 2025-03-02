@@ -35,7 +35,11 @@ class AttendanceRecordTest {
         LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 10);
         AttendanceRecord attendanceRecord = new AttendanceRecord(dateTime);
 
+        // when
+        AttendanceStatus expectedValue = AttendanceStatus.TARDY;
+        AttendanceStatus actualValue = attendanceRecord.getAttendanceStatus();
+
         // then
-        assertThat(attendanceRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.TARDY);
+        assertThat(actualValue).isEqualTo(expectedValue);
     }
 }
