@@ -13,9 +13,7 @@ class AttendancesTest {
     void test() {
         // given
         LocalDateTime day = LocalDateTime.of(2025, 2, 27, 10, 0);
-        Attendance day1 = new Attendance(day);
-        Attendance day2 = new Attendance(day.plusDays(1));
-        Attendances attendances = new Attendances(List.of(day1, day2));
+        Attendances attendances = new Attendances(List.of(day, day.plusDays(1)));
 
         // when
         boolean hasDate = attendances.has(day.toLocalDate());
@@ -32,10 +30,8 @@ class AttendancesTest {
         void test() {
             // given
             LocalDateTime attendanceDate = LocalDateTime.of(2025, 2, 25, 10, 0);
-            Attendance attendance1 = new Attendance(attendanceDate);
-            Attendance attendance2 = new Attendance(attendanceDate.plusDays(1));
-            Attendance attendance3 = new Attendance(attendanceDate.plusDays(2));
-            Attendances attendances = new Attendances(List.of(attendance1, attendance2, attendance3));
+            Attendances attendances = new Attendances(
+                    List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)));
 
             // when
             int attendanceCount = attendances.countAttendance();
@@ -49,10 +45,8 @@ class AttendancesTest {
         void test2() {
             // given
             LocalDateTime attendanceDate = LocalDateTime.of(2025, 2, 25, 10, 30);
-            Attendance tardy1 = new Attendance(attendanceDate);
-            Attendance tardy2 = new Attendance(attendanceDate.plusDays(1));
-            Attendance tardy3 = new Attendance(attendanceDate.plusDays(2));
-            Attendances attendances = new Attendances(List.of(tardy1, tardy2, tardy3));
+            Attendances attendances = new Attendances(
+                    List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)));
 
             // when
             int tardyCouont = attendances.countTardy();
@@ -66,10 +60,8 @@ class AttendancesTest {
         void test3() {
             // given
             LocalDateTime attendanceDate = LocalDateTime.of(2025, 2, 25, 10, 31);
-            Attendance absence1 = new Attendance(attendanceDate);
-            Attendance absence2 = new Attendance(attendanceDate.plusDays(1));
-            Attendance absence3 = new Attendance(attendanceDate.plusDays(2));
-            Attendances attendances = new Attendances(List.of(absence1, absence2, absence3));
+            Attendances attendances = new Attendances(
+                    List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)));
 
             // when
             int absenceCount = attendances.countAbsence(attendanceDate.plusDays(3).toLocalDate());
@@ -77,8 +69,5 @@ class AttendancesTest {
             // then
             Assertions.assertThat(absenceCount).isEqualTo(3);
         }
-
     }
-
-
 }

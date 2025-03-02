@@ -1,6 +1,7 @@
 package domain.attendance;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,8 +12,10 @@ public class Attendances {
         this.attendances = new ArrayList<>();
     }
 
-    public Attendances(List<Attendance> attendances) {
-        this.attendances = attendances;
+    public Attendances(List<LocalDateTime> attendances) {
+        this.attendances = attendances.stream()
+                .map(Attendance::new)
+                .toList();
     }
 
     public boolean has(LocalDate day) {
