@@ -224,10 +224,9 @@ public class AttendanceHistoriesTest {
 
     @Test
     @DisplayName("3.1 닉네임을 입력하면 전날까지의 출결 기록을 확인할 수 있다.")
-    void test() {
-        // given
-        // when
-        AttendanceDateTimes actualAttendanceDateTimes = defaultAttendanceHistory.getAttendanceHistory(DEFAULT_CREW);
+    void testGetAttendanceDateTimes() {
+        // given & when
+        AttendanceDateTimes actualAttendanceDateTimes = defaultAttendanceHistory.getAttendanceDateTimes(DEFAULT_CREW);
         // then
         AttendanceDateTimes expectedAttendanceDateTimes = new AttendanceDateTimes(List.of(DEFAULT_DATE_TIME));
         assertThat(actualAttendanceDateTimes).isEqualTo(expectedAttendanceDateTimes);

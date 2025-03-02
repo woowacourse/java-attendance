@@ -28,7 +28,7 @@ public class AttendanceHistories {
         return oldAttendanceDateTime;
     }
 
-    public AttendanceDateTimes getAttendanceHistory(Crew crew) {
+    public AttendanceDateTimes getAttendanceDateTimes(Crew crew) {
         return attendanceHistories.get(crew);
     }
 
