@@ -3,19 +3,18 @@ package model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Student {
+    private static final int LATE_COUNT_FOR_ONE_ABSENCE = 3;
+
     private final String name;
     private final AttendanceTimeRecord attendanceTimeRecord;
-    private final AttendanceStatusRecord attendanceStatusRecord;
-    private final AttendanceStatusCount attendanceStatusCount;
 
     public Student(String name, List<LocalDateTime> localDateTime) {
-        this.attendanceStatusRecord = new AttendanceStatusRecord(localDateTime);
         this.attendanceTimeRecord = new AttendanceTimeRecord(localDateTime);
-        this.attendanceStatusCount = new AttendanceStatusCount();
         this.name = name;
     }
 
@@ -23,30 +22,16 @@ public class Student {
         return attendanceTimeRecord.getAttendanceTimeRecords().get(localDate);
     }
 
-    public AttendanceStatus findAttendanceStatusByLocalDate(LocalDate localDate) {
-        return attendanceStatusRecord.getAttendanceStatusRecords().get(localDate);
-    }
-
     public void registerAttendanceRecord(LocalDate todayDate, LocalTime attendanceTime) {
         validateDuplicateAttendance(todayDate);
         CampusOperatingHours.validateOperatingHours(attendanceTime);
         attendanceTimeRecord.registerAttendanceTimeRecord(todayDate, attendanceTime);
-        attendanceStatusRecord.registerAttendanceStatusRecord(
-                todayDate, AttendanceStatus.calculateAttendanceStatus(todayDate, attendanceTime)
-        );
     }
 
     public void modifyAttendanceRecord(int modifyDate, LocalTime modifyTime) {
         LocalDate localDate = LocalDate.of(2024, 12, modifyDate);
         CampusOperatingHours.validateOperatingHours(modifyTime);
         attendanceTimeRecord.modifyAttendanceTimeRecord(localDate, modifyTime);
-        attendanceStatusRecord.modifyAttendanceStatusRecord(
-                localDate, AttendanceStatus.calculateAttendanceStatus(localDate, modifyTime)
-        );
-    }
-
-    public long convertTardiesToAbsence() {
-        return attendanceStatusRecord.findAttendanceStatusCount(AttendanceStatus.LATE) / 3;
     }
 
     public void updateNonAttendanceRecordStatusIsAbsent(LocalDate today) {
@@ -58,23 +43,26 @@ public class Student {
         }
     }
 
-    public void updateAttendanceCount() {
-        attendanceStatusCount.updateAttendanceCount(attendanceStatusRecord);
-    }
-
     public long calculateTotalAbsentCount() {
-        updateAttendanceCount();
-        return attendanceStatusCount.getAbsentCount() + convertTardiesToAbsence();
+        return calculateAbsentCount() + calculateLateCount() / LATE_COUNT_FOR_ONE_ABSENCE;
     }
 
     public long calculateAbsentCount() {
-        updateAttendanceCount();
-        return attendanceStatusCount.getAbsentCount();
+        return AttendanceStatus.calculateAttendanceStatusCount(getAttendanceTimeRecords(), AttendanceStatus.ABSENT);
     }
 
     public long calculateLateCount() {
-        updateAttendanceCount();
-        return attendanceStatusCount.getLateCount();
+        return AttendanceStatus.calculateAttendanceStatusCount(getAttendanceTimeRecords(), AttendanceStatus.LATE);
+    }
+
+    public Map<AttendanceStatus, Long> getAttendanceStatusCount() {
+        Map<AttendanceStatus, Long> attendanceStatusCount = new HashMap<>();
+        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
+            attendanceStatusCount.put(
+                    attendanceStatus,
+                    AttendanceStatus.calculateAttendanceStatusCount(getAttendanceTimeRecords(), attendanceStatus));
+        }
+        return attendanceStatusCount;
     }
 
     private void validateDuplicateAttendance(LocalDate today) {
@@ -86,7 +74,6 @@ public class Student {
     private void registerAsAbsentIfNoAttendance(LocalDate date) {
         if (!attendanceTimeRecord.checkAttendanceRecordByLocalDate(date)) {
             attendanceTimeRecord.putNullLocalTime(date);
-            attendanceStatusRecord.putAttendanceStateToAbsent(date);
         }
     }
 
@@ -94,12 +81,7 @@ public class Student {
         return attendanceTimeRecord.getAttendanceTimeRecords();
     }
 
-    public Map<AttendanceStatus, Long> getAttendanceStatusCount() {
-        return attendanceStatusCount.getAttendanceStatusCount();
-    }
-
     public String getName() {
         return name;
     }
-
 }
