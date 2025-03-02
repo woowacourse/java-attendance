@@ -11,10 +11,19 @@ import view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class AttendanceController {
-    private final Pattern MENU_CHOICES = Pattern.compile("[1234Q]");
+    private static final Pattern MENU_CHOICES = Pattern.compile("[1234Q]");
+    private final Map<String, Runnable> menuActions = Map.of(
+            "1", () -> checkIn(),
+            "2", () -> updateRecord(),
+            "3", () -> viewRecord(),
+            "4", () -> viewWarnedCrews(),
+            "Q", () -> {
+            }
+    );
     private final LocalDate currentDate = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
     private final InputView inputView;
     private final OutputView outputView;
@@ -27,21 +36,11 @@ public class AttendanceController {
     }
 
     public void run() {
-        String menuSelection = inputView.readMenuSelection(currentDate);
-        validateMenu(menuSelection);
-
-        if (menuSelection.equals("1")) {
-            checkIn();
-        }
-        if (menuSelection.equals("2")) {
-            updateRecord();
-        }
-        if (menuSelection.equals("3")) {
-            viewRecord();
-        }
-        if (menuSelection.equals("4")) {
-            viewWarnedCrews();
-        }
+        String menuSelection;
+        do {
+            menuSelection = inputView.readMenuSelection(currentDate);
+            repeatAction(menuSelection);
+        } while (!menuSelection.equals("Q"));
     }
 
     private CrewRecords loadCrewRecords() {
@@ -85,7 +84,16 @@ public class AttendanceController {
 
     private void validateMenu(String input) {
         if (!MENU_CHOICES.matcher(input).matches()) {
-            throw new IllegalArgumentException("[ERROR] 메뉴에 없는 선택지입니다.");
+            throw new IllegalArgumentException("[ERROR] 메뉴에 없는 선택지입니다." + System.lineSeparator());
+        }
+    }
+
+    private void repeatAction(String action) {
+        try {
+            validateMenu(action);
+            menuActions.get(action).run();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
