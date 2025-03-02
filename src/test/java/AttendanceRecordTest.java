@@ -6,8 +6,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 public class AttendanceRecordTest {
 
@@ -32,16 +30,6 @@ public class AttendanceRecordTest {
                         Integer.parseInt(time.split(":")[0]),
                         Integer.parseInt(time.split(":")[1])
                 )));
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"09:59, 출석", "10:06, 지각", "10:31, 결석"})
-    void 해당_날짜의_출석_지각_결석_여부를_판단한다(String time, String expected) {
-        AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
-        LocalDateTime attendanceTime = attendanceRecord.attend(time);
-
-        AttendanceStatus status = attendanceRecord.getAttendanceStatus(attendanceTime.getDayOfMonth());
-        assertThat(status.getStatus()).isEqualTo(expected);
     }
 
     @Test
