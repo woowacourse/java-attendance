@@ -37,6 +37,13 @@ public enum LectureTime {
                 .anyMatch(dayOfWeek1 -> dayOfWeek1 == date.getDayOfWeek());
     }
 
+    public static void validateLectureDate(LocalDate date) {
+        Arrays.stream(values())
+                .map(lectureTime -> lectureTime.dayOfWeek)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException(date + ": 교육이 없는 날입니다."));
+    }
+
     public static LectureTime from(LocalDate date) {
         return Arrays.stream(values())
                 .filter(lectureTime -> lectureTime.dayOfWeek == date.getDayOfWeek())

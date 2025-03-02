@@ -2,33 +2,35 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.function.Function;
 
 public enum AttendanceStatus {
-    ATTENDANCE("출석", (elapsedMinutes) -> elapsedMinutes <= 5),
-    LATE("지각", (elapsedMinutes) -> 5 < elapsedMinutes && elapsedMinutes <= 30),
-    ABSENT("결석", (elapsedMinutes) -> elapsedMinutes > 30),
+    ATTENDANCE("출석"),
+    LATE("지각"),
+    ABSENT("결석"),
     ;
 
+    private static final int LATE_LIMIT_IN_MINUTES = 5;
+    private static final int ABSENT_LIMIT_IN_MINUTES = 30;
     private final String description;
-    private final Function<Integer, Boolean> condition;
 
-    AttendanceStatus(String description, Function<Integer, Boolean> condition) {
+    AttendanceStatus(String description) {
         this.description = description;
-        this.condition = condition;
     }
 
     public static AttendanceStatus of(LocalDate date, LocalTime time) {
-        if (!LectureTime.isLectureDate(date)) {
-            throw new IllegalArgumentException(date + ": 교육이 없는 날입니다.");
-        }
+        LectureTime.validateLectureDate(date);
 
         int elapsedMinutes = LectureTime.calculateElapsedMinutes(date, time);
-        return Arrays.stream(values())
-                .filter(status -> status.condition.apply(elapsedMinutes))
-                .findAny()
-                .orElseThrow(() -> new IllegalStateException("논리적으로 도달할 수 없는 예외입니다."));
+        return of(elapsedMinutes);
+    }
+
+    private static AttendanceStatus of(int elapsedMinutes) {
+        if (elapsedMinutes <= LATE_LIMIT_IN_MINUTES) {
+            return ATTENDANCE;
+        } else if (elapsedMinutes <= ABSENT_LIMIT_IN_MINUTES) {
+            return LATE;
+        }
+        return ABSENT;
     }
 
     public String getDescription() {

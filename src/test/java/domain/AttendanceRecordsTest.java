@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -154,12 +153,12 @@ public class AttendanceRecordsTest {
 
             AttendanceRecords attendanceRecords = new AttendanceRecords(AttendanceRecordsGenerator.generate(from, to,
                     crew, lateCount, absentCount));
-            Map<AttendanceStatus, Integer> statusCount = attendanceRecords.calculateAttendanceStatusCount(crew, from,
+            AttendanceStatusCount statusCount = attendanceRecords.calculateAttendanceStatusCount(crew, from,
                     to);
 
             SoftAssertions.assertSoftly(softAssertions -> {
-                softAssertions.assertThat(statusCount.get(AttendanceStatus.LATE)).isEqualTo(lateCount);
-                softAssertions.assertThat(statusCount.get(AttendanceStatus.ABSENT)).isEqualTo(absentCount);
+                softAssertions.assertThat(statusCount.lateCount()).isEqualTo(lateCount);
+                softAssertions.assertThat(statusCount.absentCount()).isEqualTo(absentCount);
             });
         }
     }

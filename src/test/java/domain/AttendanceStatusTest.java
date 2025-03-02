@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class AttendanceStatusTest {
     @Test
     @DisplayName("날짜와 시간으로 알맞는 출석 상태를 반환한다")
-    void ofTest() {
+    void of_test() {
         // given
         LocalDate monday = LocalDate.of(2025, 2, 3);
         LocalTime mondayAttendanceTime = LocalTime.of(13, 1);

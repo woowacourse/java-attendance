@@ -7,18 +7,16 @@ import controller.dto.SaveAttendanceRequest;
 import domain.AbstractAttendanceRecord;
 import domain.AttendanceRecord;
 import domain.AttendanceRecords;
-import domain.AttendanceStatus;
+import domain.AttendanceStatusCount;
 import domain.Crew;
 import domain.Crews;
+import domain.RiskCrew;
 import domain.RiskRank;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.MonthAttendanceStatisticsResponse;
-import service.dto.MonthAttendanceStatisticsResponse.AttendanceStatusCount;
 import service.dto.RiskCrewsResponse;
-import service.dto.RiskCrewsResponse.RiskCrew;
 import service.dto.SaveAttendanceRecordResponse;
 
 public class AttendanceService {
@@ -64,9 +62,9 @@ public class AttendanceService {
         LocalDate to = request.today().minusDays(1);
 
         List<AbstractAttendanceRecord> records = attendanceRecords.getByCrewFromTo(crew, from, to);
-        Map<AttendanceStatus, Integer> statusCount = attendanceRecords.calculateAttendanceStatusCount(crew, from, to);
+        AttendanceStatusCount statusCount = attendanceRecords.calculateAttendanceStatusCount(crew, from, to);
         RiskRank riskRank = RiskRank.from(statusCount);
-        return new MonthAttendanceStatisticsResponse(records, AttendanceStatusCount.of(statusCount), riskRank);
+        return new MonthAttendanceStatisticsResponse(records, statusCount, riskRank);
     }
 
     public RiskCrewsResponse findRiskCrews(RiskCrewsRequest request) {

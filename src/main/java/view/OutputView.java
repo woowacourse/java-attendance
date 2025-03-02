@@ -6,10 +6,10 @@ import static util.DateTimeUtil.TIME_FORMAT;
 
 import domain.AbstractAttendanceRecord;
 import domain.AttendanceRecord;
+import domain.AttendanceStatusCount;
 import domain.RiskRank;
 import java.util.List;
 import service.dto.ModifyAttendanceRecordResponse;
-import service.dto.MonthAttendanceStatisticsResponse.AttendanceStatusCount;
 import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 

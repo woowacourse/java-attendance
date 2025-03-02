@@ -1,7 +1,6 @@
 package domain;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.function.Function;
 
 public enum RiskRank {
@@ -38,10 +37,8 @@ public enum RiskRank {
         return riskCount;
     }
 
-    public static RiskRank from(Map<AttendanceStatus, Integer> statusCount) {
-        int riskCount = getRiskCount(
-                statusCount.getOrDefault(AttendanceStatus.LATE, 0),
-                statusCount.getOrDefault(AttendanceStatus.ABSENT, 0));
+    public static RiskRank from(AttendanceStatusCount statusCount) {
+        int riskCount = getRiskCount(statusCount.lateCount(), statusCount.absentCount());
         return Arrays.stream(values())
                 .filter(riskRank -> riskRank.condition.apply(riskCount))
                 .findAny()
