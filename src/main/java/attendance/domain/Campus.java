@@ -8,6 +8,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class Campus {
     private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
@@ -15,6 +17,8 @@ public class Campus {
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0, 0);
     private static final int PRESENT_LIMIT_MINUTES = 5;
     private static final int LATE_LIMIT_MINUTES = 30;
+
+    private static final String IS_OFF_DAY_ERROR = "[ERROR] 12월 %d일 %s은 등교일이 아닙니다.";
 
     public static boolean isOffDay(final LocalDateTime attendance) {
         if (isWeekend(attendance)) {
@@ -48,5 +52,15 @@ public class Campus {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.PRESENT;
+    }
+
+    public static void validateOperationDay(final LocalDateTime attendance) {
+        if (isOffDay(attendance)) {
+            throw new IllegalArgumentException(String.format(
+                    IS_OFF_DAY_ERROR,
+                    attendance.getDayOfMonth(),
+                    attendance.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
+            ));
+        }
     }
 }
