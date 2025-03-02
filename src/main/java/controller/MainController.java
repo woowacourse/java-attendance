@@ -5,12 +5,14 @@ import domain.AttendanceBook;
 import domain.AttendanceStateCount;
 import domain.Crew;
 import domain.CrewsAttendanceBook;
+import domain.PenaltyBook;
 import domain.PenaltyType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import util.AttendanceFileReader;
 import util.DateTimeUtil;
 import view.InputView;
@@ -38,7 +40,7 @@ public class MainController {
                     attendanceHistory();
                     break;
                 case "4":
-//                    absenceHistory();
+                    absenceHistory();
                     break;
             }
         } while (!"Q".equals(feature));
@@ -87,6 +89,11 @@ public class MainController {
         PenaltyType penaltyType = attendanceBook.calculatePenaltyType(attendanceStateCount);
 
         OutputView.printAttendancePenaltyHistory(attendanceStateCount, penaltyType);
+    }
 
+    private void absenceHistory() {
+        Set<PenaltyBook> penaltyBooks = crewsAttendanceBook.calculatePenaltyBooks();
+
+        OutputView.printAbsenceHistory(penaltyBooks);
     }
 }

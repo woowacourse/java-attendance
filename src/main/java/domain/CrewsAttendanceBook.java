@@ -52,6 +52,7 @@ public class CrewsAttendanceBook {
     public Set<PenaltyBook> calculatePenaltyBooks() {
         return attendances.entrySet().stream()
                 .map(entry -> entry.getValue().createPenaltyBook(entry.getKey()))
+                .filter(p -> p.penaltyType() != PenaltyType.NONE)
                 .collect(Collectors.toSet());
     }
 }
