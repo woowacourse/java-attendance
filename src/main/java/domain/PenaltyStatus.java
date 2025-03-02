@@ -18,14 +18,14 @@ public enum PenaltyStatus {
         this.lowerLimit = lowerLimit;
     }
 
-    public static PenaltyStatus findStatusByNickname(String nickname, Attendances attendances) {
+    public static PenaltyStatus findStatusByNickname(Nickname nickname, Attendances attendances) {
         return Arrays.stream(values())
                 .filter(penaltyStatus -> penaltyStatus.lowerLimit <= getTotalAbsentCount(nickname, attendances))
                 .findFirst()
                 .orElse(NONE);
     }
 
-    public static int getTotalAbsentCount(String nickname, Attendances attendances) {
+    public static int getTotalAbsentCount(Nickname nickname, Attendances attendances) {
         int lateCount = attendances.calculateLateCount(nickname);
         int absentCount = attendances.calculateAbsentCount(nickname);
         return absentCount + lateCount / LATE_TO_ABSENT_RATIO;

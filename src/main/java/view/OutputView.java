@@ -49,7 +49,7 @@ public class OutputView {
         System.out.printf("-> %d월 %02d일 %s %s (%s) 수정 완료!\n", updatedDateTime.getMonthValue(), updatedDateTime.getDayOfMonth(), updatedDayOfWeekName, updatedAttendanceTime, updatedStatus.getName());
     }
 
-    public void printAttendanceLogsWithCrew(String nickname, Attendances attendances) {
+    public void printAttendanceLogsWithCrew(Nickname nickname, Attendances attendances) {
         System.out.printf("\n이번 달 %s의 출석 기록입니다\n\n", nickname);
         List<Attendance> logs = attendances.getLogsWithName(nickname);
         logs.sort(Comparator.comparing(log -> log.getLocalDateTime().toLocalDate().getDayOfMonth()));
@@ -71,7 +71,7 @@ public class OutputView {
         }
     }
 
-    private void printAttendanceStatus(String nickname, Attendances attendances) {
+    private void printAttendanceStatus(Nickname nickname, Attendances attendances) {
         int attendanceCount = attendances.calculateAttendanceCount(nickname);
         int lateCount = attendances.calculateLateCount(nickname);
         int absentCount = attendances.calculateAbsentCount(nickname);
@@ -81,7 +81,7 @@ public class OutputView {
         System.out.printf("결석: %d회\n", absentCount);
     }
 
-    private void printPenaltyStatus(String nickname, Attendances attendances) {
+    private void printPenaltyStatus(Nickname nickname, Attendances attendances) {
         String penaltyName = PenaltyStatus.findStatusByNickname(nickname, attendances).getName();
         if (!penaltyName.equals("비대상자")) {
             System.out.printf("\n%s 대상자입니다.", penaltyName);
@@ -90,9 +90,9 @@ public class OutputView {
 
     public void printPenaltyCrews(Attendances attendances) {
         System.out.println("\n제적 위험자 조회 결과");
-        List<String> penaltyCrews = getPenaltyCrews(attendances.getCrewNames(), attendances);
+        List<Nickname> penaltyCrews = getPenaltyCrews(attendances.getCrewNames(), attendances);
 
-        for (String nickname : penaltyCrews) {
+        for (Nickname nickname : penaltyCrews) {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
                     nickname, attendances.calculateAbsentCount(nickname),
                     attendances.calculateLateCount(nickname),
@@ -101,10 +101,10 @@ public class OutputView {
         System.out.println();
     }
 
-    private List<String> getPenaltyCrews(List<String> allCrewNames, Attendances attendances) {
+    private List<Nickname> getPenaltyCrews(List<Nickname> allCrewNames, Attendances attendances) {
         return allCrewNames.stream()
                 .filter(nickname -> PenaltyStatus.findStatusByNickname(nickname, attendances) != PenaltyStatus.NONE)
-                .sorted(Comparator.<String>comparingInt(
+                .sorted(Comparator.<Nickname>comparingInt(
                                 nickname -> PenaltyStatus.getTotalAbsentCount(
                                         nickname,
                                         attendances))

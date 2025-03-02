@@ -12,13 +12,13 @@ import java.util.Map;
 
 public class Attendances {
 
-    private final Map<String, List<Attendance>> attendances;
+    private final Map<Nickname, List<Attendance>> attendances;
 
-    public Attendances(Map<String, List<Attendance>> attendances) {
+    public Attendances(Map<Nickname, List<Attendance>> attendances) {
         this.attendances = attendances;
     }
 
-    public void addAttendanceLog(String nickname, LocalDateTime localDateTime) {
+    public void addAttendanceLog(Nickname nickname, LocalDateTime localDateTime) {
         validateHoliday(localDateTime.toLocalDate());
         if (!attendances.containsKey(nickname)) {
             List<Attendance> logs = new ArrayList<>();
@@ -31,11 +31,11 @@ public class Attendances {
         logs.add(new Attendance(localDateTime));
     }
 
-    public List<Attendance> getLogsWithName(String nickname) {
+    public List<Attendance> getLogsWithName(Nickname nickname) {
         return attendances.get(nickname);
     }
 
-    public Attendance findLogWithNameAndDate(String nickname, LocalDate date) {
+    public Attendance findLogWithNameAndDate(Nickname nickname, LocalDate date) {
         return getLogsWithName(nickname).stream()
                 .filter(attendance -> attendance.isEqualTo(date))
                 .findFirst()
@@ -43,28 +43,28 @@ public class Attendances {
 
     }
 
-    public int calculateAttendanceCount(String nickname) {
+    public int calculateAttendanceCount(Nickname nickname) {
         List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
                 .filter(attendance -> StandardTime.judge(attendance.getLocalDateTime()) == AttendanceStatus.ATTENDANCE)
                 .count();
     }
 
-    public int calculateLateCount(String nickname) {
+    public int calculateLateCount(Nickname nickname) {
         List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
                 .filter(attendance -> StandardTime.judge(attendance.getLocalDateTime()) == AttendanceStatus.LATENESS)
                 .count();
     }
 
-    public int calculateAbsentCount(String nickname) {
+    public int calculateAbsentCount(Nickname nickname) {
         List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
                 .filter(attendance -> StandardTime.judge(attendance.getLocalDateTime()) == AttendanceStatus.ABSENCE)
                 .count();
     }
 
-    public void updateAttendance(String nickname, LocalDateTime updateDateTime) {
+    public void updateAttendance(Nickname nickname, LocalDateTime updateDateTime) {
         validateHoliday(updateDateTime.toLocalDate());
         List<Attendance> attendancesWithCrew = attendances.get(nickname);
         attendancesWithCrew.stream()
@@ -73,7 +73,7 @@ public class Attendances {
                 .ifPresent(attendance -> attendance.updateAttendance(updateDateTime.toLocalTime()));
     }
 
-    public List<String> getCrewNames() {
+    public List<Nickname> getCrewNames() {
         return attendances.keySet().stream().toList();
     }
 
@@ -81,7 +81,7 @@ public class Attendances {
         attendances.keySet().forEach(this::recordAbsence);
     }
 
-    private void recordAbsence(String nickname) {
+    private void recordAbsence(Nickname nickname) {
         StandardDate.TODAY.withDayOfMonth(1)
                 .datesUntil(StandardDate.TODAY)
                 .filter(date -> date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY)
@@ -90,7 +90,7 @@ public class Attendances {
                 .forEach(date -> addAttendanceLog(nickname, LocalDateTime.of(date, LocalTime.MAX)));
     }
 
-    private boolean isAlreadyAttend(String nickname, LocalDate date) {
+    private boolean isAlreadyAttend(Nickname nickname, LocalDate date) {
         return attendances.get(nickname).stream().anyMatch(attendance -> attendance.isEqualTo(date));
     }
 
@@ -100,7 +100,7 @@ public class Attendances {
         }
     }
 
-    public String checkCrewName(String nickname) {
+    public Nickname checkCrewName(Nickname nickname) {
         if (!attendances.containsKey(nickname)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }

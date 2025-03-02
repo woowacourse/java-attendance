@@ -3,6 +3,7 @@ package controller;
 import domain.Attendance;
 import domain.Attendances;
 import domain.Command;
+import domain.Nickname;
 import domain.constant.StandardDate;
 import view.InputView;
 import view.OutputView;
@@ -48,7 +49,7 @@ public class AttendanceController {
     }
 
     private void registerAttendance() {
-        String nickname = attendances.checkCrewName(inputView.readNickname());
+        Nickname nickname = attendances.checkCrewName(new Nickname(inputView.readNickname()));
         LocalTime attendanceTime = inputView.readAttendanceTime();
         LocalDateTime localDateTime = LocalDateTime.of(StandardDate.TODAY, attendanceTime);
         attendances.addAttendanceLog(nickname, localDateTime);
@@ -56,7 +57,7 @@ public class AttendanceController {
     }
 
     private void updateAttendance() {
-        String nickname = attendances.checkCrewName(inputView.readUpdateNickname());
+        Nickname nickname = attendances.checkCrewName(new Nickname(inputView.readUpdateNickname()));
         int updateDayOfMonth = inputView.readUpdateDayOfMonth();
         validateDayOfMonth(updateDayOfMonth);
         LocalDate updateDate = getUpdateDate(updateDayOfMonth);
@@ -75,7 +76,7 @@ public class AttendanceController {
     }
 
     private void identifyAttendanceLogsWithCrew() {
-        String nickname = attendances.checkCrewName(inputView.readNickname());
+        Nickname nickname = attendances.checkCrewName(new Nickname(inputView.readNickname()));
         outputView.printAttendanceLogsWithCrew(nickname, attendances);
 
     }

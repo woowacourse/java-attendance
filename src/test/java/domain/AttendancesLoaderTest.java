@@ -45,7 +45,7 @@ public class AttendancesLoaderTest {
 
         AttendancesLoader loader = new AttendancesLoader();
         Attendances attendances = loader.load(new FileReader("testAttendance.csv"));
-        List<Attendance> logsWithCrew1 = attendances.getLogsWithName("빙봉");
+        List<Attendance> logsWithCrew1 = attendances.getLogsWithName(new Nickname("빙봉"));
         Attendance attendance = logsWithCrew1.getFirst();
         LocalDateTime localDateTime = attendance.getLocalDateTime();
 
@@ -72,7 +72,7 @@ public class AttendancesLoaderTest {
         writer.write(csvFileFormat);
         writer.flush();
         writer.close();
-        
+
         AttendancesLoader loader = new AttendancesLoader();
         Assertions.assertThatThrownBy(() -> loader.load(new FileReader("testAttendance.csv"))).isInstanceOf(IOException.class).hasMessage("[ERROR] 출석 파일을 읽는 중 오류가 발생했습니다.");
     }

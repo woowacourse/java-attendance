@@ -16,7 +16,7 @@ public class AttendancesLoader {
 
     public Attendances load(FileReader fileReader) throws IOException {
         BufferedReader reader = new BufferedReader(fileReader);
-        Map<String, List<Attendance>> attendances = new HashMap<>();
+        Map<Nickname, List<Attendance>> attendances = new HashMap<>();
         try {
             skipTitleLine(reader);
             addAttendanceLog(reader, attendances);
@@ -27,11 +27,11 @@ public class AttendancesLoader {
         return new Attendances(attendances);
     }
 
-    private void addAttendanceLog(BufferedReader reader, Map<String, List<Attendance>> attendances) throws IOException {
+    private void addAttendanceLog(BufferedReader reader, Map<Nickname, List<Attendance>> attendances) throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
             String[] nameAndDatetime = line.split(",");
-            String nickname = nameAndDatetime[0];
+            Nickname nickname = new Nickname(nameAndDatetime[0]);
             String datetime = nameAndDatetime[1];
             LocalDateTime localDateTime = LocalDateTime.parse(datetime, formatter);
 

@@ -23,32 +23,32 @@ class AttendancesTest {
     @BeforeEach
     public void setAttendances() {
         attendances = new Attendances(Map.of(
-                "짱수", List.of(
+                new Nickname("짱수"), List.of(
                         new Attendance(LocalDateTime.of(2025, 2, 3, 13, 5)),
                         new Attendance(LocalDateTime.of(2025, 2, 4, 10, 10)),
                         new Attendance(LocalDateTime.of(2025, 2, 5, 10, 4)),
                         new Attendance(LocalDateTime.of(2025, 2, 6, 10, 31)),
                         new Attendance(LocalDateTime.of(2025, 2, 7, 10, 0))),
-                "이든", List.of(
+                new Nickname("이든"), List.of(
                         new Attendance(LocalDateTime.of(2025, 2, 3, 13, 31)),
                         new Attendance(LocalDateTime.of(2025, 2, 4, 10, 31)),
                         new Attendance(LocalDateTime.of(2025, 2, 5, 10, 31)),
                         new Attendance(LocalDateTime.of(2025, 2, 6, 11, 0)),
                         new Attendance(LocalDateTime.of(2025, 2, 7, 10, 40)),
                         new Attendance(LocalDateTime.of(2025, 2, 10, 13, 40))),
-                "빙티", List.of(
+                new Nickname("빙티"), List.of(
                         new Attendance(LocalDateTime.of(2025, 2, 3, 13, 30)),
                         new Attendance(LocalDateTime.of(2025, 2, 4, 12, 0)),
                         new Attendance(LocalDateTime.of(2025, 2, 5, 13, 0)),
                         new Attendance(LocalDateTime.of(2025, 2, 6, 15, 0)),
                         new Attendance(LocalDateTime.of(2025, 2, 7, 14, 0))),
-                "빙봉", List.of(
+                new Nickname("빙봉"), List.of(
                         new Attendance(LocalDateTime.of(2025, 2, 3, 13, 31)),
                         new Attendance(LocalDateTime.of(2025, 2, 4, 10, 15)),
                         new Attendance(LocalDateTime.of(2025, 2, 5, 12, 0)),
                         new Attendance(LocalDateTime.of(2025, 2, 6, 9, 56)),
                         new Attendance(LocalDateTime.of(2025, 2, 7, 10, 20))),
-                "쿠키", List.of(
+                new Nickname("쿠키"), List.of(
                         new Attendance(LocalDateTime.of(2025, 2, 3, 13, 31)),
                         new Attendance(LocalDateTime.of(2025, 2, 4, 11, 0)),
                         new Attendance(LocalDateTime.of(2025, 2, 5, 10, 6)),
@@ -60,7 +60,7 @@ class AttendancesTest {
 
     @Test
     void 크루의_출석_상태별_횟수를_조회한다() {
-        String nickname = "짱수";
+        Nickname nickname = new Nickname("짱수");
 
         assertThat(attendances.calculateAttendanceCount(nickname)).isEqualTo(3);
         assertThat(attendances.calculateLateCount(nickname)).isEqualTo(1);
@@ -69,7 +69,7 @@ class AttendancesTest {
 
     @Test
     void 결석_5회_초과일경우_제적_대상자이다() {
-        String nickname = "이든";
+        Nickname nickname = new Nickname("이든");
 
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
 
@@ -78,7 +78,7 @@ class AttendancesTest {
 
     @Test
     void 결석_3회_이상일경우_면담_대상자이다() {
-        String nickname = "빙티";
+        Nickname nickname = new Nickname("빙티");
 
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
 
@@ -87,7 +87,7 @@ class AttendancesTest {
 
     @Test
     void 결석_2회_이상일경우_경고_대상자이다() {
-        String nickname = "빙봉";
+        Nickname nickname = new Nickname("빙봉");
 
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
 
@@ -96,7 +96,7 @@ class AttendancesTest {
 
     @Test
     void 지각_3회는_결석_1회로_간주한다() {
-        String nickname = "쿠키";
+        Nickname nickname = new Nickname("쿠키");
 
         int totalAbsentCount = PenaltyStatus.getTotalAbsentCount(nickname, attendances);
 
@@ -105,7 +105,7 @@ class AttendancesTest {
 
     @Test
     void 결석_2회_이하일경우_제적_대상자가_아니다() {
-        String nickname = "짱수";
+        Nickname nickname = new Nickname("짱수");
 
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
 
@@ -114,7 +114,7 @@ class AttendancesTest {
 
     @Test
     void 닉네임과_일자를_통해_출석기록을_가져온다() {
-        String nickname = "빙티";
+        Nickname nickname = new Nickname("빙티");
         LocalDate attendanceDate = LocalDate.of(2025, 2, 5);
 
         Attendance log = attendances.findLogWithNameAndDate(nickname, attendanceDate);
@@ -124,7 +124,7 @@ class AttendancesTest {
 
     @Test
     void 닉네임과_일자를_통해_출석을_추가한다() {
-        String nickname = "짱수";
+        Nickname nickname = new Nickname("짱수");
         LocalDateTime attendanceDateTime = LocalDateTime.of(2025, 2, 10, 13, 0);
 
         Attendances testAttendances = new Attendances(new HashMap<>());
@@ -135,7 +135,7 @@ class AttendancesTest {
 
     @Test
     void 닉네임과_수정일자를_통해_출석기록을_수정한다() {
-        String nickname = "빙봉";
+        Nickname nickname = new Nickname("빙봉");
         LocalDateTime updateDateTime = LocalDateTime.of(2025, 2, 7, 10, 0);
 
         attendances.updateAttendance(nickname, updateDateTime);
@@ -147,7 +147,7 @@ class AttendancesTest {
 
     @Test
     void 공휴일에_출석을_시도하면_예외를_발생시킨다() {
-        String nickname = "짱수";
+        Nickname nickname = new Nickname("짱수");
 
         LocalDateTime attendanceDateTime = LocalDateTime.of(2025, 2, 11, 10, 0);
         int month = attendanceDateTime.getMonthValue();
@@ -159,9 +159,9 @@ class AttendancesTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"제프, 에드, 이프"})
+    @ValueSource(strings = {"제프", "에드", "이프"})
     void 등록되지_않은_닉네임_예외를_발생시킨다(String nickname) {
-        assertThatThrownBy(() -> attendances.checkCrewName(nickname))
+        assertThatThrownBy(() -> attendances.checkCrewName(new Nickname(nickname)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
