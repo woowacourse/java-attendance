@@ -52,4 +52,7 @@ public enum Calender {
         return MON.dayOfWeek.equals(time.getDayOfWeek());
     }
 
+    public String getDescription() {
+        return description;
+    }
 }
