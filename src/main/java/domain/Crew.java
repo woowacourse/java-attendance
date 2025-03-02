@@ -14,6 +14,10 @@ public class Crew {
         this.disciplinaryStatus = disciplinaryStatus;
     }
 
+    public boolean isSameAs(final Nickname nickname) {
+        return this.nickname.equals(nickname);
+    }
+
     public DisciplinaryStatus getDisciplinaryStatus() {
         return disciplinaryStatus;
     }

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -55,5 +56,25 @@ class CrewsTest {
                 late);
 
         return new Crew(nickname1, attendanceRecords, disciplinaryStatus);
+    }
+
+
+    @DisplayName("같은 이름은 가진 크루가 있다면 true 올바르지 않다면 false 반환")
+    @Test
+    void validateCrew_WhenNicknameMatches_DoesNotThrowException_WhenNotMatches_ThrowsException() {
+        final Nickname expectedTrueNickname = new Nickname("짱구");
+        final Nickname expectedFalseNickname = new Nickname("하쿠");
+        final List<Crew> crewGroup = new ArrayList<>();
+        final Crew crew = generateCrew("짱구", List.of("2024-12-03 11:00"));
+
+        crewGroup.add(crew);
+        final Crews crews = new Crews(crewGroup);
+
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThatCode(() -> crews.validateCrew(expectedTrueNickname))
+                    .doesNotThrowAnyException();
+            softly.assertThatThrownBy(() -> crews.validateCrew(expectedFalseNickname))
+                    .isInstanceOf(IllegalArgumentException.class);
+        });
     }
 }
