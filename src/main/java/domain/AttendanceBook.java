@@ -62,17 +62,18 @@ public class AttendanceBook {
         return crews.get(name).getAttendanceRecords();
     }
 
-    public Map<AttendanceStatus, Long> countAttendanceStatus(final String name) {
+    public Map<AttendanceStatus, Integer> countAttendanceStatus(final String name) {
         final List<AttendanceRecord> attendanceRecords = lookUpAttendanceHistory(name);
         return attendanceRecords.stream()
                 .collect(Collectors.groupingBy(
                         AttendanceRecord::status,
-                        Collectors.counting()));
+                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue)
+                ));
     }
 
     public Penalty calculatePenalty(final String name) {
-        final Map<AttendanceStatus, Long> countAttendanceStatus = countAttendanceStatus(name);
-        return Penalty.findByAbsenceCount((int) (countAttendanceStatus.get(AttendanceStatus.ABSENCE)
+        final Map<AttendanceStatus, Integer> countAttendanceStatus = countAttendanceStatus(name);
+        return Penalty.findByAbsenceCount((countAttendanceStatus.get(AttendanceStatus.ABSENCE)
                 + countAttendanceStatus.get(AttendanceStatus.LATE) / LATES_COUNT_PER_ABSENCE));
     }
 }

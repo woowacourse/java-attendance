@@ -117,7 +117,7 @@ public class AttendanceBookTest {
         final String name = "쿠키";
 
         //when
-        final Map<AttendanceStatus, Long> countAttendanceStatus = attendanceBook.countAttendanceStatus(name);
+        final Map<AttendanceStatus, Integer> countAttendanceStatus = attendanceBook.countAttendanceStatus(name);
 
         //then
         assertAll(

@@ -5,12 +5,16 @@ import domain.AttendanceBook;
 import domain.AttendanceCommand;
 import domain.AttendanceModification;
 import domain.AttendanceRecord;
+import domain.AttendanceStatus;
 import domain.AttendanceTime;
+import domain.Penalty;
 import dto.AttendanceDetails;
+import dto.AttendanceHistory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import view.ConsoleInputView;
 import view.ConsoleOutputView;
@@ -65,7 +69,11 @@ public class AttendanceController {
             final List<AttendanceDetails> attendanceDetails = attendanceRecords.stream()
                     .map(this::convertToAttendanceDetails)
                     .toList();
-            outputView.printAttendanceHistory(name, attendanceDetails);
+            final Map<AttendanceStatus, Integer> countAttendanceStatus = attendanceBook.countAttendanceStatus(name);
+            final Penalty penalty = attendanceBook.calculatePenalty(name);
+            final AttendanceHistory attendanceHistory = AttendanceHistory.of(attendanceDetails, countAttendanceStatus,
+                    penalty.getCode());
+            outputView.printAttendanceHistory(name, attendanceHistory);
         }
         if (Objects.equals(attendanceCommand, AttendanceCommand.QUIT)) {
             return;
