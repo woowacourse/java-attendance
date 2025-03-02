@@ -34,4 +34,8 @@ public class AttendanceBook {
     public void checkIn(CheckInHistory checkInHistory, CheckInDate checkInDate, CheckInTime checkInTime) {
         checkInHistory.checkIn(checkInDate, checkInTime);
     }
+
+    public void modifyCheckInTime(CheckInHistory checkInHistory, CheckInDate checkInDate, CheckInTime checkInTime) {
+        checkInHistory.modifyCheckInTime(checkInDate, checkInTime);
+    }
 }
