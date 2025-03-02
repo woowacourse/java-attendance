@@ -15,10 +15,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class AttendanceRecordTest {
 
     @Nested
-    @DisplayName("성공 테스트")
-    class SuccessCases {
+    @DisplayName("출석 상태를 계산한다.")
+    class CalculateAttendanceStatus {
 
-        @DisplayName("출석 상태를 계산하여 반환한다.")
+        @DisplayName("출석 상태를 올바르게 계산한다.")
         @ParameterizedTest
         @MethodSource("provideDateTimeAndAttendanceStatus")
         public void calculateAttendanceStatus(final LocalDateTime info, final AttendanceStatus expected)
@@ -41,7 +41,7 @@ public class AttendanceRecordTest {
             );
         }
 
-        @DisplayName("record가 비어있다면, ABSENCE를 반환한다.")
+        @DisplayName("출석 계산시, AttendanceTime이 존재하지 않는다면, ABSENCE를 반환한다.")
         @Test
         public void calculateAttendanceStatusByEmpty() throws Exception {
             // given
@@ -56,8 +56,4 @@ public class AttendanceRecordTest {
 
     }
 
-    @Nested
-    @DisplayName("실패 테스트")
-    class FailCases {
-    }
 }
