@@ -3,7 +3,7 @@ package domain;
 import java.util.Objects;
 
 public class NickName {
-    String nickName;
+    private final String nickName;
 
     public NickName(String nickName) {
         this.nickName = nickName;
