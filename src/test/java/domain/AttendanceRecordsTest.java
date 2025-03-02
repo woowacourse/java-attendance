@@ -1,11 +1,17 @@
 package domain;
 
+import fixture.AttendanceRecordsFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -23,6 +29,56 @@ class AttendanceRecordsTest {
 
         // then
         assertThatNoException().isThrownBy(() -> attendanceRecords.add(attendanceRecord));
+    }
+
+    @DisplayName("입력 받은 날짜의 출석 시간을 수정할 수 있다.")
+    @Test
+    void updateTest() {
+        // given
+        AttendanceRecords attendanceRecords = new AttendanceRecords();
+        AttendanceRecord oldRecord = new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:10"));
+        attendanceRecords.add(oldRecord);
+        LocalTime newTime = LocalTime.of(13, 0);
+        LocalDate oldDate = LocalDate.of(2024, 12, 2);
+
+        // when
+        attendanceRecords.update(oldDate, newTime);
+
+        // then
+        assertAll(
+                () -> assertThat(oldRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.TARDY),
+                () -> assertThat(attendanceRecords.getRecordOnDate(oldDate).getAttendanceStatus()).isEqualTo(AttendanceStatus.PRESENT)
+        );
+    }
+
+    @DisplayName("기록이 없는 날짜의 출석 시간을 수정하려고 할 경우 예외가 발생한다.")
+    @Test
+    void updateExceptionTest() {
+        // given
+        AttendanceRecords attendanceRecords = new AttendanceRecords();
+
+        // when
+        LocalDate date = LocalDate.of(2024, 12, 3);
+        LocalTime time = LocalTime.of(10, 0);
+
+        // then
+        assertThatThrownBy(() -> attendanceRecords.update(date, time)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("입력 받은 날짜에 해당하는 출석 기록 객체를 반환한다.")
+    @Test
+    void getRecordOnDateTest() {
+        // given
+        AttendanceRecords attendanceRecords = new AttendanceRecords();
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 10);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(dateTime);
+
+        // when
+        attendanceRecords.add(attendanceRecord);
+        AttendanceRecord actualValue = attendanceRecords.getRecordOnDate(dateTime.toLocalDate());
+
+        // then
+        assertThat(actualValue).isEqualTo(new AttendanceRecord(dateTime));
     }
 
     @DisplayName("주어진 날짜에 출석 기록이 존재하는지 여부를 반환한다.")
@@ -88,69 +144,92 @@ class AttendanceRecordsTest {
         assertThat(attendanceRecords.getAttendanceCount(targetStatus)).isEqualTo(1);
     }
 
-    @DisplayName("새 출석 기록 추가 시 해당 날짜에 이미 기록이 존재하면 예외를 발생시킨다.")
+    @DisplayName("입력 받은 날짜의 전날까지의 출석 기록을 반환한다.")
     @Test
-    void addExceptionTest() {
+    void getRecordsUntilBeforeTest() {
         // given
-        AttendanceRecords attendanceRecords = new AttendanceRecords();
-        AttendanceRecord record = new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:10"));
-
-        // when
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:00")));
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-03T10:00")));
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-04T10:40")));
-
-        // then
-        assertThatThrownBy(() -> attendanceRecords.add(record)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("입력 받은 날짜의 출석 시간을 수정할 수 있다.")
-    @Test
-    void updateTest() {
-        // given
-        AttendanceRecords attendanceRecords = new AttendanceRecords();
-        AttendanceRecord oldRecord = new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:10"));
-        attendanceRecords.add(oldRecord);
-        LocalTime newTime = LocalTime.of(13, 0);
-        LocalDate oldDate = LocalDate.of(2024, 12, 2);
-
-        // when
-        attendanceRecords.update(oldDate, newTime);
-
-        // then
-        assertAll(
-                () -> assertThat(oldRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.TARDY),
-                () -> assertThat(attendanceRecords.getRecordOnDate(oldDate).getAttendanceStatus()).isEqualTo(AttendanceStatus.PRESENT)
+        AttendanceRecords attendanceRecords = AttendanceRecordsFixture.createAttendanceRecords(
+                "2024-12-02T13:00",
+                "2024-12-03T10:00",
+                "2024-12-04T10:40",
+                "2024-12-05T10:00"
         );
-    }
-
-    @DisplayName("주어진 날짜의 출석 기록을 삭제할 수 있다.")
-    @Test
-    void removeTest() {
-        // given
-        AttendanceRecords attendanceRecords = new AttendanceRecords();
-        LocalDateTime dateTime = LocalDateTime.parse("2024-12-02T13:10");
-        AttendanceRecord record = new AttendanceRecord(dateTime);
-        attendanceRecords.add(record);
 
         // when
-        attendanceRecords.remove(record);
+        LocalDate targetDate = LocalDate.of(2024, 12, 4);
+        List<AttendanceRecord> records = attendanceRecords.getRecordsUntilBefore(targetDate);
+        int expectedValue = 2;
+        int actualValue = records.size();
 
         // then
-        assertThat(attendanceRecords.hasRecordOnDate(dateTime.toLocalDate())).isFalse();
+        assertThat(actualValue).isEqualTo(expectedValue);
     }
 
-    @DisplayName("기록이 없는 날짜의 출석 시간을 수정하려고 할 경우 예외가 발생한다.")
-    @Test
-    void updateExceptionTest() {
-        // given
-        AttendanceRecords attendanceRecords = new AttendanceRecords();
-
+    @DisplayName("출석 기록에 해당하는 제적 상태를 반환한다.")
+    @ParameterizedTest
+    @MethodSource("warningStatusTestArgs")
+    void getWarningStatusTest(WarningStatus expectedValue, AttendanceRecords attendanceRecords) {
         // when
-        LocalDate date = LocalDate.of(2024, 12, 3);
-        LocalTime time = LocalTime.of(10, 0);
+        WarningStatus actualValue = attendanceRecords.getWarningStatus();
 
         // then
-        assertThatThrownBy(() -> attendanceRecords.update(date, time)).isInstanceOf(IllegalArgumentException.class);
+        assertThat(actualValue).isEqualTo(expectedValue);
+    }
+
+    @DisplayName("지각 3회를 결석 1회로 전환한 총 결석 횟수를 반환한다.")
+    @Test
+    void getConvertedAbsencesTest() {
+        // given
+        AttendanceRecords attendanceRecords = AttendanceRecordsFixture.createAttendanceRecords(
+                "2024-12-02T13:10",
+                "2024-12-03T10:20",
+                "2024-12-04T10:40",
+                "2024-12-05T11:00"
+        );
+
+        // when
+        int expectedValue = 2;
+        int actualValue = attendanceRecords.getConvertedAbsences();
+
+        // then
+        assertThat(actualValue).isEqualTo(expectedValue);
+    }
+
+    @DisplayName("지각 3회를 결석 1회로 전환한 후의 나머지 지각 횟수를 반환한다.")
+    @Test
+    void getTardiesAfterConversionTest() {
+        // given
+        AttendanceRecords attendanceRecords = AttendanceRecordsFixture.createAttendanceRecords(
+                "2024-12-02T13:10",
+                "2024-12-03T10:20",
+                "2024-12-04T10:08",
+                "2024-12-05T10:00",
+                "2024-12-06T10:15"
+        );
+
+        // when
+        int expectedValue = 1;
+        int actualValue = attendanceRecords.getTardiesAfterConversion();
+
+        // then
+        assertThat(actualValue).isEqualTo(expectedValue);
+    }
+
+    static Stream<Arguments> warningStatusTestArgs() {
+        return Stream.of(
+                Arguments.of(WarningStatus.WARN, AttendanceRecordsFixture.createAttendanceRecords("2024-12-02T14:00",
+                        "2024-12-03T10:10",
+                        "2024-12-04T10:10",
+                        "2024-12-05T10:10")),
+                Arguments.of(WarningStatus.COUNSEL, AttendanceRecordsFixture.createAttendanceRecords("2024-12-02T14:00",
+                        "2024-12-03T14:00",
+                        "2024-12-04T14:00")),
+                Arguments.of(WarningStatus.EXPEL, AttendanceRecordsFixture.createAttendanceRecords("2024-12-02T14:00",
+                        "2024-12-03T14:00",
+                        "2024-12-04T14:00",
+                        "2024-12-05T14:00",
+                        "2024-12-06T14:00",
+                        "2024-12-09T14:00"))
+        );
     }
 }

@@ -33,7 +33,7 @@ public class OutputView {
 
     public void printCrewRecord(LocalDate currentDate, AttendanceRecords attendanceRecords, Crew crew) {
         System.out.printf("%n이번 달 %s의 출석 기록입니다.%n", crew.name());
-        attendanceRecords.getRecordsUntil(currentDate)
+        attendanceRecords.getRecordsUntilBefore(currentDate)
                 .forEach(this::printAttendanceRecord);
         printAttendanceStatus(attendanceRecords);
         printWarningStatus(attendanceRecords);

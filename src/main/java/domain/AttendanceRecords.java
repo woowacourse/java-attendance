@@ -13,10 +13,6 @@ public class AttendanceRecords {
         records.add(record);
     }
 
-    public void remove(AttendanceRecord record) {
-        records.remove(record);
-    }
-
     public void update(LocalDate date, LocalTime newTime) {
         AttendanceRecord oldRecord = getRecordOnDate(date);
         AttendanceRecord newRecord = new AttendanceRecord(LocalDateTime.of(date, newTime));
@@ -41,7 +37,7 @@ public class AttendanceRecords {
                 .count();
     }
 
-    public List<AttendanceRecord> getRecordsUntil(LocalDate currentDate) {
+    public List<AttendanceRecord> getRecordsUntilBefore(LocalDate currentDate) {
         return records.stream()
                 .filter(record -> record.getDate().isBefore(currentDate))
                 .toList();
@@ -62,5 +58,9 @@ public class AttendanceRecords {
     public int getTardiesAfterConversion() {
         int tardyCount = getAttendanceCount(AttendanceStatus.TARDY);
         return WarningStatus.getTardiesAfterConversion(tardyCount);
+    }
+
+    private void remove(AttendanceRecord record) {
+        records.remove(record);
     }
 }
