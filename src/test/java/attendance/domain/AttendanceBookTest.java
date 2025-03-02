@@ -49,8 +49,8 @@ public class AttendanceBookTest {
 
     @ParameterizedTest
     @CsvSource(value = {
-            "27,true",
-            "28,false"
+            "27, true",
+            "28, false"
     })
     void 입력_받은_이름과_날짜에_해당하는_출석_기록이_존재하는지_판단한다(final int date, final boolean expectedResult) {
 
