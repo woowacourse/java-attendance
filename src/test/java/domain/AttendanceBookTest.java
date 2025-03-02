@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -90,5 +91,19 @@ public class AttendanceBookTest {
                 LocalDate.of(2024, 12, 14),
                 LocalDate.of(2024, 12, 25)
         );
+    }
+
+    @Test
+    @DisplayName("크루별 출석 기록을 확인한다.")
+    void test5() {
+        //given
+        final String name = "쿠키";
+
+        //when
+        final List<AttendanceRecord> attendanceRecords = attendanceBook.lookUpAttendanceHistory(name);
+
+        //then
+        assertThat(attendanceRecords).isNotEmpty();
+
     }
 }

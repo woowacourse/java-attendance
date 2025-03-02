@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import util.DateTimeConvertor;
 
 public class AttendanceBook {
@@ -50,5 +51,9 @@ public class AttendanceBook {
         crew.putAttendance(LocalDateTime.of(localDate, localtime));
         final AttendanceRecord afterAttendanceRecord = crew.getAttendanceRecordByDate(localDate);
         return new AttendanceModification(beforeAttendanceRecord, afterAttendanceRecord);
+    }
+
+    public List<AttendanceRecord> lookUpAttendanceHistory(final String name) {
+        return null;
     }
 }
