@@ -2,6 +2,7 @@ package domain;
 
 import static util.parser.DateTimeParser.parseStringToDateTime;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,11 @@ public class AttendanceBook {
         validateRegisteredCrew(name);
 
         return crewRecords.get(name);
+    }
+
+    public List<Crew> findWarningCrew(LocalDate startDate, LocalDate endDate) {
+        // TODO: 제적 위험 대상자 반환
+        return null;
     }
 
     public DailyRecord saveAttendanceRecord(String name, LocalDateTime dateTime) {

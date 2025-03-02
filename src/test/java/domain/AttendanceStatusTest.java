@@ -109,7 +109,7 @@ public class AttendanceStatusTest {
         void calculatePresent() {
             LocalDate startDate = parseStringToDate("2024-12-01");
             LocalDate endDate = parseStringToDate("2024-12-11");
-            Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
+            Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
             Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
 
             assertThat(statisticsResult.get(PRESENT)).isEqualTo(3);
@@ -120,7 +120,7 @@ public class AttendanceStatusTest {
         void calculateLate() {
             LocalDate startDate = parseStringToDate("2024-12-01");
             LocalDate endDate = parseStringToDate("2024-12-11");
-            Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
+            Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
             Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
 
             assertThat(statisticsResult.get(LATE)).isEqualTo(1);
@@ -131,7 +131,7 @@ public class AttendanceStatusTest {
         void calculateAbsent() {
             LocalDate startDate = parseStringToDate("2024-12-01");
             LocalDate endDate = parseStringToDate("2024-12-11");
-            Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
+            Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
             Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
 
             assertThat(statisticsResult.get(ABSENT)).isEqualTo(3);

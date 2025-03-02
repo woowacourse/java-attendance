@@ -72,7 +72,7 @@ public class AttendanceController {
         LocalDate startDate = localDate.withDayOfMonth(1);
 
         Crew crew = attendanceBook.findCrewByName(name);
-        Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, localDate);
+        Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, localDate);
         Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
         Penalty penalty = Penalty.of(statisticsResult.get(LATE), statisticsResult.get(ABSENT));
 

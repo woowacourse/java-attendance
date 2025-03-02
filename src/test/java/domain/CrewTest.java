@@ -2,6 +2,7 @@ package domain;
 
 import static domain.AttendanceStatus.PRESENT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static util.parser.DateTimeParser.parseStringToDate;
 import static util.parser.DateTimeParser.parseStringToDateTime;
 import static util.parser.DateTimeParser.parseStringToTime;
@@ -34,7 +35,7 @@ public class CrewTest {
 
             LocalDate startDate = parseStringToDate("2024-12-01");
             LocalDate endDate = parseStringToDate("2024-12-06"); // 2일, 3일을 결석으로 추가
-            Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
+            Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
 
             assertThat(records.size()).isEqualTo(4);
         }
@@ -51,7 +52,7 @@ public class CrewTest {
 
             LocalDate startDate = parseStringToDate("2025-03-01");
             LocalDate endDate = parseStringToDate("2025-03-02");
-            Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
+            Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
 
             assertThat(records.size()).isEqualTo(0);
         }
@@ -69,7 +70,7 @@ public class CrewTest {
             crew.addDailyRecord(parseStringToDateTime("2025-02-04 10:08"));
             LocalDate startDate = parseStringToDate("2025-02-01");
             LocalDate endDate = parseStringToDate("2025-02-05");// 3일을 결석으로 추가
-            Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
+            Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
 
             assertThat(records.size()).isEqualTo(2);
         }
@@ -94,10 +95,12 @@ public class CrewTest {
             LocalDate date2 = parseStringToDate("2024-12-05");
             LocalTime time2 = parseStringToTime("10:02");
 
-            assertThat(crew.findRecordByDate(date1)).isEqualTo(
-                new DailyRecord(date1.getDayOfWeek(), time1));
-            assertThat(crew.findRecordByDate(date2)).isEqualTo(
-                new DailyRecord(date2.getDayOfWeek(), time2));
+            assertAll(
+                () -> assertThat(crew.findRecordByDate(date1)).isEqualTo(
+                    new DailyRecord(date1.getDayOfWeek(), time1)),
+                () -> assertThat(crew.findRecordByDate(date2)).isEqualTo(
+                    new DailyRecord(date2.getDayOfWeek(), time2))
+            );
         }
 
         @Test
@@ -108,8 +111,10 @@ public class CrewTest {
 
             DailyRecord record = crew.addDailyRecord(dateTime);
 
-            assertThat(record.getAttendedTime()).isEqualTo(dateTime.toLocalTime());
-            assertThat(record.getStatus()).isEqualTo(PRESENT);
+            assertAll(
+                () -> assertThat(record.getAttendedTime()).isEqualTo(dateTime.toLocalTime()),
+                () -> assertThat(record.getStatus()).isEqualTo(PRESENT)
+            );
         }
     }
 
@@ -129,8 +134,10 @@ public class CrewTest {
 
             DailyRecord editedRecord = crew.updateDailyRecord(editedDateTime);
 
-            assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime());
-            assertThat(editedRecord.getStatus()).isEqualTo(PRESENT);
+            assertAll(
+                () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime()),
+                () -> assertThat(editedRecord.getStatus()).isEqualTo(PRESENT)
+            );
         }
 
         @Test
@@ -145,8 +152,10 @@ public class CrewTest {
 
             DailyRecord editedRecord = crew.updateDailyRecord(editedDateTime);
 
-            assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime());
-            assertThat(editedRecord.getStatus()).isEqualTo(PRESENT);
+            assertAll(
+                () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime()),
+                () ->assertThat(editedRecord.getStatus()).isEqualTo(PRESENT)
+            );
         }
     }
 }

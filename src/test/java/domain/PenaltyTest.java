@@ -83,4 +83,39 @@ public class PenaltyTest {
             );
         }
     }
+
+    @Nested
+    @DisplayName("제적 확인 테스트")
+    class CheckExpelledWarningTest {
+
+        @ParameterizedTest
+        @MethodSource("provideExpelledCount")
+        @DisplayName("제적 위험 대상자를 확인한다.")
+        void checkExpelled(int lateCount, int absentCount) {
+            assertThat(Penalty.isNotPass(lateCount, absentCount)).isTrue();
+        }
+
+        static Stream<Arguments> provideExpelledCount() {
+            return Stream.of(
+                Arguments.arguments(0, 6),
+                Arguments.arguments(7, 9),
+                Arguments.arguments(3, 5)
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("provideNotExpelledCount")
+        @DisplayName("제적 위험 대상자가 아님을 확인한다.")
+        void checkNotExpelled(int lateCount, int absentCount) {
+            assertThat(Penalty.isNotPass(lateCount, absentCount)).isFalse();
+        }
+
+        static Stream<Arguments> provideNotExpelledCount() {
+            return Stream.of(
+                Arguments.arguments(0, 0),
+                Arguments.arguments(0, 3),
+                Arguments.arguments(2, 4)
+            );
+        }
+    }
 }

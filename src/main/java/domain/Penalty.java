@@ -24,6 +24,11 @@ public enum Penalty {
             .orElse(PASS);
     }
 
+    public static boolean isNotPass(int lateCount, int absentCount) {
+        // TODO: 패스인지 확인
+        return false;
+    }
+
     public String getPenalty() {
         return penalty;
     }

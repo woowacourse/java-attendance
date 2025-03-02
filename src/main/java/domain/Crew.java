@@ -1,12 +1,9 @@
 package domain;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,8 +31,7 @@ public class Crew {
         return dailyRecords.getOrDefault(date, new DailyRecord(date.getDayOfWeek(), null));
     }
 
-    public Map<LocalDate, DailyRecord> findRecordsOfYearAndMonth(LocalDate startDate,
-        LocalDate endDate) {
+    public Map<LocalDate, DailyRecord> findRecordsOfDate(LocalDate startDate, LocalDate endDate) {
         return Stream.iterate(startDate, date -> date.plusDays(1))
             .limit(ChronoUnit.DAYS.between(startDate, endDate))
             .filter(date -> !Holiday.isHoliday(date))
@@ -68,5 +64,11 @@ public class Crew {
 
             dailyRecords.put(date, new DailyRecord(date.getDayOfWeek(), time));
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Crew crew = (Crew) obj;
+        return dailyRecords.equals(crew.dailyRecords);
     }
 }

@@ -3,11 +3,14 @@ package domain;
 import static domain.AttendanceStatus.PRESENT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static util.loader.FileLoader.loadCSV;
+import static util.parser.DateTimeParser.parseStringToDate;
 import static util.parser.DateTimeParser.parseStringToDateTime;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import org.assertj.core.api.Assertions;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -91,8 +94,10 @@ public class AttendanceBookTest {
             LocalDateTime editedDateTime = parseStringToDateTime("2024-12-06 10:01");
             DailyRecord editedRecord = attendanceBook.editAttendanceRecord(name, editedDateTime);
 
-            Assertions.assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime());
-            Assertions.assertThat(editedRecord.getStatus()).isEqualTo(PRESENT);
+            assertAll(
+                () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime()),
+                () -> assertThat(editedRecord.getStatus()).isEqualTo(PRESENT)
+            );
         }
 
         @Test
@@ -150,6 +155,58 @@ public class AttendanceBookTest {
             assertThatThrownBy(() -> attendanceBook.findCrewByName(name))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("등록되지 않은 크루입니다.");
+        }
+    }
+
+    @Nested
+    @DisplayName("제적 위험 대상자 테스트")
+    class WarningCrewTest {
+
+        @Test
+        @DisplayName("제적 위험 대상자를 확인할 수 있다.")
+        void findWarningCrew() {
+            AttendanceBook attendanceBook = new AttendanceBook();
+            attendanceBook.initializeCrewRecords(loadCSV("src/test/resources/attendances.csv"));
+
+            /*
+            짱수: 지각 0 결석 0
+            빙티: 지각 2 결석 0
+            쿠키: 지각 2 결석 2 (경고 대상자)
+            이든: 지각 3 결석 1 (경고 대상자)
+            빙봉: 지각 4 결석 0
+             */
+
+            LocalDate startDate = parseStringToDate("2024-12-01");
+            LocalDate endDate = parseStringToDate("2024-12-07");
+
+            List<Crew> warningCrew = attendanceBook.findWarningCrew(startDate, endDate);
+            assertThat(warningCrew.size()).isEqualTo(2);
+        }
+
+        @Test
+        @DisplayName("제적 위험 대상자를 정렬할 수 있다.")
+        void sortWarningCrew() {
+            AttendanceBook attendanceBook = new AttendanceBook();
+            attendanceBook.initializeCrewRecords(loadCSV("src/test/resources/attendances.csv"));
+
+            /*
+            짱수: 지각 0 결석 0
+            빙티: 지각 2 결석 0
+            쿠키: 지각 2 결석 2 (경고 대상자)
+            이든: 지각 3 결석 1 (경고 대상자)
+            빙봉: 지각 4 결석 0
+             */
+
+            LocalDate startDate = parseStringToDate("2024-12-01");
+            LocalDate endDate = parseStringToDate("2024-12-07");
+            Crew crew1 = attendanceBook.findCrewByName("쿠키");
+            Crew crew2 = attendanceBook.findCrewByName("이든");
+
+            List<Crew> warningCrew = attendanceBook.findWarningCrew(startDate, endDate);
+            assertAll(
+                () -> assertThat(warningCrew.getFirst()).isEqualTo(crew2),
+                () -> assertThat(warningCrew.getLast()).isEqualTo(crew1)
+            );
         }
     }
 }
