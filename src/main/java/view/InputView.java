@@ -14,6 +14,11 @@ public class InputView {
         this.scanner = new Scanner(System.in);
     }
 
+    public Integer readTodayDate() {
+        System.out.println("오늘은 2월 며칠인가요? 일자를 입력해주세요.");
+        return convertStringToInteger(scanner.nextLine());
+    }
+
     public String readNickname() {
         System.out.println("\n닉네임을 입력해 주세요.");
         return scanner.nextLine();

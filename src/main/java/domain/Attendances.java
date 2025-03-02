@@ -1,7 +1,5 @@
 package domain;
 
-import domain.constant.StandardDate;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -82,11 +80,12 @@ public class Attendances {
     }
 
     private void recordAbsence(Nickname nickname) {
-        StandardDate.TODAY.withDayOfMonth(1)
-                .datesUntil(StandardDate.TODAY)
+        TimeMachine.dateOfNow().withDayOfMonth(1)
+                .datesUntil(TimeMachine.dateOfNow())
                 .filter(date -> date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY)
                 .filter(date -> !Holiday.check(date))
                 .filter(date -> !isAlreadyAttend(nickname, date))
+                .filter(date -> !date.isAfter(TimeMachine.dateOfNow()))
                 .forEach(date -> addAttendanceLog(nickname, LocalDateTime.of(date, LocalTime.MAX)));
     }
 

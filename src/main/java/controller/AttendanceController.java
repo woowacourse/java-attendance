@@ -1,10 +1,6 @@
 package controller;
 
-import domain.Attendance;
-import domain.Attendances;
-import domain.Command;
-import domain.Nickname;
-import domain.constant.StandardDate;
+import domain.*;
 import view.InputView;
 import view.OutputView;
 
@@ -51,7 +47,7 @@ public class AttendanceController {
     private void registerAttendance() {
         Nickname nickname = attendances.checkCrewName(new Nickname(inputView.readNickname()));
         LocalTime attendanceTime = inputView.readAttendanceTime();
-        LocalDateTime localDateTime = LocalDateTime.of(StandardDate.TODAY, attendanceTime);
+        LocalDateTime localDateTime = LocalDateTime.of(TimeMachine.dateOfNow(), attendanceTime);
         attendances.addAttendanceLog(nickname, localDateTime);
         outputView.printAttendanceCheckMessage(localDateTime);
     }
@@ -71,7 +67,7 @@ public class AttendanceController {
     }
 
     private LocalDate getUpdateDate(int updateDayOfMonth) {
-        LocalDate today = StandardDate.TODAY;
+        LocalDate today = TimeMachine.dateOfNow();
         return LocalDate.of(today.getYear(), today.getMonthValue(), updateDayOfMonth);
     }
 
@@ -86,7 +82,7 @@ public class AttendanceController {
     }
 
     private void validateDayOfMonth(int updateDate) {
-        LocalDate today = StandardDate.TODAY;
+        LocalDate today = TimeMachine.dateOfNow();
         int endDayOfMonth = today.lengthOfMonth();
         if (1 > updateDate || endDayOfMonth < updateDate) {
             throw new IllegalArgumentException("[ERROR] 수정 일자가 해당 월의 일자 범위를 벗어납니다.");

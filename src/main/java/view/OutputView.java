@@ -1,7 +1,6 @@
 package view;
 
 import domain.*;
-import domain.constant.StandardDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,7 +13,7 @@ import java.util.Locale;
 public class OutputView {
 
     public void printOptionMessage() {
-        LocalDate today = StandardDate.TODAY;
+        LocalDate today = TimeMachine.dateOfNow();
         String dayOfWeekName = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         System.out.printf("""
                 
