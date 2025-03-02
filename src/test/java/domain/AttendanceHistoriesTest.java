@@ -228,6 +228,16 @@ public class AttendanceHistoriesTest {
     }
 
     @Test
+    @DisplayName("3.2 닉네임을 입력하면 전날까지의 크루 출결 횟수를 확인할 수 있다.")
+    void test() {
+        // given
+        // when
+        // then
+        int presentCount = defaultAttendanceHistory.getPresentCount(DEFAULT_DATE, DEFAULT_DATE.plusDays(1));
+        assertThat(presentCount).isEqualTo(1);
+    }
+
+    @Test
     @DisplayName("3.4 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
     void validateCrewPresenceWhenGetHistory() {
         assertThatThrownBy(() -> defaultAttendanceHistory.getAttendanceDateTimes(INVALID_CREW))
