@@ -8,6 +8,9 @@ import java.util.List;
 
 public class CsvReader {
 
+    private CsvReader() {
+    }
+
     public static List<String[]> readCsvLines(String csvFilePath) throws IOException {
         Path filePath = Path.of(csvFilePath);
         List<String> lines = readLinesFromFile(filePath);

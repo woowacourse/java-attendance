@@ -6,6 +6,9 @@ import java.time.LocalTime;
 
 public class Evaluator {
 
+    private Evaluator() {
+    }
+
     public static boolean isOpenDate(LocalDate date) {
         return !isWeekend(date.getDayOfWeek()) && !isHoliday(date);
     }

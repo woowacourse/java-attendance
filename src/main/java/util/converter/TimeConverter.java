@@ -6,6 +6,9 @@ import java.time.format.DateTimeParseException;
 
 public class TimeConverter {
 
+    private TimeConverter() {
+    }
+
     public static LocalTime convertStringToTime(String time) {
         try {
             return LocalTime.parse(time);

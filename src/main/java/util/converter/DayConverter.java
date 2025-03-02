@@ -4,6 +4,9 @@ import exception.ErrorException;
 
 public class DayConverter {
 
+    private DayConverter() {
+    }
+
     public static int convertDayToNumber(String day) {
         try {
             int number = Integer.parseInt(day);

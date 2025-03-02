@@ -7,6 +7,9 @@ import java.time.format.DateTimeParseException;
 
 public class DateTimeConverter {
 
+    private DateTimeConverter() {
+    }
+
     public static LocalDateTime convertStringToDateTime(String dateTime) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
