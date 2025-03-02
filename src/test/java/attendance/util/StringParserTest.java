@@ -74,4 +74,13 @@ class StringParserTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("yyyy-MM-dd HH:mm 형식에 맞춰 작성해주세요.");
     }
+
+    @Test
+    void 문자열을_숫자로_파싱한다() {
+        // Given
+        String input = "31";
+
+        // When & Then
+        assertThat(StringParser.parseInt(input)).isEqualTo(31);
+    }
 }

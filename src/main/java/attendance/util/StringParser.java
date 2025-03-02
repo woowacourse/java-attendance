@@ -2,6 +2,7 @@ package attendance.util;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -29,6 +30,14 @@ public class StringParser {
             addResult(line, result);
         }
         return result;
+    }
+
+    public static int parseInt(final String input) {
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException exception) {
+            throw new IllegalArgumentException("숫자 형식의 문자열이 아닙니다.");
+        }
     }
 
     private static void addResult(final String line, final Map<String, List<LocalDateTime>> result) {
