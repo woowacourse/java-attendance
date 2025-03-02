@@ -45,16 +45,12 @@ class AttendanceTest {
                             () -> attendance.findByLocalDate(LocalDate.of(2025,2,day))).isInstanceOf(IllegalArgumentException.class));
         }
 
-        @DisplayName("캠퍼스 운영시간이 아닌 경우 입력되지 않음")
+        @DisplayName("캠퍼스 운영시간이 아닌 경우 에러 반환")
         @Test
         void isNotCampusOperatingTime(){
-            IntStream.range(1,28)
-                    .forEach(day -> attendance.addAttendance(LocalDateTime.of(2025,2,day,0,0)));
+            LocalDateTime isNoOperationTime = LocalDateTime.of(2024,12,12,23,12);
 
-            IntStream.range(1,28)
-                    .filter(day -> !isAttendanceDay(LocalDate.of(2025,2,day)))
-                    .forEach(day -> assertThatThrownBy(
-                            () -> attendance.findByLocalDate(LocalDate.of(2025,2,day))).isInstanceOf(IllegalArgumentException.class));
+            assertThatThrownBy(() -> attendance.addAttendance(isNoOperationTime)).isInstanceOf(IllegalArgumentException.class);
         }
 
         @DisplayName("미래의 경우 입력되지 않음")
