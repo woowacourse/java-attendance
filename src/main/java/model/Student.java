@@ -39,6 +39,9 @@ public class Student {
         LocalDate endDate = today.minusDays(1);
 
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            if (WeeklyAttendanceSchedule.checkHoliday(date)) {
+                continue;
+            }
             registerAsAbsentIfNoAttendance(date);
         }
     }
