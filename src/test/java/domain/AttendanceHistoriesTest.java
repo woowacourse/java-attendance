@@ -21,6 +21,7 @@ public class AttendanceHistoriesTest {
     private static final LocalDate DEFAULT_DATE = LocalDate.of(2025, 2, 21);
     private static final LocalTime DEFAULT_TIME = LocalTime.of(10, 0);
     private static final Crew DEFAULT_CREW = new Crew("노랑");
+    private static final Crew INVALID_CREW = new Crew("포비");
     private static final LocalDateTime DEFAULT_DATE_TIME = LocalDateTime.of(DEFAULT_DATE, DEFAULT_TIME);
 
     private final AttendanceHistories defaultAttendanceHistory = AttendanceHistoriesFixture.createWithSingleAttendance(
@@ -113,10 +114,7 @@ public class AttendanceHistoriesTest {
     @Test
     @DisplayName("1.3 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
     void testValidateCrewPresenceWhenCheck() {
-        // given & when
-        Crew invalidCrew = new Crew("포비");
-        // then
-        assertThatThrownBy(() -> defaultAttendanceHistory.addAttendanceHistory(invalidCrew, DEFAULT_DATE_TIME))
+        assertThatThrownBy(() -> defaultAttendanceHistory.addAttendanceHistory(INVALID_CREW, DEFAULT_DATE_TIME))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
     }
@@ -202,11 +200,8 @@ public class AttendanceHistoriesTest {
     @Test
     @DisplayName("2.2 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
     void testValidateCrewPresenceWhenReplace() {
-        // given & when
-        Crew invalidCrew = new Crew("포비");
-        LocalDateTime dateTime = MONDAY_DATE.atTime(DEFAULT_TIME);
-        // then
-        assertThatThrownBy(() -> defaultAttendanceHistory.replaceAttendanceHistory(invalidCrew, dateTime))
+        assertThatThrownBy(
+                () -> defaultAttendanceHistory.replaceAttendanceHistory(INVALID_CREW, MONDAY_DATE.atTime(DEFAULT_TIME)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
     }
@@ -230,5 +225,13 @@ public class AttendanceHistoriesTest {
         // then
         AttendanceDateTimes expectedAttendanceDateTimes = new AttendanceDateTimes(List.of(DEFAULT_DATE_TIME));
         assertThat(actualAttendanceDateTimes).isEqualTo(expectedAttendanceDateTimes);
+    }
+
+    @Test
+    @DisplayName("3.4 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+    void test() {
+        assertThatThrownBy(() -> defaultAttendanceHistory.getAttendanceDateTimes(INVALID_CREW))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 }
