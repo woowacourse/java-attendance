@@ -17,7 +17,7 @@ public class AttendanceCheckController {
             }
             String studentName = InputView.getStudentNameUntilValidateToAttendance(students);
             AttendanceTime attendanceTime = InputView.getUserAttendanceTimeUntilValidateToAttendance();
-            students.findStudentByName(studentName).isAlreadyExistAttendanceDate(today);
+            students.findStudentByName(studentName).validateAlreadyExistAttendanceDate(today);
             students.findStudentByName(studentName).addAttendanceDateTime(today, attendanceTime);
             AttendanceStatus studentAttendanceStatus = AttendanceStatusEvaluator.calculateAttendanceStatus(today, attendanceTime);
             OutputView.printAttendanceResult(today, attendanceTime, studentAttendanceStatus);

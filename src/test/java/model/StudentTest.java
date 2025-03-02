@@ -101,7 +101,7 @@ public class StudentTest {
     @DisplayName("이미 출석한 요일이면 예외 발생 테스트")
     void test8() {
         org.assertj.core.api.Assertions.assertThatThrownBy(
-                        () -> student.isAlreadyExistAttendanceDate(new AttendanceDate(LocalDate.of(2024, 12, 12)))
+                        () -> student.validateAlreadyExistAttendanceDate(new AttendanceDate(LocalDate.of(2024, 12, 12)))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 이미 출석한 요일입니다. 다시 출석하고 싶으면 수정 기능을 이용해 주세요.");
     }
