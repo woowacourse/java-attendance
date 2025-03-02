@@ -59,8 +59,10 @@ public class Attendances {
     }
 
     private void validateFutureDate(DayOfMonth dayOfMonth, LocalDate today) {
-        if (today.getDayOfMonth() < dayOfMonth.dayOfMonth()) {
-            throw new IllegalArgumentException("미래 날짜는 변경할 수 없습니다.");
+        if (dayOfMonth.isHoliday(today)) {
+            if (today.getDayOfMonth() < dayOfMonth.dayOfMonth()) {
+                throw new IllegalArgumentException("없는 날짜는 변경할 수 없습니다.");
+            }
         }
     }
 
@@ -71,6 +73,15 @@ public class Attendances {
                 .filter(attendance -> attendance.isSameDay(changedDate))
                 .findAny()
                 .get();
+    }
+
+    public void addAttendance(Attendance attendance) {
+        attendances.add(attendance);
+    }
+
+    public boolean isExist(LocalDate today) {
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.isSameDay(today));
     }
 
     private void deleteSpecificAttendance(DayOfMonth dayOfMonth, LocalDate today) {

@@ -59,6 +59,13 @@ class AttendancesTest {
     }
 
     @Test
+    @DisplayName("특정 출석 날짜가 존재하는지 확인합니다.")
+    void isAttendanceExistTest() {
+        LocalDate testDate = LocalDate.of(2024, 12, 3);
+        Assertions.assertTrue(attendances.isExist(testDate));
+    }
+
+    @Test
     @DisplayName("올바른 출석 횟수를 세는지 확인합니다.")
     void calculatePresentTest() {
         Assertions.assertEquals(5, attendances.calculatePresent());

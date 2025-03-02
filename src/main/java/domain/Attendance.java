@@ -10,7 +10,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Objects;
 import util.DayConverter;
 
@@ -20,7 +19,7 @@ public class Attendance implements Comparable<Attendance> {
     public Attendance(LocalDateTime attendanceTime) {
         this.attendanceTime = attendanceTime;
     }
-
+    
     public AttendanceCode calculateAttendanceCode() {
         LocalTime time = attendanceTime.toLocalTime();
         Duration duration = Duration.between(TUESDAY.getOpenTime(), time);
@@ -37,13 +36,13 @@ public class Attendance implements Comparable<Attendance> {
         return ABSENT;
     }
 
-    public boolean isHoliday(List<Integer> holidays) {
+    public boolean isHoliday() {
         DayOfMonth dayOfMonth = new DayOfMonth(attendanceTime.getDayOfMonth());
-        return dayOfMonth.isHoliday(holidays, attendanceTime.toLocalDate());
+        return dayOfMonth.isHoliday(attendanceTime.toLocalDate());
     }
 
-    public void validateHoliday(List<Integer> holidays) {
-        if (isHoliday(holidays)) {
+    public void validateHoliday() {
+        if (isHoliday()) {
             throw new IllegalArgumentException(
                     String.format("%d월 %d일 %s은 등교일이 아닙니다.",
                             attendanceTime.getMonth().getValue(),

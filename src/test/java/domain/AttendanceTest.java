@@ -54,7 +54,7 @@ class AttendanceTest {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 25, 10, 0);
         List<Integer> holidays = List.of(25);
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Attendance(attendanceTime).validateHoliday(holidays));
+                () -> new Attendance(attendanceTime).validateHoliday());
     }
 
     @Test
