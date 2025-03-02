@@ -61,6 +61,7 @@ public class AttendanceInfos {
         int tardinessCount = 0;
         int absenceCount = 0;
 
+        // TODO : Q6
         for (int day = 1; day < date.getDayOfMonth(); day++) {
             if (isWeekend(LocalDate.of(date.getYear(), date.getMonth(), day))) {
                 continue;
