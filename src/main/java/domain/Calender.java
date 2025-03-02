@@ -26,8 +26,16 @@ public enum Calender {
     }
 
     public static Calender findBy(final LocalDate localDate) {
+        return findBy(localDate.getDayOfWeek());
+    }
+
+    public static Calender findBy(final LocalDateTime localDateTime) {
+        return findBy(localDateTime.getDayOfWeek());
+    }
+
+    private static Calender findBy(final DayOfWeek dayOfWeek) {
         return Arrays.stream(values())
-                .filter(dayOfWeek -> dayOfWeek.dayOfWeek.equals(localDate.getDayOfWeek()))
+                .filter(calender -> calender.dayOfWeek.equals(dayOfWeek))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 요일 입니다."));
     }
