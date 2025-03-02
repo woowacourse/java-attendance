@@ -37,8 +37,8 @@ class AttendancesTest {
             LocalDateTime attendanceDate = LocalDateTime.of(2025, 2, 25, 10, 0);
             Attendances attendances = new Attendances(
                     List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)),
-                    AttendanceController.START_DATE,
-                    AttendanceController.END_DATE);
+                    attendanceDate.toLocalDate(),
+                    attendanceDate.toLocalDate().plusDays(3));
 
             // when
             int attendanceCount = attendances.countAttendance();
@@ -54,8 +54,8 @@ class AttendancesTest {
             LocalDateTime attendanceDate = LocalDateTime.of(2025, 2, 25, 10, 30);
             Attendances attendances = new Attendances(
                     List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)),
-                    AttendanceController.START_DATE,
-                    AttendanceController.END_DATE);
+                    attendanceDate.toLocalDate(),
+                    attendanceDate.toLocalDate().plusDays(3));
 
             // when
             int tardyCouont = attendances.countTardy();
@@ -71,8 +71,8 @@ class AttendancesTest {
             LocalDateTime attendanceDate = LocalDateTime.of(2025, 2, 25, 10, 31);
             Attendances attendances = new Attendances(
                     List.of(attendanceDate, attendanceDate.plusDays(1), attendanceDate.plusDays(2)),
-                    AttendanceController.START_DATE,
-                    AttendanceController.END_DATE);
+                    attendanceDate.toLocalDate(),
+                    attendanceDate.toLocalDate().plusDays(3));
 
             // when
             int absenceCount = attendances.countAbsence(attendanceDate.plusDays(3).toLocalDate());
