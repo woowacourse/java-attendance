@@ -24,8 +24,12 @@ public enum WarningStatus {
                 .orElse(NONE);
     }
 
-    private static int convertTardiesToAbsences(int tardyCount, int absenceCount) {
+    public static int convertTardiesToAbsences(int tardyCount, int absenceCount) {
         return absenceCount + tardyCount / 3;
+    }
+
+    public static int getTardiesAfterConversion(int tardyCount) {
+        return tardyCount % 3;
     }
 
     public String getName() {

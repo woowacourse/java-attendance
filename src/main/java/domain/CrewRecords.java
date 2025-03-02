@@ -2,7 +2,10 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class CrewRecords {
     private final Map<Crew, AttendanceRecords> records;
@@ -32,11 +35,37 @@ public class CrewRecords {
     }
 
     public WarningStatus getWarningStatus(Crew crew) {
-        validateCrew(crew);
         AttendanceRecords attendanceRecords = records.get(crew);
         int tardyCount = attendanceRecords.getAttendanceCount(AttendanceStatus.TARDY);
         int absentCount = attendanceRecords.getAttendanceCount(AttendanceStatus.ABSENT);
         return WarningStatus.getStatus(tardyCount, absentCount);
+    }
+
+    public List<Crew> getWarnedCrews() {
+        Stream<Crew> warnedCrews = records.keySet()
+                .stream()
+                .filter(crew -> getWarningStatus(crew) != WarningStatus.NONE);
+        return sortWarnedCrews(warnedCrews);
+    }
+
+    private List<Crew> sortWarnedCrews(Stream<Crew> warnedCrews) {
+        return warnedCrews.sorted(Comparator.comparing((Crew crew) -> getConvertedAbsences(crew) * -1)
+                        .thenComparing(crew -> getTardiesAfterConversion(crew) * -1)
+                        .thenComparing(Crew::name))
+                .toList();
+    }
+
+    private int getConvertedAbsences(Crew crew) {
+        AttendanceRecords attendanceRecords = records.get(crew);
+        int tardyCount = attendanceRecords.getAttendanceCount(AttendanceStatus.TARDY);
+        int absentCount = attendanceRecords.getAttendanceCount(AttendanceStatus.ABSENT);
+        return WarningStatus.convertTardiesToAbsences(tardyCount, absentCount);
+    }
+
+    private int getTardiesAfterConversion(Crew crew) {
+        AttendanceRecords attendanceRecords = records.get(crew);
+        int tardyCount = attendanceRecords.getAttendanceCount(AttendanceStatus.TARDY);
+        return WarningStatus.getTardiesAfterConversion(tardyCount);
     }
 
     private void validateCrew(Crew crew) {
