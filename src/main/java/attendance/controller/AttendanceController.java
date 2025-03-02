@@ -6,9 +6,7 @@ import attendance.controller.util.CrewAttendancesDataParser;
 import attendance.controller.util.DateTimeConverter;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
-import attendance.domain.AttendanceDate;
 import attendance.domain.AttendancePenalty;
-import attendance.domain.AttendanceTime;
 import attendance.domain.Attendances;
 import attendance.domain.Menu;
 import attendance.dto.AttendanceResultResponse;
@@ -75,12 +73,9 @@ public class AttendanceController {
     }
 
     private void attend() {
-        AttendanceDate attendanceDate = AttendanceDate.from(today);
-
         LocalTime time = DateTimeConverter.convertToTime(inputView.readAttendTime());
-        AttendanceTime attendanceTime = AttendanceTime.from(time);
 
-        Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
+        Attendance attendance = Attendance.from(LocalDateTime.of(today, time));
         attendanceBook.attend(inputView.readNickname(), attendance);
 
         outputView.printAttendResult(AttendanceResultResponse.from(attendance));

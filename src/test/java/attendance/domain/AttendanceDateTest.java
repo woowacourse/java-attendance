@@ -1,10 +1,11 @@
 package attendance.domain;
 
+import static attendance.domain.CampusOperatingRule.DEFAULT_LATE_THRESHOLD;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-
-import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceDateTest {
@@ -12,64 +13,54 @@ public class AttendanceDateTest {
     @Test
     void 토요일이면_예외를_던진다() {
         LocalDate saturday = LocalDate.of(2024, 12, 14);
+        LocalDateTime dateTime = LocalDateTime.of(saturday, DEFAULT_LATE_THRESHOLD.getTime().minusMinutes(1));
 
-        assertThatThrownBy(() -> AttendanceDate.from(saturday))
+        assertThatThrownBy(() -> Attendance.from(dateTime))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 일요일이면_예외를_던진다() {
         LocalDate sunday = LocalDate.of(2024, 12, 15);
+        LocalDateTime dateTime = LocalDateTime.of(sunday, DEFAULT_LATE_THRESHOLD.getTime().minusMinutes(1));
 
-        assertThatThrownBy(() -> AttendanceDate.from(sunday))
+        assertThatThrownBy(() -> Attendance.from(dateTime))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 크리스마스면_예외를_던진다() {
         LocalDate christmas = LocalDate.of(2024, 12, 25);
+        LocalDateTime dateTime = LocalDateTime.of(christmas, DEFAULT_LATE_THRESHOLD.getTime().minusMinutes(1));
 
-        assertThatThrownBy(() -> AttendanceDate.from(christmas))
+        assertThatThrownBy(() -> Attendance.from(dateTime))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 평일이면_예외를_던지지_않는다() {
         LocalDate friday = LocalDate.of(2024, 12, 13);
+        LocalDateTime dateTime = LocalDateTime.of(friday, DEFAULT_LATE_THRESHOLD.getTime().minusMinutes(1));
 
-        assertThatCode(() -> AttendanceDate.from(friday))
+        assertThatCode(() -> Attendance.from(dateTime))
                 .doesNotThrowAnyException();
     }
 
     @Test
     void 같은_날이면_true를_반환한다() {
         LocalDate date = LocalDate.of(2024, 12, 13);
-        AttendanceDate attendanceDate = AttendanceDate.from(date);
+        LocalDateTime dateTime = LocalDateTime.of(date, DEFAULT_LATE_THRESHOLD.getTime().minusMinutes(1));
+        Attendance attendance = Attendance.from(dateTime);
 
-        assertThat(attendanceDate.isEqualToDate(date)).isTrue();
+        assertThat(attendance.isEqualToDate(date)).isTrue();
     }
 
     @Test
     void 다른_날이면_false를_반환한다() {
         LocalDate date = LocalDate.of(2024, 12, 13);
-        AttendanceDate attendanceDate = AttendanceDate.from(date);
+        LocalDateTime dateTime = LocalDateTime.of(date, DEFAULT_LATE_THRESHOLD.getTime().minusMinutes(1));
+        Attendance attendance = Attendance.from(dateTime);
 
-        assertThat(attendanceDate.isEqualToDate(LocalDate.of(2024, 12, 12))).isFalse();
-    }
-
-    @Test
-    void 월요일이면_true를_반환한다() {
-        LocalDate date = LocalDate.of(2024, 12, 9);
-        AttendanceDate attendanceDate = AttendanceDate.from(date);
-
-        assertThat(attendanceDate.isMonday()).isTrue();
-    }
-
-    @Test
-    void 월요일이면_false를_반환한다() {
-        LocalDate date = LocalDate.of(2024, 12, 10);
-        AttendanceDate attendanceDate = AttendanceDate.from(date);
-
-        assertThat(attendanceDate.isMonday()).isFalse();
+        assertThat(attendance.isEqualToDate(LocalDate.of(2024, 12, 12))).isFalse();
     }
 }

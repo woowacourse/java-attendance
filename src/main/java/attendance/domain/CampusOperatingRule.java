@@ -17,14 +17,18 @@ public enum CampusOperatingRule {
         this.time = time;
     }
 
-    public static LocalTime getAbsenceThreshold(boolean isMonday) {
+    public static boolean isOperatingHour(LocalTime time) {
+        return time.isAfter(CAMPUS_OPEN_HOUR.time) && time.isBefore(CAMPUS_CLOSE_HOUR.time);
+    }
+
+    public static LocalTime getAbsenceThreshold(final boolean isMonday) {
         if (isMonday) {
             return MONDAY_ABSENCE_THRESHOLD.time;
         }
         return DEFAULT_ABSENCE_THRESHOLD.time;
     }
 
-    public static LocalTime getLateThreshold(boolean isMonday) {
+    public static LocalTime getLateThreshold(final boolean isMonday) {
         if (isMonday) {
             return MONDAY_LATE_THRESHOLD.time;
         }

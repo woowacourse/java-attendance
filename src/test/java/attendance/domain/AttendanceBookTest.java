@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceTest.generateAttendanceByDateTime;
 import static attendance.domain.AttendancesTest.generateAttendances;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -19,7 +18,7 @@ public class AttendanceBookTest {
         AttendanceBook attendanceBook = generateAttendanceBook("훌라", dateTimes);
 
         assertThatThrownBy(
-                () -> attendanceBook.attend("모루", generateAttendanceByDateTime(LocalDateTime.of(2024, 12, 16, 12, 59))))
+                () -> attendanceBook.attend("모루", Attendance.from(LocalDateTime.of(2024, 12, 16, 12, 59))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -27,7 +26,7 @@ public class AttendanceBookTest {
     void 닉네임과_시간을_입력하면_출석한다() {
         List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
         AttendanceBook attendanceBook = generateAttendanceBook("훌라", dateTimes);
-        Attendance attendance = generateAttendanceByDateTime(LocalDateTime.of(2024, 12, 16, 12, 59));
+        Attendance attendance = Attendance.from(LocalDateTime.of(2024, 12, 16, 12, 59));
 
         assertThatCode(() -> attendanceBook.attend("훌라", attendance))
                 .doesNotThrowAnyException();
@@ -39,7 +38,7 @@ public class AttendanceBookTest {
         AttendanceBook attendanceBook = generateAttendanceBook("훌라", dateTimes);
 
         assertThatThrownBy(
-                () -> attendanceBook.attend("훌라", generateAttendanceByDateTime(LocalDateTime.of(2024, 12, 13, 9, 59))))
+                () -> attendanceBook.attend("훌라", Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -50,7 +49,7 @@ public class AttendanceBookTest {
 
         final var result = attendanceBook.updateAttendance("훌라", LocalDateTime.of(2024, 12, 13, 10, 6));
 
-        assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 6));
+        assertThat(result.getDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 6));
     }
 
     @Test
@@ -78,7 +77,7 @@ public class AttendanceBookTest {
 
         final var result = attendanceBook.findByNicknameAndDate("훌라", LocalDateTime.of(2024, 12, 13, 10, 6));
 
-        assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 9, 59));
+        assertThat(result.getDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 9, 59));
     }
 
     @Test
@@ -88,7 +87,7 @@ public class AttendanceBookTest {
 
         final var result = attendanceBook.findByNicknameAndDate("훌라", LocalDateTime.of(2024, 12, 12, 10, 4));
 
-        assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 12, 9, 31));
+        assertThat(result.getDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 12, 9, 31));
     }
 
     @Test

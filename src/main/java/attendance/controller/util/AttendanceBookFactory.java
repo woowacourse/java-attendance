@@ -2,10 +2,8 @@ package attendance.controller.util;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
-import attendance.domain.AttendanceDate;
-import attendance.domain.AttendanceTime;
 import attendance.domain.Attendances;
-import attendance.domain.CampusOperatingRule;
+import static attendance.domain.CampusOperatingRule.CAMPUS_CLOSE_HOUR;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -59,12 +57,9 @@ public class AttendanceBookFactory {
 
     private static Attendance initAttendance(LocalDate today, int day) {
         try {
-            AttendanceDate attendanceDate = AttendanceDate.from(today.withDayOfMonth(day));
-
-            LocalTime absenceThreshold = CampusOperatingRule.getAbsenceThreshold(attendanceDate.isMonday());
-            AttendanceTime attendanceTime = AttendanceTime.from(absenceThreshold.plusMinutes(1));
-
-            return Attendance.of(attendanceDate, attendanceTime);
+            LocalDate date = today.withDayOfMonth(day);
+            LocalTime absenceTime = CAMPUS_CLOSE_HOUR.getTime().minusMinutes(1);
+            return Attendance.from(LocalDateTime.of(date, absenceTime));
         } catch (IllegalArgumentException e) {
             return null;
         }

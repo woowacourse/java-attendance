@@ -9,6 +9,6 @@ public record AttendanceResultResponse(
         AttendanceStatus status
 ) {
     public static AttendanceResultResponse from(final Attendance attendance) {
-        return new AttendanceResultResponse(attendance.getAttendanceDateTime(), attendance.checkAttendanceStatus());
+        return new AttendanceResultResponse(attendance.getDateTime(), attendance.checkAttendanceStatus());
     }
 }

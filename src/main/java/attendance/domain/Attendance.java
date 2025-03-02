@@ -1,41 +1,70 @@
 package attendance.domain;
 
+import static attendance.constant.ErrorMessage.INVALID_ATTEND_DATE;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class Attendance {
-    private final AttendanceDate attendanceDate;
-    private AttendanceTime attendanceTime;
+    private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
 
-    private Attendance(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime) {
-        this.attendanceDate = attendanceDate;
-        this.attendanceTime = attendanceTime;
+    private LocalDateTime dateTime;
+
+    public Attendance(final LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
-    public static Attendance of(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime) {
-        return new Attendance(attendanceDate, attendanceTime);
+    public static Attendance from(final LocalDateTime dateTime) {
+        validateAvailableAttendDate(dateTime.toLocalDate());
+        validateOperatingHour(dateTime.toLocalTime());
+        return new Attendance(dateTime);
     }
 
     public void updateTime(final LocalTime time) {
-        this.attendanceTime = AttendanceTime.from(time);
+        this.dateTime = this.dateTime.with(time);
     }
 
     public boolean isEqualToDate(final LocalDate date) {
-        return this.attendanceDate.isEqualToDate(date);
+        return this.dateTime.toLocalDate().equals(date);
     }
 
     public boolean isEqualToDateByAttendance(final Attendance attendance) {
-        return this.attendanceDate.isEqualToDate(attendance.attendanceDate.date());
+        return isEqualToDate(attendance.dateTime.toLocalDate());
     }
 
     public AttendanceStatus checkAttendanceStatus() {
-        LocalTime absenceThreshold = CampusOperatingRule.getAbsenceThreshold(attendanceDate.isMonday());
-        LocalTime lateThreshold = CampusOperatingRule.getLateThreshold(attendanceDate.isMonday());
-        return attendanceTime.checkAttendanceStatus(absenceThreshold, lateThreshold);
+        LocalTime absenceThreshold = CampusOperatingRule.getAbsenceThreshold(isMonday());
+        LocalTime lateThreshold = CampusOperatingRule.getLateThreshold(isMonday());
+        return AttendanceStatus.of(dateTime.toLocalTime(), absenceThreshold, lateThreshold);
     }
 
-    public LocalDateTime getAttendanceDateTime() {
-        return LocalDateTime.of(this.attendanceDate.date(), this.attendanceTime.time());
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    private boolean isMonday() {
+        return this.dateTime.getDayOfWeek() == DayOfWeek.MONDAY;
+    }
+
+    private static void validateAvailableAttendDate(final LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY ||
+                date.isEqual(CHRISTMAS)) {
+            throw new IllegalArgumentException(String.format(INVALID_ATTEND_DATE.getMessage(),
+                    date.getMonth().getValue(),
+                    date.getDayOfMonth(),
+                    date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+        }
+    }
+
+    private static void validateOperatingHour(final LocalTime time) {
+        if (CampusOperatingRule.isOperatingHour(time)) {
+            return;
+        }
+        throw new IllegalArgumentException();
     }
 }
+
