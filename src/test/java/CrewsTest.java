@@ -1,12 +1,11 @@
+import static org.assertj.core.api.Assertions.assertThat;
+
 import domain.Crew;
 import domain.Crews;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import utils.CrewAttendanceFileReader;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CrewsTest {
     @DisplayName("크루들의 출석 데이터를 받아와 크루를 생성할 수 있다")
@@ -22,7 +21,8 @@ public class CrewsTest {
     void shouldNotAddDuplicateCrewsFromAttendanceData() {
         List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
         Crews crews = new Crews(crewAttendanceResource);
-        assertThat(crews.getCrews().stream().filter(crew -> crew.getNickname().equals("쿠키")).toList().size()).isEqualTo(1);
+        assertThat(crews.getCrews().stream().filter(crew -> crew.getNickname().equals("쿠키")).toList().size()).isEqualTo(
+                1);
     }
 
     @DisplayName("크루의 이름을 통해서 크루를 찾을 수 있다")
@@ -59,5 +59,15 @@ public class CrewsTest {
         Crews crews = new Crews(crewAttendanceResource);
         List<Crew> dismissalCrews = crews.findDismissalCrewsByImportance();
         assertThat(dismissalCrews.size()).isEqualTo(5);
+    }
+
+    @DisplayName("원래 있던 크루의 출석 정보에 추가로 출석 정보를 추가 할 수 있다")
+    @Test
+    void canAddNewAttendance() {
+        List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
+        Crews crews = new Crews(crewAttendanceResource);
+
+        crews.addCrewAttendance("쿠키", "2024-12-16 12:03");
+        assertThat(crews.findCrewByNickname("쿠키").orElse(null).getAttendTimes().getAttendTimes().size()).isEqualTo(9);
     }
 }
