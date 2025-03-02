@@ -11,16 +11,18 @@ import view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class AttendanceController {
-    private static final Pattern MENU_CHOICES = Pattern.compile("[1234Q]");
+    private static final String FILE_PATH = "src/main/resources/attendances.csv";
+    private static final int DATA_SKIP_COUNT = 1;
+
     private final Map<String, Runnable> menuActions = Map.of(
-            "1", () -> checkIn(),
-            "2", () -> updateRecord(),
-            "3", () -> viewRecord(),
-            "4", () -> viewWarnedCrews(),
+            "1", this::checkIn,
+            "2", this::updateRecord,
+            "3", this::viewRecord,
+            "4", this::viewWarnedCrews,
             "Q", () -> {
             }
     );
@@ -45,7 +47,8 @@ public class AttendanceController {
 
     private CrewRecords loadCrewRecords() {
         CrewRecordsGenerator crewRecordsGenerator = new CrewRecordsGenerator();
-        return crewRecordsGenerator.generate(currentDate, FileReader.read("src/main/resources/attendances.csv").stream().skip(1).toList());
+        List<String> lines = FileReader.read(FILE_PATH).stream().skip(DATA_SKIP_COUNT).toList();
+        return crewRecordsGenerator.generate(currentDate, lines);
     }
 
     private void checkIn() {
@@ -83,7 +86,7 @@ public class AttendanceController {
     }
 
     private void validateMenu(String input) {
-        if (!MENU_CHOICES.matcher(input).matches()) {
+        if (!menuActions.containsKey(input)) {
             throw new IllegalArgumentException("[ERROR] 메뉴에 없는 선택지입니다." + System.lineSeparator());
         }
     }
