@@ -1,6 +1,7 @@
 package domain.menu;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import exception.ErrorException;
@@ -30,5 +31,22 @@ public class MenuTest {
         assertThatThrownBy(() -> Menu.of(code))
                 .isInstanceOf(ErrorException.class)
                 .hasMessageContaining("[ERROR]");
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "ATTENDANCE_REGISTER,1,출석 확인",
+            "ATTENDANCE_EDIT,2,출석 수정",
+            "CREW_ATTENDANCE,3,크루별 출석 기록 확인",
+            "EXPULSION_RISK,4,제적 위험자 확인",
+            "QUIT,Q,종료"
+    })
+    @DisplayName("메뉴 선택 설명 기능 테스트")
+    void 메뉴_선택_설명_기능_테스트(Menu menu, String code, String description) {
+        // given & when & then
+        assertSoftly(softly -> {
+            assertEquals(code, menu.getCode());
+            assertEquals(description, menu.getDescription());
+        });
     }
 }
