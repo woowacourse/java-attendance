@@ -13,7 +13,7 @@ class AttendanceStateViewTest {
         String name = "ATTENDANCE";
 
         // when
-        AttendanceStateView result = AttendanceStateView.find(name);
+        AttendanceStateView result = AttendanceStateView.findByName(name);
 
         // then
         Assertions.assertThat(result.getName())
