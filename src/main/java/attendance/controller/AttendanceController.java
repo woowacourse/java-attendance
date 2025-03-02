@@ -8,17 +8,20 @@ import attendance.domain.Crew;
 import attendance.domain.Nickname;
 import attendance.domain.StatusStatistics;
 import attendance.util.DateUtil;
+import attendance.util.ErrorMessage;
 import attendance.util.FormattedErrorMessage;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceController {
 
+    private static final Map<String, Runnable> option = new HashMap<>();
     private static final String QUIT = "Q";
     private static final String RECORD = "1";
     private static final String EDIT = "2";
@@ -34,40 +37,37 @@ public class AttendanceController {
     }
 
     public void run() {
+        initializeOption();
         while (true) {
-            String function = InputView.readFunction(systemDate);
-            if (QUIT.equals(function)) {
+            String inputFunction = InputView.readFunction(systemDate);
+            if (QUIT.equals(inputFunction)) {
                 break;
             }
-
             try {
-                execute(function);
+                execute(inputFunction);
             } catch (IllegalArgumentException e) {
                 OutputView.printErrorMessage(e.getMessage());
             }
         }
     }
 
-    private void execute(String function) {
-        if (RECORD.equals(function)) {
-            recordAttendance();
-        }
+    private void initializeOption() {
+        option.put(RECORD, this::recordAttendance);
+        option.put(EDIT, this::editAttendance);
+        option.put(CHECK_RECORD, this::checkRecords);
+        option.put(CHECK_PENALTY, this::checkPenalty);
+    }
 
-        if (EDIT.equals(function)) {
-            editAttendance();
+    private void execute(String inputFunction) {
+        Runnable runnable = option.getOrDefault(inputFunction, null);
+        if (runnable == null) {
+            throw new IllegalArgumentException(ErrorMessage.INVALID_INPUT_OPTION_ERROR.getMessage());
         }
-
-        if (CHECK_RECORD.equals(function)) {
-            checkRecords();
-        }
-
-        if (CHECK_PENALTY.equals(function)) {
-            checkPenalty();
-        }
+        runnable.run();
     }
 
     private void recordAttendance() {
-        validateSystemDate();
+        validateDate(systemDate);
         Crew crew = getCrew(InputView.readNickname());
 
         String inputAttendTime = InputView.readAttendTimeForRecord();
@@ -77,8 +77,8 @@ public class AttendanceController {
         OutputView.printRecordAttendanceResult(attendance);
     }
 
-    private void validateSystemDate() {
-        if (DateUtil.isWeekend(systemDate) || Holiday.isHoliday(systemDate)) {
+    private void validateDate(LocalDate inputDate) {
+        if (DateUtil.isWeekend(inputDate) || Holiday.isHoliday(inputDate)) {
             throw new IllegalArgumentException(FormattedErrorMessage.INVALID_ATTEND_DATE_ERROR.getDateFormatMessage(systemDate));
         }
     }
@@ -92,8 +92,8 @@ public class AttendanceController {
     private void editAttendance() {
         Crew crew = getCrew(InputView.readNicknameForEdit());
         int inputDay = InputView.readAttendDay();
-        validateSystemDate();
         LocalDate attendDate = LocalDate.of(systemDate.getYear(), systemDate.getMonthValue(), inputDay);
+        validateDate(attendDate);
         LocalTime inputTime = InputView.readAttendTimeForEdit();
 
         Attendance newAttendance = new Attendance(attendDate, inputTime);
