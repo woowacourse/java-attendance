@@ -25,4 +25,18 @@ public enum AttendanceStatus {
         }
         return PRESENCE;
     }
+
+    @Override
+    public String toString() {
+        if (this == PRESENCE) {
+            return "출석";
+        }
+        if (this == LATE) {
+            return "지각";
+        }
+        if (this == ABSENCE) {
+            return "결석";
+        }
+        return super.toString();
+    }
 }

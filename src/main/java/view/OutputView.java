@@ -17,7 +17,7 @@ public class OutputView {
         AttendanceStatus status = AttendanceStatus.determineAttendanceStatus(checkInDate.getClassStartTime(), checkInTime.toLocalTime());
         System.out.println(formatDate(checkInDate.toLocalDate())
                 + " " + formatTime(checkInTime.toLocalTime())
-                + " (" + attendanceStatusToString(status) + ")");
+                + " (" + status + ")");
     }
 
     public void printModifiedChSeckInTime(CheckInDate checkInDate, CheckInTime beforeTime, CheckInTime afterTime) {
@@ -26,20 +26,10 @@ public class OutputView {
         System.out.printf("%s %s (%s) -> %s (%s) 수정 완료! \n"
                 , formatDate(checkInDate.toLocalDate())
                 , formatTime(beforeTime.toLocalTime())
-                , attendanceStatusToString(beforeStatus)
+                , beforeStatus
                 , formatTime(afterTime.toLocalTime())
-                , attendanceStatusToString(afterStatus)
+                , afterStatus
         );
-    }
-
-    private static String attendanceStatusToString(AttendanceStatus attendanceStatus) {
-        if (attendanceStatus == AttendanceStatus.PRESENCE) {
-            return "출석";
-        }
-        if (attendanceStatus == AttendanceStatus.LATE) {
-            return "지각";
-        }
-        return "결석";
     }
 
     private String formatDate(LocalDate date) {
