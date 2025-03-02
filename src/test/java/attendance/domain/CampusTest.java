@@ -1,13 +1,18 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class CampusTest {
     @DisplayName("정규 시작 시간 출석 테스트")
@@ -93,5 +98,33 @@ public class CampusTest {
         boolean actual = Campus.isOffDay(attendance);
 
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("캠퍼스 휴일일 경우 예외 발생")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 25, 28, 29})
+    void test8(int dayOfMonth) {
+        LocalDate date = LocalDate.of(2024, 12, dayOfMonth);
+        LocalTime time = LocalTime.of(8, 0);
+        LocalDateTime attendance = LocalDateTime.of(date, time);
+
+        assertThatThrownBy(() -> Campus.validateOperationDay(attendance))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(
+                        "[ERROR] 12월 %d일 %s은 등교일이 아닙니다.",
+                        dayOfMonth,
+                        attendance.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
+                );
+    }
+
+    @DisplayName("캠퍼스 휴일이 아닐 경우 통과")
+    @ParameterizedTest
+    @ValueSource(ints = {2, 3, 6, 9, 13, 16, 20, 23, 24, 26, 27, 30, 31})
+    void test9(int dayOfMonth) {
+        LocalDate date = LocalDate.of(2024, 12, dayOfMonth);
+        LocalTime time = LocalTime.of(8, 0);
+        LocalDateTime attendance = LocalDateTime.of(date, time);
+
+        assertThatCode(() -> Campus.validateOperationDay(attendance)).doesNotThrowAnyException();
     }
 }
