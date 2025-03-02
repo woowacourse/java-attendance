@@ -9,20 +9,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AttendanceBook {
-    private final List<Student> attendanceBook;
+    private static final int LATE_COUNT_FOR_ONE_ABSENCE = 3;
+    private final List<Student> students;
 
     public AttendanceBook(List<Student> attendanceBook) {
-        this.attendanceBook = attendanceBook;
+        this.students = attendanceBook;
     }
 
     public AttendanceBook(Map<String, List<LocalDateTime>> fileAttendanceRecord) {
-        attendanceBook = fileAttendanceRecord.entrySet().stream()
-                .map(map -> new Student(map.getKey(), map.getValue()))
+        students = fileAttendanceRecord.entrySet().stream()
+                .map(entry -> new Student(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
 
     public void updateNonExistentAttendanceRecords(LocalDate today){
-        for (Student student : attendanceBook){
+        for (Student student : students){
             student.updateNonAttendanceRecordStatusIsAbsent(today);
         }
     }
@@ -37,15 +38,15 @@ public class AttendanceBook {
     }
 
     public Student findStudentByNickName(String name){
-        return attendanceBook.stream()
+        return students.stream()
                 .filter(stu -> stu.getName().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 찾는 학생이 존재하지 않습니다."));
     }
 
     public List<Student> findExpulsionRiskStudents() {
-        return attendanceBook.stream()
-                .filter(student -> student.calculateTotalAbsentCount() >= 3)
+        return students.stream()
+                .filter(student -> student.calculateTotalAbsentCount() >= LATE_COUNT_FOR_ONE_ABSENCE)
                 .sorted(Comparator.comparing(Student::calculateTotalAbsentCount))
                 .collect(Collectors.toList());
     }
