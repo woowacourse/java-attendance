@@ -1,5 +1,6 @@
 package controller;
 
+import controller.command.Command;
 import domain.AttendanceBook;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,11 +20,6 @@ import view.OutputView;
 
 public class AttendanceController {
     private static final LocalDate START_DATE = LocalDate.of(2024, 12, 2);
-    private static final String ATTEND_COMMAND = "1";
-    private static final String EDIT_COMMAND = "2";
-    private static final String CREW_INFO_COMMAND = "3";
-    private static final String WARNING_CREW_COMMAND = "4";
-    private static final String EXIT_COMMAND = "Q";
 
     private final AttendanceFileReader attendanceFileReader;
     private final InputView inputView;
@@ -40,7 +36,7 @@ public class AttendanceController {
         Map<String, Consumer<AttendanceBook>> commands = initCommand();
         String inputCommand = "";
 
-        while (!inputCommand.equalsIgnoreCase(EXIT_COMMAND)) {
+        while (!inputCommand.equalsIgnoreCase(Command.EXIT_COMMAND.getCommand())) {
             inputCommand = processCommand(inputCommand, commands, attendanceBook);
         }
         inputView.close();
@@ -51,7 +47,7 @@ public class AttendanceController {
         try {
             // todo: 오늘 날짜 출력하는 부분 책임 분리
             inputCommand = inputView.inputCommand(LocalDate.now().format(DateTimeFormatter.ofPattern("MM월 dd일")));
-            if (inputCommand.equalsIgnoreCase(EXIT_COMMAND)) {
+            if (inputCommand.equalsIgnoreCase(Command.EXIT_COMMAND.getCommand())) {
                 return inputCommand;
             }
             executeCommand(inputCommand, commands, attendanceBook);
@@ -76,10 +72,10 @@ public class AttendanceController {
 
     private Map<String, Consumer<AttendanceBook>> initCommand() {
         Map<String, Consumer<AttendanceBook>> commands = new HashMap<>();
-        commands.put(ATTEND_COMMAND, new AttendCommand());
-        commands.put(EDIT_COMMAND, new EditCommand());
-        commands.put(CREW_INFO_COMMAND, new CrewInfoCommand());
-        commands.put(WARNING_CREW_COMMAND, new WarningInfoCommand());
+        commands.put(Command.ATTEND_COMMAND.getCommand(), new AttendCommand());
+        commands.put(Command.EDIT_COMMAND.getCommand(), new EditCommand());
+        commands.put(Command.CREW_INFO_COMMAND.getCommand(), new CrewInfoCommand());
+        commands.put(Command.WARNING_CREW_COMMAND.getCommand(), new WarningInfoCommand());
         return commands;
     }
 
