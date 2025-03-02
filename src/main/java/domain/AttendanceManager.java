@@ -12,10 +12,11 @@ public class AttendanceManager {
         this.attendanceManager = new HashMap<>();
     }
 
-    public void attend(NickName name, LocalTime attendingTime) {
-        Attendances attendances = attendanceManager.getOrDefault(name, new Attendances());
+    public void attend(NickName nickName, LocalTime attendingTime) {
+        Attendances attendances = attendanceManager.getOrDefault(nickName, new Attendances());
         attendances.attend(attendingTime);
-        attendanceManager.put(name, attendances);
+        attendanceManager.put(nickName, attendances);
+    }
 
     public boolean isAttended(NickName nickName) {
         Attendances attendances = attendanceManager.getOrDefault(nickName, new Attendances());
