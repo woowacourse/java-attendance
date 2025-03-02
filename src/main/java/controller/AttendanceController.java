@@ -17,6 +17,7 @@ import domain.Feature;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 import view.InputView;
 import view.OutputView;
@@ -54,7 +55,8 @@ public class AttendanceController {
 
     protected void attendanceEdit() {
         String name = inputView.readEditedName();
-        LocalDate date = parseIntegerToDate(localDate.getYear(), localDate.getMonthValue(), Integer.parseInt(inputView.readEditedDay()));
+        LocalDate date = parseIntegerToDate(localDate.getYear(), localDate.getMonthValue(),
+            Integer.parseInt(inputView.readEditedDay()));
         LocalTime time = parseStringToTime(inputView.readEditedTime());
 
         DailyRecord oldRecord = attendanceBook.findCrewByName(name).findRecordByDate(date);
@@ -64,9 +66,12 @@ public class AttendanceController {
 
     protected void crewRecordsCheck() {
         String name = inputView.readAttendedName();
+        LocalDate startDate = localDate.withDayOfMonth(1);
 
         Crew crew = attendanceBook.findCrewByName(name);
-        // TODO: 12월 기록 찾아오기
+        Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, localDate);
+        outputView.printCrewRecords(name, records);
+        // TODO: 통계 출력
     }
 
     protected void expelledWarningCheck() {

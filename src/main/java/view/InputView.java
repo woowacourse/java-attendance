@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class InputView {
 
     private static final String FEATURE_SELECT_FORMAT = "%s. %s%n";
-    private static final String TODAY_INFO_FORMAT = "오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.%n";
+    private static final String TODAY_INFO_FORMAT = "%n오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.%n";
     private static final String READ_ATTENDED_NAME_MESSAGE = "닉네임을 입력해 주세요.";
     private static final String READ_ATTENDED_TIME_MESSAGE = "등교 시간을 입력해 주세요.";
     private static final String READ_EDITED_NAME_MESSAGE = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";

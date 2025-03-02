@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,12 +34,13 @@ public class Crew {
         return dailyRecords.getOrDefault(date, new DailyRecord(date.getDayOfWeek(), null));
     }
 
-    public List<DailyRecord> findRecordsOfYearAndMonth(LocalDate startDate, LocalDate endDate) {
+    public Map<LocalDate, DailyRecord> findRecordsOfYearAndMonth(LocalDate startDate,
+        LocalDate endDate) {
         return Stream.iterate(startDate, date -> date.plusDays(1))
             .limit(ChronoUnit.DAYS.between(startDate, endDate))
             .filter(date -> !Holiday.isHoliday(date))
-            .map(this::findRecordByDate)
-            .collect(Collectors.toList());
+            .collect(Collectors.toMap(date -> date, this::findRecordByDate, (e1, e2) -> e1,
+                LinkedHashMap::new));
     }
 
     public DailyRecord addDailyRecord(LocalDateTime dateTime) {

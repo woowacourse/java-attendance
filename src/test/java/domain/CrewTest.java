@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ public class CrewTest {
 
             LocalDate startDate = parseStringToDate("2024-12-01");
             LocalDate endDate = parseStringToDate("2024-12-06"); // 2일, 3일을 결석으로 추가
-            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
+            Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
 
             assertThat(records.size()).isEqualTo(4);
         }
@@ -50,7 +51,7 @@ public class CrewTest {
 
             LocalDate startDate = parseStringToDate("2025-03-01");
             LocalDate endDate = parseStringToDate("2025-03-02");
-            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
+            Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
 
             assertThat(records.size()).isEqualTo(0);
         }
@@ -68,7 +69,7 @@ public class CrewTest {
             crew.addDailyRecord(parseStringToDateTime("2025-02-04 10:08"));
             LocalDate startDate = parseStringToDate("2025-02-01");
             LocalDate endDate = parseStringToDate("2025-02-05");// 3일을 결석으로 추가
-            List<DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
+            Map<LocalDate, DailyRecord> records = crew.findRecordsOfYearAndMonth(startDate, endDate);
 
             assertThat(records.size()).isEqualTo(2);
         }
