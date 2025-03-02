@@ -4,6 +4,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static domain.utils.DateTimeUtil.FIXED_RUNNING_DATE;
+
 public enum AttendanceStatus {
     ATTENDANCE,
     TARDY,
@@ -12,7 +14,6 @@ public enum AttendanceStatus {
 
     private final static int TARDY_THRESHOLD_MINUTES = 5;
     private final static int ABSENCE_THRESHOLD_MINUTES = 30;
-    private final static LocalDateTime FIXED_RUNNING_DATE = LocalDateTime.of(2024, 12, 14, 10, 0, 0);
     private final static LocalTime MONDAY_ATTENDANCE_REFERENCE_TIME = LocalTime.of(13, 0);
     private final static LocalTime NORMAL_ATTENDANCE_REFERENCE_TIME = LocalTime.of(10, 0);
 

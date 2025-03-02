@@ -118,4 +118,42 @@ class AttendanceBookTest {
 
         assertThatNoException().isThrownBy(() -> attendanceBook.validateBeforeEdit(name, dateTime.toLocalDate()));
     }
+
+    @Test
+    void 등교일이_아닌_경우_예외가_발생한다() {
+        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 25, 10, 5);
+
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        assertThatThrownBy(() -> attendanceBook.validateIsWeekday(dateTime.toLocalDate()))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 등교일인_경우_예외가_발생하지_않는다() {
+        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 13, 10, 5);
+
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        assertThatNoException().isThrownBy(() -> attendanceBook.validateIsWeekday(dateTime.toLocalDate()));
+    }
+
+    @Test
+    void 캠퍼스_운영시간이_아닌_경우_예외가_발생한다() {
+        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 7, 5);
+
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        assertThatThrownBy(() -> attendanceBook.validateIsInRunningTime(dateTime.toLocalTime()))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 캠퍼스_운영시간인_경우_예외가_발생하지_않는다() {
+        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
+
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        assertThatNoException().isThrownBy(() -> attendanceBook.validateIsInRunningTime(dateTime.toLocalTime()));
+    }
 }
