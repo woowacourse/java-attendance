@@ -59,4 +59,24 @@ class AttendanceTest {
         assertThatThrownBy(() ->
                 new Attendance(LocalDateTime.of(2024, 12, 28, 10, 0)));
     }
+
+    @Test
+    void 날짜를_같으면_TRUE를_반환한다() {
+        LocalDate date = LocalDate.of(2025, 2, 28);
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 28, 10, 0));
+
+        boolean isEqualDate = attendance.isEqualTo(date);
+
+        assertThat(isEqualDate).isEqualTo(true);
+    }
+
+    @Test
+    void 날짜가_다르면_FALSE를_반환한다() {
+        LocalDate date = LocalDate.of(2025, 2, 25);
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 28, 10, 0));
+
+        boolean isEqualDate = attendance.isEqualTo(date);
+
+        assertThat(isEqualDate).isEqualTo(false);
+    }
 }
