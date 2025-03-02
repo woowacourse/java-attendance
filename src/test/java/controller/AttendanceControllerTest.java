@@ -39,7 +39,7 @@ class AttendanceControllerTest {
     @DisplayName("잘못된 값을 입력한 경우 해당 값부터 다시 입력을 받는다.")
     @Test
     void test2() {
-        runTest("2\n미미미\n미미\n15\n3\n23:30\n15:00\nq\n",
+        runTest("6\n2\n미미미\n미미\n15\n3\n23:30\n15:00\nq\n",
                 "12월 03일 화요일 10:00 (출석) -> --:-- (결석) 수정 완료!");
     }
 

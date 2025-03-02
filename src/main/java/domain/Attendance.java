@@ -1,5 +1,7 @@
 package domain;
 
+import static domain.AttendancePolicy.*;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,10 +12,14 @@ public class Attendance {
     private final LocalDateTime dateAndTime;
 
     public Attendance(LocalDateTime dateAndTime) {
+        validateHoliday(dateAndTime.toLocalDate());
+        validateRunningTime(dateAndTime.toLocalTime());
         this.dateAndTime = dateAndTime;
     }
 
     public Attendance(LocalDate date, LocalTime time) {
+        validateHoliday(date);
+        validateRunningTime(time);
         this.dateAndTime = LocalDateTime.of(date, time);
     }
 

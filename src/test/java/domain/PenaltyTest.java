@@ -48,7 +48,8 @@ public class PenaltyTest {
         // 7, 8 => 주말
         // 4, 5, 6, 9, 11, 12 => 결석
 
-        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(mimi);
+        AttendanceCount attendanceCount = attendanceBook.findAttendanceHistoryUntilYesterday(mimi)
+                .attendanceCount();
         assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.EXPULSION);
     }
 
@@ -65,7 +66,8 @@ public class PenaltyTest {
         // 7, 8 => 주말
         // 9, 11, 12 => 결석
 
-        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(mimi);
+        AttendanceCount attendanceCount = attendanceBook.findAttendanceHistoryUntilYesterday(mimi)
+                .attendanceCount();
         assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.COUNSELING);
     }
 
@@ -80,11 +82,12 @@ public class PenaltyTest {
                 attendanceDayOf6,
                 attendanceDayOf9,
                 attendanceDayOf10
-                );
+        );
         // 7, 8 => 주말
         // 11, 12 => 결석
 
-        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(mimi);
+        AttendanceCount attendanceCount = attendanceBook.findAttendanceHistoryUntilYesterday(mimi)
+                .attendanceCount();
         assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.WARNING);
     }
 
@@ -104,7 +107,8 @@ public class PenaltyTest {
         // 7, 8 => 주말
         // 12 => 결석
 
-        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(mimi);
+        AttendanceCount attendanceCount = attendanceBook.findAttendanceHistoryUntilYesterday(mimi)
+                .attendanceCount();
         assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.NONE);
     }
 
@@ -123,7 +127,8 @@ public class PenaltyTest {
         // 11, 12 => 결석
         // 3, 4, 5 => 지각 => 결석 1회 간주, 총 결석 3회
 
-        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(mimi);
+        AttendanceCount attendanceCount = attendanceBook.findAttendanceHistoryUntilYesterday(mimi)
+                .attendanceCount();
         assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.COUNSELING);
     }
 

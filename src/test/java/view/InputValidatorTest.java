@@ -51,6 +51,14 @@ public class InputValidatorTest {
                 () -> InputValidator.validateDay(invalidDay));
     }
 
+    @DisplayName("오늘 이후의 날짜일 경우 예외가 발생한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"15"})
+    void test4(String invalidDay) {
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateDay(invalidDay));
+    }
+
     void assertThrowsIllegalArgumentException(ThrowingCallable throwingCallable) {
         assertThatThrownBy(throwingCallable)
                 .isInstanceOf(IllegalArgumentException.class)

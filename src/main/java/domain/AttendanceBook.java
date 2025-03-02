@@ -1,6 +1,9 @@
 package domain;
 
+import static util.Constants.ERROR_HEADER;
+
 import dto.AttendanceCount;
+import dto.AttendanceHistory;
 import dto.AttendanceLog;
 import dto.InitialInformation;
 import dto.ModifyingResult;
@@ -11,15 +14,12 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
+    private static final String NAME_NOT_EXISTED_ERROR = "존재하지 않는 닉네임입니다.";
+
     private final Map<CrewName, AttendanceRecord> attendanceBook;
 
     public AttendanceBook(InitialInformation initialInformation) {
         this.attendanceBook = initialInformation.initialInformation();
-    }
-
-    public boolean isNotExistedName(CrewName crewName) {
-        AttendanceRecord attendanceRecord = attendanceBook.get(crewName);
-        return attendanceRecord == null;
     }
 
     public Attendance addAttendance(CrewName crewName, Attendance attendance) {
@@ -32,14 +32,25 @@ public class AttendanceBook {
     }
 
     public AttendanceRecord findAttendanceRecordBy(CrewName crewName) {
-        return attendanceBook.get(crewName);
+        AttendanceRecord attendanceRecord = attendanceBook.get(crewName);
+        if (attendanceRecord == null) {
+            throw new IllegalArgumentException(ERROR_HEADER + NAME_NOT_EXISTED_ERROR);
+        }
+        return attendanceRecord;
     }
 
-    public AttendanceLog findAttendanceLogUntilYesterday(CrewName crewName) {
+    public AttendanceHistory findAttendanceHistoryUntilYesterday(CrewName crewName) {
+        return new AttendanceHistory(
+                findAttendanceLogUntilYesterday(crewName),
+                findCountUntilYesterday(crewName)
+        );
+    }
+
+    private AttendanceLog findAttendanceLogUntilYesterday(CrewName crewName) {
         return findAttendanceRecordBy(crewName).findAllSortedUntilYesterday();
     }
 
-    public AttendanceCount findCountUntilYesterday(CrewName crewName) {
+    private AttendanceCount findCountUntilYesterday(CrewName crewName) {
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
         return new AttendanceCount(
                 crewName,

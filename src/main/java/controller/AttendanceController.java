@@ -4,9 +4,9 @@ import static util.Constants.*;
 
 import domain.Attendance;
 import domain.AttendanceBook;
+import domain.AttendancePolicy;
 import domain.CrewName;
-import dto.AttendanceCount;
-import dto.AttendanceLog;
+import dto.AttendanceHistory;
 import dto.ModifyingResult;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,7 +22,7 @@ public class AttendanceController {
 
     public AttendanceController(AttendanceBook attendanceBook) {
         this.attendanceBook = attendanceBook;
-        this.inputView = new InputView(attendanceBook);
+        this.inputView = new InputView();
         this.outputView = new OutputView();
     }
 
@@ -30,8 +30,7 @@ public class AttendanceController {
         Map<MenuOption, Runnable> menuActions = getMenuActions();
         boolean onRunning = true;
         while (onRunning) {
-            String selectedMenu = inputView.readSelectedMenu();
-            MenuOption menuOption = MenuOption.from(selectedMenu);
+            MenuOption menuOption = handleWithRetry(this::getMenuOption);
             menuActions.getOrDefault(menuOption, () -> {
             }).run();
             onRunning = MenuOption.isRunningOption(menuOption);
@@ -47,31 +46,62 @@ public class AttendanceController {
         );
     }
 
+    private MenuOption getMenuOption() {
+        String selectedMenu = inputView.readSelectedMenu();
+        return MenuOption.from(selectedMenu);
+    }
+
     private void addAttendance() {
-        String name = handleWithRetry(inputView::readName);
-        String time = handleWithRetry(inputView::readAttendanceTime);
-        CrewName crewName = new CrewName(name);
-        Attendance attendance = new Attendance(TODAY, LocalTime.parse(time));
-        handleWithErrorMessage(() -> attendanceBook.addAttendance(crewName, attendance));
+        CrewName crewName = handleWithRetry(this::getCrewName);
+        Attendance attendance = handleWithRetry(this::getAttendance);
+        attendanceBook.addAttendance(crewName, attendance);
         outputView.showAttendanceResult(attendance);
     }
 
+    private CrewName getCrewName() {
+        String name = inputView.readName();
+        CrewName crewName = new CrewName(name);
+        attendanceBook.findAttendanceRecordBy(crewName);
+        return crewName;
+    }
+
+    private Attendance getAttendance() {
+        String time = inputView.readAttendanceTime();
+        return new Attendance(TODAY, LocalTime.parse(time));
+    }
+
     private void modifyAttendance() {
-        String crewName = handleWithRetry(inputView::readModifyName);
-        String day = handleWithRetry(inputView::readModifyDay);
-        String time = handleWithRetry(inputView::readModifyTime);
-        LocalDate date = LocalDate.of(TODAY.getYear(), TODAY.getMonth(), Integer.parseInt(day));
-        ModifyingResult modifyingResult = attendanceBook.modify(
-                new CrewName(crewName), new Attendance(date, LocalTime.parse(time)));
+        CrewName crewName = handleWithRetry(this::getCrewName);
+        LocalDate date = handleWithRetry(this::getDate);
+        LocalTime time = handleWithRetry(this::getTime);
+        Attendance attendance = new Attendance(date, time);
+        ModifyingResult modifyingResult = attendanceBook.modify(crewName, attendance);
         outputView.showModifyingResult(modifyingResult);
     }
 
+    private LocalDate getDate() {
+        String day = inputView.readModifyDay();
+        LocalDate date = LocalDate.of(TODAY.getYear(), TODAY.getMonth(), Integer.parseInt(day));
+        AttendancePolicy.validateHoliday(date);
+        return date;
+    }
+
+    private LocalTime getTime() {
+        String time = inputView.readModifyName();
+        LocalTime localTime = LocalTime.parse(time);
+        AttendancePolicy.validateRunningTime(localTime);
+        return localTime;
+    }
+
     private void showAttendanceHistory() {
-        String name = handleWithRetry(inputView::readName);
+        AttendanceHistory attendanceHistory = handleWithRetry(this::getAttendanceHistory);
+        outputView.showAttendanceHistory(attendanceHistory);
+    }
+
+    private AttendanceHistory getAttendanceHistory() {
+        String name = inputView.readName();
         CrewName crewName = new CrewName(name);
-        AttendanceLog attendanceLog = attendanceBook.findAttendanceLogUntilYesterday(crewName);
-        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(crewName);
-        outputView.showAttendanceHistory(attendanceLog, attendanceCount);
+        return attendanceBook.findAttendanceHistoryUntilYesterday(crewName);
     }
 
     private void showPenaltyCrews() {

@@ -1,5 +1,7 @@
 package controller;
 
+import static util.Constants.ERROR_HEADER;
+
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -9,6 +11,8 @@ public enum MenuOption {
     SHOWING_CREW_ATTENDANCE_HISTORY("[3]"),
     SHOWING_PENALTY_CREWS("[4]"),
     QUIT("[Qq]");
+
+    private static final String MENU_NOT_EXISTED_ERROR = "해당 메뉴가 존재하지 않습니다.";
 
     private final String pattern;
 
@@ -21,7 +25,7 @@ public enum MenuOption {
                 .filter(menuOption ->
                         Pattern.matches(menuOption.pattern, input))
                 .findFirst()
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(() -> new IllegalArgumentException(ERROR_HEADER + MENU_NOT_EXISTED_ERROR));
     }
 
     public static boolean isRunningOption(MenuOption menuOption) {

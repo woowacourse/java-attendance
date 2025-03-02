@@ -121,7 +121,7 @@ public class AttendanceBookTest {
         Attendance firstAttendance = new Attendance(attendanceDayOf2);
         Attendance expectedLastAttendance = new Attendance(LocalDateTime.of(2024, 12, 12, 15, 0));
 
-        AttendanceLog attendanceLog = attendanceBook.findAttendanceLogUntilYesterday(mimi);
+        AttendanceLog attendanceLog = attendanceBook.findAttendanceHistoryUntilYesterday(mimi).attendanceLog();
         List<Attendance> sortedAttendance = attendanceLog.sortedAttendanceLog();
 
         assertThat(sortedAttendance.getFirst()).isEqualTo(firstAttendance);
@@ -142,7 +142,8 @@ public class AttendanceBookTest {
                 // 11, 12 => 결석
                 // 결석 2, 지각 3, 출석 4
         );
-        AttendanceCount attendanceCount = attendanceBook.findCountUntilYesterday(mimi);
+        AttendanceCount attendanceCount = attendanceBook.findAttendanceHistoryUntilYesterday(mimi)
+                .attendanceCount();
 
         assertThat(attendanceCount.absentCount()).isEqualTo(2);
         assertThat(attendanceCount.lateCount()).isEqualTo(3);
@@ -155,7 +156,8 @@ public class AttendanceBookTest {
         setAttendanceBook();
 
         PenaltyCrewsInformation penaltyCrewsInformation = attendanceBook.findPenaltyCrewsSortedUntilYesterday();
-        List<CrewName> crewNames = penaltyCrewsInformation.sortedPenaltyCrewsInformation().stream()
+        List<CrewName> crewNames = penaltyCrewsInformation.sortedPenaltyCrewsInformation()
+                .stream()
                 .map(AttendanceCount::crewName)
                 .toList();
 
@@ -169,7 +171,8 @@ public class AttendanceBookTest {
         updateConsideredAbsent();
 
         PenaltyCrewsInformation penaltyCrewsInformation = attendanceBook.findPenaltyCrewsSortedUntilYesterday();
-        List<CrewName> crewNames = penaltyCrewsInformation.sortedPenaltyCrewsInformation().stream()
+        List<CrewName> crewNames = penaltyCrewsInformation.sortedPenaltyCrewsInformation()
+                .stream()
                 .map(AttendanceCount::crewName)
                 .toList();
 
@@ -183,7 +186,8 @@ public class AttendanceBookTest {
         updateEqualAbsent();
 
         PenaltyCrewsInformation penaltyCrewsInformation = attendanceBook.findPenaltyCrewsSortedUntilYesterday();
-        List<CrewName> crewNames = penaltyCrewsInformation.sortedPenaltyCrewsInformation().stream()
+        List<CrewName> crewNames = penaltyCrewsInformation.sortedPenaltyCrewsInformation()
+                .stream()
                 .map(AttendanceCount::crewName)
                 .toList();
 

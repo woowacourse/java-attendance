@@ -4,6 +4,7 @@ import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.Penalty;
 import dto.AttendanceCount;
+import dto.AttendanceHistory;
 import dto.AttendanceLog;
 import dto.ModifyingResult;
 import dto.PenaltyCrewsInformation;
@@ -24,8 +25,10 @@ public class OutputView {
         );
     }
 
-    public void showAttendanceHistory(AttendanceLog attendanceLog, AttendanceCount attendanceCount) {
-        System.out.println("\n이번 달 " + attendanceCount.crewName().value() + "의 출석 기록입니다.\n");
+    public void showAttendanceHistory(AttendanceHistory attendanceHistory) {
+        AttendanceCount attendanceCount = attendanceHistory.attendanceCount();
+        AttendanceLog attendanceLog = attendanceHistory.attendanceLog();
+        System.out.println("\n이번 달 " + attendanceCount.crewName().name() + "의 출석 기록입니다.\n");
         for (Attendance attendance : attendanceLog.sortedAttendanceLog()) {
             System.out.println(formatAttendance(attendance));
         }
@@ -63,7 +66,7 @@ public class OutputView {
         if (Penalty.from(attendanceCount) == Penalty.NONE) {
             return;
         }
-        System.out.println("- " + attendanceCount.crewName().value() + ": " +
+        System.out.println("- " + attendanceCount.crewName().name() + ": " +
                 "결석 " + attendanceCount.absentCount() + "회, " +
                 "지각 " + attendanceCount.lateCount() + "회 " +
                 "(" + Penalty.from(attendanceCount).getExpression() + ")"
