@@ -24,6 +24,15 @@ public class AttendancePolicyTest {
     }
 
     @Test
+    void 평일_운영_시간에_정상적으로_출석한다() {
+        LocalTime todayTime = LocalTime.of(10, 0);
+        LocalDateTime attendanceTime = LocalDateTime.of(weekday, todayTime);
+
+        AttendanceStatus status = new AttendancePolicy().getAttendanceStatus(attendanceTime);
+        assertThat(status.getStatus()).isEqualTo("출석");
+    }
+
+    @Test
     void 출석_날짜가_주말이면_예외가_발생한다() {
         assertThatThrownBy(() -> new AttendancePolicy().validateIsWeekDays(weekend))
                 .isInstanceOf(IllegalArgumentException.class);
