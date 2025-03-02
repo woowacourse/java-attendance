@@ -1,3 +1,5 @@
+package domain;
+
 import exception.NotOperatingTimeException;
 
 import java.time.LocalTime;

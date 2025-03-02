@@ -1,3 +1,5 @@
+package domain;
+
 import exception.DuplicateAttendanceException;
 
 import java.time.LocalDate;

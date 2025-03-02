@@ -1,3 +1,5 @@
+package domain;
+
 import exception.NotOperatingTimeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

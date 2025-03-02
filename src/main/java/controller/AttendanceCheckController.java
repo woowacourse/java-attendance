@@ -1,6 +1,6 @@
 //package controller;
 //
-//import domain.Attendance;
+//import domain.domain.Attendance;
 //import domain.AttendanceCustomDate;
 //import domain.CrewAttendances;
 //import domain.Month;
@@ -60,7 +60,7 @@
 //
 //    private void registerAttendance(String name, LocalDate date, LocalTime time) {
 //        try {
-//            Attendance attendance = crewAttendances.createNewAttendance(name, date, time);
+//            domain.Attendance attendance = crewAttendances.createNewAttendance(name, date, time);
 //            String status = attendance.getStatus().getExpression();
 //            outputView.printAttendanceResult(attendance.getDate(), attendance.getTime().get(), status);
 //        } catch (DuplicateAttendanceException e) {

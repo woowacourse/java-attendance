@@ -1,3 +1,5 @@
+package domain;
+
 import exception.CrewNotExistException;
 
 import java.time.LocalDate;

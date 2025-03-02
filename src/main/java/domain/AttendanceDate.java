@@ -1,3 +1,5 @@
+package domain;
+
 import exception.InvalidDateException;
 
 import java.time.LocalDate;

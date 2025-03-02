@@ -26,8 +26,8 @@
 //    public void run() {
 //        String name = inputView.readName();
 //        LocalDate nowDate = AttendanceCustomDate.now().toLocalDate();
-//        Map<LocalDate, Attendance> histories = crewAttendances.getAttendances(name, nowDate.withDayOfMonth(1), nowDate);
-//        AttendanceStatistic statistic = crewAttendances
+//        Map<LocalDate, domain.Attendance> histories = crewAttendances.getAttendances(name, nowDate.withDayOfMonth(1), nowDate);
+//        domain.AttendanceStatistic statistic = crewAttendances
 //                .getAttendanceStatistic(name, nowDate.withDayOfMonth(1), nowDate);
 //        CrewStatus crewStatus = statistic.getCrewStatus();
 //        outputView.printHistoryResult(name, histories, statistic.getValue(), crewStatus);

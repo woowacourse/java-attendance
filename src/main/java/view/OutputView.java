@@ -1,9 +1,9 @@
 //package view;
 //
 //import controller.Menu;
-//import domain.Attendance;
+//import domain.domain.Attendance;
 //import domain.AttendanceCustomDate;
-//import domain.AttendanceStatus;
+//import domain.domain.AttendanceStatus;
 //import domain.CrewStatus;
 //import view.dto.DisenrollmentCheckResponse;
 //
@@ -76,8 +76,8 @@
 //
 //    public void printHistoryResult(
 //            String name,
-//            Map<LocalDate, Attendance> histories,
-//            Map<AttendanceStatus, Integer> attendanceResult,
+//            Map<LocalDate, domain.Attendance> histories,
+//            Map<domain.AttendanceStatus, Integer> attendanceResult,
 //            CrewStatus crewStatus
 //    ) {
 //        System.out.printf("이번 달 %s의 출석 기록입니다.\n", name);
@@ -101,10 +101,10 @@
 //        );
 //    }
 //
-//    private void printHistories(Map<LocalDate, Attendance> histories) {
-//        for (Map.Entry<LocalDate, Attendance> entry : histories.entrySet()) {
+//    private void printHistories(Map<LocalDate, domain.Attendance> histories) {
+//        for (Map.Entry<LocalDate, domain.Attendance> entry : histories.entrySet()) {
 //            LocalDate date = entry.getKey();
-//            Attendance attendance = entry.getValue();
+//            domain.Attendance attendance = entry.getValue();
 //            String formattedDate = date.format(
 //                    DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.forLanguageTag("ko"))
 //            );
@@ -119,7 +119,7 @@
 //        }
 //    }
 //
-//    private void printAttendanceCount(Map<AttendanceStatus, Integer> attendanceResult) {
+//    private void printAttendanceCount(Map<domain.AttendanceStatus, Integer> attendanceResult) {
 //        attendanceResult.keySet().forEach(attendanceStatus -> {
 //            System.out.printf("%s: %d회\n", attendanceStatus.getExpression(), attendanceResult.get(attendanceStatus));
 //        });

@@ -1,7 +1,7 @@
 //package controller;
 //
 //import domain.AttendanceCustomDate;
-//import domain.AttendanceStatistic;
+//import domain.domain.AttendanceStatistic;
 //import domain.Crew;
 //import domain.CrewAttendances;
 //import view.dto.DisenrollmentCheckResponse;
@@ -38,7 +38,7 @@
 //    ) {
 //        List<DisenrollmentCheckResponse> responses = new ArrayList<>();
 //        for (Crew crew : targetCrews) {
-//            AttendanceStatistic statistic = crewAttendances.getAttendanceStatistic(crew.getName(), start, end);
+//            domain.AttendanceStatistic statistic = crewAttendances.getAttendanceStatistic(crew.getName(), start, end);
 //            DisenrollmentCheckResponse response = new DisenrollmentCheckResponse(
 //                    crew.getName(),
 //                    statistic.getTotalAbsenceCount(),

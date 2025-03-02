@@ -1,3 +1,5 @@
+package domain;
+
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;

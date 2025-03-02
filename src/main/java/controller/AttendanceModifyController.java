@@ -1,6 +1,6 @@
 //package controller;
 //
-//import domain.Attendance;
+//import domain.domain.Attendance;
 //import domain.AttendanceBook;
 //import domain.CrewAttendances;
 //import view.InputView;
@@ -31,8 +31,8 @@
 //        LocalTime modifyTime = inputView.readModifyTime();
 //
 //        AttendanceBook attendanceBook = crewAttendances.findAttendanceBookByCrewName(crewName);
-//        Attendance beforeAttendance = attendanceBook.findAttendanceByDate(modifyDate);
-//        Attendance modifiedAttendance = attendanceBook.replace(modifyDate, modifyTime);
+//        domain.Attendance beforeAttendance = attendanceBook.findAttendanceByDate(modifyDate);
+//        domain.Attendance modifiedAttendance = attendanceBook.replace(modifyDate, modifyTime);
 //
 //        LocalTime beforeTime = beforeAttendance.getTime().orElse(null);
 //        String beforeStatus = beforeAttendance.getStatus().getExpression();
