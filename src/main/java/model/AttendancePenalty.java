@@ -7,21 +7,21 @@ public enum AttendancePenalty {
     EXPULSION("제적", 5);
 
     private final String penalty;
-    private final int penaltyCount;
+    private final int thresholdAbsenceCount;
 
     AttendancePenalty(String penalty, int penaltyCount) {
         this.penalty = penalty;
-        this.penaltyCount = penaltyCount;
+        this.thresholdAbsenceCount = penaltyCount;
     }
 
     public static AttendancePenalty findPenaltyByAbsentCount(long count) {
-        if (count > AttendancePenalty.EXPULSION.penaltyCount) {
+        if (count > AttendancePenalty.EXPULSION.thresholdAbsenceCount) {
             return AttendancePenalty.EXPULSION;
         }
-        if (count >= AttendancePenalty.COUNSELING.penaltyCount) {
+        if (count >= AttendancePenalty.COUNSELING.thresholdAbsenceCount) {
             return AttendancePenalty.COUNSELING;
         }
-        if (count >= AttendancePenalty.WARNING.penaltyCount) {
+        if (count >= AttendancePenalty.WARNING.thresholdAbsenceCount) {
             return AttendancePenalty.WARNING;
         }
         return NONE;
