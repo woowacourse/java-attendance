@@ -65,5 +65,8 @@ public class AttendancePolicy {
     private LocalTime getAbsenceTime(LocalDateTime attendanceTime) {
         return isMonday(attendanceTime) ? MONDAY_ABSENCE_TIME : ABSENCE_TIME;
     }
-
+    
+    public boolean ignoreWeekendAndHoliday(LocalDate date) {
+        return date.getDayOfWeek().getValue() < SATURDAY_VALUE && !Holidays.isHoliday(date);
+    }
 }

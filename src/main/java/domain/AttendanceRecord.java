@@ -58,4 +58,39 @@ public class AttendanceRecord {
         attendanceTimes.removeIf(time -> time.getDayOfMonth() == modifyDay);
         attendanceTimes.add(modifyDateTime);
     }
+
+    public int countStatus(AttendanceStatus type) {
+        LocalDate startDate = dateProvider.getDate().withDayOfMonth(1);
+        LocalDate endDate = dateProvider.getDate().plusDays(1);
+
+        int statusCount = 0;
+        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+            if (!attendancePolicy.ignoreWeekendAndHoliday(date)) {
+                continue;
+            }
+            statusCount += addCount(date, type);
+        }
+        return statusCount;
+    }
+
+    private int addCount(LocalDate date, AttendanceStatus type) {
+        AttendanceStatus status = determineStatus(date);
+        if (status == type) {
+            return 1;
+        }
+        return 0;
+    }
+
+    private AttendanceStatus determineStatus(LocalDate date) {
+        if (!existsAttendanceTime(date)) {
+            return AttendanceStatus.ABSENCE;
+        }
+        return getAttendanceStatus(date.getDayOfMonth());
+    }
+
+    private boolean existsAttendanceTime(LocalDate date) {
+        return attendanceTimes.stream()
+                .anyMatch(time -> time.getDayOfMonth() == date.getDayOfMonth());
+    }
+
 }

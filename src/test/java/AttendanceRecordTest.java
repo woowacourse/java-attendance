@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceRecord;
+import domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -71,6 +72,18 @@ public class AttendanceRecordTest {
         attendanceRecord.modifyAttendanceTime(modifyDay, modifyTime);
 
         assertThat(attendanceRecord.findAttendanceTimeByDay(modifyDay).toLocalTime()).isEqualTo(modifyTime);
+    }
+
+    @Test
+    void 출석_지각_결석_횟수를_확인한다() {
+        AttendanceRecord attendanceRecord = new AttendanceRecord(() -> LocalDate.of(2024, 12, 4));
+        attendanceRecord.add(LocalDateTime.of(2024, 12, 2, 10, 5));
+        attendanceRecord.add(LocalDateTime.of(2024, 12, 3, 10, 6));
+        attendanceRecord.add(LocalDateTime.of(2024, 12, 4, 10, 31));
+
+        assertThat(attendanceRecord.countStatus(AttendanceStatus.ATTENDANCE)).isEqualTo(1);
+        assertThat(attendanceRecord.countStatus(AttendanceStatus.LATE)).isEqualTo(1);
+        assertThat(attendanceRecord.countStatus(AttendanceStatus.ABSENCE)).isEqualTo(1);
     }
 
 }
