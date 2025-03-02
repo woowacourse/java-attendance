@@ -1,4 +1,5 @@
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -44,6 +45,16 @@ public class AttendanceRecordTest {
         assertThat(targetAttendanceTime).isEqualTo(attendanceTime);
     }
 
+    @Test
+    void 해당_날짜의_출석_시간이_없으면_예외를_발생한다() {
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.attend("09:59");
+
+        assertThatThrownBy(() -> attendanceRecord.findAttendanceTimeByDay(1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 해당 날짜의 출석 시간이 없습니다.");
+    }
+
 
     class AttendanceRecord {
 
@@ -68,7 +79,7 @@ public class AttendanceRecordTest {
             return attendanceTimes.stream()
                     .filter(time -> time.getDayOfMonth() == dayOfMonth)
                     .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석 시간이 없습니다."));
+                    .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜의 출석 시간이 없습니다."));
         }
     }
 }
