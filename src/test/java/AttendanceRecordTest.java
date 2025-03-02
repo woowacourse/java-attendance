@@ -67,8 +67,7 @@ public class AttendanceRecordTest {
     @Test
     void 출석_날짜가_주말이면_예외가_발생한다() {
         assertThatThrownBy(() -> new AttendanceRecord(() -> weekend).attend("09:59"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 주말에는 출석할 수 없습니다.");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 }

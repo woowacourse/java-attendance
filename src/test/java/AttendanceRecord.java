@@ -1,7 +1,10 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class AttendanceRecord {
 
@@ -14,6 +17,15 @@ public class AttendanceRecord {
     }
 
     public LocalDateTime attend(String time) {
+        LocalDate today = dateProvider.getDate();
+        
+        if (today.getDayOfWeek().getValue() > 5) {
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                            today.getMonthValue(), today.getDayOfMonth(),
+                            today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+        }
+
         LocalDateTime attendanceTime = LocalDateTime.of(
                 dateProvider.getDate(),
                 LocalTime.of(
