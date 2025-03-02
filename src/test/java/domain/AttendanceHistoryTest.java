@@ -35,14 +35,16 @@ public class AttendanceHistoryTest {
             final var actual = attendanceHistory.attendance(attendanceDateTime);
 
             // then
-            assertThat(actual.getAttendanceDate())
-                    .hasYear(2024)
-                    .hasMonthValue(12)
-                    .hasDayOfMonth(13);
-            assertThat(actual.getAttendanceTime()).isNotEmpty();
-            assertThat(actual.getAttendanceTime().get())
-                    .hasHour(10)
-                    .hasMinute(5);
+            assertSoftly((s) -> {
+                s.assertThat(actual.getAttendanceDate())
+                        .hasYear(2024)
+                        .hasMonthValue(12)
+                        .hasDayOfMonth(13);
+                s.assertThat(actual.getAttendanceTime()).isNotEmpty();
+                s.assertThat(actual.getAttendanceTime().get())
+                        .hasHour(10)
+                        .hasMinute(5);
+            });
         }
 
         @DisplayName("출석 기록을 날짜 기준으로 찾아온다.")
@@ -109,10 +111,12 @@ public class AttendanceHistoryTest {
             final List<AttendanceRecord> actual = attendanceHistory.findAllUntilBeforeToday(targetDate);
 
             // then
-            assertThat(actual).hasSize(1);
-            assertThat(actual.getFirst().getAttendanceDate())
-                    .hasDayOfMonth(2);
-            assertThat(actual.getFirst().getAttendanceTime()).isEmpty();
+            assertSoftly((s) -> {
+                s.assertThat(actual).hasSize(1);
+                s.assertThat(actual.getFirst().getAttendanceDate())
+                        .hasDayOfMonth(2);
+                s.assertThat(actual.getFirst().getAttendanceTime()).isEmpty();
+            });
         }
 
         @DisplayName("전날까지의 출석 통계를 계산하여 반환한다.")
