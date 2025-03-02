@@ -4,6 +4,7 @@ import static attendance.view.OutputMessage.ABSENCE;
 import static attendance.view.OutputMessage.ABSENCE_COUNT;
 import static attendance.view.OutputMessage.ATTEND;
 import static attendance.view.OutputMessage.ATTEND_COUNT;
+import static attendance.view.OutputMessage.BLANK;
 import static attendance.view.OutputMessage.CONFIRM_RESULT_TILE;
 import static attendance.view.OutputMessage.CREWS_PER_PENALTY;
 import static attendance.view.OutputMessage.CREW_ATTENDANCE_TITLE;
@@ -105,7 +106,7 @@ public class OutputView {
         if (status.equals(AttendanceStatus.ABSENCE)) {
             return ABSENCE;
         }
-        return "";
+        return BLANK;
     }
 
     private void printNotVisitAbsence(final LocalDateTime dateTime) {
