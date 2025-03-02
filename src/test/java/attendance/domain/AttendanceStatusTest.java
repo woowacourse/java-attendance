@@ -77,22 +77,32 @@ class AttendanceStatusTest {
         @Test
         void 출석시간들로_출석상태의_개수를_구한다() {
             // given
+            AttendanceDateTime firstAttendanceDateTime = new AttendanceDateTime(
+                new AttendanceDate(2024, 12, 2),
+                new AttendanceTime(8, 0));
+            AttendanceDateTime secondAttendanceDateTime = new AttendanceDateTime(
+                new AttendanceDate(2024, 12, 2),
+                new AttendanceTime(13, 5));
+            AttendanceDateTime lateDateTime = new AttendanceDateTime(
+                new AttendanceDate(2024, 12, 2),
+                new AttendanceTime(13, 6));
+            AttendanceDateTime firstAbsenceDateTime = new AttendanceDateTime(
+                new AttendanceDate(2024, 12, 2),
+                new AttendanceTime(null, null));
+            AttendanceDateTime secondAbsenceDateTime = new AttendanceDateTime(
+                new AttendanceDate(2024, 12, 2),
+                new AttendanceTime(13, 31));
+
             List<AttendanceDateTime> attendanceDateTimes = List.of(
-                new AttendanceDateTime(new AttendanceDate(2024, 12, 2),
-                    new AttendanceTime(8, 0)),  // 출석
-                new AttendanceDateTime(new AttendanceDate(2024, 12, 2),
-                    new AttendanceTime(13, 5)),  // 출석
-                new AttendanceDateTime(new AttendanceDate(2024, 12, 2),
-                    new AttendanceTime(13, 6)),  // 지각
-                new AttendanceDateTime(new AttendanceDate(2024, 12, 2),
-                    new AttendanceTime(null, null)), // 결석
-                new AttendanceDateTime(new AttendanceDate(2024, 12, 2),
-                    new AttendanceTime(13, 31)) // 결석
+                firstAttendanceDateTime,
+                secondAttendanceDateTime,
+                lateDateTime,
+                firstAbsenceDateTime,
+                secondAbsenceDateTime
             );
 
             // when
-            Map<AttendanceStatus, Integer> attendanceStatusCounts = AttendanceStatus.from(
-                attendanceDateTimes);
+            Map<AttendanceStatus, Integer> attendanceStatusCounts = AttendanceStatus.from(attendanceDateTimes);
 
             // then
             assertThat(attendanceStatusCounts)
