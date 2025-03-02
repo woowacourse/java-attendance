@@ -56,14 +56,22 @@ public class AttendanceController {
     private void modify() {
         String nickname = inputView.readNickNameForModify();
         CheckInHistory checkInHistoryByName = getCheckInHistoryByName(nickname);
-        String date = inputView.readDateForModify();
-        int parsedDate = Integer.parseInt(date);
-        CheckInDate dateToModify = CheckInDate.of(2024, 12, parsedDate);
-        String time = inputView.readTimeForModify();
-        LocalTime parsedTime = LocalTime.parse(time);
-        CheckInTime afterTime = CheckInTime.of(parsedTime);
+        CheckInDate dateToModify = getDayToModify();
+        CheckInTime afterTime = getCheckInTimeForModify();
         CheckInTime beforeTime = checkInHistoryByName.modifyCheckInTime(dateToModify, afterTime);
         outputView.printModifiedChSeckInTime(dateToModify, beforeTime, afterTime);
+    }
+
+    private CheckInTime getCheckInTimeForModify() {
+        String time = inputView.readTimeForModify();
+        LocalTime parsedTime = LocalTime.parse(time);
+        return CheckInTime.of(parsedTime);
+    }
+
+    private CheckInDate getDayToModify() {
+        String date = inputView.readDateForModify();
+        int parsedDate = Integer.parseInt(date);
+        return CheckInDate.of(2024, 12, parsedDate);
     }
 
     private CheckInHistory getCheckInHistoryByName(String nickname) {
