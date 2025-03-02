@@ -56,6 +56,9 @@ public class AttendanceController {
 
     private boolean executeMenu(final String input) {
         Menu selectedMenu = Menu.from(input);
+        if (Menu.QUIT.equals(selectedMenu)) {
+            return false;
+        }
         if (Menu.ATTEND.equals(selectedMenu)) {
             attend();
         }
@@ -68,7 +71,7 @@ public class AttendanceController {
         if (Menu.PRINT_WARNING.equals(selectedMenu)) {
             printPenaltyCrews();
         }
-        return !Menu.QUIT.equals(selectedMenu);
+        return true;
     }
 
     private void attend() {
