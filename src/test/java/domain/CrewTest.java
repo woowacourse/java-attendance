@@ -18,7 +18,7 @@ public class CrewTest {
         //given
         final Long id = 1L;
         final String name = "윌슨";
-        final Map<LocalDate, Attendance> attendanceMap = new LinkedHashMap<>();
+        final Map<LocalDate, AttendanceRecord> attendanceMap = new LinkedHashMap<>();
 
         //should
         assertThatCode(() -> new Crew(id, name, attendanceMap)).doesNotThrowAnyException();
@@ -31,7 +31,7 @@ public class CrewTest {
         //given
         final Long id = 1L;
     	final String name = "윌슨";
-        final Map<LocalDate, Attendance> attendanceMap = new LinkedHashMap<>();
+        final Map<LocalDate, AttendanceRecord> attendanceMap = new LinkedHashMap<>();
         final LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 13, 10, 6);
         final LocalDateTime localDateTime2 = LocalDateTime.of(2024, 12, 20, 10, 5);
         final LocalDateTime localDateTime3 = LocalDateTime.of(2024, 12, 20, 10, 31);
@@ -49,12 +49,12 @@ public class CrewTest {
         crew.putAttendance(localDateTime6);
 
         //then
-        assertThat(attendanceMap).containsEntry(localDateTime1.toLocalDate(), Attendance.of(localDateTime1))
-                .containsEntry(localDateTime2.toLocalDate(), Attendance.of(localDateTime2))
-                .containsEntry(localDateTime3.toLocalDate(), Attendance.of(localDateTime3))
-                .containsEntry(localDateTime4.toLocalDate(), Attendance.of(localDateTime4))
-                .containsEntry(localDateTime5.toLocalDate(), Attendance.of(localDateTime5))
-                .containsEntry(localDateTime6.toLocalDate(), Attendance.of(localDateTime6));
+        assertThat(attendanceMap).containsEntry(localDateTime1.toLocalDate(), AttendanceRecord.of(localDateTime1))
+                .containsEntry(localDateTime2.toLocalDate(), AttendanceRecord.of(localDateTime2))
+                .containsEntry(localDateTime3.toLocalDate(), AttendanceRecord.of(localDateTime3))
+                .containsEntry(localDateTime4.toLocalDate(), AttendanceRecord.of(localDateTime4))
+                .containsEntry(localDateTime5.toLocalDate(), AttendanceRecord.of(localDateTime5))
+                .containsEntry(localDateTime6.toLocalDate(), AttendanceRecord.of(localDateTime6));
 
     }
 }

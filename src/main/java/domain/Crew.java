@@ -8,9 +8,9 @@ import java.util.Map;
 public class Crew {
     private final Long id;
     private final String name;
-    private final Map<LocalDate, Attendance> attendanceMap;
+    private final Map<LocalDate, AttendanceRecord> attendanceMap;
 
-    public Crew(final Long id, final String name, final Map<LocalDate, Attendance> attendanceMap) {
+    public Crew(final Long id, final String name, final Map<LocalDate, AttendanceRecord> attendanceMap) {
         this.id = id;
         this.name = name;
         this.attendanceMap = attendanceMap;
@@ -21,14 +21,14 @@ public class Crew {
     }
 
     public void putAttendance(final LocalDateTime localDateTime) {
-        attendanceMap.put(localDateTime.toLocalDate(), Attendance.of(localDateTime));
+        attendanceMap.put(localDateTime.toLocalDate(), AttendanceRecord.of(localDateTime));
     }
 
     public boolean existAttendance(final LocalDateTime localDateTime) {
         return attendanceMap.containsKey(localDateTime.toLocalDate());
     }
 
-    public Map<LocalDate, Attendance> getAttendanceMap() {
+    public Map<LocalDate, AttendanceRecord> getAttendanceMap() {
         return Collections.unmodifiableMap(attendanceMap);
     }
 }

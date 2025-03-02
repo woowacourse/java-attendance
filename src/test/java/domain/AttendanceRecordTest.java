@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceTest {
+public class AttendanceRecordTest {
 
     @Test
     @DisplayName("출석 객체 생성 테스트")
@@ -24,8 +24,8 @@ public class AttendanceTest {
         final AttendanceStatus status2 = AttendanceStatus.LATE;
 
         //should
-        assertThatCode(() -> new Attendance(attendanceDate1, attendanceTime1, status1)).doesNotThrowAnyException();
-        assertThatCode(() -> new Attendance(attendanceDate2, attendanceTime2, status2)).doesNotThrowAnyException();
+        assertThatCode(() -> new AttendanceRecord(attendanceDate1, attendanceTime1, status1)).doesNotThrowAnyException();
+        assertThatCode(() -> new AttendanceRecord(attendanceDate2, attendanceTime2, status2)).doesNotThrowAnyException();
     }
 
     @Test
@@ -36,8 +36,8 @@ public class AttendanceTest {
         final LocalDateTime localDateTime2 = LocalDateTime.of(2024, 12, 9, 10, 1);
 
         //should
-        assertThatCode(() -> Attendance.of(localDateTime1)).doesNotThrowAnyException();
-        assertThatCode(() -> Attendance.of(localDateTime2)).doesNotThrowAnyException();
+        assertThatCode(() -> AttendanceRecord.of(localDateTime1)).doesNotThrowAnyException();
+        assertThatCode(() -> AttendanceRecord.of(localDateTime2)).doesNotThrowAnyException();
     }
 
     @Test
@@ -52,11 +52,11 @@ public class AttendanceTest {
 
         //should
         assertAll(
-                () -> assertThatIllegalArgumentException().isThrownBy(() -> Attendance.of(localDateTime1)),
-                () -> assertThatIllegalArgumentException().isThrownBy(() -> Attendance.of(localDateTime2)),
-                () -> assertThatIllegalArgumentException().isThrownBy(() -> Attendance.of(localDateTime3)),
-                () -> assertThatIllegalArgumentException().isThrownBy(() -> Attendance.of(localDateTime4)),
-                () -> assertThatIllegalArgumentException().isThrownBy(() -> Attendance.of(localDateTime5))
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> AttendanceRecord.of(localDateTime1)),
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> AttendanceRecord.of(localDateTime2)),
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> AttendanceRecord.of(localDateTime3)),
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> AttendanceRecord.of(localDateTime4)),
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> AttendanceRecord.of(localDateTime5))
         );
 
     }

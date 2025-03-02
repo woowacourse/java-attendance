@@ -17,7 +17,7 @@ public class CrewsGeneratorTest {
     void test1() {
         //given
         final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 13, 10, 8);
-        final Attendance attendance = Attendance.of(localDateTime);
+        final AttendanceRecord attendanceRecord = AttendanceRecord.of(localDateTime);
         //when
         final Map<String, Crew> crews = CrewsGenerator.generate();
         final Set<String> crewsName = crews.keySet();
@@ -29,10 +29,14 @@ public class CrewsGeneratorTest {
                         .contains("빙봉")
                         .contains("이든")
                         .contains("짱수"),
-                () -> assertThat(crews.get("쿠키").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(), attendance),
-                () -> assertThat(crews.get("빙봉").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(), attendance),
-                () -> assertThat(crews.get("빙티").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(), attendance),
-                () -> assertThat(crews.get("이든").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(), attendance)
+                () -> assertThat(crews.get("쿠키").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(),
+                        attendanceRecord),
+                () -> assertThat(crews.get("빙봉").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(),
+                        attendanceRecord),
+                () -> assertThat(crews.get("빙티").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(),
+                        attendanceRecord),
+                () -> assertThat(crews.get("이든").getAttendanceMap()).containsEntry(localDateTime.toLocalDate(),
+                        attendanceRecord)
         );
     }
 }
