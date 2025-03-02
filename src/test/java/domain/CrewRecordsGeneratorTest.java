@@ -14,9 +14,12 @@ class CrewRecordsGeneratorTest {
     @Test
     void generateTest() {
         // given
+        LocalDate currentDate = LocalDate.of(2024, 12, 14);
         List<String> attendances = List.of("쿠키,2024-12-13 10:08", "빙봉,2024-12-13 10:07", "빙티,2024-12-13 10:07");
         CrewRecordsGenerator crewRecordsGenerator = new CrewRecordsGenerator();
-        CrewRecords actualValue = crewRecordsGenerator.generate(attendances);
+
+        // when
+        CrewRecords actualValue = crewRecordsGenerator.generate(currentDate, attendances);
 
         // then
         for (String attendance : attendances) {
@@ -31,14 +34,17 @@ class CrewRecordsGeneratorTest {
     @Test
     void generateAbsenceTest() {
         // given
+        LocalDate currentDate = LocalDate.of(2024, 12, 5);
         List<String> attendances = List.of("쿠키,2024-12-02 13:08", "쿠키,2024-12-04 10:00");
         Crew crew = new Crew("쿠키");
-        LocalDate missingDate = LocalDate.of(2024, 12, 3);
-        AttendanceRecord missingRecord = new AttendanceRecord(LocalDateTime.parse("2024-12-03T00:00"));
         CrewRecordsGenerator crewRecordsGenerator = new CrewRecordsGenerator();
-        CrewRecords crewRecords = crewRecordsGenerator.generate(attendances);
+
+        // when
+        LocalDate missingDate = LocalDate.of(2024, 12, 3);
+        AttendanceRecord expectedValue = new AttendanceRecord(LocalDateTime.parse("2024-12-03T23:59"));
+        CrewRecords crewRecords = crewRecordsGenerator.generate(currentDate, attendances);
 
         // then
-        assertThat(crewRecords.getRecordOnDate(crew, missingDate)).isEqualTo(missingRecord);
+        assertThat(crewRecords.getRecordOnDate(crew, missingDate)).isEqualTo(expectedValue);
     }
 }
