@@ -26,14 +26,11 @@ public class AttendanceRecordTest {
 
     @Test
     void 해당_날짜의_출석_지각_결석_여부를_판단한다() {
-        // 00:00 ~ 10:05 출석
-        // 10:06 ~ 10:30 지각
-        // 10:31 ~ 23:59 결석
         AttendanceRecord attendanceRecord = new AttendanceRecord();
-        LocalDateTime attendanceTime = attendanceRecord.attend("09:59");
+        LocalDateTime attendanceTime = attendanceRecord.attend("10:06");
 
-//        String status = attendanceRecord.getAttendanceStatus(attendanceTime.getDayOfMonth());
-//        assertThat(status).isEqualTo("출석");
+        String status = attendanceRecord.getAttendanceStatus(attendanceTime.getDayOfMonth());
+        assertThat(status).isEqualTo("지각");
     }
 
     @Test
@@ -80,6 +77,17 @@ public class AttendanceRecordTest {
                     .filter(time -> time.getDayOfMonth() == dayOfMonth)
                     .findAny()
                     .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜의 출석 시간이 없습니다."));
+        }
+
+        public String getAttendanceStatus(int dayOfMonth) {
+            LocalDateTime attendanceTime = findAttendanceTimeByDay(dayOfMonth);
+            if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10, 6))) {
+                return "출석";
+            }
+            if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10, 31))) {
+                return "지각";
+            }
+            return "결석";
         }
     }
 }
