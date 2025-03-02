@@ -26,6 +26,11 @@ public class EmptyAttendance implements Attendance {
     }
 
     @Override
+    public LocalDate getDate() {
+        return date.getValue();
+    }
+
+    @Override
     public LocalTime getTime() {
         throw new RuntimeException("무단 결석은 시간 기록이 존재하지 않습니다.");
     }

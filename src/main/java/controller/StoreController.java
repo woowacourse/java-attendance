@@ -1,12 +1,11 @@
 package controller;
 
 import domain.CrewAttendanceStorage;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
+import domain.FileStoreManager;
 
 public class StoreController implements Controller {
-    private final String FILE = "";
+    private static final String FILE = "src/main/resources/attendances.csv";
+
     private final CrewAttendanceStorage crewAttendanceStorage;
 
     public StoreController(CrewAttendanceStorage crewAttendanceStorage) {
@@ -19,6 +18,7 @@ public class StoreController implements Controller {
     }
 
     private void save() {
-
+        FileStoreManager fileStoreManager = new FileStoreManager(crewAttendanceStorage);
+        fileStoreManager.save(FILE);
     }
 }

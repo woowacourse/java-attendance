@@ -25,6 +25,11 @@ public class ExistAttendance implements Attendance {
         return true;
     }
 
+    @Override
+    public LocalDate getDate() {
+        return date.getValue();
+    }
+
     public LocalTime getTime() {
         return time.getValue();
     }
