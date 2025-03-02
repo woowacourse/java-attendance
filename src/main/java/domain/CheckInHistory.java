@@ -80,4 +80,12 @@ public class CheckInHistory {
         int absence = countAbsence(now);
         return PenaltyStatus.determinePenalty(late, absence);
     }
+
+    public boolean hasHistory(CheckInDate checkInDate) {
+        return history.containsKey(checkInDate);
+    }
+
+    public CheckInTime getCheckInTime(CheckInDate checkInDate) {
+        return history.get(checkInDate);
+    }
 }

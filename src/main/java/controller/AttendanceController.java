@@ -38,6 +38,9 @@ public class AttendanceController {
             if (featureNumber.equals("2")) {
                 modify();
             }
+            if (featureNumber.equals("3")) {
+                viewCrewHistory();
+            }
             if (featureNumber.equals("Q")) {
                 break;
             }
@@ -60,6 +63,12 @@ public class AttendanceController {
         CheckInTime afterTime = getCheckInTimeForModify();
         CheckInTime beforeTime = checkInHistoryByName.modifyCheckInTime(dateToModify, afterTime);
         outputView.printModifiedChSeckInTime(dateToModify, beforeTime, afterTime);
+    }
+
+    private void viewCrewHistory() {
+        String nickname = inputView.readNickName();
+        CheckInHistory checkInHistoryByName = getCheckInHistoryByName(nickname);
+        outputView.printAttendanceHistory(nickname, systemDateProvider.now(), checkInHistoryByName);
     }
 
     private CheckInTime getCheckInTimeForModify() {

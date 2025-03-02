@@ -1,8 +1,7 @@
 package view;
 
-import domain.AttendanceStatus;
-import domain.CheckInDate;
-import domain.CheckInTime;
+import domain.*;
+import exception.AppException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -30,6 +29,28 @@ public class OutputView {
                 , formatTime(afterTime.toLocalTime())
                 , afterStatus
         );
+    }
+
+    public void printAttendanceHistory(String nickname, LocalDate today, CheckInHistory checkInHistory) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n", nickname);
+        String datePart = "";
+        String timePart = "--:--";
+        AttendanceStatus status = AttendanceStatus.ABSENCE;
+        for (int i = 1; i < today.getDayOfMonth(); i++) {
+            try {
+                CheckInDate date = CheckInDate.of(2024, 12, i);
+                datePart = formatDate(date.toLocalDate());
+                if (checkInHistory.hasHistory(date)) {
+                    CheckInTime checkInTime = checkInHistory.getCheckInTime(date);
+                    timePart = checkInTime.toLocalTime().format(TIME_FORMATTER);
+                    LocalTime classStartTime = ClassTime.getClassStartTime(date.toLocalDate());
+                    status = AttendanceStatus.determineAttendanceStatus(classStartTime, checkInTime.toLocalTime());
+                }
+            } catch (AppException e) {
+                continue;
+            }
+            System.out.printf("%s %s (%s)\n", datePart, timePart, status);
+        }
     }
 
     private String formatDate(LocalDate date) {
