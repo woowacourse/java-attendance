@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import dto.AcademicStatusResultDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -121,10 +120,9 @@ class AttendanceBookTest {
     void 크루_이름_년월일로_출석_기록_하나를_가져온다() {
 
         // given
-        attendances.add(new Attendance("체체", new Time(LocalDateTime.of(2025, 2, 5, 10, 0))));
 
         // when
-        Attendance attendance = attendanceBook.findAttendanceByCrewNameAndLocalDate("체체", LocalDate.of(2025, 2, 5));
+        attendances.add(new Attendance("체체", new Time(LocalDateTime.of(2025, 2, 5, 10, 0))));
 
         // then
         assertThat(attendanceBook.findAttendanceByCrewNameAndLocalDate("체체", LocalDate.of(2025, 2, 5))
@@ -152,10 +150,10 @@ class AttendanceBookTest {
         // given
 
         // when
-        List<AcademicStatusResultDTO> academicStatusResultDTOS = attendanceBook.getExpulsionCrews(
+        List<String> academicStatusResults = attendanceBook.getExpulsionCrews(
                 AcademicStatus.EXPELLED, LocalDate.of(2025, 2, 27));
 
         // then
-        assertThat(academicStatusResultDTOS.size()).isEqualTo(1);
+        assertThat(academicStatusResults.size()).isEqualTo(1);
     }
 }

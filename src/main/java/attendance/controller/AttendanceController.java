@@ -1,9 +1,5 @@
 package attendance.controller;
 
-import static attendance.domain.AcademicStatus.EXPELLED;
-import static attendance.domain.AcademicStatus.INTERVIEW;
-import static attendance.domain.AcademicStatus.WARNING;
-
 import attendance.domain.AcademicStatus;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
@@ -15,16 +11,18 @@ import attendance.utils.FileReader;
 import attendance.utils.Parser;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import dto.AcademicStatusResultDTO;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class AttendanceController {
@@ -43,7 +41,7 @@ public class AttendanceController {
     private final Map<String, Supplier<Boolean>> functions;
 
     private final int inputYear = LocalDate.now().getYear();
-    private final int inputMonth = LocalDate.now().getMonthValue();
+    private final int inputMonth = 2;
     private final int inputDay = LocalDate.now().getDayOfMonth();
 
 
@@ -162,8 +160,7 @@ public class AttendanceController {
         long absent = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.ABSENT);
 
         AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCalendar(monthlyAttendances);
-        outputView.printAcademicStatusResult(
-                new AcademicStatusResultDTO(crewName, attend, late, absent, academicStatus));
+        outputView.printAcademicStatusResult(attend, late, absent, academicStatus);
 
         return false;
     }
@@ -171,11 +168,46 @@ public class AttendanceController {
     public boolean crewAtRiskOfExpulsion() {
         outputView.printRiskOfExpulsionIntro();
 
-        Stream.of(EXPELLED, INTERVIEW, WARNING)
-                .map(value -> attendanceBook.getExpulsionCrews(value, LocalDate.of(inputYear, inputMonth, inputDay)))
-                .forEach(outputView::printCrewsAtRiskOfExpulsion);
+        LocalDate localDate = LocalDate.of(inputYear, inputMonth, inputDay);
+
+        Stream.of(AcademicStatus.EXPELLED, AcademicStatus.INTERVIEW, AcademicStatus.WARNING)
+                .forEach(status -> printCrewsByAcademicStatus(status, localDate));
 
         return false;
+    }
+
+    private void printCrewsByAcademicStatus(AcademicStatus status, LocalDate targetDate) {
+        List<String> crewNames = attendanceBook.getExpulsionCrews(status, targetDate);
+
+        List<Object[]> sortedCrewsInfo = getSortedCrewsInfo(crewNames, status);
+
+        for (Object[] crew : sortedCrewsInfo) {
+            String crewName = (String) crew[0];
+            long absent = (long) crew[1];
+            long late = (long) crew[2];
+
+            outputView.printCrewAtRiskOfExpulsion(crewName, absent, late, status);
+        }
+    }
+
+    private List<Object[]> getSortedCrewsInfo(List<String> crewNames, AcademicStatus status) {
+        return crewNames.stream()
+                .map(crewName -> {
+                    Map<LocalDate, Attendance> monthlyAttendances =
+                            attendanceBook.getMonthlyAttendances(crewName, inputYear, inputMonth);
+                    long absent = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.ABSENT);
+                    long late = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.LATE);
+
+                    return new Object[]{crewName, absent, late, absent + late};
+                })
+                .sorted(createCrewInfoComparator())
+                .collect(Collectors.toList());
+    }
+
+    private Comparator<Object[]> createCrewInfoComparator() {
+        return Comparator
+                .comparingLong((Object[] crew) -> (long) crew[3]).reversed()
+                .thenComparing(crew -> (String) crew[0]);
     }
 
     private Time createTime(final LocalDate date, final String attendanceTime) {

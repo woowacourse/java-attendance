@@ -2,13 +2,12 @@ package attendance.view;
 
 import static attendance.domain.AcademicStatus.NOT;
 
+import attendance.domain.AcademicStatus;
 import attendance.domain.Attendance;
 import attendance.domain.Time;
-import dto.AcademicStatusResultDTO;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -85,25 +84,26 @@ public class OutputView {
         }
     }
 
-    public void printAcademicStatusResult(final AcademicStatusResultDTO attendanceCountAndAcademicStatusDTO) {
-        System.out.println("출석: " + attendanceCountAndAcademicStatusDTO.attend() + "회");
-        System.out.println("지각: " + attendanceCountAndAcademicStatusDTO.late() + "회");
-        System.out.println("결석: " + attendanceCountAndAcademicStatusDTO.absent() + "회");
+    public void printAcademicStatusResult(final long attend, final long late, final long absent,
+                                          final AcademicStatus academicStatus) {
+        System.out.println("출석: " + attend + "회");
+        System.out.println("지각: " + late + "회");
+        System.out.println("결석: " + absent + "회");
 
-        if (attendanceCountAndAcademicStatusDTO.academicStatus().equals(NOT)) {
+        if (academicStatus.equals(NOT)) {
             System.out.println("대상자가 아닙니다.");
             return;
         }
-        System.out.println(attendanceCountAndAcademicStatusDTO.academicStatus().getValue() + " 대상자입니다.");
+        System.out.println(academicStatus.getValue() + " 대상자입니다.");
     }
 
-    public void printCrewsAtRiskOfExpulsion(final List<AcademicStatusResultDTO> crewNameAndAcademicStatusDTOList) {
-        for (AcademicStatusResultDTO crewNameAndAcademicStatusDTO : crewNameAndAcademicStatusDTOList) {
-            System.out.print("- " + crewNameAndAcademicStatusDTO.crewName() + ": ");
-            System.out.print("결석: " + crewNameAndAcademicStatusDTO.absent() + "회, ");
-            System.out.print("지각: " + crewNameAndAcademicStatusDTO.late() + "회 ");
-            System.out.println("(" + crewNameAndAcademicStatusDTO.academicStatus().getValue() + ")");
-        }
+    public void printCrewAtRiskOfExpulsion(final String crewName, final long absent, final long late,
+                                           final AcademicStatus academicStatus) {
+        System.out.print("- " + crewName + ": ");
+        System.out.print("결석: " + absent + "회, ");
+        System.out.print("지각: " + late + "회 ");
+        System.out.println("(" + academicStatus.getValue() + ")");
+
     }
 
     public void printRiskOfExpulsionIntro() {
