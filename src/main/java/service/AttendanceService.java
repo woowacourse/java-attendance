@@ -45,7 +45,7 @@ public class AttendanceService {
     public SaveAttendanceRecordResponse saveAttendanceRecord(SaveAttendanceRequest request) {
         Crew crew = crews.findByNickname(request.nickname());
         AttendanceRecord saved = AttendanceRecord.of(crew, request.date(), request.time());
-        attendanceRecords.add(saved);
+        attendanceRecords.addIfAbsent(saved);
         return SaveAttendanceRecordResponse.of(saved);
     }
 

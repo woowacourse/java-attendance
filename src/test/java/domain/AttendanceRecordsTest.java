@@ -29,7 +29,7 @@ public class AttendanceRecordsTest {
             AttendanceRecord attendanceRecord = AttendanceRecord.of(crew, checkedDate, time);
 
             AttendanceRecords attendanceRecords = new AttendanceRecords(new ArrayList<>());
-            attendanceRecords.add(attendanceRecord);
+            attendanceRecords.addIfAbsent(attendanceRecord);
 
             // when & then
             Assertions.assertThat(attendanceRecords.existsByCrewAndDate(crew, checkedDate)).isTrue();
@@ -180,7 +180,7 @@ public class AttendanceRecordsTest {
 
             // when & then
             Assertions.assertThatThrownBy(() -> {
-                attendanceRecords.add(attendanceRecord);
+                attendanceRecords.addIfAbsent(attendanceRecord);
             }).isInstanceOf(IllegalArgumentException.class);
         }
 

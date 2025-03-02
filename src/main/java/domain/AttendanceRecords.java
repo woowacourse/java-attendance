@@ -20,7 +20,7 @@ public class AttendanceRecords {
         this.attendanceRecords.addAll(attendanceRecords);
     }
 
-    public void add(AttendanceRecord attendanceRecord) {
+    public void addIfAbsent(AttendanceRecord attendanceRecord) {
         if (existsByCrewAndDate(attendanceRecord.getCrew(), attendanceRecord.getDate())) {
             throw new IllegalArgumentException("이미 출석 기록이 존재합니다. 출석 수정 기능을 이용해주세요.");
         }

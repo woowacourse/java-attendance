@@ -96,13 +96,13 @@ class AttendanceServiceTest {
             Crews crews = new Crews(List.of(crew));
             AttendanceRecords attendanceRecords = new AttendanceRecords();
             // 지각
-            attendanceRecords.add(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 3), LocalTime.of(13, 6)));
+            attendanceRecords.addIfAbsent(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 3), LocalTime.of(13, 6)));
             // 출석
-            attendanceRecords.add(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 4), LocalTime.of(10, 5)));
+            attendanceRecords.addIfAbsent(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 4), LocalTime.of(10, 5)));
             // 결석
-            attendanceRecords.add(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 5), LocalTime.of(10, 31)));
+            attendanceRecords.addIfAbsent(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 5), LocalTime.of(10, 31)));
             // 지각
-            attendanceRecords.add(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 6), LocalTime.of(10, 30)));
+            attendanceRecords.addIfAbsent(AttendanceRecord.of(crew, LocalDate.of(2025, 2, 6), LocalTime.of(10, 30)));
             // 2/7, 2/10: 출석 기록 없는 결석
             // 총 출석 1, 지각 2, 결석 3
 
