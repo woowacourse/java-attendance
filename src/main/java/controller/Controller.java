@@ -68,8 +68,7 @@ public class Controller {
 
     private static LocalTime requestAttendanceTime() {
         OutPutView.requestAttendanceTime();
-        LocalTime attendanceTime = InputView.inputAttendanceTime();
-        return attendanceTime;
+        return InputView.inputAttendanceTime();
     }
 
     private void modifyAttendance(AttendanceBook attendanceBook) {
