@@ -279,6 +279,19 @@ public class AttendanceHistoriesTest {
         }
     }
 
+    @Test
+    @DisplayName("닉네임을 입력하면 크루의 제적 위험자 여부를 확인할 수 있다.")
+    void test() {
+        // given
+        LocalDate START_DATE = LocalDate.of(2025, 2, 11);
+        LocalDate LAST_DATE = AttendanceDateTimeFixture.getNthValidDate(START_DATE, 12);
+        AttendanceHistories warnedCrewHistory = AttendanceHistoriesFixture.createWithMultipleAttendance(
+                DEFAULT_CREW, START_DATE, 0, 0, 2);
+        // when
+        String disciplinaryStatus = warnedCrewHistory.getDisciplinaryStatus(DEFAULT_CREW);
+        // then
+        assertThat(disciplinaryStatus).isEqualTo("경고");
+    }
 
     @Test
     @DisplayName("3.4 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")

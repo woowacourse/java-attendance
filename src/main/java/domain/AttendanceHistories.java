@@ -51,6 +51,10 @@ public class AttendanceHistories {
         return attendanceDateTimes.getAbsentCount(lastDate);
     }
 
+    public String getDisciplinaryStatus(Crew crew) {
+        return null;
+    }
+
     private void validateCrewPresence(Crew crew) {
         if (!attendanceHistories.containsKey(crew)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
