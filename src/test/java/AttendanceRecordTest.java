@@ -77,4 +77,13 @@ public class AttendanceRecordTest {
                 .hasMessage("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
     }
 
+    @Test
+    void 이미_출석한_날짜이면_예외가_발생한다() {
+        AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
+        
+        assertThatThrownBy(() -> attendanceRecord.attend("10:06"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 해당 날짜에는 이미 출석했습니다. 수정 기능을 이용해주세요.");
+    }
+
 }

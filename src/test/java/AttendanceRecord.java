@@ -22,12 +22,20 @@ public class AttendanceRecord {
                 Integer.parseInt(time.split(":")[0]),
                 Integer.parseInt(time.split(":")[1]));
 
+        validateAlreadyAttend(today);
         validateIsWeekDays(today);
         validateCampusOpen(todayTime);
 
         LocalDateTime attendanceTime = LocalDateTime.of(today, todayTime);
         attendanceTimes.add(attendanceTime);
         return attendanceTime;
+    }
+
+    private void validateAlreadyAttend(LocalDate today) {
+        if (attendanceTimes.stream()
+                .anyMatch(attendanceTime -> attendanceTime.getDayOfMonth() == today.getDayOfMonth())) {
+            throw new IllegalArgumentException("[ERROR] 해당 날짜에는 이미 출석했습니다. 수정 기능을 이용해주세요.");
+        }
     }
 
     private static void validateIsWeekDays(LocalDate today) {
