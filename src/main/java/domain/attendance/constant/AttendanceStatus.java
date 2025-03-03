@@ -3,7 +3,8 @@ package domain.attendance.constant;
 import domain.datetime.CampusDate;
 import domain.datetime.CampusTime;
 import java.time.DayOfWeek;
-import java.util.LinkedHashMap;
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public enum AttendanceStatus {
@@ -18,28 +19,41 @@ public enum AttendanceStatus {
 
     private final String value;
 
+    private static final Map<AttendanceStatus, List<CampusTime>> MONDAY_STATUS = new EnumMap<>(AttendanceStatus.class);
+    private static final Map<AttendanceStatus, List<CampusTime>> WEEKDAY_STATUS = new EnumMap<>(AttendanceStatus.class);
+
+    static {
+        MONDAY_STATUS.put(ATTENDANCE,
+                List.of(CampusTime.startTime(), CampusTime.of(MONDAY_HOUR_LIMIT, TARDINESS_LIMIT + 1)));
+        MONDAY_STATUS.put(TARDINESS, List.of(CampusTime.of(MONDAY_HOUR_LIMIT, TARDINESS_LIMIT),
+                CampusTime.of(MONDAY_HOUR_LIMIT, ABSENCE_LIMIT + 1)));
+        MONDAY_STATUS.put(ABSENCE, List.of(CampusTime.of(MONDAY_HOUR_LIMIT, ABSENCE_LIMIT), CampusTime.endTime()));
+
+        WEEKDAY_STATUS.put(ATTENDANCE,
+                List.of(CampusTime.startTime(), CampusTime.of(WEEKDAY_HOUR_LIMIT, TARDINESS_LIMIT + 1)));
+        WEEKDAY_STATUS.put(TARDINESS, List.of(CampusTime.of(WEEKDAY_HOUR_LIMIT, TARDINESS_LIMIT),
+                CampusTime.of(WEEKDAY_HOUR_LIMIT, ABSENCE_LIMIT + 1)));
+        WEEKDAY_STATUS.put(ABSENCE, List.of(CampusTime.of(WEEKDAY_HOUR_LIMIT, ABSENCE_LIMIT), CampusTime.endTime()));
+    }
+
     AttendanceStatus(String value) {
         this.value = value;
     }
 
     public static AttendanceStatus calculateByDateAndTime(final CampusDate date, final CampusTime time) {
         if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return calculateStatus(MONDAY_HOUR_LIMIT, time);
+            return calculateStatus(MONDAY_STATUS, time);
         }
-        return calculateStatus(WEEKDAY_HOUR_LIMIT, time);
+        return calculateStatus(WEEKDAY_STATUS, time);
     }
 
-    private static AttendanceStatus calculateStatus(final int hourLimit, final CampusTime time) {
-        // TODO : Q5
-        Map<AttendanceStatus, CampusTime> status = new LinkedHashMap<>();
-        status.put(ABSENCE, CampusTime.of(hourLimit, ABSENCE_LIMIT));
-        status.put(TARDINESS, CampusTime.of(hourLimit, TARDINESS_LIMIT));
-
+    private static AttendanceStatus calculateStatus(final Map<AttendanceStatus, List<CampusTime>> status,
+                                                    final CampusTime time) {
         return status.entrySet().stream()
-                .filter(entry -> time.isAfter(entry.getValue()))
+                .filter(entry -> time.isAfter(entry.getValue().getFirst()) && time.isBefore(entry.getValue().getLast()))
                 .findFirst()
                 .map(Map.Entry::getKey)
-                .orElse(ATTENDANCE);
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 상태를 계산할 수 없습니다."));
     }
 
     public String getValue() {

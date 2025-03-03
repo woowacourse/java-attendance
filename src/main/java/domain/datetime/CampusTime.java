@@ -26,6 +26,14 @@ public class CampusTime implements Comparable<CampusTime> {
         return new CampusTime(time);
     }
 
+    public static CampusTime startTime() {
+        return new CampusTime(CAMPUS_START_TIME);
+    }
+
+    public static CampusTime endTime() {
+        return new CampusTime(CAMPUS_END_TIME);
+    }
+
     @Override
     public int compareTo(final CampusTime other) {
         int cmp = Integer.compare(time.getHour(), other.getHour());
