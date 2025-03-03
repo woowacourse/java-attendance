@@ -70,10 +70,9 @@ public class AttendanceController {
     private void showAttendanceHistories(Crews crews) {
         String username = inputView.getUsername();
         LocalDate now = DateFormatter.getTodayDate();
-        List<AttendanceHistory> attendanceHistories = crews.findAttendanceHistories(username, now);
         AttendanceAnalyze attendanceAnalyze = crews.getAttendanceAnalyze(username, now);
         outputView.printAttendanceHistories(
-                AttendanceHistoriesDto.of(username, attendanceHistories, attendanceAnalyze));
+                AttendanceHistoriesDto.of(username, attendanceAnalyze));
     }
 
     private void editAttendanceHistory(Crews crews) {

@@ -18,6 +18,19 @@ public class AttendanceHistoriesTest {
 
     private AttendanceHistories attendanceHistories;
 
+    @BeforeEach
+    void beforeEach() {
+        attendanceHistories = new AttendanceHistories(List.of(), LocalDate.of(2024, 12, 1));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    @DisplayName("정상적으로 출석 기록을 추가하면 결과를 반환한다.")
+    void createAttendanceTest(LocalDateTime attendanceTime, AttendanceResult expected) {
+        AttendanceResult result = attendanceHistories.addAttendanceHistory(attendanceTime);
+        assertThat(result).isEqualTo(expected);
+    }
+
     public static Stream<Arguments> createAttendanceTest() {
         return Stream.of(
                 Arguments.of(LocalDateTime.of(2024, 12, 23, 12, 50), AttendanceResult.ATTENDANCE),
@@ -35,6 +48,15 @@ public class AttendanceHistoriesTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource
+    @DisplayName("캠퍼스 운영 시간 외 시간으로 입력하면 예외 발생한다.")
+    void createAttendanceTest_Exception(LocalDateTime attendanceTime) {
+        assertThatThrownBy(() -> attendanceHistories.addAttendanceHistory(attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 캠퍼스 운영 시간은 08:00 ~ 23:00 입니다.");
+    }
+
     public static Stream<Arguments> createAttendanceTest_Exception() {
         return Stream.of(
                 Arguments.of(LocalDateTime.of(2024, 12, 19, 7, 59)),
@@ -44,28 +66,6 @@ public class AttendanceHistoriesTest {
                 Arguments.of(LocalDateTime.of(2024, 12, 19, 23, 59)),
                 Arguments.of(LocalDateTime.of(2024, 12, 19, 23, 1))
         );
-    }
-
-    @BeforeEach
-    void beforeEach() {
-        attendanceHistories = new AttendanceHistories(List.of(), LocalDate.of(2024, 12, 1));
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    @DisplayName("정상적으로 출석 기록을 추가하면 결과를 반환한다.")
-    void createAttendanceTest(LocalDateTime attendanceTime, AttendanceResult expected) {
-        AttendanceResult result = attendanceHistories.addAttendanceHistory(attendanceTime);
-        assertThat(result).isEqualTo(expected);
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    @DisplayName("캠퍼스 운영 시간 외 시간으로 입력하면 예외 발생한다.")
-    void createAttendanceTest_Exception(LocalDateTime attendanceTime) {
-        assertThatThrownBy(() -> attendanceHistories.addAttendanceHistory(attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 캠퍼스 운영 시간은 08:00 ~ 23:00 입니다.");
     }
 
     @Test

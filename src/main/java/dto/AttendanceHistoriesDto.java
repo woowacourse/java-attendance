@@ -12,8 +12,9 @@ public record AttendanceHistoriesDto(
         int absenceCount,
         String status
 ) {
-    public static AttendanceHistoriesDto of(String username, List<AttendanceHistory> histories,
+    public static AttendanceHistoriesDto of(String username,
                                             AttendanceAnalyze analyze) {
+        List<AttendanceHistory> histories = analyze.getAttendanceHistories();
         List<AttendanceHistoryDto> historiesDto = histories.stream().map(AttendanceHistoryDto::from).toList();
         int attendanceCount = analyze.getAttendanceCount();
         int lateCount = analyze.getLateCount();

@@ -100,26 +100,6 @@ public class CrewsTest {
     }
 
     @Test
-    @DisplayName("특정 날짜이전 기록 조회 테스트")
-    void getBeforeAttendanceHistoryTest() {
-        // given
-        crews.addAttendanceHistory("a", LocalDateTime.of(2024, 12, 24, 10, 7));
-        crews.addAttendanceHistory("a", LocalDateTime.of(2024, 12, 23, 13, 31));
-        crews.addAttendanceHistory("a", LocalDateTime.of(2024, 12, 26, 10, 5));
-        crews.addAttendanceHistory("a", LocalDateTime.of(2024, 12, 27, 10, 5));
-        crews.addAttendanceHistory("b", LocalDateTime.of(2024, 12, 27, 13, 31));
-        LocalDate standard = LocalDate.of(2024, 12, 27);
-        String username = "a";
-        // when
-        List<AttendanceHistory> histories = crews.findAttendanceHistories(username, standard);
-        // then
-        assertThat(histories.size()).isEqualTo(3);
-        assertThat(histories.get(0)).isEqualTo(new AttendanceHistory(LocalDateTime.of(2024, 12, 23, 13, 31)));
-        assertThat(histories.get(1)).isEqualTo(new AttendanceHistory(LocalDateTime.of(2024, 12, 24, 10, 7)));
-        assertThat(histories.get(2)).isEqualTo(new AttendanceHistory(LocalDateTime.of(2024, 12, 26, 10, 5)));
-    }
-
-    @Test
     @DisplayName("특정 날짜 이전 기록 통계 테스트")
     void getBeforeAttendanceAnalyzeTest() {
         // given

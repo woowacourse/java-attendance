@@ -36,11 +36,6 @@ public class Crews {
         return crew.findAttendanceHistory(standardTime);
     }
 
-    public List<AttendanceHistory> findAttendanceHistories(String username, LocalDate standard) {
-        Crew crew = findCrewByUsername(username);
-        return crew.findAttendanceHistories(standard);
-    }
-
     public AttendanceAnalyze getAttendanceAnalyze(String username, LocalDate standard) {
         Crew crew = findCrewByUsername(username);
         return crew.getAttendanceAnalyze(standard);
@@ -74,7 +69,8 @@ public class Crews {
                     public int compare(Crew o1, Crew o2) {
                         AttendanceAnalyze attendanceAnalyzeO1 = o1.getAttendanceAnalyze(standard);
                         AttendanceAnalyze attendanceAnalyzeO2 = o2.getAttendanceAnalyze(standard);
-                        int compare = attendanceAnalyzeO1.compareTo(attendanceAnalyzeO2);
+                        int compare = Integer.compare(attendanceAnalyzeO2.calculatePenaltyPoints(),
+                                attendanceAnalyzeO1.calculatePenaltyPoints());
                         if (compare == 0) {
                             return o1.getUsername().compareTo(o2.getUsername());
                         }

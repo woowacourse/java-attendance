@@ -1,24 +1,13 @@
 package domain;
 
-import java.util.EnumMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-public class AttendanceAnalyze implements Comparable<AttendanceAnalyze> {
-    private final int lateCount;
-    private final int absenceCount;
-    private final int attendanceCount;
+public class AttendanceAnalyze {
+    private final List<AttendanceHistory> histories;
 
     public AttendanceAnalyze(final List<AttendanceHistory> histories) {
-        Map<AttendanceResult, Integer> statics = histories.stream().collect(Collectors.groupingBy(
-                AttendanceHistory::getAttendanceResult,
-                () -> new EnumMap<>(AttendanceResult.class),
-                Collectors.summingInt((e) -> 1)
-        ));
-        this.lateCount = statics.getOrDefault(AttendanceResult.LATE, 0);
-        this.absenceCount = statics.getOrDefault(AttendanceResult.ABSENCE, 0);
-        this.attendanceCount = statics.getOrDefault(AttendanceResult.ATTENDANCE, 0);
+        this.histories = histories;
     }
 
     public boolean isExpulsionTarget() {
@@ -27,25 +16,34 @@ public class AttendanceAnalyze implements Comparable<AttendanceAnalyze> {
     }
 
     public AttendanceStatus getAttendanceStatus() {
+        int lateCount = getLateCount();
+        int absenceCount = getAbsenceCount();
         return AttendanceStatus.findAttendanceStatus(lateCount, absenceCount);
     }
 
-    @Override
-    public int compareTo(AttendanceAnalyze o) {
-        int thisTotalCount = absenceCount * 3 + lateCount;
-        int otherTotalCount = o.absenceCount * 3 + o.lateCount;
-        return Integer.compare(otherTotalCount, thisTotalCount);
-    }
-
     public int getLateCount() {
-        return lateCount;
+        return (int) histories.stream()
+                .filter(history -> history.getAttendanceResult().equals(AttendanceResult.LATE))
+                .count();
     }
 
     public int getAbsenceCount() {
-        return absenceCount;
+        return (int) histories.stream()
+                .filter(history -> history.getAttendanceResult().equals(AttendanceResult.ABSENCE))
+                .count();
     }
 
     public int getAttendanceCount() {
-        return attendanceCount;
+        return (int) histories.stream()
+                .filter(history -> history.getAttendanceResult().equals(AttendanceResult.ATTENDANCE))
+                .count();
+    }
+
+    public int calculatePenaltyPoints() {
+        return getAbsenceCount() * 3 + getLateCount();
+    }
+
+    public List<AttendanceHistory> getAttendanceHistories() {
+        return Collections.unmodifiableList(histories);
     }
 }
