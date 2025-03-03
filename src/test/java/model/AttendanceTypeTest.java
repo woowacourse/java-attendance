@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.EnumMap;
 import java.util.List;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -140,8 +141,10 @@ class AttendanceTypeTest {
         EnumMap<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(attendances);
 
         // then
-        assertThat(attendanceTotal.get(AttendanceType.SUCCESS)).isEqualTo(3);
-        assertThat(attendanceTotal.get(AttendanceType.BE_LATE)).isEqualTo(2);
-        assertThat(attendanceTotal.get(AttendanceType.ABSENCE)).isEqualTo(4);
+        Assertions.assertAll(
+                () -> assertThat(attendanceTotal.get(AttendanceType.SUCCESS)).isEqualTo(3),
+                () -> assertThat(attendanceTotal.get(AttendanceType.BE_LATE)).isEqualTo(2),
+                () -> assertThat(attendanceTotal.get(AttendanceType.ABSENCE)).isEqualTo(4)
+        );
     }
 }

@@ -7,6 +7,7 @@ import static constant.ErrorMessage.OUT_OF_OPERATION_HOURS;
 import static constant.PathConstant.ATTENDANCE_FILE_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import dto.AttendanceCheckInRequest;
 import dto.AttendanceCheckInResponse;
@@ -54,9 +55,11 @@ class AttendancesTest {
 
         // then
         int expected = 9;
-        assertThat(attendances.getAttendancesByCrew(miso)).hasSize(expected);
-        assertThat(attendances.getAttendancesByCrew(neo)).hasSize(expected);
-        assertThat(attendances.getAttendancesByCrew(pobi)).hasSize(expected);
+        assertAll(
+                () -> assertThat(attendances.getAttendancesByCrew(miso)).hasSize(expected),
+                () -> assertThat(attendances.getAttendancesByCrew(neo)).hasSize(expected),
+                () -> assertThat(attendances.getAttendancesByCrew(pobi)).hasSize(expected)
+        );
     }
 
     @Test
@@ -71,9 +74,11 @@ class AttendancesTest {
         AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
 
         // then
-        assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now());
-        assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 0));
-        assertThat(response.attendanceType()).isEqualTo(AttendanceType.SUCCESS);
+        assertAll(
+                () -> assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now()),
+                () -> assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 0)),
+                () -> assertThat(response.attendanceType()).isEqualTo(AttendanceType.SUCCESS)
+        );
     }
 
     @Test
@@ -88,9 +93,11 @@ class AttendancesTest {
         AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
 
         // then
-        assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now());
-        assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 6));
-        assertThat(response.attendanceType()).isEqualTo(AttendanceType.BE_LATE);
+        assertAll(
+                () -> assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now()),
+                () -> assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 6)),
+                () -> assertThat(response.attendanceType()).isEqualTo(AttendanceType.BE_LATE)
+        );
     }
 
     @Test
@@ -105,9 +112,11 @@ class AttendancesTest {
         AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
 
         // then
-        assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now());
-        assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 31));
-        assertThat(response.attendanceType()).isEqualTo(AttendanceType.ABSENCE);
+        assertAll(
+                () -> assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now()),
+                () -> assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 31)),
+                () -> assertThat(response.attendanceType()).isEqualTo(AttendanceType.ABSENCE)
+        );
     }
 
     @Test
@@ -137,11 +146,13 @@ class AttendancesTest {
         AttendanceUpdateResponse response = attendances.update(request, dateTimeGenerator);
 
         // then
-        assertThat(response.date()).isEqualTo(LocalDate.of(2024, 12, 6));
-        assertThat(response.previousTime()).isEqualTo(LocalTime.of(10, 30));
-        assertThat(response.previousAttendanceType()).isEqualTo(AttendanceType.BE_LATE);
-        assertThat(response.updateTime()).isEqualTo(LocalTime.of(10, 0));
-        assertThat(response.updateAttendanceType()).isEqualTo(AttendanceType.SUCCESS);
+        assertAll(
+                () -> assertThat(response.date()).isEqualTo(LocalDate.of(2024, 12, 6)),
+                () -> assertThat(response.previousTime()).isEqualTo(LocalTime.of(10, 30)),
+                () -> assertThat(response.previousAttendanceType()).isEqualTo(AttendanceType.BE_LATE),
+                () -> assertThat(response.updateTime()).isEqualTo(LocalTime.of(10, 0)),
+                () -> assertThat(response.updateAttendanceType()).isEqualTo(AttendanceType.SUCCESS)
+        );
     }
 
     @Test
@@ -157,11 +168,13 @@ class AttendancesTest {
         AttendanceUpdateResponse response = attendances.update(request, dateTimeGenerator);
 
         // then
-        assertThat(response.date()).isEqualTo(LocalDate.of(2024, 12, 4));
-        assertThat(response.previousTime()).isNull();
-        assertThat(response.previousAttendanceType()).isEqualTo(AttendanceType.ABSENCE);
-        assertThat(response.updateTime()).isEqualTo(LocalTime.of(10, 0));
-        assertThat(response.updateAttendanceType()).isEqualTo(AttendanceType.SUCCESS);
+        assertAll(
+                () -> assertThat(response.date()).isEqualTo(LocalDate.of(2024, 12, 4)),
+                () -> assertThat(response.previousTime()).isNull(),
+                () -> assertThat(response.previousAttendanceType()).isEqualTo(AttendanceType.ABSENCE),
+                () -> assertThat(response.updateTime()).isEqualTo(LocalTime.of(10, 0)),
+                () -> assertThat(response.updateAttendanceType()).isEqualTo(AttendanceType.SUCCESS)
+        );
     }
 
     @Test
@@ -175,12 +188,14 @@ class AttendancesTest {
         AttendanceHistoryResponse response = attendances.findHistoryByCrew(request, dateTimeGenerator);
 
         // then
-        assertThat(response.nickname()).isEqualTo(nickname);
-        assertThat(response.attendances()).hasSize(9);
-        assertThat(response.attendanceTotal().get(AttendanceType.SUCCESS)).isEqualTo(3);
-        assertThat(response.attendanceTotal().get(AttendanceType.BE_LATE)).isEqualTo(2);
-        assertThat(response.attendanceTotal().get(AttendanceType.ABSENCE)).isEqualTo(4);
-        assertThat(response.punishmentType()).isEqualTo(PunishmentType.MEETING);
+        assertAll(
+                () -> assertThat(response.nickname()).isEqualTo(nickname),
+                () -> assertThat(response.attendances()).hasSize(9),
+                () -> assertThat(response.attendanceTotal().get(AttendanceType.SUCCESS)).isEqualTo(3),
+                () -> assertThat(response.attendanceTotal().get(AttendanceType.BE_LATE)).isEqualTo(2),
+                () -> assertThat(response.attendanceTotal().get(AttendanceType.ABSENCE)).isEqualTo(4),
+                () -> assertThat(response.punishmentType()).isEqualTo(PunishmentType.MEETING)
+        );
     }
 
     @Test

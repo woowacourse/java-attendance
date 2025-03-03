@@ -1,9 +1,11 @@
 package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,8 +26,10 @@ class AttendanceTimeTest {
         boolean result2 = AttendanceTime.isLate(localDate, localTime2, beLateTime, absenceTime);
 
         // then
-        assertThat(result1).isTrue();
-        assertThat(result2).isTrue();
+        assertAll(
+                () -> assertThat(result1).isTrue(),
+                () -> assertThat(result2).isTrue()
+        );
     }
 
     @Test
@@ -43,8 +47,10 @@ class AttendanceTimeTest {
         boolean result2 = AttendanceTime.isLate(localDate, localTime2, beLateTime, absenceTime);
 
         // then
-        assertThat(result1).isFalse();
-        assertThat(result2).isFalse();
+        Assertions.assertAll(
+                () -> assertThat(result1).isFalse(),
+                () -> assertThat(result2).isFalse()
+        );
     }
 
     @Test
@@ -76,8 +82,10 @@ class AttendanceTimeTest {
         boolean result2 = AttendanceTime.isAbsence(localDate, localTime2, absenceTime);
 
         // then
-        assertThat(result1).isFalse();
-        assertThat(result2).isFalse();
+        Assertions.assertAll(
+                () -> assertThat(result1).isFalse(),
+                () -> assertThat(result2).isFalse()
+        );
     }
 
     @Test

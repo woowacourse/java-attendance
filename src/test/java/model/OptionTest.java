@@ -3,6 +3,7 @@ package model;
 import static constant.ErrorMessage.INVALID_OPTION_FORMAT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,12 +30,14 @@ class OptionTest {
         Option quitLowerOption = Option.find(quitLower);
 
         // then
-        assertThat(oneOption).isEqualTo(Option.ONE);
-        assertThat(twoOption).isEqualTo(Option.TWO);
-        assertThat(threeOption).isEqualTo(Option.THREE);
-        assertThat(fourOption).isEqualTo(Option.FOUR);
-        assertThat(quitUpperOption).isEqualTo(Option.QUIT);
-        assertThat(quitLowerOption).isEqualTo(Option.QUIT);
+        assertAll(
+                () -> assertThat(oneOption).isEqualTo(Option.ONE),
+                () -> assertThat(twoOption).isEqualTo(Option.TWO),
+                () -> assertThat(threeOption).isEqualTo(Option.THREE),
+                () -> assertThat(fourOption).isEqualTo(Option.FOUR),
+                () -> assertThat(quitUpperOption).isEqualTo(Option.QUIT),
+                () -> assertThat(quitLowerOption).isEqualTo(Option.QUIT)
+        );
     }
 
     @Test

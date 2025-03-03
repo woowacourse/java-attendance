@@ -1,6 +1,7 @@
 package util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -76,7 +77,9 @@ class InputParserTest {
         // then
         String expected1 = "AB";
         String expected2 = "C";
-        assertThat(result.get(0)).isEqualTo(expected1);
-        assertThat(result.get(1)).isEqualTo(expected2);
+        assertAll(
+                () -> assertThat(result.get(0)).isEqualTo(expected1),
+                () -> assertThat(result.get(1)).isEqualTo(expected2)
+        );
     }
 }

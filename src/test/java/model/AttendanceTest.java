@@ -1,6 +1,7 @@
 package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,8 +22,10 @@ class AttendanceTest {
         attendance.update(updateTime);
 
         // then
-        assertThat(attendance.getCheckInDate()).isEqualTo(LocalDate.of(2024, 12, 12));
-        assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 0));
-        assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.SUCCESS);
+        assertAll(
+                () -> assertThat(attendance.getCheckInDate()).isEqualTo(LocalDate.of(2024, 12, 12)),
+                () -> assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 0)),
+                () -> assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.SUCCESS)
+        );
     }
 }
