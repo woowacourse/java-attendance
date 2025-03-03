@@ -1,6 +1,7 @@
 package view;
 
 import domain.AttendanceRecord;
+import domain.AttendanceStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,9 +16,10 @@ public class OutputView {
     }
 
     private String formatAttendanceRecordToAttend(AttendanceRecord attendanceRecord) {
-        return String.format("%s %s %s", formatLocalDate(attendanceRecord.getDate()), formatDayOfWeek(
-                attendanceRecord.getDate()
-                        .getDayOfWeek()), formatLocalTime(attendanceRecord.getTime()));
+        return String.format("%s %s %s (%s)", formatLocalDate(attendanceRecord.getDate()), formatDayOfWeek(
+                        attendanceRecord.getDate()
+                                .getDayOfWeek()), formatLocalTime(attendanceRecord.getTime()),
+                formatAttendanceStatus(AttendanceStatus.calculateAttendanceStatus(attendanceRecord)));
     }
 
     private String formatLocalDate(LocalDate localDate) {
@@ -30,5 +32,15 @@ public class OutputView {
 
     private String formatLocalTime(LocalTime localTime) {
         return localTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    private String formatAttendanceStatus(AttendanceStatus attendanceStatus) {
+        if (attendanceStatus == AttendanceStatus.ABSENT) {
+            return "결석";
+        }
+        if (attendanceStatus == AttendanceStatus.LATE) {
+            return "지각";
+        }
+        return "출석";
     }
 }
