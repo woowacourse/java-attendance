@@ -8,17 +8,17 @@ import java.util.Objects;
 import java.util.Optional;
 import util.DateFormatter;
 
-public class AttendanceHistory implements Comparable<AttendanceHistory> {
+public class AttendanceHistory {
     private final LocalDate attendanceDate;
     private final LocalTime attendanceTime;
-    private final AttendanceResult AttendanceResult;
+    private final AttendanceResult attendanceResult;
 
     public AttendanceHistory(LocalDateTime attendanceTime) {
         AttendanceValidator.validateAttendanceTime(attendanceTime.toLocalTime());
         AttendanceValidator.validateAttendanceDate(attendanceTime.toLocalDate());
         this.attendanceDate = attendanceTime.toLocalDate();
         this.attendanceTime = attendanceTime.toLocalTime();
-        this.AttendanceResult = findAttendanceResult(this.attendanceDate, this.attendanceTime);
+        this.attendanceResult = findAttendanceResult(this.attendanceDate, this.attendanceTime);
     }
 
     public AttendanceHistory(LocalDate attendanceDate, LocalTime attendanceTime) {
@@ -26,7 +26,7 @@ public class AttendanceHistory implements Comparable<AttendanceHistory> {
         AttendanceValidator.validateAttendanceDate(attendanceDate);
         this.attendanceDate = attendanceDate;
         this.attendanceTime = attendanceTime;
-        this.AttendanceResult = findAttendanceResult(this.attendanceDate, this.attendanceTime);
+        this.attendanceResult = findAttendanceResult(this.attendanceDate, this.attendanceTime);
     }
 
     private AttendanceResult findAttendanceResult(LocalDate attendanceDate, LocalTime attendanceTime) {
@@ -51,21 +51,16 @@ public class AttendanceHistory implements Comparable<AttendanceHistory> {
         }
         AttendanceHistory that = (AttendanceHistory) o;
         return Objects.equals(attendanceDate, that.attendanceDate) && Objects.equals(attendanceTime,
-                that.attendanceTime) && Objects.equals(AttendanceResult, that.AttendanceResult);
+                that.attendanceTime) && Objects.equals(attendanceResult, that.attendanceResult);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attendanceDate, attendanceTime, AttendanceResult);
-    }
-
-    @Override
-    public int compareTo(AttendanceHistory o) {
-        return this.attendanceDate.compareTo(o.attendanceDate);
+        return Objects.hash(attendanceDate, attendanceTime, attendanceResult);
     }
 
     public AttendanceResult getAttendanceResult() {
-        return AttendanceResult;
+        return attendanceResult;
     }
 
     public LocalDate getAttendanceDate() {
@@ -78,7 +73,7 @@ public class AttendanceHistory implements Comparable<AttendanceHistory> {
 
     public static class AttendanceValidator {
         private static void validateAttendanceTime(LocalTime attendanceTime) {
-            if (attendanceTime != null && CampusOpenTime.cantAttendance(attendanceTime)) {
+            if (attendanceTime != null && CampusOpenTime.canNotAttendance(attendanceTime)) {
                 throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간은 08:00 ~ 23:00 입니다.");
             }
         }

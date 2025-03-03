@@ -4,8 +4,8 @@ import constant.Holiday;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 public class AttendanceHistories {
     private final List<AttendanceHistory> attendanceHistories;
@@ -41,7 +41,12 @@ public class AttendanceHistories {
     public List<AttendanceHistory> getBeforeAttendanceHistories(LocalDate localDate) {
         return attendanceHistories.stream()
                 .filter(attendanceHistory -> attendanceHistory.isBeforeAttendanceHistory(localDate))
-                .sorted()
+                .sorted(new Comparator<AttendanceHistory>() {
+                    @Override
+                    public int compare(AttendanceHistory o1, AttendanceHistory o2) {
+                        return o1.getAttendanceDate().compareTo(o2.getAttendanceDate());
+                    }
+                })
                 .toList();
     }
 
@@ -51,22 +56,19 @@ public class AttendanceHistories {
 
     private void createAttendance(List<LocalDateTime> histories, LocalDate localDate,
                                   List<AttendanceHistory> allHistories) {
-        if (!Holiday.isHoliday(localDate)) {
-            Optional<LocalDateTime> date = histories.stream().filter(history -> {
-                        LocalDate historyDate = history.toLocalDate();
-                        return historyDate.isEqual(localDate);
-                    })
-                    .findAny();
-            allHistories.add(makeAttendanceHistory(date, localDate));
+        if (Holiday.isHoliday(localDate)) {
+            return;
         }
+        AttendanceHistory attendanceHistory = histories.stream()
+                .filter(history -> {
+                    LocalDate historyDate = history.toLocalDate();
+                    return historyDate.isEqual(localDate);
+                })
+                .findAny()
+                .map(AttendanceHistory::new)
+                .orElseGet(() -> new AttendanceHistory(localDate, null));
+        allHistories.add(attendanceHistory);
     }
-
-    private AttendanceHistory makeAttendanceHistory(Optional<LocalDateTime> date, LocalDate standardDate) {
-        return date.map(AttendanceHistory::new)
-                .orElseGet(() -> new AttendanceHistory(standardDate, null));
-
-    }
-
 
     public static class Validator {
         public static void validateAddAttendanceHistory(List<AttendanceHistory> attendanceHistories,
