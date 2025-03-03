@@ -1,10 +1,12 @@
 package attendance.controller;
 
 import attendance.dto.AttendanceLogDto;
-import attendance.dto.AttendanceWarning;
+import attendance.dto.AttendanceWarningDto;
 import attendance.model.AttendanceBook;
+import attendance.model.AttendanceLog;
 import attendance.model.AttendanceLogs;
 import attendance.model.AttendanceType;
+import attendance.model.AttendanceWarningLevel;
 import attendance.model.AttendancesFile;
 import attendance.model.Command;
 import attendance.model.Nickname;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -115,17 +118,15 @@ public class AttendanceController {
     }
 
     private void displayBeforeAttendanceLog(LocalDate baseDate, AttendanceBook attendanceBook, Nickname nickname) {
-        final LocalTime beforeAttendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(nickname, baseDate);
-        final AttendanceType beforeAttendanceType = attendanceBook.determineAttendanceType(baseDate,
-                beforeAttendanceTime);
-        outputView.printAttendanceLog(baseDate, beforeAttendanceTime, beforeAttendanceType);
+        final LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(nickname, baseDate);
+        final AttendanceType attendanceType = attendanceBook.determineAttendanceType(baseDate, attendanceTime);
+        outputView.printAttendanceLog(baseDate, attendanceTime, attendanceType);
     }
 
     private void displayAfterAttendanceLog(LocalDate baseDate, AttendanceBook attendanceBook, Nickname nickname) {
-        final LocalTime afterAttendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(nickname, baseDate);
-        final AttendanceType afterAttendanceType = attendanceBook.determineAttendanceType(baseDate,
-                afterAttendanceTime);
-        outputView.printEditAttendanceLog(afterAttendanceTime, afterAttendanceType);
+        final LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(nickname, baseDate);
+        final AttendanceType attendanceType = attendanceBook.determineAttendanceType(baseDate, attendanceTime);
+        outputView.printEditAttendanceLog(attendanceTime, attendanceType);
     }
 
     private Nickname readNicknameForEditAttendance(AttendanceBook attendanceBook) {
@@ -143,16 +144,80 @@ public class AttendanceController {
 
     private void displayAttendanceLogs(LocalDate baseDate, AttendanceBook attendanceBook) {
         final Nickname nickname = readNickname(attendanceBook);
-        final List<AttendanceLogDto> logs = attendanceBook.findAttendanceLogsByNicknameAndInMonth(nickname, baseDate);
-        outputView.printAttendanceLogs(nickname, logs);
-        final EnumMap<AttendanceType, Integer> attendanceTypeCounts = attendanceBook.countAllAttendanceType(nickname,
-                baseDate);
-        outputView.printAttendanceTypeCount(attendanceTypeCounts);
-        outputView.printWarningLevel(attendanceBook.determineWarningLevel(attendanceTypeCounts));
+        final List<AttendanceLog> logs = attendanceBook.findAttendanceLogsByNicknameAndInMonth(nickname, baseDate);
+        final EnumMap<AttendanceType, Integer> typeCounts = attendanceBook.countAttendanceTypes(nickname, baseDate);
+        displayAttendanceLogs(attendanceBook, nickname, logs);
+        displayAttendanceTypeCountsAndWarningLevel(attendanceBook, typeCounts);
+    }
+
+    private void displayAttendanceTypeCountsAndWarningLevel(AttendanceBook attendanceBook,
+                                                            EnumMap<AttendanceType, Integer> typeCounts) {
+        outputView.printAttendanceTypeCounts(typeCounts);
+        outputView.printWarningLevel(attendanceBook.determineWarningLevel(typeCounts));
+    }
+
+    private void displayAttendanceLogs(AttendanceBook attendanceBook, Nickname nickname, List<AttendanceLog> logs) {
+        List<AttendanceLogDto> logDtos = mapToAttendanceLogDtos(attendanceBook, nickname, logs);
+        outputView.printAttendanceLogs(nickname, logDtos);
+    }
+
+    private List<AttendanceLogDto> mapToAttendanceLogDtos(AttendanceBook attendanceBook,
+                                                         Nickname nickname,
+                                                         List<AttendanceLog> logs) {
+        return logs.stream()
+                .map(attendanceLog -> new AttendanceLogDto(
+                        nickname,
+                        attendanceLog.getAttendanceDate(),
+                        attendanceLog.getAttendanceTime(),
+                        attendanceBook.determineAttendanceType(
+                                attendanceLog.getAttendanceDate(),
+                                attendanceLog.getAttendanceTime())))
+                .toList();
     }
 
     private void displayWarningList(LocalDate baseDate, AttendanceBook attendanceBook) {
-        final List<AttendanceWarning> attendanceWarnings = attendanceBook.getAttendanceWarnings(baseDate);
-        outputView.printWarningList(attendanceWarnings);
+        List<AttendanceWarningDto> attendanceWarningDtos = createAttendanceWarningDtos(baseDate, attendanceBook);
+        outputView.printWarningList(attendanceWarningDtos);
+    }
+
+    private List<AttendanceWarningDto> createAttendanceWarningDtos(LocalDate baseDate, AttendanceBook attendanceBook) {
+        return attendanceBook.getNicknames()
+                .stream()
+                .map(nickname -> mapToAttendanceWarningDto(baseDate, attendanceBook, nickname))
+                .filter(this::isNotCleanLevel)
+                .sorted(getAttendanceWarningComparator())
+                .toList();
+    }
+
+    private AttendanceWarningDto mapToAttendanceWarningDto(LocalDate baseDate,
+                                                           AttendanceBook attendanceBook,
+                                                           Nickname nickname) {
+        EnumMap<AttendanceType, Integer> typeCounts = attendanceBook.countAttendanceTypes(nickname, baseDate);
+        AttendanceWarningLevel warningLevel = attendanceBook.determineWarningLevel(typeCounts);
+        int lateCount = typeCounts.get(AttendanceType.LATE);
+        int absentCount = typeCounts.get(AttendanceType.ABSENT);
+        return new AttendanceWarningDto(nickname, lateCount, absentCount, warningLevel);
+    }
+
+    private boolean isNotCleanLevel(AttendanceWarningDto attendanceWarningDto) {
+        return attendanceWarningDto.attendanceLevel() != AttendanceWarningLevel.CLEAN;
+    }
+
+    private Comparator<AttendanceWarningDto> getAttendanceWarningComparator() {
+        return (first, second) -> {
+            if (first.attendanceLevel() == second.attendanceLevel()) {
+                return compareAbsentCountTotal(first, second);
+            }
+            return second.attendanceLevel().compareTo(first.attendanceLevel());
+        };
+    }
+
+    private int compareAbsentCountTotal(AttendanceWarningDto first, AttendanceWarningDto second) {
+        int firstAbsentCountTotal = first.absentCount() + (first.lateCount() / 3);
+        int secondAbsentCountTotal = second.absentCount() + (second.lateCount() / 3);
+        if (firstAbsentCountTotal == secondAbsentCountTotal) {
+            return first.nickname().compareTo(second.nickname());
+        }
+        return firstAbsentCountTotal - second.absentCount() + (second.lateCount() / 3);
     }
 }

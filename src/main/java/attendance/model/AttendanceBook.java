@@ -1,13 +1,11 @@
 package attendance.model;
 
-import attendance.dto.AttendanceLogDto;
-import attendance.dto.AttendanceWarning;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Set;
 
 public class AttendanceBook {
 
@@ -45,18 +43,11 @@ public class AttendanceBook {
         return AttendanceType.determine(startTimeInBaseDate, time);
     }
 
-    public List<AttendanceLogDto> findAttendanceLogsByNicknameAndInMonth(Nickname nickname, LocalDate baseDate) {
-        return attendanceLogs.findAllByNicknameInMonth(nickname, baseDate)
-                .stream()
-                .map(attendanceLog -> new AttendanceLogDto(
-                        attendanceLog.getNickname(),
-                        attendanceLog.getAttendanceDate(),
-                        attendanceLog.getAttendanceTime(),
-                        determineAttendanceType(attendanceLog.getAttendanceDate(), attendanceLog.getAttendanceTime())))
-                .toList();
+    public List<AttendanceLog> findAttendanceLogsByNicknameAndInMonth(Nickname nickname, LocalDate baseDate) {
+        return attendanceLogs.findAllByNicknameInMonth(nickname, baseDate);
     }
 
-    public EnumMap<AttendanceType, Integer> countAllAttendanceType(Nickname nickname, LocalDate baseDate) {
+    public EnumMap<AttendanceType, Integer> countAttendanceTypes(Nickname nickname, LocalDate baseDate) {
         return attendanceLogs.countAttendanceTypes(nickname, baseDate);
     }
 
@@ -66,37 +57,7 @@ public class AttendanceBook {
         return AttendanceWarningLevel.determine(lateCount, absentCount);
     }
 
-    public List<AttendanceWarning> getAttendanceWarnings(LocalDate baseDate) {
-        return nicknameRegistry.getNicknames()
-                .stream()
-                .map(nickname -> createAttendanceWarningFromLogs(baseDate, nickname))
-                .filter(AttendanceWarning::isNotClean)
-                .sorted(getAttendanceWarningComparator())
-                .toList();
-    }
-
-    private AttendanceWarning createAttendanceWarningFromLogs(LocalDate baseDate, Nickname nickname) {
-        EnumMap<AttendanceType, Integer> attendanceTypeCounts = attendanceLogs.countAttendanceTypes(nickname, baseDate);
-        int lateCount = attendanceTypeCounts.getOrDefault(AttendanceType.LATE, 0);
-        int absentCount = attendanceTypeCounts.getOrDefault(AttendanceType.ABSENT, 0);
-        return new AttendanceWarning(nickname, lateCount, absentCount);
-    }
-
-    private Comparator<AttendanceWarning> getAttendanceWarningComparator() {
-        return (first, second) -> {
-            if (first.getAttendanceLevel() == second.getAttendanceLevel()) {
-                return compareAbsentCountTotal(first, second);
-            }
-            return second.getAttendanceLevel().compareTo(first.getAttendanceLevel());
-        };
-    }
-
-    private int compareAbsentCountTotal(AttendanceWarning first, AttendanceWarning second) {
-        int firstAbsentCountTotal = first.absentCount() + (first.lateCount() / 3);
-        int secondAbsentCountTotal = second.absentCount() + (second.lateCount() / 3);
-        if (firstAbsentCountTotal == secondAbsentCountTotal) {
-            return first.nickname().compareTo(second.nickname());
-        }
-        return firstAbsentCountTotal - second.absentCount() + (second.lateCount() / 3);
+    public Set<Nickname> getNicknames() {
+        return nicknameRegistry.getNicknames();
     }
 }

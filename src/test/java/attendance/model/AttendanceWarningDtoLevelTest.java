@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayName("출석 경고 수준 테스트")
-class AttendanceWarningLevelTest {
+class AttendanceWarningDtoLevelTest {
 
     @DisplayName("지각과 결석 횟수로 경고 수준을 판단할 수 있다.")
     @ParameterizedTest

@@ -1,7 +1,7 @@
 package attendance.view;
 
 import attendance.dto.AttendanceLogDto;
-import attendance.dto.AttendanceWarning;
+import attendance.dto.AttendanceWarningDto;
 import attendance.model.AttendanceType;
 import attendance.model.AttendanceWarningLevel;
 import attendance.model.Nickname;
@@ -68,8 +68,8 @@ public class OutputView {
                 attendanceLogDto.attendanceType().getKoreanLabel());
     }
 
-    public void printAttendanceTypeCount(EnumMap<AttendanceType, Integer> count) {
-        System.out.println(formatAttendanceTypeCount(count));
+    public void printAttendanceTypeCounts(EnumMap<AttendanceType, Integer> typeCounts) {
+        System.out.println(formatAttendanceTypeCount(typeCounts));
     }
 
     private String formatAttendanceTypeCount(EnumMap<AttendanceType, Integer> count) {
@@ -89,7 +89,7 @@ public class OutputView {
         System.out.printf("%n%s 대상자입니다.%n", attendanceWarningLevel.getKoreanLabel());
     }
 
-    public void printWarningList(List<AttendanceWarning> warnings) {
+    public void printWarningList(List<AttendanceWarningDto> warnings) {
         if (warnings.isEmpty()) {
             System.out.println("\n제적 위험자가 없습니다.");
             return;
@@ -98,7 +98,7 @@ public class OutputView {
         System.out.println(formatWarningList(warnings));
     }
 
-    private String formatWarningList(List<AttendanceWarning> warnings) {
+    private String formatWarningList(List<AttendanceWarningDto> warnings) {
         return warnings.stream()
                 .map(warning ->
                         "- %s: 결석 %d회, 지각 %d회 (%s)".formatted(

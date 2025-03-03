@@ -5,7 +5,6 @@ import static attendance.model.TestFixtures.NEO_NICKNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import attendance.dto.AttendanceWarning;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -161,7 +160,7 @@ class AttendanceBookTest {
 
     @DisplayName("닉네임과 기준 날짜로 이번 달 각 출석 유형 횟수를 조회할 수 있다.")
     @Test
-    void countAllAttendanceTypeTest() {
+    void countAttendanceTypesTest() {
         // given
         LocalDate today = LocalDate.of(2024, 12, 5);
         LocalDate yesterday = today.minusDays(1);
@@ -173,7 +172,7 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when
-        EnumMap<AttendanceType, Integer> map = attendanceBook.countAllAttendanceType(BELLO_NICKNAME, today);
+        EnumMap<AttendanceType, Integer> map = attendanceBook.countAttendanceTypes(BELLO_NICKNAME, today);
 
         // then
         assertThat(map.get(AttendanceType.PRESENT))
@@ -202,73 +201,18 @@ class AttendanceBookTest {
                 .isSameAs(AttendanceWarningLevel.WARNING);
     }
 
-    @DisplayName("출석 경고를 조회할 수 있다.")
+    @DisplayName("닉네임 등록 명단에서 닉네임 목록을 조회할 수 있다.")
     @Test
-    void getAttendanceWarningsTest() {
+    void getNicknamesTest() {
         // given
-        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(BELLO_NICKNAME, NEO_NICKNAME));
-        AttendanceLogs attendanceLogs = new AttendanceLogs();
-        // 벨로 결석 4회-미팅, 네오 결석 0회-클린
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 2), LocalTime.of(15, 0)));
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 3), LocalTime.of(11, 0)));
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 4), LocalTime.of(11, 0)));
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 5), LocalTime.of(11, 0)));
-        attendanceLogs.add(new AttendanceLog(NEO_NICKNAME, LocalDate.of(2024, 12, 2), LocalTime.of(13, 0)));
-        attendanceLogs.add(new AttendanceLog(NEO_NICKNAME, LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)));
-        attendanceLogs.add(new AttendanceLog(NEO_NICKNAME, LocalDate.of(2024, 12, 4), LocalTime.of(10, 0)));
-        attendanceLogs.add(new AttendanceLog(NEO_NICKNAME, LocalDate.of(2024, 12, 5), LocalTime.of(10, 0)));
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
+        Set<Nickname> nicknames = Set.of(BELLO_NICKNAME, NEO_NICKNAME);
+        AttendanceBook attendanceBook = new AttendanceBook(new AttendanceLogs(), new NicknameRegistry(nicknames));
 
-        // when & then
-        assertThat(attendanceBook.getAttendanceWarnings(LocalDate.of(2024, 12, 6)))
-                .containsExactlyInAnyOrder(
-                        new AttendanceWarning(BELLO_NICKNAME, 0, 4)
-                );
-    }
+        // when
+        Set<Nickname> result = attendanceBook.getNicknames();
 
-    @DisplayName("출석 경고를 조회할 때 경고 레벨이 높은 순으로 정렬된다.")
-    @Test
-    void getAttendanceWarningsSortTest_WhenMultipleWarnings() {
-        // given
-        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(BELLO_NICKNAME, NEO_NICKNAME));
-        AttendanceLogs attendanceLogs = new AttendanceLogs();
-        // 네오 결석 2회-경고, 벨로 결석 4회-미팅
-        attendanceLogs.add(new AttendanceLog(NEO_NICKNAME, LocalDate.of(2024, 12, 2), LocalTime.of(15, 0)));
-        attendanceLogs.add(new AttendanceLog(NEO_NICKNAME, LocalDate.of(2024, 12, 3), LocalTime.of(11, 0)));
-        attendanceLogs.add(new AttendanceLog(NEO_NICKNAME, LocalDate.of(2024, 12, 4), LocalTime.of(10, 0)));
-        attendanceLogs.add(new AttendanceLog(NEO_NICKNAME, LocalDate.of(2024, 12, 5), LocalTime.of(10, 0)));
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 2), LocalTime.of(15, 0)));
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 3), LocalTime.of(11, 0)));
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 4), LocalTime.of(11, 0)));
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 5), LocalTime.of(11, 0)));
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
-
-        // when & then
-        assertThat(attendanceBook.getAttendanceWarnings(LocalDate.of(2024, 12, 6)))
-                .containsExactlyInAnyOrder(
-                        new AttendanceWarning(BELLO_NICKNAME, 0, 4),
-                        new AttendanceWarning(NEO_NICKNAME, 0, 2)
-                );
-    }
-
-    @DisplayName("출석 경고를 조회할 때 출석 상태가 같다면, 닉네임 순으로 정렬된다.")
-    @Test
-    void getAttendanceWarningsSortTest_WhenSameAttendanceStatus() {
-        // given
-        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(BELLO_NICKNAME, NEO_NICKNAME));
-        AttendanceLogs attendanceLogs = new AttendanceLogs();
-        // 네오 결석 2회-미팅, 벨로 결석 2회-미팅
-        attendanceLogs.add(new AttendanceLog(NEO_NICKNAME, LocalDate.of(2024, 12, 2), LocalTime.of(15, 0)));
-        attendanceLogs.add(new AttendanceLog(NEO_NICKNAME, LocalDate.of(2024, 12, 3), LocalTime.of(11, 0)));
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 2), LocalTime.of(15, 0)));
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 3), LocalTime.of(11, 0)));
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
-
-        // when & then
-        assertThat(attendanceBook.getAttendanceWarnings(LocalDate.of(2024, 12, 4)))
-                .containsExactlyInAnyOrder(
-                        new AttendanceWarning(BELLO_NICKNAME, 0, 2),
-                        new AttendanceWarning(NEO_NICKNAME, 0, 2)
-                );
+        // then
+        assertThat(result)
+                .containsExactlyInAnyOrder(BELLO_NICKNAME, NEO_NICKNAME);
     }
 }
