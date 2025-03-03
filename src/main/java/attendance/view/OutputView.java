@@ -91,7 +91,7 @@ public class OutputView {
         System.out.println("[ERROR] 잘못된 입력입니다.");
     }
 
-    public void displayExistingAttedanceMessage(String message) {
+    public void displayInputErrorMessage(String message) {
         System.out.println(message);
     }
 }

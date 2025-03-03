@@ -6,7 +6,14 @@ public class Crew {
     private final String name;
 
     public Crew(String name) {
+        validateName(name);
         this.name = name;
+    }
+
+    private void validateName(String name) {
+        if (name.isBlank() || name == null) {
+            throw new IllegalArgumentException("이름이 입력되지 않았습니다.");
+        }
     }
 
     public String getName() {

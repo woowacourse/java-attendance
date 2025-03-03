@@ -29,15 +29,20 @@ public class AttendanceController {
             String userChoice = inputView.displayMainMenu();
             switch (userChoice) {
                 case "1":
-                    createAttendance(); break;
+                    createAttendance();
+                    break;
                 case "2":
-                    modifyAttendance(); break;
+                    modifyAttendance();
+                    break;
                 case "3":
-                    checkCrewAttendanceRecord(); break;
+                    checkCrewAttendanceRecord();
+                    break;
                 case "4":
-                    checkExpelledCrews(); break;
+                    checkExpelledCrews();
+                    break;
                 case "Q":
-                    closeProgram(); break;
+                    closeProgram();
+                    break;
                 default:
                     outputView.displayErrorMessage();
                     break;
@@ -48,15 +53,16 @@ public class AttendanceController {
 
     private void createAttendance() {
         String inputCrewName = inputView.inputAttendanceCrew();
-        Crew crew = new Crew(inputCrewName);
-        String inputAttendanceDateTime = inputView.inputAttendanceDateTime();
-        LocalDateTime attendanceDateTime = UserInputParser.parseAttendanceTime(inputAttendanceDateTime);
         try {
+            Crew crew = new Crew(inputCrewName);
+            String inputAttendanceDateTime = inputView.inputAttendanceDateTime();
+            LocalDateTime attendanceDateTime = UserInputParser.parseAttendanceTime(inputAttendanceDateTime);
+
             Attendance attendance = attendanceBook.registerAttendance(crew, attendanceDateTime);
             AttendanceResult attendanceResult = AttendanceResult.from(attendance);
             outputView.displayAttendanceResult(attendanceResult);
         } catch (IllegalArgumentException e) {
-            outputView.displayExistingAttedanceMessage(e.getMessage());
+            outputView.displayInputErrorMessage(e.getMessage());
         }
     }
 
@@ -66,7 +72,8 @@ public class AttendanceController {
 
         String inputModifyDate = inputView.inputModifyDate();
         String inputModifyTime = inputView.inputModifyTime();
-        LocalDateTime localDateTime = attendance.util.UserInputParser.parseModifyDateTime(inputModifyDate,inputModifyTime);
+        LocalDateTime localDateTime = attendance.util.UserInputParser.parseModifyDateTime(inputModifyDate,
+            inputModifyTime);
 
         List<Attendance> attendances = attendanceBook.modifyAttendance(crew, localDateTime);
         ModifyAttendanceResult modifyAttendanceResult = ModifyAttendanceResult.of(attendances);
@@ -87,9 +94,9 @@ public class AttendanceController {
             attendanceStatus.getLateCount(),
             attendanceStatus.getAbsentCount(),
             attendanceStatus.getSubjectStatus()
-            );
+        );
 
-        outputView.displayAttendanceRecord(attendanceResults,attendanceStatusResult);
+        outputView.displayAttendanceRecord(attendanceResults, attendanceStatusResult);
     }
 
     private void checkExpelledCrews() {
