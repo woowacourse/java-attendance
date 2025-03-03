@@ -23,13 +23,6 @@ public class Attendance {
         attendanceTime.add(time);
     }
 
-    public LocalDateTime getAttendanceBy(final LocalDate date) {
-        return attendanceTime.stream()
-                .filter(attendance -> attendance.getDayOfMonth() == date.getDayOfMonth())
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(("해당 날자(일)에 해당하는 출석 기록이 없습니다.")));
-    }
-
     public void update(final LocalDateTime updateDateTime) {
         for (int dateIndex = 0; dateIndex < attendanceTime.size(); dateIndex++) {
             LocalDateTime localDateTime = attendanceTime.get(dateIndex);
@@ -41,6 +34,13 @@ public class Attendance {
 
     private boolean isEqualAttendance(final LocalDateTime updateDateTime, final LocalDateTime localDateTime) {
         return localDateTime.getDayOfMonth() == updateDateTime.getDayOfMonth();
+    }
+
+    public LocalDateTime getAttendanceBy(final LocalDate date) {
+        return attendanceTime.stream()
+                .filter(attendance -> attendance.getDayOfMonth() == date.getDayOfMonth())
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(("해당 날자(일)에 해당하는 출석 기록이 없습니다.")));
     }
 
     public boolean isSame(final String name) {
