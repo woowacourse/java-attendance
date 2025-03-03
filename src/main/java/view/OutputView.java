@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import view.dto.ExpelledInfoDto;
 
 public class OutputView {
     public void printAlreadyCheckedGuide(String message) {
@@ -81,45 +82,12 @@ public class OutputView {
     public void printRiskOfExpelledCrews(Map<String, Attendances> riskOfExpelledCrews, LocalDate today) {
         System.out.println("제적 위험자 조회 결과\n");
 
-        List<ExpelledCrewsInfo> expelledCrewsInfos = new ArrayList<>();
+        List<ExpelledInfoDto> expelledCrewsInfos = new ArrayList<>();
         for (Entry<String, Attendances> entry : riskOfExpelledCrews.entrySet()) {
-            expelledCrewsInfos.add(new ExpelledCrewsInfo(entry.getKey(), entry.getValue(), today));
+            expelledCrewsInfos.add(ExpelledInfoDto.from(entry.getKey(), entry.getValue(), today));
         }
 
         expelledCrewsInfos.stream().sorted()
-                .forEach(ExpelledCrewsInfo::printInfo);
-    }
-
-    static class ExpelledCrewsInfo implements Comparable<ExpelledCrewsInfo> {
-        String nickname;
-        int absentCount;
-        int lateCount;
-        CrewStatus crewStatus;
-
-        public ExpelledCrewsInfo(String nickname, Attendances attendances, LocalDate today) {
-            Map<AttendanceStatus, Integer> attendanceStatus = attendances.calculateAllAttendanceStatus(today);
-            this.nickname = nickname;
-            this.absentCount = attendanceStatus.get(AttendanceStatus.ABSENT);
-            this.lateCount = attendanceStatus.get(AttendanceStatus.LATE);
-            this.crewStatus = attendances.calculateCrewStatus(today);
-        }
-
-        @Override
-        public int compareTo(ExpelledCrewsInfo info) {
-            if (crewStatus.getPriority() == info.crewStatus.getPriority()) {
-                if (absentCount + lateCount == info.absentCount + info.lateCount) {
-                    if (absentCount == info.absentCount) {
-                        return nickname.compareTo(info.nickname);
-                    }
-                    return info.absentCount - absentCount;
-                }
-                return (info.lateCount + info.absentCount) - (lateCount + absentCount);
-            }
-            return crewStatus.getPriority() - info.crewStatus.getPriority();
-        }
-
-        public void printInfo() {
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", nickname, absentCount, lateCount, crewStatus.getKorean());
-        }
+                .forEach(ExpelledInfoDto::makeInfoLog);
     }
 }
