@@ -90,9 +90,10 @@ public class AttendanceController {
     private void checkAttendance() {
         DayType.validateIsWorkingDay(timeProvider.getNowDate());
         String name = retrySupplierUntilValid(this::getValidatedName);
-        AttendanceStatus.validateIsOperationHour(timeProvider.getNowTime());
+        LocalTime time = retrySupplierUntilValid(this::getValidatedTime);
+        AttendanceStatus.validateIsOperationHour(time);
         outputView.printCheckAttendanceResult(
-                checkAttendance(name, timeProvider.getNowDate(), timeProvider.getNowTime()));
+                checkAttendance(name, timeProvider.getNowDate(), time));
     }
 
     private <T> T retrySupplierUntilValid(Supplier<T> supplier) {
@@ -130,6 +131,12 @@ public class AttendanceController {
         LocalDate date = retrySupplierUntilValid(() -> getValidatedDateToModify(name));
         LocalTime time = retrySupplierUntilValid(this::getValidatedTimeToModify);
         outputView.printModifyAttendanceResult(modifyAttendance(name, date, time));
+    }
+
+    private LocalTime getValidatedTime() {
+        LocalTime time = inputView.readTime();
+        AttendanceStatus.validateIsOperationHour(time);
+        return time;
     }
 
     private LocalTime getValidatedTimeToModify() {
