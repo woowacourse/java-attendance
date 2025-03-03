@@ -28,7 +28,12 @@ public enum WeeklyAttendanceSchedule {
                 .filter(weeklyAttendanceSchedule -> weeklyAttendanceSchedule.dayOfWeek.equals(localDate.getDayOfWeek()))
                 .map(WeeklyAttendanceSchedule::getAttendanceStartTime)
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("[ERROR] 입력받은 %d월 %d일 %s의 attendanceStartTime을 찾지 못하였습니다.",
+                                localDate.getMonthValue(),
+                                localDate.getDayOfMonth(),
+                                localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)))
+                );
     }
 
     public static boolean checkHoliday(LocalDate date) {
