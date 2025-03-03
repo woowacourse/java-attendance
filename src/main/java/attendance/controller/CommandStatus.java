@@ -7,7 +7,7 @@ public enum CommandStatus {
     ATTEND("1"),
     MODIFY("2"),
     INQUIRY_CREW("3"),
-    FIND_DISMISSAL("4"),
+    INQUIRY_EXPULSION("4"),
     QUIT("Q");
 
     private final String status;

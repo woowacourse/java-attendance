@@ -25,7 +25,7 @@ class CommandStatusTest {
                 Arguments.of("1", CommandStatus.ATTEND),
                 Arguments.of("2", CommandStatus.MODIFY),
                 Arguments.of("3", CommandStatus.INQUIRY_CREW),
-                Arguments.of("4", CommandStatus.FIND_DISMISSAL),
+                Arguments.of("4", CommandStatus.INQUIRY_EXPULSION),
                 Arguments.of("Q", CommandStatus.QUIT)
         );
     }

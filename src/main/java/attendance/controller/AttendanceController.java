@@ -41,7 +41,7 @@ public class AttendanceController {
                 CommandStatus.ATTEND, new AttendCommand(inputView, resultView, clock, campusScheduler),
                 CommandStatus.MODIFY, new ModifyCommand(inputView, resultView, clock, campusScheduler),
                 CommandStatus.INQUIRY_CREW, new InquiryCrewCommand(inputView, resultView, clock, campusScheduler),
-                CommandStatus.FIND_DISMISSAL, new FindDismissalCommand()
+                CommandStatus.INQUIRY_EXPULSION, new InquiryExplusionCommand()
         );
     }
 
