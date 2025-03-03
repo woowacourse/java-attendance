@@ -29,6 +29,14 @@ public class OutputView {
     }
 
     public static void printEditAttendanceResult(Attendance oldAttendance, Attendance newAttendance) {
+        if (oldAttendance.isNoRecordOfTime()) {
+            printEditForNotExistRecords(oldAttendance, newAttendance);
+            return;
+        }
+        printEditForExistRecords(oldAttendance, newAttendance);
+    }
+
+    private static void printEditForExistRecords(Attendance oldAttendance, Attendance newAttendance) {
         System.out.printf("%n%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!%n%n",
                 oldAttendance.getAttendDate().getMonthValue(),
                 oldAttendance.getAttendDate().getDayOfMonth(),
@@ -36,6 +44,16 @@ public class OutputView {
                 oldAttendance.getAttendTime().getHour(),
                 oldAttendance.getAttendTime().getMinute(),
                 oldAttendance.determineStatus().getName(),
+                newAttendance.getAttendTime().getHour(),
+                newAttendance.getAttendTime().getMinute(),
+                newAttendance.determineStatus().getName());
+    }
+
+    private static void printEditForNotExistRecords(Attendance oldAttendance, Attendance newAttendance) {
+        System.out.printf("%n%02d월 %02d일 %s --:-- (결석) -> %02d:%02d (%s) 수정 완료!%n%n",
+                oldAttendance.getAttendDate().getMonthValue(),
+                oldAttendance.getAttendDate().getDayOfMonth(),
+                oldAttendance.getAttendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
                 newAttendance.getAttendTime().getHour(),
                 newAttendance.getAttendTime().getMinute(),
                 newAttendance.determineStatus().getName());
@@ -55,8 +73,7 @@ public class OutputView {
 
     private static void printAttendanceRecords(Attendances attendances, LocalDate currentDate) {
         Attendance currentAttendance = attendances.findByDate(currentDate);
-        AttendanceStatus status = currentAttendance.determineStatus();
-        if (status == AttendanceStatus.ABSENT) {
+        if (currentAttendance.isNoRecordOfTime()) {
             printNotExistRecords(currentDate);
             return;
         }

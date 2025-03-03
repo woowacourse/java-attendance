@@ -36,6 +36,11 @@ public class Attendances {
     }
 
     public void update(Attendance oldAttendance, Attendance newAttendance) {
+        if (oldAttendance.isNoRecordOfTime()) {
+            attendances.add(newAttendance);
+            return;
+        }
+
         int index = attendances.indexOf(oldAttendance);
         attendances.set(index, newAttendance);
     }

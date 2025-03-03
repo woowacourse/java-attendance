@@ -61,6 +61,10 @@ public class Attendance {
                 && attendDate.getMonthValue() == inputDate.getMonthValue();
     }
 
+    public boolean isNoRecordOfTime() {
+        return attendTime.equals(LocalTime.MIN);
+    }
+
     public LocalDate getAttendDate() {
         return attendDate;
     }
