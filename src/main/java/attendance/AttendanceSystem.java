@@ -1,6 +1,7 @@
 package attendance;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceUpdate;
 import attendance.domain.CrewAttendanceManager;
 import attendance.util.DateGenerator;
@@ -71,6 +72,16 @@ public class AttendanceSystem {
 
             AttendanceUpdate attendanceUpdate = crewAttendanceManager.processAttendanceUpdate(nickname, dateTime);
             outputView.printAttendanceUpdate(attendanceUpdate);
+        }
+    }
+
+    private void processRecordSearch(final Menu menu) {
+        if (menu.equals(Menu.RECORD_SEARCH)) {
+            String nickname = inputView.readNickname();
+            crewAttendanceManager.validateNicknameExists(nickname);
+
+            AttendanceRecord attendanceRecord = crewAttendanceManager.getAttendanceRecord(nickname);
+            outputView.printAttendanceRecord(attendanceRecord);
         }
     }
 

@@ -1,6 +1,7 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceUpdate;
 
 import java.time.LocalDate;
@@ -45,5 +46,20 @@ public class OutputView {
                 attendance.getDateTime().toLocalTime(),
                 AttendanceStateView.findByName(attendance.getState().name())
         );
+    }
+
+    public void printAttendanceRecord(AttendanceRecord attendanceRecord) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", attendanceRecord.getNickname());
+        attendanceRecord.getRecord().getAttendances()
+                .forEach(this::printAttendanceResult);
+
+        System.out.printf("""
+                        출석: %d회
+                        지각: %d회
+                        결석: %d회
+                        """,
+                attendanceRecord.getStatus().geAttendanceStateCount(),
+                attendanceRecord.getStatus().getTardyStateCount(),
+                attendanceRecord.getStatus().getAbsenceStateCount());
     }
 }

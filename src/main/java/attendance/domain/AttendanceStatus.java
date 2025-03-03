@@ -29,8 +29,16 @@ public class AttendanceStatus implements Comparable<AttendanceStatus> {
         return new AttendanceStatus(status, risk);
     }
 
-    public int getStateCount(final AttendanceState state) {
-        return status.get(state);
+    public int getAbsenceStateCount() {
+        return status.get(AttendanceState.ABSENCE);
+    }
+
+    public int getTardyStateCount() {
+        return status.get(AttendanceState.TARDY);
+    }
+
+    public int geAttendanceStateCount() {
+        return status.get(AttendanceState.ATTENDANCE);
     }
 
     public AttendanceRisk getRisk() {
