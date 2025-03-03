@@ -194,7 +194,7 @@ public class AttendanceManagerTest {
     @DisplayName("크루별 출석 기록 확인 테스트")
     class CheckAttendanceTest {
         @Test
-        @DisplayName("닉네임으로 전날 까지의 출석 기록을 확인한다")
+        @DisplayName("닉네임과 주어진 날짜들로 해당 날짜들의 출석 기록을 확인한다")
         void should_return_attendances_by_nickname_and_dates() {
             // given
             NickName nickName = new NickName("후우");
@@ -204,13 +204,16 @@ public class AttendanceManagerTest {
             AttendanceRecord attendanceRecord2 = AttendanceRecord.of("10", "10:00");
             attendanceManager.attend(nickName, attendanceRecord1);
             attendanceManager.attend(nickName, attendanceRecord2);
+            // 2,3,4,5,6,9,10
             List<Integer> checkingDates = DateUtil.getAttendAbleDates(Current.getDayOfYesterday());
 
             // when
             Attendances attendances = attendanceManager.checkAttendance(nickName, checkingDates);
 
             // then
-            assertThat(attendances).isNotEqualTo(new Attendances());
+            assertAll(() -> assertThat(attendances.getAttendances()).hasSize(checkingDates.size()),
+                    () -> assertThat(attendances.getAttendances()).contains(AttendanceRecord.dateOf(2),
+                            attendanceRecord1, attendanceRecord2));
         }
     }
 }

@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -12,8 +13,8 @@ public class Attendances {
         this.attendances = new ArrayList<>();
     }
 
-    private Attendances(List<AttendanceRecord> attendances) {
-        this.attendances = attendances;
+    public Attendances(List<AttendanceRecord> attendanceRecords) {
+        this.attendances = new ArrayList<>(attendanceRecords);
     }
 
     public void attend(AttendanceRecord attendanceRecord) {
@@ -44,6 +45,13 @@ public class Attendances {
                         .getDayOfMonth()));
     }
 
+    public AttendanceRecord getAttendanceRecordOfSameDate(int date) {
+        return attendances.stream()
+                .filter(attendanceRecord -> attendanceRecord.isSameDate(date))
+                .findFirst()
+                .orElse(AttendanceRecord.dateOf(date));
+    }
+
     public Attendances checkAttendance(List<Integer> attendAbleDates) {
         List<AttendanceRecord> result = attendAbleDates.stream()
                 .map(this::getAttendanceRecord)
@@ -56,6 +64,10 @@ public class Attendances {
                 .filter(attendanceRecord -> attendanceRecord.isSameDate(date))
                 .findFirst()
                 .orElse(AttendanceRecord.dateOf(date));
+    }
+
+    public List<AttendanceRecord> getAttendances() {
+        return Collections.unmodifiableList(attendances);
     }
 
     @Override

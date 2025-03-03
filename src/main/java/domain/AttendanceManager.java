@@ -58,10 +58,11 @@ public class AttendanceManager {
 
     public Attendances checkAttendance(NickName nickName, List<Integer> checkingDates) {
         validateNameExist(nickName);
-        Attendances attendances = new Attendances();
-        attendances.attend(AttendanceRecord.of("09", "10:00"));
-        attendances.attend(AttendanceRecord.of("10", "10:00"));
-        return attendances;
+        Attendances attendances = attendanceManager.get(nickName);
+        List<AttendanceRecord> attendanceRecords = checkingDates.stream()
+                .map(attendances::getAttendanceRecordOfSameDate)
+                .toList();
+        return new Attendances(attendanceRecords);
     }
 
     private void validateNameExist(NickName nickName) {
