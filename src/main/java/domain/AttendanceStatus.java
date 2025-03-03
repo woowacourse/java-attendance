@@ -4,8 +4,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static domain.ERROR_MESSAGE.CLOSED_DAY;
-import static domain.ERROR_MESSAGE.CLOSED_TIME;
+import static constant.ErrorMessage.CLOSED_DAY;
+import static constant.ErrorMessage.CLOSED_TIME;
 import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
 

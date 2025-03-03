@@ -6,7 +6,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import static constant.MenuOption.*;
-import static domain.ERROR_MESSAGE.*;
+import static constant.ErrorMessage.*;
 
 public class UserInputView {
     public static String askCrewName() {

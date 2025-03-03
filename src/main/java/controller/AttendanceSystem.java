@@ -1,6 +1,6 @@
 package controller;
 
-import static domain.ERROR_MESSAGE.NO_ATTENDANCES_FILE;
+import static constant.ErrorMessage.NO_ATTENDANCES_FILE;
 import static java.lang.Integer.parseInt;
 import static view.OutputView.getFormattedDayInfo;
 import static view.OutputView.printCheckedAttendance;

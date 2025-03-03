@@ -1,7 +1,7 @@
 package domain;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import constant.ErrorMessage;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
-import static domain.ERROR_MESSAGE.NO_SUCH_NICKNAME;
+import static constant.ErrorMessage.NO_SUCH_NICKNAME;
 
 public class AllCrew {
     private final List<Crew> allCrew;
@@ -35,7 +35,7 @@ public class AllCrew {
             Attendance attendance = new Attendance(dateTime);
             addCrewInfoWithNameAndAttendance(crewNameAndAttendanceTime.getFirst(), attendance);
         } catch (DateTimeParseException e) {
-            throw new DateTimeException(ERROR_MESSAGE.INVALID_FILE_TIME_FORMAT.getMessage());
+            throw new DateTimeException(ErrorMessage.INVALID_FILE_TIME_FORMAT.getMessage());
         }
     }
 

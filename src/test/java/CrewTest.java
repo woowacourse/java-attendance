@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import domain.Attendance;
 import domain.Crew;
-import domain.ERROR_MESSAGE;
+import constant.ErrorMessage;
 import domain.Penalty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -84,7 +84,7 @@ public class CrewTest {
                 // when & then
                 assertThatThrownBy(() -> crew.addAttendance(attendanceAfter))
                         .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage(ERROR_MESSAGE.ALREADY_ATTENDED.getMessage());
+                        .hasMessage(ErrorMessage.ALREADY_ATTENDED.getMessage());
             }
         }
 

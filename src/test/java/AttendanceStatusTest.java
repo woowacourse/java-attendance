@@ -1,7 +1,7 @@
 import static org.assertj.core.api.Assertions.*;
 
 import domain.AttendanceStatus;
-import domain.ERROR_MESSAGE;
+import constant.ErrorMessage;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -104,7 +104,7 @@ public class AttendanceStatusTest {
             LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 7, 10, 0);
 
             // when & then
-            assertThatThrownBy(() -> AttendanceStatus.validateCampusIsOpen(attendedTime)).hasMessage(ERROR_MESSAGE.CLOSED_DAY.getMessage());
+            assertThatThrownBy(() -> AttendanceStatus.validateCampusIsOpen(attendedTime)).hasMessage(ErrorMessage.CLOSED_DAY.getMessage());
         }
         @DisplayName("성탄절 출석 시도")
         @Test
@@ -112,7 +112,7 @@ public class AttendanceStatusTest {
             // given
             LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 25, 10, 0);
             // when & then
-            assertThatThrownBy(() -> AttendanceStatus.validateCampusIsOpen(attendedTime)).hasMessage(ERROR_MESSAGE.CLOSED_DAY.getMessage());
+            assertThatThrownBy(() -> AttendanceStatus.validateCampusIsOpen(attendedTime)).hasMessage(ErrorMessage.CLOSED_DAY.getMessage());
         }
 
     }
@@ -128,7 +128,7 @@ public class AttendanceStatusTest {
             LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 5, 7, 0);
 
             // when & then
-            assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).hasMessage(ERROR_MESSAGE.CLOSED_TIME.getMessage());
+            assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).hasMessage(ErrorMessage.CLOSED_TIME.getMessage());
         }
         @DisplayName("개장 후 출석 시도")
         @Test
@@ -137,7 +137,7 @@ public class AttendanceStatusTest {
             LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 5, 23, 30);
 
             // when & then
-            assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).hasMessage(ERROR_MESSAGE.CLOSED_TIME.getMessage());
+            assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).hasMessage(ErrorMessage.CLOSED_TIME.getMessage());
         }
     }
 }

@@ -1,5 +1,6 @@
 package view;
 
+import domain.Penalty;
 import domain.*;
 
 import java.time.LocalDate;
