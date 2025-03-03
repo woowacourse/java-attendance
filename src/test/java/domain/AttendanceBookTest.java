@@ -8,6 +8,7 @@ import domain.attendance.AttendanceInfos;
 import domain.datetime.CampusDate;
 import domain.datetime.CampusTime;
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class AttendanceBookTest {
@@ -48,10 +49,10 @@ class AttendanceBookTest {
         attendanceBook.addInfo(crew, attendanceInfo);
 
         // then
-        // TODO : Q3
-        assertThat(attendanceBook.getBook().get(crew).getAttendanceInfos()).hasSize(1);
-        assertThat(attendanceBook.getBook().get(crew).getAttendanceInfos().getFirst().getHour()).isEqualTo(10);
-        assertThat(attendanceBook.getBook().get(crew).getAttendanceInfos().getFirst().getMinute()).isEqualTo(6);
+        List<AttendanceInfo> attendanceInfos = attendanceBook.findInfoByCrew(crew).getAttendanceInfos();
+        assertThat(attendanceInfos).hasSize(1);
+        assertThat(attendanceInfos.getFirst().getHour()).isEqualTo(10);
+        assertThat(attendanceInfos.getFirst().getMinute()).isEqualTo(6);
     }
 
     @Test
