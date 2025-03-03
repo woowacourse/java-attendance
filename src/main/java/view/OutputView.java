@@ -18,7 +18,7 @@ public class OutputView {
         System.out.println(buildSingleLog(attendanceTime));
     }
 
-    public void modifyPage(Optional<AttendanceTime> previous, AttendanceTime modified) {
+    public void modifyPage(AttendanceTime previous, AttendanceTime modified) {
         LocalDate date = modified.toLocalDate();
         LocalTime modifiedTime = modified.toLocalTime();
         AttendanceStatus previousStatus = null;
@@ -27,9 +27,9 @@ public class OutputView {
         String formattedDayOfWeek = CustomDateTimeFormatter.dateToDayOfWeek(date);
         String formattedModifiedTime = CustomDateTimeFormatter.timeToString(modifiedTime);
         String formattedPrevious = "--:--";
-        if (previous.isPresent()) {
-            formattedPrevious = CustomDateTimeFormatter.timeToString(previous.get().toLocalTime());
-            previousStatus = previous.get().toAttendanceStatus();
+        if (previous != null) {
+            formattedPrevious = CustomDateTimeFormatter.timeToString(previous.toLocalTime());
+            previousStatus = previous.toAttendanceStatus();
         }
         String previousStatusName = getAttendanceStatusName(previousStatus);
         String modifiedStatusName = getAttendanceStatusName(modified.toAttendanceStatus());

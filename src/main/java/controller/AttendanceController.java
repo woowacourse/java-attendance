@@ -10,7 +10,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Optional;
 import view.InputView;
 import view.OutputView;
 
@@ -86,7 +85,7 @@ public class AttendanceController {
         LocalTime time = parseTime(rawTime);
 
         AttendanceTime attendanceTime = AttendanceTime.of(date, time);
-        Optional<AttendanceTime> previous = crewAttendance.modify(attendanceTime);
+        AttendanceTime previous = crewAttendance.modify(attendanceTime);
 
         outputView.modifyPage(previous, attendanceTime);
     }

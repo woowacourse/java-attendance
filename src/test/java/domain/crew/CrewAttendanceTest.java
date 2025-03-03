@@ -148,17 +148,16 @@ class CrewAttendanceTest {
         );
 
         // when
-        Optional<AttendanceTime> previous1 = crewAttendance.modify(noPreviousAttendanceTime);
-        Optional<AttendanceTime> previous2 = crewAttendance.modify(attendanceTime);
+        AttendanceTime previous1 = crewAttendance.modify(noPreviousAttendanceTime);
+        AttendanceTime previous2 = crewAttendance.modify(attendanceTime);
 
         // then
         AttendanceTime expected2 = AttendanceTime.of(
                 LocalDate.of(2024, 12, 10),
                 LocalTime.of(10, 5)
         );
-        assertThat(previous1.isEmpty()).isTrue();
-        assertThat(previous2.isPresent()).isTrue();
-        assertThat(previous2.get()).isEqualTo(expected2);
+        assertThat(previous1).isNull();
+        assertThat(previous2).isEqualTo(expected2);
     }
 
     @Test

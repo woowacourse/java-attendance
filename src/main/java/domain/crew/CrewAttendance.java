@@ -24,7 +24,7 @@ public class CrewAttendance {
         attendanceTimes.addAttendance(attendanceTime);
     }
 
-    public Optional<AttendanceTime> modify(AttendanceTime attendanceTime) {
+    public AttendanceTime modify(AttendanceTime attendanceTime) {
         return attendanceTimes.modifyAttendance(attendanceTime);
     }
 

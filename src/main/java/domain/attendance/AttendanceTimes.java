@@ -34,16 +34,15 @@ public class AttendanceTimes {
                 .findAny();
     }
 
-    public Optional<AttendanceTime> modifyAttendance(AttendanceTime time) {
+    public AttendanceTime modifyAttendance(AttendanceTime time) {
         Optional<AttendanceTime> currentTime = attendanceLog.stream()
                 .filter(attendanceTime -> attendanceTime.isSameDate(time))
                 .findAny();
-        Optional<AttendanceTime> previous = Optional.empty();
         if (currentTime.isEmpty()) {
             attendanceLog.add(time);
-            return previous;
+            return null;
         }
-        return Optional.of(currentTime.get().modify(time));
+        return currentTime.get().modify(time);
     }
 
     public int countAttendanceBeforeDate(LocalDate date) {

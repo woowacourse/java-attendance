@@ -106,13 +106,12 @@ class AttendanceTimesTest {
         );
 
         // when
-        Optional<AttendanceTime> optionalAttendanceTime = attendanceTimes.modifyAttendance(
+        AttendanceTime attendanceTime = attendanceTimes.modifyAttendance(
                 AttendanceTime.of(date, time)
         );
 
         // then
-        assert optionalAttendanceTime.isPresent();
-        assertThat(optionalAttendanceTime.get()).isEqualTo(previous);
+        assertThat(attendanceTime).isEqualTo(previous);
     }
 
     @Test
