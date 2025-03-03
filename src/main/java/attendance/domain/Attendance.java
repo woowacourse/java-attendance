@@ -28,7 +28,7 @@ public class Attendance {
         return !dateTime.toLocalTime().equals(LocalTime.MAX);
     }
 
-    public boolean isBefore(final LocalDate date) {
+    public boolean isDateBefore(final LocalDate date) {
         return dateTime.toLocalDate().isBefore(date);
     }
 
@@ -48,7 +48,7 @@ public class Attendance {
     public boolean equals(final Object object) {
         if (object == null || getClass() != object.getClass()) return false;
         Attendance o = (Attendance) object;
-        return dateTime.equals(o.dateTime);
+        return dateTime.equals(o.dateTime) && state == o.state;
     }
 
     @Override
