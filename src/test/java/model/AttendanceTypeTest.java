@@ -13,24 +13,19 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.DateTimeGenerator;
 import util.FileParser;
-import util.FixedDateTimeStrategy;
 
 class AttendanceTypeTest {
 
     LocalDate fixedDate;
-    DateTimeGenerator dateTimeGenerator;
     Attendances attendances;
 
     @BeforeEach
     void beforeEach() {
         fixedDate = LocalDate.of(2024, 12, 13);
-        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDate);
-        dateTimeGenerator = new DateTimeGenerator(fixedDateTimeStrategy);
 
         List<String> lines = FileParser.readLines(ATTENDANCE_FILE_PATH.getPath());
-        attendances = Attendances.from(lines, dateTimeGenerator);
+        attendances = Attendances.from(lines, fixedDate);
     }
 
     @Test

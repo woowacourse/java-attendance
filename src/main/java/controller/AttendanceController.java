@@ -10,22 +10,16 @@ import dto.AttendanceOptionRequest;
 import dto.AttendanceRiskCrewsResponse;
 import dto.AttendanceUpdateRequest;
 import dto.AttendanceUpdateResponse;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Supplier;
 import model.Attendances;
 import model.Option;
-import util.DateTimeGenerator;
 import util.FileParser;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-
-    private final DateTimeGenerator dateTimeGenerator;
-
-    public AttendanceController(DateTimeGenerator dateTimeGenerator) {
-        this.dateTimeGenerator = dateTimeGenerator;
-    }
 
     public void run() {
         Attendances attendances = initialize();
@@ -53,31 +47,31 @@ public class AttendanceController {
 
     public Attendances initialize() {
         List<String> lines = FileParser.readLines(ATTENDANCE_FILE_PATH.getPath());
-        return Attendances.from(lines, dateTimeGenerator);
+        return Attendances.from(lines, LocalDate.now());
     }
 
     private Option selectOption() {
-        AttendanceOptionRequest request = InputView.readAttendanceOptionRequest(dateTimeGenerator);
+        AttendanceOptionRequest request = InputView.readAttendanceOptionRequest(LocalDate.now());
         return Option.find(request.option());
     }
 
     private void checkInAttendance(Attendances attendances) {
         AttendanceCheckInRequest request = InputView.readAttendanceCheckInRequest();
         AttendanceCheckInResponse response = attendances.add(
-                request.nickname(), request.checkInTime(), dateTimeGenerator);
+                request.nickname(), request.checkInTime(), LocalDate.now());
         OutputView.printCheckInAttendance(response);
     }
 
     private void updateAttendance(Attendances attendances) {
-        AttendanceUpdateRequest request = InputView.readAttendanceUpdateRequest(dateTimeGenerator);
+        AttendanceUpdateRequest request = InputView.readAttendanceUpdateRequest(LocalDate.now());
         AttendanceUpdateResponse response = attendances.update(
-                request.nickname(), request.day(), request.updateTime(), dateTimeGenerator);
+                request.nickname(), request.day(), request.updateTime(), LocalDate.now());
         OutputView.printUpdateAttendance(response);
     }
 
     private void findAttendanceHistoryByCrew(Attendances attendances) {
         AttendanceHistoryRequest request = InputView.readAttendanceHistoryRequest();
-        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request.nickname(), dateTimeGenerator);
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request.nickname(), LocalDate.now());
         OutputView.printAttendanceHistory(response);
     }
 

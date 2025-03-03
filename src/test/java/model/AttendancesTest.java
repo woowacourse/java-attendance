@@ -22,24 +22,19 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.DateTimeGenerator;
 import util.FileParser;
-import util.FixedDateTimeStrategy;
 
 class AttendancesTest {
 
     LocalDate fixedDate;
-    DateTimeGenerator dateTimeGenerator;
     Attendances attendances;
 
     @BeforeEach
     void beforeEach() {
         fixedDate = LocalDate.of(2024, 12, 13);
-        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDate);
-        dateTimeGenerator = new DateTimeGenerator(fixedDateTimeStrategy);
 
         List<String> lines = FileParser.readLines(ATTENDANCE_FILE_PATH.getPath());
-        attendances = Attendances.from(lines, dateTimeGenerator);
+        attendances = Attendances.from(lines, fixedDate);
     }
 
     @Test
@@ -71,12 +66,11 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(
-                request.nickname(), request.checkInTime(), dateTimeGenerator);
+        AttendanceCheckInResponse response = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
 
         // then
         assertAll(
-                () -> assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now()),
+                () -> assertThat(response.checkInDate()).isEqualTo(fixedDate),
                 () -> assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 0)),
                 () -> assertThat(response.attendanceType()).isEqualTo(AttendanceType.SUCCESS)
         );
@@ -91,12 +85,11 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(
-                request.nickname(), request.checkInTime(), dateTimeGenerator);
+        AttendanceCheckInResponse response = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
 
         // then
         assertAll(
-                () -> assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now()),
+                () -> assertThat(response.checkInDate()).isEqualTo(fixedDate),
                 () -> assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 6)),
                 () -> assertThat(response.attendanceType()).isEqualTo(AttendanceType.BE_LATE)
         );
@@ -111,12 +104,11 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(
-                request.nickname(), request.checkInTime(), dateTimeGenerator);
+        AttendanceCheckInResponse response = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
 
         // then
         assertAll(
-                () -> assertThat(response.checkInDate()).isEqualTo(dateTimeGenerator.now()),
+                () -> assertThat(response.checkInDate()).isEqualTo(fixedDate),
                 () -> assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 31)),
                 () -> assertThat(response.attendanceType()).isEqualTo(AttendanceType.ABSENCE)
         );
@@ -131,7 +123,7 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator))
+        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), fixedDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(NOT_FOUND_CREW.getMessage());
     }
@@ -147,7 +139,7 @@ class AttendancesTest {
 
         // when
         AttendanceUpdateResponse response = attendances.update(
-                request.nickname(), request.day(), request.updateTime(), dateTimeGenerator);
+                request.nickname(), request.day(), request.updateTime(), fixedDate);
 
         // then
         assertAll(
@@ -170,7 +162,7 @@ class AttendancesTest {
 
         // when
         AttendanceUpdateResponse response = attendances.update(
-                request.nickname(), request.day(), request.updateTime(), dateTimeGenerator);
+                request.nickname(), request.day(), request.updateTime(), fixedDate);
 
         // then
         assertAll(
@@ -190,7 +182,7 @@ class AttendancesTest {
         AttendanceHistoryRequest request = new AttendanceHistoryRequest(nickname);
 
         // when
-        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request.nickname(), dateTimeGenerator);
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request.nickname(), fixedDate);
 
         // then
         assertAll(
@@ -230,15 +222,13 @@ class AttendancesTest {
     @DisplayName("공휴일에 출석을 시도하는 경우 예외가 발생한다.")
     void test10() {
         fixedDate = LocalDate.of(2024, 12, 25);
-        FixedDateTimeStrategy fixedDateTimeStrategy = new FixedDateTimeStrategy(fixedDate);
-        dateTimeGenerator = new DateTimeGenerator(fixedDateTimeStrategy);
 
         String nickname = "미소";
         String checkInTime = "10:00";
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator))
+        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), fixedDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(CANNOT_CHECK_IN_ON_HOLIDAY.getMessage());
     }
@@ -251,7 +241,7 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator))
+        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), fixedDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OUT_OF_OPERATION_HOURS.getMessage());
     }
@@ -262,10 +252,10 @@ class AttendancesTest {
         String nickname = "미소";
         String checkInTime = "10:00";
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
-        attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator);
+        attendances.add(request.nickname(), request.checkInTime(), fixedDate);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator))
+        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), fixedDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ALREADY_CHECK_IN.getMessage());
     }

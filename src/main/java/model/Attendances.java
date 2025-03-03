@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import util.DateTimeGenerator;
 import util.InputParser;
 
 public class Attendances {
@@ -35,35 +34,34 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-    public static Attendances from(List<String> inputs, DateTimeGenerator dateTimeGenerator) {
+    public static Attendances from(List<String> inputs, LocalDate now) {
         Map<Crew, List<Attendance>> attendances = parseAttendances(inputs);
-        List<LocalDate> allDates = generateDateRange(dateTimeGenerator);
+        List<LocalDate> allDates = generateDateRange(now);
         fillMissingAttendances(attendances, allDates);
 
         return new Attendances(attendances);
     }
 
-    public AttendanceCheckInResponse add(String nickname, String checkInTime, DateTimeGenerator dateTimeGenerator) {
+    public AttendanceCheckInResponse add(String nickname, String checkInTime, LocalDate now) {
         Crew crew = Crew.of(nickname);
         validateCrewExists(crew);
-        validateHoliday(dateTimeGenerator.now());
-        validateOperationTime(checkInTime, dateTimeGenerator.now());
-        validateAlreadyCheckedIn(crew, dateTimeGenerator.now());
+        validateHoliday(now);
+        validateOperationTime(checkInTime, now);
+        validateAlreadyCheckedIn(crew, now);
 
-        Attendance attendance = Attendance.of(dateTimeGenerator, checkInTime);
+        Attendance attendance = Attendance.of(now, checkInTime);
         attendances.get(crew).add(attendance);
 
         return new AttendanceCheckInResponse(
-                dateTimeGenerator.now(),
+                now,
                 LocalTime.parse(checkInTime),
                 attendance.getAttendanceType()
         );
     }
 
-    public AttendanceUpdateResponse update(String nickname, String day,
-                                           String updateTime, DateTimeGenerator dateTimeGenerator) {
+    public AttendanceUpdateResponse update(String nickname, String day, String updateTime, LocalDate now) {
         Crew crew = Crew.of(nickname);
-        LocalDate date = dateTimeGenerator.now().withDayOfMonth(Integer.parseInt(day));
+        LocalDate date = now.withDayOfMonth(Integer.parseInt(day));
 
         Attendance attendance = find(crew, date);
         LocalTime previousTime = attendance.getCheckInTime();
@@ -80,10 +78,10 @@ public class Attendances {
         );
     }
 
-    public AttendanceHistoryResponse findHistoryByCrew(String nickname, DateTimeGenerator dateTimeGenerator) {
+    public AttendanceHistoryResponse findHistoryByCrew(String nickname, LocalDate now) {
         Crew crew = Crew.of(nickname);
         List<Attendance> filteredAttendances = getAttendancesByCrew(crew).stream()
-                .filter(attendance -> attendance.getCheckInDate().isBefore(dateTimeGenerator.now()))
+                .filter(attendance -> attendance.getCheckInDate().isBefore(now))
                 .toList();
         Map<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(filteredAttendances);
         PunishmentType punishmentType = PunishmentType.find(attendanceTotal);
@@ -126,8 +124,7 @@ public class Attendances {
                 ));
     }
 
-    private static List<LocalDate> generateDateRange(DateTimeGenerator dateTimeGenerator) {
-        LocalDate now = dateTimeGenerator.now();
+    private static List<LocalDate> generateDateRange(LocalDate now) {
         return IntStream.rangeClosed(1, now.getDayOfMonth() - 1)
                 .mapToObj(now::withDayOfMonth)
                 .filter(date -> !EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(date.getDayOfWeek()))

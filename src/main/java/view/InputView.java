@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
-import util.DateTimeGenerator;
 import util.InputParser;
 import util.InputValidator;
 
@@ -20,8 +19,7 @@ public class InputView {
     private InputView() {
     }
 
-    public static AttendanceOptionRequest readAttendanceOptionRequest(DateTimeGenerator dateTimeGenerator) {
-        LocalDate now = dateTimeGenerator.now();
+    public static AttendanceOptionRequest readAttendanceOptionRequest(LocalDate now) {
         println(String.format(InputViewMessage.ATTENDANCE_OPTION_PROMPT.getMessage(),
                 now.getMonthValue(),
                 now.getDayOfMonth(),
@@ -48,7 +46,7 @@ public class InputView {
         return new AttendanceCheckInRequest(nickname, time);
     }
 
-    public static AttendanceUpdateRequest readAttendanceUpdateRequest(DateTimeGenerator dateTimeGenerator) {
+    public static AttendanceUpdateRequest readAttendanceUpdateRequest(LocalDate now) {
         println(InputViewMessage.ATTENDANCE_UPDATE_NICKNAME_PROMPT.getMessage());
         String nickname = readTrimmedInput();
         InputValidator.validateNullOrBlank(nickname);
@@ -57,7 +55,7 @@ public class InputView {
         String day = readTrimmedInput();
         InputValidator.validateNullOrBlank(day);
         InputValidator.validateInteger(day);
-        InputValidator.validateDay(day, dateTimeGenerator.now());
+        InputValidator.validateDay(day, now);
 
         println(InputViewMessage.ATTENDANCE_UPDATE_TIME_PROMPT.getMessage());
         String time = readTrimmedInput();

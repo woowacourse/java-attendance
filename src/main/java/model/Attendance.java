@@ -5,7 +5,6 @@ import static constant.AttendanceConstant.BLANK_SEPARATOR;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import util.DateTimeGenerator;
 import util.InputParser;
 
 public class Attendance {
@@ -29,8 +28,7 @@ public class Attendance {
         return new Attendance(checkInDate, checkInTime, attendanceType);
     }
 
-    public static Attendance of(DateTimeGenerator dateTimeGenerator, String rawCheckInTime) {
-        LocalDate checkInDate = dateTimeGenerator.now();
+    public static Attendance of(LocalDate checkInDate, String rawCheckInTime) {
         LocalTime checkInTime = LocalTime.parse(rawCheckInTime);
         AttendanceType attendanceType = AttendanceType.find(checkInDate, checkInTime);
 
