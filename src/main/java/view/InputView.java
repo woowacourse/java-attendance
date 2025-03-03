@@ -46,16 +46,26 @@ public class InputView {
 
     private int readUpdateMonth() {
         System.out.printf("수정하려는 날짜(월)를 입력해주세요.%n");
-        String input = scanner.next();
+        String input = scanner.nextLine();
         validatePositiveNumber(input);
         return Integer.parseInt(input);
     }
 
     private int readUpdateDay() {
         System.out.printf("수정하려는 날짜(일)를 입력해주세요.%n");
-        String input = scanner.next();
+        String input = scanner.nextLine();
         validatePositiveNumber(input);
         return Integer.parseInt(input);
+    }
+
+    public LocalTime readUpdateTime() {
+        System.out.printf("언제로 변경하겠습니까?%n");
+        String input = scanner.nextLine();
+        try {
+            return LocalTime.parse(input);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 시간은 HH:mm 형식으로 입력해 주세요.");
+        }
     }
 
     private void validatePositiveNumber(String input) {

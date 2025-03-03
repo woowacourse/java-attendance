@@ -54,6 +54,7 @@ public class AttendanceController {
     private void updateAttendance() {
         String nickname = inputView.readUpdateNickname();
         LocalDate updateDate = inputView.readUpdateDate();
+        LocalTime updateTime = inputView.readUpdateTime();
     }
 
     private void checkAttendanceRecords() {
