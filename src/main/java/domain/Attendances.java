@@ -22,6 +22,7 @@ public class Attendances {
     }
 
     public void checkAttendance(final String name, final LocalDateTime time) {
+        CampusTime.validateInTime(time.toLocalTime());
         Attendance attendance = findAttendanceBy(name);
         attendance.add(time);
     }
@@ -114,5 +115,14 @@ public class Attendances {
 
     public List<Attendance> getAttendances() {
         return List.copyOf(attendances);
+    }
+
+    public void validateFindCrew(final String name) {
+        boolean hasCrew = attendances.stream()
+                .anyMatch(attendance -> attendance.isSame(name));
+
+        if (!hasCrew) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
     }
 }

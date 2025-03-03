@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 
 import java.time.LocalDate;
@@ -47,6 +48,25 @@ class AttendancesTest {
 
         //then
         assertThat(attendance).isEqualTo(attendances1);
+    }
+
+    @DisplayName("등록되지 않는 닉네임을 가진 크루라면 예외가 발생한다.")
+    @Test
+    void validateFindCrewBy() {
+        //given
+        String name = "빙티";
+
+        Attendance attendances1 = createAttendance("도기");
+        Attendance attendances2 = createAttendance("포비");
+
+        Attendances attendances = new Attendances();
+        attendances.add(attendances1);
+        attendances.add(attendances2);
+
+        //when //then
+        assertThatThrownBy(() -> attendances.validateFindCrew(name))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등록되지 않은 닉네임입니다.");
     }
 
     @DisplayName("닉네임과 등교시간을 받아 출석을 한다.")
