@@ -3,12 +3,12 @@ package domain;
 import static domain.policy.AttendancePolicy.ABSENT_STATUS;
 import static domain.policy.AttendancePolicy.ATTEND_STATUS;
 import static domain.policy.AttendancePolicy.LATE_STATUS;
-import static domain.policy.TimePolicy.NORMAL_ATTEND_CRITERIA;
-import static domain.policy.TimePolicy.NORMAL_LATE_CRITERIA;
+import static domain.policy.TimePolicy.NORMAL_ATTEND_DEAD_LINE;
+import static domain.policy.TimePolicy.NORMAL_LATE_DEAD_LINE;
 import static domain.policy.TimePolicy.OPERATING_END;
 import static domain.policy.TimePolicy.OPERATING_START;
-import static domain.policy.TimePolicy.SPECIAL_ATTEND_CRITERIA;
-import static domain.policy.TimePolicy.SPECIAL_LATE_CRITERIA;
+import static domain.policy.TimePolicy.SPECIAL_ATTEND_DEAD_LINE;
+import static domain.policy.TimePolicy.SPECIAL_LATE_DEAD_LINE;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -32,11 +32,12 @@ public class AttendanceDiscriminator {
     }
 
     private static String judgeAttendanceByTimeAtSpecialDay(LocalTime time) {
-        return judgeAttendanceByCriteriaTime(time, SPECIAL_ATTEND_CRITERIA.getTime(), SPECIAL_LATE_CRITERIA.getTime());
+        return judgeAttendanceByCriteriaTime(time, SPECIAL_ATTEND_DEAD_LINE.getTime(),
+                SPECIAL_LATE_DEAD_LINE.getTime());
     }
 
     private static String judgeAttendanceByTimeAtNormalDay(LocalTime time) {
-        return judgeAttendanceByCriteriaTime(time, NORMAL_ATTEND_CRITERIA.getTime(), NORMAL_LATE_CRITERIA.getTime());
+        return judgeAttendanceByCriteriaTime(time, NORMAL_ATTEND_DEAD_LINE.getTime(), NORMAL_LATE_DEAD_LINE.getTime());
     }
 
     private static String judgeAttendanceByCriteriaTime(LocalTime time, LocalTime attendCriteria,

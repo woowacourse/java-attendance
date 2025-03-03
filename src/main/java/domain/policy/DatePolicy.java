@@ -8,7 +8,8 @@ import java.util.Locale;
 import view.ErrorMessage;
 
 public class DatePolicy {
-    private static final List<Integer> HOLIDAYS = List.of(25);
+    private static final String HOLIDAYS = "공휴일";
+    private static final List<Integer> HOLIDAYS_DATES = List.of(25);
 
     // 날짜 정책 1. 출석 수정 시 값을 입력받는 현재 시점보다 미래일 수 없다.
     public static void validateIsDateFuture(LocalDate date) {
@@ -19,9 +20,9 @@ public class DatePolicy {
 
     // 날짜 정책 2. 공휴일에는 출석을 받지 않는다.
     public static void validateIsDateHoliday(LocalDate date) {
-        if (HOLIDAYS.contains(date.getDayOfMonth())) {
+        if (HOLIDAYS_DATES.contains(date.getDayOfMonth())) {
             throw new IllegalArgumentException(ErrorMessage.NOTICE_NOT_TRAINING_DAY.format(
-                    date.getMonthValue(), date.getDayOfMonth(), "공휴일"
+                    date.getMonthValue(), date.getDayOfMonth(), HOLIDAYS
             ));
         }
     }
@@ -45,6 +46,6 @@ public class DatePolicy {
     public static boolean isNotTrainingDay(LocalDate date) {
         return date.getDayOfWeek() == DayOfWeek.SATURDAY ||
                 date.getDayOfWeek() == DayOfWeek.SUNDAY ||
-                HOLIDAYS.contains(date.getDayOfMonth());
+                HOLIDAYS_DATES.contains(date.getDayOfMonth());
     }
 }

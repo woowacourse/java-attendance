@@ -1,9 +1,9 @@
 package domain.policy;
 
 public enum PenaltyPolicy {
-    EXPULSION("제적", 5),
-    INTERVIEW("면담", 3),
-    WARNING("경고", 2),
+    EXPULSION("제적", 5), // 초과
+    INTERVIEW("면담", 3), // 이상
+    WARNING("경고", 2), // 이상
     NO_PENALTY("", 0);
 
     public static final int CONVERT_LATE_TO_ABSENT_CRITERIA = 3;

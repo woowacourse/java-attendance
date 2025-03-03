@@ -7,11 +7,11 @@ public enum TimePolicy {
     OPERATING_START(LocalTime.of(8, 0)),
     OPERATING_END(LocalTime.of(23, 0)),
 
-    SPECIAL_ATTEND_CRITERIA(LocalTime.of(10, 5)),
-    SPECIAL_LATE_CRITERIA(LocalTime.of(10, 30)),
+    SPECIAL_ATTEND_DEAD_LINE(LocalTime.of(10, 5)),
+    SPECIAL_LATE_DEAD_LINE(LocalTime.of(10, 30)),
 
-    NORMAL_ATTEND_CRITERIA(LocalTime.of(13, 5)),
-    NORMAL_LATE_CRITERIA(LocalTime.of(13, 30));
+    NORMAL_ATTEND_DEAD_LINE(LocalTime.of(13, 5)),
+    NORMAL_LATE_DEAD_LINE(LocalTime.of(13, 30));
 
     private final LocalTime time;
 
