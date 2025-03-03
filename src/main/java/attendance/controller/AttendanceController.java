@@ -1,6 +1,7 @@
 package attendance.controller;
 
 import attendance.Initializer;
+import attendance.constant.Option;
 import attendance.constant.Holiday;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
@@ -8,28 +9,25 @@ import attendance.domain.Crew;
 import attendance.domain.Nickname;
 import attendance.domain.StatusStatistics;
 import attendance.util.DateUtil;
-import attendance.util.ErrorMessage;
 import attendance.util.FormattedErrorMessage;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceController {
 
-    private static final Map<String, Runnable> option = new HashMap<>();
-    private static final String QUIT = "Q";
-    private static final String RECORD = "1";
-    private static final String EDIT = "2";
-    private static final String CHECK_RECORD = "3";
-    private static final String CHECK_PENALTY = "4";
-
     private final AttendanceBook attendanceBook;
     private final LocalDate systemDate;
+    private final Map<Option, Runnable> function = Map.of(
+            Option.RECORD, this::recordAttendance,
+            Option.EDIT, this::editAttendance,
+            Option.CHECK_RECORD, this::checkRecords,
+            Option.CHECK_PENALTY, this::checkPenalty
+    );
 
     public AttendanceController(Initializer initializer) {
         this.attendanceBook = initializer.initAttendanceBook();
@@ -37,10 +35,9 @@ public class AttendanceController {
     }
 
     public void run() {
-        initializeOption();
         while (true) {
             String inputFunction = InputView.readFunction(systemDate);
-            if (QUIT.equals(inputFunction)) {
+            if (Option.isQuit(inputFunction)) {
                 break;
             }
             try {
@@ -51,18 +48,9 @@ public class AttendanceController {
         }
     }
 
-    private void initializeOption() {
-        option.put(RECORD, this::recordAttendance);
-        option.put(EDIT, this::editAttendance);
-        option.put(CHECK_RECORD, this::checkRecords);
-        option.put(CHECK_PENALTY, this::checkPenalty);
-    }
-
     private void execute(String inputFunction) {
-        Runnable runnable = option.getOrDefault(inputFunction, null);
-        if (runnable == null) {
-            throw new IllegalArgumentException(ErrorMessage.INVALID_INPUT_OPTION_ERROR.getMessage());
-        }
+        Option selectedOption = Option.select(inputFunction);
+        Runnable runnable = function.get(selectedOption);
         runnable.run();
     }
 
