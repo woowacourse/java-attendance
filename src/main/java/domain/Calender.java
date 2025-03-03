@@ -15,8 +15,6 @@ public enum Calender {
     SAT("토요일", DayOfWeek.SATURDAY),
     SUN("일요일", DayOfWeek.SUNDAY);
 
-    private static final int HOLY_DAY = 25;
-
     private final String description;
     private final DayOfWeek dayOfWeek;
 
@@ -41,7 +39,7 @@ public enum Calender {
     }
 
     public static void validateHolyDay(final LocalDate localDate) {
-        if (isHolyDay(localDate)) {
+        if (isWeekend(localDate)) {
             Calender dayOfWeek = findBy(localDate);
 
             throw new IllegalArgumentException(String.format("%02d월 %02d일 %s은 등교일이 아닙니다.",
@@ -51,9 +49,9 @@ public enum Calender {
         }
     }
 
-    public static boolean isHolyDay(final LocalDate localDate) {
+    public static boolean isWeekend(final LocalDate localDate) {
         return localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)
-                || localDate.getDayOfMonth() == HOLY_DAY;
+                || HolyDay.isHolyDay(localDate);
     }
 
     public static boolean isMonday(final LocalDateTime time) {
