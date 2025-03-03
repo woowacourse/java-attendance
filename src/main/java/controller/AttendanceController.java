@@ -35,13 +35,8 @@ public class AttendanceController {
         } while (true);
     }
 
-    private AttendanceHistories loadCsvData() {
-        Map<String, List<LocalDateTime>> rawAttendanceData = fileInputView.readAttendanceFile();
-        return AttendanceHistoryGenerator.generate(rawAttendanceData);
-    }
-
     private void checkIn() {
-        System.out.println("1. 출석 확인");
+        String nickname = inputView.readNickname();
     }
 
     private void updateAttendance() {
@@ -58,6 +53,11 @@ public class AttendanceController {
 
     private void quit() {
         System.exit(0);
+    }
+
+    private AttendanceHistories loadCsvData() {
+        Map<String, List<LocalDateTime>> rawAttendanceData = fileInputView.readAttendanceFile();
+        return AttendanceHistoryGenerator.generate(rawAttendanceData);
     }
 
 //    private void retryUntilSuccess(Runnable runnable) {
