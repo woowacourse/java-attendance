@@ -26,21 +26,17 @@ public class ResultView {
     }
 
     public void printOriginAttendanceRecord(
-            final boolean hasOriginAttendance, final LocalDateTime originAttendanceDateTime,
+            final boolean hasAttendanceRecord, final LocalDateTime originAttendanceDateTime,
             final String originAttendanceStatus
     ) {
         System.out.println();
-        if (hasOriginAttendance) {
-            System.out.printf(String.join(" ",
-                    DATE_TIME_FORMATTER.format(originAttendanceDateTime),
-                    "(%s)"), originAttendanceStatus
-            );
+        if (hasAttendanceRecord) {
+            System.out.printf(String.join(" ", DATE_TIME_FORMATTER.format(originAttendanceDateTime),
+                    "(%s)"), originAttendanceStatus);
             return;
         }
-        System.out.printf(String.join(" ",
-                DATE_FORMATTER_WITHOUT_TIME.format(originAttendanceDateTime),
-                "(%s)"), originAttendanceStatus
-        );
+        System.out.printf(String.join(" ", DATE_FORMATTER_WITHOUT_TIME.format(originAttendanceDateTime),
+                "(%s)"), originAttendanceStatus);
     }
 
     public void printModificationAttendanceRecord(

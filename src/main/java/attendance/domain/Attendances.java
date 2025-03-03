@@ -75,8 +75,9 @@ public class Attendances {
         return ExpulsionStatus.findStatusByAbsentCount(totalAbsentCount);
     }
 
-    public List<Attendance> getAttendances() {
+    public List<Attendance> getAscendingAttendances() {
         return attendances.stream()
+                .sorted()
                 .toList();
     }
 

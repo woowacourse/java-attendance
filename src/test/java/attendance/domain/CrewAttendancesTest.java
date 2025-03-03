@@ -41,7 +41,7 @@ class CrewAttendancesTest {
         CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         Crew crew = new Crew("빙봉");
 
-        assertThat(crewAttendances.hasCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, day)))
+        assertThat(crewAttendances.hasCrewAttendanceRecordByLocalDate(crew, LocalDate.of(2025, 2, day)))
                 .isEqualTo(expected);
     }
 
@@ -50,7 +50,7 @@ class CrewAttendancesTest {
         CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes, standardDate);
         Crew crew = new Crew("비보");
 
-        assertThatThrownBy(() -> crewAttendances.hasCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 26)))
+        assertThatThrownBy(() -> crewAttendances.hasCrewAttendanceRecordByLocalDate(crew, LocalDate.of(2025, 2, 26)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -130,7 +130,7 @@ class CrewAttendancesTest {
         Crew crew = new Crew("빙봉");
         crewAttendances.addAttendance(crew, attendance);
 
-        assertThat(crewAttendances.findAllCrewAttendanceUntilStandardDate(crew, standardDate).getAttendances())
+        assertThat(crewAttendances.findAllCrewAttendanceUntilStandardDate(crew, standardDate).getAscendingAttendances())
                 .hasSize(19);
     }
 

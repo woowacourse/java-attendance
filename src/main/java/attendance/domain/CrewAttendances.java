@@ -61,7 +61,7 @@ public class CrewAttendances {
                 .orElse(Attendance.absent(targetDate));
     }
 
-    public boolean hasCrewAttendanceByLocalDate(final Crew crew, final LocalDate findDate) {
+    public boolean hasCrewAttendanceRecordByLocalDate(final Crew crew, final LocalDate findDate) {
         validateCrewExistence(crew);
         return crewAttendances.get(crew)
                 .hasAttendanceByLocalDate(findDate);
@@ -75,7 +75,7 @@ public class CrewAttendances {
 
     public Attendance findCrewAttendanceByLocalDate(final Crew crew, final LocalDate findDate) {
         validateCrewExistence(crew);
-        if (!hasCrewAttendanceByLocalDate(crew, findDate)) {
+        if (!hasCrewAttendanceRecordByLocalDate(crew, findDate)) {
             return Attendance.absent(findDate);
         }
         return crewAttendances.get(crew)

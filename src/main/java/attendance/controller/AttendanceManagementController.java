@@ -120,13 +120,12 @@ public class AttendanceManagementController {
         Crew crew = crews.findCrewByNickname(inputView.readAttendanceModificationCrewNickname());
         LocalDate modificationDate = inputView.readAttendanceModificationDate();
         LocalTime modificationTime = inputView.readAttendanceModificationTime();
-        boolean hasAttendanceRecord = crewAttendances.hasCrewAttendanceByLocalDate(crew, modificationDate);
         Attendance originAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, modificationDate);
         crewAttendances.modifyCrewAttendanceByModificationDateTime(
                 crew, LocalDateTime.of(modificationDate, modificationTime), today.toLocalDate()
         );
         Attendance modificationAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, modificationDate);
-        printAttendanceModificationResult(hasAttendanceRecord, originAttendance, modificationAttendance);
+        printAttendanceModificationResult(originAttendance.hasRecord(), originAttendance, modificationAttendance);
     }
 
     private void printAttendanceModificationResult(
@@ -146,10 +145,10 @@ public class AttendanceManagementController {
         Crew crew = crews.findCrewByNickname(inputView.readAttendanceConfirmNickname());
         LocalDate yesterday = today.toLocalDate().minusDays(1L);
         Attendances attendancesUntilYesterday = crewAttendances.findAllCrewAttendanceUntilStandardDate(crew, yesterday);
-        List<LocalDateTime> attendanceTimes = mapToLocalDateTimes(attendancesUntilYesterday.getAttendances());
+        List<LocalDateTime> attendanceDateTimes = mapToLocalDateTimes(attendancesUntilYesterday);
         List<Boolean> attendanceExistences = mapToAttendanceExistences(attendancesUntilYesterday);
         List<String> attendanceStatuses = getAttendanceStatuses(attendancesUntilYesterday);
-        resultView.printCrewAttendancesUntilYesterday(crew.getNickname(), attendanceTimes, attendanceExistences,
+        resultView.printCrewAttendancesUntilYesterday(crew.getNickname(), attendanceDateTimes, attendanceExistences,
                 attendanceStatuses);
         resultView.printAttendanceStatusCount(crewAttendances.calculateAttendanceCount(crew, yesterday),
                 crewAttendances.calculateLateCount(crew, yesterday),
@@ -158,23 +157,25 @@ public class AttendanceManagementController {
                 crewAttendances.calculateExpulsionStatus(crew, yesterday).getText());
     }
 
-    private List<LocalDateTime> mapToLocalDateTimes(final List<Attendance> crewAttendancesUntilYesterday) {
-        return crewAttendancesUntilYesterday
+    private List<LocalDateTime> mapToLocalDateTimes(final Attendances crewAttendancesUntilYesterday) {
+        return crewAttendancesUntilYesterday.getAscendingAttendances()
                 .stream()
                 .map(attendance -> LocalDateTime.of(attendance.getAttendanceLocalDate(),
                         attendance.getAttendanceLocalTime())
-                ).toList();
+                )
+                .toList();
     }
 
     private List<Boolean> mapToAttendanceExistences(final Attendances attendancesUntilYesterday) {
-        return attendancesUntilYesterday.getAttendances()
+        return attendancesUntilYesterday.getAscendingAttendances()
                 .stream()
                 .map(Attendance::hasRecord)
                 .toList();
     }
 
     private List<String> getAttendanceStatuses(final Attendances attendancesUntilYesterday) {
-        return attendancesUntilYesterday.getAttendances().stream()
+        return attendancesUntilYesterday.getAscendingAttendances()
+                .stream()
                 .map(Attendance::calculateStatus)
                 .map(AttendanceStatus::getText)
                 .toList();
