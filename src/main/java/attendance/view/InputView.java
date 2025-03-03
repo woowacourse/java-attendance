@@ -1,11 +1,14 @@
 package attendance.view;
 
+import attendance.util.DateFormatter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class InputView {
+    private static final String TODAY_IS = "오늘은 %s입니다. ";
     private static final String ENTER_OPTION = """
             기능을 선택해 주세요.
             1. 출석 확인
@@ -22,7 +25,8 @@ public class InputView {
 
     private final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-    public String readOption() {
+    public String readOption(final LocalDateTime today) {
+        System.out.printf(TODAY_IS, DateFormatter.formatDate(today));
         System.out.print(ENTER_OPTION);
         return readLine();
     }

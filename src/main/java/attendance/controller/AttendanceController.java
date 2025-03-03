@@ -23,13 +23,13 @@ public class AttendanceController {
 
     public void run() {
         AttendanceBook attendanceBook = AttendanceLoader.load(DataSourceReader.readFile());
-        String inputOption = inputView.readOption();
+        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
+        String inputOption = inputView.readOption(today);
         if (inputOption.equals("1")) {
             registerAttendance(attendanceBook);
         } else if (inputOption.equals("2")) {
             modifyAttendance(attendanceBook);
-        }
-        else if (inputOption.equals("3")) {
+        } else if (inputOption.equals("3")) {
             showCrewAttendance(attendanceBook);
         } else if (inputOption.equals("4")) {
             showWarningCrews(attendanceBook);
@@ -58,7 +58,7 @@ public class AttendanceController {
         LocalDateTime newAttendance = LocalDateTime.of(LocalDate.from(today), attendanceTime);
 
         attendanceBook.addAttendance(nickname, newAttendance);
-        Attendance attendance = attendanceBook.getCrewAttendanceOf(nickname,today).getAttendanceOn(newAttendance);
+        Attendance attendance = attendanceBook.getCrewAttendanceOf(nickname, today).getAttendanceOn(newAttendance);
         resultView.printAttendance(attendance);
     }
 
