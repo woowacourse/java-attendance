@@ -23,13 +23,13 @@ public class Attendances {
     }
 
     public Attendance add(Attendance attendance) {
-        validateExistForAdd(attendance.getAttendanceDate());
+        validateExist(attendance.getAttendanceDate());
         dateToTime.put(attendance.getAttendanceDate(), attendance.getAttendanceTime());
         return attendance;
     }
 
     public Attendance update(Attendance attendance) {
-        validateExistForUpdate(attendance.getAttendanceDate());
+        validateNonExists(attendance.getAttendanceDate());
         dateToTime.put(attendance.getAttendanceDate(), attendance.getAttendanceTime());
         return attendance;
     }
@@ -68,13 +68,13 @@ public class Attendances {
         return AttendanceStateRule.ABSENT;
     }
 
-    private void validateExistForAdd(AttendanceDate attendanceDate) {
+    private void validateExist(AttendanceDate attendanceDate) {
         if (existsByDate(attendanceDate)) {
             throw new IllegalArgumentException("이미 출석한 경우, 수정 기능을 이용해주세요.");
         }
     }
 
-    private void validateExistForUpdate(AttendanceDate attendanceDate) {
+    private void validateNonExists(AttendanceDate attendanceDate) {
         if (!existsByDate(attendanceDate)) {
             throw new IllegalArgumentException("출석하지 않은 경우, 수정 기능을 이용할 수 없습니다.");
         }
