@@ -48,10 +48,6 @@ public class AttendanceDateTimes {
         return totalCount - getPresentCount(lastDate) - getTardyCount(lastDate);
     }
 
-    public String getDisciplinaryStatus() {
-        return null;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

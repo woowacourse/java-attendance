@@ -6,6 +6,8 @@ public enum DisciplinaryStatus {
     ONE_ON_ONE("면담", 9),
     EXPELLED("제적", 15);
 
+    private static final int ABSENCE_WEIGHT = 3;
+    
     private final String name;
     private final int thresholdCount;
 
@@ -28,6 +30,6 @@ public enum DisciplinaryStatus {
     }
 
     private static int convertToThresholdCount(int absentCount, int tardyCount) {
-        return absentCount * 3 + tardyCount;
+        return absentCount * ABSENCE_WEIGHT + tardyCount;
     }
 }
