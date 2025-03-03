@@ -1,5 +1,6 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -33,5 +34,21 @@ class CrewTest {
         // then
         assertThatThrownBy(() -> crew.attend(attendanceDateTime))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("출석을 수정하다")
+    @Test
+    void editValidAttendanceDateTime() {
+        // given
+        final Crew crew = CrewsTest.generateCrew("쿠키", List.of("2024-12-13 10:00"));
+        final AttendanceDateTime afterAttendanceDateTime = AttendanceDateTime.from("2024-12-13 11:00");
+
+        // when
+        crew.editAttendanceDateTime(afterAttendanceDateTime);
+        
+        // then
+        final boolean hasAttendanceDateTime = crew.getAttendanceRecords()
+                .hasAttendanceDateTime(afterAttendanceDateTime);
+        assertThat(hasAttendanceDateTime).isTrue();
     }
 }

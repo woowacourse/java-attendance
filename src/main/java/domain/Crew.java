@@ -39,4 +39,16 @@ public class Crew {
     public Nickname getNickname() {
         return nickname;
     }
+
+    public AttendanceRecord findAttendanceRecordByDate(AttendanceDate attendanceDate) {
+        return attendanceRecords.findAttendanceRecord(attendanceDate);
+    }
+
+    public AttendanceRecord editAttendanceDateTime(final AttendanceDateTime wantedAttendanceDateTime) {
+        final AttendanceRecord beforeRecord = attendanceRecords.findMatchingAttendanceDate(wantedAttendanceDateTime);
+        final AttendanceRecord afterRecord = new AttendanceRecord(wantedAttendanceDateTime);
+
+        attendanceRecords.editAttendanceDateTime(beforeRecord, afterRecord);
+        return afterRecord;
+    }
 }
