@@ -22,7 +22,7 @@ public class AttendanceController {
 
         String command;
         do {
-            command = inputView.readCommand(dateProvider);
+            command = inputView.readCommand(dateProvider.getDate());
             execute(command, attendanceManager);
         } while (!command.equals("Q"));
     }
@@ -34,7 +34,7 @@ public class AttendanceController {
                 default -> throw new IllegalArgumentException("[ERROR] 올바른 명령어를 입력해주세요.");
             }
         } catch (Exception e) {
-            
+
         }
     }
 
