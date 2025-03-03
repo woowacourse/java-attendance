@@ -11,7 +11,8 @@ public record AttendanceHistory(
         int absenceCount,
         int penaltyCode
 ) {
-    public static AttendanceHistory of(final List<AttendanceDetails> attendanceDetails, final Map<AttendanceStatus, Integer> attendanceStatuses, final int penaltyCode) {
+    public static AttendanceHistory of(final List<AttendanceDetails> attendanceDetails,
+                                       final Map<AttendanceStatus, Integer> attendanceStatuses, final int penaltyCode) {
         return new AttendanceHistory(
                 attendanceDetails,
                 attendanceStatuses.getOrDefault(AttendanceStatus.ATTENDANCE, 0),

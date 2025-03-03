@@ -15,7 +15,7 @@ public class DateTimeParser {
 
     public static LocalDateTime parseToLocalDateTime(final String dateTime) {
         try {
-            return LocalDateTime.parse(dateTime,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("[ERROR] 일시는 yyyy-MM-dd HH:mm 형식이어야 합니다.");
         }

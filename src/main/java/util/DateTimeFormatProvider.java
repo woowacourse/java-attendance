@@ -11,7 +11,8 @@ import java.util.Locale;
 public class DateTimeFormatProvider {
 
     private static final DateTimeFormatter FORMATTER_1 = DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREAN);
-    private static final DateTimeFormatter FORMATTER_2 = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREAN);
+    private static final DateTimeFormatter FORMATTER_2 = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm",
+            Locale.KOREAN);
     private static final DateTimeFormatter FORMATTER_3 = DateTimeFormatter.ofPattern("HH:mm");
 
     private DateTimeFormatProvider() {

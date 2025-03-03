@@ -34,6 +34,6 @@ public class AttendancePaperGenerator {
 
 
     private static AttendancePaper createCrew(final String name) {
-        return new AttendancePaper(initialId++,name, AttendanceRecordGenerator.generate());
+        return new AttendancePaper(initialId++, name, AttendanceRecordGenerator.generate());
     }
 }

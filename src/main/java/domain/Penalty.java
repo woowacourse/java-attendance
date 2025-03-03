@@ -19,7 +19,7 @@ public enum Penalty {
 
     public static Penalty findByAbsenceCount(final int count) {
         return Arrays.stream(Penalty.values())
-                .sorted((p1,p2) -> p2.limit - p1.limit)
+                .sorted((p1, p2) -> p2.limit - p1.limit)
                 .filter(penalty -> count >= penalty.limit)
                 .findAny()
                 .orElse(Penalty.NONE);

@@ -20,7 +20,8 @@ public class AttendanceDate {
 
     private void validateDate(final LocalDate localDate) {
         if (ClassDayOff.isDayOff(localDate)) {
-            throw new IllegalArgumentException(String.format("[ERROR] %s은 등교일이 아닙니다.", DateTimeFormatProvider.toLocalDateKoreanFormat(localDate)));
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] %s은 등교일이 아닙니다.", DateTimeFormatProvider.toLocalDateKoreanFormat(localDate)));
         }
     }
 

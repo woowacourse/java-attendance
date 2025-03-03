@@ -10,7 +10,8 @@ public class AttendanceApplication {
         final ConsoleInputView consoleInputView = new ConsoleInputView();
         final ConsoleOutputView consoleOutputView = new ConsoleOutputView();
         final AttendanceBook attendanceBook = AttendanceBook.create();
-        final AttendanceController attendanceController = new AttendanceController(consoleInputView, consoleOutputView, attendanceBook);
+        final AttendanceController attendanceController = new AttendanceController(consoleInputView, consoleOutputView,
+                attendanceBook);
         new ApplicationController(attendanceController).run();
     }
 }

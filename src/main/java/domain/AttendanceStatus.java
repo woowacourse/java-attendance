@@ -6,9 +6,9 @@ import java.util.Arrays;
 
 public enum AttendanceStatus {
 
-    ATTENDANCE(1,0),
+    ATTENDANCE(1, 0),
     LATE(2, 5),
-    ABSENCE(3,30);
+    ABSENCE(3, 30);
 
 
     private final int code;
