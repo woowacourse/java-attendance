@@ -36,13 +36,8 @@ public class Attendances {
     }
 
     public void update(Attendance oldAttendance, Attendance newAttendance) {
-        attendances.stream()
-                .filter(attendance -> attendance.equals(oldAttendance))
-                .findFirst()
-                .ifPresent(attendance -> {
-                    int index = attendances.indexOf(attendance);
-                    attendances.set(index, newAttendance);
-                });
+        int index = attendances.indexOf(oldAttendance);
+        attendances.set(index, newAttendance);
     }
 
     public List<Attendance> getAttendancesUntilYesterday(LocalDate today) {
