@@ -30,7 +30,7 @@ public class DailyRecordTest {
         @DisplayName("빈 시간을 형식에 맞에 문자열로 반환할 수 있다.")
         void formatNullTime() {
             DayOfWeek dayOfWeek = DayOfWeek.FRIDAY;
-            LocalTime time = null;
+            LocalTime time = LocalTime.MIN;
 
             DailyRecord record = new DailyRecord(dayOfWeek, time);
             assertThat(record.getFormattedTime()).isEqualTo("--:--");

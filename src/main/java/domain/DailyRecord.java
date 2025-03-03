@@ -2,7 +2,6 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.Optional;
 
 public class DailyRecord {
 
@@ -15,9 +14,10 @@ public class DailyRecord {
     }
 
     public String getFormattedTime() {
-        return Optional.ofNullable(attendedTime)
-            .map(LocalTime::toString)
-            .orElse("--:--");
+        if(attendedTime.equals(LocalTime.MIN)) {
+            return "--:--";
+        }
+        return attendedTime.toString();
     }
 
     public LocalTime getAttendedTime() {

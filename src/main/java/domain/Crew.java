@@ -28,7 +28,7 @@ public class Crew {
     }
 
     public DailyRecord findRecordByDate(LocalDate date) {
-        return dailyRecords.getOrDefault(date, new DailyRecord(date.getDayOfWeek(), null));
+        return dailyRecords.getOrDefault(date, new DailyRecord(date.getDayOfWeek(), LocalTime.MIN));
     }
 
     public Map<LocalDate, DailyRecord> findRecordsOfDate(LocalDate startDate, LocalDate endDate) {
