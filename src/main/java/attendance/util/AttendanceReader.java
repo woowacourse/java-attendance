@@ -10,7 +10,8 @@ public final class AttendanceReader {
 
     private static final String ATTENDANCE_FILE_PATH = "src/main/resources/attendances.csv";
     private static final String DELIMITER = ",";
-    private static final DateTimeFormatter ATTENDANCE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter ATTENDANCE_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
+            "yyyy-MM-dd HH:mm");
 
     private AttendanceReader() {
     }
@@ -29,7 +30,7 @@ public final class AttendanceReader {
     private static void addAttendance(final AttendanceBook attendanceBook, String[] split) {
 
         String crewName = split[0];
-        LocalDateTime attendTime = LocalDateTime.parse(split[1], ATTENDANCE_TIME_FORMATTER);
+        LocalDateTime attendTime = LocalDateTime.parse(split[1], ATTENDANCE_DATE_TIME_FORMATTER);
         int hour = attendTime.getHour();
         int minute = attendTime.getMinute();
 
