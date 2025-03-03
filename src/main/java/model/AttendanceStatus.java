@@ -26,6 +26,10 @@ public enum AttendanceStatus {
         final BusinessHours businessHours = BusinessHours.find(attendanceDateTime);
         final AttendanceTime startTime = businessHours.getStartTime();
 
+        return findStatus(attendanceDateTime, startTime);
+    }
+
+    private static AttendanceStatus findStatus(final AttendanceDateTime attendanceDateTime, final AttendanceTime startTime) {
         if (startTime.isBeforeToPlus(attendanceDateTime, ABSENCE_OVER_LIMIT)) {
             return ABSENCE;
         }
@@ -37,16 +41,21 @@ public enum AttendanceStatus {
     }
 
     public static Map<AttendanceStatus, Integer> countStatus(final List<AttendanceStatus> attendanceStatuses) {
-        final Map<AttendanceStatus, Integer> map = new HashMap<>();
-        for (final AttendanceStatus status : values()) {
-            map.put(status, 0);
-        }
+        final Map<AttendanceStatus, Integer> map = initMap();
         for (final AttendanceStatus status : attendanceStatuses) {
             for (final AttendanceStatus value : values()) {
                 if (status.equals(value)) {
                     map.put(value, map.get(value) + 1);
                 }
             }
+        }
+        return map;
+    }
+
+    private static Map<AttendanceStatus, Integer> initMap() {
+        final Map<AttendanceStatus, Integer> map = new HashMap<>();
+        for (final AttendanceStatus status : values()) {
+            map.put(status, 0);
         }
         return map;
     }

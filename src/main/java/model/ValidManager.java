@@ -93,6 +93,10 @@ public final class ValidManager {
         int left = 0;
         int right = makeValidDates().size() - 1;
 
+        return findIdx(target, left, right);
+    }
+
+    private static int findIdx(final int target, int left, int right) {
         while (left <= right) {
             final int mid = (left + right) / 2;
             if (target >= mid) {

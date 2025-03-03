@@ -77,9 +77,13 @@ public class AttendanceBook {
     }
 
     private static int findLargestIdxLessThan(final List<Attendance> arr, final AttendanceDateTime target) {
-        int left = 0;
-        int right = arr.size() - 1;
+        final int left = 0;
+        final int right = arr.size() - 1;
 
+        return findIdx(arr, target, left, right);
+    }
+
+    private static int findIdx(final List<Attendance> arr, final AttendanceDateTime target, int left, int right) {
         while (left <= right) {
             final int mid = (left + right) / 2;
             final AttendanceDateTime midDateTime = arr.get(mid).getAttendanceDateTime();

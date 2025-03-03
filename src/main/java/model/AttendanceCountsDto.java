@@ -5,7 +5,7 @@ import java.util.Map;
 public final class AttendanceCountsDto {
     private final Map<AttendanceStatus, Integer> map;
 
-    public AttendanceCountsDto(Map<AttendanceStatus, Integer> map) {
+    public AttendanceCountsDto(final Map<AttendanceStatus, Integer> map) {
         this.map = map;
     }
 

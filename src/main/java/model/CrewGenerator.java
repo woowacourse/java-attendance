@@ -13,17 +13,32 @@ public class CrewGenerator {
         final int toDayOfMonth = findLastNonPresentDayOfMonth(todayDateTime);
         final Set<Integer> validDatesTo = ValidManager.getInstance().getDatesTo(toDayOfMonth);
         for (final String[] parsedData : parsedDatas) {
-            final String nicknameData = parsedData[NICKNAME_IDX];
-            final String dateTimeData = parsedData[DATETIME_IDX];
-
-            final Crew crew = Crew.of(nicknameData);
-            final AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(dateTimeData);
-            final Attendance attendance = Attendance.of(attendanceDateTime);
-
-            final AttendanceBook attendanceBook = attendanceBooks.computeIfAbsent(crew, k -> new AttendanceBook(new TreeSet<>()));
-            attendanceBook.add(attendance);
+            makeAttendanceBookByCrew(parsedData, attendanceBooks);
         }
 
+        makeNonPresentAttendances(attendanceBooks, validDatesTo);
+
+        return new AttendanceManager(attendanceBooks);
+    }
+
+    private static int findLastNonPresentDayOfMonth(final AttendanceDateTime todayDateTime) {
+        final int todayDayOfMonth = todayDateTime.getDateTime().getDayOfMonth();
+        return ValidManager.getInstance().getLastByDayOfMonth(todayDayOfMonth);
+    }
+
+    private static void makeAttendanceBookByCrew(final String[] parsedData, final Map<Crew, AttendanceBook> attendanceBooks) {
+        final String nicknameData = parsedData[NICKNAME_IDX];
+        final String dateTimeData = parsedData[DATETIME_IDX];
+
+        final Crew crew = Crew.of(nicknameData);
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(dateTimeData);
+        final Attendance attendance = Attendance.of(attendanceDateTime);
+
+        final AttendanceBook attendanceBook = attendanceBooks.computeIfAbsent(crew, k -> new AttendanceBook(new TreeSet<>()));
+        attendanceBook.add(attendance);
+    }
+
+    private static void makeNonPresentAttendances(final Map<Crew, AttendanceBook> attendanceBooks, final Set<Integer> validDatesTo) {
         for (final AttendanceBook attendanceBook : attendanceBooks.values()) {
             final Set<Integer> nonPresentAttendanceDays = calculateNonPresentAttendanceDats(attendanceBook, validDatesTo);
             for (final int day : nonPresentAttendanceDays) {
@@ -33,13 +48,6 @@ public class CrewGenerator {
                 attendanceBook.add(attendance);
             }
         }
-
-        return new AttendanceManager(attendanceBooks);
-    }
-
-    private static int findLastNonPresentDayOfMonth(final AttendanceDateTime todayDateTime) {
-        final int todayDayOfMonth = todayDateTime.getDateTime().getDayOfMonth();
-        return ValidManager.getInstance().getLastByDayOfMonth(todayDayOfMonth);
     }
 
     private static Set<Integer> calculateNonPresentAttendanceDats(final AttendanceBook attendanceBook, final Set<Integer> validateDatesTo) {

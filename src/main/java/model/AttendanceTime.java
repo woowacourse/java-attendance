@@ -25,7 +25,7 @@ public class AttendanceTime {
             final LocalTime time = LocalTime.of(hour, minute);
             return new AttendanceTime(time);
         } catch (DateTimeException e) {
-            throw new IllegalArgumentException("AttendanceTime은 시간 범위 내의 입력값이 들어와야 합니다");
+            throw new IllegalArgumentException("유효한 시간 범위 내의 입력값이 들어와야 합니다");
         }
     }
 
@@ -37,7 +37,7 @@ public class AttendanceTime {
         try {
             return LocalTime.parse(timeInput, formatter);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("AttendanceTime 의 형식은 H:m 로 들어와야 합니다");
+            throw new IllegalArgumentException("시간 형식은 H:m 로 들어와야 합니다");
         }
     }
 
