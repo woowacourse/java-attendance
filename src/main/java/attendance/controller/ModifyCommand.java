@@ -79,7 +79,7 @@ public class ModifyCommand implements Command {
         try {
             return MonthDay.of(now.getMonthValue(), day);
         } catch (DateTimeException exception) {
-            throw new IllegalArgumentException("존재하지 않은 날짜(일)입니다.");
+            throw new IllegalArgumentException("[ERROR] 존재하지 않은 날짜(일)입니다.");
         }
     }
 

@@ -37,6 +37,6 @@ class CommandStatusTest {
         // When & Then
         assertThatThrownBy(() -> CommandStatus.from("AA"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("존재하는 기능이 아닙니다.");
+                .hasMessageContaining("[ERROR] 존재하는 기능이 아닙니다.");
     }
 }

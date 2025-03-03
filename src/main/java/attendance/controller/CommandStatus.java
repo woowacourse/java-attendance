@@ -21,6 +21,6 @@ public enum CommandStatus {
         return Arrays.stream(CommandStatus.values())
                 .filter(commandStatus -> commandStatus.status.equals(statusInput))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("존재하는 기능이 아닙니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하는 기능이 아닙니다."));
     }
 }

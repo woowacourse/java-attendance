@@ -30,7 +30,7 @@ class StringParserTest {
         // When & Then
         assertThatThrownBy(() -> StringParser.parseLocalTime(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("HH:mm 형식이 아닙니다.");
+                .hasMessageContaining("[ERROR] HH:mm 형식이 아닙니다.");
     }
 
     @Test
