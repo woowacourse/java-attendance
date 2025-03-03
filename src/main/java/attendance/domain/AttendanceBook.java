@@ -40,4 +40,8 @@ public class AttendanceBook {
        CrewAttendance crewAttendance = crews.get(new Crew(nickname));
        return crewAttendance.countAttendanceStatusesBefore(today);
     }
+
+    public CrewAttendance getCrewAttendanceOf(final String nickname, final LocalDateTime today) {
+        return crews.get(new Crew(nickname));
+    }
 }
