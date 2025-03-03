@@ -52,14 +52,15 @@ public class AttendanceStorage {
 
     public AttendanceStatistic getStatisticByDateRange(LocalDate start, LocalDate end) {
         Map<AttendanceStatus, Integer> result = new EnumMap<>(AttendanceStatus.class);
-        start.datesUntil(end)
+        List<LocalDate> dates = start.datesUntil(end)
                 .filter(AttendanceDate::isValid)
-                .forEach(date -> {
-                    Attendance attendance = getAttendanceByDate(date);
-                    AttendanceStatus status = attendance.getStatus();
-                    final int updatedValue = result.getOrDefault(status, 0) + 1;
-                    result.put(status, updatedValue);
-                });
+                .toList();
+        for (LocalDate date : dates) {
+            Attendance attendance = getAttendanceByDate(date);
+            AttendanceStatus status = attendance.getStatus();
+            final int updatedValue = result.getOrDefault(status, 0) + 1;
+            result.put(status, updatedValue);
+        }
         return new AttendanceStatistic(result);
     }
 }
