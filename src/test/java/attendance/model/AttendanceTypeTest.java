@@ -44,4 +44,20 @@ class AttendanceTypeTest {
         assertThat(attendanceType)
                 .isSameAs(AttendanceType.ABSENT);
     }
+
+    @DisplayName("한글 이름을 확인할 수 있다.")
+    @ParameterizedTest
+    @CsvSource({
+            "PRESENT, 출석",
+            "LATE, 지각",
+            "ABSENT, 결석",
+    })
+    void getKoreanLabelTest(AttendanceType attendanceType, String expected) {
+        // when
+        String koreanLabel = attendanceType.getKoreanLabel();
+
+        // then
+        assertThat(koreanLabel)
+                .isEqualTo(expected);
+    }
 }

@@ -3,6 +3,7 @@ package attendance.model;
 import static attendance.model.TestFixtures.BELLO_NICKNAME;
 import static attendance.model.TestFixtures.LOCAL_DATE_2024_12_02;
 import static attendance.model.TestFixtures.LOCAL_TIME_10_00;
+import static attendance.model.TestFixtures.createAttendanceLog;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
@@ -220,5 +221,20 @@ class AttendanceLogTest {
         // then
         assertThat(isSame)
                 .isEqualTo(expected);
+    }
+
+    @DisplayName("출석 로그를 상속한 클래스와는 비교할 수 없다.")
+    @Test
+    void shouldNotEquals_WhenInheritedClass() {
+        // given
+        class Bello extends AttendanceLog {
+            public Bello() {
+                super(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00);
+            }
+        }
+
+        // when & then
+        assertThat(createAttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00).equals(new Bello()))
+                .isFalse();
     }
 }

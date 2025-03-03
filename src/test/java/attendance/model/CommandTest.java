@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -56,5 +57,35 @@ class CommandTest {
         assertThatCode(() -> Command.from(invalidInput))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 커맨드입니다. 입력: %s".formatted(invalidInput));
+    }
+
+    @DisplayName("명령어의 코드를 조회할 수 있다.")
+    @ParameterizedTest
+    @CsvSource({
+            "ATTENDANCE, 1",
+            "EDIT_ATTENDANCE, 2",
+            "ATTENDANCE_LOGS, 3",
+            "WARNING_LIST, 4",
+            "QUIT, Q"
+    })
+    void getCodeTest(Command command, String expectedCode) {
+        // when & then
+        assertThat(command.getCode())
+                .isEqualTo(expectedCode);
+    }
+
+    @DisplayName("모든 명령어를 가져올 수 있다.")
+    @ParameterizedTest
+    @CsvSource({
+            "ATTENDANCE",
+            "EDIT_ATTENDANCE",
+            "ATTENDANCE_LOGS",
+            "WARNING_LIST",
+            "QUIT"
+    })
+    void getCommandsTest(Command command) {
+        // when & then
+        assertThat(Command.getCommands())
+                .contains(command);
     }
 }

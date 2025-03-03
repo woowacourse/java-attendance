@@ -1,5 +1,6 @@
 package attendance.model;
 
+import static attendance.model.TestFixtures.BELLO_NICKNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
@@ -82,5 +83,31 @@ class NicknameTest {
         // when & then
         assertThat(neo.compareTo(bello))
                 .isNegative();
+    }
+
+    @DisplayName("닉네임을 문자열로 반환할 수 있다.")
+    @Test
+    void toStringTest() {
+        // given
+        Nickname bello = new Nickname("벨로");
+
+        // when & then
+        assertThat(bello.toString())
+                .isEqualTo("벨로");
+    }
+
+    @DisplayName("닉네임을 상속한 클래스와는 비교할 수 없다.")
+    @Test
+    void shouldNotEquals_WhenInheritedClass() {
+        // given
+        class Bello extends Nickname {
+            public Bello() {
+                super("벨로");
+            }
+        }
+
+        // when & then
+        assertThat(BELLO_NICKNAME.equals(new Bello()))
+                .isFalse();
     }
 }
