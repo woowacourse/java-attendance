@@ -31,6 +31,9 @@ public class OutputView {
     }
 
     private String formatLocalTime(LocalTime localTime) {
+        if (localTime == null) {
+            return "--:--";
+        }
         return localTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
@@ -42,6 +45,22 @@ public class OutputView {
             return "지각";
         }
         return "출석";
+    }
+
+    public void printEdit(AttendanceRecord beforeAttendanceRecord, AttendanceRecord editAttendanceRecord) {
+        System.out.println(formatAttendanceRecordToEdit(beforeAttendanceRecord, editAttendanceRecord));
+    }
+
+    private String formatAttendanceRecordToEdit(AttendanceRecord beforeAttendanceRecord,
+                                                AttendanceRecord editAttendanceRecord) {
+        return String.format("%s %s %s (%s) -> %s (%s) 수정 완료!%n",
+                formatLocalDate(beforeAttendanceRecord.getDate()),
+                formatDayOfWeek(beforeAttendanceRecord.getDate()
+                        .getDayOfWeek()),
+                formatLocalTime(beforeAttendanceRecord.getTime()),
+                formatAttendanceStatus(AttendanceStatus.calculateAttendanceStatus(beforeAttendanceRecord)),
+                formatLocalTime(editAttendanceRecord.getTime()),
+                formatAttendanceStatus(AttendanceStatus.calculateAttendanceStatus(editAttendanceRecord)));
     }
 
     public void printErrorMessage(RuntimeException e) {

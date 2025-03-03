@@ -26,6 +26,7 @@ public class AttendanceController {
     // 이곳에 각 명령별 함수형 인터페이스를 등록합니다.
     private void registerCommand() {
         commands.put("1", this::attendProcess);
+        commands.put("2", this::editProcess);
     }
 
     public void start() {
@@ -92,9 +93,26 @@ public class AttendanceController {
     }
 
     private void editProcess(AttendanceManager attendanceManager) {
-        // String editNickName = inputView.inputEditNickName();
-        // NickName nickName = new NickName(editNickName);
+        NickName nickName = inputEditNickName(attendanceManager);
+        AttendanceRecord editAttendanceRecord = inputEditAttendanceRecord();
+        AttendanceRecord beforeAttendanceRecord = attendanceManager.getAttendanceRecordOfSameDate(nickName,
+                editAttendanceRecord);
+        outputView.printEdit(beforeAttendanceRecord, editAttendanceRecord);
+    }
 
+    private NickName inputEditNickName(AttendanceManager attendanceManager) {
+        String inputNickName = inputView.inputEditNickName();
+        NickName nickName = new NickName(inputNickName);
+        if (!attendanceManager.isRegistered(nickName)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
+        return nickName;
+    }
+
+    private AttendanceRecord inputEditAttendanceRecord() {
+        String editDate = inputView.inputEditDate();
+        String editTime = inputView.inputEditTime();
+        return AttendanceRecord.of(editDate, editTime);
     }
 
     private AttendanceManager loadAttendanceManager() {
