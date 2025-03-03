@@ -2,7 +2,7 @@ package domain.crew;
 
 import java.util.Objects;
 
-public class Nickname {
+public class Nickname implements Comparable<Nickname> {
     private static final String NICKNAME_REGEX = "^[가-힣]{2,4}$";
 
     private final String value;
@@ -34,5 +34,10 @@ public class Nickname {
     @Override
     public int hashCode() {
         return Objects.hashCode(value);
+    }
+
+    @Override
+    public int compareTo(final Nickname o) {
+        return value.compareTo(o.value);
     }
 }
