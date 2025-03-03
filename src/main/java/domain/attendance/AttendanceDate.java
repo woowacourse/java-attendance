@@ -13,7 +13,7 @@ public class AttendanceDate {
 
     public AttendanceDate(LocalDateTime attendanceAt) {
         this.attendanceAt = attendanceAt;
-        updateAttendanceStatus();
+        this.status = calcAttendanceStatus(getDayOfWeek(), LocalTime.from(this.attendanceAt));
     }
 
     public DayOfWeek getDayOfWeek() {
@@ -25,10 +25,6 @@ public class AttendanceDate {
 
     public void editLocalDate(LocalDateTime editLocalDateTime){
         this.attendanceAt = editLocalDateTime;
-        updateAttendanceStatus();
-    }
-
-    private void updateAttendanceStatus(){
         this.status = calcAttendanceStatus(getDayOfWeek(), LocalTime.from(this.attendanceAt));
     }
 
