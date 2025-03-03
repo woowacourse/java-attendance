@@ -1,9 +1,9 @@
 package view;
 
+import domain.AttendanceDate;
 import domain.AttendanceState;
 import domain.Calender;
 import domain.Crew;
-import domain.DateProvider;
 import domain.Dismissal;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.StringJoiner;
 
 public class OutputView {
 
-    public void printWellComeMessage(final DateProvider dateProvider) {
+    public void printWellComeMessage(final AttendanceDate dateProvider) {
 
         String wellComeMessageFormat = String.format(
                 "\n오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.",

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class DateProviderTest {
+class AttendanceDateTest {
 
     @DisplayName("연,월,일을 받아서 날짜를 생성할 수 있다.")
     @Test
@@ -16,10 +16,10 @@ class DateProviderTest {
         int date = 2;
 
         //when
-        DateProvider dateProvider = DateProvider.of(year, month, date);
+        AttendanceDate dateProvider = AttendanceDate.of(year, month, date);
 
         //then
-        assertThat(dateProvider).isEqualTo(DateProvider.of(2024, 12, 2));
+        assertThat(dateProvider).isEqualTo(AttendanceDate.of(2024, 12, 2));
     }
 
     @DisplayName("년도를 반환한다.")
@@ -30,7 +30,7 @@ class DateProviderTest {
         int month = 12;
         int date = 2;
 
-        DateProvider dateProvider = DateProvider.of(year, month, date);
+        AttendanceDate dateProvider = AttendanceDate.of(year, month, date);
 
         //when
         int actual = dateProvider.getYear();
@@ -47,7 +47,7 @@ class DateProviderTest {
         int month = 12;
         int date = 2;
 
-        DateProvider dateProvider = DateProvider.of(year, month, date);
+        AttendanceDate dateProvider = AttendanceDate.of(year, month, date);
 
         //when
         int actual = dateProvider.getMonth();
@@ -64,7 +64,7 @@ class DateProviderTest {
         int month = 12;
         int date = 2;
 
-        DateProvider dateProvider = DateProvider.of(year, month, date);
+        AttendanceDate dateProvider = AttendanceDate.of(year, month, date);
 
         //when
         int actual = dateProvider.getDayOfMonth();
@@ -81,7 +81,7 @@ class DateProviderTest {
         int month = 12;
         int date = 2;
 
-        DateProvider dateProvider = DateProvider.of(year, month, date);
+        AttendanceDate dateProvider = AttendanceDate.of(year, month, date);
 
         //when
         Calender actual = dateProvider.getDayOfWeek();

@@ -6,16 +6,16 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class DateProvider {
+public class AttendanceDate {
 
     private final LocalDate localDate;
 
-    private DateProvider(final int year, final int month, final int date) {
+    private AttendanceDate(final int year, final int month, final int date) {
         this.localDate = validateDateFormat(year, month, date);
     }
 
-    public static DateProvider of(final int year, final int month, final int date) {
-        return new DateProvider(year, month, date);
+    public static AttendanceDate of(final int year, final int month, final int date) {
+        return new AttendanceDate(year, month, date);
     }
 
     private LocalDate validateDateFormat(final int year, final int month, final int date) {
@@ -24,6 +24,14 @@ public class DateProvider {
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("날짜 형식이 잘못 되었습니다.");
         }
+    }
+
+    public LocalDateTime createLocalDateTime(final LocalTime localTime) {
+        return LocalDateTime.of(getYear(), getMonth(), getDayOfMonth(), localTime.getHour(), localTime.getMinute());
+    }
+
+    public LocalDateTime createLocalDateTime(final int date, final LocalTime localTime) {
+        return LocalDateTime.of(getYear(), getMonth(), date, localTime.getHour(), localTime.getMinute());
     }
 
     public int getYear() {
@@ -42,12 +50,8 @@ public class DateProvider {
         return Calender.findBy(localDate);
     }
 
-    public LocalDateTime createLocalDateTime(final LocalTime localTime) {
-        return LocalDateTime.of(getYear(), getMonth(), getDayOfMonth(), localTime.getHour(), localTime.getMinute());
-    }
-
-    public LocalDateTime createLocalDateTime(final int date, final LocalTime localTime) {
-        return LocalDateTime.of(getYear(), getMonth(), date, localTime.getHour(), localTime.getMinute());
+    public void possibleAttendance() {
+        Calender.validateHolyDay(this.localDate);
     }
 
     public LocalDate getLocalDate() {
@@ -59,7 +63,7 @@ public class DateProvider {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final DateProvider that = (DateProvider) o;
+        final AttendanceDate that = (AttendanceDate) o;
         return Objects.equals(localDate, that.localDate);
     }
 

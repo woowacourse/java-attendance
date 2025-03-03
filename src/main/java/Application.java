@@ -1,5 +1,5 @@
 import controller.AttendanceController;
-import domain.DateProvider;
+import domain.AttendanceDate;
 import java.time.LocalDate;
 import view.InputView;
 import view.OutputView;
@@ -15,12 +15,12 @@ public class Application {
 
         InputView inputView = new InputView();
         OutputView outputView = new OutputView();
-        DateProvider dateProvider = DateProvider.of(YEAR, MONTH, TODAY);
+        AttendanceDate attendanceTime = AttendanceDate.of(YEAR, MONTH, TODAY);
 
         AttendanceController attendanceController = new AttendanceController(
                 inputView,
                 outputView,
-                dateProvider,
+                attendanceTime,
                 FILEPATH);
 
         attendanceController.run();

@@ -1,5 +1,6 @@
 package controller;
 
+import domain.AttendanceDate;
 import domain.AttendanceState;
 import domain.Attendances;
 import domain.Calender;
@@ -17,21 +18,21 @@ public class AttendanceController {
 
     private final InputView inputView;
     private final OutputView outputView;
-    private final DateProvider dateProvider;
+    private final AttendanceDate attendanceDate;
     private final Attendances attendances;
 
     public AttendanceController(final InputView inputView, final OutputView outputView,
-                                final DateProvider dateProvider, final String filaPath) {
+                                final AttendanceDate attendanceDate, final String filaPath) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.dateProvider = dateProvider;
+        this.attendanceDate = attendanceDate;
         this.attendances = FileManager.readFile(filaPath);
     }
 
     public void run() {
         String command;
         do {
-            outputView.printWellComeMessage(dateProvider);
+            outputView.printWellComeMessage(attendanceDate);
             command = inputView.readOption();
             executeFeature(command);
         } while (isExit(command));
@@ -47,7 +48,7 @@ public class AttendanceController {
     }
 
     void attendanceCheck() {
-        Calender.validateHolyDay(dateProvider.getLocalDate());
+        attendanceDate.possibleAttendance();
 
         String name = inputName();
         LocalDateTime attendanceDateTime = inputAttendanceDateTime();
@@ -79,7 +80,8 @@ public class AttendanceController {
 
     void attendanceHistory() {
         String name = inputName();
-        Map<LocalDateTime, AttendanceState> history = attendances.getHistory(name, dateProvider.getLocalDate());
+        Map<LocalDateTime, AttendanceState> attendanceHistory = attendances.getHistory(name,
+                attendanceDate.getLocalDate());
 
         outputView.printAttendanceHistory(name, history);
         Map<AttendanceState, Integer> attendanceStateCounts = attendances.calculate(history);
@@ -93,7 +95,8 @@ public class AttendanceController {
 
     void dismissalHistory() {
         Map<Crew, Map<AttendanceState, Integer>> absenceRecord = attendances.calculateAbsence(
-                dateProvider.getLocalDate());
+                attendanceDate.getLocalDate());
+
         outputView.printAbsenceRecord(absenceRecord);
     }
 
@@ -114,7 +117,7 @@ public class AttendanceController {
     }
 
     private LocalDateTime inputAttendanceDateTime() {
-        LocalTime attendanceTime = inputView.readAttendanceTime();
-        return dateProvider.createLocalDateTime(attendanceTime);
+        LocalTime inputAttendanceTime = inputView.readAttendanceTime();
+        return attendanceDate.createLocalDateTime(inputAttendanceTime);
     }
 }
