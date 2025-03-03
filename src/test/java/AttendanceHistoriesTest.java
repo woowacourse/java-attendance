@@ -99,7 +99,7 @@ public class AttendanceHistoriesTest {
 
         // when & then
         List<AttendanceHistory> result = attendanceHistories.findAllHistoriesOfCrewDateBefore(
-                crew, attendAt.plusDays(4));
+                crew, LocalDate.of(2024, 12, 6));
         assertThat(result).hasSize(4);
 
     }

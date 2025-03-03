@@ -3,7 +3,7 @@ import java.util.Arrays;
 public enum FunctionOption {
     REGISTER_ATTENDANCE("1"),
     UPDATE_ATTENDANCE("2"),
-    CHECK_ATTENDANCE_OF_CREW("3"),
+    CHECK_ATTENDANCE_HISTORY_OF_CREW("3"),
     CHECK_EXPULSION_CANDIDATES("4"),
     QUIT("Q");
 

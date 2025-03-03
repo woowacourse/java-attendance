@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -33,17 +34,14 @@ public class AttendanceSystemManager {
         attendanceHistories.update(oldAttendanceHistory, newAttendanceHistory);
     }
 
-    public Map<LocalDateTime, AttendanceType> findAllHistoriesOfCrew(String nickname, LocalDateTime requestedAt) {
-        Crew crew = crews.findCrewByName(nickname);
-
+    public Map<LocalDateTime, AttendanceType> findAllHistoriesOfCrew(Crew crew, LocalDate requestedAt) {
         List<AttendanceHistory> historiesOfCrew = attendanceHistories.findAllHistoriesOfCrewDateBefore(
                 crew, requestedAt);
 
-        return AttendanceTypeCounter.count(requestedAt.toLocalDate(), historiesOfCrew);
+        return AttendanceTypeCounter.count(requestedAt, historiesOfCrew);
     }
 
-
-    public List<PenaltyResultOfCrew> findExpulsionCandidates(LocalDateTime requestedAt) {
+    public List<PenaltyResultOfCrew> findExpulsionCandidates(LocalDate requestedAt) {
         List<Crew> registeredCrews = crews.getAll();
 
         List<PenaltyResultOfCrew> expulsionCandidates = new ArrayList<>();
@@ -53,7 +51,7 @@ public class AttendanceSystemManager {
                     crew, requestedAt);
 
             Map<LocalDateTime, AttendanceType> attendanceTypeCountOfDates = AttendanceTypeCounter.count(
-                    requestedAt.toLocalDate(),
+                    requestedAt,
                     historiesOfCrew);
 
             AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.createFrom(attendanceTypeCountOfDates);

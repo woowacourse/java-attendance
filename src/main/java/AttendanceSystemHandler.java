@@ -8,7 +8,8 @@ public class AttendanceSystemHandler {
     private final Crews crews;
     private final Map<FunctionOption, Runnable> ACTION_FOR_OPTION = Map.of(
             FunctionOption.REGISTER_ATTENDANCE, this::registerAttendance,
-            FunctionOption.UPDATE_ATTENDANCE, this::updateAttendance
+            FunctionOption.UPDATE_ATTENDANCE, this::updateAttendance,
+            FunctionOption.CHECK_ATTENDANCE_HISTORY_OF_CREW, this::checkAttendanceHistoryOfCrew
     );
 
     public AttendanceSystemHandler(AttendanceSystemManager attendanceSystemManager, Crews crews) {
@@ -58,5 +59,17 @@ public class AttendanceSystemHandler {
 
         // TODO: 출력 고민해보기
         attendanceSystemManager.updateRegisteredAttendance(crew, newAttendanceAt);
+    }
+
+    private void checkAttendanceHistoryOfCrew() {
+        String name = InputView.readName();
+        Crew crew = crews.findCrewByName(name);
+
+        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
+
+        Map<LocalDateTime, AttendanceType> historiesOfCrew = attendanceSystemManager.findAllHistoriesOfCrew(
+                crew, date);
+
+        OutputView.printAttendanceHistories(crew, historiesOfCrew);
     }
 }

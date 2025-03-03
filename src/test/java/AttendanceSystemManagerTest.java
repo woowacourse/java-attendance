@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,22 +142,6 @@ public class AttendanceSystemManagerTest {
 
     @Nested
     class TestForFindAllHistoriesOfCrew {
-        @Test
-        @DisplayName("존재하지 않는 닉네임으로 크루별 출석 조회를 시도하는 경우 예외가 발생한다.")
-        void test1() {
-            // given
-            String nickname = "히로";
-            Crew crew = new Crew(nickname);
-            Crews crews = new Crews(List.of(crew));
-            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
-                    new AttendanceHistories(new ArrayList<>()), crews);
-
-            // when
-            assertThatThrownBy(() -> attendanceSystemManager.findAllHistoriesOfCrew("없음", attendAt))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("등록되지 않은 닉네임입니다.");
-        }
 
         @Test
         @DisplayName("크루의 출석 기록을 모두 확인한다.")
@@ -178,8 +163,8 @@ public class AttendanceSystemManagerTest {
             AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories, crews);
 
             // when
-            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(nickname,
-                    thirdAttendAt.plusDays(1));
+            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(crew,
+                    LocalDate.of(2024, 12, 5));
 
             // then
             assertThat(result).isEqualTo(
@@ -206,8 +191,8 @@ public class AttendanceSystemManagerTest {
             AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories, crews);
 
             // when
-            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(nickname,
-                    thirdAttendAt.plusDays(1));
+            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(crew,
+                    LocalDate.of(2024, 12, 5));
 
             // then
             assertThat(result.keySet()).contains(LocalDateTime.of(2024, 12, 3, 0, 0));
@@ -231,8 +216,8 @@ public class AttendanceSystemManagerTest {
             AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories, crews);
 
             // when
-            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(nickname,
-                    thirdAttendAt.plusDays(1));
+            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(crew,
+                    LocalDate.of(2024, 12, 5));
 
             // then
             assertThat(result.keySet())
@@ -248,7 +233,7 @@ public class AttendanceSystemManagerTest {
         @DisplayName("패널티 타입이 면담, 경고, 제적인 경우만 반환한다.")
         void test1() {
             // given
-            LocalDateTime requestedAt = LocalDateTime.of(2024, 12, 6, 10, 0);
+            LocalDate requestedAt = LocalDate.of(2024, 12, 6);
             Crew hero = new Crew("히로");
             Crew hippo = new Crew("히포");
             Crew moru = new Crew("모루");
