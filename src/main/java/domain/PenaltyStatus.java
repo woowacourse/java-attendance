@@ -36,4 +36,18 @@ public enum PenaltyStatus {
     private static int convertLateToAbsence(int lateCount, int absenceCount) {
         return absenceCount + (lateCount / LATE_TO_ABSENCE_RATIO);
     }
+
+    @Override
+    public String toString() {
+        if (this == WARNING) {
+            return "경고";
+        }
+        if (this == INTERVIEW) {
+            return "면담";
+        }
+        if (this == EXPULSION) {
+            return "제적";
+        }
+        return super.toString();
+    }
 }

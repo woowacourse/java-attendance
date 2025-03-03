@@ -1,9 +1,6 @@
 package view;
 
-import domain.AttendanceStatus;
-import domain.CheckInDate;
-import domain.CheckInHistory;
-import domain.CheckInTime;
+import domain.*;
 import exception.AppException;
 
 import java.time.LocalDate;
@@ -39,6 +36,8 @@ public class OutputView {
         for (int i = 1; i < today.getDayOfMonth(); i++) {
             printAttendanceForDay(i, checkInHistory);
         }
+        printAttendanceResult(checkInHistory, today);
+        printIsCrewDanger(checkInHistory, today);
     }
 
     private void printAttendanceForDay(int day, CheckInHistory checkInHistory) {
@@ -59,10 +58,27 @@ public class OutputView {
         System.out.printf("%s %s (%s)\n", datePart, timePart, status);
     }
 
+
     private static CheckInDate getCheckInDate(int i) {
         CheckInDate date;
         date = CheckInDate.of(2024, 12, i);
         return date;
+    }
+
+    private void printAttendanceResult(CheckInHistory checkInHistory, LocalDate today) {
+        System.out.println();
+        System.out.println("출석: " + checkInHistory.countPresence(today) + "회");
+        System.out.println("지각: " + checkInHistory.countLate(today) + "회");
+        System.out.println("결석: " + checkInHistory.countAbsence(today) + "회");
+        System.out.println();
+    }
+
+
+    private void printIsCrewDanger(CheckInHistory checkInHistory, LocalDate today) {
+        PenaltyStatus status = checkInHistory.getPenaltyStatus(today);
+        if (status != PenaltyStatus.NONE) {
+            System.out.println(status + "대상자 입니다.");
+        }
     }
 
     private String formatDate(LocalDate date) {
