@@ -27,6 +27,22 @@ public class AttendanceManagerTest {
     }
 
     @Test
+    void 등록되지_않은_닉네임으로_크루를_조회하면_예외가_발생한다() {
+        AttendanceManager attendanceManager = new AttendanceManager(() -> weekday);
+        assertThatThrownBy(() -> attendanceManager.findCrewExactlyByNickname("폰트"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
+
+    @Test
+    void 닉네임으로_크루를_조회한다() {
+        AttendanceManager attendanceManager = new AttendanceManager(() -> weekday);
+        attendanceManager.addCrew("폰트", LocalDateTime.of(2024, 12, 13, 9, 59));
+
+        assertThat(attendanceManager.findCrewExactlyByNickname("폰트").getNickname()).isEqualTo("폰트");
+    }
+
+    @Test
     void 크루의_출석을_등록한다() {
         AttendanceManager attendanceManager = new AttendanceManager(() -> weekday);
         attendanceManager.addCrew("이든", LocalDateTime.of(2024, 12, 12, 10, 0));
