@@ -60,7 +60,7 @@ public class AttendanceBookTest {
 
         Crew anotherCrew = new Crew(new Nickname("브라운"));
 
-        assertThatThrownBy(() -> attendanceBook.validateCrew(anotherCrew))
+        assertThatThrownBy(() -> attendanceBook.validateContainsCrew(anotherCrew))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorMessage.CREW_NICKNAME_NOT_EXIST_ERROR.getMessage());
     }

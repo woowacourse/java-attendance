@@ -74,7 +74,7 @@ public class AttendanceController {
     private Crew createCrew(String inputNickname) {
         Nickname nickname = new Nickname(inputNickname);
         Crew crew = new Crew(nickname);
-        attendanceBook.validateCrew(crew);
+        attendanceBook.validateContainsCrew(crew);
         return crew;
     }
 

@@ -35,7 +35,7 @@ public class AttendanceBook {
         attendances.update(oldAttendance, newAttendance);
     }
 
-    public void validateCrew(Crew crew) {
+    public void validateContainsCrew(Crew crew) {
         if (!attendanceBook.containsKey(crew)) {
             throw new IllegalArgumentException(ErrorMessage.CREW_NICKNAME_NOT_EXIST_ERROR.getMessage());
         }
