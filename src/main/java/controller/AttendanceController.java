@@ -77,7 +77,10 @@ public class AttendanceController {
     }
 
     private void findAttendanceRecord(AttendanceManager attendanceManager) {
+        String nickname = inputView.readNickname();
+        AttendanceRecord attendanceRecord = attendanceManager.findAttendanceRecordByNickname(nickname);
 
+        outputView.printAttendanceRecord(nickname, attendanceRecord, dateProvider.getDate());
     }
 
 }

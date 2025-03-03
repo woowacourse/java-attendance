@@ -69,17 +69,26 @@ public class AttendanceRecord {
     }
 
     public int countStatus(AttendanceStatus type) {
+        List<LocalDate> openDays = getOpenDays();
+
+        int statusCount = 0;
+        for (LocalDate day : openDays) {
+            statusCount += addCount(day, type);
+        }
+        return statusCount;
+    }
+
+    public List<LocalDate> getOpenDays() {
         LocalDate startDate = dateProvider.getDate().withDayOfMonth(1);
         LocalDate endDate = dateProvider.getDate().plusDays(1);
 
-        int statusCount = 0;
+        List<LocalDate> openDays = new ArrayList<>();
         for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
-            if (!attendancePolicy.ignoreWeekendAndHoliday(date)) {
-                continue;
+            if (attendancePolicy.ignoreWeekendAndHoliday(date)) {
+                openDays.add(date);
             }
-            statusCount += addCount(date, type);
         }
-        return statusCount;
+        return openDays;
     }
 
     private int addCount(LocalDate date, AttendanceStatus type) {
@@ -102,4 +111,7 @@ public class AttendanceRecord {
                 .anyMatch(time -> time.getDayOfMonth() == date.getDayOfMonth());
     }
 
+    public boolean isAbsent(LocalDate currentDay) {
+        return determineStatus(currentDay) == AttendanceStatus.ABSENCE;
+    }
 }

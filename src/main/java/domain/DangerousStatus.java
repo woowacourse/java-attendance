@@ -34,4 +34,8 @@ public enum DangerousStatus {
         }
         return GOOD;
     }
+
+    public String getStatus() {
+        return status;
+    }
 }
