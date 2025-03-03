@@ -19,8 +19,7 @@ public class AttendCommand implements ControllerCommand {
     }
 
     @Override
-    public void execute() {
-        LocalDate today = LocalDate.now();
+    public void execute(LocalDate today) {
         validateTodayIsWorkingDay(today);
 
         String nickName = InputView.readNickName();

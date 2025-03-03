@@ -19,12 +19,12 @@ public class GetRecordsCommand implements ControllerCommand {
     }
 
     @Override
-    public void execute() {
+    public void execute(LocalDate today) {
         String nickName = InputView.readNickName();
         Crew crew = service.getCrewByNickName(nickName);
 
-        LocalDate from = LocalDate.now().withDayOfMonth(1);
-        LocalDate to = LocalDate.now().minusDays(1);
+        LocalDate from = today.withDayOfMonth(1);
+        LocalDate to = today.minusDays(1);
 
         List<AttendanceDateTime> attendances = service.findAllRecordsByCrewBetween(crew, from, to);
         OutputView.printAttendanceList(crew, attendances);

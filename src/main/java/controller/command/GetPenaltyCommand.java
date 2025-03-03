@@ -15,9 +15,9 @@ public class GetPenaltyCommand implements ControllerCommand {
     }
 
     @Override
-    public void execute() {
-        LocalDate from = LocalDate.now().withDayOfMonth(1);
-        LocalDate to = LocalDate.now().minusDays(1);
+    public void execute(LocalDate today) {
+        LocalDate from = today.withDayOfMonth(1);
+        LocalDate to = today.minusDays(1);
 
         List<DangerCrew> dangerCrews = service.findDangerCrews(from, to);
         OutputView.printDangerCrews(dangerCrews);

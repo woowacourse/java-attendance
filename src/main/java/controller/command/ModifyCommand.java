@@ -17,13 +17,13 @@ public class ModifyCommand implements ControllerCommand {
     }
 
     @Override
-    public void execute() {
+    public void execute(LocalDate today) {
         String nickName = InputView.readNickNameToModify();
         Crew crew = service.getCrewByNickName(nickName);
 
         String rawDateToBeModified = InputView.readDateToBeModified();
         int dayOfMonth = Integer.parseInt(rawDateToBeModified);
-        LocalDate dateToBeModified = LocalDate.now().withDayOfMonth(dayOfMonth);
+        LocalDate dateToBeModified = today.withDayOfMonth(dayOfMonth);
 
         String rawTimeToModify = InputView.readAttendTimeToModify();
         LocalTime timeToModify = LocalTime.parse(rawTimeToModify);

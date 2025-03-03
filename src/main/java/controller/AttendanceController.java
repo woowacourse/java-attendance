@@ -7,6 +7,7 @@ import controller.command.GetRecordsCommand;
 import controller.command.ModifyCommand;
 import domain.AttendanceBook;
 import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
@@ -16,7 +17,8 @@ import view.OutputView;
 
 public class AttendanceController {
 
-    private static final Map<Selection, ControllerCommand> commands = new EnumMap<>(Selection.class);
+    private static final Map<Selection, ControllerCommand> commands
+        = new EnumMap<>(Selection.class);
 
     public AttendanceController(AttendanceBook attendanceBook) {
         AttendanceService service = new AttendanceService(attendanceBook);
@@ -26,11 +28,11 @@ public class AttendanceController {
         commands.put(Selection.GET_PENALTIES, new GetPenaltyCommand(service));
     }
 
-    public void run(AttendanceBook book) {
+    public void run(LocalDate today) {
         while (true) {
             try {
                 Selection selection = Selection.of(InputView.readSelection());
-                executeCommand(selection, book);
+                executeCommand(selection, today);
 
             } catch (QuitException q) {
                 break;
@@ -42,14 +44,13 @@ public class AttendanceController {
         }
     }
 
-    private void executeCommand(Selection selection, AttendanceBook book)
-        throws QuitException {
+    private void executeCommand(Selection selection, LocalDate today) throws QuitException {
         if (selection == Selection.QUIT) {
             throw new QuitException();
         }
 
         ControllerCommand command = commands.get(selection);
-        command.execute();
+        command.execute(today);
     }
 
     private enum Selection {

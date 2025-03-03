@@ -1,6 +1,7 @@
 import controller.AttendanceController;
 import domain.AttendanceBook;
 import file.AttendanceBookFileReader;
+import java.time.LocalDate;
 
 public class Application {
 
@@ -9,6 +10,7 @@ public class Application {
         AttendanceBook book = AttendanceBookFileReader.read(fileName);
 
         AttendanceController controller = new AttendanceController(book);
-        controller.run(book);
+        LocalDate today = LocalDate.now();
+        controller.run(today);
     }
 }
