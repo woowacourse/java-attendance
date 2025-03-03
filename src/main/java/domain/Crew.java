@@ -1,18 +1,10 @@
 package domain;
 
-public class Crew {
-
-    private final String name;
-
-    public Crew(String name) {
-        this.name = name;
-    }
+public record Crew(
+    String name
+) {
 
     boolean hasName(String name) {
         return this.name.equals(name);
-    }
-
-    public String getName() {
-        return name;
     }
 }

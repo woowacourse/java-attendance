@@ -38,7 +38,7 @@ public class OutputView {
     }
 
     public static void printAttendanceList(Crew crew, List<AttendanceDateTime> attendanceList) {
-        System.out.println("이번 달 " + crew.getName() + "의 출석 기록입니다.");
+        System.out.println("이번 달 " + crew.name() + "의 출석 기록입니다.");
         blankLine();
 
         attendanceList.stream()
@@ -81,7 +81,7 @@ public class OutputView {
         vos.sort(dangerCrewComparator());
         for (DangerCrew vo : vos) {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
-                vo.crew().getName(), vo.absence(), vo.late(), vo.penalty().description());
+                vo.crew().name(), vo.absence(), vo.late(), vo.penalty().description());
         }
         blankLine();
     }
@@ -94,6 +94,6 @@ public class OutputView {
                 int right = vo2.absence() + (vo2.late() / Penalty.LATE_TO_ABSENCE_RATE);
                 return -1 * Integer.compare(left, right);
             })
-            .thenComparing(DangerCrew -> DangerCrew.crew().getName());
+            .thenComparing(DangerCrew -> DangerCrew.crew().name());
     }
 }
