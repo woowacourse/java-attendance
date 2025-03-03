@@ -28,6 +28,10 @@ public enum AttendanceStatus {
         return checkAttendanceByDay(attendanceDateTime.toLocalTime(), DEFAULT_START_TIME);
     }
 
+    public String getName() {
+        return name;
+    }
+
     private static AttendanceStatus checkAttendanceByDay(LocalTime attendanceTime, LocalTime openTime) {
         if (attendanceTime.isAfter(openTime.plusMinutes(ABSENT.thresholdMinute))) {
             return ABSENT;

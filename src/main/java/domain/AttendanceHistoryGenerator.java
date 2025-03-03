@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,9 +17,9 @@ public class AttendanceHistoryGenerator {
     }
 
     private static AttendanceDateTimes toAttendanceDateTimes(List<LocalDateTime> dateTimes) {
-        List<AttendanceDateTime> attendanceDateTimes = dateTimes.stream()
+        List<AttendanceDateTime> attendanceDateTimes = new ArrayList<>(dateTimes.stream()
                 .map(AttendanceDateTime::new)
-                .toList();
+                .toList());
         return new AttendanceDateTimes(attendanceDateTimes);
     }
 }

@@ -2,6 +2,8 @@ package controller;
 
 import domain.AttendanceHistories;
 import domain.AttendanceHistoryGenerator;
+import domain.AttendanceStatus;
+import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -18,8 +20,12 @@ public class AttendanceController {
     private final InputView inputView = new InputView();
     private final FileInputView fileInputView = new FileInputView();
     private final Map<Menu, Runnable> menuTable = new EnumMap<>(Menu.class);
+    private final AttendanceHistories attendanceHistories;
+    //    private LocalDate today = LocalDate.now();
+    private LocalDate today = LocalDate.of(2025, 2, 25);
 
-    {
+    public AttendanceController() {
+        this.attendanceHistories = loadCsvData();
         menuTable.put(Menu.CHECK_IN, this::checkIn);
         menuTable.put(Menu.UPDATE_ATTENDANCE, this::updateAttendance);
         menuTable.put(Menu.CHECK_ATTENDANCE_RECORDS, this::checkAttendanceRecords);
@@ -27,9 +33,9 @@ public class AttendanceController {
         menuTable.put(Menu.QUIT, this::quit);
     }
 
-    public void run(LocalDate today) {
-        AttendanceHistories attendanceHistories = loadCsvData();
+    public void run() {
         do {
+//            today = LocalDate.now();
             outputView.displayMenu(today);
             Menu menuInput = inputView.readMenu();
             menuTable.get(menuInput).run();
@@ -38,7 +44,11 @@ public class AttendanceController {
 
     private void checkIn() {
         String nickname = inputView.readNickname();
-        LocalTime time = inputView.readCheckInTime();
+        LocalTime inputTime = inputView.readCheckInTime();
+        LocalDateTime checkInDateTime = today.atTime(inputTime);
+        AttendanceStatus attendanceStatus = attendanceHistories.addAttendanceHistory(new Crew(nickname),
+                checkInDateTime);
+        outputView.displayAttendanceRecord(checkInDateTime, attendanceStatus);
     }
 
     private void updateAttendance() {
