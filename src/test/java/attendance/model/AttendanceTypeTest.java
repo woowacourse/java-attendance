@@ -1,5 +1,6 @@
 package attendance.model;
 
+import static attendance.model.TestFixtures.LOCAL_TIME_10_00;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalTime;
@@ -36,11 +37,8 @@ class AttendanceTypeTest {
     @DisplayName("등교 시간이 없는 경우 결석으로 간주한다.")
     @Test
     void shouldReturnAbsent_WhenAttendanceTimeIsNull() {
-        // given
-        LocalTime baseTime = LocalTime.of(10, 0);
-
         // when
-        AttendanceType attendanceType = AttendanceType.determine(baseTime, null);
+        AttendanceType attendanceType = AttendanceType.determine(LOCAL_TIME_10_00, null);
 
         // then
         assertThat(attendanceType)

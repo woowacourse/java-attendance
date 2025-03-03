@@ -1,5 +1,10 @@
 package attendance.model;
 
+import static attendance.model.TestFixtures.BELLO_NICKNAME;
+import static attendance.model.TestFixtures.LOCAL_DATE_2024_12_02;
+import static attendance.model.TestFixtures.LOCAL_TIME_10_00;
+import static attendance.model.TestFixtures.NEO_NICKNAME;
+import static attendance.model.TestFixtures.createAttendanceLog;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
@@ -19,16 +24,14 @@ class AttendanceLogsTest {
     @Test
     void attendanceLogAddTest() {
         // given
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
         AttendanceLogs attendanceLogs = new AttendanceLogs();
+        AttendanceLog attendanceLog = createAttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00);
 
         // when
-        AttendanceLog belloAttendanceLog = new AttendanceLog(new Nickname("벨로"), attendanceDate, attendanceTime);
-        attendanceLogs.add(belloAttendanceLog);
+        attendanceLogs.add(attendanceLog);
 
         // then
-        assertThat(attendanceLogs.contains(belloAttendanceLog))
+        assertThat(attendanceLogs.contains(attendanceLog))
                 .isTrue();
     }
 
@@ -36,34 +39,28 @@ class AttendanceLogsTest {
     @Test
     void getAllNicknamesTest() {
         // given
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 4);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        AttendanceLog belloAttendanceLog = new AttendanceLog(new Nickname("벨로"), attendanceDate, attendanceTime);
+        AttendanceLog belloAttendanceLog = createAttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00);
+        AttendanceLog neoAttendanceLog = createAttendanceLog(NEO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00);
         attendanceLogs.add(belloAttendanceLog);
-        AttendanceLog neoAttendanceLog = new AttendanceLog(new Nickname("네오"), attendanceDate, attendanceTime);
         attendanceLogs.add(neoAttendanceLog);
-        AttendanceLog neoYesterdayAttendanceLog = new AttendanceLog(new Nickname("네오"), attendanceDate.minusDays(1), attendanceTime);
-        attendanceLogs.add(neoYesterdayAttendanceLog);
 
         // when
         Set<Nickname> allNicknames = attendanceLogs.getAllNicknames();
 
         // then
         assertThat(allNicknames)
-                .isEqualTo(Set.of(new Nickname("벨로"), new Nickname("네오")));
+                .isEqualTo(Set.of(BELLO_NICKNAME, NEO_NICKNAME));
     }
 
     @DisplayName("닉네임과 출석 날짜가 같은 출석 로그를 저장할 경우 예외가 발생한다.")
     @Test
     void shouldThrowException_WhenAddEqualAttendanceLog() {
         // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        AttendanceLog beforeAttendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
-        AttendanceLog afterAttendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+        AttendanceLog beforeAttendanceLog = createAttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02,
+                LOCAL_TIME_10_00);
+        AttendanceLog afterAttendanceLog = new AttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00);
         attendanceLogs.add(beforeAttendanceLog);
 
         // when & then
@@ -76,38 +73,33 @@ class AttendanceLogsTest {
     @Test
     void findAttendanceLogsByNicknameUpToPreviousDayTest() {
         // given
-        Nickname nickname = new Nickname("벨로");
+
         LocalDate today = LocalDate.of(2024, 12, 3);
         LocalDate yesterday = today.minusDays(1);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
 
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        attendanceLogs.add(new AttendanceLog(nickname, yesterday, attendanceTime));
-        attendanceLogs.add(new AttendanceLog(nickname, today, attendanceTime));
+        attendanceLogs.add(createAttendanceLog(BELLO_NICKNAME, yesterday, LOCAL_TIME_10_00));
+        attendanceLogs.add(createAttendanceLog(NEO_NICKNAME, yesterday, LOCAL_TIME_10_00));
 
         // when
-        List<AttendanceLog> findLogs = attendanceLogs.findAllByNicknameInMonth(nickname, today);
+        List<AttendanceLog> findLogs = attendanceLogs.findAllByNicknameInMonth(BELLO_NICKNAME, today);
 
         // then
         assertThat(findLogs)
                 .hasSize(1)
-                .containsExactly(new AttendanceLog(nickname, yesterday, attendanceTime));
+                .containsExactly(new AttendanceLog(BELLO_NICKNAME, yesterday, LOCAL_TIME_10_00));
     }
 
     @DisplayName("닉네임과 특정 날짜로 출석 로그를 조회할 수 있다.")
     @Test
     void findByNicknameAndAttendanceDateTest() {
         // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate today = LocalDate.of(2024, 12, 3);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
-
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        AttendanceLog attendanceLog = new AttendanceLog(nickname, today, attendanceTime);
+        AttendanceLog attendanceLog = createAttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00);
         attendanceLogs.add(attendanceLog);
 
         // when
-        AttendanceLog findLog = attendanceLogs.findByNicknameAndAttendanceDate(nickname, today);
+        AttendanceLog findLog = attendanceLogs.findByNicknameAndAttendanceDate(BELLO_NICKNAME, LOCAL_DATE_2024_12_02);
 
         // then
         assertThat(findLog)
@@ -118,12 +110,10 @@ class AttendanceLogsTest {
     @Test
     void findByNicknameAndAttendanceDateNoExistTest() {
         // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate today = LocalDate.of(2024, 12, 3);
         AttendanceLogs attendanceLogs = new AttendanceLogs();
 
         // when
-        AttendanceLog findLog = attendanceLogs.findByNicknameAndAttendanceDate(nickname, today);
+        AttendanceLog findLog = attendanceLogs.findByNicknameAndAttendanceDate(BELLO_NICKNAME, LOCAL_DATE_2024_12_02);
 
         // then
         assertThat(findLog.isNotRecorded())
@@ -134,18 +124,15 @@ class AttendanceLogsTest {
     @Test
     void editAttendanceLogTest() {
         // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate today = LocalDate.of(2024, 12, 3);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
-
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        AttendanceLog attendanceLog = new AttendanceLog(nickname, today, attendanceTime);
+        AttendanceLog attendanceLog = createAttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00);
         attendanceLogs.add(attendanceLog);
 
         // when
-        LocalDateTime updateDateTime = LocalDateTime.of(today, LocalTime.of(13, 0));
-        attendanceLogs.edit(new AttendanceLog(nickname, updateDateTime.toLocalDate(), updateDateTime.toLocalTime()));
-        AttendanceLog edited = attendanceLogs.findByNicknameAndAttendanceDate(nickname, updateDateTime.toLocalDate());
+        LocalDateTime updateDateTime = LocalDateTime.of(LOCAL_DATE_2024_12_02, LocalTime.of(13, 0));
+        attendanceLogs.edit(createAttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, updateDateTime.toLocalTime()));
+        AttendanceLog edited = attendanceLogs.findByNicknameAndAttendanceDate(BELLO_NICKNAME,
+                updateDateTime.toLocalDate());
 
         // then
         assertThat(edited.getAttendanceTime())
@@ -159,11 +146,10 @@ class AttendanceLogsTest {
         Nickname nickname = new Nickname("벨로");
         LocalDate today = LocalDate.of(2024, 12, 5);
         LocalDate yesterday = today.minusDays(1);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
 
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        attendanceLogs.add(new AttendanceLog(nickname, yesterday, attendanceTime));
-        attendanceLogs.add(new AttendanceLog(nickname, today, attendanceTime));
+        attendanceLogs.add(createAttendanceLog(BELLO_NICKNAME, yesterday, LOCAL_TIME_10_00));
+        attendanceLogs.add(createAttendanceLog(BELLO_NICKNAME, today, LOCAL_TIME_10_00));
 
         // when
         EnumMap<AttendanceType, Integer> map = attendanceLogs.countAttendanceTypes(nickname, today);

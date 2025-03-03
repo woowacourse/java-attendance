@@ -1,12 +1,15 @@
 package attendance.model;
 
 import static attendance.model.TestFixtures.BELLO_NICKNAME;
+import static attendance.model.TestFixtures.LOCAL_DATE_2024_12_02;
+import static attendance.model.TestFixtures.LOCAL_DATE_TIME_2024_12_02_10_00;
+import static attendance.model.TestFixtures.LOCAL_TIME_10_00;
 import static attendance.model.TestFixtures.NEO_NICKNAME;
+import static attendance.model.TestFixtures.createAttendanceLog;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.EnumMap;
 import java.util.Set;
@@ -50,16 +53,15 @@ class AttendanceBookTest {
         AttendanceLogs attendanceLogs = new AttendanceLogs();
         NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(BELLO_NICKNAME));
         AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
-        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
 
         // when
-        attendanceBook.attend(BELLO_NICKNAME, attendanceDateTime);
+        attendanceBook.attend(BELLO_NICKNAME, LOCAL_DATE_TIME_2024_12_02_10_00);
 
         // then
-        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(BELLO_NICKNAME,
-                LocalDate.of(2024, 12, 2));
+        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(
+                BELLO_NICKNAME, LOCAL_DATE_2024_12_02);
         assertThat(attendanceTime)
-                .isEqualTo(LocalTime.of(10, 0));
+                .isEqualTo(LOCAL_TIME_10_00);
     }
 
     @DisplayName("특정 닉네임과 날짜로 출석 시간을 조회할 수 있다.")
@@ -67,17 +69,17 @@ class AttendanceBookTest {
     void findAttendanceTimeByNicknameAndDateTest() {
         // given
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)));
+        attendanceLogs.add(createAttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00));
         NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(BELLO_NICKNAME));
         AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when
-        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(BELLO_NICKNAME,
-                LocalDate.of(2024, 12, 2));
+        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(
+                BELLO_NICKNAME, LOCAL_DATE_2024_12_02);
 
         // then
         assertThat(attendanceTime)
-                .isEqualTo(LocalTime.of(10, 0));
+                .isEqualTo(LOCAL_TIME_10_00);
     }
 
     @DisplayName("특정 닉네임과 날짜로 출석 시간을 조회할 때, 기록이 없는 경우 null을 반환한다.")
@@ -89,8 +91,8 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when
-        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(BELLO_NICKNAME,
-                LocalDate.of(2024, 12, 2));
+        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(
+                BELLO_NICKNAME, LOCAL_DATE_2024_12_02);
 
         // then
         assertThat(attendanceTime)
@@ -102,21 +104,19 @@ class AttendanceBookTest {
     void editTest_WhenExistAttendanceLog() {
         // given
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 3), LocalTime.of(10, 31)));
+        attendanceLogs.add(createAttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LocalTime.of(10, 31)));
         NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(BELLO_NICKNAME));
         AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when
-        LocalDateTime updateAttendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 5);
-        attendanceBook.edit(BELLO_NICKNAME, updateAttendanceDateTime);
+        attendanceBook.edit(BELLO_NICKNAME, LOCAL_DATE_TIME_2024_12_02_10_00);
 
         // then
-        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(new Nickname("벨로"),
-                LocalDate.of(2024, 12, 3));
-        AttendanceType attendanceType = attendanceBook.determineAttendanceType(LocalDate.of(2024, 12, 3),
-                attendanceTime);
+        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(
+                BELLO_NICKNAME, LOCAL_DATE_2024_12_02);
+        AttendanceType attendanceType = attendanceBook.determineAttendanceType(LOCAL_DATE_2024_12_02, attendanceTime);
         assertThat(attendanceTime)
-                .isEqualTo(LocalTime.of(10, 5));
+                .isEqualTo(LOCAL_TIME_10_00);
         assertThat(attendanceType)
                 .isSameAs(AttendanceType.PRESENT);
     }
@@ -130,16 +130,14 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when
-        LocalDateTime updateAttendanceDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
-        attendanceBook.edit(BELLO_NICKNAME, updateAttendanceDateTime);
+        attendanceBook.edit(BELLO_NICKNAME, LOCAL_DATE_TIME_2024_12_02_10_00);
 
         // then
-        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(BELLO_NICKNAME,
-                LocalDate.of(2024, 12, 2));
-        AttendanceType attendanceType = attendanceBook.determineAttendanceType(LocalDate.of(2024, 12, 2),
-                attendanceTime);
+        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(
+                BELLO_NICKNAME, LOCAL_DATE_2024_12_02);
+        AttendanceType attendanceType = attendanceBook.determineAttendanceType(LOCAL_DATE_2024_12_02, attendanceTime);
         assertThat(attendanceTime)
-                .isEqualTo(LocalTime.of(10, 0));
+                .isEqualTo(LOCAL_TIME_10_00);
         assertThat(attendanceType)
                 .isSameAs(AttendanceType.PRESENT);
     }
@@ -149,7 +147,7 @@ class AttendanceBookTest {
     void findAttendanceLogsByNicknameAndInMonthTest() {
         // given
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)));
+        attendanceLogs.add(createAttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00));
         NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(BELLO_NICKNAME));
         AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
@@ -164,10 +162,9 @@ class AttendanceBookTest {
         // given
         LocalDate today = LocalDate.of(2024, 12, 5);
         LocalDate yesterday = today.minusDays(1);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, yesterday, attendanceTime));
-        attendanceLogs.add(new AttendanceLog(BELLO_NICKNAME, today, attendanceTime));
+        attendanceLogs.add(createAttendanceLog(BELLO_NICKNAME, yesterday, LOCAL_TIME_10_00));
+        attendanceLogs.add(createAttendanceLog(BELLO_NICKNAME, today, LOCAL_TIME_10_00));
         NicknameRegistry nicknameRegistry = new NicknameRegistry(attendanceLogs.getAllNicknames());
         AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
