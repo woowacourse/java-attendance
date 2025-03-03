@@ -1,14 +1,14 @@
-package attendance.domain;
+package attendance.model;
 
-public enum CrewStatus {
-    EXPEL("제적"),
-    MEETING("면담"),
+public enum Status {
+    NONE(""),
     WARNING("경고"),
-    NONE("");
+    MEETING("면담"),
+    EXPEL("제적");
 
     private final String status;
 
-    CrewStatus(String status) {
+    Status(final String status) {
         this.status = status;
     }
 
