@@ -2,12 +2,17 @@ package view;
 
 import domain.AttendanceRecord;
 import domain.AttendanceStatus;
+import domain.AttendanceStatusCount;
+import domain.Attendances;
+import domain.NickName;
+import domain.WarningStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class OutputView {
     public void printAttend(AttendanceRecord attendanceRecord) {
@@ -53,14 +58,58 @@ public class OutputView {
 
     private String formatAttendanceRecordToEdit(AttendanceRecord beforeAttendanceRecord,
                                                 AttendanceRecord editAttendanceRecord) {
-        return String.format("%s %s %s (%s) -> %s (%s) 수정 완료!%n",
-                formatLocalDate(beforeAttendanceRecord.getDate()),
+        return String.format("%s %s %s (%s) -> %s (%s) 수정 완료!%n", formatLocalDate(beforeAttendanceRecord.getDate()),
                 formatDayOfWeek(beforeAttendanceRecord.getDate()
-                        .getDayOfWeek()),
-                formatLocalTime(beforeAttendanceRecord.getTime()),
+                        .getDayOfWeek()), formatLocalTime(beforeAttendanceRecord.getTime()),
                 formatAttendanceStatus(AttendanceStatus.calculateAttendanceStatus(beforeAttendanceRecord)),
                 formatLocalTime(editAttendanceRecord.getTime()),
                 formatAttendanceStatus(AttendanceStatus.calculateAttendanceStatus(editAttendanceRecord)));
+    }
+
+    public void printCheckAttendance(NickName nickName, Attendances attendances) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n", nickName.getNickName());
+        String attendancesResult = formatCheckAttendance(attendances);
+        System.out.println(attendancesResult);
+        AttendanceStatusCount attendanceStatusCount = attendances.countAttendanceStatus();
+        System.out.println(formatAttendanceStatusCount(attendanceStatusCount));
+        System.out.println(formatWarningStatus(WarningStatus.calculateWarningStatus(attendanceStatusCount)));
+        System.out.println();
+    }
+
+    private String formatCheckAttendance(Attendances attendances) {
+        return attendances.getAttendances()
+                .stream()
+                .map(this::formatAttendanceRecordToAttend)
+                .collect(Collectors.joining());
+    }
+
+    private String formatAttendanceStatusCount(AttendanceStatusCount attendanceStatusCount) {
+        return String.format("""
+                        출석: %d회
+                        지각: %d회
+                        결석: %d회""", attendanceStatusCount.getCount(AttendanceStatus.ATTENDANT),
+                attendanceStatusCount.getCount(AttendanceStatus.LATE),
+                attendanceStatusCount.getCount(AttendanceStatus.ABSENT));
+    }
+
+    private String formatWarningStatus(WarningStatus warningStatus) {
+        if (warningStatus.equals(WarningStatus.CLEAR)) {
+            return "";
+        }
+        return String.format("%s 대상자입니다.", formatWarningStatusShort(warningStatus));
+    }
+
+    private String formatWarningStatusShort(WarningStatus warningStatus) {
+        if (warningStatus.equals(WarningStatus.EXPEL)) {
+            return "제적";
+        }
+        if (warningStatus.equals(WarningStatus.INTERVIEW)) {
+            return "면담";
+        }
+        if (warningStatus.equals(WarningStatus.WARNING)) {
+            return "경고";
+        }
+        return "";
     }
 
     public void printErrorMessage(RuntimeException e) {

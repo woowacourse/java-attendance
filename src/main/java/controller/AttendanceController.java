@@ -2,11 +2,14 @@ package controller;
 
 import domain.AttendanceManager;
 import domain.AttendanceRecord;
+import domain.Attendances;
 import domain.NickName;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import util.Current;
+import util.DateUtil;
 import util.FileUtil;
 import view.InputView;
 import view.OutputView;
@@ -27,6 +30,7 @@ public class AttendanceController {
     private void registerCommand() {
         commands.put("1", this::attendProcess);
         commands.put("2", this::editProcess);
+        commands.put("3", this::checkAttendanceProcess);
     }
 
     public void start() {
@@ -113,6 +117,22 @@ public class AttendanceController {
         String editDate = inputView.inputEditDate();
         String editTime = inputView.inputEditTime();
         return AttendanceRecord.of(editDate, editTime);
+    }
+
+    private void checkAttendanceProcess(AttendanceManager attendanceManager) {
+        NickName nickName = inputCheckAttendaceNickName(attendanceManager);
+        List<Integer> checkingDates = DateUtil.getAttendAbleDates(Current.getDayOfYesterday());
+        Attendances attendances = attendanceManager.checkAttendance(nickName, checkingDates);
+        outputView.printCheckAttendance(nickName, attendances);
+    }
+
+    private NickName inputCheckAttendaceNickName(AttendanceManager attendanceManager) {
+        String inputNickName = inputView.inputCheckAttendanceNickName();
+        NickName nickName = new NickName(inputNickName);
+        if (!attendanceManager.isRegistered(nickName)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
+        return nickName;
     }
 
     private AttendanceManager loadAttendanceManager() {

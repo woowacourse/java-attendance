@@ -50,4 +50,9 @@ public class InputView {
         System.out.println("언제로 변경하겠습니까?");
         return scanner.nextLine();
     }
+
+    public String inputCheckAttendanceNickName() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
 }

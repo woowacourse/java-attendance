@@ -9,6 +9,10 @@ public class NickName {
         this.nickName = nickName;
     }
 
+    public String getNickName() {
+        return nickName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
