@@ -63,19 +63,21 @@ public class AttendanceController {
 
     private void checkInAttendance(Attendances attendances) {
         AttendanceCheckInRequest request = InputView.readAttendanceCheckInRequest();
-        AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
+        AttendanceCheckInResponse response = attendances.add(
+                request.nickname(), request.checkInTime(), dateTimeGenerator);
         OutputView.printCheckInAttendance(response);
     }
 
     private void updateAttendance(Attendances attendances) {
         AttendanceUpdateRequest request = InputView.readAttendanceUpdateRequest(dateTimeGenerator);
-        AttendanceUpdateResponse response = attendances.update(request, dateTimeGenerator);
+        AttendanceUpdateResponse response = attendances.update(
+                request.nickname(), request.day(), request.updateTime(), dateTimeGenerator);
         OutputView.printUpdateAttendance(response);
     }
 
     private void findAttendanceHistoryByCrew(Attendances attendances) {
         AttendanceHistoryRequest request = InputView.readAttendanceHistoryRequest();
-        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request, dateTimeGenerator);
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request.nickname(), dateTimeGenerator);
         OutputView.printAttendanceHistory(response);
     }
 

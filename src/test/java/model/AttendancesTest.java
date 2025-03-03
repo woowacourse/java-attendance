@@ -71,7 +71,8 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
+        AttendanceCheckInResponse response = attendances.add(
+                request.nickname(), request.checkInTime(), dateTimeGenerator);
 
         // then
         assertAll(
@@ -90,7 +91,8 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
+        AttendanceCheckInResponse response = attendances.add(
+                request.nickname(), request.checkInTime(), dateTimeGenerator);
 
         // then
         assertAll(
@@ -109,7 +111,8 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(request, dateTimeGenerator);
+        AttendanceCheckInResponse response = attendances.add(
+                request.nickname(), request.checkInTime(), dateTimeGenerator);
 
         // then
         assertAll(
@@ -128,7 +131,7 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request, dateTimeGenerator))
+        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(NOT_FOUND_CREW.getMessage());
     }
@@ -143,7 +146,8 @@ class AttendancesTest {
         AttendanceUpdateRequest request = new AttendanceUpdateRequest(nickname, day, updateTime);
 
         // when
-        AttendanceUpdateResponse response = attendances.update(request, dateTimeGenerator);
+        AttendanceUpdateResponse response = attendances.update(
+                request.nickname(), request.day(), request.updateTime(), dateTimeGenerator);
 
         // then
         assertAll(
@@ -165,7 +169,8 @@ class AttendancesTest {
         AttendanceUpdateRequest request = new AttendanceUpdateRequest(nickname, day, updateTime);
 
         // when
-        AttendanceUpdateResponse response = attendances.update(request, dateTimeGenerator);
+        AttendanceUpdateResponse response = attendances.update(
+                request.nickname(), request.day(), request.updateTime(), dateTimeGenerator);
 
         // then
         assertAll(
@@ -185,7 +190,7 @@ class AttendancesTest {
         AttendanceHistoryRequest request = new AttendanceHistoryRequest(nickname);
 
         // when
-        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request, dateTimeGenerator);
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request.nickname(), dateTimeGenerator);
 
         // then
         assertAll(
@@ -233,7 +238,7 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request, dateTimeGenerator))
+        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(CANNOT_CHECK_IN_ON_HOLIDAY.getMessage());
     }
@@ -246,7 +251,7 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request, dateTimeGenerator))
+        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OUT_OF_OPERATION_HOURS.getMessage());
     }
@@ -257,10 +262,10 @@ class AttendancesTest {
         String nickname = "미소";
         String checkInTime = "10:00";
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
-        attendances.add(request, dateTimeGenerator);
+        attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request, dateTimeGenerator))
+        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), dateTimeGenerator))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ALREADY_CHECK_IN.getMessage());
     }
