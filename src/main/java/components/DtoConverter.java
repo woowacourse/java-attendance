@@ -23,7 +23,7 @@ public class DtoConverter {
     public AttendanceRecordDto convertToAttendanceRecordDto(final AttendanceRecord attendanceRecord) {
         return new AttendanceRecordDto(
                 attendanceRecord.getAttendanceDate(),
-                attendanceRecord.getAttendanceTime(),
+                attendanceRecord.getAttendanceTime().orElse(null),
                 convertAttendanceStatusToString(attendanceRecord.calculateAttendanceStatus())
         );
     }
@@ -69,7 +69,7 @@ public class DtoConverter {
     }
 
     private RiskOfExpulsionCrewDto convertToRiskOfExpulsionCrewDto(final AttendanceHistory attendanceHistory,
-                                                                  final LocalDate date) {
+                                                                   final LocalDate date) {
         final Crew crew = attendanceHistory.getCrew();
         final Map<AttendanceStatus, Integer> statistics = attendanceHistory.calculateAttendanceStatusStatistics(date);
         final RiskOfExpulsionStatus riskOfExpulsionStatus = attendanceHistory.calculateRiskOfExpulsionStatus(date);

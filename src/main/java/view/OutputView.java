@@ -25,14 +25,14 @@ public class OutputView {
     }
 
     private String formatAttendanceTime(final AttendanceRecordDto attendanceRecordDto) {
-        if (attendanceRecordDto.attendanceTime().isEmpty()) {
-            return String.format("%s (%s)", attendanceRecordDto.attendanceDate().format(EMPTY_FORMATTER),
-                    attendanceRecordDto.attendanceStatus());
+        if (attendanceRecordDto.getAttendanceTime().isEmpty()) {
+            return String.format("%s (%s)", attendanceRecordDto.getAttendanceDate().format(EMPTY_FORMATTER),
+                    attendanceRecordDto.getAttendanceStatus());
         }
         return String.format("%s (%s)",
-                LocalDateTime.of(attendanceRecordDto.attendanceDate(), attendanceRecordDto.attendanceTime().get())
+                LocalDateTime.of(attendanceRecordDto.getAttendanceDate(), attendanceRecordDto.getAttendanceTime().get())
                         .format(TIME_FORMATTER),
-                attendanceRecordDto.attendanceStatus());
+                attendanceRecordDto.getAttendanceStatus());
     }
 
     public void printIntroduceAttendanceRecords(final String crewName) {
@@ -48,14 +48,14 @@ public class OutputView {
     }
 
     private String formatAttendanceRecord(final AttendanceRecordDto attendanceRecordDto) {
-        if (attendanceRecordDto.attendanceTime().isEmpty()) {
-            return String.format(attendanceRecordDto.attendanceDate().format(EMPTY_TIME_FORMATTER) + " (%s)",
-                    attendanceRecordDto.attendanceStatus());
+        if (attendanceRecordDto.getAttendanceTime().isEmpty()) {
+            return String.format(attendanceRecordDto.getAttendanceDate().format(EMPTY_TIME_FORMATTER) + " (%s)",
+                    attendanceRecordDto.getAttendanceStatus());
         }
         return String.format(
-                LocalDateTime.of(attendanceRecordDto.attendanceDate(), attendanceRecordDto.attendanceTime().get())
+                LocalDateTime.of(attendanceRecordDto.getAttendanceDate(), attendanceRecordDto.getAttendanceTime().get())
                         .format(DATE_TIME_FORMATTER) + " (%s)",
-                attendanceRecordDto.attendanceStatus());
+                attendanceRecordDto.getAttendanceStatus());
     }
 
     public void printAttendanceStatistics(final Map<String, Integer> attendanceStatistics) {
