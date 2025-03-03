@@ -4,7 +4,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
-public class AttendanceSystemHandler {
+public class AttendanceWorkflow {
     private final AttendanceSystemManager attendanceSystemManager;
     private final Crews crews;
     private final AttendanceHistories attendanceHistories;
@@ -16,8 +16,8 @@ public class AttendanceSystemHandler {
             FunctionOption.CHECK_EXPULSION_CANDIDATES, this::checkExpulsionCandidates
     );
 
-    public AttendanceSystemHandler(AttendanceSystemManager attendanceSystemManager, Crews crews,
-                                   AttendanceHistories attendanceHistories) {
+    public AttendanceWorkflow(AttendanceSystemManager attendanceSystemManager, Crews crews,
+                              AttendanceHistories attendanceHistories) {
         this.attendanceSystemManager = attendanceSystemManager;
         this.crews = crews;
         this.attendanceHistories = attendanceHistories;
