@@ -48,4 +48,9 @@ public class OutputView {
         System.out.println("[ERROR] 이미 출석한 닉네임입니다. 수정 기능을 사용해 주세요.");
         System.out.println();
     }
+
+    public void printInvalidCommand() {
+        System.out.println("[ERROR] 잘못된 기능입니다. 다시 입력해 주세요.");
+        System.out.println();
+    }
 }

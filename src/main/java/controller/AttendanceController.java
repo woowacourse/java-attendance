@@ -36,6 +36,7 @@ public class AttendanceController {
         if (command.equalsIgnoreCase("Q")) {
             return false;
         }
+        outputView.printInvalidCommand();
         return true;
     }
 
