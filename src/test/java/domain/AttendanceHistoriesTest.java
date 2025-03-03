@@ -337,12 +337,49 @@ public class AttendanceHistoriesTest {
         }
     }
 
-    @Test
+    @Nested
     @DisplayName("3.4 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
-        // TODO 케이스별로 작성
-    void validateCrewPresenceWhenGetHistory() {
-        assertThatThrownBy(() -> defaultAttendanceHistory.getAttendanceDateTimes(INVALID_CREW))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+    public class ValidCrewTest {
+        @Test
+        @DisplayName("출결 기록을 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+        void validateCrewPresenceWhenGetHistory() {
+            assertThatThrownBy(() -> defaultAttendanceHistory.getAttendanceDateTimes(INVALID_CREW))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+
+        @Test
+        @DisplayName("출석 횟수를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+        void validateCrewPresenceWhenGetPresentCount() {
+            assertThatThrownBy(() -> defaultAttendanceHistory.getPresentCount(INVALID_CREW, FIRST_TUESDAY_DATE))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+
+        @Test
+        @DisplayName("지각 횟수를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+        void validateCrewPresenceWhenGetTardyCount() {
+            assertThatThrownBy(() -> defaultAttendanceHistory.getTardyCount(INVALID_CREW, FIRST_TUESDAY_DATE))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+
+        @Test
+        @DisplayName("결석 횟수를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+        void validateCrewPresenceWhenGetAbsentCount() {
+            assertThatThrownBy(() -> defaultAttendanceHistory.getAbsentCount(INVALID_CREW, FIRST_TUESDAY_DATE))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+
+        @Test
+        @DisplayName("제적 위험자 여부를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+        void validateCrewPresenceWhenGetDisciplinaryStatus() {
+            assertThatThrownBy(() -> defaultAttendanceHistory.getDisciplinaryStatusOf(INVALID_CREW, FIRST_TUESDAY_DATE))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
+
+
 }
