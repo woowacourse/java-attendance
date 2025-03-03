@@ -35,10 +35,21 @@ public class AttendanceSystem {
     public void run() {
         crewAttendanceManager.initAttendanceFromFile();
 
-        Menu menu = displayMenuAndReadCommand();
+        while (true) {
+            Menu menu = displayMenuAndReadCommand();
 
+            processAttendance(menu);
+            if (menu.equals(Menu.QUIT)) {
+                return;
+            }
+        }
+    }
+
+    private void processAttendance(final Menu menu) {
         processCheck(menu);
         processUpdate(menu);
+        processRecordSearch(menu);
+        processRiskCrewSearch(menu);
     }
 
     private Menu displayMenuAndReadCommand() {
@@ -89,6 +100,7 @@ public class AttendanceSystem {
     private void processRiskCrewSearch(final Menu menu) {
         if (menu.equals(Menu.RISK_CREW_SEARCH)) {
             AttendanceRecords attendanceRecords = crewAttendanceManager.getAttendanceRecords();
+            outputView.printRiskCrewsSearch(attendanceRecords);
         }
     }
 
