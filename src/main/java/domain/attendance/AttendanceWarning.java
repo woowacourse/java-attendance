@@ -12,7 +12,16 @@ public enum AttendanceWarning {
         this.absenceCount = absenceCount;
     }
 
-    public static AttendanceWarning calcuateWarning(int countAbsence) {
+    public static AttendanceWarning calculateWarning(int countAbsence) {
+        if (EXPELLED.absenceCount <= countAbsence) {
+            return EXPELLED;
+        }
+        if (INTERVIEW.absenceCount <= countAbsence) {
+            return INTERVIEW;
+        }
+        if (WARNING.absenceCount <= countAbsence) {
+            return WARNING;
+        }
         return NONE;
     }
 

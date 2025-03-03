@@ -18,7 +18,7 @@ class AttendanceWarningTest {
         int countAbsence = attendances.countAbsencePerTardy() + attendances.countAbsence();
 
         // when
-        AttendanceWarning attendanceWarning = AttendanceWarning.calcuateWarning(countAbsence);
+        AttendanceWarning attendanceWarning = AttendanceWarning.calculateWarning(countAbsence);
 
         // then
         Assertions.assertThat(attendanceWarning).isEqualTo(AttendanceWarning.WARNING);

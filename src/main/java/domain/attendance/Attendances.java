@@ -90,7 +90,7 @@ public class Attendances {
     }
 
     public int countAbsencePerTardy() {
-        return 0;
+        return countTardy() / 3;
     }
 
     private void validate(List<LocalDateTime> dateTimes) {
