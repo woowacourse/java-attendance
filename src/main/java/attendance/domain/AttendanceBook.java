@@ -32,6 +32,10 @@ public class AttendanceBook {
         return crews.containsKey(new Crew(nickname));
     }
 
+    public WarningLevel getWarningLevelOf(final String nickname, final LocalDateTime today) {
+        return WarningLevel.calculateBy(getAttendanceStatusCounts(nickname, today));
+    }
+
     public Map<AttendanceStatus, Integer> getAttendanceStatusCounts(final String nickname, final LocalDateTime today) {
        CrewAttendance crewAttendance = crews.get(new Crew(nickname));
        return crewAttendance.countAttendanceStatusesBefore(today);
