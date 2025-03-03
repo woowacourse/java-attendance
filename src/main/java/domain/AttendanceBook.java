@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import util.DateTimeConvertor;
+import util.DateTimeFormatProvider;
 
 public class AttendanceBook {
 
@@ -37,7 +37,7 @@ public class AttendanceBook {
         if (attendancePapers.get(crewName).existAttendance(localDate)) {
             throw new IllegalArgumentException(
                     String.format("[ERROR] %s 출석 기록이 존재합니다. 수정 기능을 이용해주세요",
-                            DateTimeConvertor.convertToLocalDateKoreanFormat(
+                            DateTimeFormatProvider.toLocalDateKoreanFormat(
                                     localDate)));
         }
     }

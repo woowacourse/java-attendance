@@ -2,7 +2,7 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import util.DateTimeConvertor;
+import util.DateTimeFormatProvider;
 
 public class AttendanceTime {
 
@@ -21,8 +21,8 @@ public class AttendanceTime {
     private static void validateTime(final DayOfWeek dayOfWeek, final LocalTime localtime) {
         if (CampusTime.isNotOpenTime(dayOfWeek, localtime)) {
             throw new IllegalArgumentException(String.format("[ERROR] %s %s은 캠퍼스 운영시간이 아닙니다.",
-                    DateTimeConvertor.convertToDayOfWeekKoreanFormat(dayOfWeek),
-                    DateTimeConvertor.convertToLocalTimeKoreanFormat(localtime)));
+                    DateTimeFormatProvider.toDayOfWeekKoreanFormat(dayOfWeek),
+                    DateTimeFormatProvider.toLocalTimeKoreanFormat(localtime)));
         }
     }
 

@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class DateTimeConvertorTest {
+class DateTimeFormatProviderTest {
 
     @Test
     @DisplayName("LocalDate를 M월 d월 E요일 형식으로 파싱한다.")
@@ -18,7 +18,7 @@ class DateTimeConvertorTest {
         final LocalDate localDate = LocalDate.of(2024, 12, 13);
 
         //when
-        final String koreanFormat = DateTimeConvertor.convertToLocalDateKoreanFormat(localDate);
+        final String koreanFormat = DateTimeFormatProvider.toLocalDateKoreanFormat(localDate);
 
         //then
         assertThat(koreanFormat).isEqualTo("12월 13일 금요일");
@@ -32,7 +32,7 @@ class DateTimeConvertorTest {
         DayOfWeek dayOfWeek = DayOfWeek.MONDAY;
 
         //when
-        final String koreanFormat = DateTimeConvertor.convertToDayOfWeekKoreanFormat(dayOfWeek);
+        final String koreanFormat = DateTimeFormatProvider.toDayOfWeekKoreanFormat(dayOfWeek);
 
         //then
         assertThat(koreanFormat).isEqualTo("월요일");
@@ -45,7 +45,7 @@ class DateTimeConvertorTest {
         final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 9, 8, 59);
 
         //when
-        final String koreanFormat = DateTimeConvertor.convertToLocalDateTimeKoreanFormat(localDateTime);
+        final String koreanFormat = DateTimeFormatProvider.toLocalDateTimeKoreanFormat(localDateTime);
 
         //then
         assertThat(koreanFormat).isEqualTo("12월 09일 월요일 08:59");
@@ -59,7 +59,7 @@ class DateTimeConvertorTest {
         final LocalTime localTime = LocalTime.of(9, 1);
 
         //when
-        final String koreanFormat = DateTimeConvertor.convertToLocalTimeKoreanFormat(localTime);
+        final String koreanFormat = DateTimeFormatProvider.toLocalTimeKoreanFormat(localTime);
 
         //then
         assertThat(koreanFormat).isEqualTo("09:01");

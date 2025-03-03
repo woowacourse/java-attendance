@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import util.DateTimeConvertor;
+import util.DateTimeFormatProvider;
 
 public class ConsoleOutputView {
 
@@ -39,7 +39,7 @@ public class ConsoleOutputView {
     );
 
     public void intro(final LocalDate localDate) {
-        final String message = String.format(INTRO, DateTimeConvertor.convertToLocalDateKoreanFormat(localDate));
+        final String message = String.format(INTRO, DateTimeFormatProvider.toLocalDateKoreanFormat(localDate));
         printMessage(addLineSeparator(message));
     }
 
@@ -67,7 +67,7 @@ public class ConsoleOutputView {
                                                final AttendanceDetails afterAttendanceDetails) {
         final String beforeAttendanceMessage = convertToAttendanceDetailsMessage(beforeAttendanceDetails);
         final String afterAttendanceMessage = String.format("%s (%s) 수정 완료!",
-                DateTimeConvertor.convertToLocalTimeKoreanFormat(afterAttendanceDetails.localTime()),
+                DateTimeFormatProvider.toLocalTimeKoreanFormat(afterAttendanceDetails.localTime()),
                 ATTENDANCE_STATUS.get(afterAttendanceDetails.attendanceStatusCode()));
         printMessage(addLineSeparator(String.format("%s -> %s", beforeAttendanceMessage, afterAttendanceMessage)));
     }
@@ -106,12 +106,12 @@ public class ConsoleOutputView {
     }
 
     private String convertToAttendanceDetailsMessage(final AttendanceDetails attendanceDetails) {
-        final String attendanceDateMessage = DateTimeConvertor.convertToLocalDateKoreanFormat(
+        final String attendanceDateMessage = DateTimeFormatProvider.toLocalDateKoreanFormat(
                 attendanceDetails.localDate());
         final LocalTime attendanceTime = attendanceDetails.localTime();
         String attendanceTimeMessage = "--:--";
         if (attendanceTime != null) {
-            attendanceTimeMessage = DateTimeConvertor.convertToLocalTimeKoreanFormat(attendanceTime);
+            attendanceTimeMessage = DateTimeFormatProvider.toLocalTimeKoreanFormat(attendanceTime);
         }
         return String.format("%s %s (%s)", attendanceDateMessage, attendanceTimeMessage,
                 ATTENDANCE_STATUS.get(attendanceDetails.attendanceStatusCode()));
