@@ -12,6 +12,5 @@ public class AttendanceApplication {
         final AttendanceBook attendanceBook = AttendanceBook.create();
         final AttendanceController attendanceController = new AttendanceController(consoleInputView, consoleOutputView, attendanceBook);
         attendanceController.run();
-
     }
 }

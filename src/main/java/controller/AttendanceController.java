@@ -49,14 +49,14 @@ public class AttendanceController {
         if (Objects.equals(attendanceCommand, AttendanceCommand.MODIFY)) {
             outputView.askCrewNicknameForModification();
             final String name = inputView.readCrewName();
-            attendanceBook.validateExistCrew(name);
+            final AttendancePaper attendancePaper = attendanceBook.getAttendancePaperByCrewName(name);
             outputView.askAttendanceDayForModification();
             final LocalDate localDate = inputView.readDate();
-            attendanceBook.validateModificationAttendanceDate(name, localDate);
+            attendancePaper.validateExistAttendanceDate(localDate);
             outputView.askAttendanceTimeForModification();
             final LocalTime localTime = inputView.readTime();
             final AttendanceTime attendanceTime = AttendanceTime.of(localDate.getDayOfWeek(), localTime);
-            final AttendanceModification attendanceModification = attendanceBook.modifyAttendance(name,localDate, attendanceTime);
+            final AttendanceModification attendanceModification = attendancePaper.modifyAttendance(localDate, attendanceTime);
             outputView.printModifiedAttendanceDetails(
                     convertToAttendanceDetails(attendanceModification.beforeAttendanceRecord()),
                     convertToAttendanceDetails(attendanceModification.afterAttendanceRecord()));
