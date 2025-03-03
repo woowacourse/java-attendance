@@ -1,5 +1,6 @@
 package domain;
 
+import static domain.attendance.constant.AttendanceRiskLevel.COUNSELING;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.attendance.AttendanceBook;
@@ -10,8 +11,10 @@ import domain.datetime.CampusTime;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import util.FileReader;
 
 class AttendanceBookTest {
+
 
     @Test
     void 초기_빈값의_출석부를_생성한다() {
@@ -113,7 +116,19 @@ class AttendanceBookTest {
 
     @Test
     void 위험관리대상_크루들의_정보를_출력한다() {
-        // TODO : Q4
+        // given
+        AttendanceBook attendanceBook = AttendanceBook.createBookByAttendances(
+                FileReader.fileReadLine("attendances.csv"));
+        LocalDate date = LocalDate.of(2025, 2, 17);
+        Crew crew = Crew.fromName("빙티");
+
+        // when
+        AttendanceBook riskCrewBook = attendanceBook.findRiskCrewBook(date);
+
+        // then
+        assertThat(riskCrewBook.getBook()).hasSize(5);
+        assertThat(riskCrewBook.findInfoByCrew(crew).countsByDate(date).calculateAttendanceRiskLevel()).isEqualTo(
+                COUNSELING);
     }
 
 }

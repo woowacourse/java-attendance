@@ -58,7 +58,6 @@ public class AttendanceBook {
         return AttendanceInfos.from(book.get(crew).getAttendanceInfos());
     }
 
-
     public boolean hasInfoByCrewAndDate(final Crew crew, final CampusDate date) {
         return book.get(crew).hasInfoByDate(date);
     }
