@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import attendance.exception.AttendanceArgumentException;
 import attendance.interfaces.SystemDateTime;
@@ -29,8 +28,7 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
     }
 
     private void isDuplicateAttendance(LocalDate date) {
-        Optional<Attendance> attendance = getOptionalAttendance(date);
-        if (attendance.isPresent()) {
+        if (attendances.containsKey(date)) {
             throw new AttendanceArgumentException(DUPLICATE_ATTENDANCE);
         }
     }
@@ -43,15 +41,10 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
     }
 
     public Attendance getAttendance(LocalDate date) {
-        Optional<Attendance> attendance = getOptionalAttendance(date);
-        if (attendance.isEmpty() || attendance.get().isTruancy()) {
+        if (!attendances.containsKey(date) || attendances.get(date).isTruancy()) {
             throw new AttendanceArgumentException(CANNOT_FIND_ATTENDANCE);
         }
-        return attendance.get();
-    }
-
-    public Optional<Attendance> getOptionalAttendance(LocalDate date) {
-        return Optional.ofNullable(attendances.get(date));
+        return attendances.get(date);
     }
 
     public void modifyAttendance(LocalDateTime dateTime) {
@@ -82,9 +75,9 @@ public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime
     }
 
     private AttendanceStatus getOrAbsence(LocalDate date) {
-        Optional<Attendance> optionalAttendance = getOptionalAttendance(date);
-        return optionalAttendance
-            .map(Attendance::status)
-            .orElse(AttendanceStatus.ABSENCE);
+        if (attendances.containsKey(date)) {
+            return attendances.get(date).status();
+        }
+        return AttendanceStatus.ABSENCE;
     }
 }

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import attendance.exception.AttendanceArgumentException;
 import attendance.interfaces.SystemDateTime;
@@ -47,8 +46,10 @@ public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemD
     }
 
     public Attendances getAttendances(Nickname nickname) {
-        return Optional.ofNullable(attendancesBook.get(nickname))
-            .orElseThrow(() -> new AttendanceArgumentException(NOT_REGISTERED_NICKNAME));
+        if (attendancesBook.containsKey(nickname)) {
+            return attendancesBook.get(nickname);
+        }
+        throw new AttendanceArgumentException(NOT_REGISTERED_NICKNAME);
     }
 
     public void modify(Nickname nickname, LocalDateTime dateTime) {
