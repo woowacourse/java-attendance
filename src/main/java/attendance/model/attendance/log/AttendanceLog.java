@@ -1,7 +1,7 @@
 package attendance.model.attendance.log;
 
-import attendance.model.attendance.status.AttendanceStatus;
 import attendance.model.attendance.datetime.AttendanceDateTime;
+import attendance.model.attendance.status.AttendanceStatus;
 import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -61,6 +61,14 @@ public class AttendanceLog {
 
     public AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
+    }
+
+    public boolean isLate() {
+        return attendanceStatus == AttendanceStatus.LATE;
+    }
+
+    public boolean isAbsence() {
+        return attendanceStatus == AttendanceStatus.ABSENCE;
     }
 
     @Override
