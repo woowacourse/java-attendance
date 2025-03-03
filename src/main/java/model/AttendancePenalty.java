@@ -12,15 +12,15 @@ public enum AttendancePenalty {
     private final String penalty;
     private final int thresholdAbsenceCount;
 
-    AttendancePenalty(String penalty, int penaltyCount) {
+    AttendancePenalty(String penalty, int thresholdAbsenceCount) {
         this.penalty = penalty;
-        this.thresholdAbsenceCount = penaltyCount;
+        this.thresholdAbsenceCount = thresholdAbsenceCount;
     }
 
     public static AttendancePenalty findPenaltyByAbsentCount(long totalAbsentCount) {
         return Arrays.stream(AttendancePenalty.values())
                 .sorted(Comparator.comparingInt(AttendancePenalty::getThresholdAbsenceCount).reversed())
-                .filter(attendancePenalty -> totalAbsentCount > attendancePenalty.getThresholdAbsenceCount())
+                .filter(penalty -> totalAbsentCount > penalty.thresholdAbsenceCount)
                 .findFirst()
                 .orElse(NONE);
     }
