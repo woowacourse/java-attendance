@@ -45,8 +45,8 @@ public class OutputView {
                 attendanceStatusDto.attendanceType().getName());
     }
 
-    public static void printAttendanceStatus(AttendanceStatusesOfCrewDto dto, String nickname) {
-        List<AttendanceStatusDto> statusDtos = dto.attendanceStatusDtos();
+    public static void printAttendanceStatus(AttendanceStatusesOfCrewDto attendanceStatusesDto, String nickname) {
+        List<AttendanceStatusDto> statusDtos = attendanceStatusesDto.attendanceStatusDtos();
 
         System.out.printf("%n이번 달 %s의 출석 기록입니다.%n", nickname);
         for (AttendanceStatusDto statusDto : statusDtos) {
@@ -55,14 +55,14 @@ public class OutputView {
 
         System.out.println("\n");
 
-        for (Entry<AttendanceType, Integer> entry : dto.attendanceTypeCount().entrySet()) {
+        for (Entry<AttendanceType, Integer> entry : attendanceStatusesDto.attendanceTypeCount().entrySet()) {
             String typeName = entry.getKey().getName();
             int count = entry.getValue();
 
             System.out.printf("%s: %d회%n", typeName, count);
         }
 
-        String penaltyName = dto.penaltyType().getName();
+        String penaltyName = attendanceStatusesDto.penaltyType().getName();
         if (!penaltyName.isBlank()) {
             System.out.printf("%n%s 대상자입니다.%n%n", penaltyName);
         }
