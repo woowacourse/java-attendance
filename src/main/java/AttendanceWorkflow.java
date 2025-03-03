@@ -6,6 +6,9 @@ import crew.Crew;
 import crew.Crews;
 import history.AttendanceHistories;
 import history.AttendanceHistory;
+import io.AttendanceRequestDto;
+import io.CustomFileReader;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,7 +46,9 @@ public class AttendanceWorkflow {
         }
     }
 
-    private void processAttendanceSystem() {
+    private void processAttendanceSystem() throws FileNotFoundException {
+        readyToStart();
+
         while (true) {
             FunctionOption functionOption = console.getFunctionOption();
 
@@ -53,6 +58,14 @@ public class AttendanceWorkflow {
 
             ACTION_FOR_OPTION.get(functionOption).run();
         }
+    }
+
+    private void readyToStart() throws FileNotFoundException {
+        List<String> crewNames = CustomFileReader.readCrewNames();
+        attendanceProcessor.registerCrewsByName(crewNames);
+
+        List<AttendanceRequestDto> attendanceRequestDtos = CustomFileReader.readAttendanceInfo();
+        attendanceProcessor.initializeHistories(attendanceRequestDtos);
     }
 
     private void registerAttendance() {

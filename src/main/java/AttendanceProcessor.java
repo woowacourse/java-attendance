@@ -2,6 +2,7 @@ import crew.Crew;
 import crew.Crews;
 import history.AttendanceHistories;
 import history.AttendanceHistory;
+import io.AttendanceRequestDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,6 +23,20 @@ public class AttendanceProcessor {
     public AttendanceProcessor(AttendanceHistories attendanceHistories, Crews crews) {
         this.attendanceHistories = attendanceHistories;
         this.crews = crews;
+    }
+
+    public void registerCrewsByName(List<String> crewNames) {
+        crewNames.forEach(crewName -> {
+            crews.add(new Crew(crewName));
+        });
+    }
+
+    public void initializeHistories(List<AttendanceRequestDto> attendanceRequestDtos) {
+        attendanceRequestDtos.forEach(attendanceRequestDto -> {
+            Crew foundCrew = crews.findCrewByName(attendanceRequestDto.crewName());
+            AttendanceHistory attendanceHistory = new AttendanceHistory(foundCrew, attendanceRequestDto.attendAt());
+            attendanceHistories.addNewHistory(attendanceHistory);
+        });
     }
 
     public AttendanceHistory registerNewHistory(Crew crew, LocalDateTime requestedAt) {
@@ -97,4 +112,5 @@ public class AttendanceProcessor {
 
         return expulsionCandidates;
     }
+
 }

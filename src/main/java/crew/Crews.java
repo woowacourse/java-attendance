@@ -20,5 +20,9 @@ public class Crews {
     public List<Crew> getAll() {
         return Collections.unmodifiableList(crews);
     }
+
+    public void add(Crew crew) {
+        crews.add(crew);
+    }
 }
 
