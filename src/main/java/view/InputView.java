@@ -42,7 +42,7 @@ public class InputView {
 
     public LocalDate readDateToModify() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return InputParser.parseToLocalDate(inputReader.readline());
+        return InputParser.parseToDecemberLocalDate(inputReader.readline());
     }
 
     public LocalTime readTimeToModify() {

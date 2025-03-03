@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public interface TimeProvider {
-    public LocalDate getNowDate();
+    LocalDate getNowDate();
 
-    public LocalTime getNowTime();
+    LocalTime getNowTime();
 }

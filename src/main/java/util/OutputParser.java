@@ -27,6 +27,6 @@ public class OutputParser {
         if (time == null) {
             return TIME_NULL_DISPLAY;
         }
-        return time.format(DateTimeFormatter.ofPattern("hh:mm"));
+        return time.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 }

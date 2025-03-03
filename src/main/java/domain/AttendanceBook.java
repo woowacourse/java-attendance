@@ -41,10 +41,6 @@ public class AttendanceBook {
                 .anyMatch(crew -> crew.hasName(name));
     }
 
-    public String getPenaltyMessageByName(String name) {
-        return getPenaltyByName(name).getMessage();
-    }
-
     private Crew findCrewByName(String name) {
         return crews.stream()
                 .filter(crew -> crew.hasName(name))
@@ -72,21 +68,22 @@ public class AttendanceBook {
         return crew.findTimeByDate(date);
     }
 
-    public Penalty getPenaltyByName(String name) {
-        Crew crew = findCrewByName(name);
-        return crew.getPenalty();
-    }
-
     public List<Crew> findCrewsWithPenalty() {
         return crews.stream()
                 .filter(crew -> !crew.hasPenalty(Penalty.NONE))
-                .sorted(Comparator.comparing(Crew::getPenalty, Comparator.comparingInt(Penalty::getPriority))
-                        .thenComparing(crew ->
-                                        crew.countAttendanceStatusInDecember(AttendanceStatus.ABSENT) +
-                                                crew.countAttendanceStatusInDecember(AttendanceStatus.LATE),
-                                Comparator.reverseOrder())
-                        .thenComparing(Crew::getName))
+                .sorted(compareByPenaltyAndAttendance())
                 .toList();
+    }
+
+    private Comparator<Crew> compareByPenaltyAndAttendance() {
+        return Comparator.comparing(Crew::getPenalty, Comparator.comparingInt(Penalty::getPriority))
+                .thenComparing(Comparator.comparingInt(this::countTotalPenalty).reversed())
+                .thenComparing(Crew::getName);
+    }
+
+    private int countTotalPenalty(Crew crew) {
+        return Penalty.calculatePenaltyPoint(crew.countAttendanceStatusInDecember(AttendanceStatus.LATE),
+                crew.countAttendanceStatusInDecember(AttendanceStatus.ABSENT));
     }
 
     public void validateAttendanceRecordExistsByDate(String name, LocalDate date) {

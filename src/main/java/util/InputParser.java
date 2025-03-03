@@ -6,6 +6,14 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
 public class InputParser {
+    public static LocalDate parseToDecemberLocalDate(String input) {
+        try {
+            return LocalDate.of(2024, 12, Integer.parseInt(input));
+        } catch (DateTimeParseException | NumberFormatException e) {
+            throw new IllegalArgumentException(ErrorCode.INPUT_DATE_NOT_VALID.getMessage());
+        }
+    }
+
     public static LocalDate parseToLocalDate(String input) {
         try {
             return LocalDate.parse(input);

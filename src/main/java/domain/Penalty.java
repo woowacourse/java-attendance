@@ -1,8 +1,6 @@
 package domain;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public enum Penalty {
     EXPULSION(0, "제적", 6),
@@ -18,8 +16,8 @@ public enum Penalty {
     private final int threshold;
 
     Penalty(int priority, String message, int threshold) {
-        this.message = message;
         this.priority = priority;
+        this.message = message;
         this.threshold = threshold;
     }
 
@@ -32,7 +30,7 @@ public enum Penalty {
         return findPenaltyByPenaltyPoint(penaltyPoint);
     }
 
-    private static int calculatePenaltyPoint(int lateCount, int absentCount) {
+    public static int calculatePenaltyPoint(int lateCount, int absentCount) {
         return absentCount + (lateCount / LATE_TO_ABSENT_UNIT);
     }
 
@@ -41,12 +39,6 @@ public enum Penalty {
                 .filter(penalty -> penaltyPoint >= penalty.threshold)
                 .findFirst()
                 .orElse(NONE);
-    }
-
-    public static List<Penalty> valuesWithoutNone() {
-        List<Penalty> values = new ArrayList<>(List.of(Penalty.values()));
-        values.remove(Penalty.NONE);
-        return values;
     }
 
     public String getMessage() {

@@ -37,7 +37,7 @@ public enum AttendanceStatus {
     private static AttendanceStatus findByAttendTime(LocalTime standardTime, LocalTime attendTime) {
         if (isBetween(
                 attendTime,
-                standardTime,
+                CAMPUS_OPERATION_HOUR_START,
                 standardTime.plusMinutes(LATE_THRESHOLD_MINUTES))) {
             return ATTEND;
         }
