@@ -7,7 +7,7 @@ public enum AttendancePenalty {
     NONE("없음", 0),
     WARNING("경고", 2),
     COUNSELING("면담", 3),
-    EXPULSION("제적", 5);
+    EXPULSION("제적", 6);
 
     private final String penalty;
     private final int thresholdAbsenceCount;
@@ -20,7 +20,7 @@ public enum AttendancePenalty {
     public static AttendancePenalty findPenaltyByAbsentCount(long totalAbsentCount) {
         return Arrays.stream(AttendancePenalty.values())
                 .sorted(Comparator.comparingInt(AttendancePenalty::getThresholdAbsenceCount).reversed())
-                .filter(penalty -> totalAbsentCount > penalty.thresholdAbsenceCount)
+                .filter(penalty -> totalAbsentCount >= penalty.thresholdAbsenceCount)
                 .findFirst()
                 .orElse(NONE);
     }
