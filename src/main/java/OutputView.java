@@ -77,4 +77,8 @@ public class OutputView {
         System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n", parseOldDateTime, parseOldAttendanceType, parseNewDateTime,
                 parseNewAttendanceType);
     }
+
+    public static void printErrorMessage(String message) {
+        System.out.printf("[ERROR] %s%n", message);
+    }
 }

@@ -24,6 +24,14 @@ public class AttendanceSystemHandler {
     }
 
     public void run() {
+        try {
+            processAttendanceSystem();
+        } catch (Exception e) {
+            OutputView.printErrorMessage(e.getMessage());
+        }
+    }
+
+    private void processAttendanceSystem() {
         while (true) {
             String optionSign = InputView.readOption();
             FunctionOption functionOption = FunctionOption.findBySign(optionSign);
@@ -84,8 +92,7 @@ public class AttendanceSystemHandler {
     }
 
     private void checkExpulsionCandidates() {
-//        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-        LocalDate date = LocalDate.of(2024, 12, 31);
+        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
 
         List<PenaltyResultOfCrew> expulsionCandidates = attendanceSystemManager.findExpulsionCandidates(date);
         OutputView.printExpulsionCandidates(expulsionCandidates);
