@@ -43,6 +43,7 @@ public class Crew {
 
     public int countAttendanceStatusInDecember(AttendanceStatus targetStatus) {
         return (int) IntStream.rangeClosed(DECEMBER_DAYS_START, DECEMBER_DAYS_END)
+                .filter(day -> DayType.checkIsWorkingDay(LocalDate.of(2024, 12, day)))
                 .mapToObj(this::getAttendanceStatusByDay)
                 .filter(status -> status == targetStatus)
                 .count();
