@@ -5,12 +5,15 @@ import domain.AttendanceStatus;
 import domain.AttendanceStatusCount;
 import domain.Attendances;
 import domain.NickName;
+import domain.WarningCrew;
+import domain.WarningCrews;
 import domain.WarningStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -110,6 +113,37 @@ public class OutputView {
             return "경고";
         }
         return "";
+    }
+
+
+    public void printWarningCrews(WarningCrews warningCrews) {
+        System.out.println("제적 위험자 조회 결과");
+        String sortedWarningCrewsMessage = formatWarningCrews(warningCrews);
+        System.out.println(sortedWarningCrewsMessage);
+    }
+
+    private String formatWarningCrews(WarningCrews warningCrews) {
+        return warningCrews.getWarningCrews()
+                .stream()
+                .sorted(Comparator.comparing((WarningCrew warningCrew) -> {
+                            AttendanceStatusCount attendanceStatusCount = warningCrew.attendanceStatusCount();
+                            return attendanceStatusCount.getCount(AttendanceStatus.LATE)
+                                    + attendanceStatusCount.getCount(AttendanceStatus.ABSENT) * WarningStatus.LATE_FER_ABSENCE;
+                        })
+                        .reversed()
+                        .thenComparing(warningCrew -> warningCrew.nickName()
+                                .getNickName()))
+                .map(this::formatWarningCrew)
+                .collect(Collectors.joining());
+    }
+
+    private String formatWarningCrew(WarningCrew warningCrew) {
+        // - 빙티: 결석 3회, 지각 2회 (면담)
+        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)%n", warningCrew.nickName()
+                        .getNickName(), warningCrew.attendanceStatusCount()
+                        .getCount(AttendanceStatus.ABSENT), warningCrew.attendanceStatusCount()
+                        .getCount(AttendanceStatus.LATE),
+                formatWarningStatusShort(WarningStatus.calculateWarningStatus(warningCrew.attendanceStatusCount())));
     }
 
     public void printErrorMessage(RuntimeException e) {

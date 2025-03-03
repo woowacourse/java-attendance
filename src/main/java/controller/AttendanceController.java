@@ -4,6 +4,7 @@ import domain.AttendanceManager;
 import domain.AttendanceRecord;
 import domain.Attendances;
 import domain.NickName;
+import domain.WarningCrews;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class AttendanceController {
         commands.put("1", this::attendProcess);
         commands.put("2", this::editProcess);
         commands.put("3", this::checkAttendanceProcess);
+        commands.put("4", this::checkWarningCrewProcess);
     }
 
     public void start() {
@@ -133,6 +135,11 @@ public class AttendanceController {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }
         return nickName;
+    }
+
+    private void checkWarningCrewProcess(AttendanceManager attendanceManager) {
+        WarningCrews warningCrews = attendanceManager.findWarningCrews();
+        outputView.printWarningCrews(warningCrews);
     }
 
     private AttendanceManager loadAttendanceManager() {

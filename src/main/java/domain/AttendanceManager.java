@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import util.DateUtil;
 
 public class AttendanceManager {
@@ -87,6 +88,16 @@ public class AttendanceManager {
         if (time.isBefore(START_TIME) || time.isAfter(END_TIME)) {
             throw new IllegalArgumentException("등교 시간이 아닙니다.");
         }
+    }
+
+    public WarningCrews findWarningCrews() {
+        return attendanceManager.entrySet()
+                .stream()
+                .filter(entry -> WarningStatus.calculateWarningStatus(entry.getValue()
+                        .countAttendanceStatus()) != WarningStatus.CLEAR)
+                .map(entry -> new WarningCrew(entry.getKey(), entry.getValue()
+                        .countAttendanceStatus()))
+                .collect(Collectors.collectingAndThen(Collectors.toList(), WarningCrews::new));
     }
 
     @Override
