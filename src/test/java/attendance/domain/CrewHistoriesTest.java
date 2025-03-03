@@ -150,7 +150,7 @@ class CrewHistoriesTest {
         crewHistories.addHistory(nickname, attendanceTime);
 
         // When
-        Optional<LocalDateTime> history = crewHistories.findDateHistory(nickname, LocalDate.from(attendanceTime));
+        Optional<LocalDateTime> history = crewHistories.findHistoryOfDate(nickname, LocalDate.from(attendanceTime));
 
         // Then
         assertThat(history.get()).isEqualTo(attendanceTime);
@@ -165,7 +165,7 @@ class CrewHistoriesTest {
         LocalDate today = makeDecemberDate(4);
 
         // When
-        Optional<LocalDateTime> history = crewHistories.findDateHistory(nickname, today);
+        Optional<LocalDateTime> history = crewHistories.findHistoryOfDate(nickname, today);
 
         // Then
         assertThat(history.isEmpty()).isTrue();

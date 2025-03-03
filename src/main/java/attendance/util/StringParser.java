@@ -26,7 +26,7 @@ public class StringParser {
     public static Map<String, List<LocalDateTime>> parseFile(final List<String> lines) {
         Map<String, List<LocalDateTime>> result = new HashMap<>();
         for (String line : lines) {
-            addResult(line, result);
+            parseLine(line, result);
         }
         return result;
     }
@@ -39,7 +39,7 @@ public class StringParser {
         }
     }
 
-    private static void addResult(final String line, final Map<String, List<LocalDateTime>> result) {
+    private static void parseLine(final String line, final Map<String, List<LocalDateTime>> result) {
         String[] split = line.split(SPLITTER);
         String nickname = split[0];
         LocalDateTime attendanceTime = parseLocalDateTime(split[1]);

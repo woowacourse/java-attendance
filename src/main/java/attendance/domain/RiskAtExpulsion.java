@@ -11,6 +11,7 @@ public enum RiskAtExpulsion {
     private static final List<RiskAtExpulsion> SORTED_VALUES = Arrays.stream(RiskAtExpulsion.values())
             .sorted(Comparator.comparingInt(RiskAtExpulsion::getThreshold).reversed())
             .toList();
+
     private final int threshold;
 
     RiskAtExpulsion(final int threshold) {

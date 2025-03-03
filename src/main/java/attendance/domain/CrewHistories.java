@@ -46,7 +46,7 @@ public class CrewHistories {
         return crewHistory.modify(modifyingDateTime);
     }
 
-    public Optional<LocalDateTime> findDateHistory(final Nickname nickname, final LocalDate date) {
+    public Optional<LocalDateTime> findHistoryOfDate(final Nickname nickname, final LocalDate date) {
         CrewHistory crewHistory = histories.get(nickname);
         return crewHistory.find(date);
     }
