@@ -1,11 +1,7 @@
 package domain;
 
-import static domain.AttendanceStatus.PRESENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static util.parser.DateTimeParser.parseStringToDate;
-import static util.parser.DateTimeParser.parseStringToDateTime;
-import static util.parser.DateTimeParser.parseStringToTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,6 +11,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import util.parser.DateTimeParser;
 
 @Nested
 public class CrewTest {
@@ -28,13 +25,13 @@ public class CrewTest {
         void searchDecemberRecords() {
             Crew crew = new Crew();
             List<LocalDateTime> crewRecords = List.of(
-                parseStringToDateTime("2024-12-04 10:08"),
-                parseStringToDateTime("2024-12-05 10:02")
+                DateTimeParser.parseStringToDateTime("2024-12-04 10:08"),
+                DateTimeParser.parseStringToDateTime("2024-12-05 10:02")
             );
             crew.initializeDailyRecords(crewRecords);
 
-            LocalDate startDate = parseStringToDate("2024-12-01");
-            LocalDate endDate = parseStringToDate("2024-12-06"); // 2일, 3일을 결석으로 추가
+            LocalDate startDate = DateTimeParser.parseStringToDate("2024-12-01");
+            LocalDate endDate = DateTimeParser.parseStringToDate("2024-12-06"); // 2일, 3일을 결석으로 추가
             Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
 
             assertThat(records.size()).isEqualTo(4);
@@ -45,13 +42,13 @@ public class CrewTest {
         void searchMarchRecords() {
             Crew crew = new Crew();
             List<LocalDateTime> crewRecords = List.of(
-                parseStringToDateTime("2024-12-04 10:08"),
-                parseStringToDateTime("2024-12-05 10:02")
+                DateTimeParser.parseStringToDateTime("2024-12-04 10:08"),
+                DateTimeParser.parseStringToDateTime("2024-12-05 10:02")
             );
             crew.initializeDailyRecords(crewRecords);
 
-            LocalDate startDate = parseStringToDate("2025-03-01");
-            LocalDate endDate = parseStringToDate("2025-03-02");
+            LocalDate startDate = DateTimeParser.parseStringToDate("2025-03-01");
+            LocalDate endDate = DateTimeParser.parseStringToDate("2025-03-02");
             Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
 
             assertThat(records.size()).isEqualTo(0);
@@ -62,14 +59,14 @@ public class CrewTest {
         void searchRecordAfterAttendance() {
             Crew crew = new Crew();
             List<LocalDateTime> crewRecords = List.of(
-                parseStringToDateTime("2024-12-04 10:08"),
-                parseStringToDateTime("2024-12-05 10:02")
+                DateTimeParser.parseStringToDateTime("2024-12-04 10:08"),
+                DateTimeParser.parseStringToDateTime("2024-12-05 10:02")
             );
             crew.initializeDailyRecords(crewRecords);
 
-            crew.addDailyRecord(parseStringToDateTime("2025-02-04 10:08"));
-            LocalDate startDate = parseStringToDate("2025-02-01");
-            LocalDate endDate = parseStringToDate("2025-02-05");// 3일을 결석으로 추가
+            crew.addDailyRecord(DateTimeParser.parseStringToDateTime("2025-02-04 10:08"));
+            LocalDate startDate = DateTimeParser.parseStringToDate("2025-02-01");
+            LocalDate endDate = DateTimeParser.parseStringToDate("2025-02-05");// 3일을 결석으로 추가
             Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
 
             assertThat(records.size()).isEqualTo(2);
@@ -85,15 +82,15 @@ public class CrewTest {
         void separateCrew() {
             Crew crew = new Crew();
             List<LocalDateTime> crewRecords = List.of(
-                parseStringToDateTime("2024-12-04 10:08"),
-                parseStringToDateTime("2024-12-05 10:02")
+                DateTimeParser.parseStringToDateTime("2024-12-04 10:08"),
+                DateTimeParser.parseStringToDateTime("2024-12-05 10:02")
             );
             crew.initializeDailyRecords(crewRecords);
 
-            LocalDate date1 = parseStringToDate("2024-12-04");
-            LocalTime time1 = parseStringToTime("10:08");
-            LocalDate date2 = parseStringToDate("2024-12-05");
-            LocalTime time2 = parseStringToTime("10:02");
+            LocalDate date1 = DateTimeParser.parseStringToDate("2024-12-04");
+            LocalTime time1 = DateTimeParser.parseStringToTime("10:08");
+            LocalDate date2 = DateTimeParser.parseStringToDate("2024-12-05");
+            LocalTime time2 = DateTimeParser.parseStringToTime("10:02");
 
             assertAll(
                 () -> assertThat(crew.findRecordByDate(date1)).isEqualTo(
@@ -107,13 +104,13 @@ public class CrewTest {
         @DisplayName("출석 날짜와 시간에 대한 정보를 저장할 수 있다.")
         void addRecord() {
             Crew crew = new Crew();
-            LocalDateTime dateTime = parseStringToDateTime("2024-12-09 10:02");
+            LocalDateTime dateTime = DateTimeParser.parseStringToDateTime("2024-12-09 10:02");
 
             DailyRecord record = crew.addDailyRecord(dateTime);
 
             assertAll(
                 () -> assertThat(record.getAttendedTime()).isEqualTo(dateTime.toLocalTime()),
-                () -> assertThat(record.getStatus()).isEqualTo(PRESENT)
+                () -> assertThat(record.getStatus()).isEqualTo(AttendanceStatus.PRESENT)
             );
         }
     }
@@ -127,16 +124,16 @@ public class CrewTest {
         void editLateRecord() {
             Crew crew = new Crew();
             List<LocalDateTime> crewRecords = List.of(
-                parseStringToDateTime("2024-12-04 10:08")
+                DateTimeParser.parseStringToDateTime("2024-12-04 10:08")
             );
             crew.initializeDailyRecords(crewRecords);
-            LocalDateTime editedDateTime = parseStringToDateTime("2024-12-04 10:02");
+            LocalDateTime editedDateTime = DateTimeParser.parseStringToDateTime("2024-12-04 10:02");
 
             DailyRecord editedRecord = crew.updateDailyRecord(editedDateTime);
 
             assertAll(
                 () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime()),
-                () -> assertThat(editedRecord.getStatus()).isEqualTo(PRESENT)
+                () -> assertThat(editedRecord.getStatus()).isEqualTo(AttendanceStatus.PRESENT)
             );
         }
 
@@ -145,16 +142,16 @@ public class CrewTest {
         void editAbsentRecord() {
             Crew crew = new Crew();
             List<LocalDateTime> crewRecords = List.of(
-                parseStringToDateTime("2024-12-04 10:40")
+                DateTimeParser.parseStringToDateTime("2024-12-04 10:40")
             );
             crew.initializeDailyRecords(crewRecords);
-            LocalDateTime editedDateTime = parseStringToDateTime("2024-12-04 10:02");
+            LocalDateTime editedDateTime = DateTimeParser.parseStringToDateTime("2024-12-04 10:02");
 
             DailyRecord editedRecord = crew.updateDailyRecord(editedDateTime);
 
             assertAll(
                 () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime()),
-                () -> assertThat(editedRecord.getStatus()).isEqualTo(PRESENT)
+                () -> assertThat(editedRecord.getStatus()).isEqualTo(AttendanceStatus.PRESENT)
             );
         }
     }

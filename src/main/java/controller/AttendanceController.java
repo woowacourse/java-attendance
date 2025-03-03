@@ -1,16 +1,5 @@
 package controller;
 
-import static domain.AttendanceStatus.ABSENT;
-import static domain.AttendanceStatus.LATE;
-import static domain.Feature.ATTENDANCE_CHECK;
-import static domain.Feature.ATTENDANCE_EDIT;
-import static domain.Feature.CREW_RECORDS_CHECK;
-import static domain.Feature.EXPELLED_WARNING_CHECK;
-import static util.loader.FileLoader.loadCSV;
-import static util.parser.DateTimeParser.parseIntegerToDate;
-import static util.parser.DateTimeParser.parseStringToDate;
-import static util.parser.DateTimeParser.parseStringToTime;
-
 import domain.AttendanceBook;
 import domain.AttendanceStatus;
 import domain.Coach;
@@ -22,12 +11,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
+import util.loader.FileLoader;
+import util.parser.DateTimeParser;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
 
-    private static final LocalDate localDate = parseStringToDate("2024-12-13");
+    private static final LocalDate localDate = DateTimeParser.parseStringToDate("2024-12-13");
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -43,14 +34,15 @@ public class AttendanceController {
 
     public void start() {
         handleException(() -> {
-            attendanceBook.initializeCrewRecords(loadCSV("src/main/resources/attendances.csv"));
+            attendanceBook.initializeCrewRecords(
+                FileLoader.loadCSV("src/main/resources/attendances.csv"));
             executeFeature();
         });
     }
 
     protected void attendanceCheck() {
         String name = inputView.readAttendedName();
-        LocalTime time = parseStringToTime(inputView.readAttendedTime());
+        LocalTime time = DateTimeParser.parseStringToTime(inputView.readAttendedTime());
 
         DailyRecord record = coach.attendCrew(name, LocalDateTime.of(localDate, time));
         outputView.printDateTimeRecord(localDate, record);
@@ -58,9 +50,9 @@ public class AttendanceController {
 
     protected void attendanceEdit() {
         String name = inputView.readEditedName();
-        LocalDate date = parseIntegerToDate(localDate.getYear(), localDate.getMonthValue(),
-            Integer.parseInt(inputView.readEditedDay()));
-        LocalTime time = parseStringToTime(inputView.readEditedTime());
+        LocalDate date = DateTimeParser.parseIntegerToDate(localDate.getYear(),
+            localDate.getMonthValue(), Integer.parseInt(inputView.readEditedDay()));
+        LocalTime time = DateTimeParser.parseStringToTime(inputView.readEditedTime());
 
         DailyRecord oldRecord = attendanceBook.findCrewByName(name).findRecordByDate(date);
         DailyRecord newRecord = coach.editCrew(name, LocalDateTime.of(date, time));
@@ -74,7 +66,8 @@ public class AttendanceController {
         Crew crew = attendanceBook.findCrewByName(name);
         Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, localDate);
         Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
-        Penalty penalty = Penalty.of(statisticsResult.get(LATE), statisticsResult.get(ABSENT));
+        Penalty penalty = Penalty.of(statisticsResult.get(AttendanceStatus.LATE),
+            statisticsResult.get(AttendanceStatus.ABSENT));
 
         outputView.printCrewRecords(name, records);
         outputView.printStatistics(statisticsResult);
@@ -90,8 +83,8 @@ public class AttendanceController {
             Crew crew = warningCrews.get(name);
             Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, localDate);
             Map<AttendanceStatus, Integer> statistic = AttendanceStatus.countStatus(records);
-            int lateCount = statistic.get(LATE);
-            int absentCount = statistic.get(ABSENT);
+            int lateCount = statistic.get(AttendanceStatus.LATE);
+            int absentCount = statistic.get(AttendanceStatus.ABSENT);
 
             Penalty penalty = Penalty.of(lateCount, absentCount);
             outputView.printWarningCrew(name, absentCount, lateCount, penalty);
@@ -100,10 +93,10 @@ public class AttendanceController {
 
     protected Runnable selectFeature(String featureNumber) {
         Map<Feature, Runnable> features = Map.of(
-            ATTENDANCE_CHECK, this::attendanceCheck,
-            ATTENDANCE_EDIT, this::attendanceEdit,
-            CREW_RECORDS_CHECK, this::crewRecordsCheck,
-            EXPELLED_WARNING_CHECK, this::expelledWarningCheck
+            Feature.ATTENDANCE_CHECK, this::attendanceCheck,
+            Feature.ATTENDANCE_EDIT, this::attendanceEdit,
+            Feature.CREW_RECORDS_CHECK, this::crewRecordsCheck,
+            Feature.EXPELLED_WARNING_CHECK, this::expelledWarningCheck
         );
 
         Feature.validateProvided(featureNumber);

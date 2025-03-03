@@ -1,12 +1,12 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static util.parser.DateTimeParser.parseStringToDate;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import util.parser.DateTimeParser;
 
 @Nested
 public class HolidayTest {
@@ -18,21 +18,21 @@ public class HolidayTest {
         @Test
         @DisplayName("평일을 확인한다.")
         void checkWeekday() {
-            LocalDate date = parseStringToDate("2024-12-04");
+            LocalDate date = DateTimeParser.parseStringToDate("2024-12-04");
             assertThat(Holiday.isHoliday(date)).isFalse();
         }
 
         @Test
         @DisplayName("주말을 확인한다.")
         void checkWeekend() {
-            LocalDate date = parseStringToDate("2024-12-08");
+            LocalDate date = DateTimeParser.parseStringToDate("2024-12-08");
             assertThat(Holiday.isHoliday(date)).isTrue();
         }
 
         @Test
         @DisplayName("공휴일을 확인한다.")
         void checkHoliday() {
-            LocalDate date = parseStringToDate("2024-12-25");
+            LocalDate date = DateTimeParser.parseStringToDate("2024-12-25");
             assertThat(Holiday.isHoliday(date)).isTrue();
         }
     }

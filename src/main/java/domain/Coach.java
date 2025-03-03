@@ -1,10 +1,9 @@
 package domain;
 
-import static util.parser.DateTimeParser.parseStringToTime;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import util.parser.DateTimeParser;
 
 public class Coach {
 
@@ -17,8 +16,8 @@ public class Coach {
 
     public Coach(AttendanceBook attendanceBook) {
         this.attendanceBook = attendanceBook;
-        this.operatingStart = parseStringToTime("08:00");
-        this.operatingEnd = parseStringToTime("23:00");
+        this.operatingStart = DateTimeParser.parseStringToTime("08:00");
+        this.operatingEnd = DateTimeParser.parseStringToTime("23:00");
     }
 
     public DailyRecord attendCrew(String name, LocalDateTime dateTime) {

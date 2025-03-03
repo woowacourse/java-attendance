@@ -1,11 +1,6 @@
 package domain;
 
-import static domain.AttendanceStatus.ABSENT;
-import static domain.AttendanceStatus.LATE;
-import static domain.AttendanceStatus.PRESENT;
 import static org.assertj.core.api.Assertions.assertThat;
-import static util.parser.DateTimeParser.parseStringToDate;
-import static util.parser.DateTimeParser.parseStringToDateTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,6 +14,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import util.parser.DateTimeParser;
 
 @Nested
 public class AttendanceStatusTest {
@@ -35,7 +31,7 @@ public class AttendanceStatusTest {
             LocalTime time = dateTime.toLocalTime();
 
             AttendanceStatus status = AttendanceStatus.of(date.getDayOfWeek(), time);
-            assertThat(status).isEqualTo(PRESENT);
+            assertThat(status).isEqualTo(AttendanceStatus.PRESENT);
         }
 
         static Stream<LocalDateTime> providePresentTime() {
@@ -54,7 +50,7 @@ public class AttendanceStatusTest {
             LocalTime time = dateTime.toLocalTime();
 
             AttendanceStatus status = AttendanceStatus.of(date.getDayOfWeek(), time);
-            assertThat(status).isEqualTo(LATE);
+            assertThat(status).isEqualTo(AttendanceStatus.LATE);
         }
 
         static Stream<LocalDateTime> provideLateTime() {
@@ -72,7 +68,7 @@ public class AttendanceStatusTest {
             LocalTime time = dateTime.toLocalTime();
 
             AttendanceStatus status = AttendanceStatus.of(date.getDayOfWeek(), time);
-            assertThat(status).isEqualTo(ABSENT);
+            assertThat(status).isEqualTo(AttendanceStatus.ABSENT);
         }
 
         static Stream<LocalDateTime> provideAbsentTime() {
@@ -93,13 +89,13 @@ public class AttendanceStatusTest {
         @BeforeEach
         void initializeRecord() {
             List<LocalDateTime> crewRecords = List.of(
-                parseStringToDateTime("2024-12-02 13:08"), // 지각
-                parseStringToDateTime("2024-12-03 10:02"), // 출석
-                parseStringToDateTime("2024-12-04 10:32"), // 결석
-                parseStringToDateTime("2024-12-05 09:30"), // 출석
-                parseStringToDateTime("2024-12-06 11:02"), // 결석
+                DateTimeParser.parseStringToDateTime("2024-12-02 13:08"), // 지각
+                DateTimeParser.parseStringToDateTime("2024-12-03 10:02"), // 출석
+                DateTimeParser.parseStringToDateTime("2024-12-04 10:32"), // 결석
+                DateTimeParser.parseStringToDateTime("2024-12-05 09:30"), // 출석
+                DateTimeParser.parseStringToDateTime("2024-12-06 11:02"), // 결석
                 // 9일 - 결석
-                parseStringToDateTime("2024-12-10 10:02") // 출석
+                DateTimeParser.parseStringToDateTime("2024-12-10 10:02") // 출석
             );
             crew.initializeDailyRecords(crewRecords);
         }
@@ -107,34 +103,34 @@ public class AttendanceStatusTest {
         @Test
         @DisplayName("출석 횟수를 계산할 수 있다.")
         void calculatePresent() {
-            LocalDate startDate = parseStringToDate("2024-12-01");
-            LocalDate endDate = parseStringToDate("2024-12-11");
+            LocalDate startDate = DateTimeParser.parseStringToDate("2024-12-01");
+            LocalDate endDate = DateTimeParser.parseStringToDate("2024-12-11");
             Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
             Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
 
-            assertThat(statisticsResult.get(PRESENT)).isEqualTo(3);
+            assertThat(statisticsResult.get(AttendanceStatus.PRESENT)).isEqualTo(3);
         }
 
         @Test
         @DisplayName("지각 횟수를 계산할 수 있다.")
         void calculateLate() {
-            LocalDate startDate = parseStringToDate("2024-12-01");
-            LocalDate endDate = parseStringToDate("2024-12-11");
+            LocalDate startDate = DateTimeParser.parseStringToDate("2024-12-01");
+            LocalDate endDate = DateTimeParser.parseStringToDate("2024-12-11");
             Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
             Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
 
-            assertThat(statisticsResult.get(LATE)).isEqualTo(1);
+            assertThat(statisticsResult.get(AttendanceStatus.LATE)).isEqualTo(1);
         }
 
         @Test
         @DisplayName("결석 횟수를 계산할 수 있다.")
         void calculateAbsent() {
-            LocalDate startDate = parseStringToDate("2024-12-01");
-            LocalDate endDate = parseStringToDate("2024-12-11");
+            LocalDate startDate = DateTimeParser.parseStringToDate("2024-12-01");
+            LocalDate endDate = DateTimeParser.parseStringToDate("2024-12-11");
             Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
             Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
 
-            assertThat(statisticsResult.get(ABSENT)).isEqualTo(3);
+            assertThat(statisticsResult.get(AttendanceStatus.ABSENT)).isEqualTo(3);
         }
     }
 }

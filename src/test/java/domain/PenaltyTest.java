@@ -1,9 +1,5 @@
 package domain;
 
-import static domain.Penalty.COUNSELING;
-import static domain.Penalty.EXPELLED;
-import static domain.Penalty.PASS;
-import static domain.Penalty.WARNING;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Stream;
@@ -25,7 +21,7 @@ public class PenaltyTest {
         @DisplayName("제적 대상자를 반환한다.")
         void pickExpelled(int lateCount, int absentCount) {
             Penalty penalty = Penalty.of(lateCount, absentCount);
-            assertThat(penalty).isEqualTo(EXPELLED);
+            assertThat(penalty).isEqualTo(Penalty.EXPELLED);
         }
 
         static Stream<Arguments> provideExpelledCount() {
@@ -40,7 +36,7 @@ public class PenaltyTest {
         @DisplayName("면담 대상자를 반환한다.")
         void pickCounseling(int lateCount, int absentCount) {
             Penalty penalty = Penalty.of(lateCount, absentCount);
-            assertThat(penalty).isEqualTo(COUNSELING);
+            assertThat(penalty).isEqualTo(Penalty.COUNSELING);
         }
 
         static Stream<Arguments> provideCounselingCount() {
@@ -56,7 +52,7 @@ public class PenaltyTest {
         @DisplayName("경고 대상자를 반환한다.")
         void pickWarning(int lateCount, int absentCount) {
             Penalty penalty = Penalty.of(lateCount, absentCount);
-            assertThat(penalty).isEqualTo(WARNING);
+            assertThat(penalty).isEqualTo(Penalty.WARNING);
         }
 
         static Stream<Arguments> provideWarningCount() {
@@ -72,7 +68,7 @@ public class PenaltyTest {
         @DisplayName("패스 대상자를 반환한다.")
         void pickPass(int lateCount, int absentCount) {
             Penalty penalty = Penalty.of(lateCount, absentCount);
-            assertThat(penalty).isEqualTo(PASS);
+            assertThat(penalty).isEqualTo(Penalty.PASS);
         }
 
         static Stream<Arguments> providePassCount() {

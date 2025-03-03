@@ -1,13 +1,12 @@
 package domain;
 
-import static util.parser.DateTimeParser.parseIntegerToTime;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import util.parser.DateTimeParser;
 
 public enum AttendanceStatus {
     PRESENT("출석", 0),
@@ -47,20 +46,20 @@ public enum AttendanceStatus {
     }
 
     private static AttendanceStatus findStatusOfMonday(LocalTime time) {
-        if (time.isBefore(parseIntegerToTime(13, LATE.boundaryMinute))) {
+        if (time.isBefore(DateTimeParser.parseIntegerToTime(13, LATE.boundaryMinute))) {
             return PRESENT;
         }
-        if (time.isBefore(parseIntegerToTime(13, ABSENT.boundaryMinute))) {
+        if (time.isBefore(DateTimeParser.parseIntegerToTime(13, ABSENT.boundaryMinute))) {
             return LATE;
         }
         return ABSENT;
     }
 
     private static AttendanceStatus findStatusOfDefault(LocalTime time) {
-        if (time.isBefore(parseIntegerToTime(10, LATE.boundaryMinute))) {
+        if (time.isBefore(DateTimeParser.parseIntegerToTime(10, LATE.boundaryMinute))) {
             return PRESENT;
         }
-        if (time.isBefore(parseIntegerToTime(10, ABSENT.boundaryMinute))) {
+        if (time.isBefore(DateTimeParser.parseIntegerToTime(10, ABSENT.boundaryMinute))) {
             return LATE;
         }
         return ABSENT;

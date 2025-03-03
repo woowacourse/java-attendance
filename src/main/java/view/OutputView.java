@@ -1,8 +1,5 @@
 package view;
 
-import static domain.AttendanceStatus.ABSENT;
-import static domain.AttendanceStatus.LATE;
-
 import domain.AttendanceStatus;
 import domain.DailyRecord;
 import domain.Penalty;
@@ -73,7 +70,7 @@ public class OutputView {
     }
 
     public void printWarningCrew(String name, int absent, int late, Penalty penalty) {
-        System.out.printf(WARNING_CREW_FORMAT, name, ABSENT.getName(), absent,
-            LATE.getName(), late, penalty.getName());
+        System.out.printf(WARNING_CREW_FORMAT, name, AttendanceStatus.ABSENT.getName(), absent,
+            AttendanceStatus.LATE.getName(), late, penalty.getName());
     }
 }

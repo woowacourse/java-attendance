@@ -1,9 +1,5 @@
 package domain;
 
-import static domain.AttendanceStatus.ABSENT;
-import static domain.AttendanceStatus.LATE;
-import static util.parser.DateTimeParser.parseStringToDateTime;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import util.parser.DateTimeParser;
 
 public class AttendanceBook {
 
@@ -43,34 +40,36 @@ public class AttendanceBook {
                 Crew crew = entry.getValue();
                 Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
                 Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
-                return Penalty.isNotPass(statisticsResult.get(LATE), statisticsResult.get(ABSENT));
+                return Penalty.isNotPass(statisticsResult.get(AttendanceStatus.LATE),
+                    statisticsResult.get(AttendanceStatus.ABSENT));
             })
             .sorted(Comparator
                 .comparingInt((Map.Entry<String, Crew> entry) -> {
                     Crew crew = entry.getValue();
-                    Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
+                    Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate,
+                        endDate);
                     Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
-                    return (statisticsResult.get(LATE) / 3) + statisticsResult.get(ABSENT);
+                    return (statisticsResult.get(AttendanceStatus.LATE) / 3) + statisticsResult.get(
+                        AttendanceStatus.ABSENT);
                 }).reversed()
                 .thenComparing((Map.Entry<String, Crew> entry) -> {
                     Crew crew = entry.getValue();
                     Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
                     Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
-                    return statisticsResult.get(LATE) % 3;
+                    return statisticsResult.get(AttendanceStatus.LATE) % 3;
                 }, Comparator.reverseOrder())
                 .thenComparing((Map.Entry<String, Crew> entry) -> {
                     Crew crew = entry.getValue();
                     Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
                     Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
-                    return statisticsResult.get(ABSENT);
+                    return statisticsResult.get(AttendanceStatus.ABSENT);
                 }, Comparator.reverseOrder())
                 .thenComparing(Map.Entry::getKey)
             )
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 Map.Entry::getValue,
-                (existing, replacement) -> existing,
-                LinkedHashMap::new
+                (existing, replacement) -> existing, LinkedHashMap::new
             ));
     }
 
@@ -95,7 +94,7 @@ public class AttendanceBook {
         while (scanner.hasNextLine()) {
             String[] attributes = scanner.nextLine().split(",");
             String name = attributes[0];
-            LocalDateTime dateTime = parseStringToDateTime(attributes[1]);
+            LocalDateTime dateTime = DateTimeParser.parseStringToDateTime(attributes[1]);
 
             result.putIfAbsent(name, new ArrayList<>());
             result.get(name).add(dateTime);
