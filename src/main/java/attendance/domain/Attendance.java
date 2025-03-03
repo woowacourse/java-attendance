@@ -7,16 +7,11 @@ import attendance.util.FormattedErrorMessage;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class Attendance {
+public record Attendance(LocalDate attendDate, LocalTime attendTime) {
 
-    private final LocalDate attendDate;
-    private final LocalTime attendTime;
-
-    public Attendance(LocalDate attendDate, LocalTime attendTime) {
+    public Attendance {
         validateAttendDate(attendDate);
         validateAttendTime(attendTime);
-        this.attendDate = attendDate;
-        this.attendTime = attendTime;
     }
 
     private void validateAttendDate(LocalDate attendDate) {
@@ -50,13 +45,5 @@ public class Attendance {
     public boolean isSameYearAndMonth(LocalDate inputDate) {
         return attendDate.getYear() == inputDate.getYear()
                 && attendDate.getMonthValue() == inputDate.getMonthValue();
-    }
-
-    public LocalDate getAttendDate() {
-        return attendDate;
-    }
-
-    public LocalTime getAttendTime() {
-        return attendTime;
     }
 }

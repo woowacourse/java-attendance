@@ -44,7 +44,7 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameYearAndMonth(today))
                 .filter(attendance ->  !attendance.isSameDate(today))
-                .sorted(Comparator.comparing(Attendance::getAttendDate))
+                .sorted(Comparator.comparing(Attendance::attendDate))
                 .toList();
     }
 }

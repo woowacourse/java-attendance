@@ -20,24 +20,24 @@ public class OutputView {
 
     public static void printRecordAttendanceResult(Attendance attendance) {
         System.out.printf("%n%02d월 %02d일 %s %02d:%02d (%s)%n%n",
-                attendance.getAttendDate().getMonthValue(),
-                attendance.getAttendDate().getDayOfMonth(),
-                attendance.getAttendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                attendance.getAttendTime().getHour(),
-                attendance.getAttendTime().getMinute(),
+                attendance.attendDate().getMonthValue(),
+                attendance.attendDate().getDayOfMonth(),
+                attendance.attendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                attendance.attendTime().getHour(),
+                attendance.attendTime().getMinute(),
                 attendance.determineStatus().getName());
     }
 
     public static void printEditAttendanceResult(Attendance oldAttendance, Attendance newAttendance) {
         System.out.printf("%n%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!%n%n",
-                oldAttendance.getAttendDate().getMonthValue(),
-                oldAttendance.getAttendDate().getDayOfMonth(),
-                oldAttendance.getAttendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                oldAttendance.getAttendTime().getHour(),
-                oldAttendance.getAttendTime().getMinute(),
+                oldAttendance.attendDate().getMonthValue(),
+                oldAttendance.attendDate().getDayOfMonth(),
+                oldAttendance.attendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                oldAttendance.attendTime().getHour(),
+                oldAttendance.attendTime().getMinute(),
                 oldAttendance.determineStatus().getName(),
-                newAttendance.getAttendTime().getHour(),
-                newAttendance.getAttendTime().getMinute(),
+                newAttendance.attendTime().getHour(),
+                newAttendance.attendTime().getMinute(),
                 newAttendance.determineStatus().getName());
     }
 
@@ -62,11 +62,11 @@ public class OutputView {
 
     private static void printExistRecords(Attendance attendance) {
         System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)%n",
-                attendance.getAttendDate().getMonthValue(),
-                attendance.getAttendDate().getDayOfMonth(),
-                attendance.getAttendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                attendance.getAttendTime().getHour(),
-                attendance.getAttendTime().getMinute(),
+                attendance.attendDate().getMonthValue(),
+                attendance.attendDate().getDayOfMonth(),
+                attendance.attendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                attendance.attendTime().getHour(),
+                attendance.attendTime().getMinute(),
                 attendance.determineStatus().getName());
     }
 
