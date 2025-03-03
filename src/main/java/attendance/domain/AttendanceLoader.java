@@ -10,6 +10,7 @@ public class AttendanceLoader {
         LocalDateTime attendance = LocalDateTime.parse(contents.getLast().replace(" ", "T"));
 
         AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.addCrew(contents.getFirst());
         attendanceBook.addAttendance(contents.getFirst(), attendance);
 
         return attendanceBook;
@@ -21,6 +22,7 @@ public class AttendanceLoader {
             List<String> contents = Arrays.asList(line.split(","));
             LocalDateTime attendance = LocalDateTime.parse(contents.getLast().replace(" ", "T"));
 
+            attendanceBook.addCrew(contents.getFirst());
             attendanceBook.addAttendance(contents.getFirst(), attendance);
         }
         return attendanceBook;
