@@ -1,5 +1,6 @@
 package view;
 
+import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -7,6 +8,8 @@ import java.util.Scanner;
 public class InputView {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final int START_DATE = 1;
+    private static final int END_DATE = 31;
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -39,13 +42,46 @@ public class InputView {
         return parseToLocalTime(inputTime);
     }
 
+    public String readUpdateName() {
+        System.out.println("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        String inputName = readLine();
+        validateNullOrEmpty(inputName);
+        return inputName;
+    }
+
+    public int readUpdateDate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        String inputDate = readLine();
+        validateNullOrEmpty(inputDate);
+        return validateDateRange(inputDate);
+    }
+
+    public LocalTime readUpdateTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        String inputTime = readLine();
+        validateNullOrEmpty(inputTime);
+
+        return parseToLocalTime(inputTime);
+    }
+
     private void validateNullOrEmpty(final String input) {
         if (input.isBlank()) {
             throw new IllegalArgumentException("빈 값을 입력할 수 없습니다.");
         }
     }
 
+    private int validateDateRange(final String inputDate) {
+        if (Integer.parseInt(inputDate) < START_DATE || Integer.parseInt(inputDate) > END_DATE) {
+            throw new IllegalArgumentException("존재하지 않는 날짜(일) 입니다.");
+        }
+        return Integer.parseInt(inputDate);
+    }
+
     private LocalTime parseToLocalTime(final String input) {
-        return LocalTime.parse(input, DATE_TIME_FORMATTER);
+        try {
+            return LocalTime.parse(input, DATE_TIME_FORMATTER);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("시간은 24시 형식으로 입력해야 합니다.");
+        }
     }
 }

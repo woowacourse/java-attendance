@@ -67,6 +67,23 @@ public class AttendanceController {
     }
 
     void attendanceUpdate() {
+        String name = inputView.readUpdateName();
+        int updateDate = inputView.readUpdateDate();
+        LocalTime updateTime = inputView.readUpdateTime();
+
+        LocalDateTime updateLocalDateTime = dateProvider.createLocalDateTime(updateDate, updateTime);
+
+        LocalDateTime beforeAttendance = attendances.getAttendanceRecordBy(name, updateLocalDateTime.toLocalDate());
+        AttendanceState beforeAttendanceState = AttendanceState.findStateBy(beforeAttendance);
+
+        attendances.updateAttendance(name, updateLocalDateTime);
+
+        LocalDateTime afterAttendance = attendances.getAttendanceRecordBy(name, updateLocalDateTime.toLocalDate());
+        AttendanceState afterAttendanceState = AttendanceState.findStateBy(afterAttendance);
+
+        outputView.printUpdateAttendanceRecord(beforeAttendance, beforeAttendanceState, afterAttendance,
+                afterAttendanceState);
+
 
     }
 

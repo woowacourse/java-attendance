@@ -46,6 +46,10 @@ public class DateProvider {
         return LocalDateTime.of(getYear(), getMonth(), getDayOfMonth(), localTime.getHour(), localTime.getMinute());
     }
 
+    public LocalDateTime createLocalDateTime(final int date, final LocalTime localTime) {
+        return LocalDateTime.of(getYear(), getMonth(), date, localTime.getHour(), localTime.getMinute());
+    }
+
     public LocalDate getLocalDate() {
         return localDate;
     }

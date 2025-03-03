@@ -35,4 +35,26 @@ public class OutputView {
     public void printExit() {
         System.out.println("프로그램을 종료합니다.");
     }
+
+    public void printUpdateAttendanceRecord(final LocalDateTime beforeAttendance,
+                                            final AttendanceState beforeAttendanceState,
+                                            final LocalDateTime afterAttendance,
+                                            final AttendanceState afterAttendanceState) {
+        String updateAttendanceResultFormat = String.format(
+                "\n%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!",
+                beforeAttendance.getMonthValue(),
+                beforeAttendance.getDayOfMonth(),
+                Calender.findBy(beforeAttendance).getDescription(),
+                beforeAttendance.getHour(),
+                beforeAttendance.getMinute(),
+                beforeAttendanceState.getState(),
+                afterAttendance.getHour(),
+                afterAttendance.getMinute(),
+                afterAttendanceState.getState());
+
+        System.out.println(updateAttendanceResultFormat);
+
+    }
+
+
 }
