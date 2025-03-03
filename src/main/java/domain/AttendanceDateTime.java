@@ -17,7 +17,7 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
     private final LocalDateTime dateTime;
 
     private AttendanceDateTime(final LocalDateTime dateTime) {
-        HolidayCalendar.validateHoliday(dateTime.toLocalDate());
+        AttendanceDate.validate(dateTime.toLocalDate());
         this.dateTime = dateTime;
     }
 
@@ -42,10 +42,6 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
         } catch (final DateTimeParseException e) {
             throw new IllegalArgumentException("날짜 형식은 yyyy-mm-dd- hh:mm으로 작성해주세요.");
         }
-    }
-
-    public void validateDateTime(LocalDateTime dateTime) {
-
     }
 
     public boolean isEqualToDayOfWeek(final String inputDayOfWeek) {
