@@ -56,11 +56,40 @@ public class AttendanceHistoryTest {
         Assertions.assertThat(result).isEqualTo(expectedResult);
     }
 
+    @ParameterizedTest
+    @MethodSource("attendanceStatusAndResult")
+    void 입력_받은_출석_상태에_대한_기록_횟수를_반환한다(final AttendanceStatus attendanceStatus, final int expectedResult) {
+
+        // given
+        final AttendanceHistory attendanceHistory = new AttendanceHistory();
+        attendanceHistory.add(new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 5));
+        attendanceHistory.add(new AttendanceTime(LocalDate.of(2025, 2, 26), 10, 6));
+        attendanceHistory.add(new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 30));
+        attendanceHistory.add(new AttendanceTime(LocalDate.of(2025, 2, 28), 10, 31));
+        attendanceHistory.add(new AttendanceTime(LocalDate.of(2025, 3, 3), 13, 31));
+        attendanceHistory.add(new AttendanceTime(LocalDate.of(2025, 3, 4), 10, 31));
+
+        // when
+        final int result = attendanceHistory.getAttendanceStatusCount(attendanceStatus);
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
     public static Stream<Arguments> dateAndResult() {
 
         return Stream.of(
                 Arguments.of(LocalDate.of(2025, 3, 3), true),
                 Arguments.of(LocalDate.of(2025, 3, 4), false)
+        );
+    }
+
+    public static Stream<Arguments> attendanceStatusAndResult() {
+
+        return Stream.of(
+                Arguments.of(AttendanceStatus.ATTEND, 1),
+                Arguments.of(AttendanceStatus.LATE, 2),
+                Arguments.of(AttendanceStatus.ABSENT, 3)
         );
     }
 }
