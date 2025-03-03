@@ -6,27 +6,17 @@ import domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class AttendancePolicyTest {
-
-    private LocalDate weekday;
-    private LocalDate weekend;
-
-    @BeforeEach
-    void setUp() {
-        weekday = LocalDate.of(2024, 12, 13);
-        weekend = LocalDate.of(2024, 12, 14);
-    }
+public class AttendancePolicyTest extends BaseAttendanceTest {
 
     @Test
     void 평일_운영_시간에_정상적으로_출석한다() {
         LocalTime todayTime = LocalTime.of(10, 0);
-        LocalDateTime attendanceTime = LocalDateTime.of(weekday, todayTime);
+        LocalDateTime attendanceTime = LocalDateTime.of(DEC_13, todayTime);
 
         AttendanceStatus status = new AttendancePolicy().getAttendanceStatus(attendanceTime);
         assertThat(status.getStatus()).isEqualTo("출석");
@@ -34,7 +24,7 @@ public class AttendancePolicyTest {
 
     @Test
     void 출석_날짜가_주말이면_예외가_발생한다() {
-        assertThatThrownBy(() -> new AttendancePolicy().validateIsWeekDays(weekend))
+        assertThatThrownBy(() -> new AttendancePolicy().validateIsWeekDays(DEC_14))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -56,7 +46,7 @@ public class AttendancePolicyTest {
         LocalTime todayTime = LocalTime.of(
                 Integer.parseInt(time.split(":")[0]),
                 Integer.parseInt(time.split(":")[1]));
-        LocalDateTime attendanceTime = LocalDateTime.of(weekday, todayTime);
+        LocalDateTime attendanceTime = LocalDateTime.of(DEC_13, todayTime);
 
         AttendanceStatus status = new AttendancePolicy().getAttendanceStatus(attendanceTime);
         assertThat(status.getStatus()).isEqualTo(expected);

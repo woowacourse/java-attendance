@@ -6,33 +6,23 @@ import domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceRecordTest {
-
-    private LocalDate weekday;
-    private LocalDate weekend;
-
-    @BeforeEach
-    void setUp() {
-        weekday = LocalDate.of(2024, 12, 13);
-        weekend = LocalDate.of(2024, 12, 14);
-    }
+public class AttendanceRecordTest extends BaseAttendanceTest {
 
     @Test
     void 출석하면_출석_시간을_추가한다() {
         LocalTime todayTime = LocalTime.of(9, 59);
-        AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(dateProviderDec13);
         LocalDateTime attendanceTime = attendanceRecord.attend(todayTime);
 
-        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(weekday, todayTime));
+        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(DEC_13, todayTime));
     }
 
     @Test
     void 해당_날짜의_출석_시간을_확인한다() {
         LocalTime todayTime = LocalTime.of(9, 59);
-        AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(dateProviderDec13);
         LocalDateTime attendanceTime = attendanceRecord.attend(todayTime);
 
         LocalDateTime targetAttendanceTime = attendanceRecord.findAttendanceTimeByDay(attendanceTime.getDayOfMonth());
@@ -42,7 +32,7 @@ public class AttendanceRecordTest {
     @Test
     void 해당_날짜의_출석_시간이_없으면_예외가_발생한다() {
         LocalTime todayTime = LocalTime.of(9, 59);
-        AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(dateProviderDec13);
         attendanceRecord.attend(todayTime);
 
         assertThatThrownBy(() -> attendanceRecord.findAttendanceTimeByDay(1))
@@ -53,7 +43,7 @@ public class AttendanceRecordTest {
     @Test
     void 이미_출석한_날짜이면_예외가_발생한다() {
         LocalTime todayTime = LocalTime.of(9, 59);
-        AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(dateProviderDec13);
         attendanceRecord.attend(todayTime);
 
         assertThatThrownBy(() -> attendanceRecord.attend(todayTime))
@@ -64,7 +54,7 @@ public class AttendanceRecordTest {
     @Test
     void 수정하려는_날짜의_출석_시간을_수정한다() {
         LocalTime time = LocalTime.of(9, 58);
-        AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(dateProviderDec13);
         attendanceRecord.attend(time);
         int modifyDay = 13;
         LocalTime modifyTime = LocalTime.of(10, 31);
@@ -88,11 +78,11 @@ public class AttendanceRecordTest {
 
     @Test
     void 해당_날짜에_결석인지_확인한다() {
-        AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(dateProviderDec13);
         attendanceRecord.add(LocalDateTime.of(2024, 12, 13, 10, 0));
 
-        assertThat(attendanceRecord.isAbsent(weekday)).isFalse();
-        assertThat(attendanceRecord.isAbsent(weekend)).isTrue();
+        assertThat(attendanceRecord.isAbsent(DEC_13)).isFalse();
+        assertThat(attendanceRecord.isAbsent(DEC_14)).isTrue();
     }
 
 }
