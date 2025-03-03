@@ -33,8 +33,7 @@ public class AttendanceSystemHandler {
 
     private void processAttendanceSystem() {
         while (true) {
-            String optionSign = InputView.readOption();
-            FunctionOption functionOption = FunctionOption.findBySign(optionSign);
+            FunctionOption functionOption = getFunctionOption();
 
             if (functionOption == FunctionOption.QUIT) {
                 break;
@@ -45,46 +44,31 @@ public class AttendanceSystemHandler {
     }
 
     private void registerAttendance() {
-        String name = InputView.readName();
-        Crew crew = crews.findCrewByName(name);
+        Crew crew = getRequestedCrew();
+        LocalDateTime attendAt = LocalDateTime.of(getDateOfToday(), readAttendanceTime());
 
-        String rawAttendanceTime = InputView.readAttendanceTime();
-        LocalTime attendanceTime = InputParser.parseTime(rawAttendanceTime);
-
-        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-
-        LocalDateTime requestedAt = LocalDateTime.of(date, attendanceTime);
-
-        AttendanceHistory attendanceHistory = attendanceSystemManager.registerNewAttendance(crew, requestedAt);
-        OutputView.printAttendanceHistory(attendanceHistory);
+        AttendanceHistory attendanceHistory = attendanceSystemManager.registerNewAttendance(crew, attendAt);
+        OutputView.printRegisteredHistory(attendanceHistory);
     }
 
     private void updateAttendance() {
-        String name = InputView.readNameToUpdate();
-        Crew crew = crews.findCrewByName(name);
+        Crew crew = getRequestedCrewToUpdate();
+        LocalDate requestedDate = readAttendanceDateToUpdate();
 
-        String rawRequestDate = InputView.readUpdateRequestDate();
-        int requestDate = InputParser.parseInteger(rawRequestDate);
+        LocalDateTime newAttendanceAt = LocalDateTime.of(requestedDate, readAttendanceTimeToUpdate());
 
-        String rawNewAttendanceTime = InputView.readNewAttendanceTime();
-        LocalTime newAttendanceTime = InputParser.parseTime(rawNewAttendanceTime);
-
-        LocalDateTime newAttendanceAt = LocalDateTime.of(LocalDate.of(2024, 12, requestDate), newAttendanceTime);
-
-        AttendanceHistory oldHistory = attendanceHistories.findByCrewAndDate(crew, newAttendanceAt.toLocalDate());
+        AttendanceHistory oldHistory = attendanceHistories.findByCrewAndDate(crew, requestedDate);
         AttendanceHistory newHistory = attendanceSystemManager.updateRegisteredAttendance(oldHistory, crew,
                 newAttendanceAt);
-        OutputView.printUpdateHistory(oldHistory, newHistory);
+
+        OutputView.printUpdatedHistory(oldHistory, newHistory);
     }
 
     private void checkAttendanceHistoryOfCrew() {
-        String name = InputView.readName();
-        Crew crew = crews.findCrewByName(name);
+        Crew crew = getRequestedCrew();
+        LocalDate date = getDateOfToday();
 
-        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-
-        Map<LocalDateTime, AttendanceType> historiesOfCrew = attendanceSystemManager.findAllHistoriesOfCrew(
-                crew, date);
+        Map<LocalDateTime, AttendanceType> historiesOfCrew = attendanceSystemManager.findAllHistoriesOfCrew(crew, date);
         OutputView.printAttendanceHistories(crew, historiesOfCrew);
 
         PenaltyResultOfCrew penaltyResultOfCrew = attendanceSystemManager.getPenaltyResultOfCrew(crew, historiesOfCrew);
@@ -92,10 +76,48 @@ public class AttendanceSystemHandler {
     }
 
     private void checkExpulsionCandidates() {
-//        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-        LocalDate date = LocalDate.of(2024, 12, 31);
+        LocalDate date = getDateOfToday();
 
         List<PenaltyResultOfCrew> expulsionCandidates = attendanceSystemManager.findExpulsionCandidates(date);
         OutputView.printExpulsionCandidates(expulsionCandidates);
+    }
+
+    private LocalDate getDateOfToday() {
+        return LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
+    }
+
+    private LocalDate getDateOfRequestedDate(int date) {
+        return LocalDate.of(2024, 12, date);
+    }
+
+    private LocalTime readAttendanceTime() {
+        String rawAttendanceTime = InputView.readAttendanceTime();
+        return InputParser.parseTime(rawAttendanceTime);
+    }
+
+    private LocalTime readAttendanceTimeToUpdate() {
+        String rawNewAttendanceTime = InputView.readNewAttendanceTime();
+        return InputParser.parseTime(rawNewAttendanceTime);
+    }
+
+    private LocalDate readAttendanceDateToUpdate() {
+        String rawRequestDate = InputView.readUpdateRequestDate();
+        int requestDate = InputParser.parseInteger(rawRequestDate);
+        return getDateOfRequestedDate(requestDate);
+    }
+
+    private Crew getRequestedCrew() {
+        String name = InputView.readName();
+        return crews.findCrewByName(name);
+    }
+
+    private Crew getRequestedCrewToUpdate() {
+        String name = InputView.readNameToUpdate();
+        return crews.findCrewByName(name);
+    }
+
+    private FunctionOption getFunctionOption() {
+        String optionSign = InputView.readOption();
+        return FunctionOption.findBySign(optionSign);
     }
 }

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class OutputView {
-    public static void printAttendanceHistory(AttendanceHistory attendanceHistory) {
+    public static void printRegisteredHistory(AttendanceHistory attendanceHistory) {
         LocalDateTime attendAt = attendanceHistory.getAttendAt();
         String parsedAttendAt = InputParser.parseDateTimeToString(attendAt);
         String parsedAttendanceType = InputParser.parseAttendanceType(
@@ -68,7 +68,7 @@ public class OutputView {
         System.out.println();
     }
 
-    public static void printUpdateHistory(AttendanceHistory oldHistory, AttendanceHistory newHistory) {
+    public static void printUpdatedHistory(AttendanceHistory oldHistory, AttendanceHistory newHistory) {
         LocalDateTime oldAttendAt = oldHistory.getAttendAt();
 
         String parseOldDateTime = InputParser.parseDateTimeToString(oldAttendAt);
