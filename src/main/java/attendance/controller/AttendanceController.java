@@ -26,11 +26,20 @@ public class AttendanceController {
         String inputOption = inputView.readOption();
         if (inputOption.equals("1")) {
             registerAttendance(attendanceBook);
-        } else if (inputOption.equals("3")) {
+        } else if (inputOption.equals("2")) {
+            modifyAttendance(attendanceBook);
+        }
+        else if (inputOption.equals("3")) {
             showCrewAttendance(attendanceBook);
         } else if (inputOption.equals("4")) {
             showWarningCrews(attendanceBook);
         }
+    }
+
+    private void modifyAttendance(final AttendanceBook attendanceBook) {
+        String nickname = inputView.readNicknameForModify();
+        int dayOfMonth = inputView.readDayForModify();
+        LocalTime newTime = inputView.readTimeForModify();
     }
 
     private void registerAttendance(final AttendanceBook attendanceBook) {
