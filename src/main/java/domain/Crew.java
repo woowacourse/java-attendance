@@ -11,8 +11,6 @@ public class Crew {
             .thenComparing((Crew c) -> c.attendanceRecord.getTardyCount(), Comparator.reverseOrder())
             .thenComparing(Crew::getName);
 
-
-
     private final String name;
     private final Attendance attendanceRecord;
 
