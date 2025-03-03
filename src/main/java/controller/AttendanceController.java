@@ -32,10 +32,11 @@ public class AttendanceController {
         while (true) {
             try {
                 Selection selection = Selection.of(InputView.readSelection());
+                if (selection == Selection.QUIT) {
+                    break;
+                }
                 executeCommand(selection, today);
 
-            } catch (QuitException q) {
-                break;
             } catch (DateTimeException dte) {
                 OutputView.printException(new IllegalArgumentException("잘못된 날짜입니다."));
             } catch (IllegalArgumentException e) {
@@ -44,11 +45,7 @@ public class AttendanceController {
         }
     }
 
-    private void executeCommand(Selection selection, LocalDate today) throws QuitException {
-        if (selection == Selection.QUIT) {
-            throw new QuitException();
-        }
-
+    private void executeCommand(Selection selection, LocalDate today) {
         ControllerCommand command = commands.get(selection);
         command.execute(today);
     }
@@ -72,9 +69,5 @@ public class AttendanceController {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 입력입니다."));
         }
-    }
-
-    private static class QuitException extends Exception {
-
     }
 }
