@@ -9,13 +9,12 @@ import java.util.stream.Stream;
 
 class CsvReaderTest {
 
-    private static final String FILE_PATH = "src/main/resources/attendances1.csv";
-
     @Test
     @DisplayName("csv 파일을 읽어오는 기능이 잘 작동하는지")
     void readFileSuccess() {
 
         // given
+        final String FILE_PATH = "src/main/resources/attendances.csv";
         final List<String[]> expected = List.of(
                 new String[]{"쿠키", "2024-12-13 10:08"},
                 new String[]{"빙봉", "2024-12-13 10:07"},
@@ -33,10 +32,14 @@ class CsvReaderTest {
     }
 
     @Test
-    @DisplayName("csv 파일을 읽어오는 기능이 잘 작동하는지")
+    @DisplayName("유효하지 않는 파일 경로일 때 예외 처리")
     void readFileFailureByInvalidPath() {
 
         // given
+        final String FILE_PATH = "src/main/resources/invalidPath";
+
+        // when
+        // then
         Assertions.assertThatThrownBy(
                 () -> CsvReader.readFile(FILE_PATH)
         ).isInstanceOf(IllegalStateException.class);
