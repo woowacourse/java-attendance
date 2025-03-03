@@ -7,14 +7,13 @@ import java.time.LocalTime;
 public class AttendanceTime {
 
     private final LocalDate date;
-    private int hour;
-    private int minute;
+    private Integer hour;
+    private Integer minute;
 
     private static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
     private static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
-    private static final int ABSENT_VALUE = -1;
 
-    public AttendanceTime(final LocalDate date, final int hour, final int minute) {
+    public AttendanceTime(final LocalDate date, final Integer hour, final Integer minute) {
 
         validateAttendDate(date);
         validateOperatingTime(hour, minute);
@@ -27,8 +26,8 @@ public class AttendanceTime {
 
         validateAttendDate(date);
         this.date = date;
-        this.hour = ABSENT_VALUE;
-        this.minute = ABSENT_VALUE;
+        this.hour = null;
+        this.minute = null;
     }
 
     public static boolean isWeekend(final DayOfWeek day) {
@@ -53,10 +52,10 @@ public class AttendanceTime {
 
     public boolean isDefaultAbsent() {
 
-        return hour == ABSENT_VALUE && minute == ABSENT_VALUE;
+        return hour == null && minute == null;
     }
 
-    public void modify(final int targetHour, final int targetMinute) {
+    public void modify(final Integer targetHour, final Integer targetMinute) {
 
         this.hour = targetHour;
         this.minute = targetMinute;
@@ -84,7 +83,7 @@ public class AttendanceTime {
         }
     }
 
-    private void validateOperatingTime(final int hour, final int minute) {
+    private void validateOperatingTime(final Integer hour, final Integer minute) {
 
         LocalTime inputTime = LocalTime.of(hour, minute);
 
