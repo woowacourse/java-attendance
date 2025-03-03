@@ -52,7 +52,9 @@ public class AttendanceHistories {
     }
 
     public DisciplinaryStatus getDisciplinaryStatusOf(Crew crew, LocalDate lastDate) {
-        return null;
+        int tardyCount = getTardyCount(crew, lastDate);
+        int absentCount = getAbsentCount(crew, lastDate);
+        return DisciplinaryStatus.of(tardyCount, absentCount);
     }
 
     private void validateCrewPresence(Crew crew) {
