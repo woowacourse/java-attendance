@@ -16,7 +16,7 @@ public class OutputView {
     }
 
     private String formatAttendanceRecordToAttend(AttendanceRecord attendanceRecord) {
-        return String.format("%s %s %s (%s)", formatLocalDate(attendanceRecord.getDate()), formatDayOfWeek(
+        return String.format("%s %s %s (%s)%n", formatLocalDate(attendanceRecord.getDate()), formatDayOfWeek(
                         attendanceRecord.getDate()
                                 .getDayOfWeek()), formatLocalTime(attendanceRecord.getTime()),
                 formatAttendanceStatus(AttendanceStatus.calculateAttendanceStatus(attendanceRecord)));

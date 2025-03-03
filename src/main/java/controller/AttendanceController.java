@@ -17,10 +17,26 @@ public class AttendanceController {
 
     public void start() {
         AttendanceManager attendanceManager = new AttendanceManager();
-        String command = inputView.inputCommand();
+        commandLoop(attendanceManager);
+    }
+
+    private void commandLoop(AttendanceManager attendanceManager) {
+        boolean isLoopContinue = true;
+        while (isLoopContinue) {
+            String command = inputView.inputCommand();
+            isLoopContinue = commandProcess(attendanceManager, command);
+        }
+    }
+
+    private boolean commandProcess(AttendanceManager attendanceManager, String command) {
         if (command.equals("1")) {
             attendProcess(attendanceManager);
+            return true;
         }
+        if (command.equalsIgnoreCase("Q")) {
+            return false;
+        }
+        return true;
     }
 
     private void attendProcess(AttendanceManager attendanceManager) {
