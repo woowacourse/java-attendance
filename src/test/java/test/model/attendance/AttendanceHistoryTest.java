@@ -5,9 +5,5 @@ import org.junit.jupiter.api.Test;
 
 public class AttendanceHistoryTest {
 
-    @DisplayName("")
-    @Test
-    void test() {
-        assertThat();
-    }
+
 }
