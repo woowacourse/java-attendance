@@ -1,68 +1,77 @@
 package view;
 
-import domain.MenuOption;
+import domain.menu.Menu;
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Scanner;
+import util.converter.DayConverter;
+import util.converter.DayOfWeekConverter;
+import util.converter.TimeConverter;
 
 public class InputView {
 
-    private final static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
-    public String readOption(List<MenuOption> options) {
+    public static Menu readAttendanceMenu(LocalDate runDate) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (MenuOption option : options) {
-            stringBuilder.append(System.lineSeparator())
-                    .append(option.getCommand())
-                    .append(". ")
-                    .append(option.getOption());
-        }
+        stringBuilder.append(generateAttendanceMenuHeader(runDate));
+        stringBuilder.append(generateAttendanceMenuOptions());
+        String response = prompt(stringBuilder.toString());
+        return Menu.of(response);
+    }
+
+    public static String readAttendanceRegisterCrewName() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(System.lineSeparator())
+                .append("닉네임을 입력해 주세요.");
         return prompt(stringBuilder.toString());
     }
 
-    public String readNickname() {
-        return prompt("\n닉네임을 입력해 주세요.");
-    }
-
-    public LocalTime readArrivalTime() {
+    public static LocalTime readAttendanceRegisterAttendTime() {
         String response = prompt("등교 시간을 입력해 주세요.");
-        return parseTime(response);
+        return TimeConverter.convertStringToTime(response);
     }
 
-    public String readEditNickname() {
-        return prompt("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+    private static String generateAttendanceMenuHeader(LocalDate runDate) {
+        return String.format("오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.", runDate.getMonthValue(), runDate.getDayOfMonth(),
+                DayOfWeekConverter.convertDayOfWeekToKorean(runDate.getDayOfWeek()));
     }
 
-    public int readEditArrivalDate() {
+    public static String readAttendanceEditCrewName() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(System.lineSeparator())
+                .append("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return prompt(stringBuilder.toString());
+    }
+
+    public static int readAttendanceEditAttendDay() {
         String response = prompt("수정하려는 날짜(일)를 입력해 주세요.");
-        return parseDay(response);
+        return DayConverter.convertDayToNumber(response);
     }
 
-    public LocalTime readEditArrivalTime() {
+    public static LocalTime readAttendanceEditAttendTime() {
         String response = prompt("언제로 변경하겠습니까?");
-        return parseTime(response);
+        return TimeConverter.convertStringToTime(response);
     }
 
-    private String prompt(String message) {
+    public static String readCrewAttendanceCrewName() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(System.lineSeparator())
+                .append("닉네임을 입력해 주세요.");
+        return prompt(stringBuilder.toString());
+    }
+
+    private static String generateAttendanceMenuOptions() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Menu menu : Menu.values()) {
+            stringBuilder.append(System.lineSeparator())
+                    .append(String.format("%s. %s", menu.getCode(), menu.getDescription()));
+        }
+        return stringBuilder.toString();
+    }
+
+    private static String prompt(String message) {
         System.out.println(message);
         return scanner.nextLine();
-    }
-
-    private LocalTime parseTime(String response) {
-        try {
-            return LocalTime.parse(response, DateTimeFormatter.ofPattern("HH:mm"));
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 시간 형식이 올바르지 않습니다.");
-        }
-    }
-
-    private int parseDay(String response) {
-        try {
-            return Integer.parseInt(response);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 날짜 형식이 올바르지 않습니다.");
-        }
     }
 }

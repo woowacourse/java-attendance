@@ -1,0 +1,43 @@
+package controller.menu;
+
+import controller.dto.AttendanceLogDtoConverter;
+import controller.dto.AttendanceResultDtoConverter;
+import domain.attendance.AttendanceBook;
+import domain.attendance.AttendanceLog;
+import domain.attendance.AttendanceResult;
+import dto.AttendanceLogDto;
+import dto.AttendanceResultDto;
+import exception.ExceptionHandler;
+import java.time.LocalDate;
+import java.util.List;
+import view.InputView;
+import view.OutputView;
+
+public class CrewAttendanceController implements AttendanceMenuController {
+
+    private final AttendanceBook attendanceBook;
+
+    public CrewAttendanceController(AttendanceBook attendanceBook) {
+        this.attendanceBook = attendanceBook;
+    }
+
+    @Override
+    public void run(LocalDate runDate) {
+        String crewName = fetchCrewAttendanceCrewName();
+        List<AttendanceLog> attendanceLogHistory = attendanceBook.findCrewAttendanceLogHistory(crewName, runDate);
+        List<AttendanceLogDto> attendanceLogDtos = attendanceLogHistory.stream()
+                .map(AttendanceLogDtoConverter::toDto)
+                .toList();
+        AttendanceResult attendanceResult = attendanceBook.calculateCrewAttendanceResult(crewName, runDate);
+        AttendanceResultDto attendanceResultDto = AttendanceResultDtoConverter.toDto(attendanceResult);
+        OutputView.printCrewAttendance(crewName, attendanceLogDtos, attendanceResultDto, runDate);
+    }
+
+    private String fetchCrewAttendanceCrewName() {
+        return ExceptionHandler.repeatUntilSuccess(() -> {
+            String crewName = InputView.readCrewAttendanceCrewName();
+            attendanceBook.findCrew(crewName);
+            return crewName;
+        });
+    }
+}
