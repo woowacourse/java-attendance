@@ -67,7 +67,7 @@ public class AttendanceController {
     }
 
     void attendanceUpdate() {
-        String name = inputView.readUpdateName();
+        String name = inputUpdateName();
         int updateDate = inputView.readUpdateDate();
         LocalTime updateTime = inputView.readUpdateTime();
 
@@ -97,5 +97,22 @@ public class AttendanceController {
 
     void exit() {
         outputView.printExit();
+    }
+
+    private String inputName() {
+        String name = inputView.readName();
+        attendances.validateFindCrew(name);
+        return name;
+    }
+
+    private String inputUpdateName() {
+        String name = inputView.readUpdateName();
+        attendances.validateFindCrew(name);
+        return name;
+    }
+
+    private LocalDateTime inputAttendanceDateTime() {
+        LocalTime attendanceTime = inputView.readAttendanceTime();
+        return dateProvider.createLocalDateTime(attendanceTime);
     }
 }
