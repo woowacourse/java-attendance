@@ -27,8 +27,8 @@ public class AttendanceTimeTest {
 
     @ParameterizedTest
     @CsvSource(value = {
-            "7,59",
-            "23,1"
+            "7, 59",
+            "23, 1"
     })
     void 입력_받은_시간이_캠퍼스_운영_시간이_아니면_예외를_발생한다(final int hour, final int minute) {
 
@@ -43,8 +43,8 @@ public class AttendanceTimeTest {
 
     @ParameterizedTest
     @CsvSource(value = {
-            "8,0",
-            "23,0"
+            "8, 0",
+            "23, 0"
     })
     void 입력_받은_시간이_유효한_시간이면_출석_시간이_생성된다(final int hour, final int minute) {
 
@@ -85,8 +85,8 @@ public class AttendanceTimeTest {
 
     @ParameterizedTest
     @CsvSource(value = {
-            "27,true",
-            "26,false"
+            "27, true",
+            "26, false"
     })
     void 입력_받은_날짜와_출석_기록_날짜가_같은지_비교한다(final int date, final boolean expectedResult) {
 

@@ -103,13 +103,13 @@ public class AttendanceBookTest {
 
         // given
         final AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 5));
-        attendanceBook.add("이름2", new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 6));
-        attendanceBook.add("이름2", new AttendanceTime(LocalDate.of(2025, 2, 26), 10, 30));
-        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 31));
-        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 26), 10, 31));
-        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 31));
-        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 28)));
+        attendanceBook.add("출석자", new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 5));
+        attendanceBook.add("지각자", new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 6));
+        attendanceBook.add("지각자", new AttendanceTime(LocalDate.of(2025, 2, 26), 10, 30));
+        attendanceBook.add("결석자", new AttendanceTime(LocalDate.of(2025, 2, 25), 10, 31));
+        attendanceBook.add("결석자", new AttendanceTime(LocalDate.of(2025, 2, 26), 10, 31));
+        attendanceBook.add("결석자", new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 31));
+        attendanceBook.add("결석자", new AttendanceTime(LocalDate.of(2025, 2, 28)));
 
         // when
         final int result = attendanceBook.getAttendanceStatusCount(name, attendanceStatus);
@@ -123,34 +123,34 @@ public class AttendanceBookTest {
 
         // given
         final AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 2, 25)));
-        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 2, 26)));
-        attendanceBook.add("이름2", new AttendanceTime(LocalDate.of(2025, 2, 25)));
-        attendanceBook.add("이름2", new AttendanceTime(LocalDate.of(2025, 2, 26)));
-        attendanceBook.add("이름2", new AttendanceTime(LocalDate.of(2025, 2, 27)));
-        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 24)));
-        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 25)));
-        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 26)));
-        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 27)));
-        attendanceBook.add("이름3", new AttendanceTime(LocalDate.of(2025, 2, 28)));
+        attendanceBook.add("경고 대상자", new AttendanceTime(LocalDate.of(2025, 2, 25)));
+        attendanceBook.add("경고 대상자", new AttendanceTime(LocalDate.of(2025, 2, 26)));
+        attendanceBook.add("면담 대상자", new AttendanceTime(LocalDate.of(2025, 2, 25)));
+        attendanceBook.add("면담 대상자", new AttendanceTime(LocalDate.of(2025, 2, 26)));
+        attendanceBook.add("면담 대상자", new AttendanceTime(LocalDate.of(2025, 2, 27)));
+        attendanceBook.add("제적 대상자", new AttendanceTime(LocalDate.of(2025, 2, 24)));
+        attendanceBook.add("제적 대상자", new AttendanceTime(LocalDate.of(2025, 2, 25)));
+        attendanceBook.add("제적 대상자", new AttendanceTime(LocalDate.of(2025, 2, 26)));
+        attendanceBook.add("제적 대상자", new AttendanceTime(LocalDate.of(2025, 2, 27)));
+        attendanceBook.add("제적 대상자", new AttendanceTime(LocalDate.of(2025, 2, 28)));
 
         // when
         final List<ExpulsionCandidate> result = attendanceBook.getExpulsionCandidates();
 
         // then
         org.junit.jupiter.api.Assertions.assertAll(() -> {
-            assertThat(result.get(0).name()).isEqualTo("이름1");
-            assertThat(result.get(1).name()).isEqualTo("이름2");
-            assertThat(result.get(2).name()).isEqualTo("이름3");
+            assertThat(result.get(0).name()).isEqualTo("경고 대상자");
+            assertThat(result.get(1).name()).isEqualTo("면담 대상자");
+            assertThat(result.get(2).name()).isEqualTo("제적 대상자");
         });
     }
 
     public static Stream<Arguments> nameAndAttendanceStatus() {
 
         return Stream.of(
-                Arguments.of("이름1", AttendanceStatus.ATTEND, 1),
-                Arguments.of("이름2", AttendanceStatus.LATE, 2),
-                Arguments.of("이름3", AttendanceStatus.ABSENT, 4)
+                Arguments.of("출석자", AttendanceStatus.ATTEND, 1),
+                Arguments.of("지각자", AttendanceStatus.LATE, 2),
+                Arguments.of("결석자", AttendanceStatus.ABSENT, 4)
         );
     }
 

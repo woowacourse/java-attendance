@@ -21,7 +21,6 @@ public class AcademicStatusTest {
         Assertions.assertThat(result).isEqualTo(expectedResult);
     }
 
-
     public static Stream<Arguments> lateAndAbsentAndResult() {
 
         return Stream.of(
