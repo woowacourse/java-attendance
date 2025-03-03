@@ -3,7 +3,9 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -82,5 +84,20 @@ public class CrewAttendance {
             return count + 1;
         }
         return count;
+    }
+
+    public Map<LocalDate, AttendanceStatus> getAttendanceStatusesBefore(final LocalDateTime today) {
+        Map<LocalDate, AttendanceStatus> attendanceStatuses = new HashMap<>();
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            LocalDateTime targetDay = today.minusDays(day);
+            if (!Campus.isOffDay(targetDay)) {
+                if (isExistDay(targetDay)) {
+                    attendanceStatuses.put(LocalDate.from(targetDay), getAttendanceOn(targetDay).status());
+                } else {
+                    attendanceStatuses.put(LocalDate.from(targetDay), AttendanceStatus.ABSENT);
+                }
+            }
+        }
+        return Collections.unmodifiableMap(attendanceStatuses);
     }
 }
