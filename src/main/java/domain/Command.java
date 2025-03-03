@@ -1,23 +1,26 @@
 package domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum Command {
 
-    TODAY_ATTEND("1"),
-    CHANGE_CREW_ATTENDANCE("2"),
-    SHOW_CREW_ATTENDANCE("3"),
-    SHOW_DANGEROUS_CREW("4"),
-    EXIT("Q");
+    ATTEND_TODAY(List.of("1")),
+    CHANGE_ATTENDANCE(List.of("2")),
+    SHOW_CREW_ATTENDANCES(List.of("3")),
+    SHOW_DISMISSAL_CREW(List.of("4")),
+    QUIT(List.of("Q"));
 
-    private final String command;
+    private final List<String> commands;
 
-    Command(String command) {
-        this.command = command;
+    Command(List<String> commands) {
+        this.commands = commands;
     }
 
-    public static Command getCommand(String inputCommand) {
-        for(Command command1 : Command.values())
-            if(inputCommand.equals(command1.command))
-                return command1;
-        throw new IllegalArgumentException("잘못 된 입력입니다.");
+    public static Command findCommand(String input) {
+        return Arrays.stream(Command.values())
+                .filter(command -> command.commands.contains(input))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("없는 커맨드입니다."));
     }
 }

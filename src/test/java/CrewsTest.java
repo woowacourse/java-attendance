@@ -1,86 +1,73 @@
-import domain.AttendTime;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import domain.Crew;
 import domain.Crews;
-import domain.WarningStatusType;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import utils.CrewAttendanceFileReader;
 
 public class CrewsTest {
-
-    @DisplayName("크루의 이름을 통해서 크루를 찾아낼 수 있다")
+    @DisplayName("크루들의 출석 데이터를 받아와 크루를 생성할 수 있다")
     @Test
-    void test1() {
-
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
-
-        Crew crew = crews.findCrew("폰트").orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다."));
-
-        assertThat(crew.getName()).isEqualTo("폰트");
+    void shouldCreateCrewsFromAttendanceData() {
+        List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
+        Crews crews = new Crews(crewAttendanceResource);
+        assertThat(crews.getCrews().size()).isGreaterThan(0);
     }
 
-    @DisplayName("크루의 이름을 통해서 크루를 찾아낼 수 있다")
+    @DisplayName("크루들의 출석 데이터를 받아올때 한 크루가 여러번 들어가지 않는다")
     @Test
-    void test2() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
-        Crew crew = crews.findCrew("슬링키").orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다."));
-        ;
-
-        assertThat(crew.getName()).isEqualTo("슬링키");
+    void shouldNotAddDuplicateCrewsFromAttendanceData() {
+        List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
+        Crews crews = new Crews(crewAttendanceResource);
+        assertThat(crews.getCrews().stream().filter(crew -> crew.getNickname().equals("쿠키")).toList().size()).isEqualTo(
+                1);
     }
 
-    @DisplayName("크루의 출석을 추가할 수 있다")
+    @DisplayName("크루의 이름을 통해서 크루를 찾을 수 있다")
     @Test
-    void test3() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
-
-        crews.initializeAttendTime("슬링키", "2024-12-09 13:03");
-
-        assertThat(crews.findCrew("슬링키").orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다.")).getAttendTimes().size()).isEqualTo(2);
+    void shouldFindCrewByNicknameCookie() {
+        List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
+        Crews crews = new Crews(crewAttendanceResource);
+        Crew crew = crews.findCrewByNickname("쿠키").orElseThrow(() -> new IllegalArgumentException("없는 닉네임입니다"));
+        assertThat(crew.getNickname()).isEqualTo("쿠키");
     }
 
-    @DisplayName("크루의 출석을 추가할 수 있다")
+    @DisplayName("크루의 이름을 통해서 크루를 찾을 수 있다")
     @Test
-    void test4() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
-
-        crews.initializeAttendTime("포비", "2024-12-09 13:03");
-
-        assertThat(crews.getCrews().size())
-                .isEqualTo(3);
+    void shouldFindCrewByNicknameEden() {
+        List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
+        Crews crews = new Crews(crewAttendanceResource);
+        Crew crew = crews.findCrewByNickname("이든").orElseThrow(() -> new IllegalArgumentException("없는 닉네임입니다"));
+        assertThat(crew.getNickname()).isEqualTo("이든");
     }
 
-    @DisplayName("크루의 출석을 삭제할 수 있다")
+    @DisplayName("제적 대상자 크루들 찾을 수 있다")
     @Test
-    void test5() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
-        AttendTime attendTime = crews.deleteAttendance("슬링키", 9);
-
-        assertThat(attendTime.getAttendTime().getHour()).isEqualTo(13);
-        assertThat(attendTime.getAttendTime().getMinute()).isEqualTo(3);
+    void shouldFindDismissalCrews() {
+        List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
+        Crews crews = new Crews(crewAttendanceResource);
+        List<Crew> dismissalCrews = crews.findDismissalCrews();
+        assertThat(dismissalCrews.size()).isEqualTo(5);
     }
 
-
-    @DisplayName("제적 대상자를 확인 할 수 있다")
+    @DisplayName("제적 대상자 크루들을 정렬된 상태로 찾을 수 있다")
     @Test
-    void test8() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03", "포비,2024-12-09 13:03"));
-
-        List<Crew> dismissalCrews = crews.getDangerousCrews(WarningStatusType.DISMISSAL);
-
-        assertThat(dismissalCrews.size()).isEqualTo(3);
+    void shouldFindSortedDismissalCrewsByImportance() {
+        List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
+        Crews crews = new Crews(crewAttendanceResource);
+        List<Crew> dismissalCrews = crews.findDismissalCrewsByImportance();
+        assertThat(dismissalCrews.size()).isEqualTo(5);
     }
 
-    @DisplayName("이름이 없는 크루의 경우 예외가 발생한다")
+    @DisplayName("원래 있던 크루의 출석 정보에 추가로 출석 정보를 추가 할 수 있다")
     @Test
-    void test9() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03", "포비,2024-12-09 13:03"));
+    void canAddNewAttendance() {
+        List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
+        Crews crews = new Crews(crewAttendanceResource);
 
-        assertThatThrownBy(() -> crews.ifFindNameAddTime("벨로"))
-                .isInstanceOf(IllegalArgumentException.class);
+        crews.addCrewAttendance("쿠키", "2024-12-16 12:03");
+        assertThat(crews.findCrewByNickname("쿠키").orElse(null).getAttendTimes().getAttendTimes().size()).isEqualTo(9);
     }
 }

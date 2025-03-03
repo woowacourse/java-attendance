@@ -1,63 +1,75 @@
 package domain;
 
+import static domain.DangerousTarget.LATE_RATE_OF_ABSENT;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Crews {
-
     private final List<Crew> crews;
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public Crews(List<String> inputCrews) {
+    public Crews(List<String> crewAttendanceResource) {
         crews = new ArrayList<>();
-        inputCrews.forEach(inputCrew -> {
-            String[] s = inputCrew.split(",");
-            initializeAttendTime(s[0], s[1]);
-        });
+        crewAttendanceResource.stream().map(crew -> crew.split(",")
+        ).forEach(crew -> addCrew(crew[0], crew[1]));
     }
 
-    public Optional<Crew> findCrew(String nickname) {
-        return crews.stream()
-                .filter(c -> c.checkNickName(nickname))
-                .findAny();
-    }
-
-    public void ifFindNameAddTime(String nickname) {
-        Crew crew = findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
-    }
-
-    public void initializeAttendTime(String nickname, String time) {
-        Crew crew = findCrew(nickname).orElse(null);
-
+    private void addCrew(String nickname, String date) {
+        Crew crew = findCrewByNickname(nickname).orElse(null);
         if (crew != null) {
-            crew.addAttendTime(time);
-            crew.attend(time);
+            crew.attend(LocalDateTime.parse(date, FORMATTER));
             return;
         }
-        Crew crew1 = new Crew(nickname, time);
-        crews.add(crew1);
-        crew1.attend(time);
+        crews.add(new Crew(nickname, LocalDateTime.parse(date, FORMATTER)));
     }
 
-    public AttendTime deleteAttendance(String nickname, int date) {
-        Crew crew = findCrew(nickname).orElseThrow(()->new IllegalArgumentException("[Error] 없는 학생입니다."));
-        AttendTime attendTime = crew.findAttendanceByDate(date).orElseThrow(()->new IllegalArgumentException("[Error] 이 날은 출석 기록이 없습니다."));
-        crew.deleteAttendance(date);
-        return attendTime;
+    public AttendTime addCrewAttendance(String nickname, String time) {
+        Crew crew = findCrewByNickname(nickname).orElseThrow(() -> new IllegalArgumentException("없는 닉네임입니다."));
+        return crew.attend(LocalDateTime.parse(time, FORMATTER));
+
     }
 
-    public List<Crew> getDangerousCrews(WarningStatusType type) {
-        List<Crew> dismissalCrews = new ArrayList<>();
-        crews.forEach(crew -> {
-            WarningStatusType status = crew.getAttendanceHistory().getAttendanceStatus().getStatus();
-            if (status.equals(type)) {
-                dismissalCrews.add(crew);
+    public Optional<Crew> findCrewByNickname(String nickname) {
+        return crews.stream().filter(crew -> crew.getNickname().equals(nickname)).findFirst();
+    }
+
+    public List<Crew> findDismissalCrews() {
+        return crews.stream().filter(Crew::isDismissalCrew).collect(Collectors.toList());
+    }
+
+    public List<Crew> findDismissalCrewsByImportance() {
+        List<Crew> crewList = findDismissalCrews();
+        Comparator<Crew> comparator = new Comparator<Crew>() {
+
+            @Override
+            public int compare(Crew crew1, Crew crew2) {
+
+                int crew1Counts = crew1.getCrewLateCount() / LATE_RATE_OF_ABSENT + crew1.getCrewAbsentCount();
+                int crew2Counts = crew2.getCrewLateCount() / LATE_RATE_OF_ABSENT + crew2.getCrewAbsentCount();
+
+                if (crew1Counts == crew2Counts) {
+                    int crew1Late = crew1.getCrewLateCount() % LATE_RATE_OF_ABSENT;
+                    int crew2Late = crew2.getCrewLateCount() % LATE_RATE_OF_ABSENT;
+                    if (crew1Late == crew2Late) {
+                        return crew1.getNickname().compareTo(crew2.getNickname());
+                    }
+                    return crew2Late - crew1Late;
+                }
+                return crew2Counts - crew1Counts;
             }
-        });
-        return dismissalCrews;
+        };
+
+        return crewList.stream().sorted(comparator).collect(Collectors.toList());
     }
 
     public List<Crew> getCrews() {
         return crews;
     }
+
 }

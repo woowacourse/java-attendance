@@ -1,63 +1,71 @@
 package domain;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 public class Crew {
+    private final String nickname;
+    private final AttendTimes attendTimes;
 
-    private final String name;
-    private final AttendanceHistory attendanceHistory;
-
-    public Crew(String nickname, String attendTime) {
-        this.name = nickname;
-        this.attendanceHistory = new AttendanceHistory(new ArrayList<>());
-        attendanceHistory.addAttendance(new AttendTime(attendTime));
+    public Crew(String nickname) {
+        this.nickname = nickname;
+        this.attendTimes = new AttendTimes();
     }
 
-    public void addAttendTime(String inputTime) {
-        AttendTime attendTime = new AttendTime(inputTime);
-        attendanceHistory.addAttendance(attendTime);
+    public Crew(String nickname, LocalDateTime localDateTime) {
+        this.nickname = nickname;
+        this.attendTimes = new AttendTimes();
+        attendTimes.add(new AttendTime(localDateTime.toLocalDate(),localDateTime.toLocalTime()));
     }
 
-    public String attend(String inputTime) {
-        AttendTime attendTime = new AttendTime(inputTime);
-        attendanceHistory.getAttendanceStatus();
-        return attendTime.checkTime().getType();
+    public AttendTime attend(LocalDateTime localDateTime) {
+        AttendTime attendTime =new AttendTime(localDateTime.toLocalDate(),localDateTime.toLocalTime());
+        attendTimes.add(attendTime);
+        return attendTime;
     }
 
-    public Optional<AttendTime> findAttendanceByDate(int date) {
-        return attendanceHistory.getAttendTimes().stream()
-                .filter(attendTime -> attendTime.getAttendTime().getDayOfMonth() == date)
-                .findAny();
+    public AttendTime changeAttendanceTime(int date, LocalTime localTime) {
+        attendTimes.removeAttendance(date);
+
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, date, localTime.getHour(), localTime.getMinute());
+        return attend(localDateTime);
     }
 
-    public void deleteAttendance(int date) {
-        List<AttendTime> attendTimes = attendanceHistory.getAttendTimes();
-        for (int i = 0; i < attendTimes.size(); i++) {
-            deleteAttendTime(date, attendTimes, i);
-        }
+    public AttendTime findAttendanceByDate(int dayOfMonth) {
+        return attendTimes.findAttendanceByDate(dayOfMonth).orElseThrow(()->new IllegalArgumentException("없는 이름입니다."));
     }
 
-    private static void deleteAttendTime(int date, List<AttendTime> attendTimes, int i) {
-        if (attendTimes.get(i).getAttendTime().getDayOfMonth() == date) {
-            attendTimes.remove(i);
-        }
+    public boolean isDismissalCrew() {
+        return DangerousTarget.getWarningStatus(attendTimes.calculateLateCount(),attendTimes.calculateAbsentCount())!= DangerousTarget.SAFE;
     }
 
-    public String getName() {
-        return name;
+    public DangerousTarget getDismissalStatus() {
+        return DangerousTarget.getWarningStatus(attendTimes.calculateLateCount(), attendTimes.calculateAbsentCount());
     }
 
-    public List<AttendTime> getAttendTimes() {
-        return attendanceHistory.getAttendTimes();
+    public int getCrewAttendedCount() {
+            return attendTimes.calculateAttendedCount();
     }
 
-    public AttendanceHistory getAttendanceHistory() {
-        return attendanceHistory;
+    public int getCrewLateCount() {
+        return attendTimes.calculateLateCount();
     }
 
-    public boolean checkNickName(String nickname) {
-        return this.name.equals(nickname);
+    public int getCrewAbsentCount() {
+        return attendTimes.calculateAbsentCount();
     }
+
+    public List<AttendTime> getAttendTimeLine() {
+        return attendTimes.getAttendTimeline();
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public AttendTimes getAttendTimes() {
+        return attendTimes;
+    }
+
 }

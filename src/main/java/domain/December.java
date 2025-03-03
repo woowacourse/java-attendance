@@ -1,60 +1,27 @@
 package domain;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 public enum December {
+    HOLIDAY(List.of(25)),
+    WEEKDAY(List.of(2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 23, 24, 26, 27, 30, 31)),
+    WEEKEND(List.of(1, 7, 8, 14, 15, 21, 22, 28, 29));
 
-    MONDAY(List.of(2, 9, 16, 23, 30), "월요일"),
-    TUESDAY(List.of(3, 10, 17, 24, 31), "화요일"),
-    WEDNESDAY(List.of(4, 11, 18), "수요일"),
-    THURSDAY(List.of(5, 12, 19, 26), "목요일"),
-    FRIDAY(List.of(6, 13, 20, 27), "금요일"),
-    SATURDAY(List.of(7, 14, 21, 28), "토요일"),
-    SUNDAY(List.of(8, 15, 22, 29), "일요일"),
-    HOLIDAY(List.of(25), "휴일");
+    private final List<Integer> days;
 
-    public static final int DEFAULT_YEAR = 2024;
-    public static final int DEFAULT_MONTH = 12;
-    public static final int DECEMBER_WEEKDAY_COUNTS=21;
-    
-    private final List<Integer> dates;
-    private final String dayOfWeek;
-
-    December(List<Integer> dates, String dayOfWeek) {
-        this.dates = dates;
-        this.dayOfWeek = dayOfWeek;
+    December(List<Integer> days) {
+        this.days = days;
     }
 
-    public static December findDayOfWeek(int dayOfMonth) {
-        return Arrays.stream(December.values()).filter(day -> day.dates.contains(dayOfMonth)).findFirst().orElseThrow(() -> new IllegalArgumentException("[]"));
-
+    public static boolean isHoliday(int dayOfMonth) {
+        return HOLIDAY.days.contains(dayOfMonth);
     }
 
-    public static List<Integer> getWeekDays() {
-        return Arrays.stream(December.values())
-                .filter(a -> !List.of(SUNDAY, SATURDAY, HOLIDAY).contains(a))
-                .flatMap(a -> a.dates.stream()).sorted().toList();
+    public static boolean isWeekDay(int dayOfMonth) {
+        return WEEKDAY.days.contains(dayOfMonth);
     }
 
-    public static String getDayByDate(int dayOfMonth) {
-
-        return Arrays.stream(December.values()).filter((c) -> c.dates.contains(dayOfMonth)).map(c -> c.dayOfWeek).findFirst().orElse(null);
-    }
-
-    public static void checkWeekday(LocalDateTime attendTime) {
-
-        if (attendTime.getYear() == DEFAULT_YEAR && attendTime.getMonthValue() == DEFAULT_MONTH) {
-            if (December.getWeekDays().contains(attendTime.getDayOfMonth())) {
-                return;
-            }
-        }
-        throw new IllegalArgumentException(String.format(
-                "[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
-                attendTime.getMonthValue(),
-                attendTime.getDayOfMonth(),
-                December.getDayByDate(attendTime.getDayOfMonth())));
+    public static boolean isWeekend(int dayOfMonth) {
+        return WEEKEND.days.contains(dayOfMonth);
     }
 }
-

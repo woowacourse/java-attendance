@@ -8,10 +8,7 @@ public class Application {
         final Scanner scanner = new Scanner(System.in);
         final InputView inputView = new InputView(scanner);
         final OutputView outputView = new OutputView();
-
-        final AttendanceController attendanceController = new AttendanceController(inputView, outputView);
+        AttendanceController attendanceController = new AttendanceController(inputView, outputView);
         attendanceController.run();
-
-        scanner.close();
     }
 }

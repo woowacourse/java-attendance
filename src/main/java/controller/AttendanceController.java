@@ -2,111 +2,79 @@ package controller;
 
 import domain.AttendTime;
 import domain.Command;
+import domain.Crew;
 import domain.Crews;
-import domain.December;
-import file.AttendanceFileReader;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import utils.CrewAttendanceFileReader;
 import view.InputView;
 import view.OutputView;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static domain.Command.*;
-import static domain.December.DEFAULT_MONTH;
-import static domain.December.DEFAULT_YEAR;
-import static domain.WarningStatusType.*;
-
 public class AttendanceController {
+
+    public static final String TODAY_LOCAL_DATE = "2024-12-16";
+    public static final DateTimeFormatter TODAY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final String ERROR_MESSAGE = "[ERROR]";
 
     private final InputView inputView;
     private final OutputView outputView;
-    public static final LocalDateTime TODAY=LocalDateTime.of(2024,12,16,10,0);
-    public AttendanceController(final InputView inputView, OutputView outputView) {
+
+    public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
     }
 
-    List<String> students;
-    Crews crews;
     public void run() {
-        students = AttendanceFileReader.readFile("src/main/resources/attendances.csv");
-        crews = new Crews(students);
 
+        Crews crews = new Crews(CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv"));
         while (true) {
-            Command command = inputView.readCommand();
-
+            Command command = inputView.getCommand();
             try {
-                if (command == TODAY_ATTEND) {
-                    executeAttendance();
+                if (command.equals(Command.ATTEND_TODAY)) {
+                    attendToday(crews);
                 }
-                if (command == CHANGE_CREW_ATTENDANCE) {
-                    executeChangingAttendance();
+                if (command.equals(Command.CHANGE_ATTENDANCE)) {
+                    changeAttendance(crews);
                 }
-
-                if (command == SHOW_CREW_ATTENDANCE) {
-                    executePrintCrewAttendance();
+                if (command.equals(Command.SHOW_CREW_ATTENDANCES)) {
+                    showCrewAttendances(crews);
                 }
-
-                if (command == SHOW_DANGEROUS_CREW) {
-                    executeWarningCrews();
+                if (command.equals(Command.SHOW_DISMISSAL_CREW)) {
+                    showDismissalCrew(crews);
                 }
-
-                if (command == EXIT) {
-                    break;
+                if (command.equals(Command.QUIT)) {
+                    return;
                 }
             } catch (Exception e) {
-                outputView.printErrorMessage(e);
+                System.out.println(ERROR_MESSAGE + e.getMessage());
             }
         }
     }
 
-    private void executeWarningCrews() {
-        outputView.printDismissalCrews(
-                crews.getDangerousCrews(DISMISSAL),
-                crews.getDangerousCrews(INTERVIEW),
-                crews.getDangerousCrews(WARNING)
-        );
+    private void attendToday(Crews crews) {
+        String nickname = inputView.getNickname();
+        String localDateTimeToday = inputView.getTodayLocalDateTime();
+        AttendTime attendTime = crews.addCrewAttendance(nickname, localDateTimeToday);
+        outputView.printAttendanceResult(attendTime);
     }
 
-    private void executePrintCrewAttendance() {
-        String nickname = inputView.readNickname();
-        outputView.printCrewAttendance(crews.findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("없는 학생입니다.")), nickname);
+    private void changeAttendance(Crews crews) {
+        String nickname = inputView.getNickname();
+        int date = inputView.getChangeableDate();
+        LocalTime localTime = inputView.getChangeableTime();
+
+        Crew crew = crews.findCrewByNickname(nickname).orElseThrow(IllegalArgumentException::new);
+        outputView.printBeforeChangedAttendance(crew, date);
+        outputView.printAfterChangedAttendance(crew.changeAttendanceTime(date, localTime));
     }
 
-    private void executeChangingAttendance() {
-        String nickname = inputView.readNickNameForChange();
-        int date = inputView.readDateForChange();
-        December.checkWeekday(LocalDateTime.of(DEFAULT_YEAR, DEFAULT_MONTH, date, 0, 0));
-
-        String time = inputView.readTimeForChange();
-        AttendTime attendTime = crews.deleteAttendance(nickname, date);
-
-        outputView.printBeforeChangedCrewAttendance(attendTime);
-
-        int year = attendTime.getAttendTime().getYear();
-        int month = attendTime.getAttendTime().getMonthValue();
-        int date2 = attendTime.getAttendTime().getDayOfMonth();
-
-        String inputTime = String.format("%d-%d-%d %s", year, month, date2, time);
-        crews.findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다.")).addAttendTime(inputTime);
-        String status = crews.findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다.")).attend(inputTime);
-
-        outputView.printChangedCrewAttendance(time, status);
+    private void showCrewAttendances(Crews crews) {
+        String nickname = inputView.getNickname();
+        Crew crew = crews.findCrewByNickname(nickname).orElseThrow(() -> new IllegalArgumentException("없는 사용자입니다."));
+        outputView.printAttendanceTimeLine(crew);
     }
 
-    private void executeAttendance() {
-        December.checkWeekday(TODAY);
-
-        String nickname = inputView.readNickname();
-        crews.ifFindNameAddTime(nickname);
-
-        String time = inputView.readTime();
-        System.out.println(time);
-        crews.initializeAttendTime(nickname, time);
-
-        AttendTime attendTime = crews.findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다."))
-                .findAttendanceByDate(TODAY.getDayOfMonth()).orElse(null);
-
-        outputView.printTodayAttendance(attendTime);
+    private void showDismissalCrew(Crews crews) {
+        outputView.printDismissalCrews(crews.findDismissalCrewsByImportance());
     }
 }

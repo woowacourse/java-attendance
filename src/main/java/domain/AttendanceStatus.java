@@ -1,20 +1,33 @@
 package domain;
 
-public class AttendanceStatus {
+import java.time.LocalTime;
 
-    private final int onTime;
-    private final int late;
-    private final int absent;
-    private WarningStatusType status;
+public enum AttendanceStatus {
 
-    public AttendanceStatus(int onTime, int late, int absent) {
-        this.onTime = onTime;
-        this.late = late;
-        this.absent = absent;
+    ATTENDED("출석"),
+    LATE("지각"),
+    ABSENT("결석");
+
+    public static final int LATE_MINUTE = 5;
+    public static final int ABSENT_MINUTE = 5;
+
+    private final String status;
+
+    AttendanceStatus(String status) {
+        this.status = status;
     }
 
-    public WarningStatusType getStatus() {
-        status = WarningStatusType.calculateStatus(late, absent);
+    public static AttendanceStatus calculateStatus(LocalTime lateTime, LocalTime absentTime, LocalTime attendanceTime) {
+        if (attendanceTime.isAfter(absentTime)) {
+            return ABSENT;
+        }
+        if (attendanceTime.isAfter(lateTime)) {
+            return LATE;
+        }
+        return ATTENDED;
+    }
+
+    public String getStatus() {
         return status;
     }
 }

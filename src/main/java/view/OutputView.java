@@ -1,118 +1,62 @@
 package view;
 
+import domain.AttendTime;
+import domain.Crew;
 
-import domain.*;
-
-import java.util.Comparator;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.TextStyle;
 import java.util.List;
-
-import static controller.AttendanceController.TODAY;
-import static domain.AttendanceType.LATE_TO_ABSENT_COUNT;
+import java.util.Locale;
 
 public class OutputView {
 
-    public void printTodayAttendance(final AttendTime attendTime) {
+    public void printAttendanceResult(AttendTime attendTime) {
+        LocalDate localDate = attendTime.getLocalDate();
+        LocalTime localTime = attendTime.getLocalTime();
         System.out.println();
-        printAttendTime(attendTime);
-        System.out.println();
-        System.out.println();
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)", localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN), localTime.getHour(), localTime.getMinute(), attendTime.getAttendanceStatus());
     }
 
-    public void printBeforeChangedCrewAttendance(final AttendTime attendTime) {
+    public void printAttendanceTimeLine(Crew crew) {
         System.out.println();
-        printAttendTime(attendTime);
-    }
+        System.out.println("이번 달 " + crew.getNickname() + "의 출석 기록입니다.");
 
-    public void printChangedCrewAttendance(String time, String status) {
-        System.out.printf(" -> %s (%s) 수정 완료!", time, status);
-        System.out.println();
-        System.out.println();
-    }
-
-    public void printCrewAttendance(Crew crew, String nickname) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n", nickname);
-        System.out.println();
-        for (int date : December.getWeekDays()) {
-            if(date>TODAY.getDayOfMonth())
-                return;
-            AttendTime attendTime = crew.findAttendanceByDate(date).orElse(null);
-            if (attendTime != null) {
-                printAttendTime(attendTime);
-                System.out.println();
+        for (AttendTime attendTime : crew.getAttendTimeLine()) {
+            LocalDate localDate = attendTime.getLocalDate();
+            LocalTime localTime = attendTime.getLocalTime();
+            System.out.printf("%02d월 %02d일 %s ", localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
+            if (localTime != null) {
+                System.out.printf("%02d:%02d (%s)\n", localTime.getHour(), localTime.getMinute(), attendTime.getAttendanceStatus());
                 continue;
             }
+            System.out.printf("--:-- (결석)\n");
 
-            System.out.printf("12월 %02d일 %s --:-- (결석)", date, December.getDayByDate(date));
-            System.out.println();
         }
 
         System.out.println();
-
-        AttendanceHistory attendanceHistory = crew.getAttendanceHistory();
-        System.out.printf("출석: %d회", attendanceHistory.calculateOnTime());
-        System.out.println();
-        System.out.printf("지각: %d회", attendanceHistory.calculateLate());
-        System.out.println();
-        System.out.printf("결석: %d회", attendanceHistory.calculateAbsent());
+        System.out.println("출석: " + crew.getCrewAttendedCount() + "회");
+        System.out.println("지각: " + crew.getCrewLateCount() + "회");
+        System.out.println("결석: " + crew.getCrewAbsentCount() + "회");
         System.out.println();
 
-        System.out.println();
-        AttendanceStatus attendanceStatus = attendanceHistory.getAttendanceStatus();
-        System.out.printf("%s 대상자입니다.\n", attendanceStatus.getStatus());
-        System.out.println();
+        if (crew.isDismissalCrew())
+            System.out.println(crew.getDismissalStatus().getTarget() + " 대상자입니다.");
     }
 
-
-    public void printDismissalCrews(List<Crew> dismissalCrews, List<Crew> interviewCrews, List<Crew> warningCrews) {
-        System.out.println("제적 위험자 조회 결과");
-
-        printDismissalCrewsByType(dismissalCrews);
-        printDismissalCrewsByType(interviewCrews);
-        printDismissalCrewsByType(warningCrews);
+    public void printDismissalCrews(List<Crew> dismissalCrewsByImportance) {
+        System.out.println(" 제적 위험자 조회 결과");
+        dismissalCrewsByImportance.stream().forEach(crew -> System.out.println("- "+crew.getNickname()+": 결석 "+crew.getCrewAbsentCount()+", 지각 "+crew.getCrewLateCount()+"회 ("+crew.getDismissalStatus().getTarget()+")"));
     }
 
-    private void printDismissalCrewsByType(List<Crew> dangerousCrews) {
-        Comparator<Crew> comparator = (c1, c2) -> {
-            int i = (c2.getAttendanceHistory().calculateLate() / LATE_TO_ABSENT_COUNT + c2.getAttendanceHistory()
-                    .calculateAbsent())
-                    - (c1.getAttendanceHistory().calculateLate() / LATE_TO_ABSENT_COUNT + c1.getAttendanceHistory()
-                    .calculateAbsent());
-            if (i == 0) {
-                int j = (c2.getAttendanceHistory().calculateLate() % LATE_TO_ABSENT_COUNT) - (
-                        c1.getAttendanceHistory().calculateLate()
-                                % LATE_TO_ABSENT_COUNT);
-                if (j == 0) {
-                    return c1.getName().compareTo(c2.getName());
-                }
-                return j;
-            }
-            return i;
-        };
-
-        dangerousCrews.sort(comparator);
-        dangerousCrews.forEach(crew -> {
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)", crew.getName(),
-                    crew.getAttendanceHistory().calculateAbsent(),
-                    crew.getAttendanceHistory().calculateLate(),
-                    crew.getAttendanceHistory().getAttendanceStatus().getStatus().getType());
-            System.out.println();
-        });
+    public void printBeforeChangedAttendance(Crew crew, int date) {
+        AttendTime attendTime = crew.findAttendanceByDate(date);
+        LocalDate localDate = attendTime.getLocalDate();
+        LocalTime localTime = attendTime.getLocalTime();
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> ", localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN), localTime.getHour(), localTime.getMinute(), attendTime.getAttendanceStatus());
     }
 
-    private void printAttendTime(final AttendTime attendTime) {
-        System.out.printf("12월 %02d일 %s %02d:%02d (%s)",
-                attendTime.getAttendTime().getDayOfMonth(),
-                December.getDayByDate(attendTime.getAttendTime().getDayOfMonth()),
-                attendTime.getAttendTime().getHour(),
-                attendTime.getAttendTime().getMinute(),
-                attendTime.checkTime().getType()
-        );
-    }
-
-
-    public void printErrorMessage(Exception e) {
-        System.out.println();
-        System.out.println(e.getMessage());
-        System.out.println();
+    public void printAfterChangedAttendance(AttendTime attendTime) {
+        System.out.printf("%02d:%02d (%s) 수정 완료!", attendTime.getLocalTime().getHour(), attendTime.getLocalTime().getMinute(), attendTime.getAttendanceStatus());
     }
 }
