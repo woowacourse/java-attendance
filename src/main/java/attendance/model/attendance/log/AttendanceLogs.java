@@ -122,16 +122,11 @@ public record AttendanceLogs(
     }
 
     public CrewStatus getCrewStatus() {
-        final List<AttendanceStatus> attendanceStatuses = values.stream()
-                .map(AttendanceLog::getAttendanceStatus)
-                .toList();
-        return CrewStatus.fromAttendanceStatuses(attendanceStatuses);
+        return CrewStatus.fromAttendanceLogs(this);
     }
 
     public boolean isWarning() {
-        CrewStatus status = CrewStatus.fromAttendanceStatuses(values.stream()
-                .map(AttendanceLog::getAttendanceStatus)
-                .toList());
+        CrewStatus status = CrewStatus.fromAttendanceLogs(this);
 
         return status == CrewStatus.WARNING || status == CrewStatus.CONSULTATION || status == CrewStatus.EXPULSION;
     }

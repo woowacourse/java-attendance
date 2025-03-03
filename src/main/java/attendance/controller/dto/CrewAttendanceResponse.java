@@ -1,6 +1,5 @@
 package attendance.controller.dto;
 
-import attendance.model.attendance.log.AttendanceLog;
 import attendance.model.attendance.log.AttendanceLogs;
 import attendance.model.attendance.status.AttendanceStatus;
 import attendance.model.crew.Crew;
@@ -33,10 +32,7 @@ public record CrewAttendanceResponse(
                 crew.getNickName(),
                 attendanceResponses,
                 simplifiedStatistics,
-                CrewStatus.fromAttendanceStatuses(attendanceLogs.values().stream()
-                        .map(AttendanceLog::getAttendanceStatus)
-                        .toList()
-                ).getName()
+                CrewStatus.fromAttendanceLogs(attendanceLogs).getName()
         );
     }
 }
