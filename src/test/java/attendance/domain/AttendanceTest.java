@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -35,7 +34,7 @@ class AttendanceTest {
 
         Attendance absentAttendance = Attendance.absent(absentDate);
 
-        assertThat(absentAttendance.calculateStatus()).isEqualByComparingTo(AttendanceStatus.ABSENT);
+        assertThat(absentAttendance.calculateStatus()).isEqualByComparingTo(AttendanceStatus.ABSENCE);
     }
 
     @CsvSource(value = {
@@ -123,7 +122,7 @@ class AttendanceTest {
     void 현재_출석이_결석인지_알려준다(int day, int hour, int minute, boolean expected) {
         Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, day, hour, minute));
 
-        assertThat(attendance.isAbsent()).isEqualTo(expected);
+        assertThat(attendance.isAbsence()).isEqualTo(expected);
     }
 
     @CsvSource(value = {"31,ABSENT", "30,LATE", "6,LATE", "5,ATTENDANCE_COMPLETE"})

@@ -67,7 +67,7 @@ public class Attendances {
 
     public int calculateAbsentCount(final LocalDate standardDate) {
         return (int) attendances.stream()
-                .filter(attendance -> attendance.isBeforeOrEqualDate(standardDate) && attendance.isAbsent())
+                .filter(attendance -> attendance.isBeforeOrEqualDate(standardDate) && attendance.isAbsence())
                 .count();
     }
 

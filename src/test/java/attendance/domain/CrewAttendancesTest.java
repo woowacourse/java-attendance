@@ -80,7 +80,7 @@ class CrewAttendancesTest {
 
         Attendance absentAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 25));
 
-        assertThat(absentAttendance.calculateStatus()).isEqualByComparingTo(AttendanceStatus.ABSENT);
+        assertThat(absentAttendance.calculateStatus()).isEqualByComparingTo(AttendanceStatus.ABSENCE);
     }
 
     @Test

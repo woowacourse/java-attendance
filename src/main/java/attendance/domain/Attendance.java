@@ -49,20 +49,20 @@ public class Attendance implements Comparable<Attendance> {
     }
 
     public boolean isAttendanceComplete() {
-        return AttendanceStatus.isAttendance(this, attendanceTime);
+        return AttendanceStatus.isAttendanceComplete(this, attendanceTime);
     }
 
     public boolean isLate() {
         return AttendanceStatus.isLate(this, attendanceTime);
     }
 
-    public boolean isAbsent() {
-        return AttendanceStatus.isAbsent(this, attendanceTime);
+    public boolean isAbsence() {
+        return AttendanceStatus.isAbsence(this, attendanceTime);
     }
 
     public AttendanceStatus calculateStatus() {
-        if (isAbsent()) {
-            return AttendanceStatus.ABSENT;
+        if (isAbsence()) {
+            return AttendanceStatus.ABSENCE;
         }
         if (isLate()) {
             return AttendanceStatus.LATE;
@@ -78,7 +78,7 @@ public class Attendance implements Comparable<Attendance> {
         return attendanceTime.getAttendanceTime();
     }
 
-    public boolean isHasRecord() {
+    public boolean hasRecord() {
         return hasRecord;
     }
 

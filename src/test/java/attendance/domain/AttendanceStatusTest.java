@@ -23,7 +23,7 @@ class AttendanceStatusTest {
         Attendance attendance = new Attendance(LocalDateTime.of(localDate, localTime));
         AttendanceTime attendanceTime = new AttendanceTime(localTime);
 
-        assertThat(AttendanceStatus.isAttendance(attendance, attendanceTime)).isEqualTo(expected);
+        assertThat(AttendanceStatus.isAttendanceComplete(attendance, attendanceTime)).isEqualTo(expected);
     }
 
     @CsvSource(value = {
@@ -51,7 +51,7 @@ class AttendanceStatusTest {
         Attendance attendance = new Attendance(LocalDateTime.of(localDate, localTime));
         AttendanceTime attendanceTime = new AttendanceTime(localTime);
 
-        assertThat(AttendanceStatus.isAbsent(attendance, attendanceTime)).isEqualTo(expected);
+        assertThat(AttendanceStatus.isAbsence(attendance, attendanceTime)).isEqualTo(expected);
     }
 
     @Test

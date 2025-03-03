@@ -149,7 +149,7 @@ public class AttendanceManagementController {
         List<LocalDateTime> attendanceTimes = mapToLocalDateTimes(attendancesUntilYesterday.getAttendances());
         List<Boolean> attendanceExistences = attendancesUntilYesterday.getAttendances()
                 .stream()
-                .map(Attendance::isHasRecord)
+                .map(Attendance::hasRecord)
                 .toList();
         List<String> attendanceStatuses = getAttendanceStatuses(attendancesUntilYesterday);
         resultView.printCrewAttendancesUntilYesterday(crew.getNickname(), attendanceTimes, attendanceExistences,

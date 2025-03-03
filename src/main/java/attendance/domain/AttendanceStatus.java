@@ -25,7 +25,7 @@ public enum AttendanceStatus {
                 CampusTime.TUESDAY_TO_FRIDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(30L)
         );
     }),
-    ABSENT("결석", (attendance, attendanceTime) -> {
+    ABSENCE("결석", (attendance, attendanceTime) -> {
         if (attendance.isMonday()) {
             return attendanceTime.isBetweenInclusive(
                     CampusTime.MONDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(31L),
@@ -47,7 +47,7 @@ public enum AttendanceStatus {
         this.condition = condition;
     }
 
-    public static boolean isAttendance(final Attendance attendance, final AttendanceTime attendanceTime) {
+    public static boolean isAttendanceComplete(final Attendance attendance, final AttendanceTime attendanceTime) {
         return ATTENDANCE_COMPLETE.condition.test(attendance, attendanceTime);
     }
 
@@ -55,8 +55,8 @@ public enum AttendanceStatus {
         return LATE.condition.test(attendance, attendanceTime);
     }
 
-    public static boolean isAbsent(final Attendance attendance, final AttendanceTime attendanceTime) {
-        return ABSENT.condition.test(attendance, attendanceTime);
+    public static boolean isAbsence(final Attendance attendance, final AttendanceTime attendanceTime) {
+        return ABSENCE.condition.test(attendance, attendanceTime);
     }
 
     public static int calculateTotalAbsentCount(final int absentCount, final int lateCount) {
@@ -70,4 +70,5 @@ public enum AttendanceStatus {
     public String getText() {
         return this.text;
     }
+
 }
