@@ -322,6 +322,19 @@ public class AttendanceHistoriesTest {
             // then
             assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.EXPELLED);
         }
+
+        @Test
+        @DisplayName("결석 1회 지각 2회는 해당 사항 없음으로 판단할 수 있다.")
+        void testGetNoneStatus() {
+            // given
+            AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
+                    DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, 2, 1);
+            LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, 3);
+            // when
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW, lastDate);
+            // then
+            assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.NONE);
+        }
     }
 
     @Test
