@@ -14,13 +14,13 @@ public class AttendanceController {
     public static final String YEAR_MONTH_DAY_FORMAT = "yyyy-MM-dd";
     public static final String HOUR_MINUTE_FORMAT = "HH:mm";
 
-    private final SystemDateProvider systemDateProvider;
+    private final DateProvider dateProvider;
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceBook attendanceBook;
 
-    public AttendanceController(SystemDateProvider systemDateProvider, InputView inputView, OutputView outputView) {
-        this.systemDateProvider = systemDateProvider;
+    public AttendanceController(DateProvider dateProvider, InputView inputView, OutputView outputView) {
+        this.dateProvider = dateProvider;
         this.inputView = inputView;
         this.outputView = outputView;
         this.attendanceBook = AttendanceBookParser.parseToAttendanceBook(
@@ -32,7 +32,7 @@ public class AttendanceController {
 
     public void run() {
         while (true) {
-            String featureNumber = inputView.readFeatureNumber(systemDateProvider.now());
+            String featureNumber = inputView.readFeatureNumber(dateProvider.now());
             if (featureNumber.equals("1")) {
                 checkIn();
             }
@@ -52,7 +52,7 @@ public class AttendanceController {
     }
 
     private void checkIn() {
-        CheckInDate checkInDate = CheckInDate.of(systemDateProvider.now());
+        CheckInDate checkInDate = CheckInDate.of(dateProvider.now());
         String nickname = inputView.readNickName();
         CheckInHistory historyByCrew = getCheckInHistoryByName(nickname);
         CheckInTime checkInTime = getCheckInTime();
@@ -72,11 +72,11 @@ public class AttendanceController {
     private void viewCrewHistory() {
         String nickname = inputView.readNickName();
         CheckInHistory checkInHistoryByName = getCheckInHistoryByName(nickname);
-        outputView.printAttendanceHistory(nickname, systemDateProvider.now(), checkInHistoryByName);
+        outputView.printAttendanceHistory(nickname, dateProvider.now(), checkInHistoryByName);
     }
 
     private void viewDangerCrews() {
-        List<DangerCrew> dangerCrews = attendanceBook.findDangerCrews(systemDateProvider.now());
+        List<DangerCrew> dangerCrews = attendanceBook.findDangerCrews(dateProvider.now());
         outputView.printDangerCrews(dangerCrews);
     }
 

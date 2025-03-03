@@ -89,7 +89,7 @@ public class OutputView {
     private void printIsCrewDanger(CheckInHistory checkInHistory, LocalDate today) {
         PenaltyStatus status = checkInHistory.getPenaltyStatus(today);
         if (status != PenaltyStatus.NONE) {
-            System.out.println(status + "대상자 입니다.");
+            System.out.println(status + " 대상자입니다.");
         }
     }
 

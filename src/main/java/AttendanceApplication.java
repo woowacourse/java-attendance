@@ -1,16 +1,15 @@
 import controller.AttendanceController;
-import domain.SystemDateProvider;
+import domain.DateProvider;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceApplication {
-    public static void main(String[] args) {
+    public static void main(String[] args, DateProvider dateProvider) {
         final InputView inputView = new InputView();
         final OutputView outputView = new OutputView();
-        final SystemDateProvider systemDateProvider = new SystemDateProvider();
 
         final AttendanceController attendanceController = new AttendanceController(
-                systemDateProvider, inputView, outputView
+                dateProvider, inputView, outputView
         );
 
         attendanceController.run();
