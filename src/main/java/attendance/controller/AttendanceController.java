@@ -32,5 +32,6 @@ public class AttendanceController {
         resultView.printCrewAttendanceHeader(nickname);
         resultView.printCrewAttendances(crewAttendance, today);
         resultView.printAttendanceStatusCounts(crewAttendance, today);
+        resultView.printWarningLevel(attendanceBook, nickname, today);
     }
 }

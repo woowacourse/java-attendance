@@ -3,6 +3,7 @@ package attendance.view;
 import static attendance.domain.AttendanceStatus.ABSENT;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.CrewAttendance;
@@ -17,6 +18,7 @@ public class ResultView {
     private static final String ABSENT_TIME_FORMAT = " --:-- ";
     private static final String ATTENDANCE_STATUS_FORMAT = "(%s)";
     private static final String ATTENDANCE_STATUS_COUNTS_FORMAT = "\n%s: %d회";
+    private static final String WARNING_LEVEL_NOTICE_FORMAT = "\n\n%s 대상자입니다.\n";
 
 
     public void printCrewAttendanceHeader(final String nickname) {
@@ -62,5 +64,10 @@ public class ResultView {
                     attendanceStatus.getDisplayName(),
                     attendanceStatusCounts.get(attendanceStatus));
         }
+    }
+
+    public void printWarningLevel(final AttendanceBook attendanceBook, final String nickname, final LocalDateTime today) {
+        System.out.printf(WARNING_LEVEL_NOTICE_FORMAT,
+                attendanceBook.getWarningLevelOf(nickname, today).getDisplayName());
     }
 }

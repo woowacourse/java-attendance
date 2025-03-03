@@ -43,4 +43,8 @@ public enum WarningLevel {
     private static boolean isMatch(final int absentCount, final WarningLevel warningLevel) {
         return absentCount >= warningLevel.absentCountUnderBound;
     }
+
+    public String getDisplayName() {
+        return displayName;
+    }
 }
