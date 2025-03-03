@@ -3,8 +3,11 @@ package attendance.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceBookTest {
@@ -169,5 +172,38 @@ public class AttendanceBookTest {
                                 new CrewAttendance("surf", surfAttendance)
                         )
                 );
+    }
+
+    @Test
+    void 이름과_출석날짜를_통해_출석을_찾을_수_있다() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook(
+                new Crews("pobi"),
+                new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 10, 1))
+        );
+
+        //when
+        Optional<Attendance> result = attendanceBook.findAttendance("pobi", LocalDate.of(2024, 12, 2));
+
+        //then
+        Assertions.assertThat(result)
+                .isPresent()
+                .isEqualTo(Optional.of(
+                        new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 10, 1))
+                ));
+    }
+
+    @Test
+    void 이름과_출석날짜를_통해_출석을_찾을때_없을때도_Optional로_감싸_반환한다() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook(
+                new Crews("pobi")
+        );
+
+        //when
+        Optional<Attendance> result = attendanceBook.findAttendance("pobi", LocalDate.of(2024, 12, 2));
+
+        //then
+        Assertions.assertThat(result).isEmpty();
     }
 }
