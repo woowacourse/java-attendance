@@ -26,7 +26,7 @@ public class ResultView {
     private static final String WARNING_LEVEL_NOTICE_FORMAT = "\n\n%s 대상자입니다.\n";
     private static final String WARNING_CREWS_HEADER = "\n제적 위험자 조회 결과";
     private static final String WARNING_CREW_FORMAT = "\n- %s: 결석 %d회, 지각 %d회 " + ATTENDANCE_STATUS_FORMAT;
-    private static final String MODIFIED_RESULT_FORMAT = "%s -> %s " + ATTENDANCE_STATUS_FORMAT + " 수정 완료!";
+    private static final String MODIFIED_RESULT_FORMAT = "%s -> %s " + ATTENDANCE_STATUS_FORMAT + " 수정 완료!\n";
 
     public void printAttendance(final Attendance attendance) {
         System.out.println(System.lineSeparator() + format(attendance));
@@ -109,5 +109,6 @@ public class ResultView {
                 System.out.print(result);
             });
         }
+        System.out.println();
     }
 }

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class InputView {
-    private static final String TODAY_IS = "오늘은 %s입니다. ";
+    private static final String TODAY_IS = "\n오늘은 %s입니다. ";
     private static final String ENTER_OPTION = """
             기능을 선택해 주세요.
             1. 출석 확인
