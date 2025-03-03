@@ -31,7 +31,7 @@ public class AttendanceSystem {
             Scanner scanner = new Scanner(new File("src/main/resources/attendances.csv"));
             allCrew = new AllCrew(scanner);
             allCrew.fillAllCrewsEmptyDateWithAbsent(today.minusDays(1));
-        } catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             throw new FileNotFoundException(NO_ATTENDANCES_FILE.getMessage());
         }
     }

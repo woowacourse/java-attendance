@@ -6,9 +6,11 @@ import domain.Attendance;
 import domain.Crew;
 import constant.ErrorMessage;
 import domain.Penalty;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

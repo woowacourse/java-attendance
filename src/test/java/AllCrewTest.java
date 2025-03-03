@@ -3,6 +3,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import domain.AllCrew;
 import domain.Attendance;
 import domain.Crew;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -81,7 +82,7 @@ public class AllCrewTest {
         // 강산 5일 결석
 
         // when
-        allCrew.fillAllCrewsEmptyDateWithAbsent(LocalDate.of(2024,12,5));
+        allCrew.fillAllCrewsEmptyDateWithAbsent(LocalDate.of(2024, 12, 5));
 
         // then
         Assertions.assertAll(
@@ -109,7 +110,7 @@ public class AllCrewTest {
             // 율무 2, 3, 5일 결석
 
             // when
-            allCrew.fillAllCrewsEmptyDateWithAbsent(LocalDate.of(2024,12,5));
+            allCrew.fillAllCrewsEmptyDateWithAbsent(LocalDate.of(2024, 12, 5));
 
             // then
             assertThat(allCrew.getPenaltyReceivedCrew()).extracting("name").contains("띠용", "율무");
@@ -130,7 +131,7 @@ public class AllCrewTest {
             // 율무 2, 3, 5일 결석
 
             // when
-            allCrew.fillAllCrewsEmptyDateWithAbsent(LocalDate.of(2024,12,5));
+            allCrew.fillAllCrewsEmptyDateWithAbsent(LocalDate.of(2024, 12, 5));
             List<Crew> penaltyReceivedCrew = allCrew.getPenaltyReceivedCrew();
             allCrew.sortPenaltyReceivedCrew(penaltyReceivedCrew);
 

@@ -41,7 +41,7 @@ public class UserInputView {
         if (option.equals("4"))
             return CHECK_PENALTY_RECEIVED_CREW;
         if (Pattern.matches(QUIT.getOption(), option))
-                return QUIT;
+            return QUIT;
         throw new IllegalArgumentException(INVALID_INPUT.getMessage());
     }
 }

@@ -2,7 +2,9 @@ import static org.assertj.core.api.Assertions.*;
 
 import domain.AttendanceStatus;
 import constant.ErrorMessage;
+
 import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,7 @@ public class AttendanceStatusTest {
         @Test
         void test1() {
             // given
-            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 2, 13, 0);
+            LocalDateTime attendedTime = LocalDateTime.of(2024, 12, 2, 13, 0);
 
             // when & then
             assertThat(AttendanceStatus.getStatusByAttendedTime(attendedTime))
@@ -26,7 +28,7 @@ public class AttendanceStatusTest {
         @Test
         void test2() {
             // given
-            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 2, 13, 6);
+            LocalDateTime attendedTime = LocalDateTime.of(2024, 12, 2, 13, 6);
 
             // when & then
             assertThat(AttendanceStatus.getStatusByAttendedTime(attendedTime))
@@ -37,7 +39,7 @@ public class AttendanceStatusTest {
         @Test
         void test3() {
             // given
-            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 2, 13, 31);
+            LocalDateTime attendedTime = LocalDateTime.of(2024, 12, 2, 13, 31);
 
             // when & then
             assertThat(AttendanceStatus.getStatusByAttendedTime(attendedTime))
@@ -52,7 +54,7 @@ public class AttendanceStatusTest {
         @Test
         void test1() {
             // given
-            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 3, 10, 0);
+            LocalDateTime attendedTime = LocalDateTime.of(2024, 12, 3, 10, 0);
 
             // when & then
             assertThat(AttendanceStatus.getStatusByAttendedTime(attendedTime))
@@ -63,7 +65,7 @@ public class AttendanceStatusTest {
         @Test
         void test2() {
             // given
-            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 3, 10, 6);
+            LocalDateTime attendedTime = LocalDateTime.of(2024, 12, 3, 10, 6);
 
             // when & then
             assertThat(AttendanceStatus.getStatusByAttendedTime(attendedTime))
@@ -74,7 +76,7 @@ public class AttendanceStatusTest {
         @Test
         void test3() {
             // given
-            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 4, 10, 31);
+            LocalDateTime attendedTime = LocalDateTime.of(2024, 12, 4, 10, 31);
 
             // when & then
             assertThat(AttendanceStatus.getStatusByAttendedTime(attendedTime))
@@ -85,7 +87,7 @@ public class AttendanceStatusTest {
         @Test
         void test4() {
             // given
-            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 5, 13, 0);
+            LocalDateTime attendedTime = LocalDateTime.of(2024, 12, 5, 13, 0);
 
             // when & then
             assertThat(AttendanceStatus.getStatusByAttendedTime(attendedTime))
@@ -101,16 +103,17 @@ public class AttendanceStatusTest {
         @Test
         void test1() {
             // given
-            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 7, 10, 0);
+            LocalDateTime attendedTime = LocalDateTime.of(2024, 12, 7, 10, 0);
 
             // when & then
             assertThatThrownBy(() -> AttendanceStatus.validateCampusIsOpen(attendedTime)).hasMessage(ErrorMessage.CLOSED_DAY.getMessage());
         }
+
         @DisplayName("성탄절 출석 시도")
         @Test
         void test2() {
             // given
-            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 25, 10, 0);
+            LocalDateTime attendedTime = LocalDateTime.of(2024, 12, 25, 10, 0);
             // when & then
             assertThatThrownBy(() -> AttendanceStatus.validateCampusIsOpen(attendedTime)).hasMessage(ErrorMessage.CLOSED_DAY.getMessage());
         }
@@ -125,16 +128,17 @@ public class AttendanceStatusTest {
         @Test
         void test1() {
             // given
-            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 5, 7, 0);
+            LocalDateTime attendedTime = LocalDateTime.of(2024, 12, 5, 7, 0);
 
             // when & then
             assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).hasMessage(ErrorMessage.CLOSED_TIME.getMessage());
         }
+
         @DisplayName("개장 후 출석 시도")
         @Test
         void test2() {
             // given
-            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 5, 23, 30);
+            LocalDateTime attendedTime = LocalDateTime.of(2024, 12, 5, 23, 30);
 
             // when & then
             assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).hasMessage(ErrorMessage.CLOSED_TIME.getMessage());

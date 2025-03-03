@@ -16,6 +16,7 @@ public class Attendance {
     public LocalDate getLocalDate() {
         return dateTime.toLocalDate();
     }
+
     public LocalTime getLocalTime() {
         return dateTime.toLocalTime();
     }
