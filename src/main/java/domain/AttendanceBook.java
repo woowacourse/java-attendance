@@ -32,12 +32,6 @@ public class AttendanceBook {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
 
-    public void validateExistCrew(final String crewName) {
-        if (!attendancePapers.containsKey(crewName)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
-    }
-
     public void validateExistAttendance(final LocalDate localDate, final String crewName) {
         if (attendancePapers.get(crewName).existAttendance(localDate)) {
             throw new IllegalArgumentException(
@@ -81,5 +75,9 @@ public class AttendanceBook {
         final Map<AttendanceStatus, Integer> countAttendanceStatus = countAttendanceStatus(name);
         return Penalty.findByAbsenceCount((countAttendanceStatus.get(AttendanceStatus.ABSENCE)
                 + countAttendanceStatus.get(AttendanceStatus.LATE) / LATES_COUNT_PER_ABSENCE));
+    }
+
+    public List<AttendancePaper> getSortedPenaltyAttendancePapers() {
+        return null;
     }
 }

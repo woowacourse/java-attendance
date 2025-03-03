@@ -141,4 +141,15 @@ public class AttendanceBookTest {
         //then
         assertThat(penalty).isEqualTo(Penalty.INTERVIEW);
     }
+    
+    @Test
+    @DisplayName("제적 위험자를 확인 한다.")
+    void test8() {
+        //given
+        //when
+        final List<AttendancePaper> sortedPenaltyAttendancePapers = attendanceBook.getSortedPenaltyAttendancePapers();
+        //then
+        assertThat(sortedPenaltyAttendancePapers).isNotNull();
+        
+    }
 }
