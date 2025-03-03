@@ -1,67 +1,80 @@
 package model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import controller.Controller;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import org.junit.jupiter.api.Assertions;
+import java.time.LocalTime;
+import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import view.InputView;
+import util.FileInformationProvider;
 
 public class AttendanceBookTest {
-    private final AttendanceBook studentRepository = new Controller().createStudentRepository();
-
     @Test
-    @DisplayName("존재하지 않는 학생을 입력시 예외처리 한다.")
-    void test1() {
-        String input = "포비";
-        assertThatThrownBy(() -> studentRepository.notExistStudent(input))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+    @DisplayName("학생 이름으로 학생 찾기 구현 테스트")
+    void 특정_학생의_출석_시간_가져오기_구현() throws IOException {
+        String expect = "빙티";
+        AttendanceBook attendanceBook = new AttendanceBook(FileInformationProvider.loadStudentAttendance());
+        String result = attendanceBook.findStudentByNickName(expect).getName();
+        assertThat(expect).isEqualTo(result);
     }
 
     @Test
-    @DisplayName("등교시간 잘못 입력시 예외처리 한다.")
-    void test2() {
-        assertThatThrownBy(() -> InputView.isNotOpeningHour(LocalDateTime.of(2024,12,13,7,59)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+    @DisplayName("제적 위험자 조건에 맞는 크루 찾기 테스트")
+    void 재적_위험자_조건에_맞는_크루_찾기_테스트() {
+        List<Student> students = List.of(
+                new Student("빙티", List.of(
+                        LocalDateTime.of(2024, 12, 13, 10, 31),
+                        LocalDateTime.of(2024, 12, 12, 10, 31),
+                        LocalDateTime.of(2024, 12, 11, 10, 31)
+                )),
+                new Student("이든", List.of(
+                        LocalDateTime.of(2024, 12, 13, 10, 31),
+                        LocalDateTime.of(2024, 12, 12, 10, 31),
+                        LocalDateTime.of(2024, 12, 11, 10, 31)
+                )),
+                new Student("쿠키", List.of(
+                        LocalDateTime.of(2024, 12, 13, 10, 0),
+                        LocalDateTime.of(2024, 12, 12, 10, 0),
+                        LocalDateTime.of(2024, 12, 11, 10, 0)
+                ))
+        );
+        AttendanceBook attendanceBook = new AttendanceBook(students);
+
+        List<Student> expulsionRiskStudents = attendanceBook.findExpulsionRiskStudents();
+        Assertions.assertThat(expulsionRiskStudents)
+                .extracting(Student::getName)
+                .contains("빙티", "이든");
     }
 
     @Test
-    @DisplayName("이름 기준으로 학생 객체 찾는 기능")
-    void test3() {
-        String name = "짱수";
-        Student student = studentRepository.findStudentByName(name);
-        String expectStudentName = student.getName();
-        assertThat(name).isEqualTo(expectStudentName);
-
+    @DisplayName("출결 기록이 없는 경우 null 처리 테스트")
+    void 출결_기록이_없는_경우_null_처리_테스트() throws IOException {
+        List<Student> students = List.of(
+                new Student("빙티", List.of(
+                        LocalDateTime.of(2024, 12, 13, 10, 31),
+                        LocalDateTime.of(2024, 12, 12, 10, 31),
+                        LocalDateTime.of(2024, 12, 11, 10, 31)
+                )),
+                new Student("이든", List.of(
+                        LocalDateTime.of(2024, 12, 13, 10, 31),
+                        LocalDateTime.of(2024, 12, 12, 10, 31),
+                        LocalDateTime.of(2024, 12, 11, 10, 31)
+                )),
+                new Student("쿠키", List.of(
+                        LocalDateTime.of(2024, 12, 13, 10, 0),
+                        LocalDateTime.of(2024, 12, 12, 10, 0),
+                        LocalDateTime.of(2024, 12, 11, 10, 0)
+                ))
+        );
+        AttendanceBook attendanceBook = new AttendanceBook(students);
+        attendanceBook.updateNonExistentAttendanceRecords(LocalDate.of(2024,12,15));
+        Student student = attendanceBook.findStudentByNickName("이든");
+        LocalTime result = student.findAttendanceLocalTimeByLocalDate(LocalDate.of(2024,12,14));
+        assertNull(result);
     }
-
-    @Test
-    @DisplayName("등교 시간을 바탕으로 출석 기록 업데이트하는 기능")
-    void test4() {
-        String name = "짱수";
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 13,9,59);
-
-        Student student = studentRepository.findStudentByName(name);
-        student.attendanceRegister(localDateTime);
-        student.updateAttendanceTotalCount();
-        assertThat(student.getAttendanceCount().getAttendanceTotalCount()).isEqualTo(3);
-    }
-
-    @Test
-    @DisplayName("출석 기록 업데이트 하는 메서드 테스트")
-    void test7() {
-        Student student1 = studentRepository.findStudentByName("빙티");
-        student1.modifyAttendanceRecord(LocalDateTime.of(2024,12,3,10,0));
-        Assertions.assertEquals(student1.getAttendanceRecords()
-                .getRecord()
-                .get(LocalDate.of(2024, 12, 3))
-                .getAttendanceStatus(), AttendanceStatus.ATTENDANCE);
-    }
-
 }

@@ -1,0 +1,35 @@
+package model;
+
+import java.util.Arrays;
+import java.util.Comparator;
+
+public enum AttendancePenalty {
+    NONE("없음", 0),
+    WARNING("경고", 2),
+    COUNSELING("면담", 3),
+    EXPULSION("제적", 6);
+
+    private final String penalty;
+    private final int thresholdAbsenceCount;
+
+    AttendancePenalty(String penalty, int thresholdAbsenceCount) {
+        this.penalty = penalty;
+        this.thresholdAbsenceCount = thresholdAbsenceCount;
+    }
+
+    public static AttendancePenalty findPenaltyByAbsentCount(long totalAbsentCount) {
+        return Arrays.stream(AttendancePenalty.values())
+                .sorted(Comparator.comparingInt(AttendancePenalty::getThresholdAbsenceCount).reversed())
+                .filter(penalty -> totalAbsentCount >= penalty.thresholdAbsenceCount)
+                .findFirst()
+                .orElse(NONE);
+    }
+
+    public String getPenalty() {
+        return penalty;
+    }
+
+    public int getThresholdAbsenceCount() {
+        return thresholdAbsenceCount;
+    }
+}

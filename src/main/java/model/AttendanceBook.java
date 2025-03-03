@@ -1,28 +1,42 @@
 package model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
     private final List<Student> students;
 
-    public AttendanceBook(List<Student> students) {
-        this.students = students;
+    public AttendanceBook(List<Student> attendanceBook) {
+        this.students = attendanceBook;
     }
 
-    public void notExistStudent(String studentName) {
-        if (findStudentByName(studentName) == null) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+    public AttendanceBook(Map<String, List<LocalDateTime>> fileAttendanceRecord) {
+        students = fileAttendanceRecord.entrySet().stream()
+                .map(entry -> new Student(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    public void updateNonExistentAttendanceRecords(LocalDate today) {
+        for (Student student : students) {
+            student.updateNonAttendanceRecordStatusIsAbsent(today);
         }
     }
 
-    public Student findStudentByName(String name) {
+    public Student findStudentByNickName(String name) {
         return students.stream()
-                .filter(s -> s.getName().equals(name))
+                .filter(stu -> stu.getName().equals(name))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 찾는 학생이 존재하지 않습니다."));
     }
 
-    public List<Student> getStudents() {
-        return students;
+    public List<Student> findExpulsionRiskStudents() {
+        return students.stream()
+                .filter(Student::isAtRiskOfCounselingOrExpulsion)
+                .sorted(Comparator.comparing(Student::calculateTotalAbsentCount))
+                .collect(Collectors.toList());
     }
 }

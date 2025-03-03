@@ -1,30 +1,50 @@
 package model;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
+
 public enum AttendanceStatus {
+    ATTENDANCE("출석", 0),
+    LATE("지각", 5),
+    ABSENT("결석", 30);
 
-    ABSENT("결석", 30),
-    ATTENDANCE("출석",0),
-    LATE("지각", 5);
+    private final String attendanceStatus;
+    private final int thresholdMinutes;
 
-    private final String state;
-    private final int attendanceJudgementTime;
-
-    AttendanceStatus(String state, int attendanceJudgementTime) {
-        this.state = state;
-        this.attendanceJudgementTime = attendanceJudgementTime;
+    AttendanceStatus(String attendanceStatus, int thresholdMinutes) {
+        this.attendanceStatus = attendanceStatus;
+        this.thresholdMinutes = thresholdMinutes;
     }
 
-    public static AttendanceStatus fromMinutesLate(int minutesLate) {
-        if (minutesLate > ABSENT.attendanceJudgementTime) {
-            return ABSENT;
+    public static AttendanceStatus calculateAttendanceStatus(LocalDate todayDate, LocalTime attendanceTime) {
+        if (attendanceTime == null) {
+            return AttendanceStatus.ABSENT;
         }
-        if (minutesLate > LATE.attendanceJudgementTime) {
-            return LATE;
-        }
-        return ATTENDANCE;
+        LocalTime attendanceStartTime = WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(todayDate);
+        return Arrays.stream(AttendanceStatus.values())
+                .sorted(Comparator.comparingInt(AttendanceStatus::getThresholdMinutes).reversed())
+                .filter(status -> attendanceTime.isAfter(attendanceStartTime.plusMinutes(status.getThresholdMinutes())))
+                .findFirst()
+                .orElse(AttendanceStatus.ATTENDANCE);
     }
 
-    public String getState() {
-        return state;
+    public static long calculateAttendanceStatusCount(Map<LocalDate, LocalTime> attendanceRecord,
+                                                      AttendanceStatus attendanceStatus) {
+        return attendanceRecord.entrySet().stream()
+                .filter(entry -> AttendanceStatus.calculateAttendanceStatus(
+                        entry.getKey(),
+                        entry.getValue()).equals(attendanceStatus))
+                .count();
+    }
+
+    public String getAttendanceStatus() {
+        return attendanceStatus;
+    }
+
+    public int getThresholdMinutes() {
+        return thresholdMinutes;
     }
 }

@@ -1,118 +1,45 @@
 package view;
 
-import constant.DateFormatInformation;
-import java.time.DateTimeException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import constant.MenuOption;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-import model.AttendanceRuleByDay;
 
 public class InputView {
-    private final static String ATTENDANCE_CHECK_MENU = "1. 출석 확인";
-    private final static String ATTENDANCE_MODIFY_MENU = "2. 출석 수정";
-    private final static String RECORD_PRINT_FOR_EACH_CREW_MENU = "3. 크루별 출석 기록 확인";
-    private final static String DISMISSAL_CREW_CHECK_MENU = "4. 제적 위험자 확인";
-    private final static String QUIT = "Q. 종료";
-    private final static String PROMPT_TIME_INPUT_TO_MODIFY = "언제로 변경하겠습니까?";
-    private final static String PROMPT_DAY_INPUT_TO_MODIFY = "수정하려는 날짜(일)를 입력해 주세요.";
-    private final static String PROMPT_STUDENT_NAME_INPUT_TO_MODIFY = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
-    private final static String PROMPT_STUDENT_NAME_INPUT = "닉네임을 입력해 주세요.";
-    private final static String PROMPT_START_TIME_INPUT = "등교 시간을 입력해 주세요.";
-    private final static String MENU_OPTION = "[1-4]|Q";
-    private final static int CAMPUS_START_TIME = 8;
-    private final static int CAMPUS_END_TIME = 23;
-    private final static int START_DATE = 1;
-    private final static int END_DATE = 31;
+    static Scanner SCANNER = new Scanner(System.in);
 
-
-
-    private final static Scanner scanner = new Scanner(System.in);
-
-    public static void printTodayAndSelectFunction(LocalDate localDate) {
-        int month = localDate.getMonthValue();
-        int date = localDate.getDayOfMonth();
-        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        String day = AttendanceRuleByDay.findDayByDayOfWeekValue(dayOfWeek);
-        System.out.println("오늘은 " + month + "월 " + date + "일 " + day + "입니다. 기능을 선택해 주세요.");
+    public static MenuOption inputChooseFunctionOption() {
+        return MenuOption.validateSelectMenuOption(SCANNER.nextLine());
     }
 
-    public static String userInput() {
-        return scanner.nextLine();
+    public static String input() {
+        return SCANNER.nextLine();
     }
 
-    public static String getUserInputString() {
-        printMenu();
-        String input = userInput();
+    public static LocalTime inputAttendanceTime() {
+        String input = SCANNER.nextLine();
+        return validateTimeFormat(input);
+    }
+
+    public static LocalTime validateTimeFormat(String time) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         try {
-            return isQOrOneOrTwoOrThreeOrFour(input);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return getUserInputString();
+            return LocalTime.parse(time, formatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 잘못된 시간 형식입니다. 'HH:mm' 형식으로 입력하세요.");
         }
     }
 
-    public static void printInputNicName() {
-        System.out.println(PROMPT_STUDENT_NAME_INPUT);
-    }
-
-    public static void printStartTime() {
-        System.out.println(PROMPT_START_TIME_INPUT);
-    }
-
-    public static void printStudentNameForModify() {
-        System.out.println(PROMPT_STUDENT_NAME_INPUT_TO_MODIFY);
-    }
-
-    public static int inputDateForModify() {
-        System.out.println(PROMPT_DAY_INPUT_TO_MODIFY);
+    public static int validateDateFormat(String input) {
         try {
-            int date = Integer.parseInt(userInput());
-            if (date < START_DATE || date > END_DATE) {
-                throw new IllegalArgumentException("[ERROR] 1~31 사이의 숫자만 입력해주세요");
+            int a = Integer.parseInt(input);
+            if (a < 1 || a > 31) {
+                throw new IllegalArgumentException("[ERROR] 날짜 입력은 1이상 31이하 숫자만 입력 가능합니다");
             }
-            return date;
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return inputDateForModify();
+            return a;
+        } catch (NumberFormatException n) {
+            throw new IllegalArgumentException("[ERROR] 날짜 입력은 1이상 31이하 숫자만 입력 가능합니다");
         }
-    }
-
-    public static void printTimeForModify() {
-        System.out.println(PROMPT_TIME_INPUT_TO_MODIFY);
-    }
-
-    public static LocalDateTime makeLocalDateToLocalDateTime(LocalDate localDate) {
-        String time = userInput();
-        try {
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
-                    DateFormatInformation.LOCAL_TIME_FORMATTER);
-            LocalTime localTime = LocalTime.parse(time, dateTimeFormatter);
-            return localDate.atTime(localTime);
-        } catch (DateTimeException e) {
-            throw new IllegalArgumentException("[ERROR] 시간 형식에 맞지 않습니다.");
-        }
-    }
-
-    public static void isNotOpeningHour(LocalDateTime localDateTime) {
-        if (localDateTime.getHour() < CAMPUS_START_TIME || localDateTime.getHour() >= CAMPUS_END_TIME) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
-        }
-    }
-    private static void printMenu() {
-        System.out.println(ATTENDANCE_CHECK_MENU);
-        System.out.println(ATTENDANCE_MODIFY_MENU);
-        System.out.println(RECORD_PRINT_FOR_EACH_CREW_MENU);
-        System.out.println(DISMISSAL_CREW_CHECK_MENU);
-        System.out.println(QUIT);
-    }
-
-    private static String isQOrOneOrTwoOrThreeOrFour(String input) {
-        if (!input.matches(MENU_OPTION)) {
-            throw new IllegalArgumentException("[ERROR] 메뉴에 없는 선택지 입니다.");
-        }
-        return input;
     }
 }
