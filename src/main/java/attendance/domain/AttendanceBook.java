@@ -26,7 +26,8 @@ public class AttendanceBook {
     }
 
     public Attendance findAttendanceByCrew(Crew crew, LocalDate inputDate) {
-        return attendanceBook.get(crew).findByDate(inputDate);
+        Attendances attendances = attendanceBook.get(crew);
+        return attendances.findByDate(inputDate);
     }
 
     public void update(Crew crew, Attendance oldAttendance, Attendance newAttendance) {
