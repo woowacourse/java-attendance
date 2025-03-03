@@ -19,9 +19,9 @@ import java.util.stream.IntStream;
 public class OutputView {
 
     public void printAttendance(Attendance attendance) {
-        String date = attendance.toLocalDate().format(FormatUtil.DATE_FORMATTER_KOREAN);
-        String time = attendance.toLocalTime().format(FormatUtil.TIME_FORMATTER);
-        String dayOfWeek = attendance.toLocalDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        String date = attendance.getLocalDate().format(FormatUtil.DATE_FORMATTER_KOREAN);
+        String time = attendance.getLocalTime().format(FormatUtil.TIME_FORMATTER);
+        String dayOfWeek = attendance.getLocalDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         String attendanceState = attendance.decideAttendanceState(AttendancePolicyConfig.getInstance()).getDescription();
 
         System.out.printf(ViewMessage.ATTENDANCE + "%n",
@@ -32,12 +32,12 @@ public class OutputView {
     }
 
     public void printAttendanceUpdate(Attendance originalAttendance, Attendance updatedAttendance) {
-        String originalDate = originalAttendance.toLocalDate().format(FormatUtil.DATE_FORMATTER_KOREAN);
-        String originalTime = originalAttendance.toLocalTime().format(FormatUtil.TIME_FORMATTER);
-        String originalDayOfWeek = originalAttendance.toLocalDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        String originalDate = originalAttendance.getLocalDate().format(FormatUtil.DATE_FORMATTER_KOREAN);
+        String originalTime = originalAttendance.getLocalTime().format(FormatUtil.TIME_FORMATTER);
+        String originalDayOfWeek = originalAttendance.getLocalDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         String originalAttendanceState = originalAttendance.decideAttendanceState(AttendancePolicyConfig.getInstance()).getDescription();
 
-        String updatedTime = updatedAttendance.toLocalTime().format(FormatUtil.TIME_FORMATTER);
+        String updatedTime = updatedAttendance.getLocalTime().format(FormatUtil.TIME_FORMATTER);
         String updatedAttendanceState = updatedAttendance.decideAttendanceState(AttendancePolicyConfig.getInstance()).getDescription();
 
         System.out.printf(ViewMessage.ATTENDANCE + " -> " + ViewMessage.UPDATE_COMPLETE + "%n",
@@ -71,7 +71,7 @@ public class OutputView {
 
         if (attendances.existsByDate(attendanceDate)) {
             Attendance attendance = attendances.findByDate(attendanceDate);
-            time = attendance.toLocalTime().format(FormatUtil.TIME_FORMATTER);
+            time = attendance.getLocalTime().format(FormatUtil.TIME_FORMATTER);
             attendanceState = attendance.decideAttendanceState(AttendancePolicyConfig.getInstance()).getDescription();
         }
 
@@ -110,5 +110,17 @@ public class OutputView {
                         expulsionCandidate.getCount(AttendanceStateRule.LATE),
                         AbsentRule.calculateAbsentPolicy(expulsionCandidate).getDescription())
         );
+    }
+
+    public void printErrorMessage(String message) {
+        System.out.println(FormatUtil.ERROR_PREFIX + message);
+    }
+
+    public void printUnknownErrorMessage() {
+        printErrorMessage("알 수 없는 오류가 발생했습니다.");
+    }
+
+    public void printInfoMessage(String message) {
+        System.out.println(FormatUtil.INFO_PREFIX + message);
     }
 }
