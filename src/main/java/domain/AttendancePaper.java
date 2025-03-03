@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import util.DateTimeConvertor;
 
-public class AttendancePaper {
+public class AttendancePaper implements Comparable<AttendancePaper> {
 
     private static final int LATES_COUNT_PER_ABSENCE = 3;
 
@@ -69,9 +69,14 @@ public class AttendancePaper {
     }
 
     public Penalty calculatePenalty() {
+        return Penalty.findByAbsenceCount(calculateAbsenceCount());
+    }
+
+    private int calculateAbsenceCount() {
         final Map<AttendanceStatus, Integer> countAttendanceStatus = countAttendanceStatus();
-        return Penalty.findByAbsenceCount((countAttendanceStatus.get(AttendanceStatus.ABSENCE)
-                + countAttendanceStatus.get(AttendanceStatus.LATE) / LATES_COUNT_PER_ABSENCE));
+        return countAttendanceStatus.getOrDefault(AttendanceStatus.ABSENCE, 0) + (
+                countAttendanceStatus.getOrDefault(AttendanceStatus.LATE, 0)
+                        / LATES_COUNT_PER_ABSENCE);
     }
 
     public boolean existAttendance(final LocalDate localDate) {
@@ -84,5 +89,15 @@ public class AttendancePaper {
 
     public List<AttendanceRecord> getAttendanceRecords() {
         return attendanceRecords.values().stream().toList();
+    }
+
+    @Override
+    public int compareTo(final AttendancePaper attendancePaper) {
+        final int absenceCount1 = this.calculateAbsenceCount();
+        final int absenceCount2 = attendancePaper.calculateAbsenceCount();
+        if (absenceCount1 != absenceCount2) {
+            return absenceCount2 - absenceCount1;
+        }
+        return this.crewName.compareTo(attendancePaper.crewName);
     }
 }

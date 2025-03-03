@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import util.DateTimeConvertor;
@@ -78,6 +79,9 @@ public class AttendanceBook {
     }
 
     public List<AttendancePaper> getSortedPenaltyAttendancePapers() {
-        return null;
+        return attendancePapers.values().stream()
+                .filter(attendancePaper -> !Objects.equals(attendancePaper.calculatePenalty(), Penalty.NONE))
+                .sorted()
+                .toList();
     }
 }

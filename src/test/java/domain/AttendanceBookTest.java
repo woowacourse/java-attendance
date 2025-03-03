@@ -148,8 +148,9 @@ public class AttendanceBookTest {
         //given
         //when
         final List<AttendancePaper> sortedPenaltyAttendancePapers = attendanceBook.getSortedPenaltyAttendancePapers();
+        final AttendancePaper first = sortedPenaltyAttendancePapers.getFirst();
         //then
-        assertThat(sortedPenaltyAttendancePapers).isNotNull();
+        assertThat(first.getCrewName()).isEqualTo("빙티");
         
     }
 }
