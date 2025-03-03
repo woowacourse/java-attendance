@@ -2,58 +2,93 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class Attendance {
-    private final Day day;
-    private Boolean isLate = false;
-    private Boolean isAbsent = false;
-    private LocalTime attendanceTime;
+    private static final Integer LATE_CRITERIA_MINUTES = 5;
+    private static final Integer ABSENT_CRITERIA_MINUTES = 30;
+    private static final LocalTime OPERATION_START_TIME = LocalTime.of(8, 0);
+    private static final LocalTime OPERATION_END_TIME = LocalTime.of(23, 0);
 
-    public Attendance(Day day, LocalTime attendanceTime) {
+    private final Day day;
+    private LocalTime time;
+    private Boolean isLate;
+    private Boolean isAbsent;
+
+    public Attendance(Day day, LocalTime time) {
+        validateTime(time);
         this.day = day;
-        this.attendanceTime = attendanceTime;
+        this.time = time;
         updateStatus();
     }
 
-    public Attendance(Attendance attendance) {
-        this.day = attendance.day;
-        this.attendanceTime = attendance.attendanceTime;
-        this.isLate = attendance.isLate;
-        this.isAbsent = attendance.isAbsent;
-    }
-
-    public Day getDay() {
-        return new Day(day.getDate());
-    }
-
-    public Boolean getLate() {
-        return isLate;
-    }
-
-    public Boolean getAbsent() {
-        return isAbsent;
-    }
-
-    public LocalTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
-    public Boolean isEqualTo(LocalDate date) {
-        return day.isEqualTo(date);
+    private void validateTime(LocalTime time) {
+        if (time != null && (time.isBefore(OPERATION_START_TIME) || time.isAfter(OPERATION_END_TIME))) {
+            throw new IllegalStateException("[ERROR] 운영 시간이 아닙니다.");
+        }
     }
 
     private void updateStatus() {
-        if (attendanceTime == null) {
-            isAbsent = true;
+        LocalTime criteriaTime = day.getCriteriaTime();
+        if (time == null || criteriaTime.plusMinutes(ABSENT_CRITERIA_MINUTES).isBefore(time)) {
+            markAsAbsent();
             return;
         }
-        isLate = day.isLate(attendanceTime);
-        isAbsent = day.isAbsent(attendanceTime);
+        isAbsent = false;
+        isLate = criteriaTime.plusMinutes(LATE_CRITERIA_MINUTES).isBefore(time);
     }
 
-    public void updateAttendanceTime(LocalTime attendanceTime) {
-        this.attendanceTime = attendanceTime;
+    private void markAsAbsent() {
+        isAbsent = true;
+        isLate = false;
+    }
+
+    public Boolean has(LocalDate date) {
+        return this.day.getDate().equals(date);
+    }
+
+    public void modifyTimeTo(LocalTime time) {
+        validateTime(time);
+        this.time = time;
         updateStatus();
     }
 
+    public Attendance toImmutable() {
+        return new Attendance(this.day, this.time) {
+            @Override
+            public void modifyTimeTo(LocalTime time) {
+                throw new UnsupportedOperationException("[ERROR] 수정할 수 없는 Attendance 객체입니다.");
+            }
+        };
+    }
+
+    public Boolean isLate() {
+        return isLate;
+    }
+
+    public Boolean isAbsent() {
+        return isAbsent;
+    }
+
+    public Day getDay() {
+        return day;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attendance that = (Attendance) o;
+        return Objects.equals(day, that.day);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(day);
+    }
 }

@@ -1,0 +1,65 @@
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
+import domain.AttendanceBook;
+import domain.AttendanceHistoryLoader;
+import domain.Crew;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+class AttendanceHistoryLoaderTest {
+    private File createTempFile(String csvData) throws IOException {
+        Path tempFile = Files.createTempFile("tempAttendances", ".csv");
+        Files.write(tempFile, csvData.getBytes());
+
+        return tempFile.toFile();
+    }
+
+    @Test
+    void CSV_파일을_읽어_출석부를_초기화한다() throws IOException {
+        String csvData = """
+                nickname,datetime
+                에드, 2025-02-26 10:03
+                제프, 2025-02-26 10:01
+                """;
+        File file = createTempFile(csvData);
+        AttendanceHistoryLoader loader = new AttendanceHistoryLoader();
+        AttendanceBook attendanceBook = loader.initializeAttendanceWith(new FileReader(file.getPath()));
+
+        assertThat(attendanceBook.getAttendances(new Crew("에드"))).isNotInstanceOf(Exception.class);
+        assertThat(attendanceBook.getAttendances(new Crew("제프"))).isNotInstanceOf(Exception.class);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            """
+                    nickname,datetime
+                    에드, 2025-02-26-10:03
+                    제프, 2025-02-26 10:01
+                    """,
+            """
+                    nickname,datetime
+                    에드, 2025-02-26
+                    제프, 2025-02-26 10:01
+                    """,
+            """               
+                    nickname,datetime
+                    에드, 2025-02-26 10:03
+                    제프, 10:01 025-02-26
+                    """})
+    void CSV_파일의_형식이_잘못되면_예외를_발생시킨다(String csvData) throws IOException {
+        File file = createTempFile(csvData);
+        AttendanceHistoryLoader loader = new AttendanceHistoryLoader();
+
+        assertThatThrownBy(() -> loader.initializeAttendanceWith(new FileReader(file.getPath())))
+                .isInstanceOf(IOException.class)
+                .hasMessageStartingWith("[ERROR]");
+    }
+
+}

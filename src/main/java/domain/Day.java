@@ -1,63 +1,56 @@
 package domain;
 
-import java.time.Duration;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class Day {
-
-    private static final Integer STANDARD_LATE_MINUTE = 5;
-    private static final Integer STANDARD_ABSENT_MINUTE = 30;
-
     private final LocalDate date;
 
     public Day(LocalDate date) {
-        checkOffDay(date);
+        validateDate(date);
         this.date = date;
+    }
+
+    public static Day of(Integer dayOfMonth) {
+        return new Day(LocalDate.of(2025, 2, dayOfMonth));
+    }
+
+    private void validateDate(LocalDate date) {
+        if (isWeekend(date) || isHoliday(date)) {
+            throw new IllegalStateException("[ERROR] 등교일이 아닙니다.");
+        }
+    }
+
+    private boolean isWeekend(LocalDate date) {
+        return DayOfWeek.SATURDAY.equals(date.getDayOfWeek()) || DayOfWeek.SUNDAY.equals(date.getDayOfWeek());
+    }
+
+    private boolean isHoliday(LocalDate date) {
+        return Holiday.isHoliday(date);
+    }
+
+    public LocalTime getCriteriaTime() {
+        return CustomDayOfWeek.getCriteriaTime(date);
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    private DayOfWeek getDayOfWeek(LocalDate date) {
-        return DayOfWeek.getInstance(date);
-    }
 
-    public Boolean isEqualTo(LocalDate date) {
-        return this.date.equals(date);
-    }
-
-    public void checkOffDay(LocalDate date) {
-        if (checkWeekend(date) || checkHoliday(date)) {
-            throw new IllegalArgumentException("[ERROR] 휴일 객체는 생성할 수 없습니다.");
-        }
-    }
-
-    private boolean checkWeekend(LocalDate date) {
-        return getDayOfWeek(date).equals(DayOfWeek.SATURDAY) || getDayOfWeek(date).equals(DayOfWeek.SUNDAY);
-    }
-
-    private boolean checkHoliday(LocalDate date) {
-        return Holiday.isHoliday(date);
-    }
-
-    public boolean isLate(LocalTime attendanceTime) {
-        LocalTime standardTime = getDayOfWeek(date).getStandardTime();
-        if (standardTime == null) {
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        long betweenMinutes = Duration.between(standardTime, attendanceTime).toMinutes();
-        return betweenMinutes > STANDARD_LATE_MINUTE && betweenMinutes <= STANDARD_ABSENT_MINUTE;
+        Day day = (Day) o;
+        return Objects.equals(date, day.date);
     }
 
-    public boolean isAbsent(LocalTime attendanceTime) {
-        LocalTime standardTime = getDayOfWeek(date).getStandardTime();
-        if (standardTime == null) {
-            return false;
-        }
-        long betweenMinutes = Duration.between(standardTime, attendanceTime).toMinutes();
-        return betweenMinutes > STANDARD_ABSENT_MINUTE;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(date);
     }
-
 }

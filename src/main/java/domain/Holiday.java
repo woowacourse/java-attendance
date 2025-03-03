@@ -4,7 +4,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public enum Holiday {
-    TEMPORARY_HOLIDAY_1(LocalDate.of(2025, 2, 21));
+    NEW_YEAR_DAY(LocalDate.of(2025, 1, 1)),
+    CHRISTMAS_DAY(LocalDate.of(2025, 12, 25));
 
     private final LocalDate date;
 
@@ -12,7 +13,7 @@ public enum Holiday {
         this.date = date;
     }
 
-    public static boolean isHoliday(LocalDate date) {
+    public static Boolean isHoliday(LocalDate date) {
         return Arrays.stream(Holiday.values())
                 .anyMatch(holiday -> holiday.date.equals(date));
     }

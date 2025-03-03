@@ -5,60 +5,44 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class AttendanceHistoryLoader {
 
-
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-    public Crews loadCrews(FileReader fileReader) throws IOException {
-        Crews crews = new Crews();
-
-        try (BufferedReader reader = new BufferedReader(fileReader)) {
+    public AttendanceBook initializeAttendanceWith(FileReader fileReader) throws IOException {
+        BufferedReader reader = new BufferedReader(fileReader);
+        try {
+            AttendanceBook attendanceBook = new AttendanceBook();
             skipHeader(reader);
-            loadAttendanceHistory(reader, crews);
-        } catch (Exception e) {
-            throw new IOException("[ERROR] 초기 출석 데이터를 로드하는 중 오류가 발생하였습니다.");
-        }
+            addAttendances(reader, attendanceBook);
+            return attendanceBook;
 
-        return crews;
+        } catch (Exception e) {
+            throw new IOException("[ERROR] 초기데이터 로드 중 오류가 발생하였습니다.");
+        }
     }
 
     private void skipHeader(BufferedReader reader) throws IOException {
         reader.readLine();
     }
 
-    private void loadAttendanceHistory(BufferedReader reader, Crews crews)
-            throws IOException {
+    private void addAttendances(BufferedReader reader, AttendanceBook attendanceBook) throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
-            parseAndAddAttendance(crews, line);
+            addAttendance(line, attendanceBook);
         }
     }
 
-    private void parseAndAddAttendance(Crews crews, String line) {
-        String[] values = line.split(",");
-        String crewName = values[0];
+    private void addAttendance(String line, AttendanceBook attendanceBook) {
+        String[] history = line.split(",");
+        String nickname = history[0];
+        Crew crew = new Crew(nickname);
 
-        String[] datetimeValues = values[1].split(" ");
-        String date = datetimeValues[0];
-        String time = datetimeValues[1];
+        String[] attendanceDateTime = history[1].trim().split(" ");
+        String attendanceDate = attendanceDateTime[0];
+        String attendanceTime = attendanceDateTime[1];
 
-        Crew crew = getCrew(crews, crewName);
-
-        crew.addAttendance(new Attendance(new Day(LocalDate.parse(date, dateFormatter)),
-                LocalTime.parse(time, timeFormatter)));
-    }
-
-    private Crew getCrew(Crews crews, String nickname) {
-        try {
-            return crews.findByNickname(nickname);
-        } catch (IllegalArgumentException e) {
-            Crew crew = new Crew(nickname);
-            crews.add(crew);
-            return crew;
-        }
+        Day day = new Day(LocalDate.parse(attendanceDate.trim()));
+        Attendance attendance = new Attendance(day, LocalTime.parse(attendanceTime.trim()));
+        attendanceBook.recordAttendance(crew, attendance);
     }
 }

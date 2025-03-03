@@ -1,61 +1,29 @@
 package domain;
 
-import java.time.LocalDate;
+import java.util.Objects;
 
 public class Crew {
+    private final String nickname;
 
-    private final String nickName;
-    private final Attendances attendances;
-
-    public Crew(String nickName) {
-        this.nickName = nickName;
-        this.attendances = new Attendances();
+    public Crew(String nickname) {
+        this.nickname = nickname;
     }
 
-    public Crew(Crew crew) {
-        this.nickName = crew.nickName;
-        this.attendances = new Attendances(crew.attendances);
+    public String getNickname() {
+        return nickname;
     }
 
-    public String getNickName() {
-        return nickName;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Crew crew = (Crew) o;
+        return Objects.equals(nickname, crew.nickname);
     }
 
-    public Attendances getAttendances() {
-        return new Attendances(attendances);
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(nickname);
     }
-
-    public void addAttendance(Attendance attendance) {
-        attendances.add(attendance);
-    }
-
-    public Boolean isEqualTo(String nickname) {
-        return this.nickName.equals(nickname);
-    }
-
-    public Boolean isAlreadyAttend(LocalDate date) {
-        return attendances.isAlreadyAttended(date);
-    }
-
-    public void recordAbsence() {
-        attendances.recordAbsence();
-    }
-
-    public Attendance findByDate(Integer dayOfMonth) {
-        return attendances.findByDate(dayOfMonth);
-    }
-
-    public Integer getAbsentCount() {
-        return attendances.getAbsentCount();
-    }
-
-    public Integer getLateCount() {
-        return attendances.getLateCount();
-    }
-
-    public PenaltyStatus getPenaltyStatus() {
-        return attendances.getPenaltyStatus();
-    }
-
-
 }
