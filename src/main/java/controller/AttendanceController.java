@@ -4,6 +4,7 @@ import domain.AttendanceHistories;
 import domain.AttendanceHistoryGenerator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ public class AttendanceController {
 
     private void checkIn() {
         String nickname = inputView.readNickname();
+        LocalTime time = inputView.readCheckInTime();
     }
 
     private void updateAttendance() {
