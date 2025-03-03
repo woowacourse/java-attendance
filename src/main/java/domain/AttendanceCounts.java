@@ -33,11 +33,15 @@ public class AttendanceCounts {
     }
 
     public int getAdjustedAbsentCount() {
-        return getCount(AttendanceStateRule.ABSENT) + (getCount(AttendanceStateRule.LATE) / AbsentRule.LATE_TO_ABSENT_RATIO);
+        return AbsentRule.adjustAbsentCount(
+                getCount(AttendanceStateRule.ABSENT),
+                getCount(AttendanceStateRule.LATE));
     }
 
     public int getExpulsionRiskLevel() {
-        return getCount(AttendanceStateRule.ABSENT) * AbsentRule.LATE_TO_ABSENT_RATIO + getCount(AttendanceStateRule.LATE);
+        return AbsentRule.calculateExpulsionRiskLevel(
+                getCount(AttendanceStateRule.ABSENT),
+                getCount(AttendanceStateRule.LATE));
     }
 
     public Nickname getNickname() {

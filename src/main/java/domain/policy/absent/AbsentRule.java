@@ -37,8 +37,16 @@ public enum AbsentRule {
         return AbsentRule.NONE;
     }
 
-    public boolean isRiskOfExpulsion() {
-        return this != NONE;
+    public static boolean isRiskOfExpulsion(AttendanceCounts attendanceCounts) {
+        return calculateAbsentPolicy(attendanceCounts) != NONE;
+    }
+
+    public static int adjustAbsentCount(int absentCount, int lateCount) {
+        return absentCount + (lateCount / LATE_TO_ABSENT_RATIO);
+    }
+
+    public static int calculateExpulsionRiskLevel(int absentCount, int lateCount) {
+        return absentCount * LATE_TO_ABSENT_RATIO + lateCount;
     }
 
     public String getDescription() {

@@ -46,12 +46,29 @@ class AbsentRuleTest {
     @DisplayName("제적 위험자를 확인할 수 있다.")
     void isRiskOfExpulsion() {
         // given
+        AttendanceCounts attendanceCounts1 = AttendanceCounts.initialize(Nickname.from("강산"));
+        AttendanceCounts attendanceCounts2 = AttendanceCounts.initialize(Nickname.from("띠용"));
+        AttendanceCounts attendanceCounts3 = AttendanceCounts.initialize(Nickname.from("폰트"));
+        AttendanceCounts attendanceCounts4 = AttendanceCounts.initialize(Nickname.from("칼리"));
+
+        for (int i = 0; i < 2; i++) {
+            attendanceCounts2.increment(AttendanceStateRule.ABSENT);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            attendanceCounts3.increment(AttendanceStateRule.ABSENT);
+        }
+
+        for (int i = 0; i < 6; i++) {
+            attendanceCounts4.increment(AttendanceStateRule.ABSENT);
+        }
+
         // when
         // then
         assertAll(
-                () -> assertThat(AbsentRule.NONE.isRiskOfExpulsion()).isFalse(),
-                () -> assertThat(AbsentRule.WARNING.isRiskOfExpulsion()).isTrue(),
-                () -> assertThat(AbsentRule.INTERVIEW.isRiskOfExpulsion()).isTrue(),
-                () -> assertThat(AbsentRule.EXPULSION.isRiskOfExpulsion()).isTrue());
+                () -> assertThat(AbsentRule.isRiskOfExpulsion(attendanceCounts1)).isFalse(),
+                () -> assertThat(AbsentRule.isRiskOfExpulsion(attendanceCounts2)).isTrue(),
+                () -> assertThat(AbsentRule.isRiskOfExpulsion(attendanceCounts3)).isTrue(),
+                () -> assertThat(AbsentRule.isRiskOfExpulsion(attendanceCounts4)).isTrue());
     }
 }
