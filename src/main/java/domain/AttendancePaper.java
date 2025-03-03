@@ -74,9 +74,9 @@ public class AttendancePaper implements Comparable<AttendancePaper> {
 
     private int calculateAbsenceCount() {
         final Map<AttendanceStatus, Integer> countAttendanceStatus = countAttendanceStatus();
-        return countAttendanceStatus.getOrDefault(AttendanceStatus.ABSENCE, 0) + (
+        return countAttendanceStatus.getOrDefault(AttendanceStatus.ABSENCE, 0) +
                 countAttendanceStatus.getOrDefault(AttendanceStatus.LATE, 0)
-                        / LATES_COUNT_PER_ABSENCE);
+                        / LATES_COUNT_PER_ABSENCE;
     }
 
     public boolean existAttendance(final LocalDate localDate) {

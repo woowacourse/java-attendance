@@ -2,9 +2,11 @@ package view;
 
 import dto.AttendanceDetails;
 import dto.AttendanceHistory;
+import dto.PenaltyCrew;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import util.DateTimeConvertor;
@@ -84,6 +86,15 @@ public class ConsoleOutputView {
                 attendanceHistory.absenceCount());
         final String penaltyMessage = generatePenaltyMessage(attendanceHistory.penaltyCode());
         printMessage(appendMessage(historyHeader, attendanceDetailsMessage, attendanceStatusMessage, penaltyMessage));
+    }
+
+    public void printPenaltyCrews(final List<PenaltyCrew> penaltyCrews) {
+        final String penaltyCrewsHeader = "제적 위험자 조회 결과";
+        final String penaltyCrewsMessage = penaltyCrews.stream()
+                .map(penaltyCrew -> String.format("- %s: 결석 %d회, 지각 %d회 (%s)", penaltyCrew.crewName(),
+                        penaltyCrew.absenceCount(), penaltyCrew.lateCount(), PENALTY.get(penaltyCrew.penaltyCode())))
+                .collect(Collectors.joining(LINE_SEPARATOR));
+        printlnMessage(addLineSeparator(penaltyCrewsHeader) + penaltyCrewsMessage);
     }
 
     private String generatePenaltyMessage(final int penaltyCode) {

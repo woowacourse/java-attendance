@@ -11,6 +11,7 @@ import domain.AttendanceTime;
 import domain.Penalty;
 import dto.AttendanceDetails;
 import dto.AttendanceHistory;
+import dto.PenaltyCrew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -76,6 +77,12 @@ public class AttendanceController {
                     penalty.getCode());
             outputView.printAttendanceHistory(name, attendanceHistory);
         }
+        if (Objects.equals(attendanceCommand, AttendanceCommand.PENALTY_CHECK)) {
+            final List<PenaltyCrew> penaltyCrews = attendanceBook.getSortedPenaltyAttendancePapers().stream()
+                    .map(this::convertToPenaltyCrew)
+                    .toList();
+            outputView.printPenaltyCrews(penaltyCrews);
+        }
         if (Objects.equals(attendanceCommand, AttendanceCommand.QUIT)) {
             return;
         }
@@ -90,5 +97,9 @@ public class AttendanceController {
     private AttendanceDetails convertToAttendanceDetails(final AttendanceRecord attendanceRecord) {
         return AttendanceDetails.of(attendanceRecord.attendanceDate(), attendanceRecord.attendanceTime(),
                 attendanceRecord.status());
+    }
+
+    private PenaltyCrew convertToPenaltyCrew(final AttendancePaper attendancePaper) {
+        return PenaltyCrew.of(attendancePaper.getCrewName(), attendancePaper.countAttendanceStatus(), attendancePaper.calculatePenalty());
     }
 }
