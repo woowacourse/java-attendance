@@ -1,5 +1,6 @@
 package controller;
 
+import controller.exception.ProgramQuitException;
 import domain.Attendance;
 import domain.AttendanceBook;
 import domain.AttendanceCounts;
@@ -8,9 +9,11 @@ import domain.AttendanceStatistics;
 import domain.AttendanceTime;
 import domain.Attendances;
 import domain.Nickname;
+import domain.command.AttendanceCommand;
+import domain.command.AttendanceCommandHandler;
 import domain.policy.absent.AbsentRule;
 import reader.AttendanceFileReader;
-import reader.FileReadException;
+import reader.exception.FileReadException;
 import util.FormatUtil;
 import util.TimeMachine;
 import view.InputView;
@@ -24,49 +27,57 @@ public class AttendanceController {
 
     private final InputView inputView;
     private final OutputView outputView;
+    private final AttendanceCommandHandler commandHandler;
 
-    public AttendanceController(InputView inputView, OutputView outputView) {
+    public AttendanceController(InputView inputView,
+                                OutputView outputView,
+                                AttendanceCommandHandler attendanceCommandHandler) {
         this.inputView = inputView;
         this.outputView = outputView;
-    }
-
-    private static void quitProgram() {
-        throw new ProgramQuitException(ProgramQuitException.MESSAGE);
+        this.commandHandler = attendanceCommandHandler;
+        setMenu();
     }
 
     public void run(AttendanceFileReader attendanceFileReader,
                     String attendanceFilePath) throws IOException {
         setDayOfMonth();
 
-        AttendanceBook attendanceBook = initializeByAttendanceFile(attendanceFileReader, attendanceFilePath);
+        AttendanceBook attendanceBook =
+                initializeByAttendanceFile(attendanceFileReader, attendanceFilePath);
 
-        RepeatUntilUserQuitSelect.repeat(() -> selectMenu(attendanceBook));
+        RepeatUntilUserQuitSelect.repeat(() -> selectMenu(attendanceBook), outputView);
+    }
+
+    private void setMenu() {
+        commandHandler.addAction(AttendanceCommand.ATTEND, this::attend);
+        commandHandler.addAction(AttendanceCommand.UPDATE, this::updateAttendance);
+        commandHandler.addAction(AttendanceCommand.DISPLAY, this::displayAttendances);
+        commandHandler.addAction(AttendanceCommand.EXPULSION, this::displayExpulsionCandidates);
+        commandHandler.addAction(AttendanceCommand.QUIT, this::quitProgram);
     }
 
     private void setDayOfMonth() {
-        while (!TimeMachine.timeTravelAt(inputView.inputToday())) {
-        }
+        int input;
+        do {
+            input = inputView.inputToday();
+        } while (!TimeMachine.timeTravelAt(input));
     }
 
-    private AttendanceBook initializeByAttendanceFile(AttendanceFileReader attendanceFileReader, String attendanceFilePath) throws FileReadException {
+    private AttendanceBook initializeByAttendanceFile(AttendanceFileReader attendanceFileReader,
+                                                      String attendanceFilePath) throws FileReadException {
         try {
             AttendanceBook attendanceBook = AttendanceBook.initialize();
             attendanceBook.loadAttendance(attendanceFileReader, attendanceFilePath);
             return attendanceBook;
         } catch (FileReadException e) {
-            System.out.println(FormatUtil.ERROR_PREFIX + e.getMessage());
+            outputView.printErrorMessage(e.getMessage());
             throw e;
         }
     }
 
     private void selectMenu(AttendanceBook attendanceBook) {
-        switch (MenuSelectCommand.from(inputView.inputMenu())) {
-            case ATTEND -> attend(attendanceBook);
-            case UPDATE -> updateAttendance(attendanceBook);
-            case DISPLAY -> displayAttendances(attendanceBook);
-            case EXPULSION -> displayExpulsionCandidates(attendanceBook);
-            case QUIT -> quitProgram();
-        }
+        AttendanceCommand command = AttendanceCommand.from(inputView.inputMenu());
+        commandHandler.execute(command, attendanceBook);
     }
 
     private void attend(AttendanceBook attendanceBook) {
@@ -114,5 +125,9 @@ public class AttendanceController {
         AttendanceStatistics expulsionCandidates = attendanceBook.findExpulsionCandidates().orderByExpulsionRiskLevelAndNickname();
         outputView.printRiskOfExpulsionBanner();
         outputView.printExpulsionCandidate(expulsionCandidates);
+    }
+
+    private void quitProgram(AttendanceBook attendanceBook) {
+        throw new ProgramQuitException(ProgramQuitException.MESSAGE);
     }
 }
