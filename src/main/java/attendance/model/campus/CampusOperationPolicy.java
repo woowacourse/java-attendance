@@ -3,17 +3,12 @@ package attendance.model.campus;
 import attendance.Holiday;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class CampusOperationPolicy {
 
     private static final LocalTime DEFAULT_OPEN_TIME = LocalTime.of(8, 0);
     private static final LocalTime DEFAULT_CLOSE_TIME = LocalTime.of(23, 0);
-
-    public boolean isCampusOpen(final LocalDateTime dateTime) {
-        return isOpenDate(dateTime.toLocalDate()) && isOpenTime(dateTime.toLocalTime());
-    }
 
     public boolean isOpenDate(final LocalDate date) {
         return isWeekDay(date) && isNotHoliday(date);
