@@ -83,7 +83,8 @@ public class AttendanceController {
     private void attend(AttendanceBook attendanceBook) {
         Nickname nickname = Nickname.from(inputView.inputNickname());
 
-        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.parse(inputView.inputTime(), FormatUtil.TIME_FORMATTER));
+        AttendanceTime attendanceTime = AttendanceTime.from(
+                LocalTime.parse(inputView.inputTime(), FormatUtil.TIME_FORMATTER));
         AttendanceDate attendanceDate = AttendanceDate.from(TimeMachine.dateOfNow());
         Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
 
@@ -96,8 +97,10 @@ public class AttendanceController {
         Attendances attendances = attendanceBook.findByNickname(nickname);
 
         int day = inputView.inputUpdateDate();
-        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(TimeMachine.FIXED_YEAR, TimeMachine.FIXED_MONTH, day));
-        AttendanceTime attendanceTimeForUpdate = AttendanceTime.from(LocalTime.parse(inputView.inputUpdateTime(), FormatUtil.TIME_FORMATTER));
+        AttendanceDate attendanceDate = AttendanceDate.from(
+                LocalDate.of(TimeMachine.FIXED_YEAR, TimeMachine.FIXED_MONTH, day));
+        AttendanceTime attendanceTimeForUpdate = AttendanceTime.from(
+                LocalTime.parse(inputView.inputUpdateTime(), FormatUtil.TIME_FORMATTER));
         Attendance attendanceForUpdate = Attendance.of(attendanceDate, attendanceTimeForUpdate);
 
         Attendance originalAttendance = attendances.findByDate(attendanceDate);
@@ -122,7 +125,8 @@ public class AttendanceController {
     }
 
     private void displayExpulsionCandidates(AttendanceBook attendanceBook) {
-        AttendanceStatistics expulsionCandidates = attendanceBook.findExpulsionCandidates().orderByExpulsionRiskLevelAndNickname();
+        AttendanceStatistics expulsionCandidates = attendanceBook.findExpulsionCandidates()
+                .orderByExpulsionRiskLevelAndNickname();
         outputView.printRiskOfExpulsionBanner();
         outputView.printExpulsionCandidate(expulsionCandidates);
     }

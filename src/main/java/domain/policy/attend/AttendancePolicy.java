@@ -30,9 +30,9 @@ public class AttendancePolicy {
 
     public AttendanceStateRule decideAttendanceState(Attendance attendance) {
         LocalTime AttendStartTime = attendanceTimePolicy.getAttendStartTime(
-                attendanceDatePolicy.isSpecialDay(attendance.toLocalDate()));
+                attendanceDatePolicy.isSpecialDay(attendance.getLocalDate()));
 
-        long lateMinutes = Duration.between(AttendStartTime, attendance.toLocalTime())
+        long lateMinutes = Duration.between(AttendStartTime, attendance.getLocalTime())
                 .toMinutes();
 
         return attendanceTimePolicy.decisionAttendanceState(lateMinutes);

@@ -30,7 +30,7 @@ public record RawAttendances(
     }
 
     private void groupingData(String[] data,
-                                     Map<String, List<LocalDateTime>> nicknameToDateTime) {
+                              Map<String, List<LocalDateTime>> nicknameToDateTime) {
         String nickname = data[NICKNAME_INDEX];
         LocalDateTime attendanceDateTime = LocalDateTime.parse(data[DATE_TIME_INDEX], FormatUtil.DATE_TIME_FORMATTER);
 

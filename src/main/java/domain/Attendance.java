@@ -25,11 +25,11 @@ public class Attendance {
         return attendancePolicy.decideAttendanceState(this);
     }
 
-    public LocalDate toLocalDate() {
+    public LocalDate getLocalDate() {
         return attendanceDate.toLocalDate();
     }
 
-    public LocalTime toLocalTime() {
+    public LocalTime getLocalTime() {
         return attendanceTime.toLocalTime();
     }
 

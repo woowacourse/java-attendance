@@ -1,5 +1,7 @@
 package reader;
 
+import reader.exception.FileReadException;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 

@@ -1,5 +1,5 @@
-import domain.command.AttendanceCommandHandler;
 import controller.AttendanceController;
+import domain.command.AttendanceCommandHandler;
 import reader.AttendanceFileReader;
 import view.InputView;
 import view.OutputView;
