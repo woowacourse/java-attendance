@@ -17,12 +17,8 @@ public class AttendanceBook {
     }
 
     public void add(Crew crew, Attendance attendance) {
-        if (attendanceBook.containsKey(crew)) {
-            attendanceBook.get(crew).add(attendance);
-            return;
-        }
-
-        attendanceBook.put(crew, new Attendances(new ArrayList<>(List.of(attendance))));
+        attendanceBook.putIfAbsent(crew, new Attendances(new ArrayList<>()));
+        attendanceBook.get(crew).add(attendance);
     }
 
     public Attendance findAttendanceByCrew(Crew crew, LocalDate inputDate) {
