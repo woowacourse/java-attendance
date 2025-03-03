@@ -46,4 +46,18 @@ public class OutputView {
         }
 
     }
+
+    public static void printExpulsionCandidates(List<PenaltyResultOfCrew> expulsionCandidates) {
+        System.out.println("제적 위험자 조회 결과");
+
+        expulsionCandidates.forEach(expulsionResult -> {
+            Crew crew = expulsionResult.crew();
+            AttendanceTypeCount attendanceTypeCount = expulsionResult.attendanceTypeCount();
+
+            String parseExpulsionCandidate = InputParser.parseExpulsionCandidate(crew, attendanceTypeCount);
+            System.out.println(parseExpulsionCandidate);
+        });
+
+        System.out.println();
+    }
 }

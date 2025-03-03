@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceSystemHandler {
@@ -9,7 +10,8 @@ public class AttendanceSystemHandler {
     private final Map<FunctionOption, Runnable> ACTION_FOR_OPTION = Map.of(
             FunctionOption.REGISTER_ATTENDANCE, this::registerAttendance,
             FunctionOption.UPDATE_ATTENDANCE, this::updateAttendance,
-            FunctionOption.CHECK_ATTENDANCE_HISTORY_OF_CREW, this::checkAttendanceHistoryOfCrew
+            FunctionOption.CHECK_ATTENDANCE_HISTORY_OF_CREW, this::checkAttendanceHistoryOfCrew,
+            FunctionOption.CHECK_EXPULSION_CANDIDATES, this::checkExpulsionCandidates
     );
 
     public AttendanceSystemHandler(AttendanceSystemManager attendanceSystemManager, Crews crews) {
@@ -65,13 +67,21 @@ public class AttendanceSystemHandler {
         String name = InputView.readName();
         Crew crew = crews.findCrewByName(name);
 
-//        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-        LocalDate date = LocalDate.of(2024, 12, 24);
+        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
+
         Map<LocalDateTime, AttendanceType> historiesOfCrew = attendanceSystemManager.findAllHistoriesOfCrew(
                 crew, date);
         OutputView.printAttendanceHistories(crew, historiesOfCrew);
 
         PenaltyResultOfCrew penaltyResultOfCrew = attendanceSystemManager.getPenaltyResultOfCrew(crew, historiesOfCrew);
         OutputView.printPenaltyResultOfCrew(penaltyResultOfCrew);
+    }
+
+    private void checkExpulsionCandidates() {
+//        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
+        LocalDate date = LocalDate.of(2024, 12, 31);
+
+        List<PenaltyResultOfCrew> expulsionCandidates = attendanceSystemManager.findExpulsionCandidates(date);
+        OutputView.printExpulsionCandidates(expulsionCandidates);
     }
 }
