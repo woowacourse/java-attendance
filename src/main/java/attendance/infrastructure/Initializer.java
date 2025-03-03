@@ -1,4 +1,4 @@
-package attendance;
+package attendance.infrastructure;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;

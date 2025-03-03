@@ -1,6 +1,7 @@
 package attendance;
 
 import attendance.controller.AttendanceController;
+import attendance.infrastructure.Initializer;
 
 public class Application {
 

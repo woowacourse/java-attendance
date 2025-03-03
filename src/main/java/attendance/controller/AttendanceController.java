@@ -1,6 +1,6 @@
 package attendance.controller;
 
-import attendance.Initializer;
+import attendance.infrastructure.Initializer;
 import attendance.constant.Option;
 import attendance.constant.Holiday;
 import attendance.domain.Attendance;
