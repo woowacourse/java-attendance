@@ -7,7 +7,7 @@ public enum DisciplinaryStatus {
     EXPELLED("제적", 15);
 
     private static final int ABSENCE_WEIGHT = 3;
-    
+
     private final String name;
     private final int thresholdCount;
 
@@ -31,5 +31,9 @@ public enum DisciplinaryStatus {
 
     private static int convertToThresholdCount(int absentCount, int tardyCount) {
         return absentCount * ABSENCE_WEIGHT + tardyCount;
+    }
+
+    public String getName() {
+        return name;
     }
 }

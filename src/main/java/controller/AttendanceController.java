@@ -5,6 +5,7 @@ import domain.AttendanceDateTimes;
 import domain.AttendanceHistories;
 import domain.AttendanceHistoryGenerator;
 import domain.Crew;
+import domain.DisciplinaryStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,7 +31,7 @@ public class AttendanceController {
         menuTable.put(Menu.CHECK_IN, this::checkIn);
         menuTable.put(Menu.UPDATE_ATTENDANCE, this::updateAttendance);
         menuTable.put(Menu.CHECK_ATTENDANCE_RECORDS, this::checkAttendanceRecords);
-        menuTable.put(Menu.CHECK_DISCIPLINED_CREWS, this::checkAttendanceRecords);
+        menuTable.put(Menu.CHECK_DISCIPLINED_CREWS, this::checkDisciplinedCrews);
         menuTable.put(Menu.QUIT, this::quit);
     }
 
@@ -69,6 +70,10 @@ public class AttendanceController {
         AttendanceDateTimes attendanceDateTimes = attendanceHistories.getAttendanceDateTimes(crew);
         outputView.displayAttendanceDateTimes(crew, attendanceDateTimes, today);
         outputView.displayAttendanceCount(crew, attendanceHistories, today);
+        DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(crew, today);
+        if (disciplinaryStatus != DisciplinaryStatus.NONE) {
+            outputView.displayDisciplinedStatus(disciplinaryStatus);
+        }
     }
 
     private void checkDisciplinedCrews() {

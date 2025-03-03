@@ -5,6 +5,7 @@ import domain.AttendanceDateTimes;
 import domain.AttendanceHistories;
 import domain.AttendanceStatus;
 import domain.Crew;
+import domain.DisciplinaryStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,6 +40,7 @@ public class OutputView {
     public void displayAttendanceDateTimes(Crew crew, AttendanceDateTimes attendanceDateTimes, LocalDate today) {
         System.out.printf("%n%s의 출석 기록입니다.%n%n", crew.nickname());
 
+        // TODO 캠퍼스 쉬는 날은 출력을 안하도록 수정
         for (LocalDate date = LocalDate.of(2025, 2, 11); date.isBefore(today); date = date.plusDays(1)) {
             displayAttendanceDateTime(attendanceDateTimes, date);
         }
@@ -71,5 +73,9 @@ public class OutputView {
                         + "결석 : %d회%n", attendanceHistories.getPresentCount(crew, today),
                 attendanceHistories.getTardyCount(crew, today),
                 attendanceHistories.getAbsentCount(crew, today));
+    }
+
+    public void displayDisciplinedStatus(DisciplinaryStatus disciplinaryStatus) {
+        System.out.printf("%n%s 대상자입니다.%n", disciplinaryStatus.getName());
     }
 }
