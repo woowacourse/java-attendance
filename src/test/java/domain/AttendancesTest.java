@@ -1,7 +1,6 @@
 package domain;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -18,11 +17,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AttendancesTest {
 
-    private static Attendances attendances;
-
-    @BeforeEach
-    public void setAttendances() {
-        attendances = new Attendances(Map.of(
+    private Attendances createAttendances() {
+        return new Attendances(Map.of(
                 new Nickname("짱수"), List.of(
                         new Attendance(LocalDateTime.of(2025, 2, 3, 13, 5)),
                         new Attendance(LocalDateTime.of(2025, 2, 4, 10, 10)),
@@ -60,6 +56,7 @@ class AttendancesTest {
 
     @Test
     void 크루의_출석_상태별_횟수를_조회한다() {
+        Attendances attendances = createAttendances();
         Nickname nickname = new Nickname("짱수");
 
         assertThat(attendances.calculateAttendanceCount(nickname)).isEqualTo(3);
@@ -69,6 +66,7 @@ class AttendancesTest {
 
     @Test
     void 결석_5회_초과일경우_제적_대상자이다() {
+        Attendances attendances = createAttendances();
         Nickname nickname = new Nickname("이든");
 
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
@@ -78,6 +76,7 @@ class AttendancesTest {
 
     @Test
     void 결석_3회_이상일경우_면담_대상자이다() {
+        Attendances attendances = createAttendances();
         Nickname nickname = new Nickname("빙티");
 
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
@@ -87,6 +86,7 @@ class AttendancesTest {
 
     @Test
     void 결석_2회_이상일경우_경고_대상자이다() {
+        Attendances attendances = createAttendances();
         Nickname nickname = new Nickname("빙봉");
 
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
@@ -96,6 +96,7 @@ class AttendancesTest {
 
     @Test
     void 지각_3회는_결석_1회로_간주한다() {
+        Attendances attendances = createAttendances();
         Nickname nickname = new Nickname("쿠키");
 
         int totalAbsentCount = PenaltyStatus.getTotalAbsentCount(nickname, attendances);
@@ -105,6 +106,7 @@ class AttendancesTest {
 
     @Test
     void 결석_2회_이하일경우_제적_대상자가_아니다() {
+        Attendances attendances = createAttendances();
         Nickname nickname = new Nickname("짱수");
 
         PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
@@ -114,6 +116,7 @@ class AttendancesTest {
 
     @Test
     void 닉네임과_일자를_통해_출석기록을_가져온다() {
+        Attendances attendances = createAttendances();
         Nickname nickname = new Nickname("빙티");
         LocalDate attendanceDate = LocalDate.of(2025, 2, 5);
 
@@ -135,6 +138,7 @@ class AttendancesTest {
 
     @Test
     void 닉네임과_수정일자를_통해_출석기록을_수정한다() {
+        Attendances attendances = createAttendances();
         Nickname nickname = new Nickname("빙봉");
         LocalDateTime updateDateTime = LocalDateTime.of(2025, 2, 7, 10, 0);
 
@@ -147,6 +151,7 @@ class AttendancesTest {
 
     @Test
     void 공휴일에_출석을_시도하면_예외를_발생시킨다() {
+        Attendances attendances = createAttendances();
         Nickname nickname = new Nickname("짱수");
 
         LocalDateTime attendanceDateTime = LocalDateTime.of(2025, 2, 11, 10, 0);
@@ -161,6 +166,7 @@ class AttendancesTest {
     @ParameterizedTest
     @ValueSource(strings = {"제프", "에드", "이프"})
     void 등록되지_않은_닉네임_예외를_발생시킨다(String nickname) {
+        Attendances attendances = createAttendances();
         assertThatThrownBy(() -> attendances.checkCrewName(new Nickname(nickname)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
