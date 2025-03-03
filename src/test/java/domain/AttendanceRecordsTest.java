@@ -101,15 +101,17 @@ class AttendanceRecordsTest {
     void getPresentCountTest() {
         // given
         AttendanceStatus targetStatus = AttendanceStatus.PRESENT;
-        AttendanceRecords attendanceRecords = new AttendanceRecords();
+        AttendanceRecords attendanceRecords = AttendanceRecordsFixture.createAttendanceRecords(
+                "2024-12-02T13:00",
+                "2024-12-03T10:00",
+                "2024-12-04T10:00");
 
         // when
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:00")));
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-03T10:00")));
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-04T10:00")));
+        int expectedValue = 3;
+        int actualValue = attendanceRecords.getAttendanceCount(targetStatus);
 
         // then
-        assertThat(attendanceRecords.getAttendanceCount(targetStatus)).isEqualTo(3);
+        assertThat(actualValue).isEqualTo(expectedValue);
     }
 
     @DisplayName("총 지각 횟수를 반환한다.")
@@ -117,15 +119,17 @@ class AttendanceRecordsTest {
     void getTardyCountTest() {
         // given
         AttendanceStatus targetStatus = AttendanceStatus.TARDY;
-        AttendanceRecords attendanceRecords = new AttendanceRecords();
+        AttendanceRecords attendanceRecords = AttendanceRecordsFixture.createAttendanceRecords(
+                "2024-12-02T13:10",
+                "2024-12-03T10:00",
+                "2024-12-04T10:20");
 
         // when
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:10")));
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-03T10:00")));
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-04T10:20")));
+        int expectedValue = 2;
+        int actualValue = attendanceRecords.getAttendanceCount(targetStatus);
 
         // then
-        assertThat(attendanceRecords.getAttendanceCount(targetStatus)).isEqualTo(2);
+        assertThat(actualValue).isEqualTo(expectedValue);
     }
 
     @DisplayName("총 결석 횟수를 반환한다.")
@@ -133,15 +137,17 @@ class AttendanceRecordsTest {
     void getAbsentCountTest() {
         // given
         AttendanceStatus targetStatus = AttendanceStatus.ABSENT;
-        AttendanceRecords attendanceRecords = new AttendanceRecords();
+        AttendanceRecords attendanceRecords = AttendanceRecordsFixture.createAttendanceRecords(
+                "2024-12-02T13:00",
+                "2024-12-03T10:00",
+                "2024-12-04T10:40");
 
         // when
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:00")));
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-03T10:00")));
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-04T10:40")));
+        int expectedValue = 1;
+        int actualValue = attendanceRecords.getAttendanceCount(targetStatus);
 
         // then
-        assertThat(attendanceRecords.getAttendanceCount(targetStatus)).isEqualTo(1);
+        assertThat(actualValue).isEqualTo(expectedValue);
     }
 
     @DisplayName("입력 받은 날짜의 전날까지의 출석 기록을 반환한다.")
