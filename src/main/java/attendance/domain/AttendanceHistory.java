@@ -30,4 +30,11 @@ public class AttendanceHistory {
 
         return history.stream().anyMatch(attendanceTime -> attendanceTime.isSameDay(date));
     }
+
+    public int getAttendanceStatusCount(AttendanceStatus attendanceStatus) {
+
+        return (int) history.stream()
+                .filter(attendanceTime -> AttendanceStatus.getAttendanceStatus(attendanceTime) == attendanceStatus)
+                .count();
+    }
 }
