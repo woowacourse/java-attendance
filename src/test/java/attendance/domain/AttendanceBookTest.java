@@ -117,4 +117,20 @@ public class AttendanceBookTest {
 
         assertThat(actual).isEqualTo(WarningLevel.ONE_ON_ONE);
     }
+
+    @DisplayName("제적 위험자 확인 테스트")
+    @Test
+    void test6() {
+        AttendanceBook attendanceBook = AttendanceBookTestFixture.createAttendanceBook();
+
+        Map<Crew, CrewAttendance> expelledCrews = attendanceBook.findCrewsBy(WarningLevel.EXPELLED);
+        Map<Crew, CrewAttendance> oneOnOneCrews = attendanceBook.findCrewsBy(WarningLevel.ONE_ON_ONE);
+        Map<Crew, CrewAttendance> warningCrews = attendanceBook.findCrewsBy(WarningLevel.WARNING);
+        Map<Crew, CrewAttendance> noneCrews = attendanceBook.findCrewsBy(WarningLevel.NONE);
+
+        assertThat(expelledCrews.size()).isEqualTo(0);
+        assertThat(oneOnOneCrews.size()).isEqualTo(4);
+        assertThat(warningCrews.size()).isEqualTo(1);
+        assertThat(noneCrews.size()).isEqualTo(0);
+    }
 }
