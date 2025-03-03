@@ -3,9 +3,9 @@ package attendance.domain;
 import java.util.Arrays;
 
 public enum Menu {
-    CHECK_ATTEND("1"),
-    UPDATE_ATTEND("2"),
-    PRINT_ATTEND_BY_CREW("3"),
+    ATTEND("1"),
+    UPDATE_ATTENDANCE("2"),
+    PRINT_ATTENDANCES_BY_CREW("3"),
     PRINT_WARNING("4"),
     QUIT("Q");
 

@@ -1,15 +1,17 @@
 package attendance;
 
 import attendance.controller.AttendanceController;
-
+import attendance.view.InputView;
+import attendance.view.OutputView;
 import java.time.LocalDate;
 
 public class Application {
-
     public static void main(String[] args) {
-        AttendanceController controller = new AttendanceController(
-                LocalDate.of(2024, 12, 16)
+        AttendanceController attendanceController = new AttendanceController(
+                new InputView(),
+                new OutputView(),
+                LocalDate.of(2024,12,17)
         );
-        controller.run();
+        attendanceController.run();
     }
 }

@@ -1,73 +1,68 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceStrategy.LATE_TO_ABSENCE_UNIT;
-
+import static attendance.constant.ErrorMessage.ALREADY_ATTEND;
+import static attendance.constant.ErrorMessage.DATE_WITHOUT_ATTENDANCE;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class Attendances {
+    private static final int LATE_TO_ABSENCE_UNIT = 3;
+
     private final List<Attendance> attendances;
 
     public Attendances(List<Attendance> attendances) {
         this.attendances = attendances;
     }
 
-    public void existInAttendances(final LocalDate date) {
-        attendances.stream()
-                .filter(attendance -> attendance.isEqualToDate(date))
-                .findAny()
-                .ifPresent((attendance) -> {
-                    throw new IllegalArgumentException("[ERROR] 이미 오늘 출석을 하셨습니다. 출석 수정을 이용해주세요.");
-                });
-    }
-
-    public void addAttendance(Attendance attendance) {
+    public void addIfAbsent(final Attendance attendance) {
+        if (existsByDate(attendance)) {
+            throw new IllegalArgumentException(ALREADY_ATTEND.getMessage());
+        }
         attendances.add(attendance);
     }
 
-    public Warning checkWarning() {
-        return Warning.check(calculateTotalAbsenceCount());
-    }
-
-    public long calculateTotalAbsenceCount() {
-        return countAbsence() + (countLate() / LATE_TO_ABSENCE_UNIT.getCriteria());
-    }
-
-    public long countAttend() {
+    private boolean existsByDate(final Attendance attendance) {
         return attendances.stream()
-                .filter(attendance -> attendance.getStatus().equals(AttendanceStatus.ATTEND))
-                .count();
+                .anyMatch(history -> history.isEqualToDateByAttendance(attendance));
     }
 
-    public long countAbsence() {
-        return attendances.stream()
-                .filter(attendance -> {
-                    AttendanceStatus status = attendance.getStatus();
-                    return status.equals(AttendanceStatus.ABSENCE) || status.equals(AttendanceStatus.LATE_ABSENCE);
-                })
-                .count();
+    public Attendance updateAttendance(final LocalDateTime updateDateTime) {
+        LocalDate date = LocalDate.from(updateDateTime);
+        Attendance attendance = findByDate(date);
+        attendance.updateTime(updateDateTime.toLocalTime());
+        attendances.set(attendances.indexOf(attendance), attendance);
+        return attendance;
     }
 
-    public long countLate() {
+    public Attendance findByDate(final LocalDate date) {
         return attendances.stream()
-                .filter(attendance -> attendance.getStatus().equals(AttendanceStatus.LATE))
-                .count();
-    }
-
-    public Attendance updateAttendance(final LocalDateTime dateTime) {
-        return attendances.stream()
-                .filter(attendance -> attendance.isEqualToDate(LocalDate.from(dateTime)))
+                .filter(attendance -> attendance.isEqualToDate(date))
                 .findFirst()
-                .map(attendance -> attendance.updateDateTime(dateTime))
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(DATE_WITHOUT_ATTENDANCE.getMessage()));
     }
 
-    public Attendance findAttendanceByDate(final LocalDate updateDate) {
-        return attendances.stream()
-                .filter(attendance -> attendance.isEqualToDate(updateDate))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+    public AttendancePenalty calculatePenalty() {
+        int totalAbsenceCount = countAbsence() + countLate() / LATE_TO_ABSENCE_UNIT;
+        return AttendancePenalty.from(totalAbsenceCount);
+    }
+
+    public int countAttend() {
+        return Math.toIntExact(attendances.stream()
+                .filter(attendance -> attendance.checkAttendanceStatus() == AttendanceStatus.ATTEND)
+                .count());
+    }
+
+    public int countLate() {
+        return Math.toIntExact(attendances.stream()
+                .filter(attendance -> attendance.checkAttendanceStatus() == AttendanceStatus.LATE)
+                .count());
+    }
+
+    public int countAbsence() {
+        return Math.toIntExact(attendances.stream()
+                .filter(attendance -> attendance.checkAttendanceStatus() == AttendanceStatus.ABSENCE)
+                .count());
     }
 
     public List<Attendance> getAttendances() {

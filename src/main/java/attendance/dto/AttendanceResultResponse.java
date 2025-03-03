@@ -8,7 +8,7 @@ public record AttendanceResultResponse(
         LocalDateTime dateTime,
         AttendanceStatus status
 ) {
-    public static AttendanceResultResponse from(Attendance attendance) {
-        return new AttendanceResultResponse(attendance.getDateTime(), attendance.getStatus());
+    public static AttendanceResultResponse from(final Attendance attendance) {
+        return new AttendanceResultResponse(attendance.getDateTime(), attendance.checkAttendanceStatus());
     }
 }

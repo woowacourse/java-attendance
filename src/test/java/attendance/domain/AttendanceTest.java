@@ -1,82 +1,113 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceStrategy.ABSENCE_MINUTE;
-import static attendance.domain.AttendanceStrategy.LATE_MINUTE;
-import static attendance.domain.AttendanceStrategy.MONDAY_START_HOUR;
-import static attendance.domain.AttendanceStrategy.START_HOUR;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+import static attendance.domain.CampusOperatingRule.DEFAULT_ABSENCE_THRESHOLD;
+import static attendance.domain.CampusOperatingRule.DEFAULT_LATE_THRESHOLD;
+import static attendance.domain.CampusOperatingRule.MONDAY_ABSENCE_THRESHOLD;
+import static attendance.domain.CampusOperatingRule.MONDAY_LATE_THRESHOLD;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
 
     @Test
-    void 등교시간_입력_시_출석한다() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 17,
-                START_HOUR.getCriteria() - 1, 59, 0);
-        Attendance attendance = Attendance.from(dateTime);
-        assertThat(attendance.checkAttendanceStatus(dateTime)).isEqualTo(AttendanceStatus.ATTEND);
+    void 날짜가_같다면_true를_반환한다() {
+        Attendance attendance = generateAttendanceByDateTime(LocalDateTime.of(2024, 12, 13, 9, 59));
+
+        final var result = attendance.isEqualToDate(LocalDate.of(2024, 12, 13));
+
+        assertThat(result).isTrue();
     }
 
     @Test
-    void 등교시간_입력_시_5분_늦으면_지각이다() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 17,
-                START_HOUR.getCriteria(), LATE_MINUTE.getCriteria() + 1, 0);
-        Attendance attendance = Attendance.from(dateTime);
-        assertThat(attendance.checkAttendanceStatus(dateTime)).isEqualTo(AttendanceStatus.LATE);
+    void 날짜가_다르면_false를_반환한다() {
+        Attendance attendance = generateAttendanceByDateTime(LocalDateTime.of(2024, 12, 13, 9, 59));
+
+        final var result = attendance.isEqualToDate(LocalDate.of(2024, 12, 14));
+
+        assertThat(result).isFalse();
     }
 
     @Test
-    void 등교시간_입력_시_30분_늦으면_결석이다() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 17,
-                START_HOUR.getCriteria(), ABSENCE_MINUTE.getCriteria() + 1, 0);
-        Attendance attendance = Attendance.from(dateTime);
-        assertThat(attendance.checkAttendanceStatus(dateTime)).isEqualTo(AttendanceStatus.LATE_ABSENCE);
+    void 시간을_입력_받아_출석을_수정한다() {
+        Attendance before = generateAttendanceByDateTime(LocalDateTime.of(2024, 12, 13, 9, 59));
+        LocalTime time = LocalTime.of(10, 6);
+
+        before.updateTime(time);
+        Attendance updated = generateAttendanceByDateTime(LocalDateTime.of(2024, 12, 13, 10, 6));
+
+        assertThat(before.getDateTime()).isEqualTo(updated.getDateTime());
     }
 
     @Test
-    void 월요일이면_교육시작_13시에_시작한다_출석() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 16,
-                MONDAY_START_HOUR.getCriteria() - 1, 59, 0);
-        Attendance attendance = Attendance.from(dateTime);
-        assertThat(attendance.checkAttendanceStatus(dateTime)).isEqualTo(AttendanceStatus.ATTEND);
+    void 월요일_출결_상태를_반환한다_출석() {
+        LocalDate monday = LocalDate.of(2024, 12, 9);
+        LocalTime attendTime = MONDAY_LATE_THRESHOLD.getTime().minusMinutes(1);
+        Attendance attend = Attendance.from(monday, attendTime);
+
+        final var result = attend.checkAttendanceStatus();
+
+        assertThat(result).isEqualTo(AttendanceStatus.ATTEND);
     }
 
     @Test
-    void 월요일이면_교육시작_13시에_시작한다_지각() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 16,
-                MONDAY_START_HOUR.getCriteria(), LATE_MINUTE.getCriteria() + 1, 0);
-        Attendance attendance = Attendance.from(dateTime);
-        assertThat(attendance.checkAttendanceStatus(dateTime)).isEqualTo(AttendanceStatus.LATE);
+    void 월요일_출결_상태를_반환한다_지각() {
+        LocalDate monday = LocalDate.of(2024, 12, 9);
+        LocalTime lateTime = MONDAY_LATE_THRESHOLD.getTime().plusMinutes(1);
+        Attendance attend = Attendance.from(monday, lateTime);
+
+        final var result = attend.checkAttendanceStatus();
+
+        assertThat(result).isEqualTo(AttendanceStatus.LATE);
     }
 
     @Test
-    void 월요일이면_교육시작_13시에_시작한다_결석() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 16,
-                MONDAY_START_HOUR.getCriteria(), ABSENCE_MINUTE.getCriteria() + 1, 0);
-        Attendance attendance = Attendance.from(dateTime);
-        assertThat(attendance.checkAttendanceStatus(dateTime)).isEqualTo(AttendanceStatus.LATE_ABSENCE);
+    void 월요일_출결_상태를_반환한다_결석() {
+        LocalDate monday = LocalDate.of(2024, 12, 9);
+        LocalTime absenceTime = MONDAY_ABSENCE_THRESHOLD.getTime().plusMinutes(1);
+        Attendance attend = Attendance.from(monday, absenceTime);
+
+        final var result = attend.checkAttendanceStatus();
+
+        assertThat(result).isEqualTo(AttendanceStatus.ABSENCE);
     }
 
     @Test
-    void 월요일이면_교육시작_13시에_시작한다_결석2() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 16,
-                MONDAY_START_HOUR.getCriteria() + 1, 1, 0);
-        Attendance attendance = Attendance.from(dateTime);
-        assertThat(attendance.checkAttendanceStatus(dateTime)).isEqualTo(AttendanceStatus.LATE_ABSENCE);
+    void 다른_요일_출결_상태를_반환한다_출석() {
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalTime attendTime = DEFAULT_LATE_THRESHOLD.getTime().minusMinutes(1);
+        Attendance attend = Attendance.from(date, attendTime);
+
+        final var result = attend.checkAttendanceStatus();
+
+        assertThat(result).isEqualTo(AttendanceStatus.ATTEND);
     }
 
     @Test
-    void 해당_날짜와_입력한_날짜가_일치하면_true() {
-        Attendance attendance = Attendance.from(LocalDateTime.of(2024, 12, 16, 14, 0, 0));
-        assertThat(attendance.isEqualToDate(LocalDate.of(2024, 12, 16))).isTrue();
+    void 다른_요일_출결_상태를_반환한다_지각() {
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalTime lateTime = DEFAULT_LATE_THRESHOLD.getTime().plusMinutes(1);
+        Attendance attend = Attendance.from(date, lateTime);
+
+        final var result = attend.checkAttendanceStatus();
+
+        assertThat(result).isEqualTo(AttendanceStatus.LATE);
     }
 
     @Test
-    void 해당_날짜와_입력한_날짜가_일치하지않으면_false() {
-        Attendance attendance = Attendance.from(LocalDateTime.of(2024, 12, 16, 14, 0, 0));
-        assertThat(attendance.isEqualToDate(LocalDate.of(2024, 12, 15))).isFalse();
+    void 다른_요일_출결_상태를_반환한다_결석() {
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalTime absenceTime = DEFAULT_ABSENCE_THRESHOLD.getTime().plusMinutes(1);
+        Attendance attend = Attendance.from(date, absenceTime);
+
+        final var result = attend.checkAttendanceStatus();
+
+        assertThat(result).isEqualTo(AttendanceStatus.ABSENCE);
+    }
+
+    public static Attendance generateAttendanceByDateTime(final LocalDateTime dateTime) {
+        return Attendance.from(dateTime.toLocalDate(), dateTime.toLocalTime());
     }
 }

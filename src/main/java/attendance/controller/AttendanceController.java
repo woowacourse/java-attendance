@@ -1,113 +1,114 @@
 package attendance.controller;
 
+import attendance.controller.util.AttendanceBookFactory;
 import attendance.controller.util.AttendancesFileReader;
-import attendance.controller.util.CrewAttendanceParser;
-import attendance.controller.util.TimeFormatter;
-import attendance.controller.validator.HolidayValidator;
-import attendance.controller.validator.OperatingHoursValidator;
+import attendance.controller.util.CrewAttendancesDataParser;
+import attendance.controller.util.DateTimeConverter;
 import attendance.domain.Attendance;
-import attendance.domain.Crew;
-import attendance.domain.Crews;
+import attendance.domain.AttendanceBook;
+import attendance.domain.AttendancePenalty;
+import attendance.domain.Attendances;
 import attendance.domain.Menu;
-import attendance.domain.Warning;
 import attendance.dto.AttendanceResultResponse;
-import attendance.dto.CrewAttendanceResponse;
-import attendance.dto.UpdateAfterAttendanceResponse;
-import attendance.dto.UpdateBeforeAttendanceResponse;
-import attendance.dto.WarningCrewResponse;
-import attendance.service.CrewsService;
+import attendance.dto.AttendancesResponse;
+import attendance.dto.PenaltyCrewsResponse;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 public class AttendanceController {
-    private final CrewsService crewsService;
     private final InputView inputView;
     private final OutputView outputView;
     private final LocalDate today;
+    private AttendanceBook attendanceBook;
 
-    public AttendanceController(LocalDate today) {
-        this.crewsService = new CrewsService();
-        this.inputView = new InputView();
-        this.outputView = new OutputView();
+    public AttendanceController(InputView inputView, OutputView outputView, LocalDate today) {
+        this.inputView = inputView;
+        this.outputView = outputView;
         this.today = today;
     }
 
     public void run() {
-        Crews crews = crewsService.init(CrewAttendanceParser.parseCrewAttendances(AttendancesFileReader.read()), today);
-        while (!processMenu(today, crews)) {
+        String fileInput = AttendancesFileReader.read();
+        Map<String, List<LocalDateTime>> crewAttendancesData = CrewAttendancesDataParser.parse(fileInput);
+        attendanceBook = AttendanceBookFactory.create(crewAttendancesData, today);
+
+        boolean continueProcessMenu = true;
+        while (continueProcessMenu) {
+            continueProcessMenu = processMenu();
         }
     }
 
-    private boolean processMenu(LocalDate today, Crews crews) {
+    private boolean processMenu() {
         try {
-            Menu selectedMenu = inputView.inputMenu(today);
-            return executeMenu(selectedMenu, crews);
+            return executeMenu(inputView.readSelectMenu(today));
         } catch (IllegalArgumentException e) {
-            outputView.printExceptionMessage(e);
+            outputView.printErrorMessage(e.getMessage());
+            return true;
+        }
+    }
+
+    private boolean executeMenu(final String input) {
+        Menu selectedMenu = Menu.from(input);
+        if (Menu.QUIT.equals(selectedMenu)) {
             return false;
         }
+        if (Menu.ATTEND.equals(selectedMenu)) {
+            attend();
+        }
+        if (Menu.UPDATE_ATTENDANCE.equals(selectedMenu)) {
+            updateAttendance();
+        }
+        if (Menu.PRINT_ATTENDANCES_BY_CREW.equals(selectedMenu)) {
+            printAttendancesByCrew();
+        }
+        if (Menu.PRINT_WARNING.equals(selectedMenu)) {
+            printPenaltyCrews();
+        }
+        return true;
     }
 
-    private boolean executeMenu(Menu selectedMenu, Crews crews) {
-        if (selectedMenu.equals(Menu.CHECK_ATTEND)) confirmAttendance(crews);
-        if (selectedMenu.equals(Menu.UPDATE_ATTEND)) updateAttendance(crews);
-        if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) printAttendanceByCrew(crews);
-        if (selectedMenu.equals(Menu.PRINT_WARNING)) printWarningCrews(crews);
+    private void attend() {
+        LocalTime time = DateTimeConverter.convertToTime(inputView.readAttendTime());
 
-        return selectedMenu.equals(Menu.QUIT);
+        Attendance attendance = Attendance.from(today, time);
+        attendanceBook.attend(inputView.readNickname(), attendance);
+
+        outputView.printAttendResult(AttendanceResultResponse.from(attendance));
     }
 
-    private void confirmAttendance(final Crews crews) {
-        HolidayValidator.validate(today);
+    private void updateAttendance() {
+        String nickname = inputView.readUpdateAttendanceNickname();
 
-        Crew crew = crews.findByName(inputView.inputNickname());
-        crew.existInAttendances(today);
+        LocalDateTime dateTime = DateTimeConverter.convertToDateTime(
+                inputView.readUpdateAttendanceDay(), inputView.readUpdateAttendanceTime(), today);
 
-        LocalDateTime attendDateTime = TimeFormatter.format(today, inputView.inputAttendTime());
-        OperatingHoursValidator.validate(attendDateTime);
-        Attendance attendance = Attendance.from(attendDateTime);
+        Attendance before = attendanceBook.findByNicknameAndDate(nickname, dateTime);
+        AttendanceResultResponse beforeResponse = AttendanceResultResponse.from(before);
+        Attendance after = attendanceBook.updateAttendance(nickname, dateTime);
+        AttendanceResultResponse afterResponse = AttendanceResultResponse.from(after);
 
-        crew.addAttendance(attendance);
-        outputView.printAttendanceResult(AttendanceResultResponse.from(attendance));
+        outputView.printUpdateResult(beforeResponse, afterResponse);
     }
 
-    private void updateAttendance(final Crews crews) {
-        Crew crew = crews.findByName(inputView.inputNickname());
-        LocalDate updateDate = LocalDate.of(today.getYear(), today.getMonthValue(),
-                inputView.inputUpdateDate(today));
-        HolidayValidator.validate(updateDate);
+    private void printAttendancesByCrew() {
+        String nickname = inputView.readNickname();
+        Attendances attendances = attendanceBook.findByNickname(nickname);
 
-        LocalDateTime updateTime = TimeFormatter.format(updateDate, inputView.inputUpdateTime());
-        OperatingHoursValidator.validate(updateTime);
+        outputView.printAttendancesByCrew(AttendancesResponse.of(nickname, attendances));
 
-        UpdateBeforeAttendanceResponse beforeResponse = UpdateBeforeAttendanceResponse.of(
-                crew.findAttendanceByDate(updateDate));
-        UpdateAfterAttendanceResponse afterResponse = UpdateAfterAttendanceResponse.of(
-                crew.updateAttendance(updateTime));
-
-        outputView.printUpdateAttendance(beforeResponse, afterResponse);
-    }
-
-    private void printAttendanceByCrew(final Crews crews) {
-        Crew crew = crews.findByName(inputView.inputNickname());
-
-        CrewAttendanceResponse response = CrewAttendanceResponse.from(crew);
-        outputView.printAttendanceByCrew(response);
-
-        Warning warning = crew.checkWarning();
-        if (!warning.equals(Warning.NONE)) {
-            outputView.printWarning(warning);
+        AttendancePenalty warning = attendances.calculatePenalty();
+        if (!AttendancePenalty.NONE.equals(warning)) {
+            outputView.printPenalty(warning);
         }
     }
 
-    private void printWarningCrews(final Crews crews) {
-        List<Crew> warningCrews = crews.collectWarningCrews();
-        List<WarningCrewResponse> responses = warningCrews.stream()
-                .map(WarningCrewResponse::from)
-                .toList();
-        outputView.printWarningCrews(responses);
+    private void printPenaltyCrews() {
+        PenaltyCrewsResponse response = PenaltyCrewsResponse.from(attendanceBook.findPenaltyCrews());
+        outputView.printPenaltyCrews(response);
     }
 }
