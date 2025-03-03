@@ -1,4 +1,4 @@
-package util;
+package util.parser;
 
 import domain.ErrorCode;
 import java.time.LocalDate;

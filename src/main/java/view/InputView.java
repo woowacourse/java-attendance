@@ -4,8 +4,8 @@ import domain.UserSelection;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
-import util.InputParser;
-import util.InputReader;
+import util.inputreader.InputReader;
+import util.parser.InputParser;
 
 public class InputView {
 

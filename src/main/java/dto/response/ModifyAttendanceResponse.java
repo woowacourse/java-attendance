@@ -1,4 +1,4 @@
-package dto;
+package dto.response;
 
 public record ModifyAttendanceResponse(
         String date,

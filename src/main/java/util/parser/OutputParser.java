@@ -1,4 +1,4 @@
-package util;
+package util.parser;
 
 import static java.util.Locale.KOREAN;
 

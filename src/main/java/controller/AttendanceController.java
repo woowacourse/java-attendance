@@ -11,14 +11,14 @@ import domain.Crew;
 import domain.DayType;
 import domain.ErrorCode;
 import domain.Penalty;
-import domain.TimeProvider;
 import domain.UserSelection;
-import dto.AddAttendanceRequest;
-import dto.AttendanceRecordResponse;
-import dto.AttendanceStatusCountResponse;
-import dto.CheckAttendanceResponse;
-import dto.CrewWithPenaltyResponse;
-import dto.ModifyAttendanceResponse;
+import domain.timeprovider.TimeProvider;
+import dto.request.AddAttendanceRequest;
+import dto.response.AttendanceRecordResponse;
+import dto.response.AttendanceStatusCountResponse;
+import dto.response.CheckAttendanceResponse;
+import dto.response.CrewWithPenaltyResponse;
+import dto.response.ModifyAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.EnumMap;
@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import util.FileReader;
-import util.OutputParser;
+import util.filereader.FileReader;
+import util.parser.OutputParser;
 import view.InputView;
 import view.OutputView;
 
@@ -66,10 +66,12 @@ public class AttendanceController {
     }
 
     private void initializeSelection() {
-        selection.put(UserSelection.CHECK_ATTENDANCE, this::checkAttendance);
-        selection.put(UserSelection.MODIFY_ATTENDANCE, this::modifyAttendance);
-        selection.put(UserSelection.GET_ATTENDANCE_RECORDS, this::getAttendanceRecords);
-        selection.put(UserSelection.GET_CREWS_WITH_PENALTY, this::getCrewsWithPenalty);
+        selection.putAll(Map.of(
+                UserSelection.CHECK_ATTENDANCE, this::checkAttendance,
+                UserSelection.MODIFY_ATTENDANCE, this::modifyAttendance,
+                UserSelection.GET_ATTENDANCE_RECORDS, this::getAttendanceRecords,
+                UserSelection.GET_CREWS_WITH_PENALTY, this::getCrewsWithPenalty
+        ));
     }
 
     private void askSelection() {
@@ -87,7 +89,7 @@ public class AttendanceController {
 
     private void checkAttendance() {
         DayType.validateIsWorkingDay(timeProvider.getNowDate());
-        String name = retrySupplierUntilValid(this::readName);
+        String name = retrySupplierUntilValid(this::getValidatedName);
         AttendanceStatus.validateIsOperationHour(timeProvider.getNowTime());
         outputView.printCheckAttendanceResult(
                 checkAttendance(name, timeProvider.getNowDate(), timeProvider.getNowTime()));
@@ -124,20 +126,20 @@ public class AttendanceController {
     }
 
     private void modifyAttendance() {
-        String name = retrySupplierUntilValid(this::askNameToModify);
-        LocalDate date = retrySupplierUntilValid(() -> askDateToModify(name));
-        LocalTime time = retrySupplierUntilValid(this::askTimeToModify);
+        String name = retrySupplierUntilValid(this::getValidatedNameToModify);
+        LocalDate date = retrySupplierUntilValid(() -> getValidatedDateToModify(name));
+        LocalTime time = retrySupplierUntilValid(this::getValidatedTimeToModify);
         outputView.printModifyAttendanceResult(modifyAttendance(name, date, time));
     }
 
-    private LocalTime askTimeToModify() {
+    private LocalTime getValidatedTimeToModify() {
         LocalTime time = inputView.readTimeToModify();
         AttendanceStatus.validateIsOperationHour(time);
         return time;
     }
 
     private void getAttendanceRecords() {
-        String name = retrySupplierUntilValid(this::readName);
+        String name = retrySupplierUntilValid(this::getValidatedName);
         outputView.printGetAttendanceRecordsResult(name, getAttendanceRecordResponses(name),
                 getAttendanceStatusCountResponseByName(name),
                 getPenaltyResponseByName(name));
@@ -147,19 +149,19 @@ public class AttendanceController {
         outputView.printCrewWithPenaltyResponses(getCrewWithPenaltyResponses());
     }
 
-    private LocalDate askDateToModify(String name) {
+    private LocalDate getValidatedDateToModify(String name) {
         LocalDate date = inputView.readDateToModify();
         attendanceBook.validateAttendanceRecordExistsByDate(name, date);
         return date;
     }
 
-    private String askNameToModify() {
+    private String getValidatedNameToModify() {
         String name = inputView.readNameToModify();
         attendanceBook.validateNameExists(name);
         return name;
     }
 
-    private String readName() {
+    private String getValidatedName() {
         String name = inputView.readName();
         attendanceBook.validateNameExists(name);
         return name;

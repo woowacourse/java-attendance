@@ -1,8 +1,8 @@
-package dto;
+package dto.request;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import util.InputParser;
+import util.parser.InputParser;
 
 public record AddAttendanceRequest(
         String name,

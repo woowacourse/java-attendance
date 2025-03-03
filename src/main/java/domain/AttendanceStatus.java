@@ -2,7 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import util.OutputParser;
+import util.parser.OutputParser;
 
 public enum AttendanceStatus {
     ATTEND("출석"),

@@ -1,17 +1,19 @@
 import controller.AttendanceController;
 import domain.AttendanceBook;
-import domain.NowTimeProvider;
-import domain.TimeProvider;
+import domain.timeprovider.NowTimeProvider;
+import domain.timeprovider.TimeProvider;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.Clock;
-import util.ConsoleInputReader;
-import util.CsvFileReader;
-import util.FileReader;
+import util.filereader.CsvFileReader;
+import util.filereader.FileReader;
+import util.inputreader.ConsoleInputReader;
 import view.InputView;
 import view.OutputView;
 
 public class AppConfig {
+    private static final String CSV_FILE_PATH = "src/main/resources/attendances.csv";
+
     public AttendanceController controller() {
         return new AttendanceController(attendanceBook(), inputView(), outputView(),
                 fileReader(), timeProvider());
@@ -34,7 +36,7 @@ public class AppConfig {
     }
 
     private FileReader fileReader() {
-        return new CsvFileReader("src/main/resources/attendances.csv");
+        return new CsvFileReader(CSV_FILE_PATH);
     }
 
     private TimeProvider timeProvider() {

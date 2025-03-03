@@ -1,10 +1,10 @@
 package view;
 
-import dto.AttendanceRecordResponse;
-import dto.AttendanceStatusCountResponse;
-import dto.CheckAttendanceResponse;
-import dto.CrewWithPenaltyResponse;
-import dto.ModifyAttendanceResponse;
+import dto.response.AttendanceRecordResponse;
+import dto.response.AttendanceStatusCountResponse;
+import dto.response.CheckAttendanceResponse;
+import dto.response.CrewWithPenaltyResponse;
+import dto.response.ModifyAttendanceResponse;
 import java.util.List;
 
 public class OutputView {

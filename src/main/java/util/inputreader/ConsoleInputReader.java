@@ -1,4 +1,4 @@
-package util;
+package util.inputreader;
 
 import domain.ErrorCode;
 import java.io.BufferedReader;

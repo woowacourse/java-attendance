@@ -3,7 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import util.OutputParser;
+import util.parser.OutputParser;
 
 public enum DayType {
     MONDAYS(List.of(2, 9, 16, 23, 30)),
