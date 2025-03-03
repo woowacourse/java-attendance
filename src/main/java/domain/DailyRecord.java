@@ -14,7 +14,7 @@ public class DailyRecord {
     }
 
     public String getFormattedTime() {
-        if(attendedTime.equals(LocalTime.MIN)) {
+        if (attendedTime.equals(LocalTime.MIN)) {
             return "--:--";
         }
         return attendedTime.toString();

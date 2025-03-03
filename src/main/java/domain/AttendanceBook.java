@@ -60,28 +60,35 @@ public class AttendanceBook {
     }
 
     private boolean isWarningCrew(Crew crew, LocalDate startDate, LocalDate endDate) {
-        Map<AttendanceStatus, Integer> statistics = getAttendanceStatistics(crew, startDate, endDate);
-        return Penalty.isNotPass(statistics.get(AttendanceStatus.LATE), statistics.get(AttendanceStatus.ABSENT));
+        Map<AttendanceStatus, Integer> statistics = getAttendanceStatistics
+            (crew, startDate, endDate);
+        return Penalty.isNotPass
+            (statistics.get(AttendanceStatus.LATE), statistics.get(AttendanceStatus.ABSENT));
     }
 
-    private Comparator<Map.Entry<String, Crew>> createCrewComparator(LocalDate startDate, LocalDate endDate) {
+    private Comparator<Map.Entry<String, Crew>> createCrewComparator
+        (LocalDate startDate, LocalDate endDate) {
         return Comparator
             .comparingInt((Map.Entry<String, Crew> entry) -> {
-                Map<AttendanceStatus, Integer> stats = getAttendanceStatistics(entry.getValue(), startDate, endDate);
+                Map<AttendanceStatus, Integer> stats = getAttendanceStatistics
+                    (entry.getValue(), startDate, endDate);
                 return (stats.get(AttendanceStatus.LATE) / 3) + stats.get(AttendanceStatus.ABSENT);
             }).reversed()
             .thenComparing((Map.Entry<String, Crew> entry) -> {
-                Map<AttendanceStatus, Integer> stats = getAttendanceStatistics(entry.getValue(), startDate, endDate);
+                Map<AttendanceStatus, Integer> stats = getAttendanceStatistics
+                    (entry.getValue(), startDate, endDate);
                 return stats.get(AttendanceStatus.LATE) % 3;
             }, Comparator.reverseOrder())
             .thenComparing((Map.Entry<String, Crew> entry) -> {
-                Map<AttendanceStatus, Integer> stats = getAttendanceStatistics(entry.getValue(), startDate, endDate);
+                Map<AttendanceStatus, Integer> stats = getAttendanceStatistics
+                    (entry.getValue(), startDate, endDate);
                 return stats.get(AttendanceStatus.ABSENT);
             }, Comparator.reverseOrder())
             .thenComparing(Map.Entry::getKey);
     }
 
-    private Map<AttendanceStatus, Integer> getAttendanceStatistics(Crew crew, LocalDate startDate, LocalDate endDate) {
+    private Map<AttendanceStatus, Integer> getAttendanceStatistics
+        (Crew crew, LocalDate startDate, LocalDate endDate) {
         Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
         return AttendanceStatus.countStatus(records);
     }

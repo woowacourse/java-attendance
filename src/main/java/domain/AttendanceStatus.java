@@ -46,7 +46,7 @@ public enum AttendanceStatus {
     }
 
     private static AttendanceStatus findStatusOfMonday(LocalTime time) {
-        if(time.equals(LocalTime.MIN)) {
+        if (time.equals(LocalTime.MIN)) {
             return ABSENT;
         }
         if (time.isBefore(DateTimeParser.parseIntegerToTime(13, LATE.boundaryMinute))) {
@@ -59,7 +59,7 @@ public enum AttendanceStatus {
     }
 
     private static AttendanceStatus findStatusOfDefault(LocalTime time) {
-        if(time.equals(LocalTime.MIN)) {
+        if (time.equals(LocalTime.MIN)) {
             return ABSENT;
         }
         if (time.isBefore(DateTimeParser.parseIntegerToTime(10, LATE.boundaryMinute))) {

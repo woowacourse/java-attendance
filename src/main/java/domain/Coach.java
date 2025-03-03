@@ -36,14 +36,14 @@ public class Coach {
 
     private void validateOperatingTime(LocalDateTime dateTime) {
         LocalTime time = dateTime.toLocalTime();
-        if(time.isBefore(operatingStart) || time.isAfter(operatingEnd)) {
+        if (time.isBefore(operatingStart) || time.isAfter(operatingEnd)) {
             throw new IllegalArgumentException(NOT_OPERATING_TIME_ERROR_MESSAGE);
         }
     }
 
     private void validateHoliday(LocalDateTime dateTime) {
         LocalDate date = dateTime.toLocalDate();
-        if(Holiday.isHoliday(date)) {
+        if (Holiday.isHoliday(date)) {
             throw new IllegalArgumentException(HOLIDAY_ERROR_MESSAGE);
         }
     }

@@ -132,7 +132,8 @@ public class CrewTest {
             DailyRecord editedRecord = crew.updateDailyRecord(editedDateTime);
 
             assertAll(
-                () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime()),
+                () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(
+                    editedDateTime.toLocalTime()),
                 () -> assertThat(editedRecord.getStatus()).isEqualTo(AttendanceStatus.PRESENT)
             );
         }
@@ -150,7 +151,8 @@ public class CrewTest {
             DailyRecord editedRecord = crew.updateDailyRecord(editedDateTime);
 
             assertAll(
-                () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime()),
+                () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(
+                    editedDateTime.toLocalTime()),
                 () -> assertThat(editedRecord.getStatus()).isEqualTo(AttendanceStatus.PRESENT)
             );
         }

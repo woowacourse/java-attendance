@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -102,7 +101,8 @@ public class AttendanceBookTest {
             DailyRecord editedRecord = attendanceBook.editAttendanceRecord(name, editedDateTime);
 
             assertAll(
-                () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(editedDateTime.toLocalTime()),
+                () -> assertThat(editedRecord.getAttendedTime()).isEqualTo(
+                    editedDateTime.toLocalTime()),
                 () -> assertThat(editedRecord.getStatus()).isEqualTo(AttendanceStatus.PRESENT)
             );
         }
