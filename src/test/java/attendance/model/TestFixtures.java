@@ -12,12 +12,15 @@ public class TestFixtures {
 
     protected static final LocalDate LOCAL_DATE_2024_12_02 = LocalDate.of(2024, 12, 2);
     protected static final LocalTime LOCAL_TIME_10_00 = LocalTime.of(10, 0);
-    protected static final LocalDateTime LOCAL_DATE_TIME_2024_12_02_10_00 = LocalDateTime.of(LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00);
+    protected static final LocalDateTime LOCAL_DATE_TIME_2024_12_02_10_00 = LocalDateTime.of(
+            LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00);
 
     private TestFixtures() {
     }
 
-    protected static AttendanceLog createAttendanceLog(Nickname nickname, LocalDate attendanceDate, LocalTime attendanceTime) {
+    protected static AttendanceLog createAttendanceLog(Nickname nickname,
+                                                       LocalDate attendanceDate,
+                                                       LocalTime attendanceTime) {
         return new AttendanceLog(nickname, attendanceDate, attendanceTime);
     }
 }

@@ -157,8 +157,8 @@ public class AttendanceController {
     }
 
     private List<AttendanceLogDto> mapToAttendanceLogDtos(AttendanceBook attendanceBook,
-                                                         Nickname nickname,
-                                                         List<AttendanceLog> logs) {
+                                                          Nickname nickname,
+                                                          List<AttendanceLog> logs) {
         return logs.stream()
                 .map(attendanceLog -> new AttendanceLogDto(
                         nickname,
