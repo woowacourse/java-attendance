@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class AttendanceRecord implements Comparable<AttendanceRecord> {
@@ -18,12 +19,20 @@ public class AttendanceRecord implements Comparable<AttendanceRecord> {
         return AttendanceStatus.findByAttendanceDateTime(attendanceDateTime, attendanceTimePolicy);
     }
 
+    public boolean hasAttendanceDate(final LocalDate attendanceDate) {
+        return attendanceDateTime.isSameDate(attendanceDate);
+    }
+
     public boolean hasAttendanceDateTime(final AttendanceDateTime dateTime) {
         return attendanceDateTime.equals(dateTime);
     }
 
     public AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
+    }
+
+    public AttendanceDateTime getAttendanceDateTime() {
+        return attendanceDateTime;
     }
 
     @Override

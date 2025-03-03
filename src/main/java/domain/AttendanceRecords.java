@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -28,6 +29,19 @@ public class AttendanceRecords {
         return new AttendanceStatusCounts(absenceCount, lateCount, attendanceCount);
     }
 
+    public AttendanceRecord findMatchingAttendanceDate(final AttendanceDateTime attendanceDateTime) {
+        final LocalDate localDate = attendanceDateTime.getDateTime().toLocalDate();
+        return attendanceRecords.stream()
+                .filter(attendanceRecord -> attendanceRecord.hasAttendanceDate(localDate))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출석 dateTime 입니다."));
+    }
+
+    public void editAttendanceDateTime(final AttendanceRecord before, final AttendanceRecord after) {
+        attendanceRecords.remove(before);
+        attendanceRecords.add(after);
+    }
+
     public boolean hasAttendanceDateTime(final AttendanceDateTime attendanceDateTime) {
         return attendanceRecords.stream()
                 .anyMatch(attendanceRecord -> attendanceRecord.hasAttendanceDateTime(attendanceDateTime));
@@ -39,5 +53,13 @@ public class AttendanceRecords {
 
     public AttendanceStatusCounts getAttendanceStatusCounts() {
         return attendanceStatusCounts;
+    }
+
+    public AttendanceRecord findAttendanceRecord(final AttendanceDate attendanceDate) {
+        final LocalDate date = attendanceDate.getDate();
+        return attendanceRecords.stream()
+                .filter(attendanceRecord -> attendanceRecord.hasAttendanceDate(date))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 날쩨에는 출석 기록이 존재하지 않습니다."));
     }
 }
