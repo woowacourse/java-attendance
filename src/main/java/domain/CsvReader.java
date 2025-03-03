@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CsvReader {
@@ -19,7 +20,7 @@ public class CsvReader {
         URL fileURL = createURL(filePath);
         isExistFileURL(fileURL);
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(fileURL.toURI()))) {
-            return removeFirstRow(reader);
+            return new ArrayList<>(reader.lines().toList());
         } catch (IOException | URISyntaxException e) {
             throw new IllegalStateException("파일 경로가 잘못되었습니다: " + fileURL.getPath());
         }
@@ -35,8 +36,8 @@ public class CsvReader {
         }
     }
 
-    private static List<String> removeFirstRow(BufferedReader reader) {
-        return reader.lines().skip(1).toList();
+    public static void removeFirstRow(List<String> rows) {
+        rows.removeFirst();
     }
 
     public static List<String> splitRow(String row) {

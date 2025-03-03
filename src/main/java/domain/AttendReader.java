@@ -16,6 +16,7 @@ public class AttendReader {
     public AttendanceBook loadAttendanceBook() {
         AttendanceBook attendanceBook = new AttendanceBook();
         List<String> rows = CsvReader.readFile(csvPath);
+        CsvReader.removeFirstRow(rows);
         for (String row : rows) {
             addAttendData(row, attendanceBook);
         }
