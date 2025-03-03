@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceLoader;
 import attendance.domain.CrewAttendance;
@@ -7,6 +8,7 @@ import attendance.domain.WarningLevel;
 import attendance.view.DataSourceReader;
 import attendance.view.InputView;
 import attendance.view.ResultView;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -32,8 +34,14 @@ public class AttendanceController {
     }
 
     private void registerAttendance(final AttendanceBook attendanceBook) {
+        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
         String nickname = inputView.readNickname();
         LocalTime attendanceTime = inputView.readAttendanceTime();
+        LocalDateTime newAttendance = LocalDateTime.of(LocalDate.from(today), attendanceTime);
+
+        attendanceBook.addAttendance(nickname, newAttendance);
+        Attendance attendance = attendanceBook.getCrewAttendanceOf(nickname,today).getAttendanceOn(newAttendance);
+        resultView.printAttendance(attendance);
     }
 
     private void showCrewAttendance(AttendanceBook attendanceBook) {

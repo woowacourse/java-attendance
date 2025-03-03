@@ -14,6 +14,6 @@ class DataSourceReaderTest {
 
         assertThat(lines)
                 .isNotNull()
-                .hasSize(41);
+                .hasSize(40);
     }
 }

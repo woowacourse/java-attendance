@@ -30,7 +30,7 @@ public class InputView {
     }
 
     public LocalTime readAttendanceTime() {
-        System.out.println(ENTER_ATTENDANCE_TIME);
+        System.out.print(ENTER_ATTENDANCE_TIME);
         return LocalTime.parse(readLine());
     }
 

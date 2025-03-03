@@ -27,6 +27,9 @@ public class ResultView {
     private static final String WARNING_CREWS_HEADER = "\n제적 위험자 조회 결과";
     private static final String WARNING_CREW_FORMAT = "\n- %s: 결석 %d회, 지각 %d회 " + ATTENDANCE_STATUS_FORMAT;
 
+    public void printAttendance(final Attendance attendance) {
+        System.out.println(System.lineSeparator() + format(attendance));
+    }
 
     public void printCrewAttendanceHeader(final String nickname) {
         System.out.printf(CREW_ATTENDANCE_HEADER, nickname);
