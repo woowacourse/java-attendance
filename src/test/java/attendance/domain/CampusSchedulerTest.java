@@ -116,7 +116,7 @@ class CampusSchedulerTest {
         // Given
         CrewHistory crewHistory = makeCrewHistory(makeAttendanceMonday(2), makeTardinessExceptMonday(3),
                 makeTardinessExceptMonday(4),
-                makeAbsenceExceptMonday(5));
+                makeTardinessExceptMonday(5));
         LocalDate nowDate = makeDecemberDate(6);
 
         // When
@@ -124,8 +124,8 @@ class CampusSchedulerTest {
 
         // Then
         assertThat(result).contains(entry(AttendanceState.ATTENDANCE, 1),
-                entry(AttendanceState.TARDINESS, 2),
-                entry(AttendanceState.ABSENCE, 1)
+                entry(AttendanceState.TARDINESS, 3),
+                entry(AttendanceState.ABSENCE, 0)
         );
     }
 }
