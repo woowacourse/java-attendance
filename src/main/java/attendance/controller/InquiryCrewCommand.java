@@ -3,7 +3,9 @@ package attendance.controller;
 import attendance.domain.AttendanceState;
 import attendance.domain.CampusScheduler;
 import attendance.domain.CrewHistories;
+import attendance.domain.CrewHistory;
 import attendance.domain.Nickname;
+import attendance.domain.RiskAtExpulsion;
 import attendance.view.InputView;
 import attendance.view.ResultView;
 import java.time.Clock;
@@ -30,10 +32,20 @@ public class InquiryCrewCommand implements Command {
         LocalDate nowDate = LocalDate.now(clock);
         Nickname nickname = makeNickname();
         crewHistories.validateKeyExists(nickname);
-        resultView.showAttendanceHistory(nickname, crewHistories, nowDate, campusScheduler);
+        CrewHistory history = crewHistories.findHistory(nickname);
+        resultView.showAttendanceHistory(nickname, history, nowDate, campusScheduler);
+        showAttendanceCountResult(history, nowDate);
+    }
+
+    private void showAttendanceCountResult(final CrewHistory history, final LocalDate nowDate) {
         Map<AttendanceState, Integer> result = campusScheduler.countByAttendanceState(
-                crewHistories.findHistory(nickname), nowDate);
-        resultView.showCountByAttendanceState(result);
+                history, nowDate);
+        int attendanceCount = result.get(AttendanceState.ATTENDANCE);
+        int absentCount = result.get(AttendanceState.ABSENCE);
+        int lateCount = result.get(AttendanceState.TARDINESS);
+
+        resultView.showCountByAttendanceState(attendanceCount, lateCount, absentCount);
+        resultView.showExpulsion(RiskAtExpulsion.of(absentCount, lateCount));
     }
 
     private Nickname makeNickname() {
