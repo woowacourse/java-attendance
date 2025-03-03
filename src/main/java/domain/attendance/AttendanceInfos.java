@@ -83,7 +83,7 @@ public class AttendanceInfos {
     }
 
     private boolean ifDayEqual(final CampusDate campusDate, final AttendanceInfo attendanceInfo) {
-        return attendanceInfo.getDay() == campusDate.getDay();
+        return campusDate.isSameDay(attendanceInfo.getDay());
     }
 
     private AttendanceInfo modifyInfoIfSameDay(final CampusDate campusDate, final CampusTime campusTime,

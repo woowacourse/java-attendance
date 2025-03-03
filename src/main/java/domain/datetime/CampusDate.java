@@ -32,6 +32,10 @@ public class CampusDate {
         return new CampusDate(date.withDayOfMonth(day));
     }
 
+    public boolean isSameDay(int day) {
+        return date.getDayOfMonth() == day;
+    }
+
     private static LocalDate validateDateRangeAndType(final String inputDate) {
         try {
             return LocalDate.parse(inputDate);
