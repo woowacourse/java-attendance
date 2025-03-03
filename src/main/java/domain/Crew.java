@@ -20,7 +20,7 @@ public class Crew {
         timeLogs.put(date, time);
     }
 
-    public boolean isMyName(String value) {
+    public boolean isSameName(String value) {
         return Objects.equals(name, value);
     }
 
