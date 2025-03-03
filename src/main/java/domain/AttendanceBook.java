@@ -1,11 +1,14 @@
 package domain;
 
+import domain.attendance.AttendanceWarning;
 import domain.attendance.Attendances;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class AttendanceBook {
     private final Map<Crew, Attendances> attendances = new HashMap<>();
@@ -29,7 +32,12 @@ public class AttendanceBook {
     }
 
     public List<String> findWarningCrews() {
-        return null;
+        return attendances.entrySet().stream()
+                .filter(entry ->
+                        AttendanceWarning.calculateWarning(entry.getValue().countAllAbsence())
+                                != AttendanceWarning.NONE)
+                .map(entry -> entry.getKey().getNickname())
+                .toList();
     }
 
     private Crew findCrewByNickname(String nickname) {

@@ -10,4 +10,8 @@ public class Crew {
     public boolean equals(String name) {
         return name.equals(this.nickname);
     }
+
+    public String getNickname() {
+        return nickname;
+    }
 }
