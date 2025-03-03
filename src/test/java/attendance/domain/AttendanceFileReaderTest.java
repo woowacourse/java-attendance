@@ -9,6 +9,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import attendance.interfaces.SystemDateTime;
+
 public class AttendanceFileReaderTest {
     private final SystemDateTime systemDateTime = new AttendanceDateTime();
     private static final String ATTENDANCE_CSV = "attendances.csv";

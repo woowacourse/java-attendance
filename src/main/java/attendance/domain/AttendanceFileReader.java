@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import attendance.interfaces.SystemDateTime;
+
 public class AttendanceFileReader {
     private static final String CANNOT_FIND_FILE = "[ERROR] 파일을 찾을 수 없습니다: ";
     private static final String CANNOT_READ_FILE = "[ERROR] 파일을 읽는 과정에서 예상치 못한 오류가 발생했습니다: ";

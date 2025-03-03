@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import attendance.exception.AttendanceArgumentException;
+import attendance.interfaces.SystemDateTime;
 
 public record Attendances(Map<LocalDate, Attendance> attendances, SystemDateTime systemDateTime) {
     private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";

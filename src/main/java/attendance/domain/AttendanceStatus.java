@@ -2,7 +2,8 @@ package attendance.domain;
 
 import java.time.LocalTime;
 
-import attendance.view.EnumTextConverter;
+import attendance.interfaces.Converter;
+import attendance.interfaces.Displayer;
 
 public enum AttendanceStatus implements Displayer {
     ATTENDANCE(0),
@@ -10,7 +11,10 @@ public enum AttendanceStatus implements Displayer {
     ABSENCE(30),
     TRUANCY(30);
 
+    private static final String NOT_REGISTERED_CONVERTER = "컨버터가 등록되지 않았습니다.";
+
     private final int value;
+    private static Converter<AttendanceStatus> converter;
 
     AttendanceStatus(int value) {
         this.value = value;
@@ -18,6 +22,10 @@ public enum AttendanceStatus implements Displayer {
 
     private int getValue() {
         return value;
+    }
+
+    public static void setConverter(Converter<AttendanceStatus> statusConverter) {
+        converter = statusConverter;
     }
 
     public static AttendanceStatus judgeStatus(LocalTime time, LocalTime schedule) {
@@ -32,6 +40,9 @@ public enum AttendanceStatus implements Displayer {
 
     @Override
     public String convertMessage() {
-        return EnumTextConverter.convertState(this);
+        if (converter == null) {
+            throw new IllegalStateException(NOT_REGISTERED_CONVERTER);
+        }
+        return converter.convert(this);
     }
 }

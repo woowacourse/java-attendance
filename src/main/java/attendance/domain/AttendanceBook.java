@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import attendance.exception.AttendanceArgumentException;
+import attendance.interfaces.SystemDateTime;
 
 public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemDateTime systemDateTime) {
     private static final String NOT_REGISTERED_NICKNAME = "등록되지 않은 닉네임입니다.";

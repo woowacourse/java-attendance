@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.interfaces;
 
 public interface Displayer {
     String convertMessage();

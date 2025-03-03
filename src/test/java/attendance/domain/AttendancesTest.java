@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import attendance.exception.AttendanceArgumentException;
+import attendance.interfaces.SystemDateTime;
 
 class AttendancesTest {
     private final SystemDateTime systemDateTime = new AttendanceDateTime();

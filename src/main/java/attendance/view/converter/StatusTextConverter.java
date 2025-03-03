@@ -18,7 +18,7 @@ public class StatusTextConverter implements Converter<AttendanceStatus> {
     }
 
     @Override
-    public static String convert(AttendanceStatus status) {
+    public String convert(AttendanceStatus status) {
         var converted = ATTENDANCE_STATUS_TEXT.get(status);
         if (converted == null) {
             throw new NullPointerException(CANT_CONVERTING + status);

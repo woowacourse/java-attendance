@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import attendance.interfaces.SystemDateTime;
+
 public class AttendanceDateTime implements SystemDateTime {
     private static final LocalDate CAMPUS_START_DAY = LocalDate.of(2024, Month.DECEMBER, 1);
     private static final LocalDateTime NOW_DATETIME

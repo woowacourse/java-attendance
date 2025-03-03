@@ -19,9 +19,9 @@ import attendance.domain.Attendances;
 import attendance.domain.Nickname;
 import attendance.domain.SanctionStatistics;
 import attendance.domain.StatusStatistics;
-import attendance.domain.SystemDateTime;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.InputValidationException;
+import attendance.interfaces.SystemDateTime;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
