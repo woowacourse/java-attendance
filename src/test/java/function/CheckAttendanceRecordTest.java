@@ -7,15 +7,15 @@ import static constants.TestDataMaker.MONDAY_DATE;
 import static constants.TestDataMaker.THURSDAY_DATE;
 import static constants.TestDataMaker.TUESDAY_DATE;
 import static constants.TestDataMaker.WEDNESDAY_DATE;
-import static domain.AttendanceStatus.ABSENT_STATUS;
-import static domain.AttendanceStatus.ATTEND_STATUS;
-import static domain.AttendanceStatus.LATE_STATUS;
-import static domain.PenaltyStatus.EXPULSION_STATUS;
+import static domain.policy.AttendancePolicy.ABSENT_STATUS;
+import static domain.policy.AttendancePolicy.ATTEND_STATUS;
+import static domain.policy.AttendancePolicy.LATE_STATUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceBook;
-import domain.PenaltyStatus;
+import domain.PenaltyDiscriminator;
+import domain.policy.PenaltyPolicy;
 import dto.CheckAttendanceRecordResponse;
 import dto.PenaltyResponse;
 import java.util.List;
@@ -45,19 +45,19 @@ public class CheckAttendanceRecordTest {
         // then
         assertThat(responses.getFirst().date()).isEqualTo(MONDAY_DATE);
         assertThat(responses.getFirst().time()).isEqualTo(ATTEND_MONDAY);
-        assertThat(responses.getFirst().attendanceStatus()).isEqualTo(ATTEND_STATUS);
+        assertThat(responses.getFirst().attendanceStatus()).isEqualTo(ATTEND_STATUS.getStatus());
 
         assertThat(responses.get(1).date()).isEqualTo(TUESDAY_DATE);
         assertThat(responses.get(1).time()).isEqualTo(LATE_EXCEPT_MONDAY);
-        assertThat(responses.get(1).attendanceStatus()).isEqualTo(LATE_STATUS);
+        assertThat(responses.get(1).attendanceStatus()).isEqualTo(LATE_STATUS.getStatus());
 
         assertThat(responses.get(2).date()).isEqualTo(WEDNESDAY_DATE);
         assertThat(responses.get(2).time()).isNull(); // 수요일 기록 존재 X
-        assertThat(responses.get(2).attendanceStatus()).isEqualTo(ABSENT_STATUS);
+        assertThat(responses.get(2).attendanceStatus()).isEqualTo(ABSENT_STATUS.getStatus());
 
         assertThat(responses.get(3).date()).isEqualTo(THURSDAY_DATE);
         assertThat(responses.get(3).time()).isEqualTo(ABSENT_EXCEPT_MONDAY);
-        assertThat(responses.get(3).attendanceStatus()).isEqualTo(ABSENT_STATUS);
+        assertThat(responses.get(3).attendanceStatus()).isEqualTo(ABSENT_STATUS.getStatus());
     }
 
     @Test
@@ -73,11 +73,11 @@ public class CheckAttendanceRecordTest {
     void Calculate_Attendance_Status_Count_And_Judge_Penalty() {
         List<CheckAttendanceRecordResponse> responses = attendanceBook.checkAttendanceRecord("쿠키");
 
-        PenaltyResponse penaltyResponse = PenaltyStatus.judgeCrewAttendanceRecord(responses);
+        PenaltyResponse penaltyResponse = PenaltyDiscriminator.judgeCrewAttendanceRecord(responses);
 
         assertThat(penaltyResponse.attendCount()).isEqualTo(1);
         assertThat(penaltyResponse.lateCount()).isEqualTo(1);
         assertThat(penaltyResponse.absentCount()).isEqualTo(19);
-        assertThat(penaltyResponse.penalty()).isEqualTo(EXPULSION_STATUS);
+        assertThat(penaltyResponse.penalty()).isEqualTo(PenaltyPolicy.EXPULSION.getPenalty());
     }
 }

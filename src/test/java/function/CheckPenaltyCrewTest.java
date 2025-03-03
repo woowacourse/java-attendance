@@ -1,14 +1,11 @@
 package function;
 
-import static constants.AttendanceCriteria.OPERATING_START;
-import static domain.DecemberCalendar.WORKING_DAY;
-import static domain.PenaltyStatus.EXPULSION_STATUS;
-import static domain.PenaltyStatus.INTERVIEW_STATUS;
-import static domain.PenaltyStatus.WARNING_STATUS;
+import static domain.policy.TimePolicy.OPERATING_START;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.AttendanceBook;
-import domain.DecemberCalendar;
+import domain.policy.DatePolicy;
+import domain.policy.PenaltyPolicy;
 import dto.PenaltyCrewResponse;
 import java.time.LocalDate;
 import java.util.List;
@@ -24,8 +21,7 @@ public class CheckPenaltyCrewTest {
         // given
         attendanceBook = new AttendanceBook();
         for (int day = 1; day <= 31; day++) {
-            String workingDay = DecemberCalendar.judgeWorkingDay(LocalDate.of(2024, 12, day));
-            if (!(workingDay.equals(WORKING_DAY) || workingDay.equals("월요일"))) { // 근무일이 아닌 경우
+            if (DatePolicy.isNotTrainingDay(LocalDate.of(2024, 12, day))) {
                 continue;
             }
 
@@ -50,8 +46,8 @@ public class CheckPenaltyCrewTest {
     void Using_Crew_Attendance_Records_To_Checking_Penalty_Crews() {
         List<PenaltyCrewResponse> responses = attendanceBook.checkPenaltyCrew();
 
-        assertThat(responses.getFirst().penalty()).isEqualTo(EXPULSION_STATUS);
-        assertThat(responses.get(1).penalty()).isEqualTo(INTERVIEW_STATUS);
-        assertThat(responses.getLast().penalty()).isEqualTo(WARNING_STATUS);
+        assertThat(responses.getFirst().penalty()).isEqualTo(PenaltyPolicy.EXPULSION.getPenalty());
+        assertThat(responses.get(1).penalty()).isEqualTo(PenaltyPolicy.INTERVIEW.getPenalty());
+        assertThat(responses.getLast().penalty()).isEqualTo(PenaltyPolicy.WARNING.getPenalty());
     }
 }

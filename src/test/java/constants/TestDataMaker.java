@@ -1,11 +1,11 @@
 package constants;
 
-import static constants.AttendanceCriteria.EXCEPT_MONDAY_ATTEND;
-import static constants.AttendanceCriteria.EXCEPT_MONDAY_LATE;
-import static constants.AttendanceCriteria.MONDAY_ATTEND;
-import static constants.AttendanceCriteria.MONDAY_LATE;
-import static constants.AttendanceCriteria.OPERATING_END;
-import static constants.AttendanceCriteria.OPERATING_START;
+import static domain.policy.TimePolicy.NORMAL_ATTEND_CRITERIA;
+import static domain.policy.TimePolicy.NORMAL_LATE_CRITERIA;
+import static domain.policy.TimePolicy.OPERATING_END;
+import static domain.policy.TimePolicy.OPERATING_START;
+import static domain.policy.TimePolicy.SPECIAL_ATTEND_CRITERIA;
+import static domain.policy.TimePolicy.SPECIAL_LATE_CRITERIA;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,16 +23,17 @@ public class TestDataMaker {
     public static LocalTime NON_OPERATING_TIME
             = getNonOperatingTime(OPERATING_START.getTime(), OPERATING_END.getTime());
 
-    public static LocalTime ATTEND_MONDAY = getMidTime(OPERATING_START.getTime(), MONDAY_ATTEND.getTime());
-    public static LocalTime LATE_MONDAY = getMidTime(MONDAY_ATTEND.getTime(), MONDAY_LATE.getTime());
-    public static LocalTime ABSENT_MONDAY = getMidTime(MONDAY_LATE.getTime(), OPERATING_END.getTime());
+    public static LocalTime ATTEND_MONDAY = getMidTime(OPERATING_START.getTime(), SPECIAL_ATTEND_CRITERIA.getTime());
+    public static LocalTime LATE_MONDAY = getMidTime(SPECIAL_ATTEND_CRITERIA.getTime(),
+            SPECIAL_LATE_CRITERIA.getTime());
+    public static LocalTime ABSENT_MONDAY = getMidTime(SPECIAL_LATE_CRITERIA.getTime(), OPERATING_END.getTime());
 
     public static LocalTime ATTEND_EXCEPT_MONDAY =
-            getMidTime(OPERATING_START.getTime(), EXCEPT_MONDAY_ATTEND.getTime());
+            getMidTime(OPERATING_START.getTime(), NORMAL_ATTEND_CRITERIA.getTime());
     public static LocalTime LATE_EXCEPT_MONDAY =
-            getMidTime(EXCEPT_MONDAY_ATTEND.getTime(), EXCEPT_MONDAY_LATE.getTime());
+            getMidTime(NORMAL_ATTEND_CRITERIA.getTime(), NORMAL_LATE_CRITERIA.getTime());
     public static LocalTime ABSENT_EXCEPT_MONDAY =
-            getMidTime(EXCEPT_MONDAY_LATE.getTime(), OPERATING_END.getTime());
+            getMidTime(NORMAL_LATE_CRITERIA.getTime(), OPERATING_END.getTime());
 
     private static LocalTime getMidTime(LocalTime start, LocalTime end) {
         long minutesBetween = start.until(end, ChronoUnit.MINUTES); // 분 단위로 차이를 계산

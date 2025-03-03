@@ -1,12 +1,12 @@
 package service;
 
 import static domain.AttendanceBook.validateAlreadyAttendance;
-import static domain.AttendanceBook.validateTimeIsInTheRangeOfOperation;
-import static domain.AttendanceBook.validateTrainingDay;
 import static utils.RetryUtils.retryUntilValid;
 
 import domain.AttendanceBook;
-import domain.PenaltyStatus;
+import domain.PenaltyDiscriminator;
+import domain.policy.DatePolicy;
+import domain.policy.TimePolicy;
 import dto.CheckAttendanceRecordResponse;
 import dto.CheckAttendanceResponse;
 import dto.ModifyAttendanceResponse;
@@ -33,7 +33,8 @@ public class FunctionService {
     // 기능 1
     public void checkAttendance(Function function, AttendanceBook attendanceBook) {
         if (function == Function.CHECK_ATTENDANCE) {
-            validateTrainingDay(LocalDate.now(), LocalTime.of(10, 0)); // 등교일이 맞는지?
+            DatePolicy.validateIsDateWeekend(LocalDate.now());
+            DatePolicy.validateIsDateHoliday(LocalDate.now());
             String name = retryUntilValid(() -> inputNameToCheckAttendance(attendanceBook));
 
             LocalTime time = retryUntilValid(this::inputTimeToCheckAttendance);
@@ -54,7 +55,7 @@ public class FunctionService {
 
     private LocalTime inputTimeToCheckAttendance() {
         LocalTime time = ParsingUtils.parseTimeInput(inputView.askTimeToCheckAttendance());
-        validateTimeIsInTheRangeOfOperation(time); // 운영시간 인지?
+        TimePolicy.validateTimeIsInTheRangeOfOperation(time); // 운영시간 인지?
         return time;
     }
 
@@ -83,14 +84,16 @@ public class FunctionService {
     private LocalDate inputDayToModifyAttendance(AttendanceBook attendanceBook) {
         String day = inputView.askDateToModifyAttendance();
         LocalDate date = LocalDate.of(2024, 12, Integer.parseInt(day));
-        validateTrainingDay(date, LocalTime.of(10, 0)); // 등교일이 맞는지?
-        attendanceBook.validateIsDateFuture(date);
+        DatePolicy.validateIsDateWeekend(date);
+        DatePolicy.validateIsDateHoliday(date);
+
+        DatePolicy.validateIsDateFuture(date);
         return date;
     }
 
     private LocalTime inputTimeToModifyAttendance() {
         LocalTime time = ParsingUtils.parseTimeInput(inputView.askTimeToModifyAttendance());
-        validateTimeIsInTheRangeOfOperation(time); // 운영시간 인지?
+        TimePolicy.validateTimeIsInTheRangeOfOperation(time); // 운영시간 인지?
         return time;
     }
 
@@ -100,7 +103,7 @@ public class FunctionService {
             String name = retryUntilValid(() -> inputNameToCheckAttendanceRecord(attendanceBook));
 
             List<CheckAttendanceRecordResponse> responses = attendanceBook.checkAttendanceRecord(name);
-            PenaltyResponse response = PenaltyStatus.judgeCrewAttendanceRecord(responses);
+            PenaltyResponse response = PenaltyDiscriminator.judgeCrewAttendanceRecord(responses);
 
             outputView.displayCheckAttendanceRecord(name, responses);
             outputView.displayCheckAttendanceRecordResult(response);

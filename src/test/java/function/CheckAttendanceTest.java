@@ -8,7 +8,7 @@ import static constants.TestDataMaker.NON_OPERATING_TIME;
 import static constants.TestDataMaker.SUNDAY_DATE;
 import static constants.TestDataMaker.TUESDAY_DATE;
 import static constants.TestDataMaker.WEDNESDAY_DATE;
-import static domain.AttendanceStatus.ATTEND_STATUS;
+import static domain.policy.AttendancePolicy.ATTEND_STATUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -38,7 +38,7 @@ public class CheckAttendanceTest {
 
         // then
         assertThat(response.time()).isEqualTo(ATTEND_EXCEPT_MONDAY);
-        assertThat(response.attendanceStatus()).isEqualTo(ATTEND_STATUS);
+        assertThat(response.attendanceStatus()).isEqualTo(ATTEND_STATUS.getStatus());
     }
 
     @Test

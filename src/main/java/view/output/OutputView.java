@@ -41,10 +41,14 @@ public class OutputView {
     }
 
     public void displayModifyAttendanceResult(ModifyAttendanceResponse response) {
+        String previousTimeFormat = "--:--";
+        if (response.previousTime() != null) {
+            previousTimeFormat = response.previousTime().format(formatter);
+        }
         System.out.println(DISPLAY_MODIFY_ATTENDANCE_RESULT.format(
                 response.date().getMonthValue(), response.date().getDayOfMonth(),
                 response.date().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                response.previousTime(), response.previousStatus(),
+                previousTimeFormat, response.previousStatus(),
                 response.modifiedTime(), response.modifiedStatus()
         ));
     }
