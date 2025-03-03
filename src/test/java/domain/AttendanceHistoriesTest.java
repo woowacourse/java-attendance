@@ -145,26 +145,6 @@ public class AttendanceHistoriesTest {
     }
 
     @Test
-    @DisplayName("특정 시점 이전의 기록을 조회하는 기능 테스트")
-    void findBeforeAttendanceHistories() {
-        // given
-        AttendanceHistories histories = new AttendanceHistories(List.of(
-                LocalDateTime.of(2024, 12, 3, 10, 0),
-                LocalDateTime.of(2024, 12, 2, 13, 0),
-                LocalDateTime.of(2024, 12, 4, 10, 0)), LocalDate.of(2024, 12, 13));
-        LocalDate standard = LocalDate.of(2024, 12, 7);
-        // when
-        List<AttendanceHistory> before = histories.getBeforeAttendanceHistories(standard);
-        // then
-        assertThat(before.size()).isEqualTo(5);
-        assertThat(before.get(0)).isEqualTo(new AttendanceHistory(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        assertThat(before.get(1)).isEqualTo(new AttendanceHistory(LocalDateTime.of(2024, 12, 3, 10, 0)));
-        assertThat(before.get(2)).isEqualTo(new AttendanceHistory(LocalDateTime.of(2024, 12, 4, 10, 0)));
-        assertThat(before.get(3)).isEqualTo(new AttendanceHistory(LocalDate.of(2024, 12, 5), null));
-        assertThat(before.get(4)).isEqualTo(new AttendanceHistory(LocalDate.of(2024, 12, 6), null));
-    }
-
-    @Test
     @DisplayName("특정 시점 이전의 기록 통계 조회 기능 테스트")
     void getBeforeAttendanceAnalyze() {
         // given
@@ -179,6 +159,12 @@ public class AttendanceHistoriesTest {
         assertThat(analyze.getLateCount()).isEqualTo(1);
         assertThat(analyze.getAbsenceCount()).isEqualTo(2);
         assertThat(analyze.getAttendanceCount()).isEqualTo(2);
+        List<AttendanceHistory> findHistories = analyze.getAttendanceHistories();
+        assertThat(findHistories).containsExactly(new AttendanceHistory(LocalDateTime.of(2024, 12, 2, 13, 7)),
+                new AttendanceHistory(LocalDateTime.of(2024, 12, 3, 10, 0)),
+                new AttendanceHistory(LocalDateTime.of(2024, 12, 4, 10, 0)),
+                new AttendanceHistory(LocalDate.of(2024,12,5),null),
+                new AttendanceHistory(LocalDate.of(2024,12,6),null));
     }
 
 }

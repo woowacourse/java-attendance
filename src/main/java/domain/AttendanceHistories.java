@@ -38,7 +38,11 @@ public class AttendanceHistories {
         return addAttendanceHistory(editTime);
     }
 
-    public List<AttendanceHistory> getBeforeAttendanceHistories(LocalDate localDate) {
+    public AttendanceAnalyze getAttendanceAnalyze(LocalDate standard) {
+        return new AttendanceAnalyze(getBeforeAttendanceHistories(standard));
+    }
+
+    private List<AttendanceHistory> getBeforeAttendanceHistories(LocalDate localDate) {
         return attendanceHistories.stream()
                 .filter(attendanceHistory -> attendanceHistory.isBeforeAttendanceHistory(localDate))
                 .sorted(new Comparator<AttendanceHistory>() {
@@ -48,10 +52,6 @@ public class AttendanceHistories {
                     }
                 })
                 .toList();
-    }
-
-    public AttendanceAnalyze getAttendanceAnalyze(LocalDate standard) {
-        return new AttendanceAnalyze(getBeforeAttendanceHistories(standard));
     }
 
     private void createAttendance(List<LocalDateTime> histories, LocalDate localDate,
