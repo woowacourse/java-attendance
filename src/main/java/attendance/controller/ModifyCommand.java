@@ -40,14 +40,9 @@ public class ModifyCommand implements Command {
         modify(crewHistories, modifyingDate, nickname);
     }
 
-    private void modify(final CrewHistories crewHistories, final LocalDate modifyingDate, final Nickname nickname) {
-        LocalTime modifyingTime = makeTime();
-        LocalDateTime modifyingDateTime = LocalDateTime.of(modifyingDate, modifyingTime);
-        campusScheduler.validateOperationTime(modifyingDateTime);
-
-        LocalDateTime previousDateTime = crewHistories.modify(nickname, modifyingDateTime);
-        resultView.showModifyingAttendance(previousDateTime, campusScheduler.calculateAttendanceState(previousDateTime),
-                modifyingTime, campusScheduler.calculateAttendanceState(modifyingDateTime));
+    private Nickname makeNickname() {
+        String nickname = inputView.readModifyingNickname();
+        return new Nickname(nickname);
     }
 
     private LocalDate getModifyingDate(final LocalDate now) {
@@ -57,22 +52,17 @@ public class ModifyCommand implements Command {
         return modifyingDate;
     }
 
-    private void validatePreviousDate(final LocalDate date, final LocalDate nowDate) {
-        if (date.equals(nowDate) || date.isAfter(nowDate)) {
-            throw new IllegalArgumentException("[ERROR] 과거의 날짜만 가능합니다.");
-        }
-    }
-
-    private LocalTime makeTime() {
-        String time = inputView.readModifyingTime();
-        return StringParser.parseLocalTime(time);
-    }
-
     private LocalDate makeDate(final LocalDate now) {
         String dayInput = inputView.readModifyingDay();
         int day = StringParser.parseInt(dayInput);
         MonthDay monthDay = makeMonthDay(now, day);
         return LocalDate.of(now.getYear(), monthDay.getMonthValue(), monthDay.getDayOfMonth());
+    }
+
+    private void validatePreviousDate(final LocalDate date, final LocalDate nowDate) {
+        if (date.equals(nowDate) || date.isAfter(nowDate)) {
+            throw new IllegalArgumentException("[ERROR] 과거의 날짜만 가능합니다.");
+        }
     }
 
     private MonthDay makeMonthDay(final LocalDate now, final int day) {
@@ -83,8 +73,18 @@ public class ModifyCommand implements Command {
         }
     }
 
-    private Nickname makeNickname() {
-        String nickname = inputView.readModifyingNickname();
-        return new Nickname(nickname);
+    private void modify(final CrewHistories crewHistories, final LocalDate modifyingDate, final Nickname nickname) {
+        LocalTime modifyingTime = makeTime();
+        LocalDateTime modifyingDateTime = LocalDateTime.of(modifyingDate, modifyingTime);
+        campusScheduler.validateOperationTime(modifyingDateTime);
+
+        LocalDateTime previousDateTime = crewHistories.modify(nickname, modifyingDateTime);
+        resultView.showModifyingAttendance(previousDateTime, campusScheduler.calculateAttendanceState(previousDateTime),
+                modifyingTime, campusScheduler.calculateAttendanceState(modifyingDateTime));
+    }
+
+    private LocalTime makeTime() {
+        String time = inputView.readModifyingTime();
+        return StringParser.parseLocalTime(time);
     }
 }
