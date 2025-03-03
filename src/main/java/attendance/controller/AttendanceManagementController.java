@@ -147,19 +147,15 @@ public class AttendanceManagementController {
         LocalDate yesterday = today.toLocalDate().minusDays(1L);
         Attendances attendancesUntilYesterday = crewAttendances.findAllCrewAttendanceUntilStandardDate(crew, yesterday);
         List<LocalDateTime> attendanceTimes = mapToLocalDateTimes(attendancesUntilYesterday.getAttendances());
-        List<Boolean> attendanceExistences = attendancesUntilYesterday.getAttendances()
-                .stream()
-                .map(Attendance::hasRecord)
-                .toList();
+        List<Boolean> attendanceExistences = mapToAttendanceExistences(attendancesUntilYesterday);
         List<String> attendanceStatuses = getAttendanceStatuses(attendancesUntilYesterday);
         resultView.printCrewAttendancesUntilYesterday(crew.getNickname(), attendanceTimes, attendanceExistences,
                 attendanceStatuses);
-        resultView.printAttendanceStatusCount(attendancesUntilYesterday.calculateAttendanceCount(yesterday),
-                attendancesUntilYesterday.calculateLateCount(yesterday),
-                attendancesUntilYesterday.calculateAttendanceCount(yesterday));
+        resultView.printAttendanceStatusCount(crewAttendances.calculateAttendanceCount(crew, yesterday),
+                crewAttendances.calculateLateCount(crew, yesterday),
+                crewAttendances.calculateAbsentCount(crew, yesterday));
         resultView.printExpulsionStatus(
-                attendancesUntilYesterday.findExpulsionStatusUntilStandardDate(yesterday).getText());
-
+                crewAttendances.calculateExpulsionStatus(crew, yesterday).getText());
     }
 
     private List<LocalDateTime> mapToLocalDateTimes(final List<Attendance> crewAttendancesUntilYesterday) {
@@ -168,6 +164,13 @@ public class AttendanceManagementController {
                 .map(attendance -> LocalDateTime.of(attendance.getAttendanceLocalDate(),
                         attendance.getAttendanceLocalTime())
                 ).toList();
+    }
+
+    private List<Boolean> mapToAttendanceExistences(final Attendances attendancesUntilYesterday) {
+        return attendancesUntilYesterday.getAttendances()
+                .stream()
+                .map(Attendance::hasRecord)
+                .toList();
     }
 
     private List<String> getAttendanceStatuses(final Attendances attendancesUntilYesterday) {
