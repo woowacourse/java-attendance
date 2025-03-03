@@ -21,5 +21,4 @@ public enum UserCommand {
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
     }
-
 }

@@ -59,5 +59,4 @@ public class InputView {
             throw new IllegalArgumentException("시간 형식이 잘못되었습니다. HH:mm을 지켜주세요");
         }
     }
-
 }

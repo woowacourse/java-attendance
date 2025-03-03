@@ -52,6 +52,4 @@ public class SavedDataLoader {
                 .map(Crew::new)
                 .collect(Collectors.toList()));
     }
-
-
 }
