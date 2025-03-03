@@ -1,4 +1,4 @@
-package model;
+package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,19 +6,19 @@ import java.time.LocalDate;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class HolidayTest {
+public class HolidayTest {
 
     @ParameterizedTest
     @CsvSource({
             "2024, 12, 1, true",
-            "2024, 12, 25, true",
             "2024, 12, 2, false",
+            "2024, 12, 25, true",
     })
-    void 휴일_여부를_알_수_있다(int year, int month, int day, boolean expected) {
+    void 특정_날짜가_휴일인지_아닌지_결정한다(int year, int month, int date, boolean expected) {
         //given
-        LocalDate date = LocalDate.of(year, month, day);
+        LocalDate day = LocalDate.of(year, month, date);
         //when
-        boolean actual = Holiday.isHolidayOrWeekend(date);
+        boolean actual = Holiday.isHoliday(day);
         //then
         assertThat(actual).isEqualTo(expected);
     }

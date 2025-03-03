@@ -1,4 +1,4 @@
-package model;
+package domain;
 
 import java.util.Objects;
 
@@ -6,24 +6,20 @@ public class Crew {
 
     private final String nickname;
 
-    private Crew(String nickname) {
+    public Crew(String nickname) {
         this.nickname = nickname;
     }
 
-    public static Crew of(String nickname) {
-        return new Crew(nickname);
-    }
-
-    public boolean isEqualName(String nickname) {
+    public boolean isSameNickname(String nickname) {
         return this.nickname.equals(nickname);
-    }
-
-    public int compareTo(Crew o) {
-        return nickname.compareTo(o.nickname);
     }
 
     public String getNickname() {
         return nickname;
+    }
+
+    public int compareTo(Crew o) {
+        return this.nickname.compareTo(o.nickname);
     }
 
     @Override

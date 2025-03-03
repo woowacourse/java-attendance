@@ -1,17 +1,16 @@
 package controller;
 
-import constant.Command;
 import converter.StringConverter;
+import domain.Attendance;
+import domain.Attendances;
+import domain.Crew;
+import domain.Crews;
+import file.DataReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import model.Attendance;
-import model.AttendanceStatistics;
-import model.Attendances;
-import model.Crew;
-import model.Crews;
-import util.DataReader;
+import java.util.Map;
 import view.InputView;
 import view.OutputView;
 
@@ -19,86 +18,96 @@ public class AttendanceController {
 
     private final InputView inputView;
     private final OutputView outputView;
-    private final StringConverter stringConverter;
+    private final StringConverter converter;
 
-    public AttendanceController(InputView inputView, OutputView outputView, StringConverter stringConverter) {
+    public AttendanceController(InputView inputView, OutputView outputView, StringConverter converter) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.stringConverter = stringConverter;
+        this.converter = converter;
     }
 
     public void run() {
         try {
-            List<String> rawAttendances = new DataReader().readAttendances("src/main/resources/attendances.csv");
-            Crews crews = stringConverter.convertToCrews(rawAttendances);
-            Attendances attendances = stringConverter.convertToAttendances(rawAttendances, crews);
+            List<String> rawAttendances = new DataReader().readRawAttendances();
+            Crews crews = converter.convertToCrews(rawAttendances);
+            Attendances attendances = setUpAttendances(crews, rawAttendances);
 
             Command command;
             do {
                 command = readCommand();
-                processCommand(command, crews, attendances);
+                process(command, crews, attendances);
             } while (!command.isQuit());
         } catch (RuntimeException e) {
             outputView.printErrorMessage(e);
         }
     }
 
-    private Command readCommand() {
-        String rawCommand = inputView.readCommand();
-        return Command.find(rawCommand);
+    private Attendances setUpAttendances(Crews crews, List<String> rawAttendances) {
+        List<Attendance> attendances = new ArrayList<>();
+        for (String rawAttendance : rawAttendances) {
+            String[] attendanceInfos = converter.splitToNicknameAndTime(rawAttendance);
+            Crew crew = crews.findByNickname(attendanceInfos[0]);
+            attendances.add(converter.convertToAttendance(attendanceInfos[1], crew));
+        }
+        return new Attendances(attendances);
     }
 
-    private void processCommand(Command command, Crews crews, Attendances attendances) {
+    private Command readCommand() {
         LocalDate today = LocalDate.now();
+        return Command.find(inputView.readCommand(today));
+    }
+
+    private void process(Command command, Crews crews, Attendances attendances) {
         if (command.isOne()) {
-            checkInAttendance(crews, attendances, today);
+            checkIn(crews, attendances);
         }
         if (command.isTwo()) {
-            modifyAttendance(attendances, crews, today);
+            modify(crews, attendances);
         }
         if (command.isThree()) {
-            checkAttendance(attendances, crews);
+            showAttendancesByCrew(crews, attendances);
         }
         if (command.isFour()) {
-            checkPunishment(crews, attendances, today);
+            showDangerCrews(crews, attendances);
         }
     }
 
-    private void checkInAttendance(Crews crews, Attendances attendances, LocalDate today) {
-        String rawNickname = inputView.readNickname();
-        String rawCheckInTime = inputView.readCheckInTime();
-
-        Crew crew = crews.findByNickname(rawNickname);
-
-        Attendance attendance = stringConverter.convertToAttendance(crew, rawCheckInTime, today);
-        attendances.checkIn(attendance);
+    private void checkIn(Crews crews, Attendances attendances) {
+        LocalDate today = LocalDate.now();
+        Crew crew = crews.findByNickname(inputView.readNickname());
+        Attendance attendance = converter.convertToAttendance(crew, inputView.readCheckInTime(), today);
+        attendances.add(attendance);
 
         outputView.printCheckInResult(attendance);
     }
 
-    private void modifyAttendance(Attendances attendances, Crews crews, LocalDate today) {
-        Crew crew = crews.findByNickname(inputView.readNickname());
-        String rawDay = inputView.readDay();
-        String rawChangeTime = inputView.readChangeTime();
-        LocalDateTime changeTime = stringConverter.convertToLocalDateTime(rawDay, rawChangeTime, today);
-
-        Optional<Attendance> existAttendance = attendances.find(crew, changeTime.toLocalDate());
-        Attendance modifedAttendance = attendances.modify(crew, changeTime);
-
-        outputView.printModifiedResult(existAttendance, modifedAttendance);
-    }
-
-    private void checkAttendance(Attendances attendances, Crews crews) {
-        Crew crew = crews.findByNickname(inputView.readNickname());
-
+    private void modify(Crews crews, Attendances attendances) {
         LocalDate today = LocalDate.now();
-        Attendances filteredAttendances = attendances.findByCrewThisMonth(crew, today);
-        AttendanceStatistics attendanceResult = attendances.createStatistics(crew, today);
-        outputView.printAttendanceRecord(crew, filteredAttendances, attendanceResult);
+        Crew crew = crews.findByNickname(inputView.readNickname());
+        LocalDateTime newTime = converter.convertToLocalDateTime(inputView.readDate(), inputView.readTime(), today);
+
+        Attendance oldAttendance = attendances.findByCrewAndDate(crew, newTime.toLocalDate());
+        attendances.modifyAttendanceTime(crew, newTime);
+        Attendance newAttendance = attendances.findByCrewAndDate(crew, newTime.toLocalDate());
+
+        outputView.printModifiedResult(oldAttendance, newAttendance);
     }
 
-    private void checkPunishment(Crews crews, Attendances attendances, LocalDate today) {
-        List<AttendanceStatistics> dangerCrews = crews.findDangerCrews(attendances, today);
-        outputView.printAllCrewPunishment(dangerCrews);
+    private void showAttendancesByCrew(Crews crews, Attendances attendances) {
+        LocalDate today = LocalDate.now();
+        String rawNickname = inputView.readNickname();
+        Crew crew = crews.findByNickname(rawNickname);
+        Attendances filteredAttendances = attendances.createMonthlyAttendances(crew, today);
+
+        outputView.printAttendanceRecord(crew, filteredAttendances, today);
+    }
+
+    private void showDangerCrews(Crews crews, Attendances attendances) {
+        LocalDate today = LocalDate.now();
+        Crews dangerCrews = crews.findDangerCrews(attendances, today);
+        Map<Crew, Attendances> dangerAttendances = dangerCrews.createAttendancesOfDangerCrews(attendances, today);
+        List<Crew> crewOrder = dangerCrews.sortDangerCrews(attendances, today);
+
+        outputView.printDangerCrews(dangerAttendances, crewOrder);
     }
 }

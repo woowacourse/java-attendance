@@ -1,4 +1,4 @@
-package constant;
+package controller;
 
 public enum Command {
 
@@ -21,26 +21,26 @@ public enum Command {
                 return command;
             }
         }
-        throw new IllegalArgumentException("존재하지 않는 옵션입니다.");
+        throw new IllegalArgumentException("옵션이 존재하지 않습니다.");
     }
 
     public boolean isOne() {
-        return this.equals(ONE);
+        return this == ONE;
     }
 
     public boolean isTwo() {
-        return this.equals(TWO);
+        return this == TWO;
     }
 
     public boolean isThree() {
-        return this.equals(THREE);
+        return this == THREE;
     }
 
     public boolean isFour() {
-        return this.equals(FOUR);
+        return this == FOUR;
     }
 
     public boolean isQuit() {
-        return this.equals(QUIT);
+        return this == QUIT;
     }
 }
