@@ -37,4 +37,10 @@ public class AttendanceTimeRecord {
     public Map<LocalDate, LocalTime> getAttendanceTimeRecords() {
         return attendanceTimeRecords;
     }
+
+    public void validateDuplicateAttendance(LocalDate today) {
+        if (checkAttendanceRecordByLocalDate(today)) {
+            throw new IllegalArgumentException("[ERROR] 출석기록이 존재합니다.");
+        }
+    }
 }
