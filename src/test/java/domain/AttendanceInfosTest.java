@@ -120,7 +120,6 @@ class AttendanceInfosTest {
         AttendanceInfos modifiedInfos = attendanceInfos.modifyInfoByDateAndTime(modifyDate, CampusTime.from("10:29"));
 
         // then
-        // TODO : Q2
         assertThat(modifiedInfos.getAttendanceInfos()).hasSize(2);
         assertThat(modifiedInfos.findInfoByDate(modifyDate).getHour()).isEqualTo(10);
         assertThat(modifiedInfos.findInfoByDate(modifyDate).getMinute()).isEqualTo(29);
