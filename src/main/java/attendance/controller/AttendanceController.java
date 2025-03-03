@@ -75,7 +75,7 @@ public class AttendanceController {
     private void attend() {
         LocalTime time = DateTimeConverter.convertToTime(inputView.readAttendTime());
 
-        Attendance attendance = Attendance.from(LocalDateTime.of(today, time));
+        Attendance attendance = Attendance.from(today, time);
         attendanceBook.attend(inputView.readNickname(), attendance);
 
         outputView.printAttendResult(AttendanceResultResponse.from(attendance));

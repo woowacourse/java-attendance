@@ -11,42 +11,45 @@ import java.util.Locale;
 public class Attendance {
     private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
 
-    private LocalDateTime dateTime;
+    private final LocalDate date;
+    private LocalTime time;
 
-    public Attendance(final LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public Attendance(final LocalDate date, final LocalTime time) {
+        this.date = date;
+        this.time = time;
     }
 
-    public static Attendance from(final LocalDateTime dateTime) {
-        validateAvailableAttendDate(dateTime.toLocalDate());
-        validateOperatingHour(dateTime.toLocalTime());
-        return new Attendance(dateTime);
+    public static Attendance from(final LocalDate date, LocalTime time) {
+        validateAvailableAttendDate(date);
+        validateOperatingHour(time);
+        return new Attendance(date, time);
     }
 
     public void updateTime(final LocalTime time) {
-        this.dateTime = this.dateTime.with(time);
+        validateOperatingHour(time);
+        this.time = time;
     }
 
     public boolean isEqualToDate(final LocalDate date) {
-        return this.dateTime.toLocalDate().equals(date);
+        return this.date.equals(date);
     }
 
     public boolean isEqualToDateByAttendance(final Attendance attendance) {
-        return isEqualToDate(attendance.dateTime.toLocalDate());
+        return isEqualToDate(attendance.date);
     }
 
     public AttendanceStatus checkAttendanceStatus() {
         LocalTime absenceThreshold = CampusOperatingRule.getAbsenceThreshold(isMonday());
         LocalTime lateThreshold = CampusOperatingRule.getLateThreshold(isMonday());
-        return AttendanceStatus.of(dateTime.toLocalTime(), absenceThreshold, lateThreshold);
+        return AttendanceStatus.of(time, absenceThreshold, lateThreshold);
     }
 
     public LocalDateTime getDateTime() {
-        return dateTime;
+        return LocalDateTime.of(date, time);
     }
 
     private boolean isMonday() {
-        return this.dateTime.getDayOfWeek() == DayOfWeek.MONDAY;
+        return this.date.getDayOfWeek() == DayOfWeek.MONDAY;
     }
 
     private static void validateAvailableAttendDate(final LocalDate date) {

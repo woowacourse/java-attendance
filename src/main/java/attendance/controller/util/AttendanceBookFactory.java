@@ -59,7 +59,7 @@ public class AttendanceBookFactory {
         try {
             LocalDate date = today.withDayOfMonth(day);
             LocalTime absenceTime = CAMPUS_CLOSE_HOUR.getTime().minusMinutes(1);
-            return Attendance.from(LocalDateTime.of(date, absenceTime));
+            return Attendance.from(date, absenceTime);
         } catch (IllegalArgumentException e) {
             return null;
         }
