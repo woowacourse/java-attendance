@@ -9,23 +9,19 @@ import java.util.Map;
 
 public class AttendanceBook {
 
-    private final Map<String, List<AttendanceTime>> attendances = new HashMap<>();
+    private final Map<String, AttendanceHistory> attendances = new HashMap<>();
 
     public void add(final String name, final AttendanceTime attendanceTime) {
 
         if (!attendances.containsKey(name)) {
-            attendances.put(name, new ArrayList<>());
+            attendances.put(name, new AttendanceHistory());
         }
         attendances.get(name).add(attendanceTime);
     }
 
     public AttendanceTime getAttendance(final String name, final LocalDate date) {
 
-        return attendances.get(name)
-                .stream()
-                .filter(time -> time.isSameDay(date))
-                .toList()
-                .getFirst();
+        return attendances.get(name).getAttendanceTime(date);
     }
 
     public boolean isCrewExists(final String name) {
@@ -35,13 +31,12 @@ public class AttendanceBook {
 
     public boolean isAlreadyExists(final String name, final LocalDate localDate) {
 
-        List<AttendanceTime> crewAttendances = attendances.get(name);
-        return crewAttendances.stream().anyMatch(attendanceTime -> attendanceTime.isSameDay(localDate));
+        return attendances.get(name).isAlreadyExists(localDate);
     }
 
     public List<AttendanceTime> getAttendancesByName(final String name) {
 
-        return List.copyOf(attendances.get(name));
+        return attendances.get(name).getHistory();
     }
 
     public void initCrewsAbsence() {
@@ -53,10 +48,7 @@ public class AttendanceBook {
 
     public int getAttendanceStatusCount(final String name, final AttendanceStatus attendanceStatus) {
 
-        return (int) attendances.get(name)
-                .stream()
-                .filter(attendanceTime -> AttendanceStatus.getAttendanceStatus(attendanceTime) == attendanceStatus)
-                .count();
+        return attendances.get(name).getAttendanceStatusCount(attendanceStatus);
     }
 
     public List<ExpulsionCandidate> getExpulsionCandidates() {
