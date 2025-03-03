@@ -13,12 +13,12 @@ public class AttendanceDate {
         this.date = date;
     }
 
-    public LocalDate getValue() {
-        return date;
-    }
-
     public static boolean isValid(LocalDate date) {
         return EducationTime.isOperatingOn(date.getDayOfWeek()) && !Holiday.matches(date);
+    }
+
+    public LocalDate getValue() {
+        return date;
     }
 
     private void validate(LocalDate date) {

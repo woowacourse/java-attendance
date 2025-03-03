@@ -21,12 +21,12 @@ public class AttendanceStatistic {
         return statistic.getOrDefault(AttendanceStatus.ABSENCE, 0);
     }
 
+    public int getTotalAbsenceCount() {
+        return getAbsenceCount() + getLateCount() / 3;
+    }
+
     public ExpulsionRiskStatus getExpulsionRiskStatus() {
         final int totalAbsence = getTotalAbsenceCount();
         return ExpulsionRiskStatus.of(totalAbsence);
-    }
-
-    public int getTotalAbsenceCount() {
-        return getAbsenceCount() + getLateCount() / 3;
     }
 }

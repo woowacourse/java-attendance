@@ -32,14 +32,6 @@ public enum EducationTime {
         return educationTime.startTime;
     }
 
-    public static LocalTime endOf(DayOfWeek dayOfWeek) {
-        EducationTime educationTime = Arrays.stream(values())
-                .filter(value -> value.dayOfWeek == dayOfWeek)
-                .findFirst()
-                .orElseThrow(InvalidDateException::new);
-        return educationTime.endTime;
-    }
-
     public static boolean isOperatingOn(DayOfWeek day) {
         return Arrays.stream(values()).anyMatch(value -> value.dayOfWeek == day);
     }
