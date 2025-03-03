@@ -10,9 +10,11 @@ import dto.AttendanceStatusDto;
 import dto.AttendanceStatusesOfCrewDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -25,16 +27,25 @@ public class AttendanceService {
         this.attendanceStorage = attendanceStorage;
     }
 
-    public boolean checkNicknameRegistered(String nickname) {
-        return attendanceStorage.containsSameNickname(nickname);
+    public void validateNicknameRegistered(String nickname) {
+        if (!attendanceStorage.containsSameNickname(nickname)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
     }
 
-    public boolean checkHistoryAlreadyExists(Crew crew, LocalDateTime localDateTime) {
-        return attendanceStorage.containsSameHistoryOf(crew, localDateTime);
+    public void validateHistoryNotDuplicated(Crew crew, LocalDateTime localDateTime) {
+        if (attendanceStorage.containsSameHistoryOf(crew, localDateTime)) {
+            throw new IllegalArgumentException("해당 날짜에 출석 기록이 이미 존재합니다. 수정 기능을 이용해주세요.");
+        }
     }
 
-    public boolean checkRestDay(LocalDate localDate) {
-        return AttendanceDateTime.generateWithoutTimeFrom(localDate).isRestDay();
+    public void validateIsSchoolDay(LocalDate localDate) {
+        if (AttendanceDateTime.generateWithoutTimeFrom(localDate).isRestDay()) {
+            throw new IllegalArgumentException(String.format("%d월 %d일 %s은 등교일이 아닙니다.",
+                    localDate.getMonthValue(),
+                    localDate.getDayOfMonth(),
+                    localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+        }
     }
 
     public AttendanceStatusDto addAttendanceHistory(Crew crew, LocalDateTime localDateTime) {

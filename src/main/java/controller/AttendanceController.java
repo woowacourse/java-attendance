@@ -8,9 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import service.AttendanceService;
 import view.FeatureType;
@@ -70,15 +68,15 @@ public class AttendanceController {
     }
 
     private void runCheckAttendance() {
-        validateIsSchoolDay();
+        attendanceService.validateIsSchoolDay(currentDate);
         String nickname = InputView.askNickname(false);
-        validateNicknameRegistered(nickname);
+        attendanceService.validateNicknameRegistered(nickname);
 
         LocalTime localTime = InputView.askAttendanceTime(false);
         LocalDateTime dateTime = LocalDateTime.of(currentDate, localTime);
 
         Crew crew = Crew.from(nickname);
-        validateHistoryNotAlreadyExists(crew, dateTime);
+        attendanceService.validateHistoryNotDuplicated(crew, dateTime);
 
         AttendanceStatusDto dto = attendanceService.addAttendanceHistory(crew, dateTime);
         OutputView.printAttendanceStatus(dto);
@@ -86,16 +84,14 @@ public class AttendanceController {
 
     private void runEditAttendance() {
         String nickname = InputView.askNickname(true);
-        validateNicknameRegistered(nickname);
+        attendanceService.validateNicknameRegistered(nickname);
         Crew crew = Crew.from(nickname);
 
         LocalDate localDate = InputView.askDayForEdit();
         LocalTime localTime = InputView.askAttendanceTime(true);
         LocalDateTime newDateTime = LocalDateTime.of(localDate, localTime);
-        if (!attendanceService.checkHistoryAlreadyExists(crew, newDateTime)) {
-            OutputView.printErrorMessage("해당 날짜의 출석 기록이 존재하지 않습니다. 출석 확인 기능을 이용해주세요.");
-            return;
-        }
+
+        attendanceService.validateHistoryNotDuplicated(crew, newDateTime);
 
         List<AttendanceStatusDto> statusDtos = attendanceService.replaceAttendanceHistory(crew, newDateTime);
         OutputView.printEditAttendanceStatus(statusDtos);
@@ -104,7 +100,7 @@ public class AttendanceController {
     private void runCheckAttendanceOfCrew() {
         int untilDay = currentDate.getDayOfMonth(); // 오늘 날짜 이전까지 검색
         String nickname = InputView.askNickname(false);
-        validateNicknameRegistered(nickname);
+        attendanceService.validateNicknameRegistered(nickname);
 
         AttendanceStatusesOfCrewDto statusesDto = attendanceService.getAllHistories(Crew.from(nickname), untilDay);
         OutputView.printAttendanceStatus(statusesDto, nickname);
@@ -114,26 +110,5 @@ public class AttendanceController {
         int untilDay = currentDate.getDayOfMonth();
         Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = attendanceService.getAllAttendanceTypeCountOfCrew(untilDay);
         OutputView.printCrewOfBanRisk(attendanceTypeCountOfCrew);
-    }
-
-    private void validateIsSchoolDay() {
-        if (attendanceService.checkRestDay(currentDate)) {
-            throw new IllegalArgumentException(String.format("%d월 %d일 %s은 등교일이 아닙니다.",
-                    currentDate.getMonthValue(),
-                    currentDate.getDayOfMonth(),
-                    currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
-        }
-    }
-
-    private void validateHistoryNotAlreadyExists(Crew crew, LocalDateTime dateTime) {
-        if (attendanceService.checkHistoryAlreadyExists(crew, dateTime)) {
-           throw new IllegalArgumentException("해당 날짜에 출석 기록이 이미 존재합니다. 수정 기능을 이용해주세요.");
-        }
-    }
-
-    private void validateNicknameRegistered(String nickname) {
-        if (!attendanceService.checkNicknameRegistered(nickname)) {
-            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
-        }
     }
 }

@@ -24,25 +24,25 @@ public class OutputView {
         System.out.printf("%n오늘은 %s %s입니다. (12월 시범 운영 중이기에 12월로 고정됨)%n", date, dayOfWeek);
     }
 
-    public static void printAttendanceStatus(AttendanceStatusDto dto) {
-        if (Objects.equals(dto.hour(), SHOWING_TEXT_WHEN_NOT_RECORDED) || Objects.equals(dto.minute(), SHOWING_TEXT_WHEN_NOT_RECORDED)) {
+    public static void printAttendanceStatus(AttendanceStatusDto attendanceStatusDto) {
+        if (Objects.equals(attendanceStatusDto.hour(), SHOWING_TEXT_WHEN_NOT_RECORDED) || Objects.equals(attendanceStatusDto.minute(), SHOWING_TEXT_WHEN_NOT_RECORDED)) {
             System.out.printf("%02d월 %02d일 %s %s:%s (%s)%n",
-                    dto.month(),
-                    dto.day(),
-                    dto.dayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                    dto.hour(),
-                    dto.minute(),
-                    dto.attendanceType().getName());
+                    attendanceStatusDto.month(),
+                    attendanceStatusDto.day(),
+                    attendanceStatusDto.dayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                    attendanceStatusDto.hour(),
+                    attendanceStatusDto.minute(),
+                    attendanceStatusDto.attendanceType().getName());
             return;
         }
 
         System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)%n",
-                dto.month(),
-                dto.day(),
-                dto.dayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                Integer.parseInt(dto.hour()),
-                Integer.parseInt(dto.minute()),
-                dto.attendanceType().getName());
+                attendanceStatusDto.month(),
+                attendanceStatusDto.day(),
+                attendanceStatusDto.dayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                Integer.parseInt(attendanceStatusDto.hour()),
+                Integer.parseInt(attendanceStatusDto.minute()),
+                attendanceStatusDto.attendanceType().getName());
     }
 
     public static void printAttendanceStatus(AttendanceStatusesOfCrewDto dto, String nickname) {

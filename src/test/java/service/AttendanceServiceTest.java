@@ -26,35 +26,30 @@ class AttendanceServiceTest {
     }
 
     @Test
-    void checkNicknameRegistered1() throws FileNotFoundException {
+    void validateNicknameRegistered1() throws FileNotFoundException {
         // given
         AttendanceStorage attendanceStorage = new AttendanceStorage();
         AttendanceFileReader.applyAttendanceFileTo(attendanceStorage);
         AttendanceService attendanceService = new AttendanceService(attendanceStorage);
 
-        // when
-        boolean actual = attendanceService.checkNicknameRegistered("히스타");
-
-        // then
-        Assertions.assertThat(actual).isFalse();
+        // when & then
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceService.validateNicknameRegistered("히스타"));
     }
 
     @Test
-    void checkNicknameRegistered2() throws FileNotFoundException {
+    void validateNicknameRegistered2() throws FileNotFoundException {
         // given
         AttendanceStorage attendanceStorage = new AttendanceStorage();
         AttendanceFileReader.applyAttendanceFileTo(attendanceStorage);
         AttendanceService attendanceService = new AttendanceService(attendanceStorage);
 
-        // when
-        boolean actual = attendanceService.checkNicknameRegistered("빙티");
-
-        // then
-        Assertions.assertThat(actual).isTrue();
+        // when & then
+        Assertions.assertThatNoException().isThrownBy(() -> attendanceService.validateNicknameRegistered("빙티"));
     }
 
     @Test
-    void checkHistoryAlreadyExistsTest1() {
+    void validateHistoryNotDuplicatedTest1() {
         // given
         Crew crew = Crew.from("히스타");
         AttendanceStorage storage = new AttendanceStorage();
@@ -62,15 +57,13 @@ class AttendanceServiceTest {
         storage.add(history);
         AttendanceService attendanceService = new AttendanceService(storage);
 
-        // when
-        boolean actual = attendanceService.checkHistoryAlreadyExists(crew, makeLocalDateTimeOf(1));
-
-        // then
-        Assertions.assertThat(actual).isTrue();
+        // when & then
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceService.validateHistoryNotDuplicated(crew, makeLocalDateTimeOf(1)));
     }
 
     @Test
-    void checkHistoryAlreadyExistsTest2() {
+    void validateHistoryNotDuplicatedTest2() {
         // given
         Crew crew = Crew.from("히스타");
         Crew comparedCrew = Crew.from("히로");
@@ -79,11 +72,9 @@ class AttendanceServiceTest {
         storage.add(history);
         AttendanceService attendanceService = new AttendanceService(storage);
 
-        // when
-        boolean actual = attendanceService.checkHistoryAlreadyExists(comparedCrew, makeLocalDateTimeOf(1));
-
-        // then
-        Assertions.assertThat(actual).isFalse();
+        // when & then
+        Assertions.assertThatNoException()
+                .isThrownBy(() -> attendanceService.validateHistoryNotDuplicated(comparedCrew, makeLocalDateTimeOf(1)));
     }
 
     @ParameterizedTest
@@ -93,11 +84,9 @@ class AttendanceServiceTest {
         AttendanceStorage storage = new AttendanceStorage();
         AttendanceService attendanceService = new AttendanceService(storage);
 
-        // when
-        boolean actual = attendanceService.checkRestDay(LocalDate.of(2024, 12, day));
-
-        // then
-        Assertions.assertThat(actual).isTrue();
+        // when & then
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceService.validateIsSchoolDay(LocalDate.of(2024, 12, day)));
     }
 
     @ParameterizedTest
@@ -107,11 +96,9 @@ class AttendanceServiceTest {
         AttendanceStorage storage = new AttendanceStorage();
         AttendanceService attendanceService = new AttendanceService(storage);
 
-        // when
-        boolean actual = attendanceService.checkRestDay(LocalDate.of(2024, 12, day));
-
-        // then
-        Assertions.assertThat(actual).isFalse();
+        // when & then
+        Assertions.assertThatNoException()
+                .isThrownBy(() -> attendanceService.validateIsSchoolDay(LocalDate.of(2024, 12, day)));
     }
 
     @Test
@@ -125,7 +112,8 @@ class AttendanceServiceTest {
         attendanceService.addAttendanceHistory(crew, makeLocalDateTimeOf(1));
 
         // then
-        Assertions.assertThat(attendanceService.checkHistoryAlreadyExists(crew, makeLocalDateTimeOf(1))).isTrue();
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceService.validateHistoryNotDuplicated(crew, makeLocalDateTimeOf(1)));
     }
 
     @Test
@@ -139,7 +127,8 @@ class AttendanceServiceTest {
         attendanceService.addAttendanceHistory(crew, makeLocalDateTimeOf(1));
 
         // then
-        Assertions.assertThat(attendanceService.checkHistoryAlreadyExists(crew, makeLocalDateTimeOf(2))).isFalse();
+        Assertions.assertThatNoException()
+                .isThrownBy(() -> attendanceService.validateHistoryNotDuplicated(crew, makeLocalDateTimeOf(2)));
     }
 
     @Test
