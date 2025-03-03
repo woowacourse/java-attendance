@@ -1,10 +1,10 @@
-import configure.Configure;
+import config.Config;
 import controller.AttendanceController;
 
 public class Main {
     public static void main(String[] args) {
-        Configure configure = new Configure();
-        AttendanceController attendanceController = configure.attendanceController();
+        Config config = new Config();
+        AttendanceController attendanceController = config.attendanceController();
         attendanceController.start();
     }
 }

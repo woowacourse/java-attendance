@@ -1,71 +1,81 @@
 package view;
 
-import static domain.AbsencePenalty.NORMAL;
+import static domain.AttendanceStatus.NORMAL;
 
-import dto.AbsenceCrewDto;
-import dto.AbsenceCrewsDto;
-import dto.HistoriesDto;
-import dto.HistoryDto;
+import dto.AttendanceHistoriesDto;
+import dto.AttendanceHistoryDto;
+import dto.EditResponseDto;
+import dto.ExpulsionCrewDto;
+import dto.ExpulsionCrewsDto;
 import java.time.LocalDateTime;
 import java.util.List;
-import util.Convertor;
+import util.DateFormatter;
 
 public class OutputView {
-
     private static final String LINE_SEPARATOR = System.lineSeparator();
 
-    public void printAttendanceConfirmation(LocalDateTime attendanceTime, String attendanceResult) {
-        String time = Convertor.dateFormattingForOutput(attendanceTime);
-        System.out.printf("%s (%s)\n", time, attendanceResult);
+    public void printAddAttendanceResult(LocalDateTime time, String result) {
+        String dateFormat = DateFormatter.dateFullFormat(time);
+        System.out.printf("%s (%s)\n", dateFormat, result);
+        System.out.print(LINE_SEPARATOR);
     }
 
-    public void printEditAttendance(LocalDateTime before, String beforeResult, LocalDateTime edit,
-                                    String editResult) {
-        String beforeTime = Convertor.dateFormattingForOutput(before);
-        String editTime = Convertor.timeFormattingForOutput(edit);
-        System.out.printf("%s (%s) -> %s (%s) 수정 완료!\n", beforeTime, beforeResult, editTime, editResult);
+    public void printEditResult(EditResponseDto editResponseDto) {
+        String dateFormat = DateFormatter.dateFullFormat(editResponseDto.beforeAttendanceDate(),
+                editResponseDto.beforeAttendanceTime());
+        LocalDateTime afterAttendanceTime = editResponseDto.afterAttendanceTime();
+        String afterTime = DateFormatter.timeFormat(afterAttendanceTime.toLocalTime());
+        String beforeResult = editResponseDto.beforeResult();
+        String afterResult = editResponseDto.afterResult();
+        System.out.printf("%s (%s) -> %s (%s) 수정 완료!\n", dateFormat, beforeResult, afterTime,
+                afterResult);
+        System.out.print(LINE_SEPARATOR);
     }
 
-    public void printHistories(HistoriesDto historiesDto) {
-        printAttendanceHistory(historiesDto);
-        printAttendanceAllResult(historiesDto);
-        printUserAttendanceResult(historiesDto);
+    public void printAttendanceHistories(AttendanceHistoriesDto historiesDto) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n", historiesDto.username());
+        System.out.print(LINE_SEPARATOR);
+        printHistories(historiesDto);
+        printStatistics(historiesDto);
+        printExpulsionInfo(historiesDto.status());
+        System.out.print(LINE_SEPARATOR);
     }
 
-    public void printDangerous(AbsenceCrewsDto crewsDto) {
+    public void printExpulsionCrews(ExpulsionCrewsDto expulsionCrewsDto) {
         System.out.println("제적 위험자 조회 결과");
-        List<AbsenceCrewDto> crews = crewsDto.getCrews();
+        List<ExpulsionCrewDto> crews = expulsionCrewsDto.crews();
         crews.forEach(crew -> {
-            System.out.printf("- %s: 결석 %d회,지각 %d회 (%s)\n", crew.username(),
-                    crew.absenceCount(),
-                    crew.lateCount(),
-                    crew.classifyAbsenceLevel());
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", crew.username(), crew.absenceCount(), crew.lateCount(),
+                    crew.result());
         });
         System.out.print(LINE_SEPARATOR);
     }
 
-    private void printAttendanceHistory(HistoriesDto historiesDto) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n", historiesDto.username());
-        for (HistoryDto history : historiesDto.histories()) {
-            String time = Convertor.dateFormattingForOutput(history.time());
-            System.out.printf("%s (%s)\n", time, history.attendanceResult());
-        }
-    }
-
-    private void printUserAttendanceResult(HistoriesDto historiesDto) {
-        String classifyResult = historiesDto.classifyAbsenceLevel();
-        if (!classifyResult.equals(NORMAL.getLevel())) {
-            System.out.printf("%s 대상자 입니다.\n", classifyResult);
-        }
+    public void printErrorMessage(String message) {
+        System.out.println(message);
         System.out.print(LINE_SEPARATOR);
     }
 
-    private void printAttendanceAllResult(HistoriesDto historiesDto) {
+    private void printHistories(AttendanceHistoriesDto historiesDto) {
+        List<AttendanceHistoryDto> histories = historiesDto.histories();
+        for (AttendanceHistoryDto history : histories) {
+            String dateFormat = DateFormatter.dateFullFormat(history.attendanceDate(), history.attendanceTime());
+            System.out.printf("%s (%s)\n", dateFormat, history.result());
+        }
+    }
+
+    private void printExpulsionInfo(String result) {
+        if (!result.equals(NORMAL.getStatus())) {
+            System.out.printf("%s 대상자입니다.\n", result);
+        }
+    }
+
+    private void printStatistics(AttendanceHistoriesDto historiesDto) {
         System.out.print(LINE_SEPARATOR);
         System.out.printf("출석: %d회\n", historiesDto.attendanceCount());
         System.out.printf("지각: %d회\n", historiesDto.lateCount());
         System.out.printf("결석: %d회\n", historiesDto.absenceCount());
         System.out.print(LINE_SEPARATOR);
     }
-}
 
+}

@@ -2,67 +2,81 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class Crews {
     private final List<Crew> crews;
 
-    public Crews(Map<String, List<LocalDateTime>> histories, LocalDate standard) {
-        crews = new ArrayList<>();
-        for (String username : histories.keySet()) {
-            Crew crew = new Crew(username, histories.get(username), standard);
-            crews.add(crew);
-        }
-    }
-
-    public List<AttendanceHistory> getBeforeAttendanceHistories(String username, LocalDateTime standard) {
-        Crew findCrew = findCrew(username);
-        return findCrew.getBeforeHistories(standard);
-    }
-
-    public void recordAttendance(String username, LocalDateTime attendanceTime) {
-        Crew findCrew = findCrew(username);
-        findCrew.addAttendance(attendanceTime);
-    }
-
-    public String getRecordedAttendanceResult(String username, LocalDateTime attendanceTime) {
-        Crew findCrew = findCrew(username);
-        return findCrew.getHistoryResult(attendanceTime);
-    }
-
-    public LocalDateTime getAttendanceHistory(String username, LocalDateTime localDateTime) {
-        Crew findCrew = findCrew(username);
-        return findCrew.getHistoryDate(localDateTime);
-    }
-
-    public String editAttendanceHistory(String username, LocalDateTime localDateTime) {
-        Crew findCrew = findCrew(username);
-        findCrew.editHistory(localDateTime);
-        return findCrew.getHistoryResult(localDateTime);
-    }
-
-    public AttendanceRecord getAttendanceAllResult(String username, LocalDateTime localDateTime) {
-        Crew findCrew = findCrew(username);
-        return findCrew.getAttendanceAllResult(localDateTime);
-    }
-
-    public Map<Crew, AttendanceRecord> getHighAbsenceLevelCrewsInfo(LocalDateTime localDateTime) {
-        List<Crew> highAbsenceLevelCrews = crews.stream()
-                .filter(crew -> crew.isHighAbsenceLevel(localDateTime))
+    public Crews(Map<String, List<LocalDateTime>> allAttendanceHistories, LocalDate standardDate) {
+        this.crews = allAttendanceHistories.entrySet().stream()
+                .map(entry -> new Crew(entry.getKey(), entry.getValue(), standardDate))
                 .toList();
-        Map<Crew, AttendanceRecord> result = new TreeMap<>();
-        highAbsenceLevelCrews.forEach(crew -> {
-            result.put(crew, crew.getAttendanceAllResult(localDateTime));
-        });
-        return result;
     }
 
-    private Crew findCrew(String username) {
-        return crews.stream()
-                .filter(crew -> crew.getUserName().equals(username)).findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않은 크루입니다."));
+    public void validateHasCrew(String username) {
+        findCrewByUsername(username);
+    }
+
+    public AttendanceResult addAttendanceHistory(String username, LocalDateTime attendanceTime) {
+        Crew crew = findCrewByUsername(username);
+        return crew.addAttendanceHistory(attendanceTime);
+    }
+
+    public AttendanceResult editAttendanceHistory(String username, LocalDateTime editTime) {
+        Crew crew = findCrewByUsername(username);
+        return crew.editAttendanceHistory(editTime);
+    }
+
+    public AttendanceHistory findAttendanceHistory(String username, LocalDate standardTime) {
+        Crew crew = findCrewByUsername(username);
+        return crew.findAttendanceHistory(standardTime);
+    }
+
+    public AttendanceAnalyze getAttendanceAnalyze(String username, LocalDate standard) {
+        Crew crew = findCrewByUsername(username);
+        return crew.getAttendanceAnalyze(standard);
+    }
+
+    public Map<Username, AttendanceAnalyze> findExpulsionCrews(LocalDate standard) {
+        List<Crew> expulsionCrews = getExpulsionCrewsWithOrders(standard);
+        return createExpulsionCrewsInfo(standard, expulsionCrews);
+    }
+
+    private Crew findCrewByUsername(String username) {
+        return crews.stream().filter(crew -> crew.isSameName(username))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+    }
+
+    private LinkedHashMap<Username, AttendanceAnalyze> createExpulsionCrewsInfo(LocalDate standard,
+                                                                                List<Crew> expulsionCrews) {
+        return expulsionCrews.stream().collect(Collectors.toMap(
+                Crew::getUsername,
+                crew -> crew.getAttendanceAnalyze(standard),
+                (existing, replacement) -> existing,
+                LinkedHashMap::new
+        ));
+    }
+
+    private List<Crew> getExpulsionCrewsWithOrders(LocalDate standard) {
+        return crews.stream().filter(crew -> crew.isExpulsionTarget(standard))
+                .sorted(new Comparator<Crew>() {
+                    @Override
+                    public int compare(Crew o1, Crew o2) {
+                        AttendanceAnalyze attendanceAnalyzeO1 = o1.getAttendanceAnalyze(standard);
+                        AttendanceAnalyze attendanceAnalyzeO2 = o2.getAttendanceAnalyze(standard);
+                        int compare = Integer.compare(attendanceAnalyzeO2.calculatePenaltyPoints(),
+                                attendanceAnalyzeO1.calculatePenaltyPoints());
+                        if (compare == 0) {
+                            return o1.getUsername().compareTo(o2.getUsername());
+                        }
+                        return compare;
+                    }
+                })
+                .toList();
     }
 }

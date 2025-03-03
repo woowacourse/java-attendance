@@ -1,33 +1,32 @@
-package configure;
+package config;
 
 import controller.AttendanceController;
 import view.InputView;
 import view.OutputView;
 
-public class Configure {
-    private static AttendanceController attendanceController;
-    private static OutputView outputVIew;
+public class Config {
+    private static OutputView outputView;
     private static InputView inputView;
+    private static AttendanceController attendanceController;
 
     public AttendanceController attendanceController() {
         if (attendanceController == null) {
-            return new AttendanceController(outputVIew(), inputView());
+            return new AttendanceController(outputView(), inputView());
         }
         return attendanceController;
     }
 
-    private OutputView outputVIew() {
-        if (outputVIew == null) {
-            outputVIew = new OutputView();
+    private OutputView outputView() {
+        if (outputView == null) {
+            return new OutputView();
         }
-        return outputVIew;
+        return outputView;
     }
 
     private InputView inputView() {
         if (inputView == null) {
-            inputView = new InputView();
+            return new InputView();
         }
         return inputView;
     }
-
 }

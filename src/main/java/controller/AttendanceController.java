@@ -1,93 +1,123 @@
 package controller;
 
-import static util.Convertor.changeStandardLocalDate;
-import static util.Convertor.changeStandardLocalDateTime;
+import static constant.Selection.ADD;
+import static constant.Selection.EDIT;
+import static constant.Selection.FIND_EXPULSION;
+import static constant.Selection.FIND_HISTORY;
+import static constant.Selection.QUIT;
 
-import constants.SelectionOption;
+import constant.Selection;
+import domain.AttendanceAnalyze;
 import domain.AttendanceHistory;
-import domain.AttendanceRecord;
-import domain.Crew;
+import domain.AttendanceHistory.AttendanceValidator;
+import domain.AttendanceResult;
 import domain.Crews;
-import dto.AbsenceCrewsDto;
-import dto.HistoriesDto;
+import domain.Username;
+import dto.AttendanceHistoriesDto;
+import dto.EditResponseDto;
+import dto.ExpulsionCrewsDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import util.CsvReader;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+import util.DateFormatter;
+import util.FileReader;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
 
-    private final OutputView outputVIew;
+    private final OutputView outputView;
     private final InputView inputView;
 
-    public AttendanceController(OutputView outputVIew, InputView inputView) {
-        this.outputVIew = outputVIew;
+    public AttendanceController(OutputView outputView, InputView inputView) {
+        this.outputView = outputView;
         this.inputView = inputView;
     }
 
-    private static Crews intializeCrews() {
-        LocalDate now = LocalDate.now();
-        return new Crews(CsvReader.loadAttendanceData(), changeStandardLocalDate(now));
-    }
-
     public void start() {
-        Crews crews = intializeCrews();
-        SelectionOption answer;
-        do {
-            answer = inputView.getMenu();
-            startMenu(answer, crews);
-        } while (answer != SelectionOption.QUIT);
-    }
-
-    private void startMenu(SelectionOption answer, Crews crews) {
-        if (answer == SelectionOption.ADD_ATTENDANCE) {
-            addAttendance(crews);
-        }
-        if (answer == SelectionOption.EDIT_ATTENDANCE) {
-            editAttendance(crews);
-        }
-        if (answer == SelectionOption.GET_ATTENDANCE_HISTORY) {
-            getAllAttendance(crews);
-        }
-        if (answer == SelectionOption.CHECK_ABSENCE_USERS) {
-            getAbsenceUsers(crews);
+        Crews crews = initializeCrews();
+        Selection selection;
+        while (!(selection = retryAboutInvalidInput(this.inputView::getSelection)).equals(QUIT)) {
+            retryAboutInvalidInput(this::startAttendanceService, selection, crews);
         }
     }
 
-    private void addAttendance(Crews crews) {
-        String name = inputView.getName();
-        LocalDateTime time = inputView.getAttendanceTime();
-        crews.recordAttendance(name, time);
-        String historyResult = crews.getRecordedAttendanceResult(name, time);
-        outputVIew.printAttendanceConfirmation(time, historyResult);
+    private void startAttendanceService(Selection selection, Crews crews) {
+        if (selection.equals(ADD)) {
+            addAttendanceHistory(crews);
+        }
+        if (selection.equals(EDIT)) {
+            editAttendanceHistory(crews);
+        }
+        if (selection.equals(FIND_HISTORY)) {
+            showAttendanceHistories(crews);
+        }
+        if (selection.equals(FIND_EXPULSION)) {
+            showExpulsionCrews(crews);
+        }
     }
 
-    private void editAttendance(Crews crews) {
-        String editName = inputView.getEditName();
-        LocalDateTime editHistory = inputView.getEditAttendanceTime();
-        LocalDateTime beforeHistory = crews.getAttendanceHistory(editName, editHistory);
-        String beforeResult = crews.getRecordedAttendanceResult(editName, editHistory);
-        String editResult = crews.editAttendanceHistory(editName, editHistory);
-        outputVIew.printEditAttendance(beforeHistory, beforeResult, editHistory, editResult);
+    private void showExpulsionCrews(Crews crews) {
+        LocalDate now = DateFormatter.getTodayDate();
+        Map<Username, AttendanceAnalyze> expulsionCrews = crews.findExpulsionCrews(now);
+        outputView.printExpulsionCrews(ExpulsionCrewsDto.from(expulsionCrews));
     }
 
-    private void getAllAttendance(Crews crews) {
-        String username = inputView.getName();
-        LocalDateTime newDate = changeStandardLocalDateTime(LocalDateTime.now());
-        List<AttendanceHistory> beforeAttendanceHistory = crews.getBeforeAttendanceHistories(username, newDate);
-        AttendanceRecord attendanceRecord = crews.getAttendanceAllResult(username, newDate);
-        HistoriesDto historiesDto = HistoriesDto.of(username, beforeAttendanceHistory, attendanceRecord);
-        outputVIew.printHistories(historiesDto);
+    private void showAttendanceHistories(Crews crews) {
+        String username = inputView.getUsername();
+        LocalDate now = DateFormatter.getTodayDate();
+        AttendanceAnalyze attendanceAnalyze = crews.getAttendanceAnalyze(username, now);
+        outputView.printAttendanceHistories(
+                AttendanceHistoriesDto.of(username, attendanceAnalyze));
     }
 
-    private void getAbsenceUsers(Crews crews) {
-        LocalDateTime newDate = changeStandardLocalDateTime(LocalDateTime.now());
-        Map<Crew, AttendanceRecord> highAbsenceLevelCrews = crews.getHighAbsenceLevelCrewsInfo(newDate);
-        AbsenceCrewsDto crewsDto = new AbsenceCrewsDto(highAbsenceLevelCrews);
-        outputVIew.printDangerous(crewsDto);
+    private void editAttendanceHistory(Crews crews) {
+        String username = inputView.getUsernameForEditHistory();
+        crews.validateHasCrew(username);
+        LocalDate attendDate = inputView.getEditDay();
+        AttendanceValidator.validateAttendanceDate(attendDate);
+        AttendanceHistory beforeHistory = crews.findAttendanceHistory(username, attendDate);
+        LocalTime attendTime = inputView.getEditTime();
+        LocalDateTime attendanceTime = LocalDateTime.of(attendDate, attendTime);
+        AttendanceResult result = crews.editAttendanceHistory(username, attendanceTime);
+        outputView.printEditResult(EditResponseDto.of(beforeHistory, attendanceTime, result));
     }
 
+    private void addAttendanceHistory(Crews crews) {
+        LocalDate now = DateFormatter.getTodayDate();
+        AttendanceValidator.validateAttendanceDate(now);
+        String username = inputView.getUsername();
+        crews.validateHasCrew(username);
+        LocalDateTime attendanceTime = inputView.getAttendanceTime();
+        AttendanceResult result = crews.addAttendanceHistory(username, attendanceTime);
+        outputView.printAddAttendanceResult(attendanceTime, result.getResult());
+    }
+
+    private Crews initializeCrews() {
+        Map<String, List<LocalDateTime>> histories = FileReader.getCrewsAttendanceHistories();
+        LocalDate now = DateFormatter.getTodayDate();
+        return new Crews(histories, now);
+    }
+
+    private <T> T retryAboutInvalidInput(Supplier<T> supplier) {
+        while (true) {
+            try {
+                return supplier.get();
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        }
+    }
+
+    private <T, U> void retryAboutInvalidInput(BiConsumer<T, U> biConsumer, T arg1, U arg2) {
+        try {
+            biConsumer.accept(arg1, arg2);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
+        }
+    }
 }

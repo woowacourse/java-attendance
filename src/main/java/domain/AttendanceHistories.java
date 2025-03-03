@@ -1,112 +1,83 @@
 package domain;
 
-import static domain.AttendanceHistory.ABSENT_DEFAULT_HOUR;
-import static domain.AttendanceHistory.ABSENT_DEFAULT_MINUTE;
-import static domain.AttendanceResult.ABSENCE;
-import static domain.AttendanceResult.LATE;
-
+import constant.Holiday;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AttendanceHistories {
-    private final List<AttendanceHistory> histories;
+    private final List<AttendanceHistory> attendanceHistories;
 
-    public AttendanceHistories(List<LocalDateTime> histories, LocalDate standard) {
-        List<LocalDateTime> copy = new ArrayList<>(histories);
-        int day = standard.getDayOfMonth();
-        for (int i = 1; i < day; i++) {
-            addAbsenceHistory(standard, i, copy);
+    public AttendanceHistories(final List<LocalDateTime> histories, LocalDate standardDate) {
+        List<AttendanceHistory> allHistories = new ArrayList<>();
+        for (int i = 1; i < standardDate.getDayOfMonth(); i++) {
+            LocalDate localDate = LocalDate.of(standardDate.getYear(), standardDate.getMonth(), i);
+            createAttendance(histories, localDate, allHistories);
         }
-        this.histories = copy.stream().map(AttendanceHistory::new).collect(Collectors.toList());
+        this.attendanceHistories = allHistories;
     }
 
-    public AttendanceRecord countAttendanceResult(LocalDateTime standard) {
-        Map<AttendanceResult, Integer> results = new HashMap<>();
-        histories.stream().filter(history -> history.isBeforeHistory(standard))
-                .forEach(history -> {
-                    AttendanceResult attendanceResult = history.getAttendanceResult();
-                    results.put(attendanceResult, results.getOrDefault(attendanceResult, 0) + 1);
-                });
-
-        return new AttendanceRecord(results);
+    public AttendanceResult addAttendanceHistory(LocalDateTime attendanceTime) {
+        Validator.validateAddAttendanceHistory(attendanceHistories, attendanceTime);
+        AttendanceHistory newAttendanceHistory = new AttendanceHistory(attendanceTime);
+        attendanceHistories.add(newAttendanceHistory);
+        return newAttendanceHistory.getAttendanceResult();
     }
 
-    public AbsencePenalty classifyAbsenceLevel(LocalDateTime standard) {
-        AttendanceRecord attendanceRecord = countAttendanceResult(standard);
-        Map<AttendanceResult, Integer> results = attendanceRecord.getTotalAttendanceRecord();
-        int absentCount = results.getOrDefault(ABSENCE, 0);
-        int lateCount = results.getOrDefault(LATE, 0);
-        return AbsencePenalty.findAbsenceLevel(absentCount, lateCount);
+    public AttendanceHistory findAttendanceHistoryByDate(LocalDate standardDate) {
+        return attendanceHistories.stream().filter(history -> history.isSameDate(standardDate))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 기록이 존재하지 않습니다."));
     }
 
-    public boolean hasAttendanceHistory(LocalDateTime time) {
-        return histories.stream()
-                .anyMatch(history -> (history.getAttendanceTime().getDayOfMonth() == time.getDayOfMonth()) &&
-                        (history.getAttendanceTime().getMonthValue() == time.getMonthValue()));
+    public AttendanceResult editAttendanceHistory(LocalDateTime editTime) {
+        AttendanceHistory findBeforeHistory = findAttendanceHistoryByDate(editTime.toLocalDate());
+        attendanceHistories.remove(findBeforeHistory);
+        return addAttendanceHistory(editTime);
     }
 
-    public void deleteAttendanceHistory(LocalDateTime time) {
-        AttendanceHistory findAttendanceHistory = histories.stream()
-                .filter(history -> (history.getAttendanceTime().getDayOfMonth() == time.getDayOfMonth()) &&
-                        (history.getAttendanceTime().getMonthValue() == time.getMonthValue())).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다."));
-        histories.remove(findAttendanceHistory);
+    public AttendanceAnalyze getAttendanceAnalyze(LocalDate standard) {
+        return new AttendanceAnalyze(getBeforeAttendanceHistories(standard));
     }
 
-
-    public void editAttendanceHistory(LocalDateTime time) {
-        deleteAttendanceHistory(time);
-        histories.add(new AttendanceHistory(time));
-    }
-
-    public void recordAttendance(LocalDateTime time) {
-        if (hasAttendanceHistory(time)) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다.");
-        }
-        histories.add(new AttendanceHistory(time));
-    }
-
-    public List<AttendanceHistory> getSortedAttendanceHistories(LocalDateTime standard) {
-        return histories.stream()
-                .filter(history -> history.isBeforeHistory(standard))
-                .sorted()
+    private List<AttendanceHistory> getBeforeAttendanceHistories(LocalDate localDate) {
+        return attendanceHistories.stream()
+                .filter(attendanceHistory -> attendanceHistory.isBeforeAttendanceHistory(localDate))
+                .sorted(new Comparator<AttendanceHistory>() {
+                    @Override
+                    public int compare(AttendanceHistory o1, AttendanceHistory o2) {
+                        return o1.getAttendanceDate().compareTo(o2.getAttendanceDate());
+                    }
+                })
                 .toList();
     }
 
-    public LocalDateTime getAttendanceHistory(LocalDateTime time) {
-        AttendanceHistory findAttendanceHistory = histories.stream()
-                .filter(history -> (history.getAttendanceTime().getDayOfMonth() == time.getDayOfMonth()) &&
-                        (history.getAttendanceTime().getMonthValue() == time.getMonthValue())).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다."));
-        return findAttendanceHistory.getAttendanceTime();
-    }
-
-    public String getAttendanceHistoryResult(LocalDateTime time) {
-        AttendanceHistory findAttendanceHistory = histories.stream()
-                .filter(history -> (history.getAttendanceTime().getDayOfMonth() == time.getDayOfMonth()) &&
-                        (history.getAttendanceTime().getMonthValue() == time.getMonthValue())).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다."));
-        AttendanceResult attendanceResult = findAttendanceHistory.getAttendanceResult();
-        return attendanceResult.getResult();
-    }
-
-    private void addAbsenceHistory(LocalDate standard, int day, List<LocalDateTime> copy) {
-        LocalDate time = LocalDate.of(standard.getYear(), standard.getMonthValue(), day);
-        if (DailyAttendanceTime.canAttendance(time) && !checkHasAttendanceTime(copy, time)) {
-            copy.add(LocalDateTime.of(standard.getYear(), standard.getMonthValue(), time.getDayOfMonth(),
-                    ABSENT_DEFAULT_HOUR,
-                    ABSENT_DEFAULT_MINUTE));
+    private void createAttendance(List<LocalDateTime> histories, LocalDate localDate,
+                                  List<AttendanceHistory> allHistories) {
+        if (Holiday.isHoliday(localDate)) {
+            return;
         }
+        AttendanceHistory attendanceHistory = histories.stream()
+                .filter(history -> {
+                    LocalDate historyDate = history.toLocalDate();
+                    return historyDate.isEqual(localDate);
+                })
+                .findAny()
+                .map(AttendanceHistory::new)
+                .orElseGet(() -> new AttendanceHistory(localDate, null));
+        allHistories.add(attendanceHistory);
     }
 
-    private boolean checkHasAttendanceTime(List<LocalDateTime> histories, LocalDate standard) {
-        return histories.stream()
-                .map(LocalDateTime::toLocalDate)
-                .anyMatch(date -> date.equals(standard));
+    public static class Validator {
+        public static void validateAddAttendanceHistory(List<AttendanceHistory> attendanceHistories,
+                                                        LocalDateTime localDateTime) {
+            boolean check = attendanceHistories.stream()
+                    .anyMatch(attendanceHistory -> attendanceHistory.isSameDate(localDateTime.toLocalDate()));
+            if (check) {
+                throw new IllegalArgumentException("[ERROR] 오늘 이미 출석을 하셨습니다. 수정 메뉴로 이동해주세요!");
+            }
+        }
     }
 }
