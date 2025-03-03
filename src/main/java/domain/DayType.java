@@ -32,10 +32,14 @@ public enum DayType {
     }
 
     public static void validateIsWorkingDay(LocalDate date) {
-        if (findByDate(date) != WORKING_DAYS) {
+        if (!checkIsWorkingDay(date)) {
             throw new IllegalArgumentException(
                     ErrorCode.DATE_NOT_ATTENDING_DATE.getFormattedMessage(OutputParser.parseDateInKorean(date)));
         }
+    }
+
+    public static boolean checkIsWorkingDay(LocalDate date) {
+        return findByDate(date) == WORKING_DAYS;
     }
 
     private boolean containsDay(int value) {

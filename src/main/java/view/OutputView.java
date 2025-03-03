@@ -55,7 +55,7 @@ public class OutputView {
     public void printCrewWithPenaltyResponses(List<CrewWithPenaltyResponse> responses) {
         System.out.println("제적 위험자 조회 결과");
         responses.forEach(response ->
-                System.out.printf("- %s: 결석 %d회, 지각 %d회 + " + ATTENDANCE_STATUS_FORMAT,
+                System.out.printf("- %s: 결석 %d회, 지각 %d회 " + ATTENDANCE_STATUS_FORMAT + System.lineSeparator(),
                         response.name(), response.absentCount(), response.lateCount(), response.penalty()));
     }
 
