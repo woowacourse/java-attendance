@@ -8,7 +8,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendancesTest {
 
@@ -112,5 +117,57 @@ public class AttendancesTest {
         attendances.modifyAttendanceTime(crew, newTime);
         //then
         assertThat(attendances).isEqualTo(newAttendances);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "10, 31, 9, 30, -1",
+            "10, 0, 10, 0, 0",
+            "10, 0, 10, 31, 1"
+    })
+    void 결석횟수로_출석목록을_비교한다(int hour1, int minute1, int hour2, int minute2, int expected) {
+        //given
+        Crew crew = new Crew("쿠키");
+        LocalDateTime time = LocalDateTime.of(2024, 12, 3, hour1, minute1);
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        Attendance attendance = Attendance.of(crew, attendanceTime);
+        Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
+
+        LocalDateTime time2 = LocalDateTime.of(2024, 12, 3, hour2, minute2);
+        AttendanceTime attendanceTime2 = new AttendanceTime(time2);
+        Attendance attendance2 = Attendance.of(crew, attendanceTime2);
+        Attendances attendances2 = new Attendances(new ArrayList<>(List.of(attendance2)));
+        //when
+        int difference = attendances.compareWithConvertedAbsenceCount(attendances2);
+        //then
+        assertThat(difference).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @MethodSource("createData")
+    void 제적위험도가_없는_출석목록과_경고대상_출석목록의_차이는_1이다(Attendances attendances1, Attendances attendances2) {
+        //when
+        int difference = attendances1.compareWithPenalty(attendances2);
+        //then
+        assertThat(difference).isEqualTo(1);
+    }
+
+    private static Stream<Arguments> createData() {
+        Crew crew = new Crew("쿠키");
+        LocalDateTime time = LocalDateTime.of(2024, 12, 3, 9, 30);
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        Attendance attendance = Attendance.of(crew, attendanceTime);
+        Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
+
+        LocalDateTime time2 = LocalDateTime.of(2024, 12, 3, 10, 31);
+        AttendanceTime attendanceTime2 = new AttendanceTime(time2);
+        LocalDateTime time3 = LocalDateTime.of(2024, 12, 3, 10, 31);
+        AttendanceTime attendanceTime3 = new AttendanceTime(time3);
+        Attendance attendance2 = Attendance.of(crew, attendanceTime2);
+        Attendance attendance3 = Attendance.of(crew, attendanceTime3);
+        Attendances attendances2 = new Attendances(new ArrayList<>(List.of(attendance2, attendance3)));
+        return Stream.of(
+                Arguments.of(attendances, attendances2)
+        );
     }
 }

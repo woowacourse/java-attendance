@@ -5,13 +5,10 @@ import domain.Attendance;
 import domain.Attendances;
 import domain.Crew;
 import domain.Crews;
-import domain.PenaltyPolicy;
 import file.DataReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import view.InputView;
@@ -107,53 +104,10 @@ public class AttendanceController {
 
     private void showDangerCrews(Crews crews, Attendances attendances) {
         LocalDate today = LocalDate.now();
-        List<Crew> dangerCrews = crews.findDangerCrews(attendances, today);
-        Map<Crew, Attendances> dangerAttendances = createAttendancesOfDangerCrews(dangerCrews, attendances, today);
-        List<Crew> crewOrder = sortDangerCrews(dangerAttendances);
+        Crews dangerCrews = crews.findDangerCrews(attendances, today);
+        Map<Crew, Attendances> dangerAttendances = dangerCrews.createAttendancesOfDangerCrews(attendances, today);
+        List<Crew> crewOrder = dangerCrews.sortDangerCrews(attendances, today);
+
         outputView.printDangerCrews(dangerAttendances, crewOrder);
-    }
-
-    private Map<Crew, Attendances> createAttendancesOfDangerCrews(
-            List<Crew> crews,
-            Attendances attendances,
-            LocalDate today
-    ) {
-        Map<Crew, Attendances> dangerAttendances = new HashMap<>();
-        for (Crew crew : crews) {
-            dangerAttendances.put(crew, attendances.createMonthlyAttendances(crew, today));
-        }
-        return dangerAttendances;
-    }
-
-    private List<Crew> sortDangerCrews(Map<Crew, Attendances> dangerCrews) {
-        List<Crew> crews = new ArrayList<>(dangerCrews.keySet());
-        crews.sort(new Comparator<Crew>() {
-            @Override
-            public int compare(Crew o1, Crew o2) {
-                Attendances a1 = dangerCrews.get(o1);
-                Attendances a2 = dangerCrews.get(o2);
-                if (compareWithPenalty(a1, a2) == 0 && compareWithAbsenceCount(a1, a2) == 0) {
-                    return o1.compareTo(o2);
-                }
-                if (compareWithPenalty(a1, a2) == 0) {
-                    return compareWithAbsenceCount(a1, a2);
-                }
-                return compareWithPenalty(a1, a2);
-            }
-        });
-
-        return crews;
-    }
-
-    private int compareWithAbsenceCount(Attendances a1, Attendances a2) {
-        int thisAbsenceCount = PenaltyPolicy.getConvertedCount(a1.countAttendanceType());
-        int otherAbsenceCount = PenaltyPolicy.getConvertedCount(a2.countAttendanceType());
-        return otherAbsenceCount - thisAbsenceCount;
-    }
-
-    private int compareWithPenalty(Attendances a1, Attendances a2) {
-        PenaltyPolicy penalty1 = PenaltyPolicy.judgePenalty(a1.countAttendanceType());
-        PenaltyPolicy penalty2 = PenaltyPolicy.judgePenalty(a2.countAttendanceType());
-        return penalty1.compareWithPriority(penalty2);
     }
 }

@@ -67,6 +67,18 @@ public class Attendances {
         return Collections.unmodifiableMap(counts);
     }
 
+    public int compareWithConvertedAbsenceCount(Attendances o) {
+        int thisAbsenceCount = PenaltyPolicy.getConvertedCount(this.countAttendanceType());
+        int otherAbsenceCount = PenaltyPolicy.getConvertedCount(o.countAttendanceType());
+        return otherAbsenceCount - thisAbsenceCount;
+    }
+
+    public int compareWithPenalty(Attendances o) {
+        PenaltyPolicy penalty1 = PenaltyPolicy.judgePenalty(this.countAttendanceType());
+        PenaltyPolicy penalty2 = PenaltyPolicy.judgePenalty(o.countAttendanceType());
+        return penalty1.compareWithPriority(penalty2);
+    }
+
     public List<Attendance> getAttendances() {
         return attendances;
     }
