@@ -26,7 +26,16 @@ public class AttendanceController {
         boolean isLoopContinue = true;
         while (isLoopContinue) {
             String command = inputView.inputCommand();
-            isLoopContinue = commandProcess(attendanceManager, command);
+            isLoopContinue = commandProcessErrorHandler(attendanceManager, command);
+        }
+    }
+
+    private boolean commandProcessErrorHandler(AttendanceManager attendanceManager, String command) {
+        try {
+            return commandProcess(attendanceManager, command);
+        } catch (RuntimeException e) {
+            outputView.printErrorMessage(e);
+            return true;
         }
     }
 

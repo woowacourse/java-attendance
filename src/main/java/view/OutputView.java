@@ -53,4 +53,9 @@ public class OutputView {
         System.out.println("[ERROR] 잘못된 기능입니다. 다시 입력해 주세요.");
         System.out.println();
     }
+
+    public void printErrorMessage(RuntimeException e) {
+        System.out.println("[ERROR] " + e.getMessage());
+        System.out.println();
+    }
 }
