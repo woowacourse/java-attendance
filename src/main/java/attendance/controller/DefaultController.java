@@ -82,7 +82,7 @@ public class DefaultController implements Controller {
         try {
             final Crew crew = new Crew(inputView.inputCrewNickName());
 
-            final AttendanceLogs attendanceLogs = crewAttendanceRepository.findByCrewFromTo(
+            final AttendanceLogs attendanceLogs = crewAttendanceRepository.findByCrewBetween(
                     crew,
                     START_DATE,
                     TODAY,

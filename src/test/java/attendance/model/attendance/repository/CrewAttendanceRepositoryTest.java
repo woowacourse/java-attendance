@@ -108,7 +108,7 @@ class CrewAttendanceRepositoryTest {
 
     @DisplayName("시작 LocalDate 부터 종료 LocalDate 까지 특정 크루의 CrewAttendanceLog 를 반환한다.")
     @Test
-    void findByCrewFromTo() {
+    void findByCrewBetween() {
 
         // Given
         final Crew crew = new Crew("쿠키");
@@ -134,7 +134,7 @@ class CrewAttendanceRepositoryTest {
         );
 
         // When
-        final List<AttendanceLog> actual = crewAttendanceRepository.findByCrewFromTo(crew, from, to,
+        final List<AttendanceLog> actual = crewAttendanceRepository.findByCrewBetween(crew, from, to,
                 campusOperationPolicy).values();
 
         // Then

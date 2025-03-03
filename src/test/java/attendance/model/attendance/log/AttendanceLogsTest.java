@@ -45,7 +45,7 @@ class AttendanceLogsTest {
     }
 
     @Test
-    void getAllAttendanceLogsFromTo() {
+    void getAllAttendanceLogsBetween() {
 
         // Given
         final LocalDate from = LocalDate.of(2024, 12, 2);
@@ -77,7 +77,7 @@ class AttendanceLogsTest {
         );
 
         // When
-        final List<AttendanceLog> actual = attendanceLogs.getAllAttendanceLogsFromTo(from, to, campusOperationPolicy)
+        final List<AttendanceLog> actual = attendanceLogs.getAllAttendanceLogsBetween(from, to, campusOperationPolicy)
                 .values();
 
         // Then
@@ -96,7 +96,7 @@ class AttendanceLogsTest {
         expected.put(AttendanceStatus.LATE, 1);
 
         // When
-        final Map<AttendanceStatus, Integer> actual = attendanceLogs.getAllAttendanceLogsFromTo(from, to,
+        final Map<AttendanceStatus, Integer> actual = attendanceLogs.getAllAttendanceLogsBetween(from, to,
                 campusOperationPolicy).calculateAttendanceStatusStatistics();
         // Then
         assertAll(

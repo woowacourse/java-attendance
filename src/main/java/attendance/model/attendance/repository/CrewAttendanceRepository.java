@@ -39,13 +39,13 @@ public class CrewAttendanceRepository {
         findByCrew(crew).update(from, to);
     }
 
-    public AttendanceLogs findByCrewFromTo(
+    public AttendanceLogs findByCrewBetween(
             final Crew crew,
             final LocalDate from,
             final LocalDate to,
             final CampusOperationPolicy campusOperationPolicy) {
 
-        return findByCrew(crew).getAllAttendanceLogsFromTo(from, to, campusOperationPolicy);
+        return findByCrew(crew).getAllAttendanceLogsBetween(from, to, campusOperationPolicy);
     }
 
     public Map<Crew, AttendanceLogs> getCrewAttendanceLogs() {
@@ -64,7 +64,7 @@ public class CrewAttendanceRepository {
 
         return crewAttendanceLogs.entrySet().stream()
                 .map(entry -> Map.entry(entry.getKey(),
-                        entry.getValue().getAllAttendanceLogsFromTo(from, to, campusOperationPolicy)))
+                        entry.getValue().getAllAttendanceLogsBetween(from, to, campusOperationPolicy)))
                 .filter(entry -> entry.getValue().isWarning())
                 .collect(
                         Collectors.toMap(

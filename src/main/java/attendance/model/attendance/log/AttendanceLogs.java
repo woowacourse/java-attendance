@@ -31,7 +31,7 @@ public record AttendanceLogs(
         return new AttendanceLogs(attendanceLogs);
     }
 
-    public AttendanceLogs getAllAttendanceLogsFromTo(
+    public AttendanceLogs getAllAttendanceLogsBetween(
             final LocalDate from,
             final LocalDate to,
             final CampusOperationPolicy campusOperationPolicy
