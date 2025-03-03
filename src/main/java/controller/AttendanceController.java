@@ -44,6 +44,10 @@ public class AttendanceController {
         NickName nickName = new NickName(inputNickName);
         String attendingTime = inputView.inputAttendingTime();
         AttendanceRecord attendanceRecord = AttendanceRecord.timeOf(attendingTime);
+        if (attendanceManager.isAttended(nickName, attendanceRecord)) {
+            outputView.printAlreadyAttended();
+            return;
+        }
         attendanceManager.attend(nickName, attendanceRecord);
         outputView.printAttend(attendanceRecord);
     }

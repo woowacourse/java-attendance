@@ -43,4 +43,9 @@ public class OutputView {
         }
         return "출석";
     }
+
+    public void printAlreadyAttended() {
+        System.out.println("[ERROR] 이미 출석한 닉네임입니다. 수정 기능을 사용해 주세요.");
+        System.out.println();
+    }
 }
