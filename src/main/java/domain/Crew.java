@@ -1,11 +1,7 @@
 package domain;
 
 import static domain.AttendanceStatus.isWeekendOrChristmas;
-import static constant.ErrorMessage.*;
-import static domain.Penalty.COUNSELLING;
-import static domain.Penalty.EXPEL;
-import static domain.Penalty.NONE;
-import static domain.Penalty.WARNING;
+import static util.ErrorMessage.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

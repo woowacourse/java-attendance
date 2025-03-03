@@ -1,6 +1,6 @@
 package domain;
 
-import constant.ErrorMessage;
+import util.ErrorMessage;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +13,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static constant.ErrorMessage.NO_SUCH_NICKNAME;
+import static util.ErrorMessage.NO_SUCH_NICKNAME;
 
 public class AllCrew {
     private final List<Crew> allCrew;

@@ -1,4 +1,4 @@
-package constant;
+package util;
 
 public enum ErrorMessage {
     CLOSED_DAY("오늘은 캠퍼스 휴장일입니다."),
