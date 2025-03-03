@@ -1,6 +1,8 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +14,26 @@ import util.Current;
 import util.DateUtil;
 
 public class AttendanceManagerTest {
+    @Test
+    @DisplayName("등록되지 않은 닉네임을 입력하면 예외가 발생한다")
+    void should_throw_exception_when_not_registered_nickname() {
+        // given
+        NickName nickName = new NickName("후우");
+        AttendanceRecord attendanceRecord = AttendanceRecord.of("11", "10:00");
+        AttendanceManager attendanceManager = new AttendanceManager();
+
+        // when & then
+        assertAll(() -> assertThatThrownBy(() -> {
+            attendanceManager.attend(nickName, attendanceRecord);
+        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
+            attendanceManager.isAttended(nickName, attendanceRecord);
+        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
+            attendanceManager.edit(nickName, attendanceRecord);
+        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
+            attendanceManager.checkAttendance(nickName, List.of(11));
+        }).isInstanceOf(IllegalArgumentException.class));
+    }
+
     @Nested
     @DisplayName("출석 등록 테스트")
     class AttendTest {
@@ -23,6 +45,7 @@ public class AttendanceManagerTest {
             String time = "10:00";
             AttendanceRecord attendanceRecord = AttendanceRecord.timeOf(time);
             AttendanceManager attendanceManager = new AttendanceManager();
+            attendanceManager.register(nickName);
 
             // when
             attendanceManager.attend(nickName, attendanceRecord);
@@ -39,6 +62,7 @@ public class AttendanceManagerTest {
             // given
             NickName nickName = new NickName("후우");
             AttendanceManager attendanceManager = new AttendanceManager();
+            attendanceManager.register(nickName);
             AttendanceRecord attendedAttendanceRecord = AttendanceRecord.of(attendedDate, "10:00");
             attendanceManager.attend(nickName, attendedAttendanceRecord);
             AttendanceRecord checkAttendanceRecord = AttendanceRecord.of(checkDate, "10:00");
@@ -60,6 +84,7 @@ public class AttendanceManagerTest {
             // given
             NickName nickName = new NickName("후우");
             AttendanceManager attendanceManager = new AttendanceManager();
+            attendanceManager.register(nickName);
             AttendanceRecord attendanceRecord = AttendanceRecord.of("11", "10:00");
             attendanceManager.attend(nickName, attendanceRecord);
             AttendanceRecord editAttendanceRecord = AttendanceRecord.of("11", "11:00");
@@ -82,6 +107,7 @@ public class AttendanceManagerTest {
             // given
             NickName nickName = new NickName("후우");
             AttendanceManager attendanceManager = new AttendanceManager();
+            attendanceManager.register(nickName);
             AttendanceRecord attendanceRecord1 = AttendanceRecord.of("9", "10:00");
             AttendanceRecord attendanceRecord2 = AttendanceRecord.of("10", "10:00");
             attendanceManager.attend(nickName, attendanceRecord1);

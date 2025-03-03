@@ -12,28 +12,47 @@ public class AttendanceManager {
         this.attendanceManager = new HashMap<>();
     }
 
+    public void register(NickName nickName) {
+        if (isRegistered(nickName)) {
+            return;
+        }
+        attendanceManager.put(nickName, new Attendances());
+    }
+
     public void attend(NickName nickName, AttendanceRecord attendanceRecord) {
-        Attendances attendances = attendanceManager.getOrDefault(nickName, new Attendances());
+        validateNameExist(nickName);
+        Attendances attendances = attendanceManager.get(nickName);
         attendances.attend(attendanceRecord);
-        attendanceManager.put(nickName, attendances);
     }
 
     public boolean isAttended(NickName nickName, AttendanceRecord checkAttendanceRecord) {
-        Attendances attendances = attendanceManager.getOrDefault(nickName, new Attendances());
+        validateNameExist(nickName);
+        Attendances attendances = attendanceManager.get(nickName);
         return attendances.isAttended(checkAttendanceRecord);
     }
 
     public void edit(NickName nickName, AttendanceRecord editAttendanceRecord) {
-        Attendances attendances = attendanceManager.getOrDefault(nickName, new Attendances());
+        validateNameExist(nickName);
+        Attendances attendances = attendanceManager.get(nickName);
         attendances.edit(editAttendanceRecord);
-        attendanceManager.put(nickName, attendances);
     }
 
     public Attendances checkAttendance(NickName nickName, List<Integer> checkingDates) {
+        validateNameExist(nickName);
         Attendances attendances = new Attendances();
         attendances.attend(AttendanceRecord.of("09", "10:00"));
         attendances.attend(AttendanceRecord.of("10", "10:00"));
         return attendances;
+    }
+
+    private void validateNameExist(NickName nickName) {
+        if (!isRegistered(nickName)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
+    }
+
+    private boolean isRegistered(NickName nickName) {
+        return attendanceManager.containsKey(nickName);
     }
 
     @Override
