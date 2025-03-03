@@ -9,7 +9,7 @@
 3. 날짜에 따라 휴일이나 공휴일일 겨우 예외처리한다
 4. 날짜(월요일)에 따라 다른 시간 정책을 적용한다.
 5. refact : Attendance 객체 중심 코드를 위한 테스트 수정
-6. 이름을 기준으로 기존 기록에서 AttendanceHistories 에서 특정 AttendanceHistory를 찾을 수 있어야 한다.
+6. 이름을 기준으로 기존 기록에서 AttendanceHistoriesTest 에서 특정 AttendanceHistory를 찾을 수 있어야 한다.
 7. 이름을 기준으로 기존의 AttendanceHistory 에 새 기록을 추가해야한다.
 
 ## 구현해야할 기능
