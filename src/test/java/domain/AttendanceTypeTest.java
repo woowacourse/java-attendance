@@ -5,9 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceTypeTest {
 
@@ -32,14 +34,19 @@ public class AttendanceTypeTest {
         assertThat(type).isEqualTo(expected);
     }
 
-    @Test
-    void 결석기준시간을_계산한다() {
-        //given
-        LocalDate day = LocalDate.of(2024, 12, 3);
-        LocalTime expected = LocalTime.of(10, 30);
+    @ParameterizedTest(name = "결석 기준 시간은 {1}이다")
+    @MethodSource("testData")
+    void calculateAbsenceStandardTime(LocalDate day, LocalTime expected) {
         //when
         LocalTime actual = AttendanceType.calculateAbsenceStandardTime(day);
         //then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> testData() {
+        return Stream.of(
+                Arguments.of(LocalDate.of(2024, 12, 2), LocalTime.of(13, 30)),
+                Arguments.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 30))
+        );
     }
 }
