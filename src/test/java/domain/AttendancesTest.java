@@ -150,5 +150,22 @@ class AttendancesTest {
             // then
             assertThat(result).isNotEqualTo(attendances);
         }
+
+        @Test
+        @DisplayName("출석 기록들로부터 출석 상태를 계산한다.")
+        void should_return_attendance_status_by_attendances() {
+            // given
+            Attendances attendances = new Attendances();
+            attendances.attend(AttendanceRecord.of("2", "10:00"));
+            attendances.attend(AttendanceRecord.of("3", "10:00"));
+            attendances.attend(AttendanceRecord.of("4", "10:00"));
+            attendances.attend(AttendanceRecord.of("5", "10:00"));
+
+            // when
+            AttendanceStatusCount attendanceStatusCount = attendances.countAttendanceStatus();
+
+            // then
+            assertThat(attendanceStatusCount.getCount(AttendanceStatus.ATTENDANT)).isEqualTo(4);
+        }
     }
 }
