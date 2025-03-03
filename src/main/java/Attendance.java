@@ -5,12 +5,13 @@ import java.time.MonthDay;
 import java.util.Set;
 
 public class Attendance {
-    private static final LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0);
-    private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
+    public static final LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0);
+    public static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     private static final int LATE_STANDARD = 5;
     private static final int ABSENT_STANDARD = 30;
     private static final LocalTime OPERATING_START_TIME = LocalTime.of(8, 0);
     private static final LocalTime OPERATING_END_TIME = LocalTime.of(23, 0);
+    public static final LocalTime ABSENT_DEFAULT_TIME = LocalTime.of(23, 59);
 
 
     private static final Set<DayOfWeek> WEEKENDS = Set.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
