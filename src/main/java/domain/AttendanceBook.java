@@ -34,45 +34,6 @@ public class AttendanceBook {
         return crewRecords.get(name);
     }
 
-    public Map<String, Crew> findWarningCrew(LocalDate startDate, LocalDate endDate) {
-        return crewRecords.entrySet().stream()
-            .filter(entry -> {
-                Crew crew = entry.getValue();
-                Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
-                Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
-                return Penalty.isNotPass(statisticsResult.get(AttendanceStatus.LATE),
-                    statisticsResult.get(AttendanceStatus.ABSENT));
-            })
-            .sorted(Comparator
-                .comparingInt((Map.Entry<String, Crew> entry) -> {
-                    Crew crew = entry.getValue();
-                    Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate,
-                        endDate);
-                    Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
-                    return (statisticsResult.get(AttendanceStatus.LATE) / 3) + statisticsResult.get(
-                        AttendanceStatus.ABSENT);
-                }).reversed()
-                .thenComparing((Map.Entry<String, Crew> entry) -> {
-                    Crew crew = entry.getValue();
-                    Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
-                    Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
-                    return statisticsResult.get(AttendanceStatus.LATE) % 3;
-                }, Comparator.reverseOrder())
-                .thenComparing((Map.Entry<String, Crew> entry) -> {
-                    Crew crew = entry.getValue();
-                    Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
-                    Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
-                    return statisticsResult.get(AttendanceStatus.ABSENT);
-                }, Comparator.reverseOrder())
-                .thenComparing(Map.Entry::getKey)
-            )
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue,
-                (existing, replacement) -> existing, LinkedHashMap::new
-            ));
-    }
-
     public DailyRecord saveAttendanceRecord(String name, LocalDateTime dateTime) {
         validateRegisteredCrew(name);
         validateAlreadyAttended(name, dateTime);
@@ -100,6 +61,45 @@ public class AttendanceBook {
             result.get(name).add(dateTime);
         }
         createCrews(result);
+    }
+
+    public Map<String, Crew> findWarningCrew(LocalDate startDate, LocalDate endDate) {
+        return crewRecords.entrySet().stream()
+            .filter(entry -> isWarningCrew(entry.getValue(), startDate, endDate))
+            .sorted(createCrewComparator(startDate, endDate))
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (existing, replacement) -> existing,
+                LinkedHashMap::new
+            ));
+    }
+
+    private boolean isWarningCrew(Crew crew, LocalDate startDate, LocalDate endDate) {
+        Map<AttendanceStatus, Integer> statistics = getAttendanceStatistics(crew, startDate, endDate);
+        return Penalty.isNotPass(statistics.get(AttendanceStatus.LATE), statistics.get(AttendanceStatus.ABSENT));
+    }
+
+    private Comparator<Map.Entry<String, Crew>> createCrewComparator(LocalDate startDate, LocalDate endDate) {
+        return Comparator
+            .comparingInt((Map.Entry<String, Crew> entry) -> {
+                Map<AttendanceStatus, Integer> stats = getAttendanceStatistics(entry.getValue(), startDate, endDate);
+                return (stats.get(AttendanceStatus.LATE) / 3) + stats.get(AttendanceStatus.ABSENT);
+            }).reversed()
+            .thenComparing((Map.Entry<String, Crew> entry) -> {
+                Map<AttendanceStatus, Integer> stats = getAttendanceStatistics(entry.getValue(), startDate, endDate);
+                return stats.get(AttendanceStatus.LATE) % 3;
+            }, Comparator.reverseOrder())
+            .thenComparing((Map.Entry<String, Crew> entry) -> {
+                Map<AttendanceStatus, Integer> stats = getAttendanceStatistics(entry.getValue(), startDate, endDate);
+                return stats.get(AttendanceStatus.ABSENT);
+            }, Comparator.reverseOrder())
+            .thenComparing(Map.Entry::getKey);
+    }
+
+    private Map<AttendanceStatus, Integer> getAttendanceStatistics(Crew crew, LocalDate startDate, LocalDate endDate) {
+        Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, endDate);
+        return AttendanceStatus.countStatus(records);
     }
 
     private void createCrews(Map<String, List<LocalDateTime>> result) {
