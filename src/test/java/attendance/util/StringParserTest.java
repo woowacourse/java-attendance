@@ -83,4 +83,15 @@ class StringParserTest {
         // When & Then
         assertThat(StringParser.parseInt(input)).isEqualTo(31);
     }
+
+    @Test
+    void 숫자_문자열이_아닌_경우_예외가_발생한다() {
+        // Given
+        String input = "31.3";
+
+        // When & Then
+        assertThatThrownBy(() -> StringParser.parseInt(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 숫자 형식의 문자열이 아닙니다.");
+    }
 }

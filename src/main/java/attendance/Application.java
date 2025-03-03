@@ -4,7 +4,7 @@ import attendance.controller.AttendanceController;
 import attendance.domain.CampusScheduler;
 import attendance.domain.CrewHistories;
 import attendance.domain.CrewInitializer;
-import attendance.util.FileReader;
+import attendance.view.FileReader;
 import attendance.util.StringParser;
 import attendance.view.InputView;
 import attendance.view.ResultView;
