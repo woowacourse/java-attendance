@@ -23,28 +23,28 @@ public class DefaultAttendanceStatistics implements AttendanceStatistics {
     @Override
     public Map<AttendanceStatus, Integer> getTotalStatusCount(Attendances attendances) {
         Map<AttendanceStatus, Integer> statusCount = new EnumMap<>(AttendanceStatus.class);
-        Map<LocalDate, Attendance> attendanceMap = attendances.getAttendances();
-        List<Attendance> attendanceList = extractValidAttendances(attendanceMap);
+        Map<LocalDate, Attendance> attendanceTimeStamp = attendances.getAttendances();
+        List<Attendance> monthlyAttendances = extractValidAttendances(attendanceTimeStamp);
         Arrays.stream(AttendanceStatus.values())
-                .forEach(status -> statusCount.put(status, getStatusCount(status, attendanceList)));
+                .forEach(status -> statusCount.put(status, getStatusCount(status, monthlyAttendances)));
 
-        statusCount.put(ABSENCE, statusCount.get(ABSENCE) + countBlankAttendance(attendanceMap));
+        statusCount.put(ABSENCE, statusCount.get(ABSENCE) + countBlankAttendance(attendanceTimeStamp));
         return statusCount;
     }
 
-    private List<Attendance> extractValidAttendances(Map<LocalDate, Attendance> attendanceMap) {
+    private List<Attendance> extractValidAttendances(Map<LocalDate, Attendance> attendanceTimeStamp) {
         LocalDate now = dateProvider.now();
         LocalDate month = LocalDate.of(now.getYear(), now.getMonthValue(), 1).minusDays(1);
 
-        return attendanceMap.entrySet().stream()
+        return attendanceTimeStamp.entrySet().stream()
                 .filter(entry -> entry.getKey().isAfter(month))
                 .filter(entry -> entry.getKey().isBefore(now))
                 .map(Entry::getValue)
                 .toList();
     }
 
-    private int getStatusCount(AttendanceStatus status, List<Attendance> attendanceList) {
-        return (int) attendanceList.stream()
+    private int getStatusCount(AttendanceStatus status, List<Attendance> attendances) {
+        return (int) attendances.stream()
                 .filter(attendance -> attendance.status() == status)
                 .count();
     }

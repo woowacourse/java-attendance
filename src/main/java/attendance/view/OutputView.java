@@ -130,18 +130,18 @@ public class OutputView {
         Map<String, Integer> totalAbsence = calculateTotalAbsence(crewsStatusCount);
         StringBuilder builder = new StringBuilder();
         builder.append(WARNING_CREW_PRINT_HEADER);
-        List<Entry<String, Integer>> sortedList = totalAbsence.entrySet().stream()
+        List<Entry<String, Integer>> sortedCrewAbsence = totalAbsence.entrySet().stream()
                 .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()))
                 .collect(Collectors.toList());
 
-        appendWarningCrew(builder, crewsStatusCount, sortedList);
+        appendWarningCrew(builder, crewsStatusCount, sortedCrewAbsence);
         System.out.println(builder);
     }
 
     private static void appendWarningCrew(StringBuilder builder,
                                           Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount,
-                                          List<Entry<String, Integer>> sortedList) {
-        sortedList.stream()
+                                          List<Entry<String, Integer>> sortedCrewAbsence) {
+        sortedCrewAbsence.stream()
                 .filter(entry -> WarningLevel.from(crewsStatusCount.get(entry.getKey())) != WarningLevel.NONE)
                 .forEach(entry -> {
                     Map<AttendanceStatus, Integer> statusCount = crewsStatusCount.get(entry.getKey());

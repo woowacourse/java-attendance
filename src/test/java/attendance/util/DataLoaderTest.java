@@ -22,8 +22,8 @@ class DataLoaderTest {
                 "빙티,2024-12-13 10:07",
                 "이든,2024-12-13 10:07"
         );
-        Map<String, Attendances> attendancesMap = DataLoader.loadAttendancesData(data);
+        Map<String, Attendances> crewAttendances = DataLoader.loadAttendancesData(data);
 
-        assertThat(attendancesMap.size()).isEqualTo(4);
+        assertThat(crewAttendances.size()).isEqualTo(4);
     }
 }
