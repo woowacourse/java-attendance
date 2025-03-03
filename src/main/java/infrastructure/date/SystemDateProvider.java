@@ -1,4 +1,4 @@
-package infrastructure;
+package infrastructure.date;
 
 import domain.DateProvider;
 import java.time.LocalDate;

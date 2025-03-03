@@ -1,9 +1,9 @@
-package infrastructure;
+package infrastructure.date;
 
 import domain.DateProvider;
 import java.time.LocalDate;
 
-public class DecemberDateProvider implements DateProvider {
+public class CustomDateProvider implements DateProvider {
 
     @Override
     public LocalDate getDate() {

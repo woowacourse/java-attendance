@@ -1,4 +1,4 @@
-package infrastructure;
+package infrastructure.file;
 
 import domain.AttendanceManager;
 import java.io.BufferedReader;

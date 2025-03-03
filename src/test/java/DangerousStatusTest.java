@@ -5,7 +5,7 @@ import domain.AttendanceRecord;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.DangerousStatus;
-import infrastructure.AttendanceFileReader;
+import infrastructure.file.AttendanceFileReader;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;

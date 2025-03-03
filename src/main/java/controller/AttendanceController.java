@@ -5,7 +5,7 @@ import domain.AttendanceRecord;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.DateProvider;
-import infrastructure.AttendanceFileReader;
+import infrastructure.file.AttendanceFileReader;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import view.InputView;
@@ -55,7 +55,7 @@ public class AttendanceController {
 
         LocalTime time = inputView.readTime();
         LocalDateTime attendanceTime = crew.attend(time);
-        AttendanceStatus attendanceStatus = crew.getAttendanceStatus(dateProvider.getDate().getDayOfMonth());
+        AttendanceStatus attendanceStatus = crew.getAttendanceStatus(attendanceTime.getDayOfMonth());
 
         outputView.printAttendanceResult(attendanceTime, attendanceStatus);
     }
