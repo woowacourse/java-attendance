@@ -22,18 +22,16 @@ import view.OutputView;
 import view.UserCommand;
 
 public class AttendanceController {
-    private final AttendanceSavedDataLoader savedDataLoader;
     private final InputView inputView;
     private final OutputView outputView;
 
-    public AttendanceController(final AttendanceSavedDataLoader savedDataLoader, final InputView inputView,
-                                final OutputView outputView) {
-        this.savedDataLoader = savedDataLoader;
+    public AttendanceController(final InputView inputView, final OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
     }
 
     public void run() {
+        final AttendanceSavedDataLoader savedDataLoader = new AttendanceSavedDataLoader();
         final AttendanceBook attendanceBook = new AttendanceBook();
         final Crews crews = savedDataLoader.loadCrews();
         crews.registerCrewsToAttendanceBook(attendanceBook);
