@@ -78,8 +78,7 @@ public class AttendanceBook {
         return foundCrew.getTimeLogs().entrySet().stream()
                 .sorted(Map.Entry.comparingByKey()) // 날짜 기준으로 정렬
                 .map(entry -> new CheckAttendanceRecordResponse(
-                        entry.getKey(),
-                        entry.getValue(),
+                        entry.getKey(), entry.getValue(),
                         AttendanceDiscriminator.judgeTimeLogForStatus(entry.getKey(), entry.getValue())))
                 .collect(Collectors.toList());
     }
