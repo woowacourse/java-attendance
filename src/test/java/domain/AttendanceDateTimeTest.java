@@ -5,63 +5,121 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceDateTimeTest {
-    @DisplayName("domain.AttendanceDateTime 생성 테스트")
+
+    @DisplayName("AttendanceDateTime 생성 - 정상 생성 확인")
     @Test
     void dateTimeTest1() {
-        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 25, 14, 39);
+        // given
+        int year = 2024, month = 12, day = 25, hour = 14, minute = 39;
+
+        // when
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(year, month, day, hour, minute);
+
+        // then
         Assertions.assertThat(attendanceDateTime).isInstanceOf(AttendanceDateTime.class);
     }
 
-    @DisplayName("domain.AttendanceDateTime 휴일 테스트")
+    @DisplayName("AttendanceDateTime 휴일 여부 - 크리스마스(12/25) 휴일 확인")
     @Test
     void dateTimeTest2() {
+        // given
         AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 25, 0, 0);
-        Assertions.assertThat(attendanceDateTime.isRestDay()).isTrue();
+
+        // when
+        boolean isRestDay = attendanceDateTime.isRestDay();
+
+        // then
+        Assertions.assertThat(isRestDay).isTrue();
     }
 
-    @DisplayName("domain.AttendanceDateTime 휴일 테스트")
+    @DisplayName("AttendanceDateTime 휴일 여부 - 평일(12/26) 휴일 아님")
     @Test
     void dateTimeTest3() {
+        // given
         AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 0, 0);
-        Assertions.assertThat(attendanceDateTime.isRestDay()).isFalse();
+
+        // when
+        boolean isRestDay = attendanceDateTime.isRestDay();
+
+        // then
+        Assertions.assertThat(isRestDay).isFalse();
     }
 
-    @DisplayName("domain.AttendanceDateTime getAttendanceType() 테스트")
+    @DisplayName("getAttendanceType() - 정상 출석")
     @Test
     void getAttendanceTypeTest1() {
-        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 10,0);
-        Assertions.assertThat(attendanceDateTime.getAttendanceType()).isEqualTo(AttendanceType.ATTENDANCE);
+        // given
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 10, 0);
+
+        // when
+        AttendanceType actual = attendanceDateTime.getAttendanceType();
+
+        // then
+        Assertions.assertThat(actual).isEqualTo(AttendanceType.ATTENDANCE);
     }
 
+    @DisplayName("getAttendanceType() - 지각")
     @Test
     void getAttendanceTypeTest2() {
-        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 10,30);
-        Assertions.assertThat(attendanceDateTime.getAttendanceType()).isEqualTo(AttendanceType.LATE);
+        // given
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 10, 30);
+
+        // when
+        AttendanceType actual = attendanceDateTime.getAttendanceType();
+
+        // then
+        Assertions.assertThat(actual).isEqualTo(AttendanceType.LATE);
     }
 
+    @DisplayName("getAttendanceType() - 결석")
     @Test
     void getAttendanceTypeTest3() {
-        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 10,31);
-        Assertions.assertThat(attendanceDateTime.getAttendanceType()).isEqualTo(AttendanceType.ABSENCE);
+        // given
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 10, 31);
+
+        // when
+        AttendanceType actual = attendanceDateTime.getAttendanceType();
+
+        // then
+        Assertions.assertThat(actual).isEqualTo(AttendanceType.ABSENCE);
     }
 
-    @DisplayName("isSchoolTime() 테스트")
+    @DisplayName("isSchoolTime() - 수업 시간 내 (True)")
     @Test
     void isSchoolTimeTest1() {
-        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 10,31);
-        Assertions.assertThat(attendanceDateTime.isSchoolTime()).isTrue();
+        // given
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 10, 31);
+
+        // when
+        boolean isSchoolTime = attendanceDateTime.isSchoolTime();
+
+        // then
+        Assertions.assertThat(isSchoolTime).isTrue();
     }
 
+    @DisplayName("isSchoolTime() - 수업 시작 전 (False)")
     @Test
     void isSchoolTimeTest2() {
-        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 7,59);
-        Assertions.assertThat(attendanceDateTime.isSchoolTime()).isFalse();
+        // given
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 7, 59);
+
+        // when
+        boolean isSchoolTime = attendanceDateTime.isSchoolTime();
+
+        // then
+        Assertions.assertThat(isSchoolTime).isFalse();
     }
 
+    @DisplayName("isSchoolTime() - 수업 종료 후 (False)")
     @Test
     void isSchoolTimeTest3() {
-        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 23,1);
-        Assertions.assertThat(attendanceDateTime.isSchoolTime()).isFalse();
+        // given
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 23, 1);
+
+        // when
+        boolean isSchoolTime = attendanceDateTime.isSchoolTime();
+
+        // then
+        Assertions.assertThat(isSchoolTime).isFalse();
     }
 }
-
