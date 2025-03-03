@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public record SanctionStatistics(List<StatusStatistics> statistics) implements Iterable<StatusStatistics> {
-
     public static SanctionStatistics sortedFrom(List<StatusStatistics> statistics) {
         return new SanctionStatistics(getSortedStatusStatistics(statistics));
     }

@@ -41,12 +41,12 @@ public class AttendanceDateTime implements SystemDateTime {
         return !isWeekend(date) && !isHoliday(date);
     }
 
-    private static boolean isHoliday(LocalDate date) {
+    private boolean isHoliday(LocalDate date) {
         return DAT_OF_HOLIDAY.stream()
             .anyMatch(day -> date.getDayOfMonth() == day);
     }
 
-    private static boolean isWeekend(LocalDate date) {
+    private boolean isWeekend(LocalDate date) {
         return date.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue();
     }
 }

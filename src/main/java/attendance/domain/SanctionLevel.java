@@ -35,14 +35,14 @@ public enum SanctionLevel implements Displayer {
             .orElse(NONE);
     }
 
-    private boolean matches(int wight) {
-        return condition.test(wight);
-    }
-
     private static void validateWeight(int wight) {
         if (wight < 0) {
             throw new AttendanceArgumentException(WEIGHT_BE_POSITIVE + wight);
         }
+    }
+
+    private boolean matches(int wight) {
+        return condition.test(wight);
     }
 
     @Override
