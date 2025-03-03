@@ -40,12 +40,14 @@ public class AttendanceController {
                 case "1" -> attend(attendanceManager);
                 case "2" -> modifyAttendanceTime(attendanceManager);
                 case "3" -> findAttendanceRecord(attendanceManager);
+                case "4" -> findDangerousCrews(attendanceManager);
                 default -> throw new IllegalArgumentException("[ERROR] 올바른 명령어를 입력해주세요.");
             }
         } catch (Exception e) {
             outputView.printErrorMessage(e.getMessage());
         }
     }
+
 
     private void attend(AttendanceManager attendanceManager) {
         String nickname = inputView.readNickname();
@@ -83,4 +85,7 @@ public class AttendanceController {
         outputView.printAttendanceRecord(nickname, attendanceRecord, dateProvider.getDate());
     }
 
+    private void findDangerousCrews(AttendanceManager attendanceManager) {
+        outputView.printDangerousCrews(attendanceManager.getCrews());
+    }
 }

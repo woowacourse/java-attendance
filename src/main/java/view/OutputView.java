@@ -2,10 +2,12 @@ package view;
 
 import domain.AttendanceRecord;
 import domain.AttendanceStatus;
+import domain.Crew;
 import domain.DangerousStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -91,5 +93,38 @@ public class OutputView {
         System.out.printf("%s 대상자입니다.", dangerousStatus.getStatus());
         System.out.println();
         System.out.println();
+    }
+
+    public void printDangerousCrews(List<Crew> crews) {
+        Comparator<Crew> comparator = dangerousCrewComparator();
+        crews.sort(comparator);
+
+        System.out.println("제적 위험자 조회 결과");
+        crews.forEach(crew -> {
+            int absence = crew.getAttendanceRecord().countStatus(AttendanceStatus.ABSENCE);
+            int late = crew.getAttendanceRecord().countStatus(AttendanceStatus.LATE);
+            System.out.printf("%s: 결석 %d회, 지각 %d회 (%s)",
+                    crew.getNickname(), absence, late,
+                    DangerousStatus.of(late, absence).getStatus());
+            System.out.println();
+        });
+        System.out.println();
+    }
+
+    private Comparator<Crew> dangerousCrewComparator() {
+        return (crew1, crew2) -> {
+            int i = crew2.getAttendanceRecord().totalAbsenceCount() - crew1.getAttendanceRecord().totalAbsenceCount();
+            if (i == 0) {
+                int j = crew2.getAttendanceRecord().countStatus(AttendanceStatus.LATE)
+                        % DangerousStatus.LATE_TO_ABSENCE_RATE
+                        - crew1.getAttendanceRecord().countStatus(AttendanceStatus.LATE)
+                        % DangerousStatus.LATE_TO_ABSENCE_RATE;
+                if (j == 0) {
+                    return crew1.getNickname().compareTo(crew2.getNickname());
+                }
+                return j;
+            }
+            return i;
+        };
     }
 }
