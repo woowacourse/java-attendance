@@ -381,5 +381,16 @@ public class AttendanceHistoriesTest {
         }
     }
 
-
+    @Test
+    @DisplayName("4.1 제적 위험자에 해당하는 크루들을 확인할 수 있다.")
+    void test() {
+        // given
+        AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createDisciplinedCrewsHistory(
+                FIRST_TUESDAY_DATE, 10);
+        LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, 10);
+        // when
+        List<Crew> disciplinedCrews = attendanceHistories.getDisciplinedCrews(lastDate);
+        // then
+        assertThat(disciplinedCrews).containsExactlyInAnyOrder(new Crew("경고크루"), new Crew("제적크루"), new Crew("면담크루"));
+    }
 }

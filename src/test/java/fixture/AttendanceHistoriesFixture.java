@@ -26,4 +26,13 @@ public class AttendanceHistoriesFixture {
                 absentCount);
         return new AttendanceHistories(new HashMap<>(Map.of(crew, attendanceDateTimes)));
     }
+
+    public static AttendanceHistories createDisciplinedCrewsHistory(LocalDate startDate, int totalDate) {
+        Map<Crew, AttendanceDateTimes> history = new HashMap<>();
+        history.put(new Crew("경고크루"), AttendanceDateTimesFixture.of(startDate, totalDate - 2, 0, 2));
+        history.put(new Crew("제적크루"), AttendanceDateTimesFixture.of(startDate, totalDate - 6, 0, 6));
+        history.put(new Crew("면담크루"), AttendanceDateTimesFixture.of(startDate, totalDate - 3, 0, 3));
+        history.put(new Crew("해당사항없음"), AttendanceDateTimesFixture.of(startDate, totalDate, 0, 0));
+        return new AttendanceHistories(history);
+    }
 }

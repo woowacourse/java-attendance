@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceHistories {
@@ -67,5 +68,9 @@ public class AttendanceHistories {
         if (attendanceDateTimes.contains(attendanceDate)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
         }
+    }
+
+    public List<Crew> getDisciplinedCrews(LocalDate lastDate) {
+        return null;
     }
 }
