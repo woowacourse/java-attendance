@@ -13,8 +13,15 @@ import java.util.Comparator;
 import java.util.Map;
 
 public class ResultView {
+    private static final String CREW_ATTENDANCE_HEADER = "\n이번 달 %s의 출석 기록입니다.\n\n";
     private static final String ABSENT_TIME_FORMAT = " --:-- ";
     private static final String ATTENDANCE_STATUS_FORMAT = "(%s)";
+    private static final String ATTENDANCE_STATUS_COUNTS_FORMAT = "\n%s: %d회";
+
+
+    public void printCrewAttendanceHeader(final String nickname) {
+        System.out.printf(CREW_ATTENDANCE_HEADER, nickname);
+    }
 
     public void printCrewAttendances(final CrewAttendance crewAttendance, final LocalDateTime today) {
         Map<LocalDate, AttendanceStatus> attendanceStatuses = crewAttendance.getAttendanceStatusesBefore(today);
@@ -44,5 +51,16 @@ public class ResultView {
         return DateFormatter.formatDate(localDate)
                + ABSENT_TIME_FORMAT
                + String.format(ATTENDANCE_STATUS_FORMAT, ABSENT.getDisplayName());
+    }
+
+    public void printAttendanceStatusCounts(final CrewAttendance crewAttendance, final LocalDateTime today) {
+        final Map<AttendanceStatus, Integer> attendanceStatusCounts =
+                crewAttendance.countAttendanceStatusesBefore(today);
+
+        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
+            System.out.printf(ATTENDANCE_STATUS_COUNTS_FORMAT,
+                    attendanceStatus.getDisplayName(),
+                    attendanceStatusCounts.get(attendanceStatus));
+        }
     }
 }

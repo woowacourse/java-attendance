@@ -29,6 +29,8 @@ public class AttendanceController {
         LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
         String nickname = inputView.readNickname();
         CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf(nickname, today);
+        resultView.printCrewAttendanceHeader(nickname);
         resultView.printCrewAttendances(crewAttendance, today);
+        resultView.printAttendanceStatusCounts(crewAttendance, today);
     }
 }
