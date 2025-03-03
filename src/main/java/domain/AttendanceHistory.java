@@ -1,6 +1,5 @@
 package domain;
 
-import constant.CampusOpenTime;
 import constant.Holiday;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,7 +30,7 @@ public class AttendanceHistory implements Comparable<AttendanceHistory> {
     }
 
     private AttendanceResult findAttendanceResult(LocalDate attendanceDate, LocalTime attendanceTime) {
-        return domain.AttendanceResult.findAttendanceResult(attendanceDate, attendanceTime);
+        return AttendanceResult.findAttendanceResult(attendanceDate, attendanceTime);
     }
 
     public boolean isSameDate(LocalDate standardDate) {
