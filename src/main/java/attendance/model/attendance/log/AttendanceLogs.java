@@ -15,6 +15,8 @@ public record AttendanceLogs(
         List<AttendanceLog> values
 ) {
 
+    private static final int LATE_TO_ABSENCE_RATIO = 3;
+
     public AttendanceLogs(final List<AttendanceLog> values) {
         this.values = new ArrayList<>(values);
     }
@@ -77,7 +79,7 @@ public record AttendanceLogs(
     }
 
     public int getPolicyAppliedAbsenceCount() {
-        return getAbsenceCount() + getLateCount() / 3;
+        return getAbsenceCount() + getLateCount() / LATE_TO_ABSENCE_RATIO;
     }
 
     public int getAbsenceCount() {
@@ -89,7 +91,7 @@ public record AttendanceLogs(
     }
 
     public int getPolicyAppliedLateCount() {
-        return getLateCount() % 3;
+        return getLateCount() % LATE_TO_ABSENCE_RATIO;
     }
 
     public int getLateCount() {
