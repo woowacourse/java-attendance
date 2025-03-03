@@ -22,9 +22,10 @@ public class AttendanceController {
     private final OutputView outputView = new OutputView();
     private final FileReader fileReader = new FileReader();
     private final AttendanceBook attendanceBook = fileReader.readCSV();
+    private boolean isRunning;
 
     public void run() {
-        while (true) {
+        while (!isRunning) {
             String userChoice = inputView.displayMainMenu();
             switch (userChoice) {
                 case "1":
@@ -37,7 +38,9 @@ public class AttendanceController {
                     checkExpelledCrews(); break;
                 case "Q":
                     closeProgram(); break;
-                default: break;
+                default:
+                    outputView.displayErrorMessage();
+                    break;
             }
         }
 
@@ -101,5 +104,6 @@ public class AttendanceController {
     }
 
     private void closeProgram() {
+        isRunning = true;
     }
 }

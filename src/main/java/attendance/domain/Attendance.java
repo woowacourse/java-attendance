@@ -36,21 +36,21 @@ public class Attendance {
     private String determineAttendanceStatus() {
         if (attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
             if (attendanceTime.isBefore(LocalTime.of(13, 5)) || attendanceTime.equals(LocalTime.of(13, 5))) {
-                return "출석";
+                return Subject.ATTENDANCE.getStatus();
             }
             if (attendanceTime.isBefore(LocalTime.of(13, 30)) || attendanceTime.equals(LocalTime.of(13, 30))) {
-                return "지각";
+                return Subject.LATE.getStatus();
             }
-            return "결석";
+            return Subject.ABSENT.getStatus();
         }
 
         if (attendanceTime.isBefore(LocalTime.of(10, 5)) || attendanceTime.equals(LocalTime.of(10, 5))) {
-            return "출석";
+            return Subject.ATTENDANCE.getStatus();
         }
         if (attendanceTime.isBefore(LocalTime.of(10, 30)) || attendanceTime.equals(LocalTime.of(10, 30))) {
-            return "지각";
+            return Subject.LATE.getStatus();
         }
-        return "결석";
+        return Subject.ABSENT.getStatus();
     }
 
     public LocalDate getAttendanceDate() {
