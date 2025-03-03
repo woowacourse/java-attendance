@@ -65,11 +65,13 @@ public class AttendanceSystemHandler {
         String name = InputView.readName();
         Crew crew = crews.findCrewByName(name);
 
-        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-
+//        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
+        LocalDate date = LocalDate.of(2024, 12, 24);
         Map<LocalDateTime, AttendanceType> historiesOfCrew = attendanceSystemManager.findAllHistoriesOfCrew(
                 crew, date);
-
         OutputView.printAttendanceHistories(crew, historiesOfCrew);
+
+        PenaltyResultOfCrew penaltyResultOfCrew = attendanceSystemManager.getPenaltyResultOfCrew(crew, historiesOfCrew);
+        OutputView.printPenaltyResultOfCrew(penaltyResultOfCrew);
     }
 }

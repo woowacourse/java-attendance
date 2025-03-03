@@ -15,7 +15,7 @@ public class OutputView {
     }
 
     public static void printAttendanceHistories(Crew crew, Map<LocalDateTime, AttendanceType> historiesOfCrew) {
-        System.out.printf("이번달 %s의 출석 기록입니다.%n", crew.getName());
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", crew.getName());
 
         List<Entry<LocalDateTime, AttendanceType>> sortedHistories = new ArrayList<>(historiesOfCrew.entrySet());
         sortedHistories.sort(Map.Entry.comparingByKey());
@@ -24,5 +24,26 @@ public class OutputView {
             String attendanceType = InputParser.parseAttendanceType(entry.getValue());
             System.out.printf("%s (%s)%n", attendAt, attendanceType);
         });
+
+        System.out.println();
+    }
+
+    public static void printPenaltyResultOfCrew(PenaltyResultOfCrew penaltyResultOfCrew) {
+        List<AttendanceType> attendanceTypeOrder = List.of(AttendanceType.PRESENT, AttendanceType.LATE,
+                AttendanceType.ABSENCE);
+
+        attendanceTypeOrder.forEach(attendanceType -> {
+            System.out.printf("%s: %d회%n", InputParser.parseAttendanceType(AttendanceType.PRESENT),
+                    penaltyResultOfCrew.attendanceTypeCount().getCountByType(attendanceType));
+        });
+
+        System.out.println();
+
+        PenaltyType penaltyType = penaltyResultOfCrew.penaltyType();
+        if (penaltyType.isAtExpulsionCandidateState()) {
+            String parsePenaltyType = InputParser.parsePenaltyType(penaltyType);
+            System.out.printf("%s 대상자입니다.%n%n", parsePenaltyType);
+        }
+
     }
 }

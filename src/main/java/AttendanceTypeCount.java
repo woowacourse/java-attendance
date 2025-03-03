@@ -39,4 +39,8 @@ public class AttendanceTypeCount {
         return getAbsenceCount() + getLateCount() / 3;
     }
 
+    public int getCountByType(AttendanceType attendanceType) {
+        return attendanceTypeCount.getOrDefault(attendanceType, 0);
+    }
+
 }
