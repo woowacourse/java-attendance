@@ -54,5 +54,14 @@ public class AttendanceManagerTest {
         assertThat(attendanceManager.getCrewSize()).isEqualTo(2);
     }
 
+    @Test
+    void 크루_닉네임으로_출석_기록을_가져온다() {
+        AttendanceManager attendanceManager = new AttendanceManager(() -> weekday);
+        attendanceManager.addCrew("이든", LocalDateTime.of(2024, 12, 13, 9, 59));
+
+        assertThat(attendanceManager.findAttendanceRecordByNickname("이든").findAttendanceTimeByDay(13))
+                .isEqualTo(LocalDateTime.of(2024, 12, 13, 9, 59));
+    }
+
 
 }
