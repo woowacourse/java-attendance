@@ -18,7 +18,7 @@ public class AttendanceFileReaderTest {
     @Test
     @DisplayName("csv 정보를 불러온다.")
     void test_LoadingCsvWithNoException() {
-        var attendanceReader = new AttendanceFileReader(ATTENDANCE_CSV, systemDateTime);
+        var attendanceReader = new AttendanceFileReader(ATTENDANCE_CSV);
 
         assertDoesNotThrow(attendanceReader::load);
     }
@@ -26,19 +26,19 @@ public class AttendanceFileReaderTest {
     @Test
     @DisplayName("csv 정보를 불러와, AttendanceBook에 저장하여 반환한다.")
     void test_returnAttendanceBookFromCsv() throws FileNotFoundException {
-        var attendanceReader = new AttendanceFileReader(ATTENDANCE_CSV, systemDateTime);
+        var attendanceReader = new AttendanceFileReader(ATTENDANCE_CSV);
         var loadedBook = attendanceReader.load();
-        var attendanceBook = loadedBook.attendancesBook();
+        var records = loadedBook.records();
         assertAll(
-            () -> assertThat(attendanceBook.keySet().size()).isEqualTo(5),
-            () -> assertThat(attendanceBook.containsKey(new Nickname("짱수"))).isTrue()
+            () -> assertThat(records.keySet().size()).isEqualTo(5),
+            () -> assertThat(records.containsKey("짱수")).isTrue()
         );
     }
 
     @Test
     @DisplayName("잘못된 주소의 csv 정보를 불러올때, 예외가 발생한다.")
     void error_LoadingCsvWithWrongFileName() {
-        var attendanceReader = new AttendanceFileReader("/ErrorFile.csv", systemDateTime);
+        var attendanceReader = new AttendanceFileReader("/ErrorFile.csv");
 
         Assertions.assertThatThrownBy(attendanceReader::load)
             .isInstanceOf(FileNotFoundException.class)

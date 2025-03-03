@@ -16,6 +16,7 @@ import attendance.domain.AttendanceFileReader;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Attendances;
+import attendance.domain.FileRecords;
 import attendance.domain.Nickname;
 import attendance.domain.SanctionStatistics;
 import attendance.domain.StatusStatistics;
@@ -49,14 +50,17 @@ public class AttendanceController {
     }
 
     public void run() {
-        attendanceBook = readFile();
+        var fileRecords = readFile().records();
+
+        attendanceBook = AttendanceBook.createFromRecords(fileRecords, systemDateTime);
+
         process();
     }
 
-    private AttendanceBook readFile() {
+    private FileRecords readFile() {
         try {
-            var attendanceReader = new AttendanceFileReader(ATTENDANCE_CSV, systemDateTime);
-            return attendanceReader.load();
+            var attendanceFileReader = new AttendanceFileReader(ATTENDANCE_CSV);
+            return attendanceFileReader.load();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

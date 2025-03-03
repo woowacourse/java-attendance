@@ -13,11 +13,12 @@ import attendance.interfaces.SystemDateTime;
 
 class AttendanceBookTest {
     private final SystemDateTime systemDateTime = new AttendanceDateTime();
-    private final AttendanceFileReader attendanceFileReader
-        = new AttendanceFileReader("attendances.csv", systemDateTime);
-    private final AttendanceBook attendanceBook = attendanceFileReader.load();
+    private final AttendanceBook attendanceBook;
 
     AttendanceBookTest() throws FileNotFoundException {
+        AttendanceFileReader attendanceFileReader = new AttendanceFileReader("attendances.csv");
+        var fileRecords = attendanceFileReader.load().records();
+        attendanceBook = AttendanceBook.createFromRecords(fileRecords, systemDateTime);
     }
 
     @Test

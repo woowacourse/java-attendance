@@ -14,23 +14,21 @@ import attendance.interfaces.SystemDateTime;
 public record AttendanceBook(Map<Nickname, Attendances> attendancesBook, SystemDateTime systemDateTime) {
     private static final String NOT_REGISTERED_NICKNAME = "등록되지 않은 닉네임입니다.";
 
-    public AttendanceBook(SystemDateTime systemDateTime) {
-        this(new HashMap<>(), systemDateTime);
+    public static AttendanceBook createFromRecords(Map<String, LocalDateTime> records, SystemDateTime systemDateTime) {
+        return new AttendanceBook(createAttendancesBook(records, systemDateTime), systemDateTime);
     }
 
-    public void put(String name, LocalDateTime dateTime) {
-        var nickname = new Nickname(name);
-        Optional<Attendances> attendances = Optional.ofNullable(attendancesBook.get(nickname));
-        attendances.ifPresentOrElse(
-            eixstAttendances -> eixstAttendances.addAttendance(dateTime),
-            () -> putNewAttendances(dateTime, nickname)
-        );
-    }
+    private static Map<Nickname, Attendances> createAttendancesBook(Map<String, LocalDateTime> records,
+        SystemDateTime systemDateTime) {
+        Map<Nickname, Attendances> result = new HashMap<>();
+        for (Map.Entry<String, LocalDateTime> record : records.entrySet()) {
+            var nickname = new Nickname(record.getKey());
+            var dateTime = record.getValue();
 
-    private void putNewAttendances(LocalDateTime dateTime, Nickname nickname) {
-        var newAttendances = new Attendances(systemDateTime);
-        newAttendances.addAttendance(dateTime);
-        attendancesBook.put(nickname, newAttendances);
+            result.computeIfAbsent(nickname, nicknameKey -> new Attendances(systemDateTime))
+                .addAttendance(dateTime);
+        }
+        return result;
     }
 
     public void attendance(Nickname nickname, LocalDateTime dateTime) {

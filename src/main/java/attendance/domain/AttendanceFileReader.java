@@ -7,9 +7,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
-
-import attendance.interfaces.SystemDateTime;
+import java.util.Map;
 
 public class AttendanceFileReader {
     private static final String CANNOT_FIND_FILE = "[ERROR] 파일을 찾을 수 없습니다: ";
@@ -19,20 +19,19 @@ public class AttendanceFileReader {
     private static final String REGEX = ",";
 
     private final String fileName;
-    private final SystemDateTime systemDateTime;
 
-    public AttendanceFileReader(String fileName, SystemDateTime systemDateTime) {
+    public AttendanceFileReader(String fileName) {
         this.fileName = fileName;
-        this.systemDateTime = systemDateTime;
     }
 
-    public AttendanceBook load() throws FileNotFoundException {
+    public FileRecords load() throws FileNotFoundException {
         InputStream inputStream = getInputStream();
-        try (var inputStreamReader = new InputStreamReader(inputStream);
-             var bufferedReader = new BufferedReader(inputStreamReader)) {
+        try (
+            var inputStreamReader = new InputStreamReader(inputStream);
+            var bufferedReader = new BufferedReader(inputStreamReader)) {
             var lines = readLines(bufferedReader);
             inputStream.close();
-            return generateAttendanceBook(lines);
+            return convertToFileRecords(lines);
         } catch (IOException e) {
             throw new RuntimeException(CANNOT_READ_FILE + fileName);
         }
@@ -46,15 +45,15 @@ public class AttendanceFileReader {
         return inputStream;
     }
 
-    private AttendanceBook generateAttendanceBook(List<String> lines) {
-        var attendanceBook = new AttendanceBook(systemDateTime);
+    private FileRecords convertToFileRecords(List<String> lines) {
+        Map<String, LocalDateTime> records = new HashMap<>();
         for (String line : lines) {
             var parts = line.split(REGEX);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_FORMAT);
             LocalDateTime dateTime = LocalDateTime.parse(parts[1], formatter);
-            attendanceBook.put(parts[0], dateTime);
+            records.put(parts[0], dateTime);
         }
-        return attendanceBook;
+        return new FileRecords(records);
     }
 
     private List<String> readLines(BufferedReader bufferedReader) {
