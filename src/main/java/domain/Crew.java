@@ -65,10 +65,4 @@ public class Crew {
             dailyRecords.put(date, new DailyRecord(date.getDayOfWeek(), time));
         }
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        Crew crew = (Crew) obj;
-        return dailyRecords.equals(crew.dailyRecords);
-    }
 }
