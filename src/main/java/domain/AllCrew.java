@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static constant.ErrorMessage.NO_SUCH_NICKNAME;
 
@@ -69,11 +70,10 @@ public class AllCrew {
     }
 
     public Crew findCrewByName(String crewName) {
-        for (Crew crew : allCrew) {
-            if (crew.isSameName(crewName))
-                return crew;
-        }
-        throw new NoSuchElementException(NO_SUCH_NICKNAME.getMessage());
+        return allCrew.stream()
+                .filter(crew -> crew.isSameName(crewName))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_NICKNAME.getMessage()));
     }
 
     public void fillAllCrewsEmptyDateWithAbsent(LocalDate date) {
@@ -87,17 +87,16 @@ public class AllCrew {
     }
 
     public List<Crew> getPenaltyReceivedCrew() {
-        List<Crew> penaltyReceivedCrew = new ArrayList<>();
-        for (Crew crew : allCrew) {
-            if (crew.getPenalty() != Penalty.NONE)
-                penaltyReceivedCrew.add(crew);
-        }
-        return penaltyReceivedCrew;
+        return allCrew.stream()
+                .filter(crew -> crew.getPenalty() != Penalty.NONE)
+                .collect(Collectors.toList());
     }
 
     public void sortPenaltyReceivedCrew(List<Crew> penaltyReceivedCrew) {
-        penaltyReceivedCrew.sort(Comparator.comparing(Crew::getPenaltyStandard).reversed()
-                .thenComparing(Crew::getName));
+        penaltyReceivedCrew
+                .sort(Comparator.comparing(Crew::getPenaltyStandard)
+                        .reversed()
+                        .thenComparing(Crew::getName));
     }
 
 }

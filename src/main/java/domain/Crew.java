@@ -32,8 +32,11 @@ public class Crew {
         if (isEmptyDay(date)) {
             throw new IllegalArgumentException(EMPTY_DATE.getMessage());
         }
-        return attendanceHistory.stream().filter(attendance -> attendance.getDayOfMonth() == date).findFirst()
-                .map(attendance -> attendance.changeTimeTo(localTime)).orElse(null);
+        return attendanceHistory.stream()
+                .filter(attendance -> attendance.getDayOfMonth() == date)
+                .findFirst()
+                .map(attendance -> attendance.changeTimeTo(localTime))
+                .orElse(null);
     }
 
     public String getName() {

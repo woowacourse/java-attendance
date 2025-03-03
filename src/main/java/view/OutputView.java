@@ -12,8 +12,9 @@ import java.util.Locale;
 public class OutputView {
 
     public static String getFormattedDayInfo(LocalDate date) {
-        return date.getMonthValue() + "월 " + date.getDayOfMonth() + "일 " + date.getDayOfWeek().getDisplayName(
-                TextStyle.FULL, Locale.KOREAN);
+        return date.getMonthValue() + "월 "
+                + date.getDayOfMonth() + "일 "
+                + date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 
     public static void printMenu() {
@@ -43,11 +44,13 @@ public class OutputView {
 
     public static void printModifyResult(ModifyResult modifyResult) {
         System.out.println(
-                getFormattedCheckedAttendance(modifyResult.getOldAttendance())
-                        + " -> "
-                        + modifyResult.getNewAttendance().getLocalTime()
+                getFormattedCheckedAttendance(modifyResult.getOldAttendance()) + " -> "
+                        + modifyResult.getNewAttendance()
+                        .getLocalTime()
                         .format(DateTimeFormatter.ofPattern("HH:mm", Locale.KOREA))
-                        + " (" + modifyResult.getNewAttendance().getAttendanceStatus().getValue() + ") 수정 완료!"
+                        + " (" + modifyResult.getNewAttendance()
+                        .getAttendanceStatus()
+                        .getValue() + ") 수정 완료!"
         );
     }
 
