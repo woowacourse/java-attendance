@@ -2,34 +2,47 @@ package attendance.domain;
 
 import java.time.LocalTime;
 
-import attendance.utility.EnumTextConverter;
+import attendance.interfaces.EnumDisplayConverter;
+import attendance.interfaces.EnumToTextConverter;
 
-public enum AttendanceStatus implements Displayable {
-    ABSENCE(30),
+public enum AttendanceStatus implements EnumDisplayConverter {
+    ATTENDANCE(0),
     LATE(5),
-    ATTENDANCE(0);
+    ABSENCE(30),
+    TRUANCY(30);
 
-    private final int minutes;
+    private static final String NOT_REGISTERED_CONVERTER = "컨버터가 등록되지 않았습니다.";
 
-    AttendanceStatus(int minutes) {
-        this.minutes = minutes;
+    private final int value;
+    private static EnumToTextConverter<AttendanceStatus> enumToTextConverter;
+
+    AttendanceStatus(int value) {
+        this.value = value;
     }
 
-    public static AttendanceStatus decideStatus(LocalTime time, LocalTime baseSchedule) {
-        for (AttendanceStatus status : values()) {
-            if (status.isAfterThreshold(time, baseSchedule)) {
-                return status;
-            }
+    private int getValue() {
+        return value;
+    }
+
+    public static void setConverter(EnumToTextConverter<AttendanceStatus> statusEnumToTextConverter) {
+        enumToTextConverter = statusEnumToTextConverter;
+    }
+
+    public static AttendanceStatus judgeStatus(LocalTime time, LocalTime schedule) {
+        if (time.isAfter(schedule.plusMinutes(ABSENCE.getValue()))) {
+            return AttendanceStatus.ABSENCE;
         }
-        return ATTENDANCE;
-    }
-
-    private boolean isAfterThreshold(LocalTime time, LocalTime baseSchedule) {
-        return time.isAfter(baseSchedule.plusMinutes(this.minutes));
+        if (time.isAfter(schedule.plusMinutes(LATE.getValue()))) {
+            return AttendanceStatus.LATE;
+        }
+        return AttendanceStatus.ATTENDANCE;
     }
 
     @Override
-    public String getConvertedText() {
-        return EnumTextConverter.convertState(this);
+    public String convert() {
+        if (enumToTextConverter == null) {
+            throw new IllegalStateException(NOT_REGISTERED_CONVERTER);
+        }
+        return enumToTextConverter.convert(this);
     }
 }

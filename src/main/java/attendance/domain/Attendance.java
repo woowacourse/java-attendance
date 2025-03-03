@@ -1,38 +1,59 @@
 package attendance.domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import attendance.exception.AttendanceArgumentException;
 
-public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
-    private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
+public record Attendance(LocalDateTime dateTime, AttendanceStatus status) {
+    private static final LocalTime CAMPUS_OPEN = LocalTime.of(8, 0);
+    private static final LocalTime CAMPUS_CLOSE = LocalTime.of(23, 0);
+    private static final LocalTime LESSON_MONDAY = LocalTime.of(13, 0);
+    private static final LocalTime LESSON_DEFAULT_DAY = LocalTime.of(10, 0);
 
-    public static Attendance of(LocalDateTime dateTime, SystemDateTime systemDateTime) {
-        AttendanceStatus attendanceStatus = decideAttendanceStatus(dateTime, systemDateTime);
-        return new Attendance(dateTime, attendanceStatus);
+    private static final String OUT_OF_SCHEDULE = "캠퍼스 운영시간 외에 출석할 수 없습니다.";
+
+    public Attendance(LocalDateTime dateTime) {
+        this(validateDateTime(dateTime), judgeStatus(dateTime));
     }
 
-    private static AttendanceStatus decideAttendanceStatus(LocalDateTime dateTime, SystemDateTime systemDateTime) {
-        validate(dateTime, systemDateTime);
-        Schedule schedule = Schedule.getScheduleOnDay(dateTime);
-        return AttendanceStatus.decideStatus(dateTime.toLocalTime(), schedule.getTime());
+    public static Attendance generateTruancy(LocalDate date) {
+        LocalDateTime midnight = date.atStartOfDay();
+        return new Attendance(midnight, AttendanceStatus.TRUANCY);
     }
 
-    private static void validate(LocalDateTime dateTime, SystemDateTime systemDateTime) {
-        var date = dateTime.toLocalDate();
-        if (!systemDateTime.isWorkingDay(date)) {
-            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_WEEKEND_FORMAT, date);
+    private static LocalDateTime validateDateTime(LocalDateTime dateTime) {
+        if (isDuringCampus(dateTime.toLocalTime())) {
+            throw new AttendanceArgumentException(OUT_OF_SCHEDULE);
         }
-        Schedule.validateCampusSchedule(dateTime);
+        return dateTime;
     }
 
-    public LocalDate getDate() {
-        return dateTime.toLocalDate();
+    private static AttendanceStatus judgeStatus(LocalDateTime dateTime) {
+        LocalDate date = dateTime.toLocalDate();
+        LocalTime time = dateTime.toLocalTime();
+        LocalTime schedule = getSchedule(date);
+        return AttendanceStatus.judgeStatus(time, schedule);
     }
 
-    public LocalTime getTime() {
-        return dateTime.toLocalTime();
+    private static boolean isDuringCampus(LocalTime time) {
+        return time.isBefore(CAMPUS_OPEN) || time.isAfter(CAMPUS_CLOSE);
+    }
+
+    private static LocalTime getSchedule(LocalDate date) {
+        if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
+            return LESSON_MONDAY;
+        }
+        return LESSON_DEFAULT_DAY;
+    }
+
+    public String getConvertedStatus() {
+        return status.convert();
+    }
+
+    public boolean isTruancy() {
+        return status.equals(AttendanceStatus.TRUANCY);
     }
 }

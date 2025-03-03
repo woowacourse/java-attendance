@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import attendance.interfaces.SystemDateTime;
+
 public class AttendanceDateTime implements SystemDateTime {
-    private static final LocalDate START_CALENDER = LocalDate.of(2024, Month.DECEMBER, 1);
+    private static final LocalDate CAMPUS_START_DAY = LocalDate.of(2024, Month.DECEMBER, 1);
     private static final LocalDateTime NOW_DATETIME
         = LocalDateTime.of(2024, Month.DECEMBER, 26, 10, 4);
 
@@ -22,15 +24,16 @@ public class AttendanceDateTime implements SystemDateTime {
     }
 
     @Override
-    public List<LocalDate> extractWorkingDays() {
-        return Stream.iterate(START_CALENDER, date -> date.plusDays(1))
-            .limit(ChronoUnit.DAYS.between(START_CALENDER, nowDatePlus()))
-            .filter(this::isWorkingDay)
-            .collect(Collectors.toList());
+    public LocalDate nowDate() {
+        return NOW_DATETIME.toLocalDate();
     }
 
-    private static LocalDate nowDatePlus() {
-        return NOW_DATETIME.toLocalDate().plusDays(1);
+    @Override
+    public List<LocalDate> extractWorkingDays() {
+        return Stream.iterate(CAMPUS_START_DAY, date -> date.plusDays(1))
+            .limit(ChronoUnit.DAYS.between(CAMPUS_START_DAY, NOW_DATETIME))
+            .filter(this::isWorkingDay)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -38,13 +41,12 @@ public class AttendanceDateTime implements SystemDateTime {
         return !isWeekend(date) && !isHoliday(date);
     }
 
-    private static boolean isHoliday(LocalDate date) {
+    private boolean isHoliday(LocalDate date) {
         return DAT_OF_HOLIDAY.stream()
             .anyMatch(day -> date.getDayOfMonth() == day);
     }
 
-    private static boolean isWeekend(LocalDate date) {
+    private boolean isWeekend(LocalDate date) {
         return date.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue();
     }
-
 }
