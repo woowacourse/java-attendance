@@ -2,11 +2,11 @@ package domain;
 
 import domain.policy.absent.AbsentRule;
 import reader.AttendanceFileReader;
-import reader.FileReadException;
+import reader.exception.FileReadException;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -23,22 +23,21 @@ public class AttendanceBook {
 
     public void loadAttendance(AttendanceFileReader attendanceFileReader,
                                String filePath) throws FileReadException {
-
-        Map<String, Map<LocalDate, LocalTime>> rawAttendances = attendanceFileReader.read(filePath).parseData();
+        Map<String, List<LocalDateTime>> rawAttendances = attendanceFileReader.read(filePath).parseData();
 
         writeNickname(rawAttendances);
         writeAttendances(rawAttendances);
     }
 
     public Attendances findByNickname(Nickname nickname) {
-        if (existsByNickname(nickname)) {
+        if (hasNickname(nickname)) {
             return nicknameToAttendances.get(nickname);
         }
         throw new IllegalArgumentException("해당 닉네임으로 출석된 기록이 없습니다.");
     }
 
     public Attendance add(Nickname nickname, Attendance attendance) {
-        if (!existsByNickname(nickname)) {
+        if (!hasNickname(nickname)) {
             nicknameToAttendances.put(nickname, Attendances.initialize());
         }
 
@@ -47,20 +46,22 @@ public class AttendanceBook {
     }
 
     public AttendanceStatistics findExpulsionCandidates() {
-        return AttendanceStatistics.from(nicknameToAttendances.entrySet().stream()
-                .map(attendancesByNickname ->
-                        attendancesByNickname.getValue().calculateAttendanceCounts(attendancesByNickname.getKey()))
-                .filter(attendanceStatistics -> AbsentRule.calculateAbsentPolicy(attendanceStatistics).isRiskOfExpulsion())
-                .toList());
+        return AttendanceStatistics.from(
+                nicknameToAttendances.keySet().stream()
+                        .map(nickname -> nicknameToAttendances.get(nickname)
+                                .calculateAttendanceCounts(nickname))
+                        .filter(AbsentRule::isRiskOfExpulsion)
+                        .toList());
     }
 
-    private void writeNickname(Map<String, Map<LocalDate, LocalTime>> rawAttendances) {
+
+    private void writeNickname(Map<String, List<LocalDateTime>> rawAttendances) {
         rawAttendances.keySet().stream()
                 .map(Nickname::from)
                 .forEach(nickname -> nicknameToAttendances.put(nickname, Attendances.initialize()));
     }
 
-    private void writeAttendances(Map<String, Map<LocalDate, LocalTime>> rawAttendances) {
+    private void writeAttendances(Map<String, List<LocalDateTime>> rawAttendances) {
         rawAttendances.forEach((nickname, dateTime) ->
                 writeAttendance(nicknameToAttendances, nickname, dateTime)
         );
@@ -68,16 +69,17 @@ public class AttendanceBook {
 
     private void writeAttendance(Map<Nickname, Attendances> nicknameToAttendances,
                                  String nickname,
-                                 Map<LocalDate, LocalTime> dateTime) {
-        dateTime.forEach((date, time) -> {
-            Attendances attendances = nicknameToAttendances.get(Nickname.from(nickname));
-            attendances.add(Attendance.of(
-                    AttendanceDate.from(date),
-                    AttendanceTime.from(time)));
-        });
+                                 List<LocalDateTime> dateTimes) {
+        dateTimes.forEach(dateTime -> {
+                    Attendances attendances = nicknameToAttendances.get(Nickname.from(nickname));
+                    attendances.add(Attendance.of(
+                            AttendanceDate.from(dateTime.toLocalDate()),
+                            AttendanceTime.from(dateTime.toLocalTime())));
+                }
+        );
     }
 
-    private boolean existsByNickname(Nickname nickname) {
+    private boolean hasNickname(Nickname nickname) {
         return nicknameToAttendances.containsKey(nickname);
     }
 }

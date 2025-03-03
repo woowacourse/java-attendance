@@ -2,9 +2,8 @@ package reader;
 
 import util.FormatUtil;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +19,8 @@ public record RawAttendances(
         return new RawAttendances(data);
     }
 
-    public Map<String, Map<LocalDate, LocalTime>> parseData() {
-        Map<String, Map<LocalDate, LocalTime>> nicknameToDateTime = new HashMap<>();
+    public Map<String, List<LocalDateTime>> parseData() {
+        Map<String, List<LocalDateTime>> nicknameToDateTime = new HashMap<>();
 
         data.stream()
                 .map(attendance -> attendance.splitByDelimiter(ATTENDANCE_DATA_DELIMITER))
@@ -31,12 +30,11 @@ public record RawAttendances(
     }
 
     private void groupingData(String[] data,
-                                     Map<String, Map<LocalDate, LocalTime>> nicknameToDateTime) {
+                                     Map<String, List<LocalDateTime>> nicknameToDateTime) {
         String nickname = data[NICKNAME_INDEX];
         LocalDateTime attendanceDateTime = LocalDateTime.parse(data[DATE_TIME_INDEX], FormatUtil.DATE_TIME_FORMATTER);
 
-        nicknameToDateTime.computeIfAbsent(nickname, incomingNickname -> new HashMap<>());
-        nicknameToDateTime.get(nickname)
-                .put(attendanceDateTime.toLocalDate(), attendanceDateTime.toLocalTime());
+        nicknameToDateTime.computeIfAbsent(nickname, incomingNickname -> new ArrayList<>());
+        nicknameToDateTime.get(nickname).add(attendanceDateTime);
     }
 }

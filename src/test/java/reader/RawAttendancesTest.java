@@ -3,8 +3,7 @@ package reader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class RawAttendancesTest {
 
     @Test
-    @DisplayName("이름 to 날짜 to 시간 형태로 데이터를 구성할 수 있다.")
+    @DisplayName("이름(String) to 날짜시간(LocalDateTime) 형태로 데이터를 구성할 수 있다.")
     void canParseRawAttendances() {
         // given
         String one = "one";
@@ -29,26 +28,23 @@ class RawAttendancesTest {
                         RawAttendance.from(three + ",2024-12-03 12:00"),
                         RawAttendance.from(three + ",2024-12-04 12:00")));
 
-        Map<String, Map<LocalDate, LocalTime>> nicknameToDateTime = rawAttendances.parseData();
+        Map<String, List<LocalDateTime>> nicknameToDateTime = rawAttendances.parseData();
 
         // when
-        Map<LocalDate, LocalTime> dateToTime_one = nicknameToDateTime.get(one);
-        Map<LocalDate, LocalTime> dateToTime_two = nicknameToDateTime.get(two);
-        Map<LocalDate, LocalTime> dateToTime_three = nicknameToDateTime.get(three);
+        List<LocalDateTime> dateToTime_one = nicknameToDateTime.get(one);
+        List<LocalDateTime> dateToTime_two = nicknameToDateTime.get(two);
+        List<LocalDateTime> dateToTime_three = nicknameToDateTime.get(three);
 
         // then
         assertAll(
                 () -> assertThat(dateToTime_one.size()).isEqualTo(1),
-                () -> assertThat(dateToTime_one.get(LocalDate.of(2024, 12, 2)))
-                        .isEqualTo(LocalTime.of(9, 0)),
+                () -> assertThat(dateToTime_one.contains(LocalDateTime.of(2024, 12, 2, 9, 0))).isTrue(),
 
                 () -> assertThat(dateToTime_two.size()).isEqualTo(2),
-                () -> assertThat(dateToTime_two.get(LocalDate.of(2024, 12, 2)))
-                        .isEqualTo(LocalTime.of(9, 10)),
+                () -> assertThat(dateToTime_two.contains(LocalDateTime.of(2024, 12, 3, 9, 10))).isTrue(),
 
                 () -> assertThat(dateToTime_three.size()).isEqualTo(3),
-                () -> assertThat(dateToTime_three.get(LocalDate.of(2024, 12, 2)))
-                        .isEqualTo(LocalTime.of(12, 0))
+                () -> assertThat(dateToTime_three.contains(LocalDateTime.of(2024, 12, 4, 12, 0))).isTrue()
         );
     }
 }
