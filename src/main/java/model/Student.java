@@ -23,7 +23,7 @@ public class Student {
     }
 
     public void registerAttendanceRecord(LocalDate todayDate, LocalTime attendanceTime) {
-        validateDuplicateAttendance(todayDate);
+        attendanceTimeRecord.validateDuplicateAttendance(todayDate);
         CampusOperatingHours.validateOperatingHours(attendanceTime);
         attendanceTimeRecord.registerAttendanceTimeRecord(todayDate, attendanceTime);
     }
@@ -72,12 +72,6 @@ public class Student {
                     AttendanceStatus.calculateAttendanceStatusCount(getAttendanceTimeRecords(), attendanceStatus));
         }
         return attendanceStatusCount;
-    }
-
-    private void validateDuplicateAttendance(LocalDate today) {
-        if (attendanceTimeRecord.checkAttendanceRecordByLocalDate(today)) {
-            throw new IllegalArgumentException("[ERROR] 출석기록이 존재합니다.");
-        }
     }
 
     private void registerAsAbsentIfNoAttendance(LocalDate date) {
