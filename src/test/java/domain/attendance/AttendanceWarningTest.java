@@ -15,7 +15,7 @@ class AttendanceWarningTest {
         Attendances attendances = new Attendances(List.of(attendanceDate),
                 attendanceDate.toLocalDate(),
                 attendanceDate.toLocalDate().plusDays(3));
-        int countAbsence = attendances.countAbsencePerTardy() + attendances.countAbsence();
+        int countAbsence = attendances.countAllAbsence();
 
         // when
         AttendanceWarning attendanceWarning = AttendanceWarning.calculateWarning(countAbsence);
@@ -32,7 +32,7 @@ class AttendanceWarningTest {
         Attendances attendances = new Attendances(List.of(attendanceDate),
                 attendanceDate.toLocalDate(),
                 attendanceDate.toLocalDate().plusDays(4));
-        int countAbsence = attendances.countAbsencePerTardy() + attendances.countAbsence();
+        int countAbsence = attendances.countAllAbsence();
 
         // when
         AttendanceWarning attendanceWarning = AttendanceWarning.calculateWarning(countAbsence);
@@ -49,7 +49,7 @@ class AttendanceWarningTest {
         Attendances attendances = new Attendances(List.of(attendanceDate),
                 attendanceDate.toLocalDate(),
                 attendanceDate.toLocalDate().plusDays(8));
-        int countAbsence = attendances.countAbsencePerTardy() + attendances.countAbsence();
+        int countAbsence = attendances.countAllAbsence();
 
         // when
         AttendanceWarning attendanceWarning = AttendanceWarning.calculateWarning(countAbsence);

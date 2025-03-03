@@ -53,7 +53,7 @@ public class AttendanceController {
         Map<String, Consumer<AttendanceBook>> commands = new HashMap<>();
         commands.put(Command.ATTEND_COMMAND.getCommand(), new AttendCommand(inputView, outputView));
         commands.put(Command.EDIT_COMMAND.getCommand(), new EditCommand(inputView, outputView));
-        commands.put(Command.CREW_INFO_COMMAND.getCommand(), new CrewInfoCommand());
+        commands.put(Command.CREW_INFO_COMMAND.getCommand(), new CrewInfoCommand(inputView, outputView));
         commands.put(Command.WARNING_CREW_COMMAND.getCommand(), new WarningInfoCommand());
         return commands;
     }
