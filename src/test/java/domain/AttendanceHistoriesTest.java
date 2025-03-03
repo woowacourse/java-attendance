@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendanceHistoriesTest {
     private static final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
@@ -279,18 +280,48 @@ public class AttendanceHistoriesTest {
         }
     }
 
-    @Test
-    @DisplayName("닉네임을 입력하면 크루의 제적 위험자 여부를 확인할 수 있다.")
-    void test() {
-        // given
-        LocalDate START_DATE = LocalDate.of(2025, 2, 11);
-        LocalDate LAST_DATE = AttendanceDateTimeFixture.getNthValidDate(START_DATE, 12);
-        AttendanceHistories warnedCrewHistory = AttendanceHistoriesFixture.createWithMultipleAttendance(
-                DEFAULT_CREW, START_DATE, 0, 0, 2);
-        // when
-        String disciplinaryStatus = warnedCrewHistory.getDisciplinaryStatus(DEFAULT_CREW);
-        // then
-        assertThat(disciplinaryStatus).isEqualTo("경고");
+    @Nested
+    @DisplayName("3.3 닉네임을 입력하면 크루의 제적 위험자 여부를 확인할 수 있다.")
+    public class GetDisplayStatusTest {
+        @Test
+        @DisplayName("결석 2회를 경고 대상자로 판단할 수 있다.")
+        void test1() {
+            // given
+            AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
+                    DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, 0, 2);
+            LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, 2);
+            // when
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW, lastDate);
+            // then
+            assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.WARNING);
+        }
+
+        @ParameterizedTest(name = "결석 2회 지각 {0}회를 면담 대상자로 판단할 수 있다.")
+        @DisplayName("결석 2회 지각 n회를 면담 대상자로 판단할 수 있다.")
+        @ValueSource(ints = {3, 4, 5, 6})
+        void test2(int tardyCount) {
+            // given
+            AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
+                    DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, tardyCount, 2);
+            LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, tardyCount + 2);
+            // when
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW, lastDate);
+            // then
+            assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.ONE_ON_ONE);
+        }
+
+        @Test
+        @DisplayName("결석 5회를 지각 1회를 제적 대상자로 판단할 수 있다.")
+        void test3() {
+            // given
+            AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
+                    DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, 1, 5);
+            LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, 6);
+            // when
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW, lastDate);
+            // then
+            assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.EXPELLED);
+        }
     }
 
     @Test

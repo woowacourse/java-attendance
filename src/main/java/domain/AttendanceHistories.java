@@ -51,7 +51,7 @@ public class AttendanceHistories {
         return attendanceDateTimes.getAbsentCount(lastDate);
     }
 
-    public String getDisciplinaryStatus(Crew crew) {
+    public DisciplinaryStatus getDisciplinaryStatusOf(Crew crew, LocalDate lastDate) {
         return null;
     }
 
