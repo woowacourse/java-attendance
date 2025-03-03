@@ -14,6 +14,11 @@ public class InputView {
             4. 제적 위험자 확인
             Q. 종료
             """;
+    private static final String TITLE_NICKNAME = "닉네임을 입력해 주세요.";
+    private static final String TITLE_ATTENDANCE_TIME = "등교 시간을 입력해 주세요.";
+    private static final String TITLE_MODIFYING_NICKNAME = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
+    private static final String TITLE_MODIFYING_DAY = "수정하려는 날짜(일)를 입력해 주세요.";
+    private static final String TITLE_ASK_TIME = "언제로 변경하겠습니까?";
 
     public String readCommand(final LocalDate now) {
         System.out.printf(TITLE_COMMAND, TimeFormatter.makeDateMessage(now));
@@ -21,27 +26,27 @@ public class InputView {
     }
 
     public String readNickname() {
-        System.out.println(LINE + "닉네임을 입력해 주세요.");
+        System.out.println(LINE + TITLE_NICKNAME);
         return readLine();
     }
 
     public String readAttendanceTime() {
-        System.out.println("등교 시간을 입력해 주세요.");
+        System.out.println(TITLE_ATTENDANCE_TIME);
         return readLine();
     }
 
     public String readModifyingNickname() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        System.out.println(LINE + TITLE_MODIFYING_NICKNAME);
         return readLine();
     }
 
     public String readModifyingDay() {
-        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        System.out.println(TITLE_MODIFYING_DAY);
         return readLine();
     }
 
     public String readModifyingTime() {
-        System.out.println("언제로 변경하겠습니까?");
+        System.out.println(TITLE_ASK_TIME);
         return readLine();
     }
 

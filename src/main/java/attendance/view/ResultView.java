@@ -53,7 +53,7 @@ public class ResultView {
 
     public void showAttendance(final LocalDateTime attendanceTime, final AttendanceState attendanceState) {
         showBlankLine();
-        System.out.printf(TITLE_ATTENDANCE, TimeFormatter.makeDateTimeMessage(attendanceTime),
+        System.out.printf(TITLE_ATTENDANCE + LINE, TimeFormatter.makeDateTimeMessage(attendanceTime),
                 getAttendanceState(attendanceState));
     }
 
@@ -62,7 +62,7 @@ public class ResultView {
                                         final LocalTime modifyingTime,
                                         final AttendanceState afterAttendanceState) {
         showBlankLine();
-        System.out.printf(TITLE_MODIFYING, TimeFormatter.makeDateTimeMessage(previousDateTime),
+        System.out.printf(TITLE_MODIFYING + LINE, TimeFormatter.makeDateTimeMessage(previousDateTime),
                 getAttendanceState(previousAttendanceState), TimeFormatter.makeTimeMessage(modifyingTime),
                 getAttendanceState(afterAttendanceState));
     }
