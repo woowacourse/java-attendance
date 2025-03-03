@@ -2,13 +2,14 @@ package domain;
 
 import controller.command.AttendanceCheck;
 import controller.command.AttendanceCommand;
+import controller.command.AttendanceEdit;
 import java.util.Arrays;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public enum Command {
     CHECK(AttendanceCheck::new),
-    EDIT(null),
+    EDIT(AttendanceEdit::new),
     VIEW_ATTENDANCE_BY_CREW(null),
     VIEW_AT_RISK_MEMBERS(null),
     QUIT(null);
