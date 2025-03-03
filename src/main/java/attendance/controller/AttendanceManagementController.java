@@ -60,7 +60,8 @@ public class AttendanceManagementController {
     private void addAttendanceDateTimeEachNickname(
             final String line, final Map<String, List<LocalDateTime>> nicknameAttendanceDateTimes
     ) {
-        List<String> nicknameAndAttendanceDateTimes = Arrays.stream(line.split(",")).toList();
+        List<String> nicknameAndAttendanceDateTimes = Arrays.stream(line.split(","))
+                .toList();
         String nickname = nicknameAndAttendanceDateTimes.getFirst();
         LocalDateTime attendanceDateTime = LocalDateTime.parse(nicknameAndAttendanceDateTimes.getLast(),
                 ATTENDANCE_DATE_TIME_FORMATTER);
@@ -107,7 +108,7 @@ public class AttendanceManagementController {
 
     private void runAttendanceConfirmOperation(final Crews crews, final CrewAttendances crewAttendances) {
         Crew crew = crews.findCrewByNickname(inputView.readAttendanceConfirmNickname());
-        LocalTime attendanceTime = LocalTime.parse(inputView.readAttendanceConfirmTime());
+        LocalTime attendanceTime = inputView.readAttendanceConfirmTime();
         LocalDate todayDate = today.toLocalDate();
         crewAttendances.addAttendance(crew, new Attendance(todayDate.atTime(attendanceTime)));
         Attendance todayAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, todayDate);
@@ -117,9 +118,8 @@ public class AttendanceManagementController {
 
     private void runAttendanceModificationOperation(final Crews crews, final CrewAttendances crewAttendances) {
         Crew crew = crews.findCrewByNickname(inputView.readAttendanceModificationCrewNickname());
-        LocalDate modificationDate = LocalDate.of(today.getYear(), today.getMonth(),
-                inputView.readAttendanceModificationDate());
-        LocalTime modificationTime = LocalTime.parse(inputView.readAttendanceModificationTime());
+        LocalDate modificationDate = inputView.readAttendanceModificationDate();
+        LocalTime modificationTime = inputView.readAttendanceModificationTime();
         boolean hasAttendanceRecord = crewAttendances.hasCrewAttendanceByLocalDate(crew, modificationDate);
         Attendance originAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, modificationDate);
         crewAttendances.modifyCrewAttendanceByModificationDateTime(

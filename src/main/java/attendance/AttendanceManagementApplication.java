@@ -11,7 +11,7 @@ public class AttendanceManagementApplication {
     public static void main(String[] args) {
         LocalDateTime today = LocalDateTime.of(2025, 2, 28, 10, 0);
         AttendanceManagementController attendanceManagementController = new AttendanceManagementController(
-                new InputView(), new ResultView(), today
+                new InputView(today.toLocalDate()), new ResultView(), today
         );
 
         attendanceManagementController.run();
