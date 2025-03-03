@@ -1,0 +1,51 @@
+package domain;
+
+import java.util.Arrays;
+import java.util.function.Function;
+
+public enum RiskRank {
+
+    NOT_MANAGED("", (count) -> count < 2),
+    WARNING("경고", (count) -> count == 2),
+    INTERVIEW("면담", (count) -> count >= 3 && count <= 5),
+    EXPELLED("제적", (count) -> count > 5),
+    ;
+
+    private static final int ABSENT_PER_LATE = 3;
+
+    private final String description;
+    private final Function<Integer, Boolean> condition;
+
+    RiskRank(String description, Function<Integer, Boolean> condition) {
+        this.description = description;
+        this.condition = condition;
+    }
+
+    public static int getRiskWeight(int lateCount, int absentCount) {
+        int riskCount = lateCount + absentCount * ABSENT_PER_LATE;
+        if (riskCount < 0) {
+            throw new IllegalArgumentException(riskCount + ": 결석 횟수는 음수일 수 없습니다.");
+        }
+        return riskCount;
+    }
+
+    public static int getRiskCount(int lateCount, int absentCount) {
+        int riskCount = lateCount / ABSENT_PER_LATE + absentCount;
+        if (riskCount < 0) {
+            throw new IllegalArgumentException(riskCount + ": 결석 횟수는 음수일 수 없습니다.");
+        }
+        return riskCount;
+    }
+
+    public static RiskRank from(AttendanceStatusCount statusCount) {
+        int riskCount = getRiskCount(statusCount.lateCount(), statusCount.absentCount());
+        return Arrays.stream(values())
+                .filter(riskRank -> riskRank.condition.apply(riskCount))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("논리적으로 도달할 수 없는 예외입니다."));
+    }
+
+    public String getDescription() {
+        return description;
+    }
+}

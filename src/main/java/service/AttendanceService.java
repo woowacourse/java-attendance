@@ -1,111 +1,81 @@
 package service;
 
-import constant.CampusConstant;
+import controller.dto.ModifyAttendanceRequest;
+import controller.dto.MonthAttendanceStatisticsRequest;
+import controller.dto.RiskCrewsRequest;
+import controller.dto.SaveAttendanceRequest;
+import domain.AbstractAttendanceRecord;
 import domain.AttendanceRecord;
-import domain.AttendanceStatus;
-import domain.AttendanceStatusStatistics;
+import domain.AttendanceRecords;
+import domain.AttendanceStatusCount;
 import domain.Crew;
-import domain.Manage;
-import dto.AttendanceModifyRequest;
-import dto.AttendanceRequest;
-import dto.AttendanceResult;
-import dto.CrewAlmostExpelledResult;
-import dto.ModifiedResult;
-import dto.ModifiedResult.TimeAttendanceStatus;
-import dto.MonthRecord;
+import domain.Crews;
+import domain.RiskCrew;
+import domain.RiskRank;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.IntStream;
-import repository.CrewRepository;
-import util.DateTimeUtil;
+import service.dto.ModifyAttendanceRecordResponse;
+import service.dto.MonthAttendanceStatisticsResponse;
+import service.dto.RiskCrewsResponse;
+import service.dto.SaveAttendanceRecordResponse;
 
 public class AttendanceService {
-    public AttendanceResult insertAttendanceRecord(AttendanceRequest request) {
-        validateCampusTime(request.time());
-        LocalDate nowDate = DateTimeUtil.nowDate();
-        validateOffDay(nowDate);
-        Crew crew = CrewRepository.findByNickname(request.nickname());
-        AttendanceStatus status = crew.insertAttendanceTime(nowDate, request.time());
-        return AttendanceResult.of(DateTimeUtil.nowDate(), request.time(), status);
+
+    private final Crews crews;
+    private final AttendanceRecords attendanceRecords;
+
+    public AttendanceService(Crews crews, AttendanceRecords attendanceRecords) {
+        this.crews = crews;
+        this.attendanceRecords = attendanceRecords;
     }
 
-    private void validateOffDay(LocalDate date) {
-        if (DateTimeUtil.isOffDay(date)) {
-            throw new IllegalArgumentException(date + ": 주말 및 공휴일에는 출석을 받지 않습니다.");
+    public AttendanceService(boolean loadFromFile) {
+        if (loadFromFile) {
+            attendanceRecords = new AttendanceRecords(AttendanceRecordLoader.loadAttendanceRecordsFromFile());
+            crews = new Crews(attendanceRecords.findAllDistinctCrews());
+            return;
         }
+        crews = new Crews();
+        attendanceRecords = new AttendanceRecords();
     }
 
-    public ModifiedResult modifyAttendanceRecord(AttendanceModifyRequest request) {
-        validateCampusTime(request.time());
 
-        Crew crew = CrewRepository.findByNickname(request.nickname());
-        TimeAttendanceStatus before = TimeAttendanceStatus.of(crew, request.date());
-        crew.modifyAttendanceTime(request.date(), request.time());
-        TimeAttendanceStatus after = TimeAttendanceStatus.of(crew, request.date());
-
-        return new ModifiedResult(request.date(), before, after);
+    public SaveAttendanceRecordResponse saveAttendanceRecord(SaveAttendanceRequest request) {
+        Crew crew = crews.findByNickname(request.nickname());
+        AttendanceRecord willBeSaved = AttendanceRecord.of(crew, request.date(), request.time());
+        attendanceRecords.addIfAbsent(willBeSaved);
+        AttendanceRecord found = attendanceRecords.getByCrewAndDate(crew, request.date());
+        return SaveAttendanceRecordResponse.of(found);
     }
 
-    public MonthRecord getMonthAttendanceRecordsResult(String nickname) {
-        Crew crew = CrewRepository.findByNickname(nickname);
-        LocalDate now = DateTimeUtil.nowDate();
-        List<AttendanceRecord> attendanceRecords = getMonthAttendanceRecords(crew, now);
-        Manage manage = Manage.of(getAttendanceStatusStatistics(crew, now));
-        return new MonthRecord(
-                crew.getNickname(), attendanceRecords, getAttendanceStatusStatistics(crew, now), manage
-        );
+    public ModifyAttendanceRecordResponse modifyAttendanceRecord(ModifyAttendanceRequest request) {
+        Crew crew = crews.findByNickname(request.nickname());
+        AbstractAttendanceRecord before = attendanceRecords.findByCrewAndDate(crew, request.date());
+        AttendanceRecord after = AttendanceRecord.of(crew, request.date(), request.time());
+        attendanceRecords.updateOrAdd(after);
+
+        return new ModifyAttendanceRecordResponse(before, after);
     }
 
-    private List<AttendanceRecord> getMonthAttendanceRecords(Crew crew, LocalDate today) {
-        List<AttendanceRecord> attendanceRecords = new ArrayList<>();
-        List<LocalDate> notOffDates = IntStream.range(1, today.getDayOfMonth())
-                .mapToObj(today::withDayOfMonth)
-                .filter(date -> !DateTimeUtil.isOffDay(date))
+    public MonthAttendanceStatisticsResponse getMonthAttendanceStatistics(MonthAttendanceStatisticsRequest request) {
+        Crew crew = crews.findByNickname(request.nickname());
+        LocalDate from = request.from();
+        LocalDate to = request.to();
+
+        List<AbstractAttendanceRecord> records = attendanceRecords.getByCrewFromTo(crew, from, to);
+        AttendanceStatusCount statusCount = attendanceRecords.calculateAttendanceStatusCount(crew, from, to);
+        RiskRank riskRank = RiskRank.from(statusCount);
+        return new MonthAttendanceStatisticsResponse(records, statusCount, riskRank);
+    }
+
+    public RiskCrewsResponse findRiskCrews(RiskCrewsRequest request) {
+        LocalDate from = request.today().withDayOfMonth(1);
+        LocalDate to = request.today().minusDays(1);
+
+        List<RiskCrew> riskCrews = crews.findAllCrews().stream()
+                .map(crew -> RiskCrew.of(crew, attendanceRecords.calculateAttendanceStatusCount(crew, from, to)))
+                .filter(crew -> crew.riskRank() != RiskRank.NOT_MANAGED)
                 .toList();
-        notOffDates.forEach(date ->
-                attendanceRecords.add(new AttendanceRecord(date, crew.getAttendanceTimeByDate(date)))
-        );
-        return attendanceRecords;
-    }
-
-    public AttendanceStatusStatistics getAttendanceStatusStatistics(Crew crew, LocalDate today) {
-        Map<AttendanceStatus, Integer> statusCounter = new EnumMap<>(AttendanceStatus.class);
-        initializeStatusCounter(statusCounter);
-        List<LocalDate> notOffDates = IntStream.range(1, today.getDayOfMonth())
-                .mapToObj(today::withDayOfMonth)
-                .filter(date -> !DateTimeUtil.isOffDay(date))
-                .toList();
-        notOffDates.forEach(date -> {
-            AttendanceStatus attendanceStatus = crew.getAttendanceStatusByDate(date);
-            statusCounter.put(attendanceStatus, statusCounter.getOrDefault(attendanceStatus, 0) + 1);
-        });
-        return new AttendanceStatusStatistics(statusCounter);
-    }
-
-    private void initializeStatusCounter(Map<AttendanceStatus, Integer> result) {
-        Arrays.stream(AttendanceStatus.values()).forEach(status -> result.put(status, 0));
-    }
-
-    public List<CrewAlmostExpelledResult> getCrewsAlmostExpelled() {
-        List<Crew> crews = CrewRepository.findAll();
-        return crews.stream()
-                .map(crew -> {
-                    var attendanceStatusStatistics
-                            = getAttendanceStatusStatistics(crew, DateTimeUtil.nowDate());
-                    return new CrewAlmostExpelledResult(
-                            crew.getNickname(), attendanceStatusStatistics, Manage.of(attendanceStatusStatistics));
-                })
-                .toList();
-    }
-
-    private void validateCampusTime(LocalTime time) {
-        if (time.isBefore(CampusConstant.START_TIME) || time.isAfter(CampusConstant.END_TIME)) {
-            throw new IllegalArgumentException(time + ": 캠퍼스 운영시간이 아닙니다.");
-        }
+        return new RiskCrewsResponse(riskCrews);
     }
 }

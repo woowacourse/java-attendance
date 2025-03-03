@@ -1,66 +1,87 @@
 package controller;
 
-import dto.AttendanceModifyRequest;
-import dto.AttendanceRequest;
-import dto.OptionRequest;
+import controller.dto.ModifyAttendanceRequest;
+import controller.dto.MonthAttendanceStatisticsRequest;
+import controller.dto.RiskCrewsRequest;
+import controller.dto.SaveAttendanceRequest;
+import java.time.LocalDate;
 import service.AttendanceService;
-import util.ExceptionHandler;
+import service.dto.ModifyAttendanceRecordResponse;
+import service.dto.MonthAttendanceStatisticsResponse;
+import service.dto.RiskCrewsResponse;
+import service.dto.SaveAttendanceRecordResponse;
+import util.DateTimeUtil;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
     private final AttendanceService attendanceService;
+    private boolean isRunning;
 
     public AttendanceController(AttendanceService attendanceService) {
         this.attendanceService = attendanceService;
-        ResourceLoader.loadCrewRepository();
+
+        isRunning = true;
     }
 
     public void run() {
-        boolean isRunning = true;
-        do {
-            isRunning = executeMainMenu();
-        } while (isRunning);
-    }
-
-    private boolean executeMainMenu() {
-        boolean isRunning = true;
-        OptionRequest optionRequest = InputView.scanOption();
-        switch (optionRequest.option()) {
-            case "1" -> insertAttendanceRecord();
-            case "2" -> modifyAttendanceRecord();
-            case "3" -> printMonthAttendanceRecords();
-            case "4" -> printCrewsAlmostExpelled();
-            case "q", "Q" -> isRunning = false;
-            default -> System.out.println("존재하지 않는 옵션입니다.");
+        while (isRunning) {
+            Command command = Command.from(InputView.scanMenuCommand());
+            command.run(this);
         }
-        return isRunning;
     }
 
-    private void insertAttendanceRecord() {
-        ExceptionHandler.printErrorMessageWithoutExitSystem(() -> {
-            AttendanceRequest request = InputView.scanAttendance();
-            OutputView.printAttendanceResult(attendanceService.insertAttendanceRecord(request));
-        });
+    public void saveAttendanceRecord() {
+        String nickname = InputView.scanNickname();
+        LocalDate today = DateTimeUtil.nowDate();
+        String time = InputView.scanAttendanceTime();
+
+        SaveAttendanceRequest request = SaveAttendanceRequest.of(nickname, today, time);
+        SaveAttendanceRecordResponse response = attendanceService.saveAttendanceRecord(request);
+
+        OutputView.printSavedAttendanceRecord(response);
     }
 
-    private void modifyAttendanceRecord() {
-        ExceptionHandler.printErrorMessageWithoutExitSystem(() -> {
-            AttendanceModifyRequest request = InputView.scanModify();
-            OutputView.printModifiedResult(attendanceService.modifyAttendanceRecord(request));
-        });
+    public void modifyAttendanceRecord() {
+        String nickname = InputView.scanNicknameToModify();
+        LocalDate today = DateTimeUtil.nowDate();
+        int dayToModify = InputView.scanDayToModify();
+        String timeToModify = InputView.scanTimeToModify();
+
+        ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, today, dayToModify, timeToModify);
+        ModifyAttendanceRecordResponse response = attendanceService.modifyAttendanceRecord(request);
+
+        OutputView.printModifiedAttendanceRecord(response);
     }
 
-    private void printMonthAttendanceRecords() {
-        ExceptionHandler.printErrorMessageWithoutExitSystem(() -> {
-            String nickname = InputView.scanNickname();
-            OutputView.printMonthRecord(attendanceService.getMonthAttendanceRecordsResult(nickname));
-        });
+    public void printMonthAttendanceStatistics() {
+        String nickname = InputView.scanNickname();
+        LocalDate today = DateTimeUtil.nowDate();
+        LocalDate from = DateTimeUtil.getFirstDateOfMonth(today);
+        LocalDate to = DateTimeUtil.getYesterday(today);
+
+        MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(nickname, from, to);
+        MonthAttendanceStatisticsResponse response = attendanceService.getMonthAttendanceStatistics(request);
+
+        OutputView.printMonthAttendanceRecords(response.attendanceRecords());
+        OutputView.printMonthAttendanceStatusCount(response.attendanceStatusCount());
+        OutputView.printRiskRank(response.riskRank());
     }
 
-    private void printCrewsAlmostExpelled() {
-        ExceptionHandler.printErrorMessageWithoutExitSystem(() -> {
-            OutputView.printCrewsAlmostExpelled(attendanceService.getCrewsAlmostExpelled());
-        });
+    public void printRiskCrews() {
+        LocalDate today = DateTimeUtil.nowDate();
+
+        RiskCrewsRequest request = new RiskCrewsRequest(today);
+        RiskCrewsResponse response = attendanceService.findRiskCrews(request);
+
+        OutputView.printRiskCrews(response);
+    }
+
+    public void quit() {
+        isRunning = false;
+    }
+
+    public void printRetryMessage() {
+        System.out.println("존재하지 않는 커맨드입니다. 다시 입력해주세요.");
     }
 }

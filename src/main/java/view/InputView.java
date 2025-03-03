@@ -1,70 +1,59 @@
 package view;
 
-import dto.AttendanceModifyRequest;
-import dto.AttendanceRequest;
-import dto.OptionRequest;
-import java.time.LocalDate;
-import java.time.format.TextStyle;
-import java.util.Locale;
 import java.util.Scanner;
 import util.DateTimeUtil;
 import util.ExceptionHandler;
 
 public class InputView {
 
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner SCANNER = new Scanner(System.in);
 
-    public static OptionRequest scanOption() {
-        return ExceptionHandler.retryUntilSuccessWithReturn(() -> {
-            LocalDate now = DateTimeUtil.nowDate();
-            System.out.printf("""
-                            오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.
-                            1. 출석 확인
-                            2. 출석 수정
-                            3. 크루별 출석 기록 확인
-                            4. 제적 위험자 확인
-                            Q. 종료 
-                            """,
-                    now.getMonth().getValue(),
-                    now.getDayOfMonth(),
-                    now.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN)
-            );
-            String option = scanner.nextLine();
-            System.out.println();
-            return new OptionRequest(option);
-        });
-    }
-
-    public static AttendanceRequest scanAttendance() {
-        return ExceptionHandler.retryUntilSuccessWithReturn(() -> {
-            System.out.println("닉네임을 입력해 주세요.");
-            String nickname = scanner.nextLine();
-            System.out.println("등교 시간을 입력해 주세요.");
-            String time = scanner.nextLine();
-            System.out.println();
-            return AttendanceRequest.of(nickname, time);
-        });
-    }
-
-    public static AttendanceModifyRequest scanModify() {
-        return ExceptionHandler.retryUntilSuccessWithReturn(() -> {
-            System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-            String nickname = scanner.nextLine();
-            System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-            String day = scanner.nextLine();
-            System.out.println("언제로 변경하겠습니까?");
-            String time = scanner.nextLine();
-            System.out.println();
-            return AttendanceModifyRequest.of(nickname, day, time);
-        });
+    public static String scanMenuCommand() {
+        System.out.printf("""
+                오늘은 %s입니다. 기능을 선택해 주세요.
+                1. 출석 확인
+                2. 출석 수정
+                3. 크루별 출석 기록 확인
+                4. 제적 위험자 확인
+                Q. 종료       
+                """, DateTimeUtil.nowDate().format(DateTimeUtil.DATE_FORMAT));
+        return SCANNER.nextLine();
     }
 
     public static String scanNickname() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return SCANNER.nextLine();
+    }
+
+    public static String scanAttendanceTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        return SCANNER.nextLine();
+    }
+
+    public static String scanNicknameToModify() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return SCANNER.nextLine();
+    }
+
+    public static int scanDayToModify() {
         return ExceptionHandler.retryUntilSuccessWithReturn(() -> {
-            System.out.println("닉네임을 입력해 주세요.");
-            String nickname = scanner.nextLine();
-            System.out.println();
-            return nickname;
+            System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+            String day = SCANNER.nextLine();
+            validateInteger(day);
+            return Integer.parseInt(day);
         });
+    }
+
+    public static String scanTimeToModify() {
+        System.out.println("언제로 변경하겠습니까?");
+        return SCANNER.nextLine();
+    }
+
+    private static void validateInteger(String day) {
+        try {
+            Integer.parseInt(day);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(day + ": 정수가 아닙니다.");
+        }
     }
 }
