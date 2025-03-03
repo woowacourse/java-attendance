@@ -28,6 +28,10 @@ public class AttendanceBook {
         return attendances.get(findCrewByNickname(nickname));
     }
 
+    public List<String> findWarningCrews() {
+        return null;
+    }
+
     private Crew findCrewByNickname(String nickname) {
         return attendances.keySet()
                 .stream()
