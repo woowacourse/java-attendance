@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import util.DateUtil;
 
 public class AttendanceManager {
     private final Map<NickName, Attendances> attendanceManager;
@@ -21,18 +22,21 @@ public class AttendanceManager {
 
     public void attend(NickName nickName, AttendanceRecord attendanceRecord) {
         validateNameExist(nickName);
+        validateAttendAbleDate(attendanceRecord);
         Attendances attendances = attendanceManager.get(nickName);
         attendances.attend(attendanceRecord);
     }
 
     public boolean isAttended(NickName nickName, AttendanceRecord checkAttendanceRecord) {
         validateNameExist(nickName);
+        validateAttendAbleDate(checkAttendanceRecord);
         Attendances attendances = attendanceManager.get(nickName);
         return attendances.isAttended(checkAttendanceRecord);
     }
 
     public void edit(NickName nickName, AttendanceRecord editAttendanceRecord) {
         validateNameExist(nickName);
+        validateAttendAbleDate(editAttendanceRecord);
         Attendances attendances = attendanceManager.get(nickName);
         attendances.edit(editAttendanceRecord);
     }
@@ -53,6 +57,13 @@ public class AttendanceManager {
 
     private boolean isRegistered(NickName nickName) {
         return attendanceManager.containsKey(nickName);
+    }
+
+    private void validateAttendAbleDate(AttendanceRecord attendanceRecord) {
+        if (!DateUtil.isAttendAbleDate(attendanceRecord.getDate()
+                .getDayOfMonth())) {
+            throw new IllegalArgumentException("등교일이 아닙니다.");
+        }
     }
 
     @Override

@@ -34,6 +34,26 @@ public class AttendanceManagerTest {
         }).isInstanceOf(IllegalArgumentException.class));
     }
 
+    @ParameterizedTest
+    @DisplayName("휴일 및 주말에는 출석을 등록하면 예외가 발생한다")
+    @CsvSource(value = {"1", "7", "8", "14", "15", "21", "22", "25", "28", "29"})
+    void should_throw_exception_when_attend_on_holiday_or_weekend(String date) {
+        // given
+        NickName nickName = new NickName("후우");
+        AttendanceRecord attendanceRecord = AttendanceRecord.of(date, "10:00");
+        AttendanceManager attendanceManager = new AttendanceManager();
+        attendanceManager.register(nickName);
+
+        // when & then
+        assertAll(() -> assertThatThrownBy(() -> {
+            attendanceManager.attend(nickName, attendanceRecord);
+        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
+            attendanceManager.isAttended(nickName, attendanceRecord);
+        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
+            attendanceManager.edit(nickName, attendanceRecord);
+        }).isInstanceOf(IllegalArgumentException.class));
+    }
+
     @Nested
     @DisplayName("출석 등록 테스트")
     class AttendTest {
