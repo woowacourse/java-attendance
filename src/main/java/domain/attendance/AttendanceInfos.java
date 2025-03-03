@@ -57,47 +57,33 @@ public class AttendanceInfos {
     }
 
     public AttendanceCounts countsByDate(final LocalDate date) {
-        int attendanceCount = 0;
-        int tardinessCount = 0;
-        int absenceCount = 0;
-
-        // TODO : Q6
+        AttendanceCounts attendanceCounts = AttendanceCounts.initCounts();
         for (int day = 1; day < date.getDayOfMonth(); day++) {
-            if (isWeekend(LocalDate.of(date.getYear(), date.getMonth(), day))) {
+            if (currentDateIsWeekend(date, day)) {
                 continue;
             }
-            CampusDate currentDate = CampusDate.ofDateWithDay(date, day);
-            if (notHaveInfoByDate(currentDate)) {
-                absenceCount++;
-                continue;
-            }
-            AttendanceStatus attendanceStatus = findInfoByDate(currentDate).getAttendanceStatus();
-            if (attendanceStatus == AttendanceStatus.ATTENDANCE) {
-                attendanceCount++;
-                continue;
-            }
-            if (attendanceStatus == AttendanceStatus.ABSENCE) {
-                absenceCount++;
-                continue;
-            }
-            if (attendanceStatus == AttendanceStatus.TARDINESS) {
-                tardinessCount++;
-                continue;
-            }
+            attendanceCounts = addAttendanceCounts(CampusDate.ofDateWithDay(date, day), attendanceCounts);
         }
-        return AttendanceCounts.ofStatusCounts(attendanceCount, tardinessCount, absenceCount);
+        return attendanceCounts;
     }
 
-    private boolean isWeekend(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+    private boolean currentDateIsWeekend(LocalDate date, int day) {
+        LocalDate currentDate = LocalDate.of(date.getYear(), date.getMonth(), day);
+        return currentDate.getDayOfWeek() == DayOfWeek.SATURDAY || currentDate.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
+    private AttendanceCounts addAttendanceCounts(CampusDate currentCampusDate, AttendanceCounts attendanceCounts) {
+        if (!hasInfoByDate(currentCampusDate)) {
+            attendanceCounts = attendanceCounts.plusAttendanceCounts(AttendanceStatus.ABSENCE);
+            return attendanceCounts;
+        }
+        attendanceCounts = attendanceCounts.plusAttendanceCounts(
+                findInfoByDate(currentCampusDate).getAttendanceStatus());
+        return attendanceCounts;
     }
 
     private boolean ifDayEqual(final CampusDate campusDate, final AttendanceInfo attendanceInfo) {
         return attendanceInfo.getDay() == campusDate.getDay();
-    }
-
-    private boolean notHaveInfoByDate(CampusDate campusDate) {
-        return !hasInfoByDate(campusDate);
     }
 
     private AttendanceInfo modifyInfoIfSameDay(final CampusDate campusDate, final CampusTime campusTime,

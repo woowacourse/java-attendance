@@ -6,6 +6,7 @@ import static domain.attendance.constant.AttendanceRiskLevel.NORMAL;
 import static domain.attendance.constant.AttendanceRiskLevel.WARNING;
 
 import domain.attendance.constant.AttendanceRiskLevel;
+import domain.attendance.constant.AttendanceStatus;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -21,8 +22,25 @@ public class AttendanceCounts {
         this.absenceCount = absenceCount;
     }
 
+    public static AttendanceCounts initCounts() {
+        return new AttendanceCounts(0, 0, 0);
+    }
+
     public static AttendanceCounts ofStatusCounts(final int attendanceCount, final int tardinessCount,
                                                   final int absenceCount) {
+        return new AttendanceCounts(attendanceCount, tardinessCount, absenceCount);
+    }
+
+    public AttendanceCounts plusAttendanceCounts(AttendanceStatus status) {
+        if (status == AttendanceStatus.ATTENDANCE) {
+            return new AttendanceCounts(attendanceCount + 1, tardinessCount, absenceCount);
+        }
+        if (status == AttendanceStatus.TARDINESS) {
+            return new AttendanceCounts(attendanceCount, tardinessCount + 1, absenceCount);
+        }
+        if (status == AttendanceStatus.ABSENCE) {
+            return new AttendanceCounts(attendanceCount, tardinessCount, absenceCount + 1);
+        }
         return new AttendanceCounts(attendanceCount, tardinessCount, absenceCount);
     }
 
