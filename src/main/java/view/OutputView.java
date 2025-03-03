@@ -1,121 +1,108 @@
 package view;
 
-import controller.facade.Menu;
-import domain.attendance.Attendance;
-import domain.crew.Crew;
-import domain.date.CustomDate;
-import domain.attendance.AttendanceStatus;
-import domain.crew.CrewStatus;
-import java.time.LocalTime;
-import service.dto.AttendanceHistoryResponse;
-import service.dto.AttendanceModifyResponse;
-import service.dto.DisenrollmentCheckResponse;
-
-import java.time.LocalDateTime;
-import java.util.*;
-import view.format.CustomDateTimeFormatter;
+import common.Campus;
+import common.DateTimeFormat;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import model.attendance.Attendance;
+import model.attendance.AttendanceStatistic;
+import model.attendance.AttendanceStatus;
+import model.attendance.Crew;
+import model.attendance.PenaltyStatus;
 
 public class OutputView {
-
-    public void printDateAndMenus() {
-        String formattedDate = CustomDateTimeFormatter.formatDateAndDay(CustomDate.now());
-        System.out.printf("오늘은 %s입니다. 기능을 선택해 주세요.%n", formattedDate);
-
-        Arrays.stream(Menu.values()).forEach(menu -> {
-            System.out.printf("%s. %s%n", menu.getInputValue(), menu.getExpression());
-        });
-    }
-
-    public void printAttendanceResult(Attendance attendance) {
-        LocalDateTime time = attendance.getTime();
-        String formattedTime = CustomDateTimeFormatter.formatTime(time);
-        String formattedDate = CustomDateTimeFormatter.formatDateAndDay(time);
-        System.out.printf("%s %s (%s)\n", formattedDate, formattedTime, attendance.getStatus().getExpression());
-    }
-
-    public void printExceptionMessage(String message) {
-        System.out.println(message);
-    }
-
-    public void recommendModifyFunction(String message) {
-        System.out.println(message + " 수정 기능을 이용해주세요.");
-    }
-
-    public void printModifyResult(AttendanceModifyResponse response) {
-        String formattedBeforeDate = CustomDateTimeFormatter.formatDateAndDay(response.beforeTime());
-        String formattedBeforeTime = CustomDateTimeFormatter.formatTime(response.beforeTime());
-        String formattedAfterTime = CustomDateTimeFormatter.formatTime(response.afterTime());
-        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!\n",
-                formattedBeforeDate,
-                formattedBeforeTime,
-                response.beforeStatus().getExpression(),
-                formattedAfterTime,
-                response.afterStatus().getExpression()
+    public void printAttendanceRegisterResult(Attendance newAttendance) {
+        System.out.println();
+        System.out.printf("%s %s (%s)%n",
+                newAttendance.getDate().format(DateTimeFormat.MONTH_DATE_DAY_FORMATTER),
+                newAttendance.getTime().format(DateTimeFormat.HOUR_MINUTE_FORMATTER),
+                newAttendance.findStatus().getMeaning()
         );
     }
 
-    public void printHistoryResult(
-            Crew crew,
-            List<AttendanceHistoryResponse> histories,
-            Map<AttendanceStatus, Integer> attendanceResult,
-            CrewStatus crewStatus
-    ) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n", crew.getName());
-        printHistories(histories);
-        printAttendanceCount(attendanceResult);
-        printCrewStatus(crewStatus);
+    public void printExceptionMessage(String message) {
+        System.out.println("[ERROR] " + message);
     }
 
-    private void printHistories(List<AttendanceHistoryResponse> histories) {
-        histories.forEach(response -> {
-            String formattedDate = CustomDateTimeFormatter.formatDateAndDay(
-                    LocalDateTime.of(response.date(), response.time().orElse(LocalTime.of(0, 0))));
-            String formattedTime = getFormattedTime(response);
-            String status = response.status().getExpression();
-            System.out.printf("%s %s (%s)\n", formattedDate, formattedTime, status);
-        });
+    public void printAttendanceModifyResult(Attendance oldAttendance, Attendance newAttendance) {
+        System.out.println();
+        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n",
+                oldAttendance.getDate().format(DateTimeFormat.MONTH_DATE_DAY_FORMATTER),
+                getAttendanceTimeExpression(oldAttendance),
+                oldAttendance.findStatus().getMeaning(),
+                getAttendanceTimeExpression(newAttendance),
+                newAttendance.findStatus().getMeaning()
+        );
     }
 
-    private void printAttendanceCount(Map<AttendanceStatus, Integer> attendanceResult) {
-        attendanceResult.keySet().forEach(attendanceStatus -> {
-            System.out.printf("%s: %d회\n", attendanceStatus.getExpression(), attendanceResult.get(attendanceStatus));
-        });
+    public void printAttendanceHistories(List<Attendance> attendanceHistories, String crewName) {
+        System.out.println();
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", crewName);
+
+        for (Attendance attendance : attendanceHistories) {
+            System.out.printf("%s %s (%s)%n",
+                    attendance.getDate().format(DateTimeFormat.MONTH_DATE_DAY_FORMATTER),
+                    getAttendanceTimeExpression(attendance),
+                    attendance.findStatus().getMeaning()
+            );
+        }
+
     }
 
-    private void printCrewStatus(CrewStatus crewStatus) {
-        if (crewStatus.equals(CrewStatus.NORMAL)) {
+    public void printAttendanceStatusHistory(Map<AttendanceStatus, Integer> attendanceStatusHistory) {
+        System.out.println();
+        for (AttendanceStatus status : AttendanceStatus.findAllInAscendingOrder()) {
+            System.out.printf("%s: %d회%n", status.getMeaning(), attendanceStatusHistory.get(status));
+        }
+    }
+
+    public void printPenaltyStatus(PenaltyStatus penaltyStatus) {
+        if (penaltyStatus == PenaltyStatus.NONE) {
             return;
         }
-        System.out.printf("%s 대상자입니다.\n", crewStatus.getExpression());
+        System.out.println();
+        System.out.printf("%s 대상자입니다.%n", penaltyStatus.getMeaning());
     }
 
-    public void printDisenrollmentCheckResult(List<DisenrollmentCheckResponse> responses) {
-        System.out.println("제적 위험자 조회 결과");
-        List<DisenrollmentCheckResponse> sortedResponse = getSortedResponse(responses);
-        sortedResponse.forEach(response -> {
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
-                    response.name(),
-                    response.absenceCount(),
-                    response.lateCount(),
-                    response.crewStatus()
-            );
-        });
-    }
-
-    private static String getFormattedTime(AttendanceHistoryResponse response) {
-        String formattedTime = "--:--";
-        if (response.time().isPresent()) {
-            formattedTime = CustomDateTimeFormatter.formatTime(
-                    LocalDateTime.of(response.date(), response.time().get()));
+    private String getAttendanceTimeExpression(Attendance attendance) {
+        if (attendance.getTime().equals(Campus.NONE_ATTENDANCE_TIME)) {
+            return "--:--";
         }
-        return formattedTime;
+        return attendance.getTime().format(DateTimeFormat.HOUR_MINUTE_FORMATTER);
     }
 
-    private List<DisenrollmentCheckResponse> getSortedResponse(List<DisenrollmentCheckResponse> responses) {
-        return responses.stream()
-                .sorted(Comparator.comparing(DisenrollmentCheckResponse::convertedAbsenceCount)
-                        .reversed()
-                        .thenComparing(DisenrollmentCheckResponse::name))
-                .toList();
+    public void printPenaltyResult(Map<Crew, AttendanceStatistic> penaltyTargets) {
+        System.out.println();
+        System.out.println("제적 위험자 조회 결과");
+        Map<Crew, AttendanceStatistic> sortedPenaltyTargets = sortStatistics(penaltyTargets);
+        for (Crew crew : sortedPenaltyTargets.keySet()) {
+            AttendanceStatistic statistic = penaltyTargets.get(crew);
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                    crew.getName(),
+                    statistic.getAttendanceCount().get(AttendanceStatus.ABSENCE),
+                    statistic.getAttendanceCount().get(AttendanceStatus.LATE),
+                    statistic.getPenaltyStatus().getMeaning()
+            );
+        }
+    }
+
+    private Map<Crew, AttendanceStatistic> sortStatistics(Map<Crew, AttendanceStatistic> origin) {
+        Map<Crew, AttendanceStatistic> sorted = new HashMap<>();
+        origin.entrySet().stream()
+                .sorted(Comparator.comparing((Map.Entry<Crew, AttendanceStatistic> entrySet) -> {
+                                    Map<AttendanceStatus, Integer> attendanceCount = entrySet.getValue().getAttendanceCount();
+                                    return PenaltyStatus.calculateFinalAbsenceCount(
+                                            attendanceCount.get(AttendanceStatus.LATE),
+                                            attendanceCount.get(AttendanceStatus.ABSENCE)
+                                    );
+                                }).reversed()
+                                .thenComparing((Map.Entry<Crew, AttendanceStatistic> entrySet) -> entrySet.getKey().getName())
+                )
+                .forEach((Map.Entry<Crew, AttendanceStatistic> entrySet) -> {
+                    sorted.put(entrySet.getKey(), entrySet.getValue());
+                });
+        return sorted;
     }
 }
