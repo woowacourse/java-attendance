@@ -80,13 +80,16 @@ public class AttendanceBook {
 
         return attendances.keySet()
                 .stream()
-                .map(name -> {
-                    int absent = getAttendanceStatusCount(name, AttendanceStatus.ABSENT);
-                    int late = getAttendanceStatusCount(name, AttendanceStatus.LATE);
-                    return new ExpulsionCandidate(name, absent, late, AcademicStatus.getAcademicStatus(late, absent));
-                })
+                .map(this::getExpulsionCandidate)
                 .filter(crew -> crew.status() == academicStatus)
                 .sorted(Comparator.comparing(ExpulsionCandidate::absent).thenComparing(ExpulsionCandidate::name))
                 .toList();
+    }
+
+    private ExpulsionCandidate getExpulsionCandidate(final String name) {
+
+        int absent = getAttendanceStatusCount(name, AttendanceStatus.ABSENT);
+        int late = getAttendanceStatusCount(name, AttendanceStatus.LATE);
+        return new ExpulsionCandidate(name, absent, late, AcademicStatus.getAcademicStatus(late, absent));
     }
 }
