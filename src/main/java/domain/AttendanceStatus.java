@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
@@ -7,19 +8,12 @@ public enum AttendanceStatus {
 
     public static AttendanceStatus calculateAttendanceStatus(AttendanceRecord attendanceRecord) {
         final LocalTime time = attendanceRecord.getTime();
-        if (time == null) {
+        final DayOfWeek dayOfWeek = attendanceRecord.getDate()
+                .getDayOfWeek();
+        if (time == null || time.isAfter(AttendanceTimeInfo.getAbsenceTime(dayOfWeek))) {
             return ABSENT;
         }
-        if (attendanceRecord.isSameDate(9) && time.isAfter(LocalTime.of(13, 30))) {
-            return ABSENT;
-        }
-        if (attendanceRecord.isSameDate(9) && time.isAfter(LocalTime.of(13, 5))) {
-            return LATE;
-        }
-        if (attendanceRecord.isSameDate(10) && time.isAfter(LocalTime.of(10, 30))) {
-            return ABSENT;
-        }
-        if (attendanceRecord.isSameDate(10) && time.isAfter(LocalTime.of(10, 5))) {
+        if (time.isAfter(AttendanceTimeInfo.getLateLocalTime(dayOfWeek))) {
             return LATE;
         }
         return ATTENDANT;
