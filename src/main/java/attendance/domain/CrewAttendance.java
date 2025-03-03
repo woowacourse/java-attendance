@@ -19,6 +19,7 @@ public class CrewAttendance {
     }
 
     public void add(final LocalDateTime attendance) {
+        Campus.validateOperationDay(attendance);
         validateDuplicateDate(attendance);
         attendances.add(Attendance.of(attendance));
     }
@@ -35,6 +36,7 @@ public class CrewAttendance {
     }
 
     public void modify(final LocalDateTime newAttendance) {
+        Campus.validateOperationDay(newAttendance);
         Attendance prevAttendance = getAttendanceOn(LocalDate.from(newAttendance));
         attendances.remove(prevAttendance);
         attendances.add(Attendance.of(newAttendance));
