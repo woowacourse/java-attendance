@@ -4,11 +4,15 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import util.loader.FileLoader;
 import util.parser.DateTimeParser;
+import util.parser.FileParser;
 
 @Nested
 public class CoachTest {
@@ -20,8 +24,9 @@ public class CoachTest {
         @Test
         @DisplayName("코치는 평일에 크루를 출석시킬 수 있다.")
         void attendCrew() {
-            AttendanceBook attendanceBook = new AttendanceBook();
-            attendanceBook.initializeCrewRecords(FileLoader.loadCSV("src/test/resources/attendances.csv"));
+            Scanner scanner = FileLoader.loadCSV("src/test/resources/attendances.csv");
+            Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
+            AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
             Coach coach = new Coach(attendanceBook);
             String name = "빙봉";
@@ -33,8 +38,9 @@ public class CoachTest {
         @Test
         @DisplayName("코치는 휴일에 크루를 출석시킬 수 없다.")
         void notAttendCrewInHoliday() {
-            AttendanceBook attendanceBook = new AttendanceBook();
-            attendanceBook.initializeCrewRecords(FileLoader.loadCSV("src/test/resources/attendances.csv"));
+            Scanner scanner = FileLoader.loadCSV("src/test/resources/attendances.csv");
+            Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
+            AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
             Coach coach = new Coach(attendanceBook);
             String name = "빙봉";
@@ -46,8 +52,9 @@ public class CoachTest {
         @Test
         @DisplayName("코치는 운영시간에 크루를 출석시킬 수 있다.")
         void notAttendCrewInOperatingTime() {
-            AttendanceBook attendanceBook = new AttendanceBook();
-            attendanceBook.initializeCrewRecords(FileLoader.loadCSV("src/test/resources/attendances.csv"));
+            Scanner scanner = FileLoader.loadCSV("src/test/resources/attendances.csv");
+            Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
+            AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
             Coach coach = new Coach(attendanceBook);
             String name = "빙봉";
@@ -64,8 +71,9 @@ public class CoachTest {
         @Test
         @DisplayName("코치는 평일의 기록을 수정시킬 수 있다.")
         void editCrew() {
-            AttendanceBook attendanceBook = new AttendanceBook();
-            attendanceBook.initializeCrewRecords(FileLoader.loadCSV("src/test/resources/attendances.csv"));
+            Scanner scanner = FileLoader.loadCSV("src/test/resources/attendances.csv");
+            Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
+            AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
             Coach coach = new Coach(attendanceBook);
             String name = "빙봉";
@@ -77,8 +85,9 @@ public class CoachTest {
         @Test
         @DisplayName("코치는 휴일의 기록을 수정시킬 수 없다.")
         void notEditCrewInHoliday() {
-            AttendanceBook attendanceBook = new AttendanceBook();
-            attendanceBook.initializeCrewRecords(FileLoader.loadCSV("src/test/resources/attendances.csv"));
+            Scanner scanner = FileLoader.loadCSV("src/test/resources/attendances.csv");
+            Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
+            AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
             Coach coach = new Coach(attendanceBook);
             String name = "빙봉";
@@ -90,8 +99,9 @@ public class CoachTest {
         @Test
         @DisplayName("코치는 운영시간 외의 시간으로 기록을 수정시킬 수 없다.")
         void notEditCrewInOperatingTime() {
-            AttendanceBook attendanceBook = new AttendanceBook();
-            attendanceBook.initializeCrewRecords(FileLoader.loadCSV("src/test/resources/attendances.csv"));
+            Scanner scanner = FileLoader.loadCSV("src/test/resources/attendances.csv");
+            Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
+            AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
             Coach coach = new Coach(attendanceBook);
             String name = "빙봉";

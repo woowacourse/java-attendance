@@ -10,9 +10,13 @@ import domain.Penalty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import util.loader.FileLoader;
 import util.parser.DateTimeParser;
+import util.parser.FileParser;
 import view.InputView;
 import view.OutputView;
 
@@ -28,16 +32,12 @@ public class AttendanceController {
     public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.attendanceBook = new AttendanceBook();
+        this.attendanceBook = createAttendanceBook();
         this.coach = new Coach(attendanceBook);
     }
 
     public void start() {
-        handleException(() -> {
-            attendanceBook.initializeCrewRecords(
-                FileLoader.loadCSV("src/main/resources/attendances.csv"));
-            executeFeature();
-        });
+        handleException(this::executeFeature);
     }
 
     protected void attendanceCheck() {
@@ -110,6 +110,17 @@ public class AttendanceController {
             action.run();
             featureNumber = inputView.readFeature(localDate);
         }
+    }
+
+    private AttendanceBook createAttendanceBook() {
+        Map<String, List<LocalDateTime>> attendanceData = new HashMap<>();
+        try {
+            Scanner scanner = FileLoader.loadCSV("src/main/resources/attendances.csv");
+            attendanceData = FileParser.parseScannerToMap(scanner);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+        }
+        return new AttendanceBook(attendanceData);
     }
 
     private void handleException(Runnable action) {

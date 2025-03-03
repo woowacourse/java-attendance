@@ -2,15 +2,12 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.stream.Collectors;
-import util.parser.DateTimeParser;
 
 public class AttendanceBook {
 
@@ -20,8 +17,8 @@ public class AttendanceBook {
 
     private final Map<String, Crew> crewRecords;
 
-    public AttendanceBook() {
-        this.crewRecords = new HashMap<>();
+    public AttendanceBook(Map<String, List<LocalDateTime>> attendanceData) {
+        this.crewRecords = createCrews(attendanceData);
     }
 
     public int countCrew() {
@@ -48,19 +45,6 @@ public class AttendanceBook {
 
         Crew crew = crewRecords.get(name);
         return crew.updateDailyRecord(editedDateTime);
-    }
-
-    public void initializeCrewRecords(Scanner scanner) {
-        Map<String, List<LocalDateTime>> result = new HashMap<>();
-        while (scanner.hasNextLine()) {
-            String[] attributes = scanner.nextLine().split(",");
-            String name = attributes[0];
-            LocalDateTime dateTime = DateTimeParser.parseStringToDateTime(attributes[1]);
-
-            result.putIfAbsent(name, new ArrayList<>());
-            result.get(name).add(dateTime);
-        }
-        createCrews(result);
     }
 
     public Map<String, Crew> findWarningCrew(LocalDate startDate, LocalDate endDate) {
@@ -102,12 +86,14 @@ public class AttendanceBook {
         return AttendanceStatus.countStatus(records);
     }
 
-    private void createCrews(Map<String, List<LocalDateTime>> result) {
-        for (String name : result.keySet()) {
-            List<LocalDateTime> dailyRecords = result.get(name);
-            crewRecords.put(name, new Crew());
-            crewRecords.get(name).initializeDailyRecords(dailyRecords);
+    private Map<String, Crew> createCrews(Map<String, List<LocalDateTime>> attendanceData) {
+        Map<String, Crew> records = new HashMap<>();
+        for (String name : attendanceData.keySet()) {
+            List<LocalDateTime> dailyRecords = attendanceData.get(name);
+            records.put(name, new Crew());
+            records.get(name).initializeDailyRecords(dailyRecords);
         }
+        return records;
     }
 
     private void validateRegisteredCrew(String name) {
