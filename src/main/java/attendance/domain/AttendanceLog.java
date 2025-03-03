@@ -14,6 +14,12 @@ public class AttendanceLog {
 
     public Attendance registerAttendance(LocalDateTime attendanceDateTime) {
         Attendance attendance = new Attendance(attendanceDateTime);
+        attendanceLog.stream()
+            .filter(attendance1 -> attendance1.getAttendanceDate().equals(attendanceDateTime.toLocalDate()))
+            .findFirst()
+            .ifPresent(attendance1 -> {
+                throw new IllegalArgumentException("이미 해당 날짜에 출석이 등록되어 있습니다. 수정 기능을 이용해주세요");
+            });
         attendanceLog.add(attendance);
         return attendance;
     }

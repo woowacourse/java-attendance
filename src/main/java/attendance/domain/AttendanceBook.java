@@ -19,6 +19,7 @@ public class AttendanceBook {
     public Attendance registerAttendance(Crew crew, LocalDateTime newAttendanceDateTime) {
         validateCrewExistance(crew);
         AttendanceLog attendanceLog = attendanceRecord.get(crew);
+
         return attendanceLog.registerAttendance(newAttendanceDateTime);
     }
 

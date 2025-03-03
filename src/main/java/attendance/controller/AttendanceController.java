@@ -49,12 +49,15 @@ public class AttendanceController {
     private void createAttendance() {
         String inputCrewName = inputView.inputAttendanceCrew();
         Crew crew = new Crew(inputCrewName);
-
         String inputAttendanceDateTime = inputView.inputAttendanceDateTime();
         LocalDateTime attendanceDateTime = UserInputParser.parseAttendanceTime(inputAttendanceDateTime);
-        Attendance attendance = attendanceBook.registerAttendance(crew, attendanceDateTime);
-        AttendanceResult attendanceResult = AttendanceResult.from(attendance);
-        outputView.displayAttendanceResult(attendanceResult);
+        try {
+            Attendance attendance = attendanceBook.registerAttendance(crew, attendanceDateTime);
+            AttendanceResult attendanceResult = AttendanceResult.from(attendance);
+            outputView.displayAttendanceResult(attendanceResult);
+        } catch (IllegalArgumentException e) {
+            outputView.displayExistingAttedanceMessage(e.getMessage());
+        }
     }
 
     private void modifyAttendance() {
