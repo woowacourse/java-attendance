@@ -1,5 +1,7 @@
 package model;
 
+import util.HolidayManager;
+
 import java.time.LocalDateTime;
 
 public class Attendance implements Comparable<Attendance>{

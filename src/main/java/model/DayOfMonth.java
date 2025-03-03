@@ -12,7 +12,7 @@ public class DayOfMonth {
     }
 
     public static DayOfMonth of(final String valueInput) {
-        int value = parseInt(valueInput);
+        final int value = parseInt(valueInput);
         return new DayOfMonth(value);
     }
 

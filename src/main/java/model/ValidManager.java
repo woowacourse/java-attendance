@@ -1,5 +1,7 @@
 package model;
 
+import util.HolidayManager;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.HashSet;

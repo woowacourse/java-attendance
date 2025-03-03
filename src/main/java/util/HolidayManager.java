@@ -1,4 +1,6 @@
-package model;
+package util;
+
+import model.AttendanceDateTime;
 
 import java.util.HashSet;
 import java.util.Set;
