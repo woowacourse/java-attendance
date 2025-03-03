@@ -1,6 +1,6 @@
 package model;
 
-import java.util.EnumMap;
+import java.util.Map;
 
 public enum PunishmentType {
 
@@ -9,7 +9,7 @@ public enum PunishmentType {
     EXPULSION,
     NONE;
 
-    public static PunishmentType find(EnumMap<AttendanceType, Integer> attendanceTotal) {
+    public static PunishmentType find(Map<AttendanceType, Integer> attendanceTotal) {
         Integer absenceTotal = attendanceTotal.get(AttendanceType.ABSENCE);
         if (absenceTotal > 5) {
             return EXPULSION;

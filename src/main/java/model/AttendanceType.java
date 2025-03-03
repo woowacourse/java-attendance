@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public enum AttendanceType {
 
@@ -29,8 +30,8 @@ public enum AttendanceType {
         return SUCCESS;
     }
 
-    public static EnumMap<AttendanceType, Integer> calculateTotal(List<Attendance> attendances) {
-        EnumMap<AttendanceType, Integer> attendanceTotal = new EnumMap<>(AttendanceType.class);
+    public static Map<AttendanceType, Integer> calculateTotal(List<Attendance> attendances) {
+        Map<AttendanceType, Integer> attendanceTotal = new EnumMap<>(AttendanceType.class);
 
         Arrays.stream(AttendanceType.values())
                 .forEach(attendanceType -> attendanceTotal.put(attendanceType, 0));

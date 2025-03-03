@@ -1,7 +1,7 @@
 package dto;
 
-import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import model.AttendanceType;
 import model.Crew;
 import model.PunishmentType;
@@ -12,7 +12,7 @@ public record AttendanceRiskCrewsResponse(
 
     public record AttendanceRiskCrewResponse(
             Crew crew,
-            EnumMap<AttendanceType, Integer> attendanceTotal,
+            Map<AttendanceType, Integer> attendanceTotal,
             PunishmentType punishmentType
     ) {
     }

@@ -17,7 +17,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -86,7 +85,7 @@ public class Attendances {
         List<Attendance> filteredAttendances = getAttendancesByCrew(crew).stream()
                 .filter(attendance -> attendance.getCheckInDate().isBefore(dateTimeGenerator.now()))
                 .toList();
-        EnumMap<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(filteredAttendances);
+        Map<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(filteredAttendances);
         PunishmentType punishmentType = PunishmentType.find(attendanceTotal);
 
         return new AttendanceHistoryResponse(crew.getNickname(), filteredAttendances, attendanceTotal, punishmentType);

@@ -7,8 +7,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -138,7 +138,7 @@ class AttendanceTypeTest {
         List<Attendance> attendances = this.attendances.getAttendancesByCrew(crew);
 
         // when
-        EnumMap<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(attendances);
+        Map<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(attendances);
 
         // then
         Assertions.assertAll(
