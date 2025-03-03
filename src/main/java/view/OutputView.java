@@ -1,10 +1,13 @@
 package view;
 
 import domain.AttendanceDateTime;
+import domain.AttendanceDateTimes;
 import domain.AttendanceStatus;
+import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.NoSuchElementException;
 
 public class OutputView {
     private final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("M월 d일 E요일");
@@ -32,9 +35,31 @@ public class OutputView {
         );
     }
 
+    public void displayAttendanceDateTimes(Crew crew, AttendanceDateTimes attendanceDateTimes, LocalDate today) {
+        System.out.printf("%n%s의 출석 기록입니다.%n%n", crew.nickname());
+
+        for (LocalDate date = LocalDate.of(2025, 2, 11); date.isBefore(today); date = date.plusDays(1)) {
+            displayAttendanceDateTime(attendanceDateTimes, date);
+        }
+    }
+
+    private void displayAttendanceDateTime(AttendanceDateTimes attendanceDateTimes, LocalDate date) {
+        try {
+            AttendanceDateTime attendanceDateTime = attendanceDateTimes.get(date);
+            System.out.printf(toAttendanceRecordFormat(attendanceDateTime));
+        } catch (NoSuchElementException e) {
+            System.out.printf(toEmptyRecordFormat(date));
+        }
+        System.out.println();
+    }
+
     private String toAttendanceRecordFormat(AttendanceDateTime attendanceDateTime) {
         LocalDateTime dateTime = attendanceDateTime.getLocalDateTime();
         AttendanceStatus status = attendanceDateTime.getStatus();
         return String.format("%s (%s)", DATE_TIME_FORMAT.format(dateTime), status.getName());
+    }
+
+    private String toEmptyRecordFormat(LocalDate date) {
+        return String.format("%s --:-- (결석)", DATE_FORMAT.format(date));
     }
 }

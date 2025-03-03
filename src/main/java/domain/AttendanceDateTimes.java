@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class AttendanceDateTimes {
     private final List<AttendanceDateTime> attendanceDateTimes;
@@ -27,6 +28,13 @@ public class AttendanceDateTimes {
                 .filter(dateTime -> dateTime.toDate().isEqual(targetDate))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다."));
+    }
+
+    public AttendanceDateTime get(LocalDate date) throws NoSuchElementException {
+        return attendanceDateTimes.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.toDate().isEqual(date))
+                .findAny()
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public int getPresentCount(LocalDate lastDate) {

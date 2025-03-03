@@ -1,6 +1,7 @@
 package controller;
 
 import domain.AttendanceDateTime;
+import domain.AttendanceDateTimes;
 import domain.AttendanceHistories;
 import domain.AttendanceHistoryGenerator;
 import domain.Crew;
@@ -63,7 +64,10 @@ public class AttendanceController {
     }
 
     private void checkAttendanceRecords() {
-        System.out.println("3. 크루별 출석 기록 확인");
+        String nickname = inputView.readNickname();
+        Crew crew = new Crew(nickname);
+        AttendanceDateTimes attendanceDateTimes = attendanceHistories.getAttendanceDateTimes(crew);
+        outputView.displayAttendanceDateTimes(crew, attendanceDateTimes, today);
     }
 
     private void checkDisciplinedCrews() {
