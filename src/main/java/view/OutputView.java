@@ -1,7 +1,7 @@
 package view;
 
-import domain.AttendanceDateTime;
-import domain.AttendanceRecord;
+import domain.dateTime.AttendanceDateTime;
+import domain.record.AttendanceRecord;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;

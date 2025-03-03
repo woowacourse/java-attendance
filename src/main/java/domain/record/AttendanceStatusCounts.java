@@ -1,4 +1,4 @@
-package domain;
+package domain.record;
 
 import java.util.Objects;
 

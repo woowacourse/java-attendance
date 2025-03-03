@@ -2,6 +2,13 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import domain.crew.Crew;
+import domain.crew.Crews;
+import domain.crew.Nickname;
+import domain.dateTime.AttendanceDateTime;
+import domain.record.AttendanceRecord;
+import domain.record.AttendanceRecords;
+import domain.record.AttendanceStatusCounts;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;

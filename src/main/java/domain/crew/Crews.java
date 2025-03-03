@@ -1,4 +1,4 @@
-package domain;
+package domain.crew;
 
 import java.util.Comparator;
 import java.util.List;

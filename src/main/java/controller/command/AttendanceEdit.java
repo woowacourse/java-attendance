@@ -1,12 +1,12 @@
 package controller.command;
 
-import domain.AttendanceDate;
-import domain.AttendanceDateTime;
-import domain.AttendanceRecord;
-import domain.AttendanceTime;
-import domain.Crew;
-import domain.Crews;
-import domain.Nickname;
+import domain.crew.Crew;
+import domain.crew.Crews;
+import domain.crew.Nickname;
+import domain.dateTime.AttendanceDate;
+import domain.dateTime.AttendanceDateTime;
+import domain.dateTime.AttendanceTime;
+import domain.record.AttendanceRecord;
 import view.InputView;
 import view.OutputView;
 

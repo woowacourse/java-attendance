@@ -1,4 +1,4 @@
-package domain;
+package domain.dateTime;
 
 import static controller.AttendanceCommandController.SYSTEM_DATE_TIME;
 

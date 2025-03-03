@@ -1,4 +1,10 @@
-package domain;
+package domain.crew;
+
+import domain.DisciplinaryStatus;
+import domain.dateTime.AttendanceDate;
+import domain.dateTime.AttendanceDateTime;
+import domain.record.AttendanceRecord;
+import domain.record.AttendanceRecords;
 
 public class Crew {
 

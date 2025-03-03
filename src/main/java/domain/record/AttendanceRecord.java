@@ -1,5 +1,8 @@
-package domain;
+package domain.record;
 
+import domain.AttendanceStatus;
+import domain.dateTime.AttendanceDateTime;
+import domain.dateTime.AttendanceTimePolicy;
 import java.time.LocalDate;
 import java.util.Objects;
 

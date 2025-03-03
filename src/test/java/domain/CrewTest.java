@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import domain.crew.Crew;
+import domain.dateTime.AttendanceDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +47,7 @@ class CrewTest {
 
         // when
         crew.editAttendanceDateTime(afterAttendanceDateTime);
-        
+
         // then
         final boolean hasAttendanceDateTime = crew.getAttendanceRecords()
                 .hasAttendanceDateTime(afterAttendanceDateTime);

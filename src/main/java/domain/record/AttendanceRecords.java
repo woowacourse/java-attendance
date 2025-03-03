@@ -1,5 +1,8 @@
-package domain;
+package domain.record;
 
+import domain.AttendanceStatus;
+import domain.dateTime.AttendanceDate;
+import domain.dateTime.AttendanceDateTime;
 import java.time.LocalDate;
 import java.util.EnumMap;
 import java.util.Map;

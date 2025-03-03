@@ -2,14 +2,14 @@ package controller.command;
 
 import static controller.AttendanceCommandController.SYSTEM_DATE_TIME;
 
-import domain.AttendanceDate;
-import domain.AttendanceDateTime;
 import domain.AttendanceStatus;
-import domain.AttendanceTime;
-import domain.AttendanceTimePolicy;
-import domain.Crew;
-import domain.Crews;
-import domain.Nickname;
+import domain.crew.Crew;
+import domain.crew.Crews;
+import domain.crew.Nickname;
+import domain.dateTime.AttendanceDate;
+import domain.dateTime.AttendanceDateTime;
+import domain.dateTime.AttendanceTime;
+import domain.dateTime.AttendanceTimePolicy;
 import java.time.LocalDate;
 import view.InputView;
 import view.OutputView;

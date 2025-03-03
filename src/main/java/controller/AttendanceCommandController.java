@@ -2,8 +2,8 @@ package controller;
 
 import controller.command.AttendanceCommand;
 import domain.Command;
-import domain.CrewGenerator;
-import domain.Crews;
+import domain.crew.CrewGenerator;
+import domain.crew.Crews;
 import java.time.LocalDateTime;
 import util.Loop;
 import view.InputView;
