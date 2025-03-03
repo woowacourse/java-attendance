@@ -30,12 +30,13 @@ class ValidManagerTest {
 
         // given
         final AttendanceDateTime todayDateTime = AttendanceDateTime.of("2024-12-16 10:00");
-        final int today = todayDateTime.getDateTime().getDayOfMonth();
+        final int todayDayOfMonth = todayDateTime.getDateTime().getDayOfMonth();
+        final int toDayOfMonth =  ValidManager.getInstance().getLastByDayOfMonth(todayDayOfMonth);
 
         // when
-        final Set<Integer> datesTo = ValidManager.getInstance().getDatesTo(todayDateTime.getDateTime().getDayOfMonth());
+        final Set<Integer> datesTo = ValidManager.getInstance().getDatesTo(toDayOfMonth);
 
         // then
-        datesTo.forEach(dayOfMonth -> Assertions.assertThat(dayOfMonth < today).isTrue());
+        datesTo.forEach(dayOfMonth -> Assertions.assertThat(dayOfMonth < todayDayOfMonth).isTrue());
     }
 }

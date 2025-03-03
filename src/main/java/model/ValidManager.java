@@ -101,6 +101,6 @@ public final class ValidManager {
                 right = mid - 1;
             }
         }
-        return right;
+        return right - 1;
     }
 }

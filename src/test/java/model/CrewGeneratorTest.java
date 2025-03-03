@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 class CrewGeneratorTest {
 
     @Test
@@ -17,7 +15,7 @@ class CrewGeneratorTest {
 
         // given
         final AttendanceDateTime todayDateTime = AttendanceDateTime.of("2024-12-14 10:00");
-        // 쿠키 2, 빙봉 3, 빙티 2, 이든 2, 짱수 1
+        // 14일 전날까지 유효한 날짜 10개
         final List<String[]> crewDatas = List.of(
                 new String[]{"쿠키", "2024-12-13 10:08"},
                 new String[]{"빙봉", "2024-12-13 10:07"},
@@ -36,13 +34,8 @@ class CrewGeneratorTest {
         final Map<Crew, AttendanceBook> attendanceBooks = attendanceManager.getAttendanceBooks();
 
         // then
-        assertAll(
-                () -> Assertions.assertThat(attendanceBooks).isNotEmpty(),
-                () -> Assertions.assertThat(attendanceBooks.get(Crew.of("쿠키")).getAttendances().size()).isEqualTo(2),
-                () -> Assertions.assertThat(attendanceBooks.get(Crew.of("빙봉")).getAttendances().size()).isEqualTo(3),
-                () -> Assertions.assertThat(attendanceBooks.get(Crew.of("빙티")).getAttendances().size()).isEqualTo(2),
-                () -> Assertions.assertThat(attendanceBooks.get(Crew.of("이든")).getAttendances().size()).isEqualTo(2),
-                () -> Assertions.assertThat(attendanceBooks.get(Crew.of("짱수")).getAttendances().size()).isEqualTo(1)
-        );
+        attendanceBooks.keySet()
+                .forEach(crew -> Assertions.assertThat(attendanceBooks.get(crew).getAttendances().size())
+                        .isEqualTo(10));
     }
 }
