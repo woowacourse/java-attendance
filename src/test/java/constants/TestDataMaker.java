@@ -16,9 +16,7 @@ public class TestDataMaker {
     public static LocalDate TUESDAY_DATE = LocalDate.of(2024, 12, 3);
     public static LocalDate WEDNESDAY_DATE = LocalDate.of(2024, 12, 4);
     public static LocalDate THURSDAY_DATE = LocalDate.of(2024, 12, 5);
-    public static LocalDate SATURDAY_DATE = LocalDate.of(2024, 12, 7);
     public static LocalDate SUNDAY_DATE = LocalDate.of(2024, 12, 1);
-    public static LocalDate HOLIDAY_DATE = LocalDate.of(2024, 12, 25);
 
     public static LocalTime NON_OPERATING_TIME
             = getNonOperatingTime(OPERATING_START.getTime(), OPERATING_END.getTime());
