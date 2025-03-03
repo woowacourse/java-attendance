@@ -1,5 +1,6 @@
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import history.AttendanceTimeChecker;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;

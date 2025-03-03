@@ -1,3 +1,7 @@
+package type;
+
+import crew.Crew;
+
 public record PenaltyResultOfCrew(
         Crew crew,
         AttendanceTypeCount attendanceTypeCount,

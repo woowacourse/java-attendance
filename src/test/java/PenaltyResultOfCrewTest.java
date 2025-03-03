@@ -1,7 +1,11 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
+import crew.Crew;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import type.AttendanceTypeCount;
+import type.PenaltyResultOfCrew;
+import type.PenaltyType;
 
 public class PenaltyResultOfCrewTest {
     @Test

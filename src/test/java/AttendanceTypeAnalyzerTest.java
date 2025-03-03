@@ -1,10 +1,14 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
+import crew.Crew;
+import history.AttendanceHistory;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import type.AttendanceType;
+import type.AttendanceTypeAnalyzer;
 
 class AttendanceTypeAnalyzerTest {
 
@@ -38,7 +42,7 @@ class AttendanceTypeAnalyzerTest {
 
 
     @Test
-    @DisplayName("기록이 없는 날에 대해 NO_DATA 를 AttendanceType 으로 반환한다.")
+    @DisplayName("기록이 없는 날에 대해 NO_DATA 를 type.AttendanceType 으로 반환한다.")
     void test3() {
         Crew crew = new Crew("히로");
         LocalDateTime requestedDate = LocalDateTime.of(2024, 12, 4, 0, 0);
@@ -73,7 +77,7 @@ class AttendanceTypeAnalyzerTest {
     }
 
     @Test
-    @DisplayName("기록이 없는 경우는 NO_DATA 를 AttendanceType 으로 저장한다.")
+    @DisplayName("기록이 없는 경우는 NO_DATA 를 type.AttendanceType 으로 저장한다.")
     void test5() {
         // given
         Crew crew = new Crew("히로");

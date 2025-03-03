@@ -1,3 +1,5 @@
+package crew;
+
 import java.util.Objects;
 
 public class Crew {

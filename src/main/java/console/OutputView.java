@@ -1,8 +1,16 @@
+package console;
+
+import crew.Crew;
+import history.AttendanceHistory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import type.AttendanceType;
+import type.AttendanceTypeCount;
+import type.PenaltyResultOfCrew;
+import type.PenaltyType;
 
 public class OutputView {
     public static void printRegisteredHistory(AttendanceHistory attendanceHistory) {

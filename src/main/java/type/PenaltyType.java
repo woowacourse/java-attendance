@@ -1,7 +1,9 @@
+package type;
+
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-enum PenaltyType {
+public enum PenaltyType {
 
     ONE_ON_ONE((absenceCount) -> absenceCount >= 3 && absenceCount <= 5),
 

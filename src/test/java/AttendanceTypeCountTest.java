@@ -5,6 +5,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import type.AttendanceType;
+import type.AttendanceTypeCount;
 
 public class AttendanceTypeCountTest {
 

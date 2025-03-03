@@ -2,6 +2,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import crew.Crew;
+import crew.Crews;
+import history.AttendanceHistories;
+import history.AttendanceHistory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,6 +15,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import type.AttendanceType;
+import type.AttendanceTypeCount;
+import type.PenaltyResultOfCrew;
+import type.PenaltyType;
 
 public class AttendanceProcessorTest {
     @Nested
@@ -323,7 +331,7 @@ public class AttendanceProcessorTest {
         }
 
         @Test
-        @DisplayName("PenaltyType 과 결석 횟수가 동일한 경우 닉네임 순으로 정렬한다.")
+        @DisplayName("type.PenaltyType 과 결석 횟수가 동일한 경우 닉네임 순으로 정렬한다.")
         void test3() {
             // given
 

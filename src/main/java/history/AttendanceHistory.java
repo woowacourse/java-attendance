@@ -1,3 +1,6 @@
+package history;
+
+import crew.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

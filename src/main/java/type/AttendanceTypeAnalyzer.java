@@ -1,3 +1,8 @@
+package type;
+
+
+import history.AttendanceHistory;
+import history.AttendanceTimeChecker;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
