@@ -9,6 +9,7 @@ import domain.DisciplinaryStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class OutputView {
@@ -46,6 +47,36 @@ public class OutputView {
         }
     }
 
+    public void displayAttendanceCount(Crew crew, AttendanceHistories attendanceHistories, LocalDate today
+    ) {
+        System.out.printf("%n출석: %d회%n"
+                        + "지각: %d회%n"
+                        + "결석 : %d회%n", attendanceHistories.getPresentCount(crew, today),
+                attendanceHistories.getTardyCount(crew, today),
+                attendanceHistories.getAbsentCount(crew, today));
+    }
+
+    public void displayDisciplinedStatus(DisciplinaryStatus disciplinaryStatus) {
+        System.out.printf("%n%s 대상자입니다.%n", disciplinaryStatus.getName());
+    }
+
+    public void displayDisciplinedCrews(List<Crew> disciplinedCrews, AttendanceHistories attendanceHistories,
+                                        LocalDate today) {
+        System.out.printf("%n제적 위험자 조회 결과%n");
+        disciplinedCrews.forEach(crew -> displayDisciplinedCrew(crew, attendanceHistories, today));
+    }
+
+    private void displayDisciplinedCrew(Crew crew, AttendanceHistories attendanceHistories, LocalDate today) {
+        int absentCount = attendanceHistories.getAbsentCount(crew, today);
+        int tardyCount = attendanceHistories.getTardyCount(crew, today);
+        System.out.printf("- %s: %s %d회, %s %d회 (%s)%n", crew.nickname(),
+                AttendanceStatus.ABSENT.getName(),
+                absentCount,
+                AttendanceStatus.TARDY.getName(),
+                tardyCount,
+                DisciplinaryStatus.of(tardyCount, absentCount).getName());
+    }
+
     private void displayAttendanceDateTime(AttendanceDateTimes attendanceDateTimes, LocalDate date) {
         try {
             AttendanceDateTime attendanceDateTime = attendanceDateTimes.get(date);
@@ -64,18 +95,5 @@ public class OutputView {
 
     private String toEmptyRecordFormat(LocalDate date) {
         return String.format("%s --:-- (결석)", DATE_FORMAT.format(date));
-    }
-
-    public void displayAttendanceCount(Crew crew, AttendanceHistories attendanceHistories, LocalDate today
-    ) {
-        System.out.printf("%n출석: %d회%n"
-                        + "지각: %d회%n"
-                        + "결석 : %d회%n", attendanceHistories.getPresentCount(crew, today),
-                attendanceHistories.getTardyCount(crew, today),
-                attendanceHistories.getAbsentCount(crew, today));
-    }
-
-    public void displayDisciplinedStatus(DisciplinaryStatus disciplinaryStatus) {
-        System.out.printf("%n%s 대상자입니다.%n", disciplinaryStatus.getName());
     }
 }

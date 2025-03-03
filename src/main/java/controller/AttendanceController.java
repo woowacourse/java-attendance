@@ -77,7 +77,8 @@ public class AttendanceController {
     }
 
     private void checkDisciplinedCrews() {
-        System.out.println("4. 제적 위험자 확인");
+        List<Crew> disciplinedCrews = attendanceHistories.getDisciplinedCrews(today);
+        outputView.displayDisciplinedCrews(disciplinedCrews, attendanceHistories, today);
     }
 
     private void quit() {

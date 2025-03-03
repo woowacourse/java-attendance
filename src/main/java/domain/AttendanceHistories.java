@@ -2,10 +2,14 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceHistories {
+    private static final double TARDY_TO_ABSENT = 3;
+    private static final double REVERSE_ORDER = -1;
     private final Map<Crew, AttendanceDateTimes> attendanceHistories;
 
     public AttendanceHistories(Map<Crew, AttendanceDateTimes> attendanceHistoryData) {
@@ -59,9 +63,37 @@ public class AttendanceHistories {
     }
 
     public List<Crew> getDisciplinedCrews(LocalDate lastDate) {
-        return attendanceHistories.keySet().stream()
+        List<Crew> crews = new ArrayList<>(attendanceHistories.keySet().stream()
                 .filter(crew -> getDisciplinaryStatusOf(crew, lastDate) != DisciplinaryStatus.NONE)
-                .toList();
+                .toList());
+        return sortDisciplinedCrews(crews, lastDate);
+    }
+
+    private List<Crew> sortDisciplinedCrews(List<Crew> crews, LocalDate lastDate) {
+        sortCrewsByName(crews);
+        sortCrewsByAttendanceCount(crews, lastDate);
+        sortCrewsByDisciplinaryStatus(crews, lastDate);
+        return crews;
+    }
+
+    private void sortCrewsByName(List<Crew> crews) {
+        crews.sort(Comparator.comparing(Crew::nickname));
+    }
+
+    private void sortCrewsByAttendanceCount(List<Crew> crews, LocalDate lastDate) {
+        crews.sort(Comparator.comparing(crew -> {
+            int absentCount = getAbsentCount(crew, lastDate);
+            int tardyCount = getTardyCount(crew, lastDate);
+            absentCount += (int) (tardyCount / TARDY_TO_ABSENT);
+            return (absentCount + tardyCount % TARDY_TO_ABSENT) * REVERSE_ORDER;
+        }));
+    }
+
+    private void sortCrewsByDisciplinaryStatus(List<Crew> crews, LocalDate lastDate) {
+        crews.sort(Comparator.comparing(crew -> {
+            DisciplinaryStatus status = getDisciplinaryStatusOf(crew, lastDate);
+            return status.ordinal() * REVERSE_ORDER;
+        }));
     }
 
     private void validateCrewPresence(Crew crew) {
