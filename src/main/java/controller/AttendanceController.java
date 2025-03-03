@@ -23,8 +23,7 @@ public class AttendanceController {
     private final FileInputView fileInputView = new FileInputView();
     private final Map<Menu, Runnable> menuTable = new EnumMap<>(Menu.class);
     private final AttendanceHistories attendanceHistories;
-    //    private LocalDate today = LocalDate.now();
-    private LocalDate today = LocalDate.of(2025, 2, 25);
+    private LocalDate today = LocalDate.now();
 
     public AttendanceController() {
         this.attendanceHistories = loadCsvData();
@@ -37,7 +36,7 @@ public class AttendanceController {
 
     public void run() {
         do {
-//            today = LocalDate.now();
+            today = LocalDate.now();
             retryUntilSuccess(() -> {
                 outputView.displayMenu(today);
                 Menu menuInput = inputView.readMenu();
