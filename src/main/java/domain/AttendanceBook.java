@@ -24,19 +24,6 @@ public class AttendanceBook {
         this.crews = new ArrayList<>();
     }
 
-    public Crew findCrewByName(String name) {
-        return crews.stream()
-                .filter(crew -> crew.isSameName(name))
-                .findAny()
-                .orElseThrow(
-                        () -> new IllegalArgumentException(ErrorMessage.NOTICE_NICKNAME_IS_NOT_REGISTERED.getFormat()));
-    }
-
-    public boolean checkCrewExisted(String name) {
-        return crews.stream()
-                .anyMatch(crew -> crew.isSameName(name));
-    }
-
     public static void validateAlreadyAttendance(Crew foundCrew, LocalDate date) {
         if (foundCrew.isDateExisted(date)) { // 날짜가 존재한다면
             throw new IllegalArgumentException(ErrorMessage.NOTICE_ATTENDANCE_ALREADY_EXISTED.getFormat());
@@ -75,7 +62,7 @@ public class AttendanceBook {
         Crew foundCrew = findCrewByName(name);
         foundCrew.gratifyTimeLogs(); // 수정하려는 날짜가 기록이 없는 경우를 대비하여 빈 타임 로그 구현
 
-        LocalTime previousTime = foundCrew.findTimeByDate(date);// 이전 시간 가져오기
+        LocalTime previousTime = foundCrew.getTimeByDate(date);// 이전 시간 가져오기
         String previousStatus = AttendanceDiscriminator.judgeTimeLogForStatus(date, previousTime); // 변경 전 출결 현황
 
         foundCrew.addNewTimeLog(date, modifiedTime); // 시간 변경하기
@@ -117,5 +104,18 @@ public class AttendanceBook {
                 .thenComparing(PenaltyCrewResponse::name)); // 3. name 기준 오름차순
 
         return responses;
+    }
+
+    public boolean checkCrewExisted(String name) {
+        return crews.stream()
+                .anyMatch(crew -> crew.isSameName(name));
+    }
+
+    public Crew findCrewByName(String name) {
+        return crews.stream()
+                .filter(crew -> crew.isSameName(name))
+                .findAny()
+                .orElseThrow(
+                        () -> new IllegalArgumentException(ErrorMessage.NOTICE_NICKNAME_IS_NOT_REGISTERED.getFormat()));
     }
 }

@@ -15,9 +15,23 @@ public class Crew {
         this.name = name;
         this.timeLogs = new HashMap<>();
     }
-
+    
     public void addNewTimeLog(LocalDate date, LocalTime time) {
         timeLogs.put(date, time);
+    }
+
+    public void gratifyTimeLogs() {
+        for (int recordingDay = 1; recordingDay <= 31; recordingDay++) {
+            LocalDate recordingDate = LocalDate.of(2024, 12, recordingDay);
+
+            if (DatePolicy.isNotTrainingDay(recordingDate)) { // 근무일이 아닌 경우
+                continue;
+            }
+
+            if (!timeLogs.containsKey(recordingDate)) { // 기록이 존재하지 않으면
+                addNewTimeLog(recordingDate, null);
+            }
+        }
     }
 
     public boolean isSameName(String value) {
@@ -36,21 +50,7 @@ public class Crew {
         return timeLogs;
     }
 
-    public void gratifyTimeLogs() {
-        for (int recordingDay = 1; recordingDay <= 31; recordingDay++) {
-            LocalDate recordingDate = LocalDate.of(2024, 12, recordingDay);
-
-            if (DatePolicy.isNotTrainingDay(recordingDate)) { // 근무일이 아닌 경우
-                continue;
-            }
-
-            if (!timeLogs.containsKey(recordingDate)) { // 기록이 존재하지 않으면
-                addNewTimeLog(recordingDate, null);
-            }
-        }
-    }
-
-    public LocalTime findTimeByDate(LocalDate date) {
+    public LocalTime getTimeByDate(LocalDate date) {
         return timeLogs.get(date);
     }
 }
