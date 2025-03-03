@@ -5,6 +5,7 @@ import static controller.AttendanceCommandController.SYSTEM_DATE_TIME;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
@@ -38,6 +39,11 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
 
     public static AttendanceDateTime of(final AttendanceDate date, final AttendanceTime time) {
         final LocalDateTime localDateTime = LocalDateTime.of(date.getDate(), time.getTime());
+        return new AttendanceDateTime(localDateTime);
+    }
+
+    public static AttendanceDateTime createAbsence(final LocalDate date) {
+        final LocalDateTime localDateTime = LocalDateTime.of(date, LocalTime.of(0, 0));
         return new AttendanceDateTime(localDateTime);
     }
 

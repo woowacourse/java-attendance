@@ -5,12 +5,13 @@ import domain.dateTime.AttendanceDate;
 import domain.dateTime.AttendanceDateTime;
 import domain.record.AttendanceRecord;
 import domain.record.AttendanceRecords;
+import domain.record.AttendanceStatusCounts;
 
 public class Crew {
 
     private final Nickname nickname;
     private final AttendanceRecords attendanceRecords;
-    private final DisciplinaryStatus disciplinaryStatus;
+    private DisciplinaryStatus disciplinaryStatus;
 
     public Crew(final Nickname nickname,
                 final AttendanceRecords attendanceRecords,
@@ -28,6 +29,16 @@ public class Crew {
         final AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceDateTime);
 
         attendanceRecords.add(attendanceRecord);
+        attendanceRecords.updateCountAttendanceStatus();
+        updateDisciplinaryStatus();
+    }
+
+    public void updateDisciplinaryStatus() {
+        final AttendanceStatusCounts attendanceStatusCounts = attendanceRecords.getAttendanceStatusCounts();
+        final int absence = attendanceStatusCounts.getAbsence();
+        final int late = attendanceStatusCounts.getLate();
+
+        this.disciplinaryStatus = DisciplinaryStatus.findByAbsenceAndLatenessCount(absence, late);
     }
 
     public boolean isSameAs(final Nickname nickname) {
@@ -55,6 +66,7 @@ public class Crew {
         final AttendanceRecord afterRecord = new AttendanceRecord(wantedAttendanceDateTime);
 
         attendanceRecords.editAttendanceDateTime(beforeRecord, afterRecord);
+        attendanceRecords.updateCountAttendanceStatus();
         return afterRecord;
     }
 }

@@ -1,6 +1,7 @@
 package controller.command;
 
 import controller.AttendanceCommandController;
+import domain.DisciplinaryStatus;
 import domain.crew.Crew;
 import domain.crew.Crews;
 import domain.crew.Nickname;
@@ -15,8 +16,10 @@ public class AttendanceByCrew implements AttendanceCommand {
         final Nickname nickname = readNickname();
         final Crew crew = crews.findByNickname(nickname);
         final AttendanceRecords attendanceRecords = crew.getAttendanceRecords();
+        final DisciplinaryStatus disciplinaryStatus = crew.getDisciplinaryStatus();
 
-        OutputView.printValidAttendances(AttendanceCommandController.SYSTEM_DATE_TIME, attendanceRecords);
+        OutputView.printValidAttendances(AttendanceCommandController.SYSTEM_DATE_TIME, attendanceRecords,
+                disciplinaryStatus);
     }
 
     private Nickname readNickname() {

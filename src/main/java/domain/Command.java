@@ -4,6 +4,7 @@ import controller.command.AttendanceByCrew;
 import controller.command.AttendanceCheck;
 import controller.command.AttendanceCommand;
 import controller.command.AttendanceEdit;
+import controller.command.RiskMembers;
 import java.util.Arrays;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -12,7 +13,7 @@ public enum Command {
     CHECK(AttendanceCheck::new),
     EDIT(AttendanceEdit::new),
     VIEW_ATTENDANCE_BY_CREW(AttendanceByCrew::new),
-    VIEW_AT_RISK_MEMBERS(null),
+    VIEW_AT_RISK_MEMBERS(RiskMembers::new),
     QUIT(null);
 
     private final CommandMapper mapper;

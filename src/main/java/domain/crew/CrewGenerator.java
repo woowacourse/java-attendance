@@ -1,16 +1,22 @@
 package domain.crew;
 
+import static controller.AttendanceCommandController.REFERENCE_DAY;
+import static controller.AttendanceCommandController.REFERENCE_MONTH;
+import static controller.AttendanceCommandController.REFERENCE_YEAR;
+
 import domain.DisciplinaryStatus;
 import domain.dateTime.AttendanceDateTime;
 import domain.record.AttendanceRecord;
 import domain.record.AttendanceRecords;
 import domain.record.AttendanceStatusCounts;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import util.CsvReader;
+import util.DateUtil;
 
 public class CrewGenerator {
 
@@ -29,6 +35,22 @@ public class CrewGenerator {
         final List<Crew> crewGroup = new ArrayList<>();
         crewData.forEach((nickname, attendanceRecordGroup) -> {
             final AttendanceRecords attendanceRecords = new AttendanceRecords(attendanceRecordGroup);
+            final List<Integer> validDays = DateUtil.calculateValidDays(
+                    REFERENCE_YEAR,
+                    REFERENCE_MONTH,
+                    REFERENCE_DAY - 1
+            );
+
+            validDays.forEach(day -> {
+                final LocalDate localDate = LocalDate.of(REFERENCE_YEAR, REFERENCE_MONTH, day);
+                final AttendanceRecord attendanceRecord = attendanceRecords.findByDate(localDate);
+
+                if (attendanceRecord == null) {
+                    final AttendanceDateTime attendanceDateTime = AttendanceDateTime.createAbsence(localDate);
+                    attendanceRecords.add(new AttendanceRecord(attendanceDateTime));
+                }
+            });
+
             final AttendanceStatusCounts attendanceStatusCounts = attendanceRecords.getAttendanceStatusCounts();
             final int absence = attendanceStatusCounts.getAbsence();
             final int late = attendanceStatusCounts.getLate();

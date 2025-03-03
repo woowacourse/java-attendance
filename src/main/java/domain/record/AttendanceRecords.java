@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class AttendanceRecords {
     private final SortedSet<AttendanceRecord> attendanceRecords;
-    private final AttendanceStatusCounts attendanceStatusCounts;
+    private AttendanceStatusCounts attendanceStatusCounts;
 
     public AttendanceRecords(final SortedSet<AttendanceRecord> attendanceRecords) {
         this.attendanceRecords = attendanceRecords;
@@ -50,6 +50,7 @@ public class AttendanceRecords {
     public void editAttendanceDateTime(final AttendanceRecord before, final AttendanceRecord after) {
         attendanceRecords.remove(before);
         attendanceRecords.add(after);
+        updateCountAttendanceStatus();
     }
 
     public boolean hasAttendanceDateTime(final AttendanceDateTime attendanceDateTime) {
@@ -57,16 +58,18 @@ public class AttendanceRecords {
                 .anyMatch(attendanceRecord -> attendanceRecord.hasAttendanceDateTime(attendanceDateTime));
     }
 
+
     public void add(final AttendanceRecord attendanceRecord) {
         attendanceRecords.add(attendanceRecord);
+        updateCountAttendanceStatus();
+    }
+
+    public void updateCountAttendanceStatus() {
+        attendanceStatusCounts = this.countAttendanceStatus();
     }
 
     public AttendanceStatusCounts getAttendanceStatusCounts() {
         return attendanceStatusCounts;
-    }
-
-    public SortedSet<AttendanceRecord> getAttendanceRecords() {
-        return attendanceRecords;
     }
 
     public AttendanceRecord findAttendanceRecord(final AttendanceDate attendanceDate) {
@@ -74,6 +77,6 @@ public class AttendanceRecords {
         return attendanceRecords.stream()
                 .filter(attendanceRecord -> attendanceRecord.hasAttendanceDate(date))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 날쩨에는 출석 기록이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜에는 출석 기록이 존재하지 않습니다."));
     }
 }

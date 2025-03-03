@@ -33,6 +33,10 @@ public class AttendanceStatusCounts {
         return adjustedAbsence;
     }
 
+    public int getAttendance() {
+        return attendance;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (o == null || getClass() != o.getClass()) {

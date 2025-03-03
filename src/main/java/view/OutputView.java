@@ -1,11 +1,16 @@
 package view;
 
 import domain.AttendanceStatus;
+import domain.DisciplinaryStatus;
+import domain.crew.Crew;
+import domain.crew.Nickname;
 import domain.dateTime.AttendanceDateTime;
 import domain.record.AttendanceRecord;
 import domain.record.AttendanceRecords;
+import domain.record.AttendanceStatusCounts;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -43,33 +48,67 @@ public final class OutputView {
 
 
     public static void printValidAttendances(final LocalDateTime localDateTime,
-                                             final AttendanceRecords attendanceRecords) {
+                                             final AttendanceRecords attendanceRecords,
+                                             final DisciplinaryStatus disciplinaryStatus) {
         final int endOfDay = localDateTime.getDayOfMonth() - 1;
         final int year = localDateTime.getYear();
         final int month = localDateTime.getMonthValue();
-        final LocalDate date = LocalDate.of(year, month, endOfDay);
         final List<Integer> validDays = DateUtil.calculateValidDays(year, month, endOfDay);
 
         validDays.forEach(day -> {
-            final DateTimeFormatter absenceFormat = DateTimeFormatter.ofPattern("M월 dd일 EEEE", Locale.KOREAN);
             final AttendanceRecord attendanceRecord = attendanceRecords.findByDate(LocalDate.of(year, month, day));
 
-            if (attendanceRecord != null) {
-                printAttendanceInRecord(attendanceRecord);
-                return;
-            }
-            printF("%s --:-- (결석)%n", date.format(absenceFormat));
+            printAttendanceInRecord(attendanceRecord);
         });
+        printAttendanceCounts(attendanceRecords);
+
+        if (disciplinaryStatus != DisciplinaryStatus.NONE) {
+            final ResourceBundle bundle = ResourceBundle.getBundle("disciplinaryStatus");
+            printF("%n%s 대상자입니다.%n", bundle.getString(disciplinaryStatus.name()));
+        }
     }
 
     private static void printAttendanceInRecord(final AttendanceRecord attendanceRecord) {
         final ResourceBundle bundle = ResourceBundle.getBundle("attendanceStatus");
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 dd일 EEEE HH:mm", Locale.KOREAN);
+        final DateTimeFormatter absenceFormat = DateTimeFormatter.ofPattern("M월 dd일 EEEE", Locale.KOREAN);
         final AttendanceDateTime attendanceDateTime = attendanceRecord.getAttendanceDateTime();
         final LocalDateTime dateTime = attendanceDateTime.getDateTime();
         final AttendanceStatus attendanceStatus = attendanceRecord.getAttendanceStatus();
 
+        if (dateTime.toLocalTime().equals(LocalTime.of(0, 0))) {
+            printF("%s --:-- (%s)%n", dateTime.format(absenceFormat), bundle.getString(attendanceStatus.name()));
+            return;
+        }
+
         printF("%s (%s)%n", dateTime.format(formatter), bundle.getString(attendanceStatus.name()));
+    }
+
+    private static void printAttendanceCounts(final AttendanceRecords attendanceRecords) {
+        final AttendanceStatusCounts attendanceStatusCounts = attendanceRecords.getAttendanceStatusCounts();
+        final ResourceBundle resourceBundle = ResourceBundle.getBundle("attendanceStatus");
+        final int present = attendanceStatusCounts.getAttendance();
+        final int late = attendanceStatusCounts.getLate();
+        final int absent = attendanceStatusCounts.getAbsence();
+        printF("%n%s: %d회%n", resourceBundle.getString("PRESENT"), present);
+        printF("%s: %d회%n", resourceBundle.getString("LATE".toUpperCase()), late);
+        printF("%s: %d회%n", resourceBundle.getString("ABSENT"), absent);
+    }
+
+    public static void printRiskMembers(final List<Crew> disciplinaryCrews) {
+        printF("%n제적 위험자 조회 결과%n");
+        disciplinaryCrews.forEach(crew -> {
+            final DisciplinaryStatus disciplinaryStatus = crew.getDisciplinaryStatus();
+            final ResourceBundle bundle = ResourceBundle.getBundle("disciplinaryStatus");
+            final String status = bundle.getString(disciplinaryStatus.name());
+            final Nickname nickname = crew.getNickname();
+            final AttendanceRecords attendanceRecords = crew.getAttendanceRecords();
+            final AttendanceStatusCounts attendanceStatusCounts = attendanceRecords.getAttendanceStatusCounts();
+            final int absence = attendanceStatusCounts.getAbsence();
+            final int late = attendanceStatusCounts.getLate();
+
+            printF("- %s: 결석 %d회, 지각 %d회 (%s)%n", nickname.getValue(), absence, late, status);
+        });
     }
 
     private static void printF(final String message, final Object... args) {
