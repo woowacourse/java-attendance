@@ -1,10 +1,10 @@
 package domain;
 
 public enum DisciplinaryStatus {
-    NONE("해당 사항 없음", 1),
-    WARNING("경고", 2),
-    ONE_ON_ONE("면담", 3),
-    EXPELLED("제적", 5);
+    NONE("해당 사항 없음", 0),
+    WARNING("경고", 6),
+    ONE_ON_ONE("면담", 9),
+    EXPELLED("제적", 15);
 
     private final String name;
     private final int thresholdCount;
@@ -15,21 +15,19 @@ public enum DisciplinaryStatus {
     }
 
     public static DisciplinaryStatus of(int tardyCount, int absentCount) {
-        if (convertTardyToAbsent(absentCount, tardyCount) > EXPELLED.thresholdCount) {
+        if (convertToThresholdCount(absentCount, tardyCount) > EXPELLED.thresholdCount) {
             return EXPELLED;
         }
-        if (convertTardyToAbsent(absentCount, tardyCount) >= ONE_ON_ONE.thresholdCount) {
+        if (convertToThresholdCount(absentCount, tardyCount) >= ONE_ON_ONE.thresholdCount) {
             return ONE_ON_ONE;
         }
-        if (convertTardyToAbsent(absentCount, tardyCount) >= WARNING.thresholdCount) {
+        if (convertToThresholdCount(absentCount, tardyCount) >= WARNING.thresholdCount) {
             return WARNING;
         }
         return NONE;
     }
 
-    private static int convertTardyToAbsent(int absentCount, int tardyCount) {
-        int convertedAbsences = tardyCount / 3;
-        int remainingTardies = tardyCount % 3;
-        return absentCount + convertedAbsences + remainingTardies;
+    private static int convertToThresholdCount(int absentCount, int tardyCount) {
+        return absentCount * 3 + tardyCount;
     }
 }
