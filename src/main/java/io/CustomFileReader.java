@@ -16,10 +16,13 @@ public class CustomFileReader {
         List<String> result = new ArrayList<>();
 
         Scanner scanner = new Scanner(new File(path));
+
         scanner.nextLine();
         while (scanner.hasNextLine()) {
             result.add(scanner.nextLine());
         }
+        scanner.close();
+
         return result;
     }
 
