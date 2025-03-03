@@ -1,12 +1,15 @@
 package domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Crews {
     private final List<Crew> crews;
 
     public Crews(final List<Crew> crews) {
-        this.crews = crews;
+        this.crews = crews.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public Crew findByName(final String crewName) {
