@@ -75,7 +75,7 @@ class AttendancesTest {
                     attendanceDate.toLocalDate().plusDays(3));
 
             // when
-            int absenceCount = attendances.countAbsence(attendanceDate.plusDays(3).toLocalDate());
+            int absenceCount = attendances.countAbsence();
 
             // then
             Assertions.assertThat(absenceCount).isEqualTo(3);

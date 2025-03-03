@@ -83,10 +83,14 @@ public class Attendances {
                 .count();
     }
 
-    public int countAbsence(LocalDate endDate) {
+    public int countAbsence() {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.getStatus() == AttendanceStatus.ABSENCE)
                 .count();
+    }
+
+    public int countAbsencePerTardy() {
+        return 0;
     }
 
     private void validate(List<LocalDateTime> dateTimes) {
