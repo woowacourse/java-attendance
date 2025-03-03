@@ -21,7 +21,7 @@ public class OutputView {
     public static void printToday(LocalDate currentDate) {
         String date = currentDate.format(DateTimeFormatter.ofPattern("M월 d일"));
         String dayOfWeek = currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        System.out.printf("%n오늘은 %s %s입니다. ", date, dayOfWeek);
+        System.out.printf("%n오늘은 %s %s입니다. (12월 시범 운영 중이기에 12월로 고정됨)%n", date, dayOfWeek);
     }
 
     public static void printAttendanceStatus(AttendanceStatusDto dto) {

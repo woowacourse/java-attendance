@@ -37,7 +37,8 @@ public class AttendanceController {
     }
 
     private FeatureType getFeature() {
-        currentDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
+        currentDate = LocalDate.of(2024, 12, currentDay);
         OutputView.printToday(currentDate);
         return InputView.askFeature();
     }
