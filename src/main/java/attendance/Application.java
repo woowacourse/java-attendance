@@ -1,110 +1,105 @@
 package attendance;
 
-import static attendance.domain.CrewStatus.INTERVIEW;
-import static attendance.view.InputView.inputAttendanceTime;
-import static attendance.view.InputView.inputCrewName;
-import static attendance.view.InputView.inputModifyDate;
-import static attendance.view.InputView.inputOption;
-import static attendance.view.OutputView.printAttendanceHistories;
-import static attendance.view.OutputView.printAttendanceHistory;
+import static attendance.domain.CampusManager.validateOperationDate;
+import static attendance.domain.CampusManager.validateOperationTime;
+import static attendance.view.InputView.readAttendanceDateToModify;
+import static attendance.view.InputView.readAttendanceModificationTime;
+import static attendance.view.InputView.readAttendanceTime;
+import static attendance.view.InputView.readCrewNickname;
+import static attendance.view.InputView.readCrewNicknameToModify;
+import static attendance.view.InputView.readOption;
+import static attendance.view.OutputView.printAttendance;
+import static attendance.view.OutputView.printAttendanceModificationResult;
 import static attendance.view.OutputView.printAttendanceStatistics;
-import static attendance.view.OutputView.printDangerousCrews;
-import static attendance.view.OutputView.printInterviewTarget;
-import static attendance.view.OutputView.printModifyAttendanceHistory;
+import static attendance.view.OutputView.printDangerousCrewsInformation;
+import static attendance.view.OutputView.printMonthlyAttendances;
+import static attendance.view.OutputView.printNoAttendanceToModify;
 
-import attendance.domain.AttendanceHistory;
-import attendance.domain.AttendancePolicy;
-import attendance.domain.AttendanceType;
-import attendance.domain.Crew;
-import attendance.domain.CrewManager;
-import attendance.utils.AttendanceFileReader;
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceStatistics;
+import attendance.domain.Nickname;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Application {
-    private static final Map<String, Runnable> optionMenu = new HashMap<>();
-    private static final CrewManager crewManager = new CrewManager();
-    private static final CurrentDate currentDate = new SystemCurrentDate();
-
-    static {
-        optionMenu.put("1", Application::doAttendance);
-        optionMenu.put("2", Application::modifyAttendance);
-        optionMenu.put("3", Application::checkAttendanceHistoriesByCrew);
-        optionMenu.put("4", Application::checkDangerousCrews);
-    }
+    private static final AttendanceManager attendanceManager = new AttendanceManager();
 
     public static void main(String[] args) {
-        LocalDate today = currentDate.now();
-        initializeCrewsAndAttendances();
-        while (true) {
-            String option = inputOption(today);
-            if (option.equals("Q")) {
-                break;
-            }
-            run(option);
+        initAttendances(attendanceManager);
+        boolean again = true;
+        while (again) {
+            LocalDate today = now();
+            String option = readOption(today);
+            again = run(option);
         }
     }
 
-    private static void run(String option) {
-        Runnable runnable = optionMenu.getOrDefault(option, null);
-        if (runnable == null) {
-            throw new IllegalArgumentException("잘못된 입력 입니다.");
-        }
-        runnable.run();
-    }
-
-    private static void initializeCrewsAndAttendances() {
+    private static boolean run(final String option) {
         try {
-            BufferedReader file = AttendanceFileReader.read();
-            AttendanceFileReader.initializeAttendances(file, crewManager);
+            return Options.run(option);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return true;
+        }
+    }
+
+    private static void initAttendances(final AttendanceManager attendanceManager) {
+        try {
+            BufferedReader bufferedReader = AttendancesFileReader.readFile();
+            AttendanceFileParser.initAttendances(bufferedReader, attendanceManager);
         } catch (IOException e) {
-            throw new IllegalArgumentException("파일 읽기를 실패했습니다.");
+            throw new IllegalArgumentException(e);
         }
     }
 
-    private static void doAttendance() {
-        LocalDate today = currentDate.now();
-        AttendancePolicy.checkNotWeekendAndHoliday(today);
-        Crew crew = findCrew(crewManager);
-        LocalTime attendanceTime = inputAttendanceTime();
-        AttendanceHistory attendanceHistory = crew.doAttendance(today, attendanceTime);
-        printAttendanceHistory(attendanceHistory);
+    public static void doAttendance() {
+        validateOperationDate(now());
+        Nickname crewNickname = new Nickname(readCrewNickname());
+        attendanceManager.validateExistingCrew(crewNickname);
+        attendanceManager.validateDuplicatedAttendance(crewNickname, now());
+        LocalTime attendanceTime = readAttendanceTime();
+        validateOperationTime(attendanceTime);
+        Attendance attendance = attendanceManager.addAttendance(crewNickname, now(), attendanceTime);
+        printAttendance(attendance);
     }
 
-    private static void modifyAttendance() {
-        LocalDate today = currentDate.now();
-        Crew crew = findCrew(crewManager);
-        LocalDate modifyDate = inputModifyDate(today);
-        LocalTime modifyTime = inputAttendanceTime();
-        AttendanceHistory beforeAttendanceHistory = crew.getAttendanceHistoryByDate(modifyDate);
-        AttendanceHistory afterAttendanceHistory = crew.modifyAttendance(modifyDate, modifyTime);
-        printModifyAttendanceHistory(beforeAttendanceHistory, afterAttendanceHistory);
-    }
-
-    private static void checkAttendanceHistoriesByCrew() {
-        LocalDate today = currentDate.now();
-        Crew crew = findCrew(crewManager);
-        Map<AttendanceType, Integer> attendanceResult = crew.calculateAttendanceResult(today);
-        printAttendanceHistories(today, crew);
-        printAttendanceStatistics(attendanceResult);
-        if (crew.calculateCrewStatus(attendanceResult) == INTERVIEW) {
-            printInterviewTarget();
+    public static void modifyAttendance() {
+        Nickname crewNickname = new Nickname(readCrewNicknameToModify());
+        attendanceManager.validateExistingCrew(crewNickname);
+        LocalDate dateToModify = readAttendanceDateToModify(now());
+        validateOperationDate(dateToModify);
+        Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crewNickname, dateToModify);
+        if (existingAttendance.isEmpty()) {
+            printNoAttendanceToModify();
+            return;
         }
+        LocalTime modificationTime = readAttendanceModificationTime();
+        validateOperationTime(modificationTime);
+        Attendance modifiedAttendance = attendanceManager.modifyAttendance(crewNickname, dateToModify, modificationTime);
+        printAttendanceModificationResult(existingAttendance.get(), modifiedAttendance);
     }
 
-    private static void checkDangerousCrews() {
-        LocalDate today = currentDate.now();
-        List<Crew> dangerousCrews = crewManager.getDangerousCrews(today);
-        printDangerousCrews(today, dangerousCrews);
+    public static void checkAttendanceHistory() {
+        Nickname crewNickname = new Nickname(readCrewNickname());
+        attendanceManager.validateExistingCrew(crewNickname);
+        List<Attendance> monthlyAttendances = attendanceManager.getMonthlyAttendances(now(), crewNickname);
+        printMonthlyAttendances(now(), crewNickname, monthlyAttendances);
+        AttendanceStatistics attendanceStatistics = attendanceManager.getAttendanceStatistics(now(), crewNickname);
+        printAttendanceStatistics(attendanceStatistics);
     }
 
-    private static Crew findCrew(CrewManager crewManager) {
-        String crewName = inputCrewName();
-        return crewManager.findByCrewName(crewName);
+    public static void checkDangerousCrews() {
+        Map<Nickname, AttendanceStatistics> dangerousCrewsInformation = attendanceManager.getDangerousCrewsInformation(now());
+        printDangerousCrewsInformation(dangerousCrewsInformation);
+    }
+
+    private static LocalDate now() {
+        return LocalDate.of(2024, 12, 16);
     }
 }

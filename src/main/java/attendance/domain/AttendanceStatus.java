@@ -1,14 +1,13 @@
 package attendance.domain;
 
-public enum CrewStatus {
-    NONE(""),
-    WARNING("경고"),
-    INTERVIEW("면담"),
-    FIRE("제적");
+public enum AttendanceStatus {
+    ATTENDANCE("출석"),
+    LATE("지각"),
+    ABSENCE("결석");
 
     private final String name;
 
-    CrewStatus(final String name) {
+    AttendanceStatus(final String name) {
         this.name = name;
     }
 

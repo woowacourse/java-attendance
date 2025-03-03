@@ -1,124 +1,135 @@
 package attendance.view;
 
-import static attendance.domain.AttendanceType.ABSENCE;
-import static attendance.domain.AttendanceType.LATE;
+import static attendance.domain.AttendanceStatus.ABSENCE;
+import static attendance.domain.AttendanceStatus.LATE;
+import static attendance.exception.ErrorMessage.NO_ATTENDANCE_TO_MODIFY;
 
-import attendance.domain.AttendanceHistory;
-import attendance.domain.AttendancePolicy;
-import attendance.domain.AttendanceType;
-import attendance.domain.Crew;
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatistics;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.CampusManager;
+import attendance.domain.Nickname;
 import attendance.domain.CrewStatus;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class OutputView {
-    private static final String ATTENDANCE_HISTORY_MESSAGE = "\n%02d월 %02d일 %s %02d:%02d (%s)";
-    private static final String ATTENDANCE_HISTORIES_MESSAGE_HEADER = "\n이번 달 %s의 출석 기록입니다.\n";
-    private static final String NO_ATTENDANCE_HISTORY_MESSAGE = "\n%02d월 %02d일 %s --:-- (결석)";
-    private static final String MODIFY_ATTENDANCE_HISTORY_MESSAGE = "\n%d월 %d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n";
-    private static final String ATTENDANCE_STATISTICS_MESSAGE = "%s: %d회";
-    private static final String INTERVIEW_TARGET_MESSAGE = "면담 대상자입니다.\n";
-    private static final String DANGEROUS_CREW_MESSAGE_HEADER = "\n제적 위험자 조회 결과";
-    private static final String DANGEROUS_CREW_MESSAGE_BODY = "- %s: 결석 %d회, 지각 %d회 (%s)";
-
-    public static void printAttendanceHistory(AttendanceHistory attendanceHistory) {
-        LocalDateTime attendanceTime = attendanceHistory.getAttendanceDateTime();
-        AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-        String message = ATTENDANCE_HISTORY_MESSAGE.formatted(attendanceTime.getMonthValue(),
-                attendanceTime.getDayOfMonth(), attendanceTime.getDayOfWeek(), attendanceTime.getHour(),
-                attendanceTime.getMinute(), attendanceType.getName());
-        System.out.println(message);
+    private OutputView() {
     }
 
-    public static void printModifyAttendanceHistory(AttendanceHistory beforeAttendanceHistory,
-                                                    AttendanceHistory afterAttendanceHistory) {
-        LocalDateTime beforeAttendanceTime = beforeAttendanceHistory.getAttendanceDateTime();
-        LocalDateTime afterAttendanceTime = afterAttendanceHistory.getAttendanceDateTime();
-        AttendanceType beforeAttendanceType = beforeAttendanceHistory.getAttendanceType();
-        AttendanceType afterAttendanceType = afterAttendanceHistory.getAttendanceType();
-        String message = MODIFY_ATTENDANCE_HISTORY_MESSAGE.formatted(beforeAttendanceTime.getMonthValue(),
-                beforeAttendanceTime.getDayOfMonth(), beforeAttendanceTime.getDayOfWeek(),
-                beforeAttendanceTime.getHour(), beforeAttendanceTime.getMinute(), beforeAttendanceType.getName(),
-                afterAttendanceTime.getHour(), afterAttendanceTime.getMinute(), afterAttendanceType.getName());
-        System.out.println(message);
+    public static void printAttendance(final Attendance attendance) {
+        LocalDate attendanceDate = attendance.getDate();
+        int month = attendanceDate.getMonthValue();
+        int date = attendanceDate.getDayOfMonth();
+        DayOfWeek day = attendanceDate.getDayOfWeek();
+        String dayName = day.getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        LocalTime attendanceTime = attendance.getTime();
+        int hour = attendanceTime.getHour();
+        int minute = attendanceTime.getMinute();
+        AttendanceStatus status = attendance.getStatus();
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)\n", month, date, dayName, hour, minute, status.getName());
     }
 
-    public static void printAttendanceHistories(LocalDate today, Crew crew) {
-        System.out.println(ATTENDANCE_HISTORIES_MESSAGE_HEADER.formatted(crew.getName()));
-        int year = today.getYear();
-        int month = today.getMonthValue();
-        for (int date = 1; date < today.getDayOfMonth(); date++) {
-            LocalDate attendanceDate = LocalDate.of(year, month, date);
-            printAttendanceHistoryByDate(crew, attendanceDate);
+    public static void printNoAttendanceToModify() {
+        System.out.println(NO_ATTENDANCE_TO_MODIFY);
+    }
+
+    public static void printAttendanceModificationResult(final Attendance beforeAttendance,
+                                                         final Attendance afterAttendance) {
+        LocalDate attendanceDate = beforeAttendance.getDate();
+        DayOfWeek attendanceDay = attendanceDate.getDayOfWeek();
+        LocalTime beforeAttendanceTime = beforeAttendance.getTime();
+        LocalTime afterAttendanceTime = afterAttendance.getTime();
+        System.out.printf("\n%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
+                attendanceDate.getMonthValue(),
+                attendanceDate.getDayOfMonth(),
+                attendanceDay.getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                beforeAttendanceTime.getHour(),
+                beforeAttendanceTime.getMinute(),
+                beforeAttendance.getStatus().getName(),
+                afterAttendanceTime.getHour(),
+                afterAttendanceTime.getMinute(),
+                afterAttendance.getStatus().getName()
+        );
+    }
+
+    public static void printMonthlyAttendances(final LocalDate today,
+                                               final Nickname crew,
+                                               final List<Attendance> attendances) {
+        System.out.printf("\n이번 달 %s의 출석 기록입니다.\n", crew.getNickname());
+        System.out.println();
+        for (int i = today.getDayOfMonth() - 1; i > 0; i--) {
+            LocalDate date = today.minusDays(i);
+            printMonthlyAttendance(attendances, date);
         }
         System.out.println();
     }
 
-    public static void printAttendanceStatistics(Map<AttendanceType, Integer> attendanceStatistics) {
-        for (Entry<AttendanceType, Integer> entry : attendanceStatistics.entrySet()) {
-            AttendanceType attendanceType = entry.getKey();
-            int count = entry.getValue();
-            System.out.println(ATTENDANCE_STATISTICS_MESSAGE.formatted(attendanceType, count));
-        }
-        System.out.println();
-    }
-
-    public static void printInterviewTarget() {
-        System.out.println(INTERVIEW_TARGET_MESSAGE);
-    }
-
-    public static void printDangerousCrews(LocalDate today, List<Crew> dangerousCrews) {
-        System.out.println(DANGEROUS_CREW_MESSAGE_HEADER);
-        sortDangerousCrews(today, dangerousCrews);
-        for (Crew crew : dangerousCrews) {
-            printDangerousCrew(today, crew);
-        }
-        System.out.println();
-    }
-
-    private static void printAttendanceHistoryByDate(Crew crew, LocalDate attendanceDate) {
-        try {
-            AttendancePolicy.checkNotWeekendAndHoliday(attendanceDate);
-        } catch (IllegalArgumentException e) {
+    private static void printMonthlyAttendance(final List<Attendance> attendances, final LocalDate date) {
+        boolean isOperationDate = CampusManager.isOperationDate(date);
+        if (!isOperationDate) {
             return;
         }
-        try {
-            printAttendanceHistory(crew.getAttendanceHistoryByDate(attendanceDate));
-        } catch (IllegalArgumentException e) {
-            printNoAttendanceHistory(attendanceDate);
+        attendances.stream()
+                .filter(attendance -> attendance.isDateEquals(date))
+                .findAny()
+                .ifPresentOrElse(OutputView::printAttendance, () -> printNoAttendance(date));
+    }
+
+    private static void printNoAttendance(final LocalDate noAttendanceDate) {
+        int month = noAttendanceDate.getMonthValue();
+        int date = noAttendanceDate.getDayOfMonth();
+        DayOfWeek day = noAttendanceDate.getDayOfWeek();
+        String dayName = day.getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        System.out.printf("%02d월 %02d일 %s --:-- (결석)\n", month, date, dayName);
+    }
+
+    public static void printAttendanceStatistics(final AttendanceStatistics attendanceStatistics) {
+        for (AttendanceStatus status : AttendanceStatus.values()) {
+            int statusCount = attendanceStatistics.getStatusCount(status);
+            System.out.printf("%s: %d회\n", status.getName(), statusCount);
+        }
+        System.out.println();
+        CrewStatus crewStatus = attendanceStatistics.calculateCrewStatus();
+        if (crewStatus.equals(CrewStatus.INTERVIEW)) {
+            System.out.println("면담 대상자입니다.");
         }
     }
 
-    private static void printNoAttendanceHistory(LocalDate attendanceDate) {
-        System.out.println(NO_ATTENDANCE_HISTORY_MESSAGE.formatted(attendanceDate.getMonthValue(),
-                attendanceDate.getDayOfMonth(), attendanceDate.getDayOfWeek()));
+    public static void printDangerousCrewsInformation(final Map<Nickname, AttendanceStatistics> dangerousCrews) {
+        System.out.println("\n제적 위험자 조회 결과");
+        List<Nickname> crews = sortDangerousCrews(dangerousCrews);
+        for (Nickname crew : crews) {
+            String nickname = crew.getNickname();
+            AttendanceStatistics statistics = dangerousCrews.get(crew);
+            int absenceCount = statistics.getStatusCount(ABSENCE);
+            int lateCount = statistics.getStatusCount(LATE);
+            CrewStatus crewStatus = statistics.calculateCrewStatus();
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", nickname, absenceCount, lateCount, crewStatus.getName());
+        }
     }
 
-    private static void printDangerousCrew(LocalDate today, Crew crew) {
-        Map<AttendanceType, Integer> attendanceStatistics = crew.calculateAttendanceResult(today);
-        CrewStatus crewStatus = crew.calculateCrewStatus(attendanceStatistics);
-        System.out.println(DANGEROUS_CREW_MESSAGE_BODY.formatted(crew.getName(), attendanceStatistics.get(ABSENCE),
-                attendanceStatistics.get(LATE), crewStatus.getName()));
-    }
-
-    private static List<Crew> sortDangerousCrews(LocalDate today, List<Crew> dangerousCrews) {
-        ArrayList<Crew> sortedDangerousCrews = new ArrayList<>(dangerousCrews);
-        sortedDangerousCrews.sort(new Comparator<Crew>() {
+    private static List<Nickname> sortDangerousCrews(final Map<Nickname, AttendanceStatistics> dangerousCrews) {
+        List<Nickname> crews = new ArrayList<>(dangerousCrews.keySet());
+        crews.sort(new Comparator<Nickname>() {
             @Override
-            public int compare(Crew firstCrew, Crew secondCrew) {
-                CrewStatus firstStatus = firstCrew.calculateCrewStatus(firstCrew.calculateAttendanceResult(today));
-                CrewStatus secondStatus = secondCrew.calculateCrewStatus(secondCrew.calculateAttendanceResult(today));
-                if (firstStatus == secondStatus) {
-                    return firstCrew.getName().compareTo(secondCrew.getName());
+            public int compare(Nickname firstCrew, Nickname secondCrew) {
+                AttendanceStatistics firstCrewStatistics = dangerousCrews.get(firstCrew);
+                AttendanceStatistics secondCrewStatistics = dangerousCrews.get(secondCrew);
+                int compareResult = firstCrewStatistics.compareTo(secondCrewStatistics);
+                if (compareResult == 0) {
+                    return secondCrew.compareTo(firstCrew);
                 }
-                return secondStatus.getOrder() - firstStatus.getOrder();
+                return compareResult;
             }
         });
-        return sortedDangerousCrews;
+        return crews;
     }
 }

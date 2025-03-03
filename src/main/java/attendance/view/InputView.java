@@ -1,64 +1,92 @@
 package attendance.view;
 
+import static attendance.exception.ErrorMessage.INVALID_DATE;
+import static attendance.exception.ErrorMessage.INVALID_TIME;
+
 import java.time.DateTimeException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.TextStyle;
 import java.util.InputMismatchException;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class InputView {
-    private static final String TODAY_INFO = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.";
     private static final Scanner scanner = new Scanner(System.in);
+    private static final String TIME_PATTERN = "HH:mm";
 
-    public static String inputOption(LocalDate localDate) {
-        System.out.println(TODAY_INFO.formatted(localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getDayOfWeek()));
+    private InputView() {
+    }
+
+    public static String readOption(final LocalDate today) {
+        printWelcomeMessage(today);
+        return input();
+    }
+
+    private static void printWelcomeMessage(final LocalDate today) {
+        int month = today.getMonthValue();
+        int date = today.getDayOfMonth();
+        DayOfWeek day = today.getDayOfWeek();
+        String dayName = day.getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        System.out.printf("\n오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.\n", month, date, dayName);
         System.out.println("1. 출석 확인\n"
                 + "2. 출석 수정\n"
                 + "3. 크루별 출석 기록 확인\n"
                 + "4. 제적 위험자 확인\n"
                 + "Q. 종료");
-        return userInput();
     }
 
-    public static String inputCrewName() {
+    public static String readCrewNickname() {
         System.out.println("\n닉네임을 입력해 주세요.");
-        return userInput();
+        return input();
     }
 
-    public static LocalTime inputAttendanceTime() {
+    public static LocalTime readAttendanceTime() throws IllegalArgumentException {
         System.out.println("등교 시간을 입력해 주세요.");
-        String userInput = userInput();
+        String attendanceTime = input();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(TIME_PATTERN);
         try {
-            return parseStringToLocalTime(userInput);
+            return LocalTime.parse(attendanceTime, dateTimeFormatter);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("잘못된 시간 형식입니다.");
+            throw new IllegalArgumentException(INVALID_TIME.getMessage());
         }
     }
 
-    public static LocalDate inputModifyDate(LocalDate today) {
+    public static String readCrewNicknameToModify() {
+        System.out.println("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return input();
+    }
+
+    public static LocalDate readAttendanceDateToModify(final LocalDate today) {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        int year = today.getYear();
+        int month = today.getMonthValue();
         try {
-            int modifyDate = scanner.nextInt();
+            int date = scanner.nextInt();
             scanner.nextLine();
-            int year = today.getYear();
-            int month = today.getMonthValue();
-            return LocalDate.of(year, month, modifyDate);
+            return LocalDate.of(year, month, date);
         } catch (InputMismatchException e) {
-            throw new IllegalArgumentException("숫자가 아닙니다.");
+            throw new IllegalArgumentException(INVALID_TIME.getMessage());
         } catch (DateTimeException e) {
-            throw new IllegalArgumentException("잘못된 날짜입니다.");
+            throw new IllegalArgumentException(INVALID_DATE.getMessage());
         }
     }
 
-    private static LocalTime parseStringToLocalTime(String userInput) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return LocalTime.parse(userInput, formatter);
+    public static LocalTime readAttendanceModificationTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        String attendanceTime = input();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(TIME_PATTERN);
+        try {
+            return LocalTime.parse(attendanceTime, dateTimeFormatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException(INVALID_TIME.getMessage());
+        }
     }
 
-    private static String userInput() {
-        String input = scanner.nextLine();
-        return input;
+    private static String input() {
+        return scanner.nextLine();
     }
 }

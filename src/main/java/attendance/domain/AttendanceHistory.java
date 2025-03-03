@@ -1,49 +1,82 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
+import static attendance.domain.AttendanceStatus.ATTENDANCE;
+import static attendance.domain.AttendanceStatus.LATE;
+import static attendance.domain.AttendanceStatus.values;
+import static attendance.exception.ErrorMessage.DUPLICATED_ATTENDANCE;
+import static attendance.exception.ErrorMessage.NO_ATTENDANCE_TO_MODIFY;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class AttendanceHistory {
-    private final LocalDateTime attendanceDateTime;
-    private final AttendanceType attendanceType;
+    private final Set<Attendance> attendances = new HashSet<>();
 
-    public AttendanceHistory(LocalDateTime attendanceDateTime, AttendanceType attendanceType) {
-        this.attendanceDateTime = attendanceDateTime;
-        this.attendanceType = attendanceType;
+    public Attendance addAttendance(final Attendance attendance) {
+        validateDuplicatedAttendance(attendance.getDate());
+        attendances.add(attendance);
+        return attendance;
     }
 
-    public LocalDateTime getAttendanceDateTime() {
-        return attendanceDateTime;
+    public void validateDuplicatedAttendance(final LocalDate attendanceDate) {
+        findAttendance(attendanceDate).ifPresent(attendance -> {
+            throw new IllegalArgumentException(DUPLICATED_ATTENDANCE.getMessage());
+        });
     }
 
-    /**
-     * TODO
-     * 내부에서 boolean을 반환할 수 있겠다
-     */
-    public AttendanceType getAttendanceType() {
-        return attendanceType;
+    public Optional<Attendance> findAttendance(final LocalDate date) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isDateEquals(date))
+                .findAny();
     }
 
-    public boolean isAttendanceDateEquals(LocalDate date) {
-        LocalDate attendanceDate = attendanceDateTime.toLocalDate();
-        return attendanceDate.equals(date);
+    public Attendance modifyAttendance(final Attendance modifiedAttendance) {
+        LocalDate attendanceDateToModify = modifiedAttendance.getDate();
+        findAttendance(attendanceDateToModify).ifPresentOrElse(attendances::remove, () -> {
+            throw new IllegalArgumentException(NO_ATTENDANCE_TO_MODIFY.getMessage());
+        });
+        return addAttendance(modifiedAttendance);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    public List<Attendance> getMonthlyAttendances(final LocalDate today) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isYearMonthEquals(today))
+                .toList();
+    }
+
+    public AttendanceStatistics getAttendanceStatistics(final LocalDate today) {
+        Map<AttendanceStatus, Integer> statistics = new HashMap<>();
+        initializeStatistics(statistics);
+        for (int i = today.getDayOfMonth() - 1; i > 0; i--) {
+            LocalDate date = today.minusDays(i);
+            addAttendanceStatusCount(date, statistics);
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        AttendanceHistory that = (AttendanceHistory) o;
-        return Objects.equals(attendanceDateTime.toLocalDate(), that.attendanceDateTime.toLocalDate());
+        return new AttendanceStatistics(statistics.get(ATTENDANCE), statistics.get(LATE), statistics.get(ABSENCE));
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(attendanceDateTime.toLocalDate());
+    private void addAttendanceStatusCount(final LocalDate date, final Map<AttendanceStatus, Integer> statistics) {
+        boolean isOperationDate = CampusManager.isOperationDate(date);
+        if (!isOperationDate) {
+            return;
+        }
+        Optional<Attendance> attendance = findAttendance(date);
+        if (attendance.isEmpty()) {
+            statistics.put(ABSENCE, statistics.get(ABSENCE) + 1);
+            return;
+        }
+        AttendanceStatus status = attendance.get().getStatus();
+        statistics.put(status, statistics.get(status) + 1);
+    }
+
+    private void initializeStatistics(final Map<AttendanceStatus, Integer> statistics) {
+        for (AttendanceStatus status : values()) {
+            statistics.put(status, 0);
+        }
     }
 }
