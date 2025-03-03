@@ -11,7 +11,8 @@ public enum ErrorCode {
     INPUT_DATE_NOT_VALID("잘못된 날짜 입력입니다."),
     INPUT_TIME_NOT_VALID("잘못된 시간 입력입니다."),
     INPUT_SELECTION_NOT_FOUND("입력에 해당하는 선택지가 존재하지 않습니다."),
-    INPUT_CONSOLE_READER_FAILED("입력 값을 읽는 도중 오류가 발생했습니다.");
+    INPUT_CONSOLE_READER_FAILED("입력 값을 읽는 도중 오류가 발생했습니다."),
+    INPUT_ATTEMPT_LIMIT_EXCEEDED("입력 횟수를 초과하였습니다. 다시 입력해주세요.");
 
     private static final String ERROR_PREFIX = "[ERROR] ";
     private final String message;
