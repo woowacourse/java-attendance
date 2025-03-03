@@ -3,9 +3,11 @@ package attendance.view;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalTime;
 
 public class InputView {
     private static final String ENTER_NICKNAME = "\n닉네임을 입력해 주세요.\n";
+    private static final String ENTER_ATTENDANCE_TIME = "등교 시간을 입력해 주세요.\n";
 
     private static final String ENTER_OPTION = """
             기능을 선택해 주세요.
@@ -25,6 +27,11 @@ public class InputView {
     public String readNickname() {
         System.out.print(ENTER_NICKNAME);
         return readLine();
+    }
+
+    public LocalTime readAttendanceTime() {
+        System.out.println(ENTER_ATTENDANCE_TIME);
+        return LocalTime.parse(readLine());
     }
 
     private String readLine() {

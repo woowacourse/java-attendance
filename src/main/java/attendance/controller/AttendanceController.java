@@ -8,6 +8,7 @@ import attendance.view.DataSourceReader;
 import attendance.view.InputView;
 import attendance.view.ResultView;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AttendanceController {
     private final InputView inputView;
@@ -21,12 +22,18 @@ public class AttendanceController {
     public void run() {
         AttendanceBook attendanceBook = AttendanceLoader.load(DataSourceReader.readFile());
         String inputOption = inputView.readOption();
-        if (inputOption.equals("3")) {
+        if (inputOption.equals("1")) {
+            registerAttendance(attendanceBook);
+        } else if (inputOption.equals("3")) {
             showCrewAttendance(attendanceBook);
-        }
-        else if (inputOption.equals("4")) {
+        } else if (inputOption.equals("4")) {
             showWarningCrews(attendanceBook);
         }
+    }
+
+    private void registerAttendance(final AttendanceBook attendanceBook) {
+        String nickname = inputView.readNickname();
+        LocalTime attendanceTime = inputView.readAttendanceTime();
     }
 
     private void showCrewAttendance(AttendanceBook attendanceBook) {
