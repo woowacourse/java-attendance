@@ -2,6 +2,7 @@ package attendance;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceRecord;
+import attendance.domain.AttendanceRecords;
 import attendance.domain.AttendanceUpdate;
 import attendance.domain.CrewAttendanceManager;
 import attendance.util.DateGenerator;
@@ -82,6 +83,12 @@ public class AttendanceSystem {
 
             AttendanceRecord attendanceRecord = crewAttendanceManager.getAttendanceRecord(nickname);
             outputView.printAttendanceRecord(attendanceRecord);
+        }
+    }
+
+    private void processRiskCrewSearch(final Menu menu) {
+        if (menu.equals(Menu.RISK_CREW_SEARCH)) {
+            AttendanceRecords attendanceRecords = crewAttendanceManager.getAttendanceRecords();
         }
     }
 

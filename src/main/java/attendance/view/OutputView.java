@@ -2,6 +2,7 @@ package attendance.view;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceRecord;
+import attendance.domain.AttendanceRecords;
 import attendance.domain.AttendanceUpdate;
 
 import java.time.LocalDate;
@@ -57,9 +58,28 @@ public class OutputView {
                         출석: %d회
                         지각: %d회
                         결석: %d회
+                        
+                        %s 대상자입니다.
                         """,
                 attendanceRecord.getStatus().geAttendanceStateCount(),
                 attendanceRecord.getStatus().getTardyStateCount(),
-                attendanceRecord.getStatus().getAbsenceStateCount());
+                attendanceRecord.getStatus().getAbsenceStateCount(),
+                attendanceRecord.getStatus().getRisk()
+        );
+    }
+
+    public void printRiskCrewsSearch(AttendanceRecords attendanceRecords) {
+        System.out.println("제적 위험자 조회 결과");
+        attendanceRecords.records()
+                .forEach(this::printAttendanceRecord);
+    }
+
+    private void printRiskCrewSearch(AttendanceRecord attendanceRecord) {
+        System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)",
+                attendanceRecord.getNickname(),
+                attendanceRecord.getStatus().getAbsenceStateCount(),
+                attendanceRecord.getStatus().getTardyStateCount(),
+                attendanceRecord.getStatus().getRisk()
+        );
     }
 }
