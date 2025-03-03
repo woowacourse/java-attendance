@@ -10,6 +10,8 @@ public enum PenaltyStatus {
     NONE("없음", 0),
     ;
 
+    private static final int LATE_TO_ABSENCE_THRESHOLD = 3;
+
     private final String meaning;
     private final int absenceCountLowerBound;
 
@@ -27,7 +29,7 @@ public enum PenaltyStatus {
     }
 
     public static int calculateFinalAbsenceCount(int lateCount, int absenceCount) {
-        return absenceCount + (lateCount / 3);
+        return absenceCount + (lateCount / LATE_TO_ABSENCE_THRESHOLD);
     }
 
     public String getMeaning() {

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 public class AttendanceStatusTest {
 
-    //TODO : Attendance와 결합하기
     @DisplayName("날짜와 시간을 입력하면 이에 맞는 출석 상태를 반환한다.")
     @Test
     void success_findStatusByDate() {

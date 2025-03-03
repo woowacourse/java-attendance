@@ -1,6 +1,7 @@
 package model.attendance;
 
 import common.Campus;
+import model.date.December;
 import model.exception.DuplicatedAttendanceRegistrationException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,10 +17,10 @@ public class AttendanceHistory {
 
     public AttendanceHistory() {
         List<Attendance> defaultAttendances = new ArrayList<>();
-        for (int date = 1; date <= 31; date++) {
+        for (int date = December.START_DATE; date <= December.END_DATE; date++) {
             try {
-                defaultAttendances.add(new Attendance(LocalDate.of(2024, 12, date)));
-            } catch (HolidayAttendanceException e) {
+                defaultAttendances.add(new Attendance(December.createDecemberDateWith(date)));
+            } catch (HolidayAttendanceException ignored) {
             }
         }
         this.attendances = defaultAttendances;
