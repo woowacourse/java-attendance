@@ -7,14 +7,20 @@ import java.time.LocalTime;
 
 public enum OperationSchedule {
 
-    MONDAY(DayOfWeek.MONDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(13, 0)),
-    TUESDAY(DayOfWeek.TUESDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)),
-    WEDNESDAY(DayOfWeek.WEDNESDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)),
-    THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)),
-    FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)),
-    SATURDAY(DayOfWeek.SATURDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)),
-    SUNDAY(DayOfWeek.SUNDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)),
+    MONDAY(DayOfWeek.MONDAY, Constant.EIGHT, Constant.TWENTY_THREE, LocalTime.of(13, 0)),
+    TUESDAY(DayOfWeek.TUESDAY, Constant.EIGHT, Constant.TWENTY_THREE, Constant.TEN),
+    WEDNESDAY(DayOfWeek.WEDNESDAY, Constant.EIGHT, Constant.TWENTY_THREE, Constant.TEN),
+    THURSDAY(DayOfWeek.THURSDAY, Constant.EIGHT, Constant.TWENTY_THREE, Constant.TEN),
+    FRIDAY(DayOfWeek.FRIDAY, Constant.EIGHT, Constant.TWENTY_THREE, Constant.TEN),
+    SATURDAY(DayOfWeek.SATURDAY, Constant.EIGHT, Constant.TWENTY_THREE, Constant.TEN),
+    SUNDAY(DayOfWeek.SUNDAY, Constant.EIGHT, Constant.TWENTY_THREE, Constant.TEN),
     NONE(null, LocalTime.of(0, 0), LocalTime.of(0, 0), LocalTime.of(10, 0));
+
+    private static class Constant {
+        private static final LocalTime EIGHT = LocalTime.of(8, 0);
+        private static final LocalTime TWENTY_THREE = LocalTime.of(23, 0);
+        private static final LocalTime TEN = LocalTime.of(10, 0);
+    }
 
     private final DayOfWeek dayOfWeek;
     private final LocalTime startTime;
