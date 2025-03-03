@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 import attendance.exception.AttendanceArgumentException;
-import attendance.view.EnumTextConverter;
+import attendance.interfaces.Converter;
+import attendance.interfaces.Displayer;
 
 public enum SanctionLevel implements Displayer {
     DISMISS(weight -> weight > 5),
@@ -12,11 +13,18 @@ public enum SanctionLevel implements Displayer {
     WARNING(weight -> weight > 1),
     NONE(weight -> weight <= 1);
 
-    public static final String WEIGHT_BE_POSITIVE = "가중치는 음수가 될 수 없습니다: ";
+    private static final String WEIGHT_BE_POSITIVE = "가중치는 음수가 될 수 없습니다: ";
+    private static final String NOT_REGISTERED_CONVERTER = "컨버터가 등록되지 않았습니다.";
+
     private final Predicate<Integer> condition;
+    private static Converter<SanctionLevel> converter;
 
     SanctionLevel(Predicate<Integer> condition) {
         this.condition = condition;
+    }
+
+    public static void setConverter(Converter<SanctionLevel> levelConverter) {
+        converter = levelConverter;
     }
 
     public static SanctionLevel matchLevel(int wight) {
@@ -39,6 +47,9 @@ public enum SanctionLevel implements Displayer {
 
     @Override
     public String convertMessage() {
-        return EnumTextConverter.convertLevel(this);
+        if (converter == null) {
+            throw new IllegalStateException(NOT_REGISTERED_CONVERTER);
+        }
+        return converter.convert(this);
     }
 }
