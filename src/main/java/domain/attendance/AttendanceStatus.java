@@ -1,24 +1,19 @@
 package domain.attendance;
 
 public enum AttendanceStatus {
-    PRESENCE(0),
-    LATE(5),
-    ABSENCE(30),
+
+    ATTEND,
+    LATE,
+    ABSENCE,
     ;
 
-    private final int arrivalTimeLimit;
-
-    AttendanceStatus(int arrivalTimeLimit) {
-        this.arrivalTimeLimit = arrivalTimeLimit;
-    }
-
-    public static AttendanceStatus timeGapToAttendanceStatus(int minute) {
-        if (minute <= LATE.arrivalTimeLimit) {
-            return PRESENCE;
+    public static AttendanceStatus from(AttendanceTime attendanceTime) {
+        if (attendanceTime.isAbsence()) {
+            return ABSENCE;
         }
-        if (minute <= ABSENCE.arrivalTimeLimit) {
+        if (attendanceTime.isLate()) {
             return LATE;
         }
-        return ABSENCE;
+        return ATTEND;
     }
 }

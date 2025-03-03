@@ -1,127 +1,132 @@
 package controller;
 
-import controller.feature.Feature;
-import domain.attendance.Attendance;
-import domain.attendance.Attendances;
-import domain.checkin.CheckInTime;
+import domain.attendance.AttendanceBook;
+import domain.attendance.AttendanceTime;
+import domain.crew.Crew;
+import domain.crew.CrewAttendance;
+import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Map;
-import util.AttendanceParser;
-import view.input.InputView;
-import view.output.OutputView;
+import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
 
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-    public static final DateTimeFormatter CSV_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    public static final String CSV_PATH = "src/main/resources/attendances.csv";
 
+    private final AttendanceBook attendanceBook;
     private final InputView inputView;
     private final OutputView outputView;
-    private final Map<Feature, Runnable> features;
-    private Attendances attendances;
 
-    public AttendanceController(InputView inputView,
-                                OutputView outputView) {
+    public AttendanceController(AttendanceBook attendanceBook, InputView inputView, OutputView outputView) {
+        this.attendanceBook = attendanceBook;
         this.inputView = inputView;
         this.outputView = outputView;
-        this.features = Map.of(
-                Feature.CHECK_IN, this::checkIn,
-                Feature.MODIFY_CHECK_IN, this::modifyCheckInTime,
-                Feature.READ_CHECK_IN, this::readCheckInTime,
-                Feature.READ_DANGER_CREWS, this::readDangerCrews
-        );
     }
 
     public void run() {
-        attendances = AttendanceParser.registerAttendances(
-                CSV_PATH,
-                CSV_DATE_FORMATTER
-        );
-        selectFeature();
-    }
-
-    private void selectFeature() {
-        while (true) {
-            Feature feature;
+        Command command = Command.NONE;
+        do {
+            LocalDate today = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
             try {
-                feature = Feature.from(inputView.readFeatureNumber());
+                command = Command.from(inputView.readCommandCode(today));
+                runCommand(command, today);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
-                continue;
             }
-            if (feature == Feature.QUIT) {
-                return;
-            }
-            runFeature(feature);
+        } while (command != Command.QUIT);
+    }
+
+    public void runCommand(Command command, LocalDate today) {
+        if (command == Command.ATTEND) {
+            attend(today);
+        }
+        if (command == Command.MODIFY_ATTENDANCE) {
+            modifyAttendanceTime(today);
+        }
+        if (command == Command.READ_ATTENDANCE_LOG) {
+            readAttendanceLogs(today);
+        }
+        if (command == Command.READ_DISCIPLINARY_CREWS) {
+            readDisciplinaryCrews(today);
+        }
+        if (command == Command.QUIT) {
+            quit();
         }
     }
 
-    private void runFeature(Feature feature) {
+    private void attend(LocalDate today) {
+        String crewName = inputView.readNickname();
+        CrewAttendance crewAttendance = getCrewAttendance(crewName);
+
+        String rawTime = inputView.readTime();
+        LocalTime time = parseTime(rawTime);
+
+        AttendanceTime attendanceTime = AttendanceTime.of(today, time);
+        crewAttendance.attend(attendanceTime);
+
+        outputView.attendPage(attendanceTime);
+    }
+
+    private void modifyAttendanceTime(LocalDate today) {
+        String crewName = inputView.readNicknameForModify();
+        CrewAttendance crewAttendance = getCrewAttendance(crewName);
+
+        String rawDay = inputView.readModifyDay();
+        LocalDate date = parseDate(rawDay);
+        if (date.isAfter(today)) {
+            throw new IllegalArgumentException("미래의 날짜는 수정할 수 없습니다.");
+        }
+
+        String rawTime = inputView.readModifyTime();
+        LocalTime time = parseTime(rawTime);
+
+        AttendanceTime attendanceTime = AttendanceTime.of(date, time);
+        AttendanceTime previous = crewAttendance.modify(attendanceTime);
+
+        outputView.modifyPage(previous, attendanceTime);
+    }
+
+    private LocalDate parseDate(String rawDay) {
+        LocalDate date;
         try {
-            Runnable action = features.get(feature);
-            action.run();
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            int dayOfMonth = Integer.parseInt(rawDay);
+            date = LocalDate.of(2024, 12, dayOfMonth);
+        } catch (NumberFormatException | DateTimeException e) {
+            throw new IllegalArgumentException("유효하지 않은 날짜입니다.");
+        }
+        return date;
+    }
+
+    private LocalTime parseTime(String rawTime) {
+        try {
+            return LocalTime.parse(rawTime, TIME_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("유효하지 않은 시간입니다.");
         }
     }
 
-    private void checkIn() {
-        String name = inputView.readNickName();
-        Attendance attendance = attendances.findAttendanceByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다."));
+    private void readAttendanceLogs(LocalDate today) {
+        String crewName = inputView.readNickname();
+        CrewAttendance crewAttendance = getCrewAttendance(crewName);
 
-        LocalDateTime checkInTime = getCheckInTime();
-        attendance.checkIn(checkInTime);
-
-        outputView.printTodayCheckInTime(CheckInTime.of(checkInTime));
+        outputView.attendanceLogPage(crewAttendance, today);
     }
 
-    private LocalDateTime getCheckInTime() {
-        String timeString = inputView.readTimeForCheckIn();
-        LocalTime parsedTime = LocalTime.parse(timeString, TIME_FORMATTER);
-
-        return LocalDateTime.of(LocalDate.now(), parsedTime);
+    private CrewAttendance getCrewAttendance(String crewName) {
+        Crew crew = Crew.of(crewName);
+        return attendanceBook.findCrewAttendanceByCrew(crew);
     }
 
-
-    private void modifyCheckInTime() {
-        String name = inputView.readNickNameForModify();
-        Attendance attendance = attendances.findAttendanceByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다."));
-
-        LocalDateTime newCheckInTime = getNewCheckInTime();
-        LocalDateTime previousCheckInTime = attendance.modify(newCheckInTime);
-
-        outputView.printModifyCheckInTime(CheckInTime.of(previousCheckInTime), CheckInTime.of(newCheckInTime));
+    private void readDisciplinaryCrews(LocalDate today) {
+        List<CrewAttendance> disciplinaryCrews = attendanceBook.findDisciplinaryCrews(today);
+        outputView.disciplinaryCrewsPage(disciplinaryCrews, today);
     }
 
-    private LocalDateTime getNewCheckInTime() {
-        int day = Integer.parseInt(inputView.readDateForModify());
-        LocalDate date = LocalDate.of(2024, 12, day);
-        String timeString = inputView.readTimeForModify();
-        LocalTime time = LocalTime.parse(timeString, TIME_FORMATTER);
-
-        return LocalDateTime.of(date, time);
-    }
-
-
-    private void readCheckInTime() {
-        String name = inputView.readNickName();
-        Attendance attendance = attendances.findAttendanceByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다."));
-        outputView.printAttendanceLog(attendance);
-    }
-
-    private void readDangerCrews() {
-        List<Attendance> dangerCrew = attendances.findDangerCrew();
-        List<Attendance> sorted = dangerCrew.stream()
-                .sorted()
-                .toList();
-        outputView.printDangerCrews(sorted);
+    private void quit() {
+        System.out.println("프로그램을 종료합니다.");
     }
 }

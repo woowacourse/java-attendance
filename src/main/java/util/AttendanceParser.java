@@ -1,36 +1,17 @@
 package util;
 
-import domain.attendance.Attendance;
-import domain.attendance.Attendances;
-import domain.checkin.CheckInTimes;
-import domain.crew.Crew;
-
+import domain.dto.AttendanceRecordDto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceParser {
-    public static Attendances registerAttendances(String fileName, DateTimeFormatter formatter) {
-        List<List<String>> rawAttendances = CsvParser.readFile(fileName);
-        List<Attendance> attendanceLog = new ArrayList<>();
 
-        Attendances attendances = Attendances.of(attendanceLog);
-        for (List<String> line : rawAttendances) {
-            String crewName = line.get(0);
-            Attendance attendance = attendances.findAttendanceByName(crewName)
-                    .orElseGet(() -> {
-                        Crew crew = Crew.of(crewName);
-                        Attendance newAttendance = Attendance.of(crew, CheckInTimes.of(List.of()));
-                        attendanceLog.add(newAttendance);
-                        return newAttendance;
-                    });
-            attendance.checkIn(getLocalDateTime(line.get(1), formatter));
-        }
-        return attendances;
-    }
-
-    private static LocalDateTime getLocalDateTime(String rawDateTime, DateTimeFormatter formatter) {
-        return LocalDateTime.parse(rawDateTime, formatter);
+    public static List<AttendanceRecordDto> parse(List<String[]> records) {
+        return records.stream()
+                .map(data -> new AttendanceRecordDto(
+                        data[0], LocalDateTime.parse(data[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                )
+                .toList();
     }
 }
