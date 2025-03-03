@@ -39,6 +39,12 @@ public class AttendanceManager {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
 
+    public AttendanceRecord findAttendanceRecordByNickname(String nickname) {
+        return findCrewByNickname(nickname)
+                .map(Crew::getAttendanceRecord)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+    }
+
     private Optional<Crew> findCrewByNickname(String nickname) {
         return crews.stream()
                 .filter(crew -> crew.getNickname().equals(nickname))
