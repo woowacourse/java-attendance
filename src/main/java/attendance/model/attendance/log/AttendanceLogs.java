@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public record AttendanceLogs(
@@ -102,17 +101,13 @@ public record AttendanceLogs(
     }
 
     public void update(final AttendanceLog from, final AttendanceLog to) {
-        final Optional<AttendanceLog> targetAttendanceLog = values.stream()
+        final AttendanceLog targetAttendanceLog = values.stream()
                 .filter(log -> log.isSameDate(from.getDate()))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석 기록이 존재하지 않습니다."));
 
-        if (targetAttendanceLog.isPresent()) {
-            values.remove(targetAttendanceLog.get());
-            values.add(to);
-            return;
-        }
-
-        throw new IllegalArgumentException("해당 날짜의 출석 기록이 존재하지 않습니다.");
+        values.remove(targetAttendanceLog);
+        values.add(to);
     }
 
     public boolean contains(final AttendanceLog attendanceLog) {
