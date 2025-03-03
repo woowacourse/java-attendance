@@ -36,9 +36,11 @@ public class AttendanceController {
     public void run() {
         do {
 //            today = LocalDate.now();
-            outputView.displayMenu(today);
-            Menu menuInput = inputView.readMenu();
-            menuTable.get(menuInput).run();
+            retryUntilSuccess(() -> {
+                outputView.displayMenu(today);
+                Menu menuInput = inputView.readMenu();
+                menuTable.get(menuInput).run();
+            });
         } while (true);
     }
 
@@ -77,12 +79,12 @@ public class AttendanceController {
         return AttendanceHistoryGenerator.generate(rawAttendanceData);
     }
 
-//    private void retryUntilSuccess(Runnable runnable) {
-//        try {
-//            runnable.run();
-//        } catch (IllegalArgumentException e) {
-//            System.out.printf("%s%n", e.getMessage());
-//            retryUntilSuccess(runnable);
-//        }
-//    }
+    private void retryUntilSuccess(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (IllegalArgumentException e) {
+            System.out.printf("%s%n", e.getMessage());
+            retryUntilSuccess(runnable);
+        }
+    }
 }

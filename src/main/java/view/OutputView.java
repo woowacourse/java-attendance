@@ -32,7 +32,6 @@ public class OutputView {
         );
     }
 
-
     private String toAttendanceRecordFormat(AttendanceDateTime attendanceDateTime) {
         LocalDateTime dateTime = attendanceDateTime.getLocalDateTime();
         AttendanceStatus status = attendanceDateTime.getStatus();
