@@ -5,7 +5,6 @@ import static attendance.model.TestFixtures.NEO_NICKNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import attendance.dto.AttendResult;
 import attendance.dto.AttendanceWarning;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,13 +54,13 @@ class AttendanceBookTest {
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
 
         // when
-        AttendResult attendResult = attendanceBook.attend(BELLO_NICKNAME, attendanceDateTime);
+        attendanceBook.attend(BELLO_NICKNAME, attendanceDateTime);
 
         // then
-        assertThat(attendResult.attendanceDateTime())
-                .isEqualTo(attendanceDateTime);
-        assertThat(attendResult.attendanceType())
-                .isSameAs(AttendanceType.PRESENT);
+        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(BELLO_NICKNAME,
+                LocalDate.of(2024, 12, 2));
+        assertThat(attendanceTime)
+                .isEqualTo(LocalTime.of(10, 0));
     }
 
     @DisplayName("특정 닉네임과 날짜로 출석 시간을 조회할 수 있다.")
@@ -74,7 +73,8 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when
-        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(BELLO_NICKNAME, LocalDate.of(2024, 12, 2));
+        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(BELLO_NICKNAME,
+                LocalDate.of(2024, 12, 2));
 
         // then
         assertThat(attendanceTime)
@@ -90,7 +90,8 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when
-        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(BELLO_NICKNAME, LocalDate.of(2024, 12, 2));
+        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(BELLO_NICKNAME,
+                LocalDate.of(2024, 12, 2));
 
         // then
         assertThat(attendanceTime)
@@ -111,8 +112,10 @@ class AttendanceBookTest {
         attendanceBook.edit(BELLO_NICKNAME, updateAttendanceDateTime);
 
         // then
-        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(new Nickname("벨로"), LocalDate.of(2024, 12, 3));
-        AttendanceType attendanceType = attendanceBook.determineAttendanceType(LocalDate.of(2024, 12, 3), attendanceTime);
+        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(new Nickname("벨로"),
+                LocalDate.of(2024, 12, 3));
+        AttendanceType attendanceType = attendanceBook.determineAttendanceType(LocalDate.of(2024, 12, 3),
+                attendanceTime);
         assertThat(attendanceTime)
                 .isEqualTo(LocalTime.of(10, 5));
         assertThat(attendanceType)
@@ -132,8 +135,10 @@ class AttendanceBookTest {
         attendanceBook.edit(BELLO_NICKNAME, updateAttendanceDateTime);
 
         // then
-        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(BELLO_NICKNAME, LocalDate.of(2024, 12, 2));
-        AttendanceType attendanceType = attendanceBook.determineAttendanceType(LocalDate.of(2024, 12, 2), attendanceTime);
+        LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(BELLO_NICKNAME,
+                LocalDate.of(2024, 12, 2));
+        AttendanceType attendanceType = attendanceBook.determineAttendanceType(LocalDate.of(2024, 12, 2),
+                attendanceTime);
         assertThat(attendanceTime)
                 .isEqualTo(LocalTime.of(10, 0));
         assertThat(attendanceType)

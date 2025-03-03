@@ -1,9 +1,7 @@
 package attendance.controller;
 
-import attendance.dto.AttendResult;
 import attendance.dto.AttendanceLogDto;
 import attendance.dto.AttendanceWarning;
-import attendance.dto.EditResultDto;
 import attendance.model.AttendanceBook;
 import attendance.model.AttendanceLogs;
 import attendance.model.AttendanceType;
@@ -83,8 +81,8 @@ public class AttendanceController {
     private void attend(LocalDate baseDate, AttendanceBook attendanceBook) {
         final Nickname nickname = readNickname(attendanceBook);
         final LocalDateTime attendanceDateTime = readAttendanceDateTime(baseDate);
-        final AttendResult attendResult = attendanceBook.attend(nickname, attendanceDateTime);
-        outputView.printAttendance(attendResult);
+        attendanceBook.attend(nickname, attendanceDateTime);
+        displayAttendanceLog(baseDate, attendanceBook, nickname);
     }
 
     private Nickname readNickname(AttendanceBook attendanceBook) {
@@ -102,23 +100,32 @@ public class AttendanceController {
         return LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("HH:mm"));
     }
 
+    private void displayAttendanceLog(LocalDate baseDate, AttendanceBook attendanceBook, Nickname nickname) {
+        final LocalTime attendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(nickname, baseDate);
+        final AttendanceType attendanceType = attendanceBook.determineAttendanceType(baseDate, attendanceTime);
+        outputView.printAttendanceLog(LocalDateTime.of(baseDate, attendanceTime), attendanceType);
+    }
+
     private void editAttendanceLog(LocalDate baseDate, AttendanceBook attendanceBook) {
         final Nickname nickname = readNicknameForEditAttendance(attendanceBook);
         final LocalDateTime updateDateTime = readUpdateDateTime(baseDate);
-        EditResultDto editResultDto = editAttendanceLog(attendanceBook, nickname, updateDateTime);
-        outputView.printEditAttendanceLog(editResultDto);
+        displayBeforeAttendanceLog(updateDateTime.toLocalDate(), attendanceBook, nickname);
+        attendanceBook.edit(nickname, updateDateTime);
+        displayAfterAttendanceLog(updateDateTime.toLocalDate(), attendanceBook, nickname);
     }
 
-    private EditResultDto editAttendanceLog(AttendanceBook attendanceBook, Nickname nickname, LocalDateTime updateDateTime) {
-        final LocalTime beforeAttendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(nickname, updateDateTime.toLocalDate());
-        final AttendanceType beforeAttendanceType = attendanceBook.determineAttendanceType(updateDateTime.toLocalDate(), beforeAttendanceTime);
-        attendanceBook.edit(nickname, updateDateTime);
-        final LocalTime afterAttendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(nickname, updateDateTime.toLocalDate());
-        final AttendanceType afterAttendanceType = attendanceBook.determineAttendanceType(updateDateTime.toLocalDate(), updateDateTime.toLocalTime());
-        return new EditResultDto(
-                updateDateTime.toLocalDate(),
-                beforeAttendanceTime, beforeAttendanceType,
-                afterAttendanceTime, afterAttendanceType);
+    private void displayBeforeAttendanceLog(LocalDate baseDate, AttendanceBook attendanceBook, Nickname nickname) {
+        final LocalTime beforeAttendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(nickname, baseDate);
+        final AttendanceType beforeAttendanceType = attendanceBook.determineAttendanceType(baseDate,
+                beforeAttendanceTime);
+        outputView.printAttendanceLog(baseDate, beforeAttendanceTime, beforeAttendanceType);
+    }
+
+    private void displayAfterAttendanceLog(LocalDate baseDate, AttendanceBook attendanceBook, Nickname nickname) {
+        final LocalTime afterAttendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(nickname, baseDate);
+        final AttendanceType afterAttendanceType = attendanceBook.determineAttendanceType(baseDate,
+                afterAttendanceTime);
+        outputView.printEditAttendanceLog(afterAttendanceTime, afterAttendanceType);
     }
 
     private Nickname readNicknameForEditAttendance(AttendanceBook attendanceBook) {

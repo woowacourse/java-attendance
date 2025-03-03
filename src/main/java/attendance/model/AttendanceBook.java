@@ -1,6 +1,5 @@
 package attendance.model;
 
-import attendance.dto.AttendResult;
 import attendance.dto.AttendanceLogDto;
 import attendance.dto.AttendanceWarning;
 import java.time.LocalDate;
@@ -26,10 +25,9 @@ public class AttendanceBook {
         }
     }
 
-    public AttendResult attend(Nickname nickname, LocalDateTime attendanceDateTime) {
+    public void attend(Nickname nickname, LocalDateTime attendanceDateTime) {
         AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDateTime);
         attendanceLogs.add(attendanceLog);
-        return new AttendResult(attendanceDateTime, determineAttendanceType(attendanceDateTime));
     }
 
     public LocalTime findAttendanceTimeByNicknameAndDate(Nickname nickname, LocalDate localDate) {
@@ -45,11 +43,6 @@ public class AttendanceBook {
     public AttendanceType determineAttendanceType(LocalDate date, LocalTime time) {
         LocalTime startTimeInBaseDate = EducationSchedule.findStartTimeByDay(date.getDayOfWeek());
         return AttendanceType.determine(startTimeInBaseDate, time);
-    }
-
-    private AttendanceType determineAttendanceType(LocalDateTime attendanceDateTime) {
-        LocalTime startTimeInBaseDate = EducationSchedule.findStartTimeByDay(attendanceDateTime.getDayOfWeek());
-        return AttendanceType.determine(startTimeInBaseDate, attendanceDateTime.toLocalTime());
     }
 
     public List<AttendanceLogDto> findAttendanceLogsByNicknameAndInMonth(Nickname nickname, LocalDate baseDate) {

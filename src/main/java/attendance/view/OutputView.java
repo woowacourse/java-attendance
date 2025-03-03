@@ -1,13 +1,13 @@
 package attendance.view;
 
-import attendance.dto.AttendResult;
 import attendance.dto.AttendanceLogDto;
-import attendance.dto.EditResultDto;
 import attendance.dto.AttendanceWarning;
 import attendance.model.AttendanceType;
 import attendance.model.AttendanceWarningLevel;
 import attendance.model.Nickname;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -24,26 +24,29 @@ public class OutputView {
         System.out.printf("%n오늘은 %s입니다. ", date.format(DATE_FORMATTER));
     }
 
-    public void printAttendance(AttendResult attendResult) {
+    public void printAttendanceLog(LocalDateTime attendanceDateTime, AttendanceType attendanceType) {
         System.out.printf("%n%s (%s)%n",
-                attendResult.attendanceDateTime().format(DATE_TIME_FORMATTER),
-                attendResult.attendanceType().getKoreanLabel());
+                attendanceDateTime.format(DATE_TIME_FORMATTER),
+                attendanceType.getKoreanLabel());
     }
 
-    public void printEditAttendanceLog(EditResultDto editResultDto) {
-        StringBuilder message = new StringBuilder();
-        message.append("%n%s ".formatted(editResultDto.targetDate().format(DATE_FORMATTER)));
-        if (editResultDto.beforeAttendanceTime() == null) {
-            message.append("--:--");
+    public void printAttendanceLog(LocalDate attendanceDate,
+                                   LocalTime attendanceTime,
+                                   AttendanceType attendanceType) {
+        if (attendanceTime == null) {
+            System.out.printf("%n%s --:-- (%s)",
+                    attendanceDate.format(DATE_FORMATTER),
+                    AttendanceType.ABSENT.getKoreanLabel());
+            return;
         }
-        if (editResultDto.beforeAttendanceTime() != null) {
-            message.append(editResultDto.beforeAttendanceTime().format(TIME_FORMATTER));
-        }
-        message.append(" (%s) -> %s (%s) 수정 완료!%n".formatted(
-                editResultDto.beforeAttendanceType().getKoreanLabel(),
-                editResultDto.afterAttendanceTime().format(TIME_FORMATTER),
-                editResultDto.afterAttendanceType().getKoreanLabel()));
-        System.out.print(message);
+        System.out.printf("%n%s (%s)",
+                LocalDateTime.of(attendanceDate, attendanceTime).format(DATE_TIME_FORMATTER),
+                attendanceType.getKoreanLabel());
+    }
+
+    public void printEditAttendanceLog(LocalTime attendanceTime, AttendanceType attendanceType) {
+        System.out.printf(" -> %s (%s) 수정 완료!%n", attendanceTime.format(TIME_FORMATTER),
+                attendanceType.getKoreanLabel());
     }
 
     public void printAttendanceLogs(Nickname nickname, List<AttendanceLogDto> attendanceLogDtos) {
