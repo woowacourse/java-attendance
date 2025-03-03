@@ -25,14 +25,14 @@ public class AttendanceSystem {
     private final LocalDate today;
     private final AllCrew allCrew;
 
-    public AttendanceSystem() throws FileNotFoundException {
+    public AttendanceSystem() {
         try {
             today = LocalDate.now();
             Scanner scanner = new Scanner(new File("src/main/resources/attendances.csv"));
             allCrew = new AllCrew(scanner);
             allCrew.fillAllCrewsEmptyDateWithAbsent(today.minusDays(1));
         } catch (FileNotFoundException e) {
-            throw new FileNotFoundException(NO_ATTENDANCES_FILE.getMessage());
+            throw new IllegalArgumentException(NO_ATTENDANCES_FILE.getMessage());
         }
     }
 
