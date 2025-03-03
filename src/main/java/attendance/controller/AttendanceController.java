@@ -16,7 +16,6 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -95,12 +94,8 @@ public class AttendanceController {
     }
 
     private LocalDateTime readAttendanceDateTime(LocalDate baseDate) {
-        final LocalTime attendanceTime = parseTime(inputView.readAttendanceTime());
+        final LocalTime attendanceTime = inputView.readAttendanceTime();
         return LocalDateTime.of(baseDate, attendanceTime);
-    }
-
-    private LocalTime parseTime(String rawTime) {
-        return LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("HH:mm"));
     }
 
     private void displayAttendanceLog(LocalDate baseDate, AttendanceBook attendanceBook, Nickname nickname) {
@@ -138,7 +133,7 @@ public class AttendanceController {
     private LocalDateTime readUpdateDateTime(LocalDate baseDate) {
         final int updateDay = inputView.readDateForEditAttendance();
         final LocalDate updateDate = LocalDate.of(baseDate.getYear(), baseDate.getMonth(), updateDay);
-        final LocalTime updateTime = parseTime(inputView.readAttendanceTimeForEditAttendance());
+        final LocalTime updateTime = inputView.readAttendanceTimeForEditAttendance();
         return LocalDateTime.of(updateDate, updateTime);
     }
 
@@ -204,20 +199,26 @@ public class AttendanceController {
     }
 
     private Comparator<AttendanceWarningDto> getAttendanceWarningComparator() {
-        return (first, second) -> {
-            if (first.attendanceLevel() == second.attendanceLevel()) {
-                return compareAbsentCountTotal(first, second);
-            }
-            return second.attendanceLevel().compareTo(first.attendanceLevel());
-        };
+        return this::compareAttendanceWarningLevelDesc;
     }
 
-    private int compareAbsentCountTotal(AttendanceWarningDto first, AttendanceWarningDto second) {
+    private int compareAttendanceWarningLevelDesc(AttendanceWarningDto first, AttendanceWarningDto second) {
+        if (first.attendanceLevel() == second.attendanceLevel()) {
+            return compareAbsentCountTotalDesc(first, second);
+        }
+        return second.attendanceLevel().compareTo(first.attendanceLevel());
+    }
+
+    private int compareAbsentCountTotalDesc(AttendanceWarningDto first, AttendanceWarningDto second) {
         int firstAbsentCountTotal = first.absentCount() + (first.lateCount() / 3);
         int secondAbsentCountTotal = second.absentCount() + (second.lateCount() / 3);
         if (firstAbsentCountTotal == secondAbsentCountTotal) {
-            return first.nickname().compareTo(second.nickname());
+            return compareNicknameAsc(first, second);
         }
         return firstAbsentCountTotal - second.absentCount() + (second.lateCount() / 3);
+    }
+
+    private int compareNicknameAsc(AttendanceWarningDto first, AttendanceWarningDto second) {
+        return first.nickname().compareTo(second.nickname());
     }
 }

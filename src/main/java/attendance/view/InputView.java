@@ -1,10 +1,14 @@
 package attendance.view;
 
 import attendance.model.Command;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
 public class InputView {
+
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final Scanner scanner;
 
@@ -23,9 +27,9 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public String readAttendanceTime() {
+    public LocalTime readAttendanceTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return scanner.nextLine();
+        return parseTime(scanner.nextLine());
     }
 
     public String readNicknameForEditAttendance() {
@@ -46,8 +50,12 @@ public class InputView {
         }
     }
 
-    public String readAttendanceTimeForEditAttendance() {
+    private LocalTime parseTime(String rawTime) {
+        return LocalTime.parse(rawTime, TIME_FORMATTER);
+    }
+
+    public LocalTime readAttendanceTimeForEditAttendance() {
         System.out.println("언제로 변경하겠습니까?");
-        return scanner.nextLine();
+        return parseTime(scanner.nextLine());
     }
 }
