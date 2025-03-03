@@ -15,12 +15,9 @@ public record StatusStatistics(Nickname nickname, EnumMap<AttendanceStatus, Inte
 
     public void update(Map<LocalDate, AttendanceStatus> attendances) {
         for (LocalDate date : attendances.keySet()) {
-            put(attendances.get(date));
+            var state = attendances.get(date);
+            statistics.put(state, this.getCount(state) + 1);
         }
-    }
-
-    public void put(AttendanceStatus state) {
-        statistics.put(state, this.getCount(state) + 1);
     }
 
     public int getCount(AttendanceStatus state) {
