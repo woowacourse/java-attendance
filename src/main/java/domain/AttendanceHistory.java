@@ -27,8 +27,7 @@ public class AttendanceHistory {
     }
 
     public AttendanceRecord attendance(final LocalDateTime attendanceDateTime) {
-        validateAttendanceDay(attendanceDateTime);
-        validateAttendanceTime(attendanceDateTime);
+        validateAttendanceDateTime(attendanceDateTime);
         validateAlreadyAttendance(attendanceDateTime);
         final AttendanceRecord attendanceRecord = AttendanceRecord.of(attendanceDateTime);
         attendanceHistory.put(attendanceDateTime.toLocalDate(), attendanceRecord);
@@ -45,6 +44,11 @@ public class AttendanceHistory {
         return attendanceHistory.containsKey(targetDate);
     }
 
+    private void validateAttendanceDateTime(final LocalDateTime attendanceDateTime) {
+        validateAttendanceDay(attendanceDateTime);
+        validateAttendanceTime(attendanceDateTime);
+    }
+
     private void validateAttendanceDay(final LocalDateTime attendanceDateTime) {
         if (!isAttendanceDay(attendanceDateTime.toLocalDate())) {
             throw new IllegalArgumentException("주어진 날짜는 출석하는 날이 아닙니다.");
@@ -52,16 +56,15 @@ public class AttendanceHistory {
     }
 
     public AttendanceRecord updateTimeByDate(final LocalDateTime afterTime) {
-        validateAttendanceDay(afterTime);
-        validateAttendanceTime(afterTime);
+        validateAttendanceDateTime(afterTime);
         final AttendanceRecord prevRecord = attendanceHistory.get(afterTime.toLocalDate());
         final AttendanceRecord newRecord = AttendanceRecord.of(afterTime);
         attendanceHistory.put(afterTime.toLocalDate(), newRecord);
         return prevRecord;
     }
 
-    private static void validateAttendanceTime(final LocalDateTime afterTime) {
-        final LocalTime time = afterTime.toLocalTime();
+    private static void validateAttendanceTime(final LocalDateTime attendanceDateTime) {
+        final LocalTime time = attendanceDateTime.toLocalTime();
         if (time.isBefore(START_TIME) || time.isAfter(END_TIME)) {
             throw new IllegalArgumentException("출석이 가능한 시간이 아닙니다.");
         }
