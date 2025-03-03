@@ -3,7 +3,6 @@ package attendance.domain;
 import static attendance.fixture.TestFixture.makeAbsenceExceptMonday;
 import static attendance.fixture.TestFixture.makeAbsenceMonday;
 import static attendance.fixture.TestFixture.makeAttendanceExceptMonday;
-import static attendance.fixture.TestFixture.makeAttendanceMonday;
 import static attendance.fixture.TestFixture.makeCrewHistory;
 import static attendance.fixture.TestFixture.makeDateTime;
 import static attendance.fixture.TestFixture.makeDecemberDate;
@@ -11,12 +10,11 @@ import static attendance.fixture.TestFixture.makeTardinessExceptMonday;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.entry;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import attendance.view.TimeFormatter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -121,12 +119,13 @@ class CampusSchedulerTest {
         LocalDate nowDate = makeDecemberDate(10);
 
         // When
-        Map<AttendanceState, Integer> result = campusScheduler.countByAttendanceState(crewHistory, nowDate);
+        AttendanceCounter counter = campusScheduler.countByAttendanceState(crewHistory, nowDate);
 
         // Then
-        assertThat(result).contains(entry(AttendanceState.ATTENDANCE, 0),
-                entry(AttendanceState.TARDINESS, 3),
-                entry(AttendanceState.ABSENCE, 3)
+        assertAll(
+                () -> assertThat(counter.getCount(AttendanceState.ATTENDANCE)).isEqualTo(0),
+                () -> assertThat(counter.getCount(AttendanceState.TARDINESS)).isEqualTo(3),
+                () -> assertThat(counter.getCount(AttendanceState.ABSENCE)).isEqualTo(3)
         );
     }
 }

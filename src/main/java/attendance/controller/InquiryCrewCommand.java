@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.domain.AttendanceCounter;
 import attendance.domain.AttendanceState;
 import attendance.domain.CampusScheduler;
 import attendance.domain.CrewHistories;
@@ -10,7 +11,6 @@ import attendance.view.InputView;
 import attendance.view.ResultView;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.Map;
 
 public class InquiryCrewCommand implements Command {
 
@@ -38,11 +38,11 @@ public class InquiryCrewCommand implements Command {
     }
 
     private void showAttendanceCountResult(final CrewHistory history, final LocalDate nowDate) {
-        Map<AttendanceState, Integer> result = campusScheduler.countByAttendanceState(
+        AttendanceCounter counter = campusScheduler.countByAttendanceState(
                 history, nowDate);
-        int attendanceCount = result.get(AttendanceState.ATTENDANCE);
-        int absentCount = result.get(AttendanceState.ABSENCE);
-        int lateCount = result.get(AttendanceState.TARDINESS);
+        int attendanceCount = counter.getCount(AttendanceState.ATTENDANCE);
+        int absentCount = counter.getCount(AttendanceState.ABSENCE);
+        int lateCount = counter.getCount(AttendanceState.TARDINESS);
 
         resultView.showCountByAttendanceState(attendanceCount, lateCount, absentCount);
         resultView.showExpulsion(RiskAtExpulsion.of(absentCount, lateCount));
