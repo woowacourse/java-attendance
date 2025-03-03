@@ -17,11 +17,11 @@ public class DateFormatter {
     private final static String DEFAULT_TIME = "--:--";
 
 
-    public static String dateFullFormat(LocalDate localDate, Optional<LocalTime> localTime) {
+    public static String dateFullFormat(LocalDate localDate, LocalTime localTime) {
         String date = dateFormat(localDate);
         String time = DEFAULT_TIME;
-        if (localTime.isPresent()) {
-            time = timeFormat(localTime.get());
+        if (localTime != null) {
+            time = timeFormat(localTime);
         }
         return date + " " + time;
     }

@@ -7,11 +7,13 @@ import java.util.Optional;
 
 public record AttendanceHistoryDto(
         LocalDate attendanceDate,
-        Optional<LocalTime> attendanceTime,
+        LocalTime attendanceTime,
         String result
 ) {
     public static AttendanceHistoryDto from(AttendanceHistory history) {
-        return new AttendanceHistoryDto(history.getAttendanceDate(), history.getAttendanceTime(),
+        Optional<LocalTime> optionalLocalTime = history.getAttendanceTime();
+        LocalTime attendanceTime = optionalLocalTime.orElse(null);
+        return new AttendanceHistoryDto(history.getAttendanceDate(), attendanceTime,
                 history.getAttendanceResult().getResult());
     }
 }
