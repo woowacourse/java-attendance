@@ -1,5 +1,6 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,4 +53,32 @@ public class AttendanceHistoriesTest {
 
 
     }
+
+    @Test
+    @DisplayName("데이터로부터 결석 기록 포함해 출석 기록 객체 생성")
+    public void makeAbsentHistoriesTest() {
+        // given
+        List<LocalDateTime> originalHistories = List.of(
+                LocalDateTime.of(2024, 12, 1, 10, 0),
+                LocalDateTime.of(2024, 12, 3, 10, 0),
+                LocalDateTime.of(2024, 12, 5, 10, 0)
+        );
+        LocalDate standard = LocalDate.of(2024, 12, 10);
+
+        // when
+        AttendanceHistories attendanceHistories = new AttendanceHistories(originalHistories, standard);
+
+        // then
+        List<AttendanceHistory> histories = attendanceHistories.getAttendanceHistories();
+        assertThat(histories).isNotNull();
+        assertThat(histories.size()).isGreaterThan(originalHistories.size());
+        assertThat(histories.stream()
+                .flatMap(history -> history.getAttendances().stream())
+                .anyMatch(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.ABSENT))
+                .isTrue();
+
+
+    }
+
+
 }
