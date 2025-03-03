@@ -16,6 +16,12 @@ public class Attendances {
         this.attendances = attendances;
     }
 
+    public void initializeLogs(List<AttendanceLog> fileLogs) {
+        for (AttendanceLog log : fileLogs) {
+            attendances.computeIfAbsent(log.nickname(), k -> new ArrayList<>()).add(new Attendance(log.localDateTime()));
+        }
+    }
+
     public void addAttendanceLog(Nickname nickname, LocalDateTime localDateTime) {
         validateHoliday(localDateTime.toLocalDate());
         if (!attendances.containsKey(nickname)) {

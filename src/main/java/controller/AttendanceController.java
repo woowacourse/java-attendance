@@ -4,9 +4,11 @@ import domain.*;
 import view.InputView;
 import view.OutputView;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceController {
@@ -23,10 +25,16 @@ public class AttendanceController {
             Command.PENALTY_CHECK, this::identifyPenaltyCrews
     );
 
-    public AttendanceController(InputView inputView, OutputView outputView, Attendances attendances) {
+    public AttendanceController(InputView inputView, OutputView outputView, AttendancesLoader loader) throws IOException {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.attendances = attendances;
+        this.attendances = initializeAttendances(loader);
+    }
+
+    public Attendances initializeAttendances(AttendancesLoader loader) throws IOException {
+        Attendances attendances = new Attendances(new HashMap<>());
+        attendances.initializeLogs(loader.load());
+        return attendances;
     }
 
     public void run() {

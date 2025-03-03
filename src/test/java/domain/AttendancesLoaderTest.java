@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -41,8 +42,9 @@ public class AttendancesLoaderTest {
         writeFile(csvFileFormat);
 
 
-        AttendancesLoader loader = new AttendancesLoader();
-        Attendances attendances = loader.load(new FileReader("testAttendance.csv"));
+        AttendancesLoader loader = new AttendancesLoader(new FileReader("testAttendance.csv"));
+        Attendances attendances = new Attendances(new HashMap<>());
+        attendances.initializeLogs(loader.load());
         List<Attendance> logsWithCrew1 = attendances.getLogsWithName(new Nickname("빙봉"));
         Attendance attendance = logsWithCrew1.getFirst();
         LocalDateTime localDateTime = attendance.getLocalDateTime();
@@ -68,8 +70,8 @@ public class AttendancesLoaderTest {
     void 잘못된_포맷을_읽을_경우_예외를_발생시킨다(String csvFileFormat) throws IOException {
         writeFile(csvFileFormat);
 
-        AttendancesLoader loader = new AttendancesLoader();
-        Assertions.assertThatThrownBy(() -> loader.load(new FileReader("testAttendance.csv"))).isInstanceOf(IOException.class).hasMessage("[ERROR] 출석 파일을 읽는 중 오류가 발생했습니다.");
+        AttendancesLoader loader = new AttendancesLoader(new FileReader("testAttendance.csv"));
+        Assertions.assertThatThrownBy(loader::load).isInstanceOf(IOException.class).hasMessage("[ERROR] 출석 파일을 읽는 중 오류가 발생했습니다.");
     }
 
     private void writeFile(String csvFileFormat) throws IOException {
