@@ -54,16 +54,16 @@ class AttendanceStatusTest {
         LocalDate nowDate = dateGenerator.generate();
         return Stream.of(
                 Arguments.of(List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0)))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0)))
                 ), 1, 0, 0),
                 Arguments.of(List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(10, 6)))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(10, 6)))
                 ), 1, 1, 0),
                 Arguments.of(List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(10, 6))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(10, 31)))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(10, 6))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(10, 31)))
                 ), 1, 1, 1)
         );
     }
@@ -72,25 +72,25 @@ class AttendanceStatusTest {
         LocalDate nowDate = dateGenerator.generate();
         return Stream.of(
                 Arguments.of(
-                        List.of(Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0)))),
+                        List.of(Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0)))),
                         AttendanceRisk.NONE
                 ),
                 Arguments.of(List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(18, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(18, 0)))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(18, 0)))
                 ), AttendanceRisk.WARNING),
                 Arguments.of(List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(18, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(18, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(18, 0)))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(18, 0)))
                 ), AttendanceRisk.INTERVIEW),
                 Arguments.of(List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(18, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(18, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(18, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.of(18, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(6), LocalTime.of(18, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(7), LocalTime.of(18, 0)))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(6), LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(7), LocalTime.of(18, 0)))
                 ), AttendanceRisk.WEEDING)
         );
     }

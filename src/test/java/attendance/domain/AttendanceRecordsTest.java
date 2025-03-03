@@ -26,35 +26,35 @@ class AttendanceRecordsTest {
 
         List<List<Attendance>> attendances = List.of(
                 List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
                 ),
                 List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
                 ),
                 List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MIDNIGHT))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MIDNIGHT))
                 ),
                 List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX))
                 ),
                 List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(6), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(7), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(8), LocalTime.MAX))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(6), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(7), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(8), LocalTime.MAX))
                 )
         );
 

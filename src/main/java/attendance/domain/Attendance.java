@@ -15,7 +15,7 @@ public class Attendance {
         this.state = state;
     }
 
-    public static Attendance fromDateTime(final LocalDateTime dateTime) {
+    public static Attendance createFromDateTime(final LocalDateTime dateTime) {
         AttendanceState state = AttendanceState.evaluate(dateTime);
         return new Attendance(dateTime, state);
     }

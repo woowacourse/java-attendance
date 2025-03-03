@@ -45,7 +45,7 @@ class CrewAttendanceManagerTest {
         // given
         LocalDate nowDate = dateGenerator.generate();
 
-        Attendance attendance = Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX));
+        Attendance attendance = Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX));
         Attendances attendances = new Attendances(List.of(attendance));
 
         String nickname = "비타";
@@ -70,7 +70,7 @@ class CrewAttendanceManagerTest {
         LocalDate nowDate = dateGenerator.generate();
         LocalDateTime baseDateTime = LocalDateTime.of(nowDate, LocalTime.of(18, 0));
 
-        Attendance attendance = Attendance.fromDateTime(baseDateTime);
+        Attendance attendance = Attendance.createFromDateTime(baseDateTime);
         Attendances attendances = new Attendances(List.of(attendance));
 
         String nickname = "비타";
@@ -98,14 +98,14 @@ class CrewAttendanceManagerTest {
         LocalDate nowDate = dateGenerator.generate();
 
         Attendances baseRecord = new Attendances(List.of(
-                Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(13, 0))),
-                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
-                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
+                Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(13, 0))),
+                Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
+                Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
         ));
 
         List<Attendance> exceptedRecord = List.of(
-                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
-                Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
+                Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(13, 0))),
+                Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(13, 0)))
         );
 
         String nickname = "비타";
@@ -131,35 +131,35 @@ class CrewAttendanceManagerTest {
         LocalDate nowDate = dateGenerator.generate();
         List<Attendances> attendances = List.of(
                 new Attendances(List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
                 )),
                 new Attendances(List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
                 )),
                 new Attendances(List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MIDNIGHT))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MIDNIGHT))
                 )),
                 new Attendances(List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX))
                 )),
                 new Attendances(List.of(
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(6), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(7), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(8), LocalTime.MAX))
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(6), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(7), LocalTime.MAX)),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(8), LocalTime.MAX))
                 ))
         );
 

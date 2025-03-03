@@ -94,7 +94,7 @@ public class CrewAttendanceManager {
                 .mapToObj(nowDate::withDayOfMonth)
                 .filter(holidays::isNotHoliday)
                 .map(date -> LocalDateTime.of(date, LocalTime.MAX))
-                .map(Attendance::fromDateTime)
+                .map(Attendance::createFromDateTime)
                 .toList();
         addNewCrew(nickname, new Attendances(defaultAttendances));
     }

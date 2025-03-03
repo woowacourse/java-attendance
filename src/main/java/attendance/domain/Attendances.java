@@ -19,7 +19,7 @@ public class Attendances {
 
         List<Attendance> newAttendances = new ArrayList<>(attendances);
         newAttendances.remove(before);
-        newAttendances.add(Attendance.fromDateTime(dateTime));
+        newAttendances.add(Attendance.createFromDateTime(dateTime));
         return new Attendances(newAttendances);
     }
 
@@ -28,7 +28,7 @@ public class Attendances {
 
         List<Attendance> newAttendances = new ArrayList<>(attendances);
         newAttendances.remove(before);
-        newAttendances.add(Attendance.fromDateTime(dateTime));
+        newAttendances.add(Attendance.createFromDateTime(dateTime));
         return new Attendances(newAttendances);
     }
 
