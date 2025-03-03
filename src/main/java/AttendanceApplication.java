@@ -1,4 +1,4 @@
-import components.SavedDataLoader;
+import domain.SavedDataLoader;
 import controller.AttendanceController;
 import view.InputView;
 import view.OutputView;

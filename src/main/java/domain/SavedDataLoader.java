@@ -1,9 +1,5 @@
-package components;
+package domain;
 
-import domain.AttendanceBook;
-import domain.AttendanceHistory;
-import domain.Crew;
-import domain.Crews;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

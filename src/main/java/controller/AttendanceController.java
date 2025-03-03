@@ -1,6 +1,6 @@
 package controller;
 
-import components.SavedDataLoader;
+import domain.SavedDataLoader;
 import domain.AttendanceBook;
 import domain.AttendanceHistory;
 import domain.AttendanceRecord;
