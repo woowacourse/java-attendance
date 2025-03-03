@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 import attendance.exception.AttendanceArgumentException;
-import attendance.interfaces.Converter;
-import attendance.interfaces.Displayer;
+import attendance.interfaces.EnumDisplayConverter;
+import attendance.interfaces.EnumToTextConverter;
 
-public enum SanctionLevel implements Displayer {
+public enum SanctionLevel implements EnumDisplayConverter {
     DISMISS(weight -> weight > 5),
     NEED_MEETING(weight -> weight >= 3),
     WARNING(weight -> weight > 1),
@@ -17,14 +17,14 @@ public enum SanctionLevel implements Displayer {
     private static final String NOT_REGISTERED_CONVERTER = "컨버터가 등록되지 않았습니다.";
 
     private final Predicate<Integer> condition;
-    private static Converter<SanctionLevel> converter;
+    private static EnumToTextConverter<SanctionLevel> enumToTextConverter;
 
     SanctionLevel(Predicate<Integer> condition) {
         this.condition = condition;
     }
 
-    public static void setConverter(Converter<SanctionLevel> levelConverter) {
-        converter = levelConverter;
+    public static void setConverter(EnumToTextConverter<SanctionLevel> levelEnumToTextConverter) {
+        enumToTextConverter = levelEnumToTextConverter;
     }
 
     public static SanctionLevel matchLevel(int wight) {
@@ -46,10 +46,10 @@ public enum SanctionLevel implements Displayer {
     }
 
     @Override
-    public String convertMessage() {
-        if (converter == null) {
+    public String convert() {
+        if (enumToTextConverter == null) {
             throw new IllegalStateException(NOT_REGISTERED_CONVERTER);
         }
-        return converter.convert(this);
+        return enumToTextConverter.convert(this);
     }
 }

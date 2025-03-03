@@ -1,5 +1,5 @@
 package attendance.interfaces;
 
-public interface Converter<E> {
+public interface EnumToTextConverter<E> {
     String convert(E e);
 }

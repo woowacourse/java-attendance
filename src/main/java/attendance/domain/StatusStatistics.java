@@ -33,7 +33,7 @@ public record StatusStatistics(Nickname nickname, EnumMap<AttendanceStatus, Inte
     }
 
     public String getConvertedSanctionLevel() {
-        return getSanctionLevel().convertMessage();
+        return getSanctionLevel().convert();
     }
 
     private int compareWeight() {
@@ -51,4 +51,5 @@ public record StatusStatistics(Nickname nickname, EnumMap<AttendanceStatus, Inte
             .thenComparing(StatusStatistics::nickname)
             .compare(this, o);
     }
+
 }

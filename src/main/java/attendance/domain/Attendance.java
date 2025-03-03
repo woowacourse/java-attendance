@@ -33,7 +33,7 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus status) {
     }
 
     public String getConvertedStatus() {
-        return status.convertMessage();
+        return status.convert();
     }
 
     public boolean isTruancy() {

@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import attendance.domain.AttendanceStatus;
-import attendance.interfaces.Converter;
+import attendance.interfaces.EnumToTextConverter;
 
-public class StatusTextConverter implements Converter<AttendanceStatus> {
+public class AttendanceStatusToTextConverter implements EnumToTextConverter<AttendanceStatus> {
     private static final Map<AttendanceStatus, String> ATTENDANCE_STATUS_TEXT = new HashMap<>();
     private static final String CANT_CONVERTING = "변환할 수 없는 값입니다: ";
 

@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import attendance.domain.SanctionLevel;
-import attendance.interfaces.Converter;
+import attendance.interfaces.EnumToTextConverter;
 
-public class LevelTextConverter implements Converter<SanctionLevel> {
+public class SanctionLevelToTextConverter implements EnumToTextConverter<SanctionLevel> {
     private static final Map<SanctionLevel, String> SANCTION_LEVEL_TEXT = new HashMap<>();
     private static final String CANT_CONVERTING = "변환할 수 없는 값입니다: ";
 
