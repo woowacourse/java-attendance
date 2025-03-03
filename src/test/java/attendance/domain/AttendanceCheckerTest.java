@@ -21,7 +21,7 @@ public class AttendanceCheckerTest {
 
     @Test
     void 주말이면_예외가_발생한다() {
-        AttendanceChecker attendanceChecker = new AttendanceChecker();
+        AttendanceChecker attendanceChecker = new DefaultAttendanceChecker();
         LocalDate weekendDate = LocalDateTestFixture.createWeekendDate();
         LocalTime time = LocalTime.of(10, 0);
 
@@ -33,7 +33,7 @@ public class AttendanceCheckerTest {
     @ParameterizedTest
     @EnumSource(Holiday.class)
     void 공휴일이면_예외가_발생한다(Holiday holiday) {
-        AttendanceChecker attendanceChecker = new AttendanceChecker();
+        AttendanceChecker attendanceChecker = new DefaultAttendanceChecker();
         LocalDate holidayDate = LocalDate.of(DATE_PROVIDER.now().getYear(), holiday.getMonth(), holiday.getDay());
         LocalTime time = LocalTime.of(10, 0);
 
@@ -50,7 +50,7 @@ public class AttendanceCheckerTest {
             "7, 59"
     })
     void 캠퍼스의_운영시간이_아니면_예외가_발생한다(int hour, int minute) {
-        AttendanceChecker attendanceChecker = new AttendanceChecker();
+        AttendanceChecker attendanceChecker = new DefaultAttendanceChecker();
         LocalDate regularDate = LocalDateTestFixture.createRegularDate();
         LocalTime time = LocalTime.of(hour, minute);
 
@@ -67,7 +67,7 @@ public class AttendanceCheckerTest {
             "23, 0"
     })
     void 캠퍼스의_운영시간이면_예외가_발생하지_않는다(int hour, int minute) {
-        AttendanceChecker attendanceChecker = new AttendanceChecker();
+        AttendanceChecker attendanceChecker = new DefaultAttendanceChecker();
         LocalDate regularDate = LocalDateTestFixture.createRegularDate();
         LocalTime time = LocalTime.of(hour, minute);
 

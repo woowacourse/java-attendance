@@ -3,8 +3,10 @@ package attendance.domain.fixture;
 import static attendance.domain.fixture.LocalDateTestFixture.DATE_PROVIDER;
 
 import attendance.config.FixedLocalDateProvider;
+import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceManager;
 import attendance.domain.Attendances;
+import attendance.domain.DefaultAttendanceChecker;
 import attendance.domain.DefaultAttendanceStatistics;
 import attendance.domain.LocalDateProvider;
 import java.time.LocalDate;
@@ -30,13 +32,14 @@ public class AttendanceManagerTestFixture {
                 .forEach(name -> {
                     crewAttendances.put(name, createEmptyAttendances());
                 });
-
-        return new AttendanceManager(crewAttendances, dateProvider, new DefaultAttendanceStatistics(dateProvider));
+        AttendanceChecker checker = new DefaultAttendanceChecker();
+        return new AttendanceManager(crewAttendances, dateProvider, new DefaultAttendanceStatistics(dateProvider, checker), checker);
     }
 
     public static AttendanceManager createByCrewAttendances(Map<String, Attendances> crewAttendances) {
         LocalDateProvider dateProvider = DATE_PROVIDER;
-        return new AttendanceManager(crewAttendances, dateProvider, new DefaultAttendanceStatistics(dateProvider));
+        AttendanceChecker checker = new DefaultAttendanceChecker();
+        return new AttendanceManager(crewAttendances, dateProvider, new DefaultAttendanceStatistics(dateProvider, checker), checker);
     }
 
     private static Attendances createEmptyAttendances() {

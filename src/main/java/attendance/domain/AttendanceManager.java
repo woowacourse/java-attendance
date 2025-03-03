@@ -10,12 +10,14 @@ public class AttendanceManager {
     private final Map<String, Attendances> crewAttendances;
     private final LocalDateProvider dateProvider;
     private final AttendanceStatistics statistics;
+    private final AttendanceChecker checker;
 
     public AttendanceManager(Map<String, Attendances> crewAttendances, LocalDateProvider dateProvider,
-                             AttendanceStatistics statistics) {
+                             AttendanceStatistics statistics, AttendanceChecker checker) {
         this.crewAttendances = crewAttendances;
         this.dateProvider = dateProvider;
         this.statistics = statistics;
+        this.checker = checker;
     }
 
     public void validateExistCrew(String crewName) {
@@ -27,7 +29,7 @@ public class AttendanceManager {
     public void attend(String crewName, LocalTime time) {
         Attendances attendances = findAttendancesByName(crewName);
         checkDuplicateAttendance(attendances, dateProvider.now());
-        AttendanceChecker.checkCampusOpen(dateProvider.now(), time);
+        checker.checkCampusOpen(dateProvider.now(), time);
 
         attendances.addAttendance(dateProvider.now(), time);
     }
@@ -39,7 +41,7 @@ public class AttendanceManager {
     }
 
     public LocalTime modify(String crewName, LocalDate date, LocalTime time) {
-        AttendanceChecker.checkCampusOpen(date, time);
+        checker.checkCampusOpen(date, time);
         Attendances attendances = findAttendancesByName(crewName);
         Attendance prevAttendance = attendances.getCurrentAttendance(date);
 

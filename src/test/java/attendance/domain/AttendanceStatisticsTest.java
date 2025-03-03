@@ -21,7 +21,7 @@ public class AttendanceStatisticsTest {
         attendances.addAttendance(LocalDate.of(2024, 12, 2), LocalTime.of(13, 10));
         attendances.addAttendance(LocalDate.of(2024, 12, 3), LocalTime.of(10, 50));
         attendances.addAttendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 6));
-        AttendanceStatistics attendanceStatistics = new DefaultAttendanceStatistics(new FixedLocalDateProvider(today));
+        AttendanceStatistics attendanceStatistics = new DefaultAttendanceStatistics(new FixedLocalDateProvider(today), new DefaultAttendanceChecker());
 
         Map<AttendanceStatus, Integer> count = attendanceStatistics.getTotalStatusCount(attendances);
 
@@ -33,7 +33,7 @@ public class AttendanceStatisticsTest {
     void 등교하지_않은_날은_결석으로_간주한다() {
         LocalDate today = LocalDate.of(2024, 12, 5);
         Attendances attendances = new Attendances();
-        AttendanceStatistics attendanceStatistics = new DefaultAttendanceStatistics(new FixedLocalDateProvider(today));
+        AttendanceStatistics attendanceStatistics = new DefaultAttendanceStatistics(new FixedLocalDateProvider(today), new DefaultAttendanceChecker());
 
         Map<AttendanceStatus, Integer> result = attendanceStatistics.getTotalStatusCount(attendances);
 

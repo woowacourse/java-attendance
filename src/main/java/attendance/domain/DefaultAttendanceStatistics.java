@@ -13,9 +13,11 @@ import java.util.stream.IntStream;
 public class DefaultAttendanceStatistics implements AttendanceStatistics {
 
     private final LocalDateProvider dateProvider;
+    private final AttendanceChecker checker;
 
-    public DefaultAttendanceStatistics(LocalDateProvider dateProvider) {
+    public DefaultAttendanceStatistics(LocalDateProvider dateProvider, AttendanceChecker checker) {
         this.dateProvider = dateProvider;
+        this.checker = checker;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class DefaultAttendanceStatistics implements AttendanceStatistics {
         return (int) IntStream.range(1, dateProvider.now().getDayOfMonth())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
                 .filter(date -> !attendances.containsKey(date))
-                .filter(AttendanceChecker::isCampusOpenDate)
+                .filter(date -> checker.isCampusOpenDate(date))
                 .count();
     }
 }

@@ -35,9 +35,11 @@ public class OutputView {
     private static final String WARNING_CREW_PRINT_FORMAT = "- %s: %s %d회, %s %d회 (%s)\n";
 
     private final LocalDateProvider dateProvider;
+    private final AttendanceChecker checker;
 
-    public OutputView(LocalDateProvider dateProvider) {
+    public OutputView(LocalDateProvider dateProvider, AttendanceChecker checker) {
         this.dateProvider = dateProvider;
+        this.checker = checker;
     }
 
     public void printCheckAttendanceResult(LocalTime enterTime) {
@@ -92,7 +94,7 @@ public class OutputView {
         LocalDate now = dateProvider.now();
         IntStream.range(1, now.getDayOfMonth())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
-                .filter(AttendanceChecker::isCampusOpenDate)
+                .filter(date -> checker.isCampusOpenDate(date))
                 .forEach(date -> {
                     builder.append(toAttendanceRecordString(crewAttendances, date));
                 });
