@@ -77,7 +77,7 @@ public class OutputView {
 
     public void printRiskCrewsSearch(AttendanceRecords attendanceRecords) {
         System.out.println("\n제적 위험자 조회 결과");
-        attendanceRecords.records()
+        attendanceRecords.getRecords()
                 .forEach(this::printRiskCrewSearch);
     }
 
