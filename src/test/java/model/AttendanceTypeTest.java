@@ -135,10 +135,6 @@ class AttendanceTypeTest {
         // given
         Crew crew = Crew.of("미소");
         List<Attendance> attendances = this.attendances.getAttendancesByCrew(crew);
-        for (Attendance attendance : attendances) {
-            System.out.println("attendance.getCheckInDate() = " + attendance.getCheckInDate());
-            System.out.println("attendance.getAttendanceType() = " + attendance.getAttendanceType());
-        }
 
         // when
         EnumMap<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(attendances);
