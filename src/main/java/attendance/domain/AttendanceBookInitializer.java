@@ -13,7 +13,9 @@ public class AttendanceBookInitializer {
     public static final String CREW_DATETIME_DELIMITER = ",";
 
     public AttendanceBook initialize(final List<String> crewAttendanceTexts) {
-        Map<Crew, List<AttendanceDateTime>> crewAttendances = parseTexts(crewAttendanceTexts);
+        Map<Crew, List<AttendanceDateTime>> parsedCrewAttendances = parseTexts(crewAttendanceTexts);
+        Map<Crew, Attendances> crewAttendances = parsedCrewAttendances.keySet().stream()
+                .collect(Collectors.toMap(key -> key, key -> new Attendances(parsedCrewAttendances.get(key))));
         return new AttendanceBook(crewAttendances);
     }
 

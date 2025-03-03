@@ -22,7 +22,8 @@ public class AttendanceBookTest {
         List<AttendanceDateTime> cookieAttendanceDateTimes = new ArrayList<>(List.of(
                 new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(25).atTime(10, 4))
         ));
-        Map<Crew, List<AttendanceDateTime>> crewAttendances = Map.of(cookie, cookieAttendanceDateTimes);
+        Attendances cookieAttendances = new Attendances(cookieAttendanceDateTimes);
+        Map<Crew, Attendances> crewAttendances = Map.of(cookie, cookieAttendances);
         this.attendanceBook = new AttendanceBook(crewAttendances);
     }
 
@@ -32,11 +33,13 @@ public class AttendanceBookTest {
         Crew cookie = new Crew("쿠키");
         List<AttendanceDateTime> cookieAttendanceDateTimes = List.of(
                 new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(25).atTime(10, 4)));
+        Attendances cookieAttendances = new Attendances(cookieAttendanceDateTimes);
         Crew bingbong = new Crew("빙봉");
         List<AttendanceDateTime> bingbongAttendanceDateTimes = List.of(
                 new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(26).atTime(10, 7)),
                 new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(27).atTime(10, 35)));
-        Map<Crew, List<AttendanceDateTime>> crewAttendances = Map.of(cookie, cookieAttendanceDateTimes, bingbong, bingbongAttendanceDateTimes);
+        Attendances bingbongAttendances = new Attendances(bingbongAttendanceDateTimes);
+        Map<Crew, Attendances> crewAttendances = Map.of(cookie, cookieAttendances, bingbong, bingbongAttendances);
 
         // When & Then
         assertThatCode(() -> new AttendanceBook(crewAttendances))

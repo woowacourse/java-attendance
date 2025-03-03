@@ -8,9 +8,9 @@ import java.util.stream.IntStream;
 public class AttendanceBook {
 
     public static final int START_DAY_OF_MONTH = 1;
-    private final Map<Crew, List<AttendanceDateTime>> crewAttedances;
+    private final Map<Crew, Attendances> crewAttedances;
 
-    public AttendanceBook(final Map<Crew, List<AttendanceDateTime>> crewAttendances) {
+    public AttendanceBook(final Map<Crew, Attendances> crewAttendances) {
         this.crewAttedances = crewAttendances;
     }
 
@@ -21,30 +21,25 @@ public class AttendanceBook {
     }
 
     public void validateDuplicateAttendanceDate(final Crew crew, final AttendanceDateTime attendanceDateTime) {
-        List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
-        boolean isSameDateExists = attendances.stream()
-                .anyMatch(datetime -> datetime.isSameDate(attendanceDateTime));
-        if (isSameDateExists) {
+        Attendances attendances = this.crewAttedances.get(crew);
+        if (attendances.isSameDateExists(attendanceDateTime)) {
             throw new IllegalArgumentException("오늘은 이미 출석하셨습니다. 출석 수정 기능을 이용해 주세요.");
         }
     }
 
     public void saveAttendanceDateTime(final Crew crew, final AttendanceDateTime attendanceDateTime) {
-        List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
-        attendances.add(attendanceDateTime);
+        Attendances attendances = this.crewAttedances.get(crew);
+        attendances.addAttendanceDateTime(attendanceDateTime);
     }
 
     public AttendanceDateTime findAttendanceDateTimeByCrewAndDate(final Crew crew, final LocalDate findDate) {
-        List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
-        return attendances.stream()
-                .filter(attendanceDateTime -> attendanceDateTime.isSameDate(findDate))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 일자에 출석하지 않았습니다."));
+        Attendances attendances = this.crewAttedances.get(crew);
+        return attendances.findByLocalDate(findDate);
     }
 
     public void removeAttendanceDateTime(final Crew crew, final AttendanceDateTime attendanceDateTime) {
-        List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
-        attendances.remove(attendanceDateTime);
+        Attendances attendances = this.crewAttedances.get(crew);
+        attendances.removeAttendanceDateTime(attendanceDateTime);
     }
 
     public List<AttendanceDateTime> findCrewAttendancesThisMonth(final Crew crew) {

@@ -18,11 +18,13 @@ public class AttendanceBookInitializerTest {
         Crew cookie = new Crew("쿠키");
         List<AttendanceDateTime> cookieAttendanceDateTimes = List.of(
                 new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(25).atTime(10, 4)));
+        Attendances cookieAttendances = new Attendances(cookieAttendanceDateTimes);
         Crew bingbong = new Crew("빙봉");
         List<AttendanceDateTime> bingbongAttendanceDateTimes = List.of(
                 new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(26).atTime(10, 7)),
                 new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(27).atTime(10, 35)));
-        AttendanceBook expected = new AttendanceBook(Map.of(cookie, cookieAttendanceDateTimes, bingbong, bingbongAttendanceDateTimes));
+        Attendances bingbongAttendances = new Attendances(bingbongAttendanceDateTimes);
+        AttendanceBook expected = new AttendanceBook(Map.of(cookie, cookieAttendances, bingbong, bingbongAttendances));
 
         // When
         AttendanceBook crewAttendances = attendanceBookInitializer.initialize(crewAttendanceTexts);
