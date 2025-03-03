@@ -1,6 +1,6 @@
 package io;
 
-import console.InputParser;
+import console.Parser;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
@@ -43,7 +43,7 @@ public class CustomFileReader {
             String[] splitInfo = info.split(" ");
             int date = Integer.parseInt(splitInfo[0].split("-")[2]);
             LocalDateTime attendAt = LocalDateTime.of(LocalDate.of(2024, 12, date),
-                    InputParser.parseTime(splitInfo[1]));
+                    Parser.parseTime(splitInfo[1]));
             result.add(new AttendanceRequestDto(crewName, attendAt));
         }
 

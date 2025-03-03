@@ -12,7 +12,7 @@ import type.AttendanceType;
 import type.AttendanceTypeCount;
 import type.PenaltyType;
 
-public class InputParser {
+public class Parser {
     public static LocalTime parseTime(String input) {
         String[] splitInput = input.split(":");
         int hour = Integer.parseInt(splitInput[0]);

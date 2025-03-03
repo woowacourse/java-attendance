@@ -14,17 +14,17 @@ public class AttendanceSystemConsole {
 
     public LocalTime readAttendanceTime() {
         String rawAttendanceTime = InputView.readAttendanceTime();
-        return InputParser.parseTime(rawAttendanceTime);
+        return Parser.parseTime(rawAttendanceTime);
     }
 
     public LocalTime readAttendanceTimeToUpdate() {
         String rawNewAttendanceTime = InputView.readNewAttendanceTime();
-        return InputParser.parseTime(rawNewAttendanceTime);
+        return Parser.parseTime(rawNewAttendanceTime);
     }
 
     public LocalDate readAttendanceDateToUpdate() {
         String rawRequestDate = InputView.readUpdateRequestDate();
-        int requestDate = InputParser.parseInteger(rawRequestDate);
+        int requestDate = Parser.parseInteger(rawRequestDate);
         return getDateOfRequestedDate(requestDate);
     }
 

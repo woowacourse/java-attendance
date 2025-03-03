@@ -15,8 +15,8 @@ import type.PenaltyType;
 public class OutputView {
     public static void printRegisteredHistory(AttendanceHistory attendanceHistory) {
         LocalDateTime attendAt = attendanceHistory.getAttendAt();
-        String parsedAttendAt = InputParser.parseDateTimeToString(attendAt);
-        String parsedAttendanceType = InputParser.parseAttendanceType(
+        String parsedAttendAt = Parser.parseDateTimeToString(attendAt);
+        String parsedAttendanceType = Parser.parseAttendanceType(
                 AttendanceType.findAttendanceTypeByDateTime(attendAt));
 
         System.out.printf("%s (%s)%n", parsedAttendAt, parsedAttendanceType);
@@ -31,14 +31,14 @@ public class OutputView {
         sortedHistories.forEach(entry -> {
             AttendanceType attendanceType = entry.getValue();
 
-            String attendAt = InputParser.parseDateTimeToString(entry.getKey());
+            String attendAt = Parser.parseDateTimeToString(entry.getKey());
             if (attendanceType.equals(AttendanceType.NO_DATA)) {
-                String parseDate = InputParser.parseDateToString(entry.getKey().toLocalDate());
+                String parseDate = Parser.parseDateToString(entry.getKey().toLocalDate());
                 attendAt = parseDate + " --:--";
 
             }
 
-            String parseAttendanceType = InputParser.parseAttendanceType(attendanceType);
+            String parseAttendanceType = Parser.parseAttendanceType(attendanceType);
             System.out.printf("%s (%s)%n", attendAt, parseAttendanceType);
         });
 
@@ -50,7 +50,7 @@ public class OutputView {
                 AttendanceType.ABSENCE);
 
         attendanceTypeOrder.forEach(attendanceType -> {
-            System.out.printf("%s: %d회%n", InputParser.parseAttendanceType(attendanceType),
+            System.out.printf("%s: %d회%n", Parser.parseAttendanceType(attendanceType),
                     penaltyResultOfCrew.attendanceTypeCount().getCountByType(attendanceType));
         });
 
@@ -58,7 +58,7 @@ public class OutputView {
 
         PenaltyType penaltyType = penaltyResultOfCrew.penaltyType();
         if (penaltyType.isAtExpulsionCandidateState()) {
-            String parsePenaltyType = InputParser.parsePenaltyType(penaltyType);
+            String parsePenaltyType = Parser.parsePenaltyType(penaltyType);
             System.out.printf("%s 대상자입니다.%n%n", parsePenaltyType);
         }
 
@@ -71,7 +71,7 @@ public class OutputView {
             Crew crew = expulsionResult.crew();
             AttendanceTypeCount attendanceTypeCount = expulsionResult.attendanceTypeCount();
 
-            String parseExpulsionCandidate = InputParser.parseExpulsionCandidate(crew, attendanceTypeCount);
+            String parseExpulsionCandidate = Parser.parseExpulsionCandidate(crew, attendanceTypeCount);
             System.out.println(parseExpulsionCandidate);
         });
 
@@ -81,15 +81,15 @@ public class OutputView {
     public static void printUpdatedHistory(AttendanceHistory oldHistory, AttendanceHistory newHistory) {
         LocalDateTime oldAttendAt = oldHistory.getAttendAt();
 
-        String parseOldDateTime = InputParser.parseDateTimeToString(oldAttendAt);
+        String parseOldDateTime = Parser.parseDateTimeToString(oldAttendAt);
         AttendanceType oldAttendanceType = AttendanceType.findAttendanceTypeByDateTime(oldAttendAt);
-        String parseOldAttendanceType = InputParser.parseAttendanceType(oldAttendanceType);
+        String parseOldAttendanceType = Parser.parseAttendanceType(oldAttendanceType);
 
         LocalDateTime newAttendAt = newHistory.getAttendAt();
 
-        String parseNewDateTime = InputParser.parseTimeToString(newAttendAt.toLocalTime());
+        String parseNewDateTime = Parser.parseTimeToString(newAttendAt.toLocalTime());
         AttendanceType newAttendanceType = AttendanceType.findAttendanceTypeByDateTime(newAttendAt);
-        String parseNewAttendanceType = InputParser.parseAttendanceType(newAttendanceType);
+        String parseNewAttendanceType = Parser.parseAttendanceType(newAttendanceType);
 
         System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n", parseOldDateTime, parseOldAttendanceType, parseNewDateTime,
                 parseNewAttendanceType);

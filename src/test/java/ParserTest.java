@@ -1,6 +1,6 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
-import console.InputParser;
+import console.Parser;
 import crew.Crew;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,7 +15,7 @@ import type.AttendanceType;
 import type.AttendanceTypeCount;
 import type.PenaltyType;
 
-public class InputParserTest {
+public class ParserTest {
     @Test
     @DisplayName("시간 형태의 문자열을 입력하면 LocalDate 로 반환한다")
     void test1() {
@@ -23,7 +23,7 @@ public class InputParserTest {
         String input = "13:45";
 
         // when & then
-        assertThat(InputParser.parseTime(input))
+        assertThat(Parser.parseTime(input))
                 .isEqualTo(LocalTime.of(13, 45));
     }
 
@@ -34,7 +34,7 @@ public class InputParserTest {
         LocalDateTime time = LocalDateTime.of(2024, 12, 5, 9, 59);
 
         // when & then
-        assertThat(InputParser.parseDateTimeToString(time)).isEqualTo("12월 05일 목요일 09:59");
+        assertThat(Parser.parseDateTimeToString(time)).isEqualTo("12월 05일 목요일 09:59");
     }
 
     private static Stream<Arguments> testCasesForParseAttendanceType() {
@@ -50,7 +50,7 @@ public class InputParserTest {
     @DisplayName("출석 타입에 따라 적절한 문자열을 반환한다.")
     void test(AttendanceType attendanceType, String expected) {
         // when & then
-        assertThat(InputParser.parseAttendanceType(attendanceType)).isEqualTo(expected);
+        assertThat(Parser.parseAttendanceType(attendanceType)).isEqualTo(expected);
     }
 
     private static Stream<Arguments> testCasesForParsePenaltyType() {
@@ -66,7 +66,7 @@ public class InputParserTest {
     @DisplayName("패널티 타입에 따라 적절한 문자열을 반환한다.")
     void test3(PenaltyType penaltyType, String expected) {
         // when & then
-        assertThat(InputParser.parsePenaltyType(penaltyType)).isEqualTo(expected);
+        assertThat(Parser.parsePenaltyType(penaltyType)).isEqualTo(expected);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class InputParserTest {
         );
 
         // when & then
-        assertThat(InputParser.parseExpulsionCandidate(new Crew("히로"),
+        assertThat(Parser.parseExpulsionCandidate(new Crew("히로"),
                 AttendanceTypeCount.createFrom(attendanceTypeOfDates))).isEqualTo("- 히로: 결석 2회, 지각 1회 (경고)");
     }
 
@@ -93,7 +93,7 @@ public class InputParserTest {
         LocalTime time = LocalTime.of(10, 4);
 
         // when
-        String actual = InputParser.parseTimeToString(time);
+        String actual = Parser.parseTimeToString(time);
 
         // then
         assertThat(actual).isEqualTo("10:04");
