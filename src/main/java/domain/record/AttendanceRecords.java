@@ -1,6 +1,7 @@
 package domain.record;
 
 import domain.AttendanceStatus;
+import domain.DisciplinaryStatus;
 import domain.dateTime.AttendanceDate;
 import domain.dateTime.AttendanceDateTime;
 import java.time.LocalDate;
@@ -78,5 +79,17 @@ public class AttendanceRecords {
                 .filter(attendanceRecord -> attendanceRecord.hasAttendanceDate(date))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 날짜에는 출석 기록이 존재하지 않습니다."));
+    }
+
+    public DisciplinaryStatus findDisciplinaryStatus() {
+        final int absence = attendanceStatusCounts.getAbsence();
+        final int late = attendanceStatusCounts.getLate();
+        return DisciplinaryStatus.findByAbsenceAndLatenessCount(absence, late);
+    }
+
+    public void updateAttendanceRecord(final AttendanceRecord attendanceRecord) {
+        attendanceRecords.remove(attendanceRecord);
+        attendanceRecords.add(attendanceRecord);
+        updateCountAttendanceStatus();
     }
 }
