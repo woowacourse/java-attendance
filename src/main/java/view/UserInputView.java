@@ -1,12 +1,6 @@
 package view;
 
-import constant.MenuOption;
-
 import java.util.Scanner;
-import java.util.regex.Pattern;
-
-import static constant.MenuOption.*;
-import static constant.ErrorMessage.*;
 
 public class UserInputView {
     public static String askCrewName() {

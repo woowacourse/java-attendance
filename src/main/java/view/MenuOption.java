@@ -1,4 +1,6 @@
-package constant;
+package view;
+
+import constant.ErrorMessage;
 
 import java.util.Arrays;
 

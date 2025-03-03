@@ -6,7 +6,7 @@ import static view.OutputView.printCheckedAttendance;
 import static view.OutputView.printModifyResult;
 import static view.UserInputView.*;
 
-import constant.MenuOption;
+import view.MenuOption;
 import domain.AllCrew;
 import domain.Crew;
 import view.OutputView;
