@@ -12,7 +12,7 @@ public enum CampusOpenTime {
         this.time = time;
     }
 
-    public static boolean cantAttendance(LocalTime attendanceTime) {
+    public static boolean canNotAttendance(LocalTime attendanceTime) {
         return attendanceTime.isBefore(OPEN_TIME.time) || attendanceTime.isAfter(CLOSE_TIME.time);
     }
 }
