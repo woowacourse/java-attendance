@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class AttendancePolicy {
@@ -65,8 +67,21 @@ public class AttendancePolicy {
     private LocalTime getAbsenceTime(LocalDateTime attendanceTime) {
         return isMonday(attendanceTime) ? MONDAY_ABSENCE_TIME : ABSENCE_TIME;
     }
-    
+
     public boolean ignoreWeekendAndHoliday(LocalDate date) {
         return date.getDayOfWeek().getValue() < SATURDAY_VALUE && !Holidays.isHoliday(date);
+    }
+
+    public List<LocalDate> getOpenDays(LocalDate today) {
+        LocalDate startDate = today.withDayOfMonth(1);
+        LocalDate endDate = today.plusDays(1);
+
+        List<LocalDate> openDays = new ArrayList<>();
+        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+            if (ignoreWeekendAndHoliday(date)) {
+                openDays.add(date);
+            }
+        }
+        return openDays;
     }
 }

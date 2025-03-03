@@ -79,16 +79,7 @@ public class AttendanceRecord {
     }
 
     public List<LocalDate> getOpenDays() {
-        LocalDate startDate = dateProvider.getDate().withDayOfMonth(1);
-        LocalDate endDate = dateProvider.getDate().plusDays(1);
-
-        List<LocalDate> openDays = new ArrayList<>();
-        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
-            if (attendancePolicy.ignoreWeekendAndHoliday(date)) {
-                openDays.add(date);
-            }
-        }
-        return openDays;
+        return attendancePolicy.getOpenDays(dateProvider.getDate());
     }
 
     private int addCount(LocalDate date, AttendanceStatus type) {
