@@ -2,9 +2,9 @@ package utils;
 
 import java.time.DayOfWeek;
 
-public class DayOfWeeks {
+public class DayOfWeekUtils {
 
-    private DayOfWeeks(){
+    private DayOfWeekUtils(){
     }
 
     public static boolean isWeekend(final DayOfWeek dayOfWeek){

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import utils.DayOfWeeks;
+import utils.DayOfWeekUtils;
 import utils.SolarCalendarHoliday;
 
 public class AttendanceHistory {
@@ -86,7 +86,7 @@ public class AttendanceHistory {
     }
 
     private boolean isAttendanceDay(final LocalDate targetDate) {
-        return !(DayOfWeeks.isWeekend(targetDate.getDayOfWeek())
+        return !(DayOfWeekUtils.isWeekend(targetDate.getDayOfWeek())
                 || SolarCalendarHoliday.isHoliday(MonthDay.from(targetDate)));
     }
 
