@@ -1,47 +1,34 @@
 package attendance;
 
-import attendance.controller.Controller;
-import attendance.model.Crews;
-import attendance.model.FixedCustomClock;
-import attendance.model.loader.AttendanceLoader;
-import attendance.model.loader.AttendanceProcessor;
-import attendance.model.loader.CrewRegistry;
+import attendance.controller.AttendanceController;
+import attendance.domain.AttendanceBook;
+import attendance.domain.Crews;
+import attendance.domain.CustomClock;
+import attendance.domain.EducationDayPolicy;
+import attendance.loader.AttendanceAssembler;
+import attendance.loader.AttendancesLoader;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class Application {
-
     public static void main(String[] args) {
-        Crews crews = new Crews(new ArrayList<>());
-        FixedCustomClock fixedCustomClock = createCustomClock();
-        AttendanceLoader attendanceLoader = new AttendanceLoader();
-        CrewRegistry crewRegistry = new CrewRegistry(crews);
-        loadAttendance(attendanceLoader, fixedCustomClock, crewRegistry);
+        CustomClock clock = new CustomClock(LocalDateTime.of(2024, 12, 15, 13, 0));
+        EducationDayPolicy policy = new EducationDayPolicy(Set.of(LocalDate.of(2024, 12, 25)));
 
-        InputView inputView = new InputView(fixedCustomClock);
+        InputView inputView = new InputView(clock);
         OutputView outputView = new OutputView();
-        Controller controller = new Controller(inputView, outputView, fixedCustomClock, crews);
+
+        AttendanceAssembler assembler = new AttendanceAssembler(new AttendancesLoader(), policy);
+        AttendanceBook attendanceBook = assembler.getAttendanceBook();
+        Crews crews = assembler.getCrews();
+
+        AttendanceController controller = new AttendanceController(inputView, outputView, attendanceBook, crews, clock,
+                policy);
+
         controller.run();
-    }
 
-    private static FixedCustomClock createCustomClock() {
-        Set<LocalDate> holidays = Set.of(
-                LocalDate.of(2024, 12, 25)
-        );
-
-        LocalDate setTime = LocalDate.of(2024, 12, 16);
-        return new FixedCustomClock(setTime, holidays);
-    }
-
-    private static void loadAttendance(AttendanceLoader attendanceLoader, FixedCustomClock fixedCustomClock,
-                                       CrewRegistry crewRegistry) {
-        AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
-                attendanceLoader, fixedCustomClock, crewRegistry
-        );
-
-        attendanceProcessor.processAttendanceRecords();
     }
 }

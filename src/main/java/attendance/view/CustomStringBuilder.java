@@ -7,6 +7,10 @@ public class CustomStringBuilder {
         stringBuilder.append(content).append(System.lineSeparator());
     }
 
+    public void appendLine() {
+        stringBuilder.append(System.lineSeparator());
+    }
+
     public void print() {
         System.out.println(stringBuilder);
     }
