@@ -59,8 +59,8 @@ class AttendanceBookTest {
         // then
         assertThat(attendResult.attendanceDateTime())
                 .isEqualTo(attendanceDateTime);
-        assertThat(attendResult.attendanceType() == AttendanceType.PRESENT)
-                .isTrue();
+        assertThat(attendResult.attendanceType())
+                .isSameAs(AttendanceType.PRESENT);
     }
 
     @DisplayName("존재하는 출석 기록을 수정할 수 있다.")
@@ -79,12 +79,12 @@ class AttendanceBookTest {
         // then
         assertThat(editResult.beforeAttendanceTime())
                 .isEqualTo(LocalTime.of(10, 31));
-        assertThat(editResult.beforeAttendanceType() == AttendanceType.ABSENT)
-                .isTrue();
+        assertThat(editResult.beforeAttendanceType())
+                .isSameAs(AttendanceType.ABSENT);
         assertThat(editResult.afterAttendanceTime())
                 .isEqualTo(updateAttendanceDateTime.toLocalTime());
-        assertThat(editResult.afterAttendanceType() == AttendanceType.PRESENT)
-                .isTrue();
+        assertThat(editResult.afterAttendanceType())
+                .isSameAs(AttendanceType.PRESENT);
     }
 
     @DisplayName("출석 기록이 없던 날짜의 출석 기록을 수정할 수 있다.")
@@ -100,14 +100,14 @@ class AttendanceBookTest {
         EditResult editResult = attendanceBook.edit(new Nickname("벨로"), updateAttendanceDateTime);
 
         // then
-        assertThat(editResult.beforeAttendanceTime() == null)
-                .isTrue();
-        assertThat(editResult.beforeAttendanceType() == AttendanceType.ABSENT)
-                .isTrue();
+        assertThat(editResult.beforeAttendanceTime())
+                .isNull();
+        assertThat(editResult.beforeAttendanceType())
+                .isSameAs(AttendanceType.ABSENT);
         assertThat(editResult.afterAttendanceTime())
                 .isEqualTo(updateAttendanceDateTime.toLocalTime());
-        assertThat(editResult.afterAttendanceType() == AttendanceType.PRESENT)
-                .isTrue();
+        assertThat(editResult.afterAttendanceType())
+                .isSameAs(AttendanceType.PRESENT);
     }
 
     @DisplayName("특정 닉네임의 특정 월의 전날까지의 출석 기록을 조회할 수 있다.")
@@ -164,8 +164,8 @@ class AttendanceBookTest {
         AttendanceWarningLevel warningLevel = attendanceBook.determineWarningLevel(counted);
 
         // then
-        assertThat(warningLevel == AttendanceWarningLevel.WARNING)
-                .isTrue();
+        assertThat(warningLevel)
+                .isSameAs(AttendanceWarningLevel.WARNING);
     }
 
     @DisplayName("출석 경고를 조회할 수 있다.")

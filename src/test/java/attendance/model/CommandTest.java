@@ -24,8 +24,8 @@ class CommandTest {
         Command command = Command.from(input);
 
         // then
-        assertThat(command == expected)
-                .isTrue();
+        assertThat(command)
+                .isSameAs(expected);
     }
 
     @DisplayName("문자열로 명령어를 찾을 수 없는 경우 예외가 발생한다.")

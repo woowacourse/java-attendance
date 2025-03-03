@@ -29,8 +29,8 @@ class AttendanceTypeTest {
         AttendanceType attendanceType = AttendanceType.determine(baseTime, attendanceTime);
 
         // then
-        assertThat(attendanceType == expected)
-                .isTrue();
+        assertThat(attendanceType)
+                .isSameAs(expected);
     }
 
     @DisplayName("등교 시간이 없는 경우 결석으로 간주한다.")
@@ -43,7 +43,7 @@ class AttendanceTypeTest {
         AttendanceType attendanceType = AttendanceType.determine(baseTime, null);
 
         // then
-        assertThat(attendanceType == AttendanceType.ABSENT)
-                .isTrue();
+        assertThat(attendanceType)
+                .isSameAs(AttendanceType.ABSENT);
     }
 }

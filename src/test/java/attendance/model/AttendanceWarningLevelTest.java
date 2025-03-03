@@ -30,8 +30,8 @@ class AttendanceWarningLevelTest {
         AttendanceWarningLevel level = AttendanceWarningLevel.determine(lateCount, absentCount);
 
         // then
-        assertThat(level == expected)
-                .isTrue();
+        assertThat(level)
+                .isSameAs(expected);
     }
 
     @DisplayName("출석 경고 수준으로 한글 라벨을 알 수 있다.")
