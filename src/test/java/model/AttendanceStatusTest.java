@@ -2,6 +2,7 @@ package model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,48 @@ public class AttendanceStatusTest {
 
         AttendanceStatus expect = AttendanceStatus.ATTENDANCE;
         AttendanceStatus result = AttendanceStatus.calculateAttendanceStatus(today, input);
+        Assertions.assertEquals(expect, result);
+    }
+
+    @Test
+    @DisplayName("출석 횟수 계산하기")
+    void 출석_횟수_계산_테스트(){
+        Map<LocalDate, LocalTime> testMap = Map.of(
+                LocalDate.of(2024,12,13), LocalTime.of(10,0),
+                LocalDate.of(2024,12,12), LocalTime.of(10,0),
+                LocalDate.of(2024,12,11), LocalTime.of(10,6),
+                LocalDate.of(2024,12,10), LocalTime.of(10,0),
+                LocalDate.of(2024,12,9), LocalTime.of(13,0));
+        long expect = 4;
+        long result = AttendanceStatus.calculateAttendanceStatusCount(testMap, AttendanceStatus.ATTENDANCE);
+        Assertions.assertEquals(expect, result);
+    }
+
+    @Test
+    @DisplayName("지각 횟수 계산하기")
+    void 지각_횟수_계산_테스트(){
+        Map<LocalDate, LocalTime> testMap = Map.of(
+                LocalDate.of(2024,12,13), LocalTime.of(10,0),
+                LocalDate.of(2024,12,12), LocalTime.of(10,0),
+                LocalDate.of(2024,12,11), LocalTime.of(10,6),
+                LocalDate.of(2024,12,10), LocalTime.of(10,0),
+                LocalDate.of(2024,12,9), LocalTime.of(13,0));
+        long expect = 1;
+        long result = AttendanceStatus.calculateAttendanceStatusCount(testMap, AttendanceStatus.LATE);
+        Assertions.assertEquals(expect, result);
+    }
+
+    @Test
+    @DisplayName("결설 횟수 계산하기")
+    void 결석_횟수_계산_테스트(){
+        Map<LocalDate, LocalTime> testMap = Map.of(
+                LocalDate.of(2024,12,13), LocalTime.of(10,31),
+                LocalDate.of(2024,12,12), LocalTime.of(10,50),
+                LocalDate.of(2024,12,11), LocalTime.of(10,6),
+                LocalDate.of(2024,12,10), LocalTime.of(10,0),
+                LocalDate.of(2024,12,9), LocalTime.of(13,0));
+        long expect = 2;
+        long result = AttendanceStatus.calculateAttendanceStatusCount(testMap, AttendanceStatus.ABSENT);
         Assertions.assertEquals(expect, result);
     }
 }
