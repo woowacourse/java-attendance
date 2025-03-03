@@ -22,19 +22,11 @@ public enum Holiday {
             return true;
         }
         return Arrays.stream(values())
-            .filter(holiday -> holiday.month == date.getMonthValue()
-                && holiday.day == date.getDayOfMonth())
-            .findAny()
-            .isPresent();
+            .anyMatch(holiday -> holiday.month == date.getMonthValue()
+                && holiday.day == date.getDayOfMonth());
     }
 
     private static boolean checkWeekend(LocalDate date) {
-        if (date.getDayOfWeek() == SATURDAY) {
-            return true;
-        }
-        if (date.getDayOfWeek() == SUNDAY) {
-            return true;
-        }
-        return false;
+        return date.getDayOfWeek() == SATURDAY || date.getDayOfWeek() == SUNDAY;
     }
 }
