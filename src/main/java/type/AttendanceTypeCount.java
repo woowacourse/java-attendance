@@ -11,7 +11,6 @@ public class AttendanceTypeCount {
         this.attendanceTypeCount = attendanceTypeCount;
     }
 
-    // TODO: 필요성에 대해 다시 생각하기. 테스트 전파일까?
     public static AttendanceTypeCount from(int absenceCount, int lateCount) {
         return new AttendanceTypeCount(
                 Map.of(AttendanceType.ABSENCE, absenceCount,

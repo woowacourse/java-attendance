@@ -17,7 +17,6 @@ public class AttendanceTypeAnalyzer {
 
     private static final LocalTime FIXED_TIME_FOR_NO_DATA = LocalTime.of(0, 0);
 
-    // TODO: Map 래핑할 수 있는지 생각해보기
     public static Map<LocalDateTime, AttendanceType> analyze(LocalDate requestedDate,
                                                              List<AttendanceHistory> attendanceHistories) {
         List<AttendanceHistory> sortedHistory = sortAccordingToDate(attendanceHistories);
