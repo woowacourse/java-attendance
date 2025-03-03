@@ -23,7 +23,7 @@ public class AttendanceController {
         this.functionService = functionService;
     }
 
-    public AttendanceBook init() {
+    private AttendanceBook init() {
         String filePath = "src/main/resources/attendances.csv";
         return registration.registerCrews(filePath); // 초기화
     }
