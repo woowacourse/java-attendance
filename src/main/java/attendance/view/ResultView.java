@@ -1,5 +1,8 @@
 package attendance.view;
 
+import static attendance.domain.AttendanceState.ABSENCE;
+
+import attendance.domain.AttendanceCounter;
 import attendance.domain.AttendanceState;
 import attendance.domain.CampusScheduler;
 import attendance.domain.CrewHistory;
@@ -8,8 +11,12 @@ import attendance.domain.RiskAtExpulsion;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ResultView {
 
@@ -17,7 +24,7 @@ public class ResultView {
     private static final Map<AttendanceState, String> ATTENDANCE_STATE_KOREAN = Map.of(
             AttendanceState.ATTENDANCE, "출석",
             AttendanceState.TARDINESS, "지각",
-            AttendanceState.ABSENCE, "결석"
+            ABSENCE, "결석"
     );
     private static final Map<RiskAtExpulsion, String> RISK_AT_EXPULSION_KOREAN = Map.of(
             RiskAtExpulsion.WARNING, "경고",
@@ -36,7 +43,9 @@ public class ResultView {
             출석: %d회
             지각: %d회
             결석: %d회""";
-    private static final String TITLE_EXPULSION_FORMAT = "%s 대상자입니다.";
+    private static final String FORMAT_EXPULSION = "%s 대상자입니다.";
+    private static final String TITLE_EXPULSION = "제적 위험자 조회 결과";
+    private static final String FORMAT_EXPULSION_WITH_COUNT = "- %s: 결석 %d회, 지각 %d회 (%s)";
 
     public void showBlankLine() {
         System.out.println();
@@ -76,7 +85,36 @@ public class ResultView {
         if (riskAtExpulsion == RiskAtExpulsion.NOT_APPLICABLE) {
             return;
         }
-        System.out.printf(LINE + TITLE_EXPULSION_FORMAT + LINE, getRiskAtExpulsion(riskAtExpulsion));
+        System.out.printf(LINE + FORMAT_EXPULSION + LINE, getRiskAtExpulsion(riskAtExpulsion));
+    }
+
+    public void showExpulsionCrews(final Map<Nickname, AttendanceCounter> result) {
+        System.out.println(LINE + TITLE_EXPULSION);
+        Map<Nickname, AttendanceCounter> sortedResult = result.entrySet().stream()
+                .sorted(makeComparator())
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (x, y) -> y, LinkedHashMap::new));
+        for (Entry<Nickname, AttendanceCounter> entry : sortedResult.entrySet()) {
+            showExpulsionCrew(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private Comparator<Entry<Nickname, AttendanceCounter>> makeComparator() {
+        return Comparator.comparingInt(
+                        (Entry<Nickname, AttendanceCounter> e) -> e.getValue().getCount(AttendanceState.ABSENCE) * 3
+                                + e.getValue().getCount(AttendanceState.TARDINESS))
+                .reversed()
+                .thenComparing(e -> e.getKey().getValue());
+    }
+
+    private void showExpulsionCrew(final Nickname nickname, final AttendanceCounter counter) {
+        int absentCount = counter.getCount(ABSENCE);
+        int lateCount = counter.getCount(AttendanceState.TARDINESS);
+        RiskAtExpulsion riskAtExpulsion = RiskAtExpulsion.of(absentCount, lateCount);
+        if (riskAtExpulsion == RiskAtExpulsion.NOT_APPLICABLE) {
+            return;
+        }
+        System.out.printf(FORMAT_EXPULSION_WITH_COUNT + LINE, nickname.getValue(), absentCount, lateCount,
+                getRiskAtExpulsion(riskAtExpulsion));
     }
 
     private void showEveryDateHistory(final CrewHistory crewHistory,

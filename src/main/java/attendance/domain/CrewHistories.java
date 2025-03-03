@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -72,5 +73,9 @@ public class CrewHistories {
     @Override
     public int hashCode() {
         return Objects.hashCode(histories);
+    }
+
+    public Map<Nickname, CrewHistory> getHistories() {
+        return Collections.unmodifiableMap(histories);
     }
 }
