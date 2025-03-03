@@ -105,7 +105,7 @@ public class AttendanceLogTest {
         String subjectStatus = attendanceStatus.getSubjectStatus(); // 이제 상태는 객체에 캡슐화돼 있음
 
         // then
-        assertThat(subjectStatus).isEqualTo("면담 대상자");
+        assertThat(subjectStatus).isEqualTo("면담");
     }
 
     @Test

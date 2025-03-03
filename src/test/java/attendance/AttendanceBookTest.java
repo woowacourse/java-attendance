@@ -121,6 +121,6 @@ public class AttendanceBookTest {
         Assertions.assertThat(attendanceStatus.getAttendanceCount()).isEqualTo(7);
         Assertions.assertThat(attendanceStatus.getLateCount()).isEqualTo(3);
         Assertions.assertThat(attendanceStatus.getAbsentCount()).isEqualTo(4);
-        Assertions.assertThat(attendanceStatus.getSubjectStatus()).isEqualTo("면담 대상자");
+        Assertions.assertThat(attendanceStatus.getSubjectStatus()).isEqualTo("면담");
     }
 }

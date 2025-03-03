@@ -68,35 +68,42 @@ public class AttendanceController {
 
     private void modifyAttendance() {
         String inputCrewName = inputView.inputModifyCrew();
-        Crew crew = new Crew(inputCrewName);
+        try{
+            Crew crew = new Crew(inputCrewName);
+            String inputModifyDate = inputView.inputModifyDate();
+            String inputModifyTime = inputView.inputModifyTime();
+            LocalDateTime localDateTime = attendance.util.UserInputParser.parseModifyDateTime(inputModifyDate,
+                inputModifyTime);
 
-        String inputModifyDate = inputView.inputModifyDate();
-        String inputModifyTime = inputView.inputModifyTime();
-        LocalDateTime localDateTime = attendance.util.UserInputParser.parseModifyDateTime(inputModifyDate,
-            inputModifyTime);
+            List<Attendance> attendances = attendanceBook.modifyAttendance(crew, localDateTime);
+            ModifyAttendanceResult modifyAttendanceResult = ModifyAttendanceResult.of(attendances);
+            outputView.displayModifyResult(modifyAttendanceResult);
+        } catch (IllegalArgumentException e) {
+            outputView.displayInputErrorMessage(e.getMessage());
+        }
 
-        List<Attendance> attendances = attendanceBook.modifyAttendance(crew, localDateTime);
-        ModifyAttendanceResult modifyAttendanceResult = ModifyAttendanceResult.of(attendances);
-        outputView.displayModifyResult(modifyAttendanceResult);
     }
 
     private void checkCrewAttendanceRecord() {
         String inputCrewName = inputView.inputCheckCrew();
-        Crew crew = new Crew(inputCrewName);
+        try {
+            Crew crew = new Crew(inputCrewName);
+            List<Attendance> attendances = attendanceBook.checkAttendancesRecord(crew);
+            AttendanceStatus attendanceStatus = attendanceBook.checkAttendanceCrewStatus(crew);
+            List<AttendanceResult> attendanceResults = attendances.stream()
+                .map(AttendanceResult::from)
+                .toList();
+            AttendanceStatusResult attendanceStatusResult = new AttendanceStatusResult(
+                attendanceStatus.getAttendanceCount(),
+                attendanceStatus.getLateCount(),
+                attendanceStatus.getAbsentCount(),
+                attendanceStatus.getSubjectStatus()
+            );
+            outputView.displayAttendanceRecord(attendanceResults, attendanceStatusResult);
+        }catch (IllegalArgumentException e) {
+            outputView.displayInputErrorMessage(e.getMessage());
+        }
 
-        List<Attendance> attendances = attendanceBook.checkAttendancesRecord(crew);
-        AttendanceStatus attendanceStatus = attendanceBook.checkAttendanceCrewStatus(crew);
-        List<AttendanceResult> attendanceResults = attendances.stream()
-            .map(AttendanceResult::from)
-            .toList();
-        AttendanceStatusResult attendanceStatusResult = new AttendanceStatusResult(
-            attendanceStatus.getAttendanceCount(),
-            attendanceStatus.getLateCount(),
-            attendanceStatus.getAbsentCount(),
-            attendanceStatus.getSubjectStatus()
-        );
-
-        outputView.displayAttendanceRecord(attendanceResults, attendanceStatusResult);
     }
 
     private void checkExpelledCrews() {
