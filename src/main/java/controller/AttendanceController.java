@@ -1,6 +1,6 @@
 package controller;
 
-import domain.SavedDataLoader;
+import domain.AttendanceSavedDataLoader;
 import domain.AttendanceBook;
 import domain.AttendanceHistory;
 import domain.AttendanceRecord;
@@ -22,11 +22,11 @@ import view.OutputView;
 import view.UserCommand;
 
 public class AttendanceController {
-    private final SavedDataLoader savedDataLoader;
+    private final AttendanceSavedDataLoader savedDataLoader;
     private final InputView inputView;
     private final OutputView outputView;
 
-    public AttendanceController(final SavedDataLoader savedDataLoader, final InputView inputView,
+    public AttendanceController(final AttendanceSavedDataLoader savedDataLoader, final InputView inputView,
                                 final OutputView outputView) {
         this.savedDataLoader = savedDataLoader;
         this.inputView = inputView;

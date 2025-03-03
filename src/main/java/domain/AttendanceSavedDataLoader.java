@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import utils.FileReader;
 
-public class SavedDataLoader {
+public class AttendanceSavedDataLoader {
     private static final String LOAD_FILE_PATH = "./src/main/resources/attendances.csv";
     private static final int CREW_INDEX = 0;
     private static final int ATTENDANCE_INDEX = 1;
@@ -16,7 +16,7 @@ public class SavedDataLoader {
 
     private final List<String[]> loadedData;
 
-    public SavedDataLoader() {
+    public AttendanceSavedDataLoader() {
         final List<String> readData = FileReader.read(LOAD_FILE_PATH);
         readData.removeFirst();
         loadedData = parsedData(readData);

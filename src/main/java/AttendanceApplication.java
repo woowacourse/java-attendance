@@ -1,4 +1,4 @@
-import domain.SavedDataLoader;
+import domain.AttendanceSavedDataLoader;
 import controller.AttendanceController;
 import view.InputView;
 import view.OutputView;
@@ -6,7 +6,7 @@ import view.OutputView;
 public class AttendanceApplication {
 
     public static void main(String[] args) {
-        AttendanceController attendanceController = new AttendanceController(new SavedDataLoader(), new InputView(),
+        AttendanceController attendanceController = new AttendanceController(new AttendanceSavedDataLoader(), new InputView(),
                 new OutputView());
         attendanceController.run();
     }
