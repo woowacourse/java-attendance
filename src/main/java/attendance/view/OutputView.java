@@ -2,7 +2,7 @@ package attendance.view;
 
 import attendance.dto.AttendResult;
 import attendance.dto.AttendanceLogDto;
-import attendance.dto.EditResult;
+import attendance.dto.EditResultDto;
 import attendance.dto.AttendanceWarning;
 import attendance.model.AttendanceType;
 import attendance.model.AttendanceWarningLevel;
@@ -30,19 +30,19 @@ public class OutputView {
                 attendResult.attendanceType().getKoreanLabel());
     }
 
-    public void printEditAttendanceLog(EditResult editResult) {
+    public void printEditAttendanceLog(EditResultDto editResultDto) {
         StringBuilder message = new StringBuilder();
-        message.append("%n%s ".formatted(editResult.targetDate().format(DATE_FORMATTER)));
-        if (editResult.beforeAttendanceTime() == null) {
+        message.append("%n%s ".formatted(editResultDto.targetDate().format(DATE_FORMATTER)));
+        if (editResultDto.beforeAttendanceTime() == null) {
             message.append("--:--");
         }
-        if (editResult.beforeAttendanceTime() != null) {
-            message.append(editResult.beforeAttendanceTime().format(TIME_FORMATTER));
+        if (editResultDto.beforeAttendanceTime() != null) {
+            message.append(editResultDto.beforeAttendanceTime().format(TIME_FORMATTER));
         }
         message.append(" (%s) -> %s (%s) 수정 완료!%n".formatted(
-                editResult.beforeAttendanceType().getKoreanLabel(),
-                editResult.afterAttendanceTime().format(TIME_FORMATTER),
-                editResult.afterAttendanceType().getKoreanLabel()));
+                editResultDto.beforeAttendanceType().getKoreanLabel(),
+                editResultDto.afterAttendanceTime().format(TIME_FORMATTER),
+                editResultDto.afterAttendanceType().getKoreanLabel()));
         System.out.print(message);
     }
 

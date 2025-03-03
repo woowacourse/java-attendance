@@ -4,7 +4,7 @@ import attendance.model.AttendanceType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record EditResult(
+public record EditResultDto(
         LocalDate targetDate,
         LocalTime beforeAttendanceTime,
         AttendanceType beforeAttendanceType,

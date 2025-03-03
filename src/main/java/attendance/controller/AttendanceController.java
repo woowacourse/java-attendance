@@ -2,8 +2,8 @@ package attendance.controller;
 
 import attendance.dto.AttendResult;
 import attendance.dto.AttendanceLogDto;
-import attendance.dto.EditResult;
 import attendance.dto.AttendanceWarning;
+import attendance.dto.EditResultDto;
 import attendance.model.AttendanceBook;
 import attendance.model.AttendanceLogs;
 import attendance.model.AttendanceType;
@@ -105,8 +105,20 @@ public class AttendanceController {
     private void editAttendanceLog(LocalDate baseDate, AttendanceBook attendanceBook) {
         final Nickname nickname = readNicknameForEditAttendance(attendanceBook);
         final LocalDateTime updateDateTime = readUpdateDateTime(baseDate);
-        final EditResult editResult = attendanceBook.edit(nickname, updateDateTime);
-        outputView.printEditAttendanceLog(editResult);
+        EditResultDto editResultDto = editAttendanceLog(attendanceBook, nickname, updateDateTime);
+        outputView.printEditAttendanceLog(editResultDto);
+    }
+
+    private EditResultDto editAttendanceLog(AttendanceBook attendanceBook, Nickname nickname, LocalDateTime updateDateTime) {
+        final LocalTime beforeAttendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(nickname, updateDateTime.toLocalDate());
+        final AttendanceType beforeAttendanceType = attendanceBook.determineAttendanceType(updateDateTime.toLocalDate(), beforeAttendanceTime);
+        attendanceBook.edit(nickname, updateDateTime);
+        final LocalTime afterAttendanceTime = attendanceBook.findAttendanceTimeByNicknameAndDate(nickname, updateDateTime.toLocalDate());
+        final AttendanceType afterAttendanceType = attendanceBook.determineAttendanceType(updateDateTime.toLocalDate(), updateDateTime.toLocalTime());
+        return new EditResultDto(
+                updateDateTime.toLocalDate(),
+                beforeAttendanceTime, beforeAttendanceType,
+                afterAttendanceTime, afterAttendanceType);
     }
 
     private Nickname readNicknameForEditAttendance(AttendanceBook attendanceBook) {
@@ -126,7 +138,8 @@ public class AttendanceController {
         final Nickname nickname = readNickname(attendanceBook);
         final List<AttendanceLogDto> logs = attendanceBook.findAttendanceLogsByNicknameAndInMonth(nickname, baseDate);
         outputView.printAttendanceLogs(nickname, logs);
-        final EnumMap<AttendanceType, Integer> attendanceTypeCounts = attendanceBook.countAllAttendanceType(nickname, baseDate);
+        final EnumMap<AttendanceType, Integer> attendanceTypeCounts = attendanceBook.countAllAttendanceType(nickname,
+                baseDate);
         outputView.printAttendanceTypeCount(attendanceTypeCounts);
         outputView.printWarningLevel(attendanceBook.determineWarningLevel(attendanceTypeCounts));
     }

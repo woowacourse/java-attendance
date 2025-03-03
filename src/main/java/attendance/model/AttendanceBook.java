@@ -3,7 +3,6 @@ package attendance.model;
 import attendance.dto.AttendResult;
 import attendance.dto.AttendanceLogDto;
 import attendance.dto.AttendanceWarning;
-import attendance.dto.EditResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,24 +32,17 @@ public class AttendanceBook {
         return new AttendResult(attendanceDateTime, determineAttendanceType(attendanceDateTime));
     }
 
-    public EditResult edit(Nickname nickname, LocalDateTime updateDateTime) {
-        LocalDate updateDate = updateDateTime.toLocalDate();
-        AttendanceLog beforeAttendanceLog = attendanceLogs.findByNicknameAndAttendanceDate(nickname, updateDate);
-        AttendanceType beforeAttendanceType = determineAttendanceType(beforeAttendanceLog.getAttendanceDate(),
-                beforeAttendanceLog.getAttendanceTime());
-        AttendanceLog updateAttendanceLog = new AttendanceLog(nickname, updateDateTime);
-        attendanceLogs.edit(updateAttendanceLog);
-        AttendanceType afterAttendanceType = determineAttendanceType(updateDateTime);
-        return new EditResult(
-                beforeAttendanceLog.getAttendanceDate(),
-                beforeAttendanceLog.getAttendanceTime(),
-                beforeAttendanceType,
-                updateDateTime.toLocalTime(),
-                afterAttendanceType
-        );
+    public LocalTime findAttendanceTimeByNicknameAndDate(Nickname nickname, LocalDate localDate) {
+        return attendanceLogs.findByNicknameAndAttendanceDate(nickname, localDate)
+                .getAttendanceTime();
     }
 
-    private AttendanceType determineAttendanceType(LocalDate date, LocalTime time) {
+    public void edit(Nickname nickname, LocalDateTime updateDateTime) {
+        AttendanceLog updateAttendanceLog = new AttendanceLog(nickname, updateDateTime);
+        attendanceLogs.edit(updateAttendanceLog);
+    }
+
+    public AttendanceType determineAttendanceType(LocalDate date, LocalTime time) {
         LocalTime startTimeInBaseDate = EducationSchedule.findStartTimeByDay(date.getDayOfWeek());
         return AttendanceType.determine(startTimeInBaseDate, time);
     }
