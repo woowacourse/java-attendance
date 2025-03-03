@@ -10,10 +10,6 @@ public class AttendanceManager {
         this.attendanceBooks = attendanceBookMap;
     }
 
-    public Map<Crew, AttendanceBook> getAttendanceBooks() {
-        return attendanceBooks;
-    }
-
     public Crew findCrewByNickname(final Nickname nickname) {
         return attendanceBooks.keySet().stream()
                 .filter(crew -> crew.getNickname().equals(nickname))
@@ -39,5 +35,9 @@ public class AttendanceManager {
             final int fromDayOfMonth = attendanceBook.getLastlyAttendance();
             attendanceBook.updateRecordFromTo(fromDayOfMonth, toDayOfMonth);
         }
+    }
+
+    public Map<Crew, AttendanceBook> getAttendanceBooks() {
+        return attendanceBooks;
     }
 }

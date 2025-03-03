@@ -1,14 +1,13 @@
 package controller;
 
 import model.*;
-import view.DateInfoDto;
-import view.InputView;
-import view.OutputView;
-import view.TypeInfoDto;
+import view.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AttendanceController {
 
@@ -29,6 +28,8 @@ public class AttendanceController {
             processAttendanceCorrection();
         } else if (command.equals(Command.CHECK_ATTENDANCE_RECORDS_BY_CREW)) {
             processCrewAttendanceBook(todayDateTime);
+        } else if (command.equals(Command.IDENTIFICATION_OF_THE_RISK_OF_EXPULSION)) {
+            processRiskOfExpulsion();
         }
     }
 
@@ -73,12 +74,27 @@ public class AttendanceController {
         final List<AttendanceStatus> statuses = recordAttendanceBook.getStatuses();
         final AttendanceCountsDto countsDto = new AttendanceCountsDto(AttendanceStatus.countStatus(statuses));
         final ExpulsionType expulsionType = ExpulsionType.find(countsDto);
+        final ExpulsionInfoDto expulsionInfo = new ExpulsionInfoDto(countsDto, expulsionType);
 
-        final List<TypeInfoDto> dtos = new ArrayList<>();
+        final List<TypeInfoDto> typeInfoDtos = new ArrayList<>();
         for (final Attendance attendance : recordAttendanceBook.getAttendances()) {
-            dtos.add(TypeInfoDto.of(attendance));
+            typeInfoDtos.add(TypeInfoDto.of(attendance));
         }
-        OutputView.printCrewAttendanceBook(crew, dtos, countsDto, expulsionType);
+        OutputView.printCrewAttendanceBook(crew, typeInfoDtos, expulsionInfo);
+    }
+
+    private void processRiskOfExpulsion() {
+        final Map<Crew, AttendanceBook> attendanceBooks = manager.getAttendanceBooks();
+        final Map<Crew, ExpulsionInfoDto> expulsionInfoDtosByCrew = new HashMap<>();
+        for (final Crew crew : attendanceBooks.keySet()) {
+            final AttendanceBook attendanceBook = attendanceBooks.get(crew);
+            final List<AttendanceStatus> statuses = attendanceBook.getStatuses();
+            final AttendanceCountsDto countsDto = new AttendanceCountsDto(AttendanceStatus.countStatus(statuses));
+            final ExpulsionType expulsionType = ExpulsionType.find(countsDto);
+            final ExpulsionInfoDto expulsionInfoDto = new ExpulsionInfoDto(countsDto, expulsionType);
+            expulsionInfoDtosByCrew.put(crew, expulsionInfoDto);
+        }
+        OutputView.printRiskOfExpulsion(expulsionInfoDtosByCrew);
     }
 
     private void updateAttendanceRecord(final AttendanceDateTime todayDateTime) {

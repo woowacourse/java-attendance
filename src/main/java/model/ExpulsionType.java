@@ -33,7 +33,7 @@ public enum ExpulsionType {
         return displayName;
     }
 
-    private static int calculateDiscriminationCount(final AttendanceCountsDto dto) {
+    public static int calculateDiscriminationCount(final AttendanceCountsDto dto) {
         final int absenceCount = dto.map().get(AttendanceStatus.ABSENCE);
         final int tardinessCount = dto.map().get(AttendanceStatus.TARDINESS);
 

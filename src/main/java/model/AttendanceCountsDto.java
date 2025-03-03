@@ -2,7 +2,18 @@ package model;
 
 import java.util.Map;
 
-public record AttendanceCountsDto(Map<AttendanceStatus, Integer> map) {
+public final class AttendanceCountsDto {
+    private final Map<AttendanceStatus, Integer> map;
 
+    public AttendanceCountsDto(Map<AttendanceStatus, Integer> map) {
+        this.map = map;
+    }
+
+    public Map<AttendanceStatus, Integer> map() {
+        return map;
+    }
+
+    public Map<AttendanceStatus, Integer> getMap() {
+        return map;
+    }
 }
-
