@@ -107,7 +107,7 @@ class AttendanceDateTest {
                         .forEach(attendanceDate -> assertThat(attendanceDate.isTardy()).isTrue());
             }
 
-            @DisplayName("10:030 이후의 경우 결석")
+            @DisplayName("10:30 이후의 경우 결석")
             @Test
             void weekOfDayTAbsenceTest(){
                 List<AttendanceDate> list =  IntStream.range(1,28)
