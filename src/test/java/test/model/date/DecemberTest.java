@@ -1,5 +1,6 @@
 package test.model.date;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
@@ -23,6 +24,19 @@ public class DecemberTest {
                 .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> December.validateHoliday(LocalDate.of(2024, 12, 15)))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("수정하려는 날짜를 LocalDate 객체로 반환한다.")
+    @Test
+    void success_transferDateIntegerToDecemberDate() {
+        //given
+        int rawDate = 3;
+
+        //when
+        LocalDate date = December.createDecemberDateWith(rawDate);
+
+        //then
+        assertThat(date).isEqualTo(LocalDate.of(2024, 12, rawDate));
     }
 
 }
