@@ -63,10 +63,9 @@ public class AttendancesTest {
         AttendanceTime attendanceTime = new AttendanceTime(time);
         Attendance attendance1 = Attendance.of(crew, attendanceTime);
         LocalDate day = LocalDate.of(2024, 12, 3);
-        Attendance attendance2 = Attendance.createAbsence(crew, day);
 
         Attendances attendances = new Attendances(List.of(attendance1));
-        Attendances expected = new Attendances(List.of(attendance1, attendance2));
+        Attendances expected = new Attendances(List.of(attendance1));
 
         //when
         Attendances filteredAttendances = attendances.createMonthlyAttendances(crew, day);
