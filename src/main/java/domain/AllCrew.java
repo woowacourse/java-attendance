@@ -2,6 +2,9 @@ package domain;
 
 import constant.ErrorMessage;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,18 +21,30 @@ public class AllCrew {
         allCrew = new ArrayList<Crew>();
     }
 
-    public AllCrew(Scanner fileScanner) {
-        allCrew = new ArrayList<>();
-        while (fileScanner.hasNextLine()) {
-            String line = fileScanner.nextLine();
+    public void updateFile(String filePath) {
+        processAllCrewFileData(readFileData(filePath));
+    }
+
+    public List<String> readFileData(String filePath) {
+        List<String> lines = new ArrayList<>();
+        try {
+            lines = Files.readAllLines(Path.of(filePath));
+        } catch (IOException e) {
+            throw new IllegalArgumentException(ErrorMessage.NO_ATTENDANCES_FILE.getMessage());
+        }
+        return lines;
+    }
+
+    private void processAllCrewFileData(List<String> rawData) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MM dd HH mm");
+        for (String line : rawData) {
             List<String> crewNameAndAttendanceTime = List.of(line.split("-"));
             String rawDateTime = crewNameAndAttendanceTime.get(1);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MM dd HH mm");
-            loadFileAllCrewData(rawDateTime, formatter, crewNameAndAttendanceTime);
+            loadCrewData(rawDateTime, formatter, crewNameAndAttendanceTime);
         }
     }
 
-    private void loadFileAllCrewData(String rawDateTime, DateTimeFormatter formatter, List<String> crewNameAndAttendanceTime) {
+    private void loadCrewData(String rawDateTime, DateTimeFormatter formatter, List<String> crewNameAndAttendanceTime) {
         try {
             LocalDateTime dateTime = LocalDateTime.parse(rawDateTime, formatter);
             Attendance attendance = new Attendance(dateTime);
@@ -84,4 +99,5 @@ public class AllCrew {
         penaltyReceivedCrew.sort(Comparator.comparing(Crew::getPenaltyStandard).reversed()
                 .thenComparing(Crew::getName));
     }
+
 }

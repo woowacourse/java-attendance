@@ -1,6 +1,5 @@
 package controller;
 
-import static constant.ErrorMessage.NO_ATTENDANCES_FILE;
 import static java.lang.Integer.parseInt;
 import static view.OutputView.getFormattedDayInfo;
 import static view.OutputView.printCheckedAttendance;
@@ -13,27 +12,20 @@ import domain.Crew;
 import view.OutputView;
 import view.UserInputView;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Scanner;
 
 public class AttendanceSystem {
     private final LocalDate today;
     private final AllCrew allCrew;
 
     public AttendanceSystem() {
-        try {
-            today = LocalDate.now();
-            Scanner scanner = new Scanner(new File("src/main/resources/attendances.csv"));
-            allCrew = new AllCrew(scanner);
-            allCrew.fillAllCrewsEmptyDateWithAbsent(today.minusDays(1));
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException(NO_ATTENDANCES_FILE.getMessage());
-        }
+        today = LocalDate.now();
+        allCrew = new AllCrew();
+        allCrew.updateFile("src/main/resources/attendances.csv");
+        allCrew.fillAllCrewsEmptyDateWithAbsent(today.minusDays(1));
     }
 
     public void run() {

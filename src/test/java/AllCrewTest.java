@@ -1,5 +1,4 @@
-import static org.assertj.core.api.Assertions.assertThat;
-
+import constant.ErrorMessage;
 import domain.AllCrew;
 import domain.Attendance;
 import domain.Crew;
@@ -13,7 +12,34 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.*;
+
 public class AllCrewTest {
+
+    @Nested
+    @DisplayName("All Crew 파일 로드 테스트")
+    class AllCrewFileLoadTest {
+        @DisplayName("파일 읽어오기")
+        @Test
+        void test1() {
+            // given
+            AllCrew allCrew = new AllCrew();
+
+            // when & then
+            assertThatCode(() -> allCrew.updateFile("src/main/resources/attendances.csv")).doesNotThrowAnyException();
+        }
+
+        @DisplayName("파일 읽어오기 예외")
+        @Test
+        void test2() {
+            // given
+            AllCrew allCrew = new AllCrew();
+
+            // when & then
+            assertThatThrownBy(() -> allCrew.updateFile("wrong_file_path")).hasMessage(ErrorMessage.NO_ATTENDANCES_FILE.getMessage());
+        }
+    }
+
     @DisplayName("크루 출석 정보 등록 & 이름으로 등록 여부 확인 테스트")
     @Test
     void test1() {
