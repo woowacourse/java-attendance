@@ -26,6 +26,6 @@ public enum ErrorCode {
     }
 
     public String getFormattedMessage(Serializable... args) {
-        return String.format(message, args);
+        return String.format(message, (Object[]) args);
     }
 }
