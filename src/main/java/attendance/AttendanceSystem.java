@@ -1,6 +1,7 @@
 package attendance;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceUpdate;
 import attendance.domain.CrewAttendanceManager;
 import attendance.util.DateGenerator;
 import attendance.util.DateTimeParser;
@@ -8,6 +9,8 @@ import attendance.view.InputView;
 import attendance.view.Menu;
 import attendance.view.OutputView;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -33,6 +36,7 @@ public class AttendanceSystem {
         Menu menu = displayMenuAndReadCommand();
 
         processCheck(menu);
+        processUpdate(menu);
     }
 
     private Menu displayMenuAndReadCommand() {
@@ -49,6 +53,24 @@ public class AttendanceSystem {
 
             Attendance attendance = crewAttendanceManager.processAttendanceCheck(nickname, time);
             outputView.printAttendanceResult(attendance);
+        }
+    }
+
+    private void processUpdate(final Menu menu) {
+        if (menu.equals(Menu.UPDATE)) {
+            String nickname = inputView.readNicknameForUpdate();
+            crewAttendanceManager.validateNicknameExists(nickname);
+
+            int day = inputView.readAttendanceDayForUpdate();
+            LocalDate date = DateTimeParser.parseDay(day, dateGenerator.generate());
+
+            String time = inputView.readAttendanceTimeForUpdate();
+            LocalTime time1 = DateTimeParser.parseTime(time, TIME_FORMATTER);
+
+            LocalDateTime dateTime = LocalDateTime.of(date, time1);
+
+            AttendanceUpdate attendanceUpdate = crewAttendanceManager.processAttendanceUpdate(nickname, dateTime);
+            outputView.printAttendanceUpdate(attendanceUpdate);
         }
     }
 

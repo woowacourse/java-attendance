@@ -36,7 +36,7 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameDate(date))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 입력된 날짜(일)에는 출석 기록이 존재하지 않습니다."));
     }
 
     public List<Attendance> getAttendancesBefore(LocalDate today) {

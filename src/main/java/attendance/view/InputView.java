@@ -25,7 +25,7 @@ public class InputView {
         return console.nextLine();
     }
 
-    public int readAttendanceDay() {
+    public int readAttendanceDayForUpdate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         return Integer.parseInt(console.nextLine());
     }
