@@ -21,13 +21,12 @@ class CampusOperatingTimeTest {
 
     static Stream<Arguments> getNotInOperationTime() {
         return Stream.of(
-                Arguments.of(CampusOperatingTime.OPEN_AT.getTime().minusNanos(1), "운영 시작 시간 1 나노초 전"),
-                Arguments.of(CampusOperatingTime.OPEN_AT.getTime().minusMinutes(1), "운영 시작 시간 1분 전"),
-                Arguments.of(CampusOperatingTime.OPEN_AT.getTime().minusHours(5), "운영 시작 시간 5시간 전"),
-                Arguments.of(CampusOperatingTime.CLOSE_AT.getTime(), "운영 종료 시간"),
-                Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().plusNanos(1), "운영 종료 시간 1 나노초 후"),
-                Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().plusMinutes(1), "운영 종료 시간 1분 후"),
-                Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().plusHours(5), "운영 종료 시간 5시간 후")
+                Arguments.of(CampusOperatingTime.OPEN.getTime().minusNanos(1), "운영 시작 시간 1 나노초 전"),
+                Arguments.of(CampusOperatingTime.OPEN.getTime().minusMinutes(1), "운영 시작 시간 1분 전"),
+                Arguments.of(CampusOperatingTime.OPEN.getTime().minusHours(5), "운영 시작 시간 5시간 전"),
+                Arguments.of(CampusOperatingTime.CLOSE.getTime().plusNanos(1), "운영 종료 시간 1 나노초 후"),
+                Arguments.of(CampusOperatingTime.CLOSE.getTime().plusMinutes(1), "운영 종료 시간 1분 후"),
+                Arguments.of(CampusOperatingTime.CLOSE.getTime().plusHours(5), "운영 종료 시간 5시간 후")
         );
     }
 
@@ -39,13 +38,14 @@ class CampusOperatingTimeTest {
 
     static Stream<Arguments> getInOperationTime() {
         return Stream.of(
-                Arguments.of(CampusOperatingTime.OPEN_AT.getTime(), "운영 시작 시간"),
-                Arguments.of(CampusOperatingTime.OPEN_AT.getTime().plusNanos(1), "운영 시작 시간 1 나노초 후"),
-                Arguments.of(CampusOperatingTime.OPEN_AT.getTime().plusMinutes(1), "운영 시작 시간 1분 후"),
-                Arguments.of(CampusOperatingTime.OPEN_AT.getTime().plusHours(5), "운영 시작 시간 5시간 후"),
-                Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().minusNanos(1), "운영 종료 시간 1 나노초 전"),
-                Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().minusMinutes(1), "운영 종료 시간 1분 전"),
-                Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().minusHours(5), "운영 종료 시간 5시간 전")
+                Arguments.of(CampusOperatingTime.OPEN.getTime(), "운영 시작 시간"),
+                Arguments.of(CampusOperatingTime.OPEN.getTime().plusNanos(1), "운영 시작 시간 1 나노초 후"),
+                Arguments.of(CampusOperatingTime.OPEN.getTime().plusMinutes(1), "운영 시작 시간 1분 후"),
+                Arguments.of(CampusOperatingTime.OPEN.getTime().plusHours(5), "운영 시작 시간 5시간 후"),
+                Arguments.of(CampusOperatingTime.CLOSE.getTime(), "운영 종료 시간"),
+                Arguments.of(CampusOperatingTime.CLOSE.getTime().minusNanos(1), "운영 종료 시간 1 나노초 전"),
+                Arguments.of(CampusOperatingTime.CLOSE.getTime().minusMinutes(1), "운영 종료 시간 1분 전"),
+                Arguments.of(CampusOperatingTime.CLOSE.getTime().minusHours(5), "운영 종료 시간 5시간 전")
         );
     }
 }
