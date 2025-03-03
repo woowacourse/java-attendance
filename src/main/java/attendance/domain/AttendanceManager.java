@@ -21,9 +21,10 @@ public class AttendanceManager {
     }
 
     public void validateExistCrew(String crewName) {
-        if (!crewAttendances.containsKey(crewName)) {
-            throw new IllegalArgumentException("존재하지 않는 크루 닉네임입니다.");
+        if (crewAttendances.containsKey(crewName)) {
+            return;
         }
+        throw new IllegalArgumentException("존재하지 않는 크루 닉네임입니다.");
     }
 
     public void attend(String crewName, LocalTime time) {
