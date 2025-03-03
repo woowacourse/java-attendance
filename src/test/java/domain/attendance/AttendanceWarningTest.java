@@ -48,7 +48,7 @@ class AttendanceWarningTest {
         LocalDateTime attendanceDate = LocalDateTime.of(2025, 3, 3, 13, 0);
         Attendances attendances = new Attendances(List.of(attendanceDate),
                 attendanceDate.toLocalDate(),
-                attendanceDate.toLocalDate().plusDays(8));
+                attendanceDate.toLocalDate().plusDays(9));
         int countAbsence = attendances.countAllAbsence();
 
         // when

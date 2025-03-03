@@ -78,7 +78,7 @@ public class OutputView {
                         .thenComparing(WarningCrewInfoDto::countTardy).reversed()
                         .thenComparing(WarningCrewInfoDto::nickname)
         );
-        sortedWarningCrewInfoDtos.stream().forEach(this::printWarningCrewDetail);
+        sortedWarningCrewInfoDtos.forEach(this::printWarningCrewDetail);
         System.out.println();
     }
 
