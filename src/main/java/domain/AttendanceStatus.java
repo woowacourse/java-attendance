@@ -10,20 +10,16 @@ import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
 
 public enum AttendanceStatus {
-    ATTEND("출석"),
+    ATTEND("출석", 0),
     LATE("지각", 5),
     ABSENT("결석", 30);
 
-    private String status;
-    private int timeLimit;
+    private final String status;
+    private final int timeLimit;
 
     private static final int OPEN_TIME = 8;
     private static final int CLOSE_TIME = 23;
     private static final int CHRISTMAS = 25;
-
-    AttendanceStatus(String status) {
-        this.status = status;
-    }
 
     AttendanceStatus(String status, int timeLimit) {
         this.status = status;
