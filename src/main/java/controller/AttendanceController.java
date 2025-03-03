@@ -20,12 +20,12 @@ public class AttendanceController {
     private static final Map<Selection, ControllerCommand> commands
         = new EnumMap<>(Selection.class);
 
-    public AttendanceController(AttendanceBook attendanceBook) {
-        AttendanceService service = new AttendanceService(attendanceBook);
+    public AttendanceController(AttendanceBook book, LocalDate beginDateOfEducation) {
+        AttendanceService service = new AttendanceService(book);
         commands.put(Selection.ATTEND, new AttendCommand(service));
         commands.put(Selection.MODIFY, new ModifyCommand(service));
         commands.put(Selection.GET_RECORDS, new GetRecordsCommand(service));
-        commands.put(Selection.GET_PENALTIES, new GetPenaltyCommand(service));
+        commands.put(Selection.GET_PENALTIES, new GetPenaltyCommand(service, beginDateOfEducation));
     }
 
     public void run(LocalDate today) {
