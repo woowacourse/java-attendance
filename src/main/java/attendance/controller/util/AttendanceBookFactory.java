@@ -55,7 +55,7 @@ public class AttendanceBookFactory {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private static Attendance initAttendance(LocalDate today, int day) {
+    private static Attendance initAttendance(final LocalDate today, final int day) {
         try {
             LocalDate date = today.withDayOfMonth(day);
             LocalTime absenceTime = CAMPUS_CLOSE_HOUR.getTime().minusMinutes(1);
