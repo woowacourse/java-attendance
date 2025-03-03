@@ -3,6 +3,7 @@ package attendance.view;
 import attendance.constant.Holiday;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.Attendances;
 import attendance.domain.Crew;
 import attendance.domain.Penalty;
 import attendance.domain.StatusStatistics;
@@ -10,7 +11,6 @@ import attendance.util.DateUtil;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -20,28 +20,28 @@ public class OutputView {
 
     public static void printRecordAttendanceResult(Attendance attendance) {
         System.out.printf("%n%02d월 %02d일 %s %02d:%02d (%s)%n%n",
-                attendance.attendDate().getMonthValue(),
-                attendance.attendDate().getDayOfMonth(),
-                attendance.attendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                attendance.attendTime().getHour(),
-                attendance.attendTime().getMinute(),
+                attendance.getAttendDate().getMonthValue(),
+                attendance.getAttendDate().getDayOfMonth(),
+                attendance.getAttendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                attendance.getAttendTime().getHour(),
+                attendance.getAttendTime().getMinute(),
                 attendance.determineStatus().getName());
     }
 
     public static void printEditAttendanceResult(Attendance oldAttendance, Attendance newAttendance) {
         System.out.printf("%n%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!%n%n",
-                oldAttendance.attendDate().getMonthValue(),
-                oldAttendance.attendDate().getDayOfMonth(),
-                oldAttendance.attendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                oldAttendance.attendTime().getHour(),
-                oldAttendance.attendTime().getMinute(),
+                oldAttendance.getAttendDate().getMonthValue(),
+                oldAttendance.getAttendDate().getDayOfMonth(),
+                oldAttendance.getAttendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                oldAttendance.getAttendTime().getHour(),
+                oldAttendance.getAttendTime().getMinute(),
                 oldAttendance.determineStatus().getName(),
-                newAttendance.attendTime().getHour(),
-                newAttendance.attendTime().getMinute(),
+                newAttendance.getAttendTime().getHour(),
+                newAttendance.getAttendTime().getMinute(),
                 newAttendance.determineStatus().getName());
     }
 
-    public static void printAttendanceRecordsUntilYesterday(Crew crew, LocalDate today, List<Attendance> attendances) {
+    public static void printAttendanceRecordsUntilYesterday(Crew crew, LocalDate today, Attendances attendances) {
         System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", crew.getNickname().nickname());
         for (int day = 1; day < today.getDayOfMonth(); day++) {
             LocalDate currentDate = LocalDate.of(today.getYear(), today.getMonthValue(), day);
@@ -53,20 +53,23 @@ public class OutputView {
         System.out.println();
     }
 
-    private static void printAttendanceRecords(List<Attendance> attendances, LocalDate currentDate) {
-        attendances.stream()
-                .filter(attendance -> attendance.isSameDate(currentDate))
-                .findFirst()
-                .ifPresentOrElse(OutputView::printExistRecords, () -> printNotExistRecords(currentDate));
+    private static void printAttendanceRecords(Attendances attendances, LocalDate currentDate) {
+        Attendance currentAttendance = attendances.findByDate(currentDate);
+        AttendanceStatus status = currentAttendance.determineStatus();
+        if (status == AttendanceStatus.ABSENT) {
+            printNotExistRecords(currentDate);
+            return;
+        }
+        printExistRecords(currentAttendance);
     }
 
     private static void printExistRecords(Attendance attendance) {
         System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)%n",
-                attendance.attendDate().getMonthValue(),
-                attendance.attendDate().getDayOfMonth(),
-                attendance.attendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                attendance.attendTime().getHour(),
-                attendance.attendTime().getMinute(),
+                attendance.getAttendDate().getMonthValue(),
+                attendance.getAttendDate().getDayOfMonth(),
+                attendance.getAttendDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                attendance.getAttendTime().getHour(),
+                attendance.getAttendTime().getMinute(),
                 attendance.determineStatus().getName());
     }
 

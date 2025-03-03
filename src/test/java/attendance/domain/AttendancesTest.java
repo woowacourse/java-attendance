@@ -17,7 +17,7 @@ public class AttendancesTest {
     @Test
     void 출석_리스트에_출석을_추가할수_있다() {
         Attendances attendances = new Attendances(new ArrayList<>());
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
 
         assertThatCode(() -> attendances.add(attendance))
                 .doesNotThrowAnyException();
@@ -25,9 +25,9 @@ public class AttendancesTest {
 
     @Test
     void 출석_리스트에_해당날짜의_출석이_존재하는데_추가하면_예외를_반환한다() {
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
         Attendances attendances = new Attendances(List.of(attendance));
-        Attendance sameDateAttendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance sameDateAttendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
 
         assertThatThrownBy(() -> attendances.add(sameDateAttendance))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -36,7 +36,7 @@ public class AttendancesTest {
 
     @Test
     void 출석_리스트에서_원하는_날짜의_출석을_반환한다() {
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
         Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
 
         Attendance oldAttendance = attendances.findByDate(LocalDate.of(2024, 12, 12));
@@ -45,22 +45,21 @@ public class AttendancesTest {
     }
 
     @Test
-    void 출석_리스트에_원하는_날짜의_출석이_없다면_예외가_발생한다() {
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+    void 출석_리스트에_원하는_날짜의_출석이_없다면_결석객체가_생성된다() {
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
         Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
+        Attendance attendanceOfAbsent = attendances.findByDate(LocalDate.of(2024, 12, 13));
 
-        assertThatThrownBy(() -> attendances.findByDate(LocalDate.of(2024, 12, 13)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorMessage.ATTENDANCE_NOT_EXIST_ERROR.getMessage());
+        assertThat(attendanceOfAbsent.determineStatus()).isEqualTo(AttendanceStatus.ABSENT);
     }
 
     @Test
     void 출석_리스트에서_원하는_날짜의_출석을_수정한다() {
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
         Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
 
         Attendance oldAttendance = attendances.findByDate(LocalDate.of(2024, 12, 12));
-        Attendance newAttendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 30));
+        Attendance newAttendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 30));
 
         assertThatCode(() -> attendances.update(oldAttendance, newAttendance))
                 .doesNotThrowAnyException();
@@ -68,9 +67,9 @@ public class AttendancesTest {
 
     @Test
     void 출석_리스트에서_이번달_전날까지의_기록을_반환한다() {
-        Attendance anotherMonthAttendance = new Attendance(LocalDate.of(2024, 11, 12), LocalTime.of(13, 0));
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
-        Attendance attendance2 = new Attendance(LocalDate.of(2024, 12, 13), LocalTime.of(13, 0));
+        Attendance anotherMonthAttendance = Attendance.of(LocalDate.of(2024, 11, 12), LocalTime.of(13, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance attendance2 = Attendance.of(LocalDate.of(2024, 12, 13), LocalTime.of(13, 0));
         Attendances attendances = new Attendances(new ArrayList<>(List.of(anotherMonthAttendance, attendance, attendance2)));
 
         assertThat(attendances.getAttendancesUntilYesterday(LocalDate.of(2024, 12, 14))).hasSize(2);

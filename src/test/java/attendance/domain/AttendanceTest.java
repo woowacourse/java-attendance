@@ -23,7 +23,7 @@ public class AttendanceTest {
     void 주말에_출석을_하면_예외가_발생한다(LocalDate weekend, String message) {
         LocalTime attendTime = CampusOperatingTime.OPEN.getTime();
 
-        assertThatThrownBy(() -> new Attendance(weekend, attendTime))
+        assertThatThrownBy(() -> Attendance.of(weekend, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(FormattedErrorMessage.INVALID_ATTEND_DATE_ERROR.getDateFormatMessage(weekend));
 
@@ -47,7 +47,7 @@ public class AttendanceTest {
     void 공휴일에_출석을_하면_예외가_발생한다(LocalDate holiday, String message) {
         LocalTime attendTime = CampusOperatingTime.CLOSE.getTime().minusMinutes(1);
 
-        assertThatThrownBy(() -> new Attendance(holiday, attendTime))
+        assertThatThrownBy(() -> Attendance.of(holiday, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(FormattedErrorMessage.INVALID_ATTEND_DATE_ERROR.getDateFormatMessage(holiday));
     }
@@ -69,7 +69,7 @@ public class AttendanceTest {
     void 캠퍼스_운영시간_이외의_시간에_출석을_하면_예외가_발생한다(LocalTime notInOperatingTime, String message) {
         LocalDate attendDate = LocalDate.of(2024, 12, 13);
 
-        assertThatThrownBy(() -> new Attendance(attendDate, notInOperatingTime))
+        assertThatThrownBy(() -> Attendance.of(attendDate, notInOperatingTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(FormattedErrorMessage.INVALID_ATTEND_TIME_ERROR.getTimeFormatMessage(notInOperatingTime));
     }
@@ -90,7 +90,7 @@ public class AttendanceTest {
     void 월요일_출석시간에_따라_출석상태를_반환한다(LocalTime attendTime, AttendanceStatus expectedStatus, String message) {
         LocalDate monday = LocalDate.of(2024, 12, 9);
 
-        assertThat(new Attendance(monday, attendTime).determineStatus()).isEqualTo(expectedStatus);
+        assertThat(Attendance.of(monday, attendTime).determineStatus()).isEqualTo(expectedStatus);
     }
 
     static Stream<Arguments> getMondayAttendTime() {
@@ -108,7 +108,7 @@ public class AttendanceTest {
     void 월요일이_아닌_요일의_출석시간에_따라_출석상태를_반환한다(LocalTime attendTime, AttendanceStatus expectedStatus, String message) {
         LocalDate thursday = LocalDate.of(2024, 12, 12);
 
-        assertThat(new Attendance(thursday, attendTime).determineStatus()).isEqualTo(expectedStatus);
+        assertThat(Attendance.of(thursday, attendTime).determineStatus()).isEqualTo(expectedStatus);
     }
 
     static Stream<Arguments> getGeneralAttendTime() {
@@ -123,9 +123,9 @@ public class AttendanceTest {
 
     @Test
     void 입력된_출석의_일자와_현재_출석의_일자가_동일하면_true_아니면_false를_반환한다() {
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
-        Attendance sameDateAttendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
-        Attendance differentDateAttendance = new Attendance(LocalDate.of(2024, 12, 13), LocalTime.of(13, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance sameDateAttendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance differentDateAttendance = Attendance.of(LocalDate.of(2024, 12, 13), LocalTime.of(13, 0));
 
         assertAll(
                 () -> assertThat(attendance.isSameDate(sameDateAttendance)).isTrue(),
@@ -135,7 +135,7 @@ public class AttendanceTest {
 
     @Test
     void 입력된_일자와_출석의_일자가_동일하면_true_아니면_false를_반환한다() {
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
         LocalDate sameDate = LocalDate.of(2024, 12, 12);
         LocalDate differentDate = LocalDate.of(2024, 12, 13);
 
@@ -147,7 +147,7 @@ public class AttendanceTest {
 
     @Test
     void 입력된_날짜와_출석의_연월이_동일하면_true_아니면_false를_반환한다() {
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0));
         LocalDate sameYearAndMonth = LocalDate.of(2024, 12, 12);
         LocalDate differentYearAndMonth = LocalDate.of(2024, 11, 12);
 

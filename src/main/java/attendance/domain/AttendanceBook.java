@@ -41,9 +41,9 @@ public class AttendanceBook {
         }
     }
 
-    public List<Attendance> getRecordOfCrew(LocalDate today, Crew crew) {
+    public Attendances getRecordOfCrew(LocalDate today, Crew crew) {
         Attendances attendances = attendanceBook.get(crew);
-        return attendances.getAttendancesUntilYesterday(today);
+        return new Attendances(attendances.getAttendancesUntilYesterday(today));
     }
 
     public Map<Crew, StatusStatistics> getSortedCrewsAndStatistics(LocalDate today) {
@@ -54,7 +54,7 @@ public class AttendanceBook {
                 .toList();
 
         sortedCrews.forEach(crew -> {
-            List<Attendance> attendances = getRecordOfCrew(today, crew);
+            Attendances attendances = getRecordOfCrew(today, crew);
             StatusStatistics statusStatistics = new StatusStatistics(attendances, today);
             penaltyCrews.put(crew, statusStatistics);
         });
@@ -82,7 +82,7 @@ public class AttendanceBook {
     }
 
     private StatusStatistics createStatusStatistics(LocalDate today, Crew crew) {
-        List<Attendance> attendances = getRecordOfCrew(today, crew);
+        Attendances attendances = getRecordOfCrew(today, crew);
         return new StatusStatistics(attendances, today);
     }
 }

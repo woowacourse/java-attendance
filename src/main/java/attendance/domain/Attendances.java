@@ -32,7 +32,7 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameDate(inputDate))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ATTENDANCE_NOT_EXIST_ERROR.getMessage()));
+                .orElse(Attendance.of(inputDate));
     }
 
     public void update(Attendance oldAttendance, Attendance newAttendance) {
@@ -43,8 +43,8 @@ public class Attendances {
     public List<Attendance> getAttendancesUntilYesterday(LocalDate today) {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameYearAndMonth(today))
-                .filter(attendance ->  !attendance.isSameDate(today))
-                .sorted(Comparator.comparing(Attendance::attendDate))
+                .filter(attendance -> !attendance.isSameDate(today))
+                .sorted(Comparator.comparing(Attendance::getAttendDate))
                 .toList();
     }
 }

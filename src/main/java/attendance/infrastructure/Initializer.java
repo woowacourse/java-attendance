@@ -31,7 +31,7 @@ public class Initializer {
             Crew crew = new Crew(new Nickname(nickname));
             LocalDate attendDate = LocalDate.parse(line.split(DELIMITER)[DATE_INDEX], DATE_TIME_FORMATTER);
             LocalTime attendTime = LocalTime.parse(line.split(DELIMITER)[DATE_INDEX], DATE_TIME_FORMATTER);
-            Attendance attendance = new Attendance(attendDate, attendTime);
+            Attendance attendance = Attendance.of(attendDate, attendTime);
             attendanceBook.add(crew, attendance);
         }
         return attendanceBook;

@@ -1,13 +1,14 @@
 package attendance.controller;
 
-import attendance.infrastructure.Initializer;
-import attendance.constant.Option;
 import attendance.constant.Holiday;
+import attendance.constant.Option;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.Attendances;
 import attendance.domain.Crew;
 import attendance.domain.Nickname;
 import attendance.domain.StatusStatistics;
+import attendance.infrastructure.Initializer;
 import attendance.util.DateUtil;
 import attendance.util.FormattedErrorMessage;
 import attendance.view.InputView;
@@ -15,7 +16,6 @@ import attendance.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Map;
 
 public class AttendanceController {
@@ -59,7 +59,7 @@ public class AttendanceController {
         Crew crew = createCrew(InputView.readNickname());
 
         LocalTime inputAttendTime = InputView.readAttendTimeForRecord();
-        Attendance attendance = new Attendance(systemDate, inputAttendTime);
+        Attendance attendance = Attendance.of(systemDate, inputAttendTime);
 
         attendanceBook.add(crew, attendance);
         OutputView.printRecordAttendanceResult(attendance);
@@ -85,7 +85,7 @@ public class AttendanceController {
         validateDate(attendDate);
         LocalTime inputTime = InputView.readAttendTimeForEdit();
 
-        Attendance newAttendance = new Attendance(attendDate, inputTime);
+        Attendance newAttendance = Attendance.of(attendDate, inputTime);
         Attendance oldAttendance = attendanceBook.findAttendanceByCrew(crew, attendDate);
         attendanceBook.update(crew, oldAttendance, newAttendance);
         OutputView.printEditAttendanceResult(oldAttendance, newAttendance);
@@ -94,7 +94,7 @@ public class AttendanceController {
     private void checkRecords() {
         Crew crew = createCrew(InputView.readNickname());
 
-        List<Attendance> attendances = attendanceBook.getRecordOfCrew(systemDate, crew);
+        Attendances attendances = attendanceBook.getRecordOfCrew(systemDate, crew);
         OutputView.printAttendanceRecordsUntilYesterday(crew, systemDate, attendances);
 
         StatusStatistics statusStatistics = new StatusStatistics(attendances, systemDate);

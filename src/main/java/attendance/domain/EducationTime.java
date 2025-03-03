@@ -23,12 +23,12 @@ public enum EducationTime {
         return time;
     }
 
-    public static boolean isBeforeAttendTime(DayOfWeek inputDayOfWeek, LocalTime inputTime) {
+    public static boolean isBetweenAttendTime(DayOfWeek inputDayOfWeek, LocalTime inputTime) {
         if (inputDayOfWeek == DayOfWeek.MONDAY) {
-            return !inputTime.isAfter(MONDAY_LATE.time);
+            return !inputTime.isBefore(CampusOperatingTime.OPEN.getTime()) && !inputTime.isAfter(MONDAY_LATE.time);
         }
 
-        return !inputTime.isAfter(GENERAL_LATE.time);
+        return !inputTime.isBefore(CampusOperatingTime.OPEN.getTime()) && !inputTime.isAfter(GENERAL_LATE.time);
     }
 
     public static boolean isBetweenLateTime(DayOfWeek inputDayOfWeek,LocalTime inputTime) {

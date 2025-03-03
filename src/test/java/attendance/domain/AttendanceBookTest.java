@@ -17,7 +17,7 @@ public class AttendanceBookTest {
     void 출석부에_크루별_출석을_추가할수_있다() {
         AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
         Crew crew = new Crew(new Nickname("듀이"));
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
 
         assertThatCode(() -> attendanceBook.add(crew, attendance))
                 .doesNotThrowAnyException();
@@ -27,7 +27,7 @@ public class AttendanceBookTest {
     void 출석부의_크루별_출석리스트중_원하는날짜의_출석을_가져올수_있다() {
         AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
         Crew crew = new Crew(new Nickname("듀이"));
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
         attendanceBook.add(crew, attendance);
 
         LocalDate inputDate = LocalDate.of(2024, 12, 12);
@@ -40,12 +40,12 @@ public class AttendanceBookTest {
     void 출석부에서_크루별_출석을_수정할수_있다() {
         AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
         Crew crew = new Crew(new Nickname("듀이"));
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
         attendanceBook.add(crew, attendance);
 
         LocalDate inputDate = LocalDate.of(2024, 12, 12);
         Attendance oldAttendance = attendanceBook.findAttendanceByCrew(crew, inputDate);
-        Attendance newAttendance = new Attendance(inputDate, LocalTime.of(10, 30));
+        Attendance newAttendance = Attendance.of(inputDate, LocalTime.of(10, 30));
 
         assertThatCode(() -> attendanceBook.update(crew, oldAttendance, newAttendance))
                 .doesNotThrowAnyException();
@@ -55,7 +55,7 @@ public class AttendanceBookTest {
     void 출석부에_존재하는_크루가_아니라면_예외를_반환한다() {
         AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
         Crew crew = new Crew(new Nickname("듀이"));
-        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
+        Attendance attendance = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
         attendanceBook.add(crew, attendance);
 
         Crew anotherCrew = new Crew(new Nickname("브라운"));
@@ -69,13 +69,14 @@ public class AttendanceBookTest {
     void 출석부에서_해당날짜_이전까지_크루의_출석기록을_가져올수_있다() {
         AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
         Crew crew = new Crew(new Nickname("듀이"));
-        Attendance attendance1 = new Attendance(LocalDate.of(2024, 12, 11), LocalTime.of(10, 0));
-        Attendance attendance2 = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
+        Attendance attendance1 = Attendance.of(LocalDate.of(2024, 12, 11), LocalTime.of(10, 0));
+        Attendance attendance2 = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
         attendanceBook.add(crew, attendance1);
         attendanceBook.add(crew, attendance2);
 
         LocalDate today = LocalDate.of(2024, 12, 13);
-        assertThat(attendanceBook.getRecordOfCrew(today, crew)).hasSize(2);
+        Attendances attendances = attendanceBook.getRecordOfCrew(today, crew);
+        assertThat(attendances.getAttendancesUntilYesterday(today)).hasSize(2);
     }
 
     @Test
@@ -83,8 +84,8 @@ public class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
         Crew duei = new Crew(new Nickname("듀이"));
         Crew brown = new Crew(new Nickname("브라운"));
-        Attendance attendanceOfDuei = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
-        Attendance attendanceOfBrown = new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
+        Attendance attendanceOfDuei = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
+        Attendance attendanceOfBrown = Attendance.of(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0));
         attendanceBook.add(duei, attendanceOfDuei);
         attendanceBook.add(brown, attendanceOfBrown);
 
