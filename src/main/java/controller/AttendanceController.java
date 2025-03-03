@@ -4,8 +4,11 @@ import domain.AttendanceState;
 import domain.Attendances;
 import domain.Calender;
 import domain.DateProvider;
+import domain.Dismissal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 import util.FileManager;
 import view.InputView;
 import view.OutputView;
@@ -55,17 +58,6 @@ public class AttendanceController {
         outputView.printAttendanceRecord(attendanceDateTime, attendanceState);
     }
 
-    private String inputName() {
-        String name = inputView.readName();
-        attendances.validateFindCrew(name);
-        return name;
-    }
-
-    private LocalDateTime inputAttendanceDateTime() {
-        LocalTime attendanceTime = inputView.readAttendanceTime();
-        return dateProvider.createLocalDateTime(attendanceTime);
-    }
-
     void attendanceUpdate() {
         String name = inputUpdateName();
         int updateDate = inputView.readUpdateDate();
@@ -83,12 +75,20 @@ public class AttendanceController {
 
         outputView.printUpdateAttendanceRecord(beforeAttendance, beforeAttendanceState, afterAttendance,
                 afterAttendanceState);
-
-
     }
 
     void attendanceHistory() {
+        String name = inputName();
+        Map<LocalDateTime, AttendanceState> history = attendances.getHistory(name, LocalDate.of(2024, 12, 13));
 
+        outputView.printAttendanceHistory(name, history);
+        Map<AttendanceState, Integer> attendanceStateCounts = attendances.calculate(history);
+
+        Integer lateCount = attendanceStateCounts.get(AttendanceState.LATE);
+        Integer absenceCount = attendanceStateCounts.get(AttendanceState.ABSENCE);
+        Dismissal dismissal = Dismissal.findDismissalBy(lateCount, absenceCount);
+
+        outputView.printAttendanceStateCounts(attendanceStateCounts, dismissal);
     }
 
     void dismissalHistory() {

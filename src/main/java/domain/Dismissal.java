@@ -36,4 +36,8 @@ public enum Dismissal {
 
         return WARNING;
     }
+
+    public String getDescription() {
+        return description;
+    }
 }
