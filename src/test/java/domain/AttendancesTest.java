@@ -66,6 +66,37 @@ class AttendancesTest {
             // then
             assertThat(attendances.hashCode()).isNotEqualTo(prevHash);
         }
+
+        @Test
+        @DisplayName("출석 기록과 동일한 날짜의 출석 기록을 가져온다")
+        void should_return_attendanceRecord_of_same_date() {
+            // given
+            Attendances attendances = new Attendances();
+            AttendanceRecord attendanceRecord = AttendanceRecord.of("2", "10:00");
+            attendances.attend(attendanceRecord);
+            AttendanceRecord targetAttendanceRecord = AttendanceRecord.of("2", "00:00");
+
+            // when
+            AttendanceRecord result = attendances.getAttendanceRecordOfSameDate(targetAttendanceRecord);
+
+            // then
+            assertThat(result).isEqualTo(attendanceRecord);
+        }
+
+        @Test
+        @DisplayName("출석 기록과 동일한 날짜의 출석 기록이 없다면 생성해 가져온다")
+        void should_create_and_return_attendanceRecord_of_same_date() {
+            // given
+            Attendances attendances = new Attendances();
+            AttendanceRecord targetAttendanceRecord = AttendanceRecord.of("2", "00:00");
+
+            // when
+            AttendanceRecord result = attendances.getAttendanceRecordOfSameDate(targetAttendanceRecord);
+
+            // then
+            AttendanceRecord expected = AttendanceRecord.dateOf(2);
+            assertThat(result).isEqualTo(expected);
+        }
     }
 
     @Nested

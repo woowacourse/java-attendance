@@ -36,6 +36,14 @@ public class Attendances {
                 .collect(Collectors.toList());
     }
 
+    public AttendanceRecord getAttendanceRecordOfSameDate(AttendanceRecord targetAttendanceRecord) {
+        return attendances.stream()
+                .filter(attendanceRecord -> attendanceRecord.isSameDate(targetAttendanceRecord))
+                .findFirst()
+                .orElse(AttendanceRecord.dateOf(targetAttendanceRecord.getDate()
+                        .getDayOfMonth()));
+    }
+
     public Attendances checkAttendance(List<Integer> attendAbleDates) {
         List<AttendanceRecord> result = attendAbleDates.stream()
                 .map(this::getAttendanceRecord)
