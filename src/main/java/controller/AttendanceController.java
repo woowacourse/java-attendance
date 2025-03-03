@@ -33,22 +33,25 @@ public class AttendanceController {
     public void run() {
         while (true) {
             String featureNumber = inputView.readFeatureNumber(dateProvider.now());
-            if (featureNumber.equals("1")) {
-                checkIn();
-            }
-            if (featureNumber.equals("2")) {
-                modify();
-            }
-            if (featureNumber.equals("3")) {
-                viewCrewHistory();
-            }
-            if (featureNumber.equals("4")) {
-                viewDangerCrews();
-            }
-            if (featureNumber.equals("Q")) {
+            if (readFeatureNumber(featureNumber))
                 break;
-            }
         }
+    }
+
+    private boolean readFeatureNumber(String featureNumber) {
+        if (featureNumber.equals("1")) {
+            checkIn();
+        }
+        if (featureNumber.equals("2")) {
+            modify();
+        }
+        if (featureNumber.equals("3")) {
+            viewCrewHistory();
+        }
+        if (featureNumber.equals("4")) {
+            viewDangerCrews();
+        }
+        return featureNumber.equals("Q");
     }
 
     private void checkIn() {
