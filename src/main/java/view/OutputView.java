@@ -36,7 +36,13 @@ public class OutputView {
         attendanceRecords.getRecordsUntilBefore(currentDate)
                 .forEach(this::printAttendanceRecord);
         printAttendanceStatus(attendanceRecords);
-        printWarningStatus(attendanceRecords);
+    }
+
+    public void printWarningStatus(WarningStatus warningStatus) {
+        if (warningStatus == WarningStatus.NONE) {
+            return;
+        }
+        System.out.printf("%s 대상자입니다.", warningStatus.getName());
     }
 
     public void printWarnedCrews(CrewRecords crewRecords) {
@@ -56,14 +62,6 @@ public class OutputView {
             int count = attendanceRecords.getAttendanceCount(status);
             System.out.printf("%s: %d회%n", status.getName(), count);
         }
-    }
-
-    private void printWarningStatus(AttendanceRecords attendanceRecords) {
-        WarningStatus warningStatus = attendanceRecords.getWarningStatus();
-        if (warningStatus == WarningStatus.NONE) {
-            return;
-        }
-        System.out.printf("%s 대상자입니다.", warningStatus.getName());
     }
 
     private String getDisplayTime(AttendanceStatus attendanceStatus, LocalTime time) {
