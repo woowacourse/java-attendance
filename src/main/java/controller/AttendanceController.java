@@ -68,6 +68,7 @@ public class AttendanceController {
         Crew crew = new Crew(nickname);
         AttendanceDateTimes attendanceDateTimes = attendanceHistories.getAttendanceDateTimes(crew);
         outputView.displayAttendanceDateTimes(crew, attendanceDateTimes, today);
+        outputView.displayAttendanceCount(crew, attendanceHistories, today);
     }
 
     private void checkDisciplinedCrews() {

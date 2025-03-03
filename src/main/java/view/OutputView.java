@@ -2,6 +2,7 @@ package view;
 
 import domain.AttendanceDateTime;
 import domain.AttendanceDateTimes;
+import domain.AttendanceHistories;
 import domain.AttendanceStatus;
 import domain.Crew;
 import java.time.LocalDate;
@@ -61,5 +62,14 @@ public class OutputView {
 
     private String toEmptyRecordFormat(LocalDate date) {
         return String.format("%s --:-- (결석)", DATE_FORMAT.format(date));
+    }
+
+    public void displayAttendanceCount(Crew crew, AttendanceHistories attendanceHistories, LocalDate today
+    ) {
+        System.out.printf("%n출석: %d회%n"
+                        + "지각: %d회%n"
+                        + "결석 : %d회%n", attendanceHistories.getPresentCount(crew, today),
+                attendanceHistories.getTardyCount(crew, today),
+                attendanceHistories.getAbsentCount(crew, today));
     }
 }
