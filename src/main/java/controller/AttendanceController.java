@@ -4,6 +4,7 @@ import common.SystemDate;
 import domain.AttendanceBook;
 import domain.AttendanceCommand;
 import domain.AttendanceModification;
+import domain.AttendancePaper;
 import domain.AttendanceRecord;
 import domain.AttendanceStatus;
 import domain.AttendanceTime;
@@ -37,12 +38,12 @@ public class AttendanceController {
         if (Objects.equals(attendanceCommand, AttendanceCommand.CHECK)) {
             outputView.askCrewNickName();
             final String name = inputView.readCrewName();
-            attendanceBook.validateExistCrew(name);
-            attendanceBook.validateExistAttendance(SystemDate.NOW.getDate(), name);
+            final AttendancePaper attendancePaper = attendanceBook.getAttendancePaperByCrewName(name);
+            attendancePaper.validateExistingAttendanceRecord(SystemDate.NOW.getDate());
             outputView.askAttendanceTime();
             final LocalTime localTime = inputView.readTime();
             final LocalDateTime localDateTime = LocalDateTime.of(SystemDate.NOW.getDate(), localTime);
-            final AttendanceRecord attendanceRecord = attendanceBook.addAttendance(name, localDateTime);
+            final AttendanceRecord attendanceRecord = attendancePaper.addAttendance(localDateTime);
             outputView.printAttendanceDetails(convertToAttendanceDetails(attendanceRecord));
         }
         if (Objects.equals(attendanceCommand, AttendanceCommand.MODIFY)) {

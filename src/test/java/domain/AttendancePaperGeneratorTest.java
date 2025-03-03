@@ -9,7 +9,7 @@ import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class CrewsGeneratorTest {
+public class AttendancePaperGeneratorTest {
 
     //쿠키,2024-12-13 10:08
     @Test
@@ -19,7 +19,7 @@ public class CrewsGeneratorTest {
         final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 13, 10, 8);
         final AttendanceRecord attendanceRecord = AttendanceRecord.of(localDateTime);
         //when
-        final Map<String, Crew> crews = CrewsGenerator.generate();
+        final Map<String, AttendancePaper> crews = AttendancePaperGenerator.generate();
         final Set<String> crewsName = crews.keySet();
 
         //then

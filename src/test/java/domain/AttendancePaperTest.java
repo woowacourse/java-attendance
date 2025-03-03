@@ -10,7 +10,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class CrewTest {
+public class AttendancePaperTest {
 
     @Test
     @DisplayName("크루 생성 테스트")
@@ -21,7 +21,7 @@ public class CrewTest {
         final Map<LocalDate, AttendanceRecord> attendanceMap = new LinkedHashMap<>();
 
         //should
-        assertThatCode(() -> new Crew(id, name, attendanceMap)).doesNotThrowAnyException();
+        assertThatCode(() -> new AttendancePaper(id, name, attendanceMap)).doesNotThrowAnyException();
 
     }
 
@@ -40,13 +40,13 @@ public class CrewTest {
         final LocalDateTime localDateTime6 = LocalDateTime.of(2024, 12, 16, 13, 31);
 
         //when
-        final Crew crew = new Crew(id, name, attendanceMap);
-        crew.putAttendance(localDateTime1);
-        crew.putAttendance(localDateTime2);
-        crew.putAttendance(localDateTime3);
-        crew.putAttendance(localDateTime4);
-        crew.putAttendance(localDateTime5);
-        crew.putAttendance(localDateTime6);
+        final AttendancePaper attendancePaper = new AttendancePaper(id, name, attendanceMap);
+        attendancePaper.addAttendance(localDateTime1);
+        attendancePaper.addAttendance(localDateTime2);
+        attendancePaper.addAttendance(localDateTime3);
+        attendancePaper.addAttendance(localDateTime4);
+        attendancePaper.addAttendance(localDateTime5);
+        attendancePaper.addAttendance(localDateTime6);
 
         //then
         assertThat(attendanceMap).containsEntry(localDateTime1.toLocalDate(), AttendanceRecord.of(localDateTime1))
