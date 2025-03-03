@@ -1,7 +1,11 @@
 package controller;
 
+import domain.AttendanceState;
 import domain.Attendances;
+import domain.Calender;
 import domain.DateProvider;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import util.FileManager;
 import view.InputView;
 import view.OutputView;
@@ -40,7 +44,26 @@ public class AttendanceController {
     }
 
     void attendanceCheck() {
+        Calender.validateHolyDay(dateProvider.getLocalDate());
 
+        String name = inputName();
+        LocalDateTime attendanceDateTime = inputAttendanceDateTime();
+
+        attendances.checkAttendance(name, attendanceDateTime);
+        AttendanceState attendanceState = AttendanceState.findStateBy(attendanceDateTime);
+
+        outputView.printAttendanceRecord(attendanceDateTime, attendanceState);
+    }
+
+    private String inputName() {
+        String name = inputView.readName();
+        attendances.validateFindCrew(name);
+        return name;
+    }
+
+    private LocalDateTime inputAttendanceDateTime() {
+        LocalTime attendanceTime = inputView.readAttendanceTime();
+        return dateProvider.createLocalDateTime(attendanceTime);
     }
 
     void attendanceUpdate() {

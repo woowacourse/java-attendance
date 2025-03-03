@@ -62,4 +62,8 @@ public enum AttendanceState {
     private static boolean isOtherDayAbsence(final LocalDateTime time) {
         return time.toLocalTime().isAfter(OTHER_DAY_LATE_TIME);
     }
+
+    public String getState() {
+        return state;
+    }
 }

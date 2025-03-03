@@ -2,6 +2,8 @@ package domain;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class DateProvider {
@@ -38,6 +40,14 @@ public class DateProvider {
 
     public Calender getDayOfWeek() {
         return Calender.findBy(localDate);
+    }
+
+    public LocalDateTime createLocalDateTime(final LocalTime localTime) {
+        return LocalDateTime.of(getYear(), getMonth(), getDayOfMonth(), localTime.getHour(), localTime.getMinute());
+    }
+
+    public LocalDate getLocalDate() {
+        return localDate;
     }
 
     @Override
