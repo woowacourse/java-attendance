@@ -5,13 +5,11 @@ import static attendance.domain.AttendanceStatus.ATTENDANCE;
 import static attendance.domain.AttendanceStatus.LATE;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceResult;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.Holiday;
 import attendance.domain.WarningLevel;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -84,25 +82,16 @@ public class OutputView {
         System.out.printf("%s: %d회\n", toKoreaAttendanceStatus(ABSENT), attendanceStatus.getOrDefault(ABSENT, 0));
     }
 
-    private boolean isNotPrintDate(LocalDate currentDate) {
-        return currentDate.getDayOfWeek() == DayOfWeek.SATURDAY || currentDate.getDayOfWeek() == DayOfWeek.SUNDAY
-                || Holiday.isHoliday(MonthDay.from(currentDate));
-    }
-
     private void printAllAttendances(LocalDate endDate, Map<LocalDate, Attendance> attendanceMap) {
-        LocalDate currentDate = LocalDate.of(2024, 12, 2);
-        while (currentDate.isBefore(endDate) || currentDate.isEqual(endDate)) {
-            if (isNotPrintDate(currentDate)) {
-                currentDate = currentDate.plusDays(1);
+        AttendanceDate currentDate = AttendanceDate.ATTENDANCE_START_DATE;
+        while (currentDate.isBeforeAndEqual(endDate)) {
+            if (attendanceMap.containsKey(currentDate.getAttendanceDate())) {
+                System.out.println(toAttendanceFullFormat(attendanceMap.get(currentDate.getAttendanceDate())));
+                currentDate = currentDate.nextDate();
                 continue;
             }
-            if (attendanceMap.containsKey(currentDate)) {
-                System.out.println(toAttendanceFullFormat(attendanceMap.get(currentDate)));
-                currentDate = currentDate.plusDays(1);
-                continue;
-            }
-            System.out.println(toAbsentFullFormat(currentDate));
-            currentDate = currentDate.plusDays(1);
+            System.out.println(toAbsentFullFormat(currentDate.getAttendanceDate()));
+            currentDate = currentDate.nextDate();
         }
     }
 
@@ -110,7 +99,7 @@ public class OutputView {
         if (warningLevel == WarningLevel.NONE) {
             return;
         }
-        System.out.printf("%s 대상자입니다.", toKoreaWarningLevel(warningLevel));
+        System.out.printf("%s 대상자입니다.\n", toKoreaWarningLevel(warningLevel));
     }
 
     private String toAttendanceFullFormat(Attendance attendance) {

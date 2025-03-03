@@ -11,14 +11,14 @@ public class Attendance {
     private final AttendanceDate attendanceDate;
     private LocalTime attendanceTime;
 
-    public Attendance(String nickname, LocalDate attendanceDate, LocalTime attendanceTime) {
-        this(nickname, LocalDateTime.of(attendanceDate, attendanceTime));
+    public Attendance(String nickname, LocalDateTime attendanceDateTime) {
+        this(nickname, attendanceDateTime.toLocalDate(), attendanceDateTime.toLocalTime());
     }
 
-    public Attendance(String nickname, LocalDateTime attendanceDateTime) {
+    public Attendance(String nickname, LocalDate attendanceDate, LocalTime attendanceTime) {
         this.nickname = nickname;
-        this.attendanceDate = new AttendanceDate(attendanceDateTime.toLocalDate());
-        this.attendanceTime = attendanceDateTime.toLocalTime();
+        this.attendanceDate = new AttendanceDate(attendanceDate);
+        this.attendanceTime = attendanceTime;
     }
 
     public boolean isAlreadyAttend(Attendance newAttendance) {
