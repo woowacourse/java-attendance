@@ -5,6 +5,7 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Attendances;
+import attendance.domain.CrewAttendanceStatus;
 import attendance.domain.Time;
 import attendance.utils.AttendanceReader;
 import attendance.utils.FileReader;
@@ -16,13 +17,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class AttendanceController {
@@ -179,18 +178,16 @@ public class AttendanceController {
     private void printCrewsByAcademicStatus(final AcademicStatus status, final LocalDate targetDate) {
         List<String> crewNames = attendanceBook.getExpulsionCrews(status, targetDate);
 
-        List<Object[]> sortedCrewsInfo = getSortedCrewsInfo(crewNames, status);
-
-        for (Object[] crew : sortedCrewsInfo) {
-            String crewName = (String) crew[0];
-            long absent = (long) crew[1];
-            long late = (long) crew[2];
-
-            outputView.printCrewAtRiskOfExpulsion(crewName, absent, late, status);
-        }
+        getSortedCrewsInfo(crewNames, status)
+                .forEach(crewStatus -> outputView.printCrewAtRiskOfExpulsion(
+                        crewStatus.getCrewName(),
+                        crewStatus.getAbsent(),
+                        crewStatus.getLate(),
+                        status
+                ));
     }
 
-    private List<Object[]> getSortedCrewsInfo(final List<String> crewNames, final AcademicStatus status) {
+    private List<CrewAttendanceStatus> getSortedCrewsInfo(final List<String> crewNames, final AcademicStatus status) {
         return crewNames.stream()
                 .map(crewName -> {
                     Map<LocalDate, Attendance> monthlyAttendances =
@@ -198,16 +195,11 @@ public class AttendanceController {
                     long absent = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.ABSENT);
                     long late = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.LATE);
 
-                    return new Object[]{crewName, absent, late, absent + late};
+                    return new CrewAttendanceStatus(crewName, absent, late);
                 })
-                .sorted(createCrewInfoComparator())
-                .collect(Collectors.toList());
-    }
+                .sorted(CrewAttendanceStatus.createSortingComparator())
+                .toList();
 
-    private Comparator<Object[]> createCrewInfoComparator() {
-        return Comparator
-                .comparingLong((Object[] crew) -> (long) crew[3]).reversed()
-                .thenComparing(crew -> (String) crew[0]);
     }
 
     private Time createTime(final LocalDate date, final String attendanceTime) {
