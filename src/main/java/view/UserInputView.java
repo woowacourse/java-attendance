@@ -32,16 +32,6 @@ public class UserInputView {
     public static MenuOption askMenuOption() {
         OutputView.printMenu();
         String option = (new Scanner(System.in).nextLine());
-        if (option.equals("1"))
-            return CHECK_ATTENDANCE;
-        if (option.equals("2"))
-            return MODIFY_ATTENDANCE;
-        if (option.equals("3"))
-            return CHECK_CREW_ATTENDANCE_HISTORY;
-        if (option.equals("4"))
-            return CHECK_PENALTY_RECEIVED_CREW;
-        if (Pattern.matches(QUIT.getOption(), option))
-            return QUIT;
-        throw new IllegalArgumentException(INVALID_INPUT.getMessage());
+        return MenuOption.of(option);
     }
 }

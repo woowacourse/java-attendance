@@ -1,5 +1,7 @@
 package constant;
 
+import java.util.Arrays;
+
 public enum MenuOption {
     CHECK_ATTENDANCE("1"),
     MODIFY_ATTENDANCE("2"),
@@ -13,7 +15,10 @@ public enum MenuOption {
         this.option = option;
     }
 
-    public String getOption() {
-        return option;
+
+    public static MenuOption of(String input) {
+        return Arrays.stream(values()).filter(menu -> menu.option.equals(input))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.INVALID_INPUT.getMessage()));
     }
 }
