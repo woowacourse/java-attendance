@@ -21,7 +21,6 @@ class AttendanceInfoTest {
         CampusDate campusDate = CampusDate.fromDate(LocalDate.of(2025, 2, 27));
 
         // when
-        // TODO : Q1
         AttendanceInfo attendanceInfo = AttendanceInfo.fromDateAndTime(campusDate, campusTime);
 
         // then
