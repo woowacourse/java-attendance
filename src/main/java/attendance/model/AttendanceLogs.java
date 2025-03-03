@@ -1,7 +1,7 @@
 package attendance.model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -37,47 +37,48 @@ public class AttendanceLogs {
     }
 
     public List<AttendanceLog> findAllByNicknameInMonth(Nickname nickname, LocalDate baseDate) {
-        List<AttendanceLog> realLogs = getExistingLogs(nickname, baseDate);
-        List<AttendanceLog> completeLogs = new ArrayList<>(realLogs);
-        Set<LocalDate> existingDates = extractExistingDates(realLogs);
-        addAbsentDaysForMonth(nickname, baseDate, existingDates, completeLogs);
-        return sortByDate(completeLogs);
+        List<AttendanceLog> attendanceLogs = getAttendanceLogsForMonth(nickname, baseDate);
+        Set<LocalDate> recordedDates = extractAttendanceDates(attendanceLogs);
+        fillAbsentDays(nickname, baseDate, recordedDates, attendanceLogs);
+        return sortByDate(attendanceLogs);
     }
 
-    private List<AttendanceLog> getExistingLogs(Nickname nickname, LocalDate baseDate) {
+    private List<AttendanceLog> getAttendanceLogsForMonth(Nickname nickname, LocalDate baseDate) {
         return logs.stream()
                 .filter(isSameCrewAndMonth(nickname, baseDate))
                 .filter(untilPreviousDay(baseDate))
-                .toList();
+                .collect(Collectors.toList());
     }
 
-    private Set<LocalDate> extractExistingDates(List<AttendanceLog> logs) {
+    private Set<LocalDate> extractAttendanceDates(List<AttendanceLog> logs) {
         return logs.stream()
                 .map(AttendanceLog::getAttendanceDate)
                 .collect(Collectors.toSet());
     }
 
-    private void addAbsentDaysForMonth(Nickname nickname, LocalDate baseDate,
-                                       Set<LocalDate> existingDates,
-                                       List<AttendanceLog> logs) {
+    private void fillAbsentDays(Nickname nickname, LocalDate baseDate,
+                                Set<LocalDate> existingDates,
+                                List<AttendanceLog> logs) {
         LocalDate startOfMonth = baseDate.withDayOfMonth(1);
         for (LocalDate date = startOfMonth; date.isBefore(baseDate); date = date.plusDays(1)) {
-            addIfLogNotExistDay(nickname, existingDates, logs, date);
+            addIfUnrecordedAttendance(nickname, existingDates, logs, date);
         }
     }
 
-    private void addIfLogNotExistDay(Nickname nickname, Set<LocalDate> existingDates,
-                                     List<AttendanceLog> logs, LocalDate date) {
-        if (!existingDates.contains(date)) {
-            addIfOpenDay(nickname, logs, date);
+    private void addIfUnrecordedAttendance(Nickname nickname, Set<LocalDate> recordedDates,
+                                           List<AttendanceLog> logs, LocalDate date) {
+        if (isValidAttendanceDay(date) && !recordedDates.contains(date)) {
+            logs.add(new AttendanceLog(nickname, date));
         }
     }
 
-    private void addIfOpenDay(Nickname nickname, List<AttendanceLog> completeLogs, LocalDate date) {
-        try {
-            completeLogs.add(new AttendanceLog(nickname, date));
-        } catch (IllegalArgumentException ignore) {
-        }
+    private boolean isValidAttendanceDay(LocalDate date) {
+        return !isWeekend(date) && !PublicHoliday.isPublicHoliday(date);
+    }
+
+    private boolean isWeekend(LocalDate baseDate) {
+        DayOfWeek dayOfWeek = baseDate.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
     private List<AttendanceLog> sortByDate(List<AttendanceLog> logs) {
