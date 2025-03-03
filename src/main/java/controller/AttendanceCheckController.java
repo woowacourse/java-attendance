@@ -7,7 +7,6 @@ import view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 
 public class AttendanceCheckController implements Controller {
     private final InputView inputView;
@@ -36,8 +35,6 @@ public class AttendanceCheckController implements Controller {
             registerAttendance(name, attendanceDate.getValue(), time);
         } catch (CustomException e) {
             outputView.printExceptionMessage(e.getMessage());
-        } catch (DateTimeParseException e) {
-            outputView.printExceptionMessage("");
         }
     }
 
