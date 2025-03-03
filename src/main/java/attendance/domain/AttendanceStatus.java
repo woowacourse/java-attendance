@@ -37,7 +37,7 @@ public class AttendanceStatus implements Comparable<AttendanceStatus> {
         return status.get(AttendanceState.TARDY);
     }
 
-    public int geAttendanceStateCount() {
+    public int getAttendanceStateCount() {
         return status.get(AttendanceState.ATTENDANCE);
     }
 

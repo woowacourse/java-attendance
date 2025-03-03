@@ -61,7 +61,7 @@ public class OutputView {
                         
                         %s 대상자입니다.
                         """,
-                attendanceRecord.getStatus().geAttendanceStateCount(),
+                attendanceRecord.getStatus().getAttendanceStateCount(),
                 attendanceRecord.getStatus().getTardyStateCount(),
                 attendanceRecord.getStatus().getAbsenceStateCount(),
                 attendanceRecord.getStatus().getRisk()
