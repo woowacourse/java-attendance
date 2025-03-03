@@ -7,6 +7,8 @@ import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceTime;
 import attendance.domain.Crew;
+import attendance.domain.Day;
+import attendance.domain.Month;
 import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -27,15 +29,19 @@ class AttendanceBookLoaderTest {
             Crew crewMurphy = new Crew("머피");
             AttendanceRecord murphyAttendanceRecord = new AttendanceRecord(
                 Map.of(
-                    new AttendanceDate(2024, 12, 2), new AttendanceTime(13, 0),
-                    new AttendanceDate(2024, 12, 3), new AttendanceTime(10, 0)
+                    new AttendanceDate(2024, new Month(12), new Day(2)),
+                    new AttendanceTime(13, 0),
+                    new AttendanceDate(2024, new Month(12), new Day(3)),
+                    new AttendanceTime(10, 0)
                 ));
 
             Crew crewJamie = new Crew("제이미");
             AttendanceRecord jamieAttendanceRecord = new AttendanceRecord(
                 Map.of(
-                    new AttendanceDate(2024, 12, 2), new AttendanceTime(13, 0),
-                    new AttendanceDate(2024, 12, 3), new AttendanceTime(10, 0)
+                    new AttendanceDate(2024, new Month(12), new Day(2)),
+                    new AttendanceTime(13, 0),
+                    new AttendanceDate(2024, new Month(12), new Day(3)),
+                    new AttendanceTime(10, 0)
                 ));
 
             AttendanceBook murphyAttendanceBook = new AttendanceBook(crewMurphy,

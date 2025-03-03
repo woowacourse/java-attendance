@@ -20,13 +20,16 @@ class AttendanceBookTest {
             Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
             AttendanceRecord attendanceRecord = new AttendanceRecord(
                 attendanceDateTimes);
-            AttendanceBook attendanceBook = new AttendanceBook(new Crew("머피"),
-                attendanceRecord);
+            AttendanceBook attendanceBook = new AttendanceBook(new Crew(
+                "머피"), attendanceRecord);
 
-            AttendanceDate attendanceDate = new AttendanceDate(2024, 12, 3);
-            AttendanceTime attendanceTime = new AttendanceTime(10, 0);
+            AttendanceDate attendanceDate = new AttendanceDate(
+                2024, new Month(12), new Day(3));
+            AttendanceTime attendanceTime = new AttendanceTime(
+                10, 0);
             final AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
                 attendanceDate, attendanceTime);
+
             // when
             attendanceBook.save(attendanceDateTime);
 
@@ -39,13 +42,15 @@ class AttendanceBookTest {
         void 출석일시를_수정한다() {
             // given
             Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
-            AttendanceDate attendanceDate = new AttendanceDate(2024, 12, 3);
-            AttendanceTime attendanceTime = new AttendanceTime(10, 0);
+            AttendanceDate attendanceDate = new AttendanceDate(
+                2024, new Month(12), new Day(3));
+            AttendanceTime attendanceTime = new AttendanceTime(
+                10, 0);
             attendanceDateTimes.put(attendanceDate, attendanceTime);
             AttendanceRecord attendanceRecord = new AttendanceRecord(
                 attendanceDateTimes);
-            AttendanceBook attendanceBook = new AttendanceBook(new Crew("머피"),
-                attendanceRecord);
+            AttendanceBook attendanceBook = new AttendanceBook(
+                new Crew("머피"), attendanceRecord);
 
             AttendanceTime modifiedAttendanceTime = new AttendanceTime(11, 0);
             AttendanceDateTime modifiedAttendanceDateTime = new AttendanceDateTime(
@@ -63,7 +68,8 @@ class AttendanceBookTest {
         void 출석일시를_찾는다() {
             // given
             Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
-            AttendanceDate attendanceDate = new AttendanceDate(2024, 12, 3);
+            AttendanceDate attendanceDate = new AttendanceDate(
+                2024, new Month(12), new Day(3));
             AttendanceTime attendanceTime = new AttendanceTime(10, 0);
             attendanceDateTimes.put(attendanceDate, attendanceTime);
 
@@ -87,18 +93,14 @@ class AttendanceBookTest {
             Map<AttendanceDate, AttendanceTime> attendanceDateTimes = new HashMap<>();
 
             AttendanceDate secondAttendanceDate = new AttendanceDate(
-                2024, 12, 3);
-            AttendanceTime secondAttendanceTime = new AttendanceTime(
-                10, 0);
-            attendanceDateTimes.put(secondAttendanceDate,
-                secondAttendanceTime);
+                2024, new Month(12), new Day(3));
+            AttendanceTime secondAttendanceTime = new AttendanceTime(10, 0);
+            attendanceDateTimes.put(secondAttendanceDate, secondAttendanceTime);
 
             AttendanceDate firstAttendanceDate = new AttendanceDate(
-                2024, 12, 2);
-            AttendanceTime firstAttendanceTime = new AttendanceTime(
-                13, 0);
-            attendanceDateTimes.put(firstAttendanceDate,
-                firstAttendanceTime);
+                2024, new Month(12), new Day(2));
+            AttendanceTime firstAttendanceTime = new AttendanceTime(13, 0);
+            attendanceDateTimes.put(firstAttendanceDate, firstAttendanceTime);
 
             AttendanceRecord attendanceRecord = new AttendanceRecord(
                 attendanceDateTimes);
@@ -107,14 +109,15 @@ class AttendanceBookTest {
 
             // when
             List<AttendanceDateTime> foundAttendanceDateTimes = attendanceBook.retrieveOrderByDateTimeUntilDate(
-                new AttendanceDate(2024, 12, 4));
+                new AttendanceDate(2024, new Month(12), new Day(4))
+            );
 
             // then
             assertThat(foundAttendanceDateTimes).containsExactly(
-                new AttendanceDateTime(
-                    firstAttendanceDate, firstAttendanceTime),
-                new AttendanceDateTime(
-                    secondAttendanceDate, secondAttendanceTime)
+                new AttendanceDateTime(firstAttendanceDate,
+                    firstAttendanceTime),
+                new AttendanceDateTime(secondAttendanceDate,
+                    secondAttendanceTime)
             );
         }
     }

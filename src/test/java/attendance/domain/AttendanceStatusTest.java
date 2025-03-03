@@ -26,7 +26,7 @@ class AttendanceStatusTest {
         ) {
             // given
             AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
-                new AttendanceDate(2024, 12, 2),
+                new AttendanceDate(2024, new Month(12), new Day(2)),
                 new AttendanceTime(hour, minute));
 
             // when
@@ -40,7 +40,7 @@ class AttendanceStatusTest {
         void 출석시간을_기준으로_5분초과면_지각이다() {
             // given
             AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
-                new AttendanceDate(2024, 12, 2),
+                new AttendanceDate(2024, new Month(12), new Day(2)),
                 new AttendanceTime(13, 6));
 
             // when
@@ -64,7 +64,7 @@ class AttendanceStatusTest {
         ) {
             // given
             AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
-                new AttendanceDate(2024, 12, 2),
+                new AttendanceDate(2024, new Month(12), new Day(2)),
                 new AttendanceTime(hour, minute));
 
             // when
@@ -78,19 +78,19 @@ class AttendanceStatusTest {
         void 출석시간들로_출석상태의_개수를_구한다() {
             // given
             AttendanceDateTime firstAttendanceDateTime = new AttendanceDateTime(
-                new AttendanceDate(2024, 12, 2),
+                new AttendanceDate(2024, new Month(12), new Day(2)),
                 new AttendanceTime(8, 0));
             AttendanceDateTime secondAttendanceDateTime = new AttendanceDateTime(
-                new AttendanceDate(2024, 12, 2),
+                new AttendanceDate(2024, new Month(12), new Day(2)),
                 new AttendanceTime(13, 5));
             AttendanceDateTime lateDateTime = new AttendanceDateTime(
-                new AttendanceDate(2024, 12, 2),
+                new AttendanceDate(2024, new Month(12), new Day(2)),
                 new AttendanceTime(13, 6));
             AttendanceDateTime firstAbsenceDateTime = new AttendanceDateTime(
-                new AttendanceDate(2024, 12, 2),
+                new AttendanceDate(2024, new Month(12), new Day(2)),
                 new AttendanceTime(null, null));
             AttendanceDateTime secondAbsenceDateTime = new AttendanceDateTime(
-                new AttendanceDate(2024, 12, 2),
+                new AttendanceDate(2024, new Month(12), new Day(2)),
                 new AttendanceTime(13, 31));
 
             List<AttendanceDateTime> attendanceDateTimes = List.of(
@@ -102,7 +102,8 @@ class AttendanceStatusTest {
             );
 
             // when
-            Map<AttendanceStatus, Integer> attendanceStatusCounts = AttendanceStatus.from(attendanceDateTimes);
+            Map<AttendanceStatus, Integer> attendanceStatusCounts = AttendanceStatus.from(
+                attendanceDateTimes);
 
             // then
             assertThat(attendanceStatusCounts)

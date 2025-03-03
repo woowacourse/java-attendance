@@ -8,6 +8,8 @@ import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceTime;
 import attendance.domain.Crew;
+import attendance.domain.Day;
+import attendance.domain.Month;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +26,8 @@ class AttendanceBookRepositoryTest {
             // given
             Crew crew = new Crew("크루원");
             AttendanceRecord attendanceRecord = new AttendanceRecord(
-                Map.of(new AttendanceDate(2024, 12, 2),
+                Map.of(new AttendanceDate(
+                        2024, new Month(12), new Day(2)),
                     new AttendanceTime(13, 0)));
             AttendanceBook attendanceBook = new AttendanceBook(crew,
                 attendanceRecord);
@@ -53,22 +56,29 @@ class AttendanceBookRepositoryTest {
 
             AttendanceBook attendanceBookWithMostAbsences = new AttendanceBook(
                 crewWithMostAbsences, new AttendanceRecord(Map.of(
-                new AttendanceDate(2024, 12, 2), new AttendanceTime(13, 31),
-                new AttendanceDate(2024, 12, 3), new AttendanceTime(10, 31))));
+                new AttendanceDate(2024, new Month(12), new Day(2)),
+                new AttendanceTime(13, 31),
+                new AttendanceDate(2024, new Month(12), new Day(3)),
+                new AttendanceTime(10, 31))));
 
             AttendanceBook attendanceBookWithFewerAbsences = new AttendanceBook(
                 crewWithFewerAbsences, new AttendanceRecord(Map.of(
-                new AttendanceDate(2024, 12, 2), new AttendanceTime(13, 0))));
+                new AttendanceDate(2024, new Month(12), new Day(2)),
+                new AttendanceTime(13, 0))));
 
             AttendanceBook attendanceBookWithSameAbsences = new AttendanceBook(
                 crewWithSameAbsences, new AttendanceRecord(Map.of(
-                new AttendanceDate(2024, 12, 2), new AttendanceTime(13, 31),
-                new AttendanceDate(2024, 12, 3), new AttendanceTime(10, 31))));
+                new AttendanceDate(2024, new Month(12), new Day(2)),
+                new AttendanceTime(13, 31),
+                new AttendanceDate(2024, new Month(12), new Day(3)),
+                new AttendanceTime(10, 31))));
 
             AttendanceBook attendanceBookWithoutPenalty = new AttendanceBook(
                 crewWithoutPenalty, new AttendanceRecord(Map.of(
-                new AttendanceDate(2024, 12, 2), new AttendanceTime(13, 0),
-                new AttendanceDate(2024, 12, 3), new AttendanceTime(10, 0))));
+                new AttendanceDate(2024, new Month(12), new Day(2)),
+                new AttendanceTime(13, 0),
+                new AttendanceDate(2024, new Month(12), new Day(3)),
+                new AttendanceTime(10, 0))));
 
             AttendanceBookRepository attendanceBookRepository = new AttendanceBookRepository(
                 Map.of(
@@ -85,7 +95,7 @@ class AttendanceBookRepositoryTest {
             // when
             List<AttendanceBook> attendanceBooks = attendanceBookRepository
                 .findAllPenaltyCrewUntilDateOrderByAbsenceCountAndCrewNickname(
-                    new AttendanceDate(2024, 12, 5));
+                    new AttendanceDate(2024, new Month(12), new Day(5)));
 
             // then
             assertThat(attendanceBooks).containsExactly(

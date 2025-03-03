@@ -7,6 +7,8 @@ import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceTime;
+import attendance.domain.Day;
+import attendance.domain.Month;
 import attendance.repository.AttendanceBookRepository;
 import attendance.view.input.InputView;
 import attendance.view.input.MenuOption;
@@ -115,8 +117,8 @@ public class AttendanceController {
 
         final AttendanceDate attendanceDate = new AttendanceDate(
             currentDate.getYear(),
-            currentDate.getMonthValue(),
-            inputView.readModifyAttendanceDate());
+            new Month(currentDate.getMonthValue()),
+            new Day(inputView.readModifyAttendanceDate()));
 
         final AttendanceDateTime originalAttendanceDateTime = attendanceBook.retrieveByDate(
             attendanceDate);

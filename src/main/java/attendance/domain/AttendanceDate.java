@@ -6,19 +6,19 @@ import java.util.Objects;
 
 public class AttendanceDate implements Comparable<AttendanceDate> {
 
-    public static final AttendanceDate FIRST_DATE = new AttendanceDate(
-        2024, 12, 2);
+    public static final AttendanceDate FIRST_DATE = new AttendanceDate(2024,
+        new Month(12), new Day(2));
 
     private final int year;
-    private final int month;
-    private final int day;
+    private final Month month;
+    private final Day day;
 
     public AttendanceDate(
         final int year,
-        final int month,
-        final int day
+        final Month month,
+        final Day day
     ) {
-        validateDate(month, day);
+        validateNotNull(month, day);
         validate2024December(year, month, day);
         validateHoliday(year, month, day);
         this.year = year;
@@ -26,33 +26,29 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
         this.day = day;
     }
 
-    private void validateDate(
-        final int month,
-        final int day
+    private void validateNotNull(
+        final Month month,
+        final Day day
     ) {
-        if (month < 1 || month > 12) {
-            throw new IllegalArgumentException("월은 1 이상 12 이하여야 합니다.");
-        }
-
-        if (day < 1 || day > 31) {
-            throw new IllegalArgumentException("일은 1 이상 31 이하여야 합니다.");
+        if (month == null || day == null) {
+            throw new NullPointerException("출석 날짜는 달와 일을 가지고 있어야 합니다.");
         }
     }
 
     private void validate2024December(
         final int year,
-        final int month,
-        final int day
+        final Month month,
+        final Day day
     ) {
-        if (year != 2024 || month != 12 || day > 31) {
+        if (year != 2024 || month.getValue() != 12 || day.getValue() > 31) {
             throw new IllegalArgumentException("출석 날짜는 2024년 12월만 지원합니다.");
         }
     }
 
     private void validateHoliday(
         final int year,
-        final int month,
-        final int day
+        final Month month,
+        final Day day
     ) {
         if (isHoliday(year, month, day)) {
             throw new IllegalArgumentException("출석 날짜는 주말 또는 공휴일은 지원하지 않습니다.");
@@ -61,44 +57,44 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
 
     private boolean isHoliday(
         final int year,
-        final int month,
-        final int day
+        final Month month,
+        final Day day
     ) {
         return isWeekend(year, month, day) || isPublicHoliday(month, day);
     }
 
     private boolean isWeekend(
         final int year,
-        final int month,
-        final int day
+        final Month month,
+        final Day day
     ) {
-        return DayOfWeek.of(LocalDate.of(year, month, day)
+        return DayOfWeek.of(LocalDate.of(year, month.getValue(), day.getValue())
                 .getDayOfWeek()
                 .getValue())
             .getValue() > 5;
     }
 
     private boolean isPublicHoliday(
-        final int month,
-        final int day
+        final Month month,
+        final Day day
     ) {
-        return month == 12 && day == 25;
+        return month.getValue() == 12 && day.getValue() == 25;
     }
 
     public static AttendanceDate from(final LocalDate localDate) {
-        return new AttendanceDate(
-            localDate.getYear(),
-            localDate.getMonthValue(),
-            localDate.getDayOfMonth()
-        );
+        return new AttendanceDate(localDate.getYear(),
+            new Month(localDate.getMonthValue()),
+            new Day(localDate.getDayOfMonth()));
     }
 
     public AttendanceDate plusDay() {
-        LocalDate localDate = LocalDate.of(year, month, day)
+        LocalDate localDate = LocalDate.of(year, month.getValue(),
+                day.getValue())
             .plusDays(1);
 
-        while (isHoliday(localDate.getYear(), localDate.getMonthValue(),
-            localDate.getDayOfMonth())) {
+        while (isHoliday(localDate.getYear(),
+            new Month(localDate.getMonthValue()),
+            new Day(localDate.getDayOfMonth()))) {
             localDate = localDate.plusDays(1);
         }
 
@@ -106,19 +102,21 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
     }
 
     public boolean isBefore(final AttendanceDate o) {
-        return LocalDate.of(year, month, day)
-            .isBefore(LocalDate.of(o.year, o.month, o.day));
+        return LocalDate.of(year, month.getValue(), day.getValue())
+            .isBefore(
+                LocalDate.of(o.year, o.month.getValue(), o.day.getValue()));
     }
 
     public AttendanceDayOfWeek getAttendanceDayOfWeekDayOfWeek() {
-        return AttendanceDayOfWeek.from(LocalDate.of(year, month, day));
+        return AttendanceDayOfWeek.from(
+            LocalDate.of(year, month.getValue(), day.getValue()));
     }
-    
-    public int getMonth() {
+
+    public Month getMonth() {
         return month;
     }
 
-    public int getDay() {
+    public Day getDay() {
         return day;
     }
 
@@ -129,8 +127,8 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
         }
 
         final AttendanceDate that = (AttendanceDate) o;
-
-        return year == that.year && month == that.month && day == that.day;
+        return year == that.year && month.equals(that.month) && day.equals(
+            that.day);
     }
 
     @Override
@@ -140,7 +138,9 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
 
     @Override
     public int compareTo(final AttendanceDate o) {
-        return LocalDate.of(this.year, this.month, this.day)
-            .compareTo(LocalDate.of(o.year, o.month, o.day));
+        return LocalDate.of(this.year, this.month.getValue(),
+                this.day.getValue())
+            .compareTo(
+                LocalDate.of(o.year, o.month.getValue(), o.day.getValue()));
     }
 }
