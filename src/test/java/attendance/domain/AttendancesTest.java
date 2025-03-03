@@ -1,146 +1,165 @@
 package attendance.domain;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
-import attendance.common.ErrorMessage;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class AttendancesTest {
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+public class AttendancesTest {
 
     @Test
-    void 이미_출석_기록이_있는_경우_true를_반환한다() {
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 3);
-        LocalTime attendanceTime = LocalTime.of(8, 1);
-        Attendances attendances = new Attendances(
-                List.of(new Attendance("쿠키", attendanceDate, attendanceTime)));
+    void 출석_기록을_추가한다() {
+        // given
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 13);
+        LocalTime attendanceTime = LocalTime.of(10, 8);
+        Attendances attendances = new Attendances(new ArrayList<>());
 
-        assertThat(attendances.checkAttendance("쿠키", attendanceDate)).isTrue();
+        // when
+        attendances.addAttendance(new Attendance(attendanceDate, attendanceTime));
+
+        // then
+        assertThat(attendances.hasAttendance(attendanceDate, attendanceTime)).isTrue();
     }
 
     @Test
-    void 출석_기록이_없는_경우_false를_반환한다() {
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 3);
-        LocalTime attendanceTime = LocalTime.of(8, 1);
-        LocalDate today = LocalDate.of(2024, 12, 31);
-        Attendances attendances = new Attendances(
-                List.of(new Attendance("쿠키", attendanceDate, attendanceTime)));
+    void 기존_출석_기록_있다면_true_반환한다() {
+        // given
+        LocalDate today = LocalDate.of(2024, 12, 13);
+        LocalTime attendanceTime = LocalTime.of(10, 8);
+        Attendances attendances = new Attendances(new ArrayList<>());
+        attendances.addAttendance(new Attendance(today, attendanceTime));
 
-        assertThat(attendances.checkAttendance("쿠키", today)).isFalse();
+        // when & then
+        assertThat(attendances.hasAttendance(today, attendanceTime)).isTrue();
+
     }
 
     @Test
-    void 등록된_이름이_없는_경우_예외가_발생한다() {
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 3);
-        LocalTime attendanceTime = LocalTime.of(8, 1);
-        Attendances attendances = new Attendances(
-                List.of(new Attendance("쿠키", attendanceDate, attendanceTime)));
+    void 기존_출석_기록_없다면_false_반환한다() {
+        // given
+        LocalDate today = LocalDate.of(2024, 12, 13);
+        LocalTime absenceTime = LocalTime.of(10, 31);
+        LocalTime lateTime = LocalTime.of(10, 6);
+        Attendances attendances = new Attendances(new ArrayList<>());
 
-        assertThatThrownBy(() -> attendances.checkName("철수"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorMessage.NO_NAME.getMessage());
+        attendances.addAttendance(new Attendance(today, lateTime));
+
+        // when & then
+        assertThat(attendances.hasAttendance(today, absenceTime)).isFalse();
+
     }
 
     @Test
-    void 등록된_이름이_있는_경우_예외가_발생하지_않는다() {
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 3);
-        LocalTime attendanceTime = LocalTime.of(8, 1);
-        Attendances attendances = new Attendances(
-                List.of(new Attendance("쿠키", attendanceDate, attendanceTime)));
+    void 출석수정시_출석기록이_없었던_경우_null반환한다() {
+        // given
+        Attendances attendances = new Attendances(new ArrayList<>());
+        attendances.addAttendance(
+            new Attendance(LocalDate.of(2024, 12, 11), LocalTime.of(9, 50)));
 
-        assertDoesNotThrow(() -> attendances.checkName("쿠키"));
+        // when
+        LocalDate monday = LocalDate.of(2024, 12, 2);
+        LocalTime presenceTime = LocalTime.of(12, 50);
+        Optional<LocalTime> beforeEditTime = attendances.editAttendance(monday, presenceTime);
+
+        // then
+        assertThat(beforeEditTime.isEmpty()).isTrue();
     }
 
     @Test
-    void 출석을_저장한다() {
-        Attendances attendances = new Attendances(List.of());
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 3);
-        LocalTime attendanceTime = LocalTime.of(8, 1);
+    void 출석수정시_출석기록이_있는_경우_수정전_출석시간을_반환한다() {
+        // given
+        Attendances attendances = new Attendances(new ArrayList<>());
+        LocalDate monday = LocalDate.of(2024, 12, 9);
+        LocalTime presenceTime = LocalTime.of(12, 50);
+        attendances.addAttendance(new Attendance(monday, presenceTime));
 
-        Attendance attendance = new Attendance("쿠키", attendanceDate, attendanceTime);
+        // when
+        LocalTime absenceTime = LocalTime.of(13, 31);
+        Optional<LocalTime> beforeEditTime = attendances.editAttendance(monday, absenceTime);
 
-        Attendances expect = new Attendances(List.of(attendance));
-
-        assertThat(attendances.add(attendance)).isEqualTo(expect);
+        // then
+        assertThat(beforeEditTime.isPresent()).isTrue();
+        assertThat(beforeEditTime.get()).isEqualTo(presenceTime);
     }
 
     @Test
-    void 이름과_날짜를_전달해_해당_객체의_시간을_받아온다() {
-        String name = "쿠키";
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 3);
-        LocalTime attendanceTime = LocalTime.of(8, 1);
-        Attendances attendances = new Attendances(
-                List.of(new Attendance(name, attendanceDate, attendanceTime)));
+    void 전날까지의_출석기록을_조회해온다() {
+        // given
+        Attendances attendances = new Attendances(new ArrayList<>());
+        LocalDate twodaysAgo = LocalDate.of(2024, 12, 3);
+        LocalDate yesterday = LocalDate.of(2024, 12, 4);
+        LocalDate today = LocalDate.of(2024, 12, 5);
+        attendances.addAttendance(
+            new Attendance(twodaysAgo, LocalTime.of(10, 1)));
+        attendances.addAttendance(
+            new Attendance(yesterday, LocalTime.of(10, 2)));
+        attendances.addAttendance(
+            new Attendance(today, LocalTime.of(10, 3)));
 
-        assertThat(attendances.findLocalTimeByNameAndDate(name, attendanceDate)).isEqualTo(attendanceTime);
+        // when
+        List<Attendance> attendancesUntilYesterday = attendances.findAttendanceUntilYesterday(today);
+
+        // then
+        assertThat(attendancesUntilYesterday).containsExactlyElementsOf(
+            List.of(
+                new Attendance(LocalDate.of(2024, 12, 2), null),
+                new Attendance(twodaysAgo, LocalTime.of(10, 1)),
+                new Attendance(yesterday, LocalTime.of(10, 2))
+            )
+        );
     }
 
     @Test
-    void 수정할_출석_기록을_찾는다() {
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 3);
-        LocalTime attendanceTime = LocalTime.of(8, 1);
-        LocalTime editTime = LocalTime.of(9, 1);
-        Attendance attendance = new Attendance("쿠키", attendanceDate, attendanceTime);
-        Attendance editedAttendance = new Attendance("쿠키", attendanceDate, editTime);
-        Attendances attendances = new Attendances(List.of(attendance));
-        Attendances expected = new Attendances(List.of(editedAttendance));
+    void 크루의_출결상태를_집계한다() {
+        // given
+        Attendances attendances = new Attendances(new ArrayList<>());
+        LocalDate twodaysAgo = LocalDate.of(2024, 12, 3);
+        LocalDate yesterday = LocalDate.of(2024, 12, 4);
+        LocalDate today = LocalDate.of(2024, 12, 5);
+        attendances.addAttendance(
+            new Attendance(twodaysAgo, LocalTime.of(10, 1)));
+        attendances.addAttendance(
+            new Attendance(yesterday, LocalTime.of(10, 6)));
+        attendances.addAttendance(
+            new Attendance(today, LocalTime.of(10, 3)));
 
-        assertThat(attendances.editAttendance("쿠키", attendanceDate, editTime))
-                .isEqualTo(expected);
+        // when
+        Map<AttendanceStatus, Integer> attendanceStatusCount = attendances.countAttendanceStatus(today);
+
+        // then
+        assertThat(attendanceStatusCount).isEqualTo(
+            Map.of(
+                AttendanceStatus.PRESENCE, 1,
+                AttendanceStatus.LATE, 1,
+                AttendanceStatus.ABSENCE, 1
+            )
+        );
     }
 
     @Test
-    void 닉네임별_출석기록을_오늘날짜_까지_오름차순으로_가져온다() {
-        LocalTime attendanceTime = LocalTime.of(9, 1);
-        LocalDate today = LocalDate.of(2024, 12, 16);
-        List<Attendance> attendancesData = List.of(
-                new Attendance("쿠키", LocalDate.of(2024, 12, 15), attendanceTime)
-                , new Attendance("빙봉", LocalDate.of(2024, 12, 15), attendanceTime)
-                , new Attendance("쿠키", LocalDate.of(2024, 12, 9), attendanceTime)
-                , new Attendance("빙봉", LocalDate.of(2024, 12, 9), attendanceTime)
-                , new Attendance("쿠키", LocalDate.of(2024, 12, 17), attendanceTime));
-        Attendances attendances = new Attendances(attendancesData);
+    void 출석을_원하는_날짜에_출석기록이_있으면_예외를_반환한다() {
+        // given
+        Attendances attendances = new Attendances(new ArrayList<>());
+        LocalDate yesterday = LocalDate.of(2024, 12, 4);
+        LocalDate today = LocalDate.of(2024, 12, 5);
+        attendances.addAttendance(
+            new Attendance(yesterday, LocalTime.of(10, 6)));
+        attendances.addAttendance(
+            new Attendance(today, LocalTime.of(10, 3)));
 
-        List<Attendance> attendanceRecords = attendances.findByNameAndDateWithAscend("쿠키", today);
-        assertThat(attendanceRecords).containsExactlyElementsOf(
-                List.of(new Attendance("쿠키", LocalDate.of(2024, 12, 9), attendanceTime)
-                        , new Attendance("쿠키", LocalDate.of(2024, 12, 15), attendanceTime)));
-    }
-
-    @Test
-    void 닉네임별_출결_결과를_반환한다() {
-        LocalDate today = LocalDate.of(2024, 12, 18);
-        List<Attendance> attendancesData = List.of(
-                new Attendance("쿠키", LocalDate.of(2024, 12, 10), LocalTime.of(10, 1))
-                , new Attendance("쿠키", LocalDate.of(2024, 12, 11), LocalTime.of(10, 6))
-                , new Attendance("쿠키", LocalDate.of(2024, 12, 13), LocalTime.of(10, 31))
-                , new Attendance("쿠키", LocalDate.of(2024, 12, 17), LocalTime.of(10, 31)));
-
-        Attendances attendances = new Attendances(attendancesData);
-
-        Map<AttendanceStatus, Integer> expect = Map.of(AttendanceStatus.PRESENCE, 1, AttendanceStatus.LATE, 1, AttendanceStatus.ABSENCE, 10);
-
-        assertThat(attendances.countAttendanceStatusByNameAndDate("쿠키", today)).isEqualTo(expect);
-    }
-
-    @Test
-    void 크루들의_이름_목록을_가져온다() {
-        LocalTime attendanceTime = LocalTime.of(9, 1);
-        List<Attendance> attendancesData = List.of(
-            new Attendance("쿠키", LocalDate.of(2024, 12, 15), attendanceTime)
-            , new Attendance("빙봉", LocalDate.of(2024, 12, 15), attendanceTime)
-            , new Attendance("쿠키", LocalDate.of(2024, 12, 9), attendanceTime)
-            , new Attendance("빙봉", LocalDate.of(2024, 12, 9), attendanceTime)
-            , new Attendance("쿠키", LocalDate.of(2024, 12, 17), attendanceTime));
-        Attendances attendances = new Attendances(attendancesData);
-
-        assertThat(attendances.getCrewNames()).containsExactlyElementsOf(List.of("쿠키", "빙봉"));
+        // when & then
+        assertThatThrownBy(() -> attendances.hasAttendance(today))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("[ERROR] 이미 출석기록이 존재합니다. 출석 수정을 이용해주세요.");
     }
 }

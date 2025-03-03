@@ -1,14 +1,15 @@
 package attendance.dto;
 
-import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatus;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record AttendanceInfoDto(LocalDate attendanceDate, LocalTime attendanceTime, String statusMessage) {
+public record AttendanceInfoDto(
+    LocalDate attendanceDate, LocalTime attendanceTime, AttendanceStatus attendanceStatus
+){
 
-    public static AttendanceInfoDto toDto(Attendance attendance) {
-
-        return new AttendanceInfoDto(attendance.getAttendanceDate(), attendance.getAttendanceTime(),
-                attendance.getStatusMessage());
+    public static AttendanceInfoDto of (LocalDate attendanceDate, LocalTime attendanceTime, AttendanceStatus attendanceStatus) {
+        return new AttendanceInfoDto(attendanceDate, attendanceTime, attendanceStatus);
     }
 }

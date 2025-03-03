@@ -3,13 +3,17 @@ package attendance.dto;
 import attendance.domain.AttendancePenalty;
 import attendance.domain.PenaltyCrew;
 
-public record PenaltyCrewDto(String name, int absenceCount, int lateCount, String penaltyMessage) {
-
-    public static PenaltyCrewDto toDto(PenaltyCrew penaltyCrew) {
-        int crewAbsenceCount = penaltyCrew.getAbsenceCount();
-        int crewLateCount = penaltyCrew.getLateCount();
-
-        return new PenaltyCrewDto(penaltyCrew.getName(), crewAbsenceCount, crewLateCount,
-                AttendancePenalty.find(crewAbsenceCount, crewLateCount).getMessage());
+public record PenaltyCrewDto (
+    String name,
+    int lateCount,
+    int absenceCount,
+    AttendancePenalty penalty
+){
+    public static PenaltyCrewDto of(PenaltyCrew penaltyCrew) {
+        return new PenaltyCrewDto(
+            penaltyCrew.getName(),
+            penaltyCrew.getLateCount(),
+            penaltyCrew.getAbsenceCount(),
+            penaltyCrew.getPenalty());
     }
 }

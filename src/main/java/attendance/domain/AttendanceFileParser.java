@@ -1,54 +1,52 @@
 package attendance.domain;
 
-import attendance.common.ErrorMessage;
-import attendance.dto.FileRequestDto;
+import attendance.dto.AttendanceFileDto;
 import attendance.utils.DateConverter;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
-public class AttendanceFileParser implements AttendanceReader {
+import java.nio.file.Files;
+
+public class AttendanceFileParser implements AttendanceReader{
 
     public static final String DELIMITER = ",";
+    public static final int NAME_INDEX = 0;
+    public static final int LOCAL_DATE_TIME_INDEX = 1;
+    public static final int HEADER_LINE = 1;
+
     private final String path;
 
     public AttendanceFileParser(String path) {
         this.path = path;
     }
 
-    public List<FileRequestDto> read() {
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            List<FileRequestDto> fileRequestDtos = new ArrayList<>();
-            br.readLine();
-            generateFileRequestDto(br, fileRequestDtos);
-            return fileRequestDtos;
+    public List<AttendanceFileDto> read() {
+        try (Stream<String> lines = Files.lines(Path.of(path))) {
+            return lines.skip(HEADER_LINE)
+                .map(this::parseToAttendanceFileDto)
+                .toList();
         } catch (IOException e) {
-            throw new UncheckedIOException(ErrorMessage.FILE_READ_FAIL.formatMessage(path), e);
+            throw new UncheckedIOException(String.format("[ERROR] 파일을 읽기에 실패하였습니다. 경로: %s", path), e);
         }
     }
 
-    private static void generateFileRequestDto(BufferedReader br, List<FileRequestDto> fileRequestDtos)
-        throws IOException {
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] inputs = line.split(DELIMITER);
-            validateInput(inputs);
-            String name = inputs[0];
-            LocalDate date = DateConverter.convertToDate(inputs[1]);
-            LocalTime time = DateConverter.convertToTime(inputs[1]);
-            fileRequestDtos.add(new FileRequestDto(name, date, time));
-        }
+    private AttendanceFileDto parseToAttendanceFileDto(String line) {
+        String[] split = line.split(DELIMITER);
+        validateSplit(split);
+        LocalDate attendanceDate = DateConverter.convertToDate(split[LOCAL_DATE_TIME_INDEX]);
+        LocalTime attendanceTime = DateConverter.convertToTime(split[LOCAL_DATE_TIME_INDEX]);
+        return AttendanceFileDto.of(split[NAME_INDEX], attendanceDate, attendanceTime);
     }
 
-    private static void validateInput(String[] inputs) {
-        if (inputs.length != 2) {
-            throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_FORMAT.getMessage());
+    private void validateSplit(String[] split) {
+        if (split.length != 2) {
+            throw new IllegalArgumentException("[ERROR] 잘못된 파일 형식을 입력하셨습니다.");
         }
     }
 }

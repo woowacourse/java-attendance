@@ -1,8 +1,9 @@
-package attendance.service;
+package attendance.controller;
 
 import java.time.LocalDate;
 
 public interface DateGenerator {
 
-    LocalDate generate();
+    public LocalDate generate();
+
 }

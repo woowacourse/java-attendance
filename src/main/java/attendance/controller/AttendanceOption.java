@@ -1,6 +1,5 @@
 package attendance.controller;
 
-import attendance.common.ErrorMessage;
 import java.util.Arrays;
 
 public enum AttendanceOption {
@@ -11,16 +10,16 @@ public enum AttendanceOption {
     WARNING("4"),
     QUIT("Q");
 
-    private final String input;
+    private final String message;
 
-    AttendanceOption(String input) {
-        this.input = input;
+    AttendanceOption(String message) {
+        this.message = message;
     }
 
     public static AttendanceOption find(String input) {
         return Arrays.stream(values())
-                .filter(attendanceOption -> input.equals(attendanceOption.input))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.INVALID_OPTION_INPUT.getMessage()));
+            .filter(attendanceOption -> attendanceOption.message.equals(input))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("[ERROR] 잘못된 기능을 입력하셨습니다."));
     }
 }

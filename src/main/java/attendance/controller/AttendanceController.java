@@ -1,96 +1,108 @@
 package attendance.controller;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceCheckResult;
+import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceStatus;
+import attendance.dto.AttendanceCheckDto;
+import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceInfoDto;
-import attendance.dto.CrewAttendanceDto;
-import attendance.dto.EditResponseDto;
 import attendance.dto.PenaltyCrewDto;
-import attendance.service.AttendanceService;
-import attendance.service.DateGenerator;
-import attendance.domain.HolidayChecker;
 import attendance.view.InputView;
 import attendance.view.OutputView;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AttendanceController {
 
     private final InputView inputView;
+    private final AttendanceManager attendanceManager;
     private final OutputView outputView;
-    private final AttendanceService service;
     private final DateGenerator dateGenerator;
 
-    public AttendanceController(InputView inputView, OutputView outputView, AttendanceService service,
-                                DateGenerator dateGenerator) {
+    public AttendanceController(InputView inputView, AttendanceManager attendanceManager,
+                                OutputView outputView, DateGenerator dateGenerator) {
         this.inputView = inputView;
+        this.attendanceManager = attendanceManager;
         this.outputView = outputView;
-        this.service = service;
         this.dateGenerator = dateGenerator;
     }
 
     public void run() {
-        service.init();
-        LocalDate now = dateGenerator.generate();
-        AttendanceOption attendanceOption = null;
+        LocalDate today = dateGenerator.generate();
+        AttendanceOption option;
 
         do {
-            attendanceOption = inputView.readOption(now);
-            executeOption(attendanceOption, now);
-        } while (attendanceOption != AttendanceOption.QUIT);
+            option = inputView.readAttendanceOption(today);
+            execute(option, today);
+        } while (option != AttendanceOption.QUIT);
     }
 
-    private void executeOption(AttendanceOption attendanceOption, LocalDate today) {
-        if (attendanceOption == AttendanceOption.MARK) {
+    private void execute(AttendanceOption option, LocalDate today) {
+        if (option.equals(AttendanceOption.MARK)) {
             remarkAttendance(today);
         }
-
-        if (attendanceOption == AttendanceOption.EDIT) {
+        if (option.equals(AttendanceOption.EDIT)) {
             editAttendance();
         }
-
-        if (attendanceOption == AttendanceOption.CHECK) {
+        if (option.equals(AttendanceOption.CHECK)) {
             checkAttendance(today);
         }
-
-        if (attendanceOption == AttendanceOption.WARNING) {
-            checkExpulsion(today);
+        if (option.equals(AttendanceOption.WARNING)) {
+            findPenaltyCrews(today);
         }
     }
 
     private void remarkAttendance(LocalDate today) {
-        HolidayChecker.validWeekDay(today);
-
-        String nickname = inputView.readNickname();
-        service.checkNameExists(nickname);
-
-        LocalTime localTime = inputView.readTime();
-        service.insertAttendance(nickname, today, localTime);
-
-        String attendanceStatus = service.getAttendanceStatus(today, localTime);
-        outputView.addResult(new AttendanceInfoDto(today, localTime, attendanceStatus));
+        String name = inputView.readAttendanceName();
+        LocalTime attendanceTime = inputView.readRemarkAttendanceTime();
+        Attendance attendance = attendanceManager.remarkAttendance(name, today, attendanceTime);
+        AttendanceStatus attendanceStatus = attendanceManager.getAttendanceStatus(today, attendanceTime);
+        AttendanceInfoDto attendanceInfoDto = AttendanceInfoDto.of(attendance.getAttendanceDate(), attendance.getAttendanceTime(), attendanceStatus);
+        outputView.printRemarkAttendanceResult(attendanceInfoDto);
     }
 
     private void editAttendance() {
-        String nickName = inputView.readEditNickName();
-        service.checkNameExists(nickName);
-        LocalDate date = inputView.readEditDate();
-        LocalTime editTime = inputView.readEditTime();
+        String name = inputView.readEditAttendanceName();
+        LocalDate editAttendanceDate = inputView.readEditAttendanceDate();
+        LocalTime editAttendanceTime = inputView.readEditAttendanceTime();
+        Attendance beforeEditAttendance = attendanceManager.editAttendance(name, editAttendanceDate, editAttendanceTime);
+        AttendanceEditDto attendanceEditDto = convertToAttendanceEditDto(editAttendanceDate, beforeEditAttendance, editAttendanceTime);
+        outputView.printEditAttendanceResult(attendanceEditDto);
+    }
 
-        EditResponseDto responseDto = service.edit(nickName, date, editTime);
-
-        outputView.editResult(responseDto);
+    private AttendanceEditDto convertToAttendanceEditDto(LocalDate editAttendanceDate, Attendance beforeEditAttendance, LocalTime editAttendanceTime) {
+        return AttendanceEditDto.of(
+            editAttendanceDate, beforeEditAttendance.getAttendanceTime(),
+            AttendanceStatus.findAttendanceStatus(editAttendanceDate, beforeEditAttendance.getAttendanceTime()),
+            editAttendanceTime,
+            AttendanceStatus.findAttendanceStatus(editAttendanceDate, editAttendanceTime));
     }
 
     private void checkAttendance(LocalDate today) {
-        String nickname = inputView.readNickname();
-        service.checkNameExists(nickname);
-
-        CrewAttendanceDto crewAttendance = service.getCrewAttendance(nickname, today);
-        outputView.attendanceResult(crewAttendance);
+        String name = inputView.readAttendanceName();
+        AttendanceCheckResult checkResult = attendanceManager.checkAttendance(name, today);
+        List<AttendanceInfoDto> attendanceDtos = convertToAttendanceInfoDto(checkResult);
+        AttendanceCheckDto attendanceCheckDto = AttendanceCheckDto.of(
+            checkResult.name(), attendanceDtos, checkResult.attendanceStatusCount(), checkResult.attendancePenalty()
+        );
+        outputView.printCheckAttendanceResult(attendanceCheckDto);
     }
 
-    private void checkExpulsion(LocalDate today) {
-        List<PenaltyCrewDto> crewsInfos = service.getCrewsName(today);
-        outputView.penaltyCrews(crewsInfos);
+    private static List<AttendanceInfoDto> convertToAttendanceInfoDto(AttendanceCheckResult checkResult) {
+        return checkResult.attendanceUntilYesterday().stream()
+            .map(att -> AttendanceInfoDto.of(att.getAttendanceDate(), att.getAttendanceTime(),
+                AttendanceStatus.findAttendanceStatus(att.getAttendanceDate(), att.getAttendanceTime())))
+            .collect(Collectors.toList());
+    }
+
+    private void findPenaltyCrews(LocalDate today) {
+        List<PenaltyCrewDto> penaltyCrewsDto = attendanceManager.findPenaltyCrews(today).stream()
+            .map(PenaltyCrewDto::of)
+            .collect(Collectors.toList());
+        outputView.printPenaltyCrews(penaltyCrewsDto);
     }
 }

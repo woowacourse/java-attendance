@@ -1,0 +1,48 @@
+package attendance.domain;
+
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
+
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+public class PenaltyCountTest {
+
+    @Test
+    void 지각과_결석_횟수를_계산한다() {
+        // given
+        Map<AttendanceStatus, Integer> statusCounts = Map.of(
+            AttendanceStatus.PRESENCE, 1,
+            AttendanceStatus.ABSENCE, 2,
+            AttendanceStatus.LATE, 3
+        );
+
+        // when
+        PenaltyCount penaltyCount = new PenaltyCount(statusCounts);
+
+
+        // then
+        assertThat(penaltyCount.getWeightedLateAndAbsencePoint()).isEqualTo(3);
+    }
+
+    @Test
+    void 페널티를_찾는다() {
+        // given
+        Map<AttendanceStatus, Integer> statusCounts = Map.of(
+            AttendanceStatus.PRESENCE, 1,
+            AttendanceStatus.ABSENCE, 2,
+            AttendanceStatus.LATE, 3
+        );
+
+        PenaltyCount penaltyCount = new PenaltyCount(statusCounts);
+
+        // when
+        AttendancePenalty attendancePenalty = penaltyCount.findAttendancePenalty();
+
+        // then
+        assertThat(attendancePenalty).isEqualTo(AttendancePenalty.COUNSELING);
+    }
+}

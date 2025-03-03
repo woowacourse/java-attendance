@@ -1,80 +1,51 @@
 package attendance.domain;
 
-import attendance.common.CommonConstants;
-import attendance.common.ErrorMessage;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
-import java.util.Optional;
 
 public class Attendance implements Comparable<Attendance> {
 
-    private static final LocalTime OPEN_TIME = LocalTime.of(8, 0);
-    private static final LocalTime CLOSED_TIME = LocalTime.of(23, 0);
-    public static final LocalDate DECEMBER_END_DATE = LocalDate.of(2024, 12, 31);
+    private static final LocalTime CAMPUS_OPEN_TIME = LocalTime.of(8,0);
+    private static final LocalTime CAMPUS_CLOSE_TIME = LocalTime.of(23, 0);
 
-    private final String nickName;
     private final LocalDate attendanceDate;
     private final LocalTime attendanceTime;
 
-    public Attendance(String nickName, LocalDate attendanceDate, LocalTime attendanceTime) {
-        validateDate(attendanceDate);
-        validateTime(attendanceTime);
-        this.nickName = nickName;
+    public Attendance(LocalDate attendanceDate, LocalTime attendanceTime) {
+        Holiday.validateWeekDay(attendanceDate);
+        validateCampusOperatingHours(attendanceTime);
         this.attendanceDate = attendanceDate;
         this.attendanceTime = attendanceTime;
     }
 
-    private void validateDate(LocalDate attendanceDate) {
-        if (attendanceDate.isBefore(CommonConstants.DECEMBER_START_DATE) || attendanceDate.isAfter(DECEMBER_END_DATE)) {
-            throw new IllegalArgumentException(ErrorMessage.INVALID_DATE.getMessage());
+    public boolean hasAttend(LocalDate attendanceDate, LocalTime attendanceTime) {
+        if (this.attendanceTime == null) return false;
+        return this.attendanceDate.isEqual(attendanceDate)
+            && this.attendanceTime.equals(attendanceTime);
+    }
+
+    private void validateCampusOperatingHours(LocalTime attendanceTime) {
+        if (attendanceTime == null) return;
+        if (attendanceTime.isBefore(CAMPUS_OPEN_TIME) || attendanceTime.isAfter(CAMPUS_CLOSE_TIME)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영시간이 아닙니다. 운영시간은 08:00 ~ 23:00 입니다.");
         }
     }
 
-    private void validateTime(LocalTime attendanceTime) {
-        if (validateOpenTime(attendanceTime)) {
-            throw new IllegalArgumentException(ErrorMessage.NOT_OPEN_TIME.getMessage());
-        }
+    public boolean hasAttendDate(LocalDate editDate) {
+        return attendanceDate.isEqual(editDate);
     }
 
-    private boolean validateOpenTime(LocalTime attendanceTime) {
-        return attendanceTime.isBefore(OPEN_TIME) || attendanceTime.isAfter(CLOSED_TIME);
-    }
-
-    public boolean check(String name, LocalDate now) {
-        return nickName.equals(name) && attendanceDate.equals(now);
-    }
-
-    public boolean hasName(String name) {
-        return nickName.equals(name);
-    }
-
-    public Optional<LocalTime> findTimeIfMatch(String name, LocalDate attendanceDate) {
-        if (check(name, attendanceDate)) {
-            return Optional.of(attendanceTime);
-        }
-
-        return Optional.empty();
-    }
-
-    public AttendanceStatus getStatus() {
-        return AttendanceStatus.of(attendanceDate, attendanceTime);
-    }
-
-    public String getStatusMessage() {
-        return AttendanceStatus.of(attendanceDate, attendanceTime).getKorean();
-    }
-
-    public LocalDate getAttendanceDate() {
-        return attendanceDate;
+    public boolean isBefore(LocalDate today) {
+        return attendanceDate.isBefore(today);
     }
 
     public LocalTime getAttendanceTime() {
         return attendanceTime;
     }
 
-    public String getNickName() {
-        return nickName;
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
     }
 
     @Override
@@ -82,26 +53,15 @@ public class Attendance implements Comparable<Attendance> {
         return this.attendanceDate.compareTo(o.attendanceDate);
     }
 
-    public boolean isBefore(LocalDate today) {
-        return this.attendanceDate.isBefore(today);
-    }
-
-    public boolean hasAttendance(LocalDate date) {
-        return this.attendanceDate.isEqual(date);
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (o == null || getClass() != o.getClass()) return false;
         Attendance that = (Attendance) o;
-        return Objects.equals(nickName, that.nickName) && Objects.equals(attendanceDate, that.attendanceDate)
-                && Objects.equals(attendanceTime, that.attendanceTime);
+        return Objects.equals(attendanceDate, that.attendanceDate) && Objects.equals(attendanceTime, that.attendanceTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nickName, attendanceDate, attendanceTime);
+        return Objects.hash(attendanceDate, attendanceTime);
     }
 }

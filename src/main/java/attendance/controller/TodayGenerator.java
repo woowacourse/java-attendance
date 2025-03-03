@@ -1,8 +1,8 @@
-package attendance.service;
+package attendance.controller;
 
 import java.time.LocalDate;
 
-public class DateGeneratorImpl implements DateGenerator {
+public class TodayGenerator implements DateGenerator{
 
     @Override
     public LocalDate generate() {

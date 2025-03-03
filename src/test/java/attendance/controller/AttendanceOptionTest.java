@@ -1,27 +1,19 @@
 package attendance.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.common.ErrorMessage;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-class AttendanceOptionTest {
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+public class AttendanceOptionTest {
 
     @Test
-    void 기능을_입력한다() {
-        String input = "1";
-
-        assertThat(AttendanceOption.find(input)).isEqualTo(AttendanceOption.MARK);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"a", "#"})
-    void 기능번호_이외에_입력을_하면_에러를_발생한다(String input) {
-        assertThatThrownBy(() -> AttendanceOption.find(input))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorMessage.INVALID_OPTION_INPUT.getMessage());
+    void 잘못된_기능_입력을_하는_경우_예외가_발생한다() {
+        // when & then
+        assertThatThrownBy(() -> AttendanceOption.find("출석"))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("[ERROR] 잘못된 기능을 입력하셨습니다.");
     }
 }

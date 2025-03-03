@@ -1,10 +1,10 @@
 package attendance.domain;
 
-import attendance.dto.FileRequestDto;
+import attendance.dto.AttendanceFileDto;
 
 import java.util.List;
 
 public interface AttendanceReader {
 
-    public List<FileRequestDto> read();
+    List<AttendanceFileDto> read();
 }

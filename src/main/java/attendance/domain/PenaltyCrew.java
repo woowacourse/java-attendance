@@ -1,67 +1,54 @@
 package attendance.domain;
 
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Objects;
 
 public class PenaltyCrew implements Comparable<PenaltyCrew> {
 
-    public static final int LATE_TO_ABSENCE_RATIO = 3;
-
     private final String name;
-    private final int absenceCount;
-    private final int lateCount;
-    private final Integer weightedLateAbsencePoint;
-    private final AttendancePenalty attendanceStatus;
+    private final PenaltyCount penaltyCount;
+    private final AttendancePenalty penalty;
 
-    public PenaltyCrew(String name, int absenceCount, int lateCount) {
-        this.lateCount = lateCount;
-        this.absenceCount = absenceCount;
+    public PenaltyCrew(String name, Map<AttendanceStatus, Integer> statusCounts) {
         this.name = name;
-        this.weightedLateAbsencePoint = calculateWeightedLateAbsencePoint(absenceCount, lateCount);
-        this.attendanceStatus = AttendancePenalty.find(absenceCount, lateCount);
+        this.penaltyCount = new PenaltyCount(statusCounts);
+        this.penalty = penaltyCount.findAttendancePenalty();
     }
 
-    private static int calculateWeightedLateAbsencePoint(int absenceCount, int lateCount) {
-        return absenceCount * LATE_TO_ABSENCE_RATIO + lateCount;
-    }
-
-    @Override
-    public int compareTo(PenaltyCrew o) {
-        return Comparator.comparing(PenaltyCrew::getAttendanceStatus)
-            .thenComparing(PenaltyCrew::getWeightedLateAbsencePoint, Comparator.reverseOrder())
-            .thenComparing(PenaltyCrew::getName)
-            .compare(this, o);
+    public AttendancePenalty getPenalty() {
+        return penalty;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getLateCount() {
-        return lateCount;
+    public int getWeightedLateAndAbsencePoint() {
+        return penaltyCount.getWeightedLateAndAbsencePoint();
     }
 
-    public Integer getWeightedLateAbsencePoint() { return weightedLateAbsencePoint; }
+    public int getLateCount() { return penaltyCount.getLateCount();}
 
-    public int getAbsenceCount() {
-        return absenceCount;
+    public int getAbsenceCount() { return penaltyCount.getAbsenceCount();}
+
+    @Override
+    public int compareTo(PenaltyCrew o) {
+        return Comparator.comparing(PenaltyCrew::getPenalty)
+            .thenComparing(PenaltyCrew::getWeightedLateAndAbsencePoint, Comparator.reverseOrder())
+            .thenComparing(PenaltyCrew::getName)
+            .compare(this, o);
     }
-
-    public AttendancePenalty getAttendanceStatus() { return attendanceStatus; }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         PenaltyCrew that = (PenaltyCrew) o;
-        return absenceCount == that.absenceCount
-            && lateCount == that.lateCount
-            && Objects.equals(name, that.name)
-            && Objects.equals(weightedLateAbsencePoint, that.weightedLateAbsencePoint)
-            && attendanceStatus == that.attendanceStatus;
+        return Objects.equals(name, that.name) && Objects.equals(penaltyCount, that.penaltyCount) && penalty == that.penalty;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, absenceCount, lateCount, weightedLateAbsencePoint, attendanceStatus);
+        return Objects.hash(name, penaltyCount, penalty);
     }
 }
