@@ -25,4 +25,9 @@ public class AttendanceHistory {
                 .toList()
                 .getFirst();
     }
+
+    public boolean isAlreadyExists(final LocalDate date) {
+
+        return history.stream().anyMatch(attendanceTime -> attendanceTime.isSameDay(date));
+    }
 }
