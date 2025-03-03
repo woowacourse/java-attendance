@@ -48,6 +48,14 @@ public class AttendanceManager {
         attendances.edit(editAttendanceRecord);
     }
 
+    public AttendanceRecord getAttendanceRecordOfSameDate(NickName nickName, AttendanceRecord editAttendanceRecord) {
+        validateNameExist(nickName);
+        validateAttendAbleDate(editAttendanceRecord);
+        validateAttendAbleTime(editAttendanceRecord);
+        Attendances attendances = attendanceManager.get(nickName);
+        return attendances.getAttendanceRecordOfSameDate(editAttendanceRecord);
+    }
+
     public Attendances checkAttendance(NickName nickName, List<Integer> checkingDates) {
         validateNameExist(nickName);
         Attendances attendances = new Attendances();

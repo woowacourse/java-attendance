@@ -152,6 +152,42 @@ public class AttendanceManagerTest {
             // then
             assertThat(attendanceManager.hashCode()).isNotEqualTo(prevHash);
         }
+
+        @Test
+        @DisplayName("출석 기록과 동일한 날짜의 출석 기록을 가져온다")
+        void should_return_attendanceRecord_of_same_date() {
+            // given
+            AttendanceManager attendanceManager = new AttendanceManager();
+            NickName nickName = new NickName("후우");
+            attendanceManager.register(nickName);
+            AttendanceRecord attendanceRecord = AttendanceRecord.of("2", "10:00");
+            attendanceManager.attend(nickName, attendanceRecord);
+
+            AttendanceRecord targetAttendanceRecord = AttendanceRecord.of("2", "18:00");
+
+            // when
+            AttendanceRecord result = attendanceManager.getAttendanceRecordOfSameDate(nickName, targetAttendanceRecord);
+
+            // then
+            assertThat(result).isEqualTo(attendanceRecord);
+        }
+
+        @Test
+        @DisplayName("출석 기록과 동일한 날짜의 출석 기록이 없다면 생성해 가져온다")
+        void should_create_and_return_attendanceRecord_of_same_date() {
+            // given
+            AttendanceManager attendanceManager = new AttendanceManager();
+            NickName nickName = new NickName("후우");
+            attendanceManager.register(nickName);
+            AttendanceRecord targetAttendanceRecord = AttendanceRecord.of("2", "18:00");
+
+            // when
+            AttendanceRecord result = attendanceManager.getAttendanceRecordOfSameDate(nickName, targetAttendanceRecord);
+
+            // then
+            AttendanceRecord expected = AttendanceRecord.dateOf(2);
+            assertThat(result).isEqualTo(expected);
+        }
     }
 
     @Nested
