@@ -3,7 +3,10 @@ package controller;
 import domain.AttendanceManager;
 import domain.AttendanceRecord;
 import domain.NickName;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import util.FileUtil;
 import view.InputView;
 import view.OutputView;
@@ -11,10 +14,18 @@ import view.OutputView;
 public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
+    private final Map<String, Consumer<AttendanceManager>> commands;
 
     public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
+        commands = new HashMap<>();
+        registerCommand();
+    }
+
+    // 이곳에 각 명령별 함수형 인터페이스를 등록합니다.
+    private void registerCommand() {
+        commands.put("1", this::attendProcess);
     }
 
     public void start() {
@@ -40,14 +51,15 @@ public class AttendanceController {
     }
 
     private boolean commandProcess(AttendanceManager attendanceManager, String command) {
-        if (command.equals("1")) {
-            attendProcess(attendanceManager);
-            return true;
-        }
         if (command.equalsIgnoreCase("Q")) {
             return false;
         }
-        outputView.printInvalidCommand();
+        if (!commands.containsKey(command)) {
+            outputView.printInvalidCommand();
+            return true;
+        }
+        Consumer<AttendanceManager> commandConsumer = commands.get(command);
+        commandConsumer.accept(attendanceManager);
         return true;
     }
 
