@@ -31,12 +31,13 @@ public class AttendanceController {
     public void run(LocalDate today) {
         while (true) {
             try {
-                Selection selection = Selection.of(InputView.readSelection());
+                String userInput = InputView.readSelection(today);
+
+                Selection selection = Selection.of(userInput);
                 if (selection == Selection.QUIT) {
                     break;
                 }
                 executeCommand(selection, today);
-
             } catch (DateTimeException dte) {
                 OutputView.printException(new IllegalArgumentException("잘못된 날짜입니다."));
             } catch (IllegalArgumentException e) {

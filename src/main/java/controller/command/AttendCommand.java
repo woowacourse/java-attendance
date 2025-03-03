@@ -5,6 +5,7 @@ import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import service.AttendanceService;
 import util.DateUtils;
 import view.InputView;
@@ -34,7 +35,7 @@ public class AttendCommand implements ControllerCommand {
 
     private static void validateTodayIsWorkingDay(LocalDate today) {
         if (DateUtils.isDayOff(today)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEE요일");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEE요일", Locale.KOREAN);
             String formattedDate = formatter.format(today);
             throw new IllegalArgumentException(formattedDate + "은 등교일이 아닙니다.");
         }

@@ -2,15 +2,16 @@ package view;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class InputView {
 
     private static final Scanner SCANNER = new Scanner(System.in);
 
-    public static String readSelection() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEE요일");
-        String formatted = formatter.format(LocalDate.now());
+    public static String readSelection(LocalDate today) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEE요일", Locale.KOREAN);
+        String formatted = formatter.format(today);
         System.out.printf("오늘은 %s입니다. 기능을 선택해 주세요.\n", formatted);
         System.out.println("""
             1. 출석 확인
