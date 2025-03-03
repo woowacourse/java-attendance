@@ -1,8 +1,12 @@
 package attendance.domain;
 
 import java.time.LocalDate;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceHistoryTest {
 
@@ -35,5 +39,28 @@ public class AttendanceHistoryTest {
             org.junit.jupiter.api.Assertions.assertEquals(attendanceTime.getHour(), 10);
             org.junit.jupiter.api.Assertions.assertEquals(attendanceTime.getMinute(), 20);
         });
+    }
+
+    @ParameterizedTest
+    @MethodSource("dateAndResult")
+    void 입력_받은_날짜에_대한_출석_기록이_이미_존재하는지_판단한다(final LocalDate date, final boolean expectedResult) {
+
+        // given
+        final AttendanceHistory attendanceHistory = new AttendanceHistory();
+        attendanceHistory.add(new AttendanceTime(LocalDate.of(2025, 3, 3), 10, 20));
+
+        // when
+        final boolean result = attendanceHistory.isAlreadyExists(date);
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
+    public static Stream<Arguments> dateAndResult() {
+
+        return Stream.of(
+                Arguments.of(LocalDate.of(2025, 3, 3), true),
+                Arguments.of(LocalDate.of(2025, 3, 4), false)
+        );
     }
 }
