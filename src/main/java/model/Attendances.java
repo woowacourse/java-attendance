@@ -81,6 +81,8 @@ public class Attendances {
     public AttendanceHistoryResponse findHistoryByCrew(String nickname, LocalDate now) {
         Crew crew = Crew.of(nickname);
         List<Attendance> filteredAttendances = getAttendancesByCrew(crew).stream()
+                .filter(attendance -> attendance.getCheckInDate().getYear() == now.getYear())
+                .filter(attendance -> attendance.getCheckInDate().getMonth() == now.getMonth())
                 .filter(attendance -> attendance.getCheckInDate().isBefore(now))
                 .toList();
         Map<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(filteredAttendances);
@@ -89,11 +91,15 @@ public class Attendances {
         return new AttendanceHistoryResponse(crew.getNickname(), filteredAttendances, attendanceTotal, punishmentType);
     }
 
-    public AttendanceRiskCrewsResponse findRiskCrews() {
+    public AttendanceRiskCrewsResponse findRiskCrews(LocalDate now) {
         List<AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse> sortedRiskCrews = attendances.keySet().stream()
                 .map(crew -> new AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse(
                         crew,
-                        AttendanceType.calculateTotal(getAttendancesByCrew(crew)),
+                        AttendanceType.calculateTotal(getAttendancesByCrew(crew).stream()
+                                .filter(attendance -> attendance.getCheckInDate().getYear() == now.getYear())
+                                .filter(attendance -> attendance.getCheckInDate().getMonth() == now.getMonth())
+                                .toList()
+                        ),
                         PunishmentType.find(AttendanceType.calculateTotal(getAttendancesByCrew(crew)))
                 ))
                 .sorted(Comparator

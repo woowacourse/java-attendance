@@ -76,7 +76,7 @@ public class AttendanceController {
     }
 
     private void findRiskCrews(Attendances attendances) {
-        AttendanceRiskCrewsResponse response = attendances.findRiskCrews();
+        AttendanceRiskCrewsResponse response = attendances.findRiskCrews(LocalDate.now());
         OutputView.printRiskCrews(response);
     }
 
