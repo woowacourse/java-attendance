@@ -10,6 +10,6 @@ public class EmptyAttendanceDate extends AttendanceDate {
 
     @Override
     public LocalDateTime getDateTime() {
-        throw new IllegalArgumentException("출입 기록이 없는 날에는 출석 시간을 조회할 수 없습니다");
+        throw new EmptyAttendanceDateException(this.getDate());
     }
 }
