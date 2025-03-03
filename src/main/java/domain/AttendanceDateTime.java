@@ -36,6 +36,11 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
         return new AttendanceDateTime(dateTime);
     }
 
+    public static AttendanceDateTime of(final AttendanceDate date, final AttendanceTime time) {
+        final LocalDateTime localDateTime = LocalDateTime.of(date.getDate(), time.getTime());
+        return new AttendanceDateTime(localDateTime);
+    }
+
     private static LocalDateTime parseDateTime(final String inputDateTime) {
         try {
             return LocalDateTime.parse(inputDateTime, DATE_TIME_FORMATTER);
@@ -51,6 +56,11 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
 
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    public boolean isSameDate(final LocalDate date) {
+        final LocalDate localDate = dateTime.toLocalDate();
+        return localDate.equals(date);
     }
 
     @Override
