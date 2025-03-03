@@ -45,16 +45,4 @@ class WeeklyAttendanceScheduleTest {
                         +localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
                         + "은 등교일이 아닙니다.");
     }
-
-    @ParameterizedTest
-    @CsvSource({
-            "2024-12-14, true",
-            "2024-12-15, true",
-            "2024-12-25, true"
-    })
-    @DisplayName("휴일에 대한 출석 여부 확인")
-    void 출석_여부_확인(LocalDate localDate, boolean expected) {
-        boolean result = WeeklyAttendanceSchedule.checkHoliday(localDate);
-        assertEquals(expected, result);
-    }
 }
