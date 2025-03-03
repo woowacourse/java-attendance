@@ -12,7 +12,7 @@ public class InputView {
     private static final Pattern TIME_INPUT_PATTERN = Pattern.compile("\\d{2}:\\d{2}");
     private final Scanner scanner = new Scanner(System.in);
 
-    public String readOperationCommand(final LocalDateTime today) {
+    public OperationCommand readOperationCommand(final LocalDateTime today) {
         System.out.println(String.join("", "오늘은 ", DATE_FORMATTER.format(today), "입니다. 기능을 선택해 주세요."));
         System.out.print("""
                 1. 출석 확인
@@ -23,7 +23,7 @@ public class InputView {
                 """);
         String operationCommand = scanner.nextLine();
         validateBlank(operationCommand);
-        return operationCommand;
+        return OperationCommand.from(operationCommand);
     }
 
     public String readAttendanceConfirmNickname() {

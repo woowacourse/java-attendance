@@ -18,6 +18,7 @@ import attendance.domain.Crew;
 import attendance.domain.CrewAttendances;
 import attendance.domain.Crews;
 import attendance.view.InputView;
+import attendance.view.OperationCommand;
 import attendance.view.ResultView;
 
 public class AttendanceManagementController {
@@ -81,20 +82,20 @@ public class AttendanceManagementController {
     private void startAttendanceManagementSystem(final Crews crews, final CrewAttendances crewAttendances) {
         while (true) {
             try {
-                String operationCommand = inputView.readOperationCommand(today);
-                if (operationCommand.equals("Q")) {
+                OperationCommand operationCommand = inputView.readOperationCommand(today);
+                if (operationCommand.equals(OperationCommand.QUIT)) {
                     return;
                 }
-                if (operationCommand.equals("1")) {
+                if (operationCommand.equals(OperationCommand.ATTENDANCE_CONFIRMATION)) {
                     runAttendanceConfirmOperation(crews, crewAttendances);
                 }
-                if (operationCommand.equals("2")) {
+                if (operationCommand.equals(OperationCommand.ATTENDANCE_MODIFICATION)) {
                     runAttendanceModificationOperation(crews, crewAttendances);
                 }
-                if (operationCommand.equals("3")) {
+                if (operationCommand.equals(OperationCommand.CREW_ATTENDANCES_INQUIRY)) {
                     runCrewAttendancesInquiryOperation(crews, crewAttendances);
                 }
-                if (operationCommand.equals("4")) {
+                if (operationCommand.equals(OperationCommand.PENALTY_CREWS_INQUIRY)) {
                     runPenaltyCrewsInquiryOperation(crews, crewAttendances);
                 }
             } catch (IllegalArgumentException e) {
