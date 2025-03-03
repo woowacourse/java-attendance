@@ -16,8 +16,7 @@ class AttendanceCounterTest {
     void setUp() {
         Map<AttendanceState, Integer> counts = new HashMap<>(
                 Map.of(AttendanceState.ATTENDANCE, 2,
-                        AttendanceState.TARDINESS, 3,
-                        AttendanceState.ABSENCE, 1)
+                        AttendanceState.TARDINESS, 3)
         );
         attendanceCounter = new AttendanceCounter(counts);
     }
@@ -39,7 +38,7 @@ class AttendanceCounterTest {
         assertAll(
                 () -> assertThat(attendanceCounter.getCount(AttendanceState.ATTENDANCE)).isEqualTo(2),
                 () -> assertThat(attendanceCounter.getCount(AttendanceState.TARDINESS)).isEqualTo(3),
-                () -> assertThat(attendanceCounter.getCount(AttendanceState.ABSENCE)).isEqualTo(1)
+                () -> assertThat(attendanceCounter.getCount(AttendanceState.ABSENCE)).isEqualTo(0)
         );
     }
 }
