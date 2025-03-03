@@ -14,6 +14,22 @@ import util.Current;
 import util.DateUtil;
 
 public class AttendanceManagerTest {
+    @ParameterizedTest
+    @DisplayName("닉네임이 등록되었는지 확인한다")
+    @CsvSource(value = {"후우, true", "마후우, false"})
+    void should_return_true_when_registered_nickname(NickName nickName, boolean expected) {
+        // given
+        NickName registedNickName = new NickName("후우");
+        AttendanceManager attendanceManager = new AttendanceManager();
+        attendanceManager.register(registedNickName);
+
+        // when
+        boolean result = attendanceManager.isRegistered(nickName);
+
+        // then
+        assertThat(result).isEqualTo(expected);
+    }
+
     @Test
     @DisplayName("등록되지 않은 닉네임을 입력하면 예외가 발생한다")
     void should_throw_exception_when_not_registered_nickname() {

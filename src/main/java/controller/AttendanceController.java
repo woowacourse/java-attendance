@@ -55,8 +55,7 @@ public class AttendanceController {
             return false;
         }
         if (!commands.containsKey(command)) {
-            outputView.printInvalidCommand();
-            return true;
+            throw new IllegalArgumentException("잘못된 기능입니다. 다시 입력해 주세요.");
         }
         Consumer<AttendanceManager> commandConsumer = commands.get(command);
         commandConsumer.accept(attendanceManager);
@@ -64,16 +63,38 @@ public class AttendanceController {
     }
 
     private void attendProcess(AttendanceManager attendanceManager) {
-        String inputNickName = inputView.inputAttendNickName();
-        NickName nickName = new NickName(inputNickName);
-        String attendingTime = inputView.inputAttendingTime();
-        AttendanceRecord attendanceRecord = AttendanceRecord.timeOf(attendingTime);
-        if (attendanceManager.isAttended(nickName, attendanceRecord)) {
-            outputView.printAlreadyAttended();
-            return;
-        }
+        NickName nickName = inputAttendNickName(attendanceManager);
+        AttendanceRecord attendanceRecord = inputAttendTime();
+        validateIsNotAttended(attendanceManager, nickName, attendanceRecord);
         attendanceManager.attend(nickName, attendanceRecord);
         outputView.printAttend(attendanceRecord);
+    }
+
+    private NickName inputAttendNickName(AttendanceManager attendanceManager) {
+        String inputNickName = inputView.inputAttendNickName();
+        NickName nickName = new NickName(inputNickName);
+        if (!attendanceManager.isRegistered(nickName)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
+        return nickName;
+    }
+
+    private AttendanceRecord inputAttendTime() {
+        String attendTime = inputView.inputAttendingTime();
+        return AttendanceRecord.timeOf(attendTime);
+    }
+
+    private void validateIsNotAttended(AttendanceManager attendanceManager, NickName nickName,
+                                       AttendanceRecord attendanceRecord) {
+        if (attendanceManager.isAttended(nickName, attendanceRecord)) {
+            throw new IllegalArgumentException("이미 출석한 닉네임입니다. 수정 기능을 사용해 주세요.");
+        }
+    }
+
+    private void editProcess(AttendanceManager attendanceManager) {
+        // String editNickName = inputView.inputEditNickName();
+        // NickName nickName = new NickName(editNickName);
+
     }
 
     private AttendanceManager loadAttendanceManager() {

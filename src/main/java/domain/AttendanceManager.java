@@ -62,7 +62,7 @@ public class AttendanceManager {
         }
     }
 
-    private boolean isRegistered(NickName nickName) {
+    public boolean isRegistered(NickName nickName) {
         return attendanceManager.containsKey(nickName);
     }
 
