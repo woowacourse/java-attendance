@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class ResultView {
     private static final String CREW_ATTENDANCE_HEADER = "\n이번 달 %s의 출석 기록입니다.\n\n";
@@ -97,18 +98,31 @@ public class ResultView {
                 .filter(level -> level != WarningLevel.NONE)
                 .toList();
         for (WarningLevel warningLevel : warningLevels) {
-            final Map<Crew, CrewAttendance> crews = warningLevel.getCrews();
-            crews.entrySet().forEach(entry -> {
-                final Map<AttendanceStatus, Integer> attendanceStatusCounts = entry.getValue()
-                        .countAttendanceStatusesBefore(today);
-                final String result = String.format(WARNING_CREW_FORMAT,
-                        entry.getKey().nickname(),
-                        attendanceStatusCounts.get(ABSENT),
-                        attendanceStatusCounts.get(LATE),
-                        warningLevel.getDisplayName());
-                System.out.print(result);
-            });
+            printCrewsOf(warningLevel, today);
         }
         System.out.println();
+    }
+
+    private static void printCrewsOf(final WarningLevel warningLevel, final LocalDateTime today) {
+        final Map<Crew, CrewAttendance> crews = warningLevel.getCrews();
+        for (Entry<Crew, CrewAttendance> entry : crews.entrySet()) {
+            Crew crew = entry.getKey();
+            CrewAttendance crewAttendance = entry.getValue();
+            final Map<AttendanceStatus, Integer> attendanceStatusCounts =
+                    crewAttendance.countAttendanceStatusesBefore(today);
+            System.out.print(formatWarningCrew(warningLevel, crew, attendanceStatusCounts));
+        }
+    }
+
+    private static String formatWarningCrew(
+            final WarningLevel warningLevel,
+            final Crew crew,
+            final Map<AttendanceStatus, Integer> attendanceStatusCounts
+    ) {
+        return String.format(WARNING_CREW_FORMAT,
+                crew.nickname(),
+                attendanceStatusCounts.get(ABSENT),
+                attendanceStatusCounts.get(LATE),
+                warningLevel.getDisplayName());
     }
 }
