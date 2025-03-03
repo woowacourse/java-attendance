@@ -6,7 +6,7 @@ public enum AttendanceRisk {
     WEEDING(6),
     INTERVIEW(3),
     WARNING(2),
-    NONE(Integer.MIN_VALUE);
+    NONE(Integer.MIN_VALUE); // 임계값을 특별히 정의하지 않았습니다. (Integer.MIN_VALUE 사용)
 
     private final int threshold;
 
