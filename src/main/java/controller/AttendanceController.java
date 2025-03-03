@@ -3,9 +3,7 @@ package controller;
 import domain.AttendanceDate;
 import domain.AttendanceState;
 import domain.Attendances;
-import domain.Calender;
 import domain.Crew;
-import domain.DateProvider;
 import domain.Dismissal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -54,28 +52,36 @@ public class AttendanceController {
         LocalDateTime attendanceDateTime = inputAttendanceDateTime();
 
         attendances.checkAttendance(name, attendanceDateTime);
-        AttendanceState attendanceState = AttendanceState.findStateBy(attendanceDateTime);
+        AttendanceState attendanceState = getAttendanceState(attendanceDateTime);
 
         outputView.printAttendanceRecord(attendanceDateTime, attendanceState);
     }
 
     void attendanceUpdate() {
         String name = inputUpdateName();
-        int updateDate = inputView.readUpdateDate();
-        LocalTime updateTime = inputView.readUpdateTime();
+        LocalDateTime updateDateTime = inputUpdateDateTime();
 
-        LocalDateTime updateLocalDateTime = dateProvider.createLocalDateTime(updateDate, updateTime);
+        LocalDateTime beforeAttendance = attendances.getAttendanceRecordBy(name, updateDateTime.toLocalDate());
+        AttendanceState beforeAttendanceState = getAttendanceState(beforeAttendance);
 
-        LocalDateTime beforeAttendance = attendances.getAttendanceRecordBy(name, updateLocalDateTime.toLocalDate());
-        AttendanceState beforeAttendanceState = AttendanceState.findStateBy(beforeAttendance);
+        attendances.updateAttendance(name, updateDateTime);
 
-        attendances.updateAttendance(name, updateLocalDateTime);
-
-        LocalDateTime afterAttendance = attendances.getAttendanceRecordBy(name, updateLocalDateTime.toLocalDate());
-        AttendanceState afterAttendanceState = AttendanceState.findStateBy(afterAttendance);
+        LocalDateTime afterAttendance = attendances.getAttendanceRecordBy(name, updateDateTime.toLocalDate());
+        AttendanceState afterAttendanceState = getAttendanceState(afterAttendance);
 
         outputView.printUpdateAttendanceRecord(beforeAttendance, beforeAttendanceState, afterAttendance,
                 afterAttendanceState);
+    }
+
+    private LocalDateTime inputUpdateDateTime() {
+        int updateDate = inputView.readUpdateDate();
+        LocalTime updateTime = inputView.readUpdateTime();
+
+        return attendanceDate.createLocalDateTime(updateDate, updateTime);
+    }
+
+    private AttendanceState getAttendanceState(LocalDateTime attendanceDateTime) {
+        return AttendanceState.findStateBy(attendanceDateTime);
     }
 
     void attendanceHistory() {
@@ -83,14 +89,18 @@ public class AttendanceController {
         Map<LocalDateTime, AttendanceState> attendanceHistory = attendances.getHistory(name,
                 attendanceDate.getLocalDate());
 
-        outputView.printAttendanceHistory(name, history);
-        Map<AttendanceState, Integer> attendanceStateCounts = attendances.calculate(history);
+        outputView.printAttendanceHistory(name, attendanceHistory);
+        Map<AttendanceState, Integer> attendanceStateCounts = attendances.calculate(attendanceHistory);
 
-        Integer lateCount = attendanceStateCounts.get(AttendanceState.LATE);
-        Integer absenceCount = attendanceStateCounts.get(AttendanceState.ABSENCE);
-        Dismissal dismissal = Dismissal.findDismissalBy(lateCount, absenceCount);
+        Dismissal dismissal = getDismissal(attendanceStateCounts);
 
         outputView.printAttendanceStateCounts(attendanceStateCounts, dismissal);
+    }
+
+    private Dismissal getDismissal(Map<AttendanceState, Integer> attendanceStateCounts) {
+        int lateCount = attendanceStateCounts.get(AttendanceState.LATE);
+        int absenceCount = attendanceStateCounts.get(AttendanceState.ABSENCE);
+        return Dismissal.findDismissalBy(lateCount, absenceCount);
     }
 
     void dismissalHistory() {
