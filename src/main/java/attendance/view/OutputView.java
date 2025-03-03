@@ -43,8 +43,8 @@ public class OutputView {
     }
 
     public void printAttendanceUpdate(AttendanceUpdate attendanceUpdate) {
-        printAttendanceResult(attendanceUpdate.beforeAttendance());
-        Attendance attendance = attendanceUpdate.afterAttendance();
+        printAttendanceResult(attendanceUpdate.getBeforeAttendance());
+        Attendance attendance = attendanceUpdate.getAfterAttendance();
         System.out.printf(" -> %s (%s) 수정 완료!",
                 attendance.getDateTime().toLocalTime(),
                 AttendanceStateView.findByName(attendance.getState().name())

@@ -83,11 +83,11 @@ class CrewAttendanceManagerTest {
 
         // then
         assertAll(
-                () -> assertThat(result.beforeAttendance().getDateTime()).isEqualTo(baseDateTime),
-                () -> assertThat(result.beforeAttendance().getState()).isEqualTo(AttendanceState.ABSENCE),
+                () -> assertThat(result.getBeforeAttendance().getDateTime()).isEqualTo(baseDateTime),
+                () -> assertThat(result.getBeforeAttendance().getState()).isEqualTo(AttendanceState.ABSENCE),
 
-                () -> assertThat(result.afterAttendance().getDateTime()).isEqualTo(updateDateTime),
-                () -> assertThat(result.afterAttendance().getState()).isEqualTo(AttendanceState.ATTENDANCE)
+                () -> assertThat(result.getAfterAttendance().getDateTime()).isEqualTo(updateDateTime),
+                () -> assertThat(result.getAfterAttendance().getState()).isEqualTo(AttendanceState.ATTENDANCE)
         );
     }
 
