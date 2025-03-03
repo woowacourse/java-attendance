@@ -10,6 +10,7 @@ import attendance.domain.fixture.AttendancesTestFixture;
 import attendance.domain.fixture.LocalDateTestFixture;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class AttendanceManagerTest {
                     crewAttendances.put(name, new Attendances());
                 });
 
-        AttendanceChecker checker = new DefaultAttendanceChecker();
+        AttendanceChecker checker = new DefaultAttendanceChecker(new ArrayList<>());
 
         assertThat(new AttendanceManager(crewAttendances, LocalDateTestFixture.DATE_PROVIDER,
                 new DefaultAttendanceStatistics(LocalDateTestFixture.DATE_PROVIDER, checker), checker))

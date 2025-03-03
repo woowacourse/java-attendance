@@ -1,6 +1,8 @@
 package attendance.domain.fixture;
 
 import attendance.config.FixedLocalDateProvider;
+import attendance.domain.AttendanceChecker;
+import attendance.domain.DefaultAttendanceChecker;
 import attendance.domain.Holiday;
 import attendance.domain.LocalDateProvider;
 import java.time.DayOfWeek;
@@ -10,13 +12,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class LocalDateTestFixture {
-    public static final LocalDateProvider DATE_PROVIDER;
-    public static final LocalDate TEST_DATE;
+    public static final LocalDate TEST_DATE = LocalDate.of(2024, 12, 31);
+    public static final LocalDateProvider DATE_PROVIDER = new FixedLocalDateProvider(TEST_DATE);
+    public static AttendanceChecker checker;
 
-    static {
-        TEST_DATE = LocalDate.of(2024, 12, 31);
-        DATE_PROVIDER = new FixedLocalDateProvider(TEST_DATE);
-    }
 
     public static LocalDate createRegularDate() {
         LocalDate now = DATE_PROVIDER.now();
@@ -32,7 +31,6 @@ public class LocalDateTestFixture {
         LocalDate now = DATE_PROVIDER.now();
         return IntStream.range(1, endDate)
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
-                .filter(date -> !Holiday.isHoliday(date))
                 .filter(date -> !isWeekend(date))
                 .collect(Collectors.toList());
     }

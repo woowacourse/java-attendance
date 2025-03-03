@@ -8,13 +8,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DataFileReader {
-    private static final String FILE_PATH = "src/main/resources/attendances.csv";
-    private static final int FILE_HEADER_LINE_COUNT = 1;
-
-    public static List<String> readFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+    public static List<String> readFile(String path, int skipLineCount) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
             return reader.lines()
-                    .skip(FILE_HEADER_LINE_COUNT)
+                    .skip(skipLineCount)
                     .collect(Collectors.toList());
         } catch (FileNotFoundException e) {
             throw new RuntimeException("파일이 존재하지 않습니다.", e);

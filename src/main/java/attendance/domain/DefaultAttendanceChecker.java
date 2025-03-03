@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public class DefaultAttendanceChecker implements AttendanceChecker{
@@ -12,6 +13,11 @@ public class DefaultAttendanceChecker implements AttendanceChecker{
     private static final int CAMPUS_OPEN_MINUTE = 0;
     private static final int CAMPUS_CLOSE_HOUR = 23;
     private static final int CAMPUS_CLOSE_MINUTE = 0;
+    private final List<Holiday> holidays;
+
+    public DefaultAttendanceChecker(List<Holiday> holidays) {
+        this.holidays = holidays;
+    }
 
     @Override
     public void checkCampusOpen(LocalDate date, LocalTime time) {
@@ -21,7 +27,7 @@ public class DefaultAttendanceChecker implements AttendanceChecker{
 
     @Override
     public boolean isCampusOpenDate(LocalDate date) {
-        return !isWeekend(date) && !Holiday.isHoliday(date);
+        return !isWeekend(date) && !isHoliday(date);
     }
 
     private void checkDate(LocalDate date) {
@@ -33,6 +39,11 @@ public class DefaultAttendanceChecker implements AttendanceChecker{
                     getDisplayName(date)
             ));
         }
+    }
+
+    private boolean isHoliday(LocalDate date){
+        return holidays.stream()
+                .anyMatch(holiday -> holiday.isMatch(date));
     }
 
     private boolean isWeekend(LocalDate date) {

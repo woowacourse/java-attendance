@@ -170,7 +170,7 @@ public class OutputView {
 
 
     public void printErrorMessage(Exception error) {
-        System.out.println(ERROR_MESSAGE_PREFIX + error);
+        System.out.println(ERROR_MESSAGE_PREFIX + error.getMessage());
     }
 
     private static String getDisplayName(LocalDate date) {

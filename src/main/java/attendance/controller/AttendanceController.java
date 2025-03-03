@@ -52,7 +52,11 @@ public class AttendanceController {
     }
 
     private void execute(AttendanceCommand command) {
-        commands.get(command).run();
+        try {
+            commands.get(command).run();
+        } catch (IllegalArgumentException e){
+            outputView.printErrorMessage(e);
+        }
     }
 
     private void checkAttendance(AttendanceManager attendanceManager) {

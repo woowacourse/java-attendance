@@ -4,8 +4,12 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import attendance.domain.fixture.LocalDateTestFixture;
+import attendance.util.CsvDataLoader;
+import attendance.util.DataLoader;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -18,10 +22,17 @@ import org.junit.jupiter.params.provider.EnumSource;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class AttendanceCheckerTest {
     private static final LocalDateProvider DATE_PROVIDER = LocalDateTestFixture.DATE_PROVIDER;
+    private static AttendanceChecker attendanceChecker;
+
+    @BeforeAll
+    static void setup(){
+        DataLoader dataLoader = new CsvDataLoader();
+        attendanceChecker = new DefaultAttendanceChecker(dataLoader.loadHolidayData());
+    }
+
 
     @Test
     void 주말이면_예외가_발생한다() {
-        AttendanceChecker attendanceChecker = new DefaultAttendanceChecker();
         LocalDate weekendDate = LocalDateTestFixture.createWeekendDate();
         LocalTime time = LocalTime.of(10, 0);
 
@@ -30,11 +41,9 @@ public class AttendanceCheckerTest {
                 .hasMessageContaining("등교일이 아닙니다.");
     }
 
-    @ParameterizedTest
-    @EnumSource(Holiday.class)
-    void 공휴일이면_예외가_발생한다(Holiday holiday) {
-        AttendanceChecker attendanceChecker = new DefaultAttendanceChecker();
-        LocalDate holidayDate = LocalDate.of(DATE_PROVIDER.now().getYear(), holiday.getMonth(), holiday.getDay());
+    @Test
+    void 공휴일이면_예외가_발생한다() {
+        LocalDate holidayDate = LocalDate.of(2024, 12, 25);
         LocalTime time = LocalTime.of(10, 0);
 
         assertThatThrownBy(() -> attendanceChecker.checkCampusOpen(holidayDate, time))
@@ -50,7 +59,6 @@ public class AttendanceCheckerTest {
             "7, 59"
     })
     void 캠퍼스의_운영시간이_아니면_예외가_발생한다(int hour, int minute) {
-        AttendanceChecker attendanceChecker = new DefaultAttendanceChecker();
         LocalDate regularDate = LocalDateTestFixture.createRegularDate();
         LocalTime time = LocalTime.of(hour, minute);
 
@@ -67,7 +75,6 @@ public class AttendanceCheckerTest {
             "23, 0"
     })
     void 캠퍼스의_운영시간이면_예외가_발생하지_않는다(int hour, int minute) {
-        AttendanceChecker attendanceChecker = new DefaultAttendanceChecker();
         LocalDate regularDate = LocalDateTestFixture.createRegularDate();
         LocalTime time = LocalTime.of(hour, minute);
 
