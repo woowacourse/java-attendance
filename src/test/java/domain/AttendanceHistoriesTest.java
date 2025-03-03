@@ -383,7 +383,7 @@ public class AttendanceHistoriesTest {
 
     @Test
     @DisplayName("4.1 제적 위험자에 해당하는 크루들을 확인할 수 있다.")
-    void test() {
+    void testGetDisciplinedCrews() {
         // given
         AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createDisciplinedCrewsHistory(
                 FIRST_TUESDAY_DATE, 10);
