@@ -3,7 +3,6 @@ import java.time.LocalDateTime;
 
 public class AttendanceHistory {
     private final Crew crew;
-    //TODO: LocalDateTime 을 래핑해볼까?
     private final LocalDateTime attendAt;
 
     public AttendanceHistory(Crew crew, LocalDateTime attendAt) {

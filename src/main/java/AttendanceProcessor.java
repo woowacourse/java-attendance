@@ -15,7 +15,7 @@ public class AttendanceProcessor {
         this.crews = crews;
     }
 
-    public AttendanceHistory registerNewAttendance(Crew crew, LocalDateTime requestedAt) {
+    public AttendanceHistory registerNewHistory(Crew crew, LocalDateTime requestedAt) {
         boolean existedHistory = attendanceHistories.checkExistenceByCrewAndDate(crew, requestedAt.toLocalDate());
         if (existedHistory) {
             throw new IllegalArgumentException("이미 존재하는 출석 기록입니다. 수정 기능을 이용해주세요.");
@@ -27,18 +27,18 @@ public class AttendanceProcessor {
         return attendanceHistory;
     }
 
-    public AttendanceHistory updateRegisteredAttendance(AttendanceHistory oldAttendanceHistory, Crew crew,
-                                                        LocalDateTime requestedAt) {
+    public AttendanceHistory updateRegisteredHistory(AttendanceHistory oldAttendanceHistory, Crew crew,
+                                                     LocalDateTime requestedAt) {
         AttendanceHistory newAttendanceHistory = new AttendanceHistory(crew, requestedAt);
         attendanceHistories.update(oldAttendanceHistory, newAttendanceHistory);
         return newAttendanceHistory;
     }
 
     public Map<LocalDateTime, AttendanceType> findAllHistoriesOfCrew(Crew crew, LocalDate requestedAt) {
-        List<AttendanceHistory> historiesOfCrew = attendanceHistories.findAllHistoriesOfCrewDateBefore(
-                crew, requestedAt);
+        List<AttendanceHistory> historiesOfCrew = attendanceHistories.findAllHistoriesOfCrewDateBefore(crew,
+                requestedAt);
 
-        return AttendanceTypeCounter.count(requestedAt, historiesOfCrew);
+        return AttendanceTypeAnalyzer.analyze(requestedAt, historiesOfCrew);
     }
 
     public PenaltyResultOfCrew getPenaltyResultOfCrew(Crew crew, Map<LocalDateTime, AttendanceType> attendanceHistory) {
@@ -55,7 +55,7 @@ public class AttendanceProcessor {
             List<AttendanceHistory> historiesOfCrew = attendanceHistories.findAllHistoriesOfCrewDateBefore(
                     crew, requestedAt);
 
-            Map<LocalDateTime, AttendanceType> attendanceTypeCountOfDates = AttendanceTypeCounter.count(
+            Map<LocalDateTime, AttendanceType> attendanceTypeCountOfDates = AttendanceTypeAnalyzer.analyze(
                     requestedAt,
                     historiesOfCrew);
 

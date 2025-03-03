@@ -6,7 +6,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class AttendanceTypeCounterTest {
+class AttendanceTypeAnalyzerTest {
 
     @Test
     @DisplayName("출석의 타입에 따라 개수를 적절히 센다")
@@ -30,7 +30,7 @@ class AttendanceTypeCounterTest {
                 LocalDateTime.of(2024, 12, 9, 13, 6), AttendanceType.LATE
         );
 
-        Map<LocalDateTime, AttendanceType> actual = AttendanceTypeCounter.count(requestedDate.toLocalDate(),
+        Map<LocalDateTime, AttendanceType> actual = AttendanceTypeAnalyzer.analyze(requestedDate.toLocalDate(),
                 attendanceHistories);
 
         assertThat(actual).isEqualTo(expected);
@@ -51,7 +51,7 @@ class AttendanceTypeCounterTest {
                 LocalDateTime.of(2024, 12, 3, 0, 0), AttendanceType.NO_DATA
         );
 
-        Map<LocalDateTime, AttendanceType> actual = AttendanceTypeCounter.count(requestedDate.toLocalDate(),
+        Map<LocalDateTime, AttendanceType> actual = AttendanceTypeAnalyzer.analyze(requestedDate.toLocalDate(),
                 attendanceHistories);
 
         assertThat(actual).isEqualTo(result);
@@ -66,7 +66,7 @@ class AttendanceTypeCounterTest {
                 new AttendanceHistory(crew, LocalDateTime.of(2024, 12, 2, 10, 0))
         );
 
-        Map<LocalDateTime, AttendanceType> actual = AttendanceTypeCounter.count(requestedDate.toLocalDate(),
+        Map<LocalDateTime, AttendanceType> actual = AttendanceTypeAnalyzer.analyze(requestedDate.toLocalDate(),
                 attendanceHistories);
 
         assertThat(actual.keySet()).doesNotContain(LocalDateTime.of(2024, 12, 1, 0, 0));
@@ -83,7 +83,7 @@ class AttendanceTypeCounterTest {
         );
 
         // when
-        Map<LocalDateTime, AttendanceType> attendanceTypeOfDates = AttendanceTypeCounter.count(
+        Map<LocalDateTime, AttendanceType> attendanceTypeOfDates = AttendanceTypeAnalyzer.analyze(
                 requestedDate.toLocalDate(),
                 attendanceHistories);
         AttendanceType actual = attendanceTypeOfDates.get(LocalDateTime.of(2024, 12, 3, 0, 0));

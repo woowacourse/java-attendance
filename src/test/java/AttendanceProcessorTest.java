@@ -27,7 +27,7 @@ public class AttendanceProcessorTest {
                     new AttendanceHistories(List.of(attendanceHistory)), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceProcessor.registerNewAttendance(crew, attendAt))
+            assertThatThrownBy(() -> attendanceProcessor.registerNewHistory(crew, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("이미 존재하는 출석 기록입니다. 수정 기능을 이용해주세요.");
         }
@@ -43,7 +43,7 @@ public class AttendanceProcessorTest {
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceProcessor.registerNewAttendance(crew, attendAt))
+            assertThatThrownBy(() -> attendanceProcessor.registerNewHistory(crew, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("평일이거나 공휴일이 아닌 경우에만 출석할 수 있습니다.");
         }
@@ -59,7 +59,7 @@ public class AttendanceProcessorTest {
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceProcessor.registerNewAttendance(crew, attendAt))
+            assertThatThrownBy(() -> attendanceProcessor.registerNewHistory(crew, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
         }
@@ -77,7 +77,7 @@ public class AttendanceProcessorTest {
 
             // when
             assertThatCode(
-                    () -> attendanceProcessor.registerNewAttendance(crew, attendAt)).doesNotThrowAnyException();
+                    () -> attendanceProcessor.registerNewHistory(crew, attendAt)).doesNotThrowAnyException();
         }
 
         @Test
@@ -92,7 +92,7 @@ public class AttendanceProcessorTest {
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            AttendanceHistory attendanceHistory = attendanceProcessor.registerNewAttendance(crew, attendAt);
+            AttendanceHistory attendanceHistory = attendanceProcessor.registerNewHistory(crew, attendAt);
 
             // then
             Assertions.assertAll(
@@ -119,7 +119,7 @@ public class AttendanceProcessorTest {
 
             // when
             assertThatThrownBy(
-                    () -> attendanceProcessor.updateRegisteredAttendance(oldHistory, crew, newAttendDate))
+                    () -> attendanceProcessor.updateRegisteredHistory(oldHistory, crew, newAttendDate))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
         }

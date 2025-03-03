@@ -49,7 +49,7 @@ public class AttendanceWorkflow {
         Crew crew = getRequestedCrew();
         LocalDateTime attendAt = LocalDateTime.of(console.getDateOfToday(), console.readAttendanceTime());
 
-        AttendanceHistory attendanceHistory = attendanceProcessor.registerNewAttendance(crew, attendAt);
+        AttendanceHistory attendanceHistory = attendanceProcessor.registerNewHistory(crew, attendAt);
         OutputView.printRegisteredHistory(attendanceHistory);
     }
 
@@ -60,7 +60,7 @@ public class AttendanceWorkflow {
         LocalDateTime newAttendanceAt = LocalDateTime.of(requestedDate, console.readAttendanceTimeToUpdate());
 
         AttendanceHistory oldHistory = attendanceHistories.findByCrewAndDate(crew, requestedDate);
-        AttendanceHistory newHistory = attendanceProcessor.updateRegisteredAttendance(oldHistory, crew,
+        AttendanceHistory newHistory = attendanceProcessor.updateRegisteredHistory(oldHistory, crew,
                 newAttendanceAt);
 
         OutputView.printUpdatedHistory(oldHistory, newHistory);
