@@ -54,9 +54,7 @@ public class AttendanceBook {
 
     public List<String> getExpulsionCrews(final AcademicStatus academicStatus,
                                           final LocalDate localDate) {
-        List<String> academicStatusCrewsName = filterCrewsByAcademicStatus(academicStatus, localDate);
-//        sortAcademicStatusResults(academicStatusCrewsName);
-        return academicStatusCrewsName;
+        return filterCrewsByAcademicStatus(academicStatus, localDate);
     }
 
     private List<String> filterCrewsByAcademicStatus(final AcademicStatus academicStatus,
@@ -71,14 +69,6 @@ public class AttendanceBook {
                 .map(SimpleEntry::getKey)
                 .collect(Collectors.toList());
     }
-
-//    private void sortAcademicStatusResults(final List<AcademicStatusResultDTO> academicStatusResultDTOS) {
-//        academicStatusResultDTOS.sort(
-//                Comparator.comparingLong((AcademicStatusResultDTO dto) -> dto.absent() + dto.late())
-//                        .reversed()
-//                        .thenComparing(AcademicStatusResultDTO::crewName)
-//        );
-//    }
 
     public Map<LocalDate, Attendance> getMonthlyAttendances(final String crewName, final int year, final int month) {
         return attendances.getMonthlyAttendanceMap(crewName, year, month);
