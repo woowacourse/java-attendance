@@ -19,9 +19,16 @@ public class AttendanceController {
 
     public void run(final AttendanceDateTime todayDateTime) {
         updateAttendanceRecord(todayDateTime);
+        commandProcess(todayDateTime);
+    }
+
+    private void commandProcess(final AttendanceDateTime todayDateTime) {
         final String symbolInput = InputView.readCommand(new DateInfoDto(todayDateTime));
         final Command command = Command.findBySymbol(symbolInput);
 
+        if (command.equals(Command.QUIT)) {
+            return ;
+        }
         if (command.equals(Command.ATTENDANCE_CHECK)) {
             processAttendanceCheck(todayDateTime);
         } else if (command.equals(Command.ATTENDANCE_CORRECTION)) {
@@ -31,6 +38,7 @@ public class AttendanceController {
         } else if (command.equals(Command.IDENTIFICATION_OF_THE_RISK_OF_EXPULSION)) {
             processRiskOfExpulsion();
         }
+        commandProcess(todayDateTime);
     }
 
     private void processAttendanceCheck(final AttendanceDateTime todayDateTime) {
@@ -47,7 +55,7 @@ public class AttendanceController {
     }
 
     private void processAttendanceCorrection() {
-        final Nickname nickname = new Nickname(InputView.readNickname());
+        final Nickname nickname = new Nickname(InputView.readNicknameByUpdate());
         final Crew crew = manager.findCrewByNickname(nickname);
         final AttendanceBook attendanceBook = manager.findAttendanceBookByCrew(crew);
 
@@ -55,7 +63,7 @@ public class AttendanceController {
         final Attendance oldAttendance = attendanceBook.findByDayOfMonth(dayOfMonth);
         final AttendanceDateTime oldDateTime = oldAttendance.getAttendanceDateTime();
 
-        final AttendanceTime attendanceTime = AttendanceTime.of(InputView.readAttendanceTime());
+        final AttendanceTime attendanceTime = AttendanceTime.of(InputView.readAttendanceTimeByUpdate());
         BusinessHours.validateOperatingTime(attendanceTime);
         oldAttendance.validateSameTime(attendanceTime);
         final AttendanceDateTime newDateTime = AttendanceDateTime.of(oldDateTime.getDateTime().toLocalDate(), attendanceTime);

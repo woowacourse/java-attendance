@@ -16,9 +16,11 @@ public class OutputView {
 
     public static void printAttendanceCorrection(final TypeInfoDto oldDto, final TypeInfoDto newDto) {
         System.out.println(String.format("%s -> %s 수정 완료!", oldDto.getFormattedDateTime(), newDto.getFormattedTime()));
+        System.out.println();
     }
 
     public static void printCrewAttendanceBook(final Crew crew, final List<TypeInfoDto> typeInfoDtos, final ExpulsionInfoDto expulsionInfoDto) {
+        System.out.println();
         System.out.println(String.format("이번 달 %s의 출석 기록입니다.", crew.getNickname().getValue()));
         System.out.println();
         for (final TypeInfoDto dto : typeInfoDtos) {
@@ -39,6 +41,7 @@ public class OutputView {
         if (!expulsionDisplayName.equals(ExpulsionType.NONE.getDisplayName())) {
             System.out.println(String.format("%s 대상자입니다.", expulsionDisplayName));
         }
+        System.out.println();
     }
 
     public static void printRiskOfExpulsion(final Map<Crew, ExpulsionInfoDto> expulsionInfoDtosByCrew) {
@@ -49,7 +52,7 @@ public class OutputView {
                 expulsionInfoDtosByCrew.get(crew).countsDto().getMap().get(AttendanceStatus.ABSENCE),
                 expulsionInfoDtosByCrew.get(crew).countsDto().getMap().get(AttendanceStatus.TARDINESS),
                 expulsionInfoDtosByCrew.get(crew).expulsionType().getDisplayName())));
-
+        System.out.println();
     }
 
     private static List<Crew> getCrews(final Map<Crew, ExpulsionInfoDto> expulsionInfoDtosByCrew) {
