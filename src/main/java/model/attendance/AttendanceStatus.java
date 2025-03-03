@@ -10,8 +10,7 @@ import java.util.List;
 public enum AttendanceStatus {
     NORMAL("출석", 6),
     LATE("지각", 31),
-    ABSENCE("결석", -1)
-    ;
+    ABSENCE("결석", -1);
 
     private static final int START_TIME_EXCEPT_MONDAY = 10;
     private static final int START_TIME_ON_MONDAY = 13;

@@ -92,17 +92,17 @@ public class OutputView {
         Map<Crew, AttendanceStatistic> sorted = new HashMap<>();
         origin.entrySet().stream()
                 .sorted(Comparator.comparing((Map.Entry<Crew, AttendanceStatistic> entrySet) -> {
-                            Map<AttendanceStatus, Integer> attendanceCount = entrySet.getValue().getAttendanceCount();
-                            return PenaltyStatus.calculateFinalAbsenceCount(
-                                    attendanceCount.get(AttendanceStatus.LATE),
-                                    attendanceCount.get(AttendanceStatus.ABSENCE)
-                            );
-                        }).reversed()
-                        .thenComparing((Map.Entry<Crew, AttendanceStatistic> entrySet) -> entrySet.getKey().getName())
+                                    Map<AttendanceStatus, Integer> attendanceCount = entrySet.getValue().getAttendanceCount();
+                                    return PenaltyStatus.calculateFinalAbsenceCount(
+                                            attendanceCount.get(AttendanceStatus.LATE),
+                                            attendanceCount.get(AttendanceStatus.ABSENCE)
+                                    );
+                                }).reversed()
+                                .thenComparing((Map.Entry<Crew, AttendanceStatistic> entrySet) -> entrySet.getKey().getName())
                 )
-                        .forEach((Map.Entry<Crew, AttendanceStatistic> entrySet) -> {
-                            sorted.put(entrySet.getKey(), entrySet.getValue());
-                        });
+                .forEach((Map.Entry<Crew, AttendanceStatistic> entrySet) -> {
+                    sorted.put(entrySet.getKey(), entrySet.getValue());
+                });
         return sorted;
     }
 }
