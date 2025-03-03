@@ -19,7 +19,7 @@ import java.util.Map;
 public class Application {
 
     private static final String FILE_NAME = "src/main/resources/attendances.csv";
-    private static final LocalDateTime today = LocalDateTime.of(2024, 12, 5, 10, 0);
+    private static final LocalDateTime today = LocalDateTime.of(2024, 12, 13, 10, 0);
     private static final String ZONE_ID = "Asia/Tokyo";
 
     public static void main(String[] args) throws IOException {
