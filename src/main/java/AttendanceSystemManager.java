@@ -41,7 +41,6 @@ public class AttendanceSystemManager {
         return AttendanceTypeCounter.count(requestedAt, historiesOfCrew);
     }
 
-    // TODO: 테스트 추가
     public PenaltyResultOfCrew getPenaltyResultOfCrew(Crew crew, Map<LocalDateTime, AttendanceType> attendanceHistory) {
         AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.createFrom(attendanceHistory);
         return PenaltyResultOfCrew.from(crew, attendanceTypeCount);

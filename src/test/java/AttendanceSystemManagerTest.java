@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceSystemManagerTest {
-    // TODO: 기능 한 개 구현하고, 전체적으로 리팩토링 (테스트명, 클래스 구조 등)
-
     @Nested
     class TestForRegisterNewAttendance {
         @Test
@@ -225,6 +223,33 @@ public class AttendanceSystemManagerTest {
 
         }
 
+    }
+
+    @Nested
+    class TestForGetPenaltyResultOfCrew {
+        @Test
+        @DisplayName("크루의 패널티 결과를 가져온다.")
+        void test() {
+            // given
+            Crew crew = new Crew("히로");
+            Map<LocalDateTime, AttendanceType> attendanceHistory = Map.of(
+                    LocalDateTime.of(2024, 12, 2, 10, 31), AttendanceType.ABSENCE,
+                    LocalDateTime.of(2024, 12, 3, 10, 31), AttendanceType.ABSENCE,
+                    LocalDateTime.of(2024, 12, 4, 10, 1), AttendanceType.ABSENCE,
+                    LocalDateTime.of(2024, 12, 5, 10, 1), AttendanceType.ABSENCE,
+                    LocalDateTime.of(2024, 12, 6, 10, 1), AttendanceType.ABSENCE
+            );
+            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+                    new AttendanceHistories(List.of()), new Crews(List.of(crew)));
+
+            // when
+            PenaltyResultOfCrew penaltyResultOfCrew = attendanceSystemManager.getPenaltyResultOfCrew(crew,
+                    attendanceHistory);
+
+            // then
+            AttendanceTypeCount attendanceTypeCount = penaltyResultOfCrew.attendanceTypeCount();
+            assertThat(attendanceTypeCount.getAbsenceCount()).isEqualTo(5);
+        }
     }
 
     @Nested
