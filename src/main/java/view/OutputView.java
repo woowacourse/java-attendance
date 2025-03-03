@@ -1,5 +1,6 @@
 package view;
 
+import domain.AttendanceDateTime;
 import domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class OutputView {
     private final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("M월 d일 E요일");
+    private final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
     private final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("M월 d일 E요일 HH:mm");
 
     public void displayMenu(LocalDate today) {
@@ -18,7 +20,22 @@ public class OutputView {
                 "Q. 종료%n", DATE_FORMAT.format(today));
     }
 
-    public void displayAttendanceRecord(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
-        System.out.printf("%s (%s)%n", DATE_TIME_FORMAT.format(dateTime), attendanceStatus.getName());
+    public void displayAttendanceRecord(LocalDateTime dateTime) {
+        System.out.println(toAttendanceRecordFormat(new AttendanceDateTime(dateTime)));
+    }
+
+    public void displayUpdateResult(AttendanceDateTime oldAttendanceDateTime, LocalDateTime newAttendanceDateTime) {
+        System.out.printf("%n%s -> %s (%s) 수정 완료!%n"
+                , toAttendanceRecordFormat(oldAttendanceDateTime)
+                , TIME_FORMAT.format(newAttendanceDateTime)
+                , AttendanceStatus.of(newAttendanceDateTime).getName()
+        );
+    }
+
+
+    private String toAttendanceRecordFormat(AttendanceDateTime attendanceDateTime) {
+        LocalDateTime dateTime = attendanceDateTime.getLocalDateTime();
+        AttendanceStatus status = attendanceDateTime.getStatus();
+        return String.format("%s (%s)", DATE_TIME_FORMAT.format(dateTime), status.getName());
     }
 }

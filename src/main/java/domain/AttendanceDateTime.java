@@ -37,6 +37,14 @@ public class AttendanceDateTime {
         return AttendanceStatus.of(attendanceDateTime) == attendanceStatus;
     }
 
+    public LocalDateTime getLocalDateTime() {
+        return attendanceDateTime;
+    }
+
+    public AttendanceStatus getStatus() {
+        return AttendanceStatus.of(attendanceDateTime);
+    }
+
     private void validateDayOff(LocalDate attendanceDate) {
         if (isDayOff(attendanceDate)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일");

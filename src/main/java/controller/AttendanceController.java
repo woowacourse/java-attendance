@@ -1,8 +1,8 @@
 package controller;
 
+import domain.AttendanceDateTime;
 import domain.AttendanceHistories;
 import domain.AttendanceHistoryGenerator;
-import domain.AttendanceStatus;
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,15 +46,18 @@ public class AttendanceController {
         String nickname = inputView.readNickname();
         LocalTime inputTime = inputView.readCheckInTime();
         LocalDateTime checkInDateTime = today.atTime(inputTime);
-        AttendanceStatus attendanceStatus = attendanceHistories.addAttendanceHistory(new Crew(nickname),
-                checkInDateTime);
-        outputView.displayAttendanceRecord(checkInDateTime, attendanceStatus);
+        attendanceHistories.addAttendanceHistory(new Crew(nickname), checkInDateTime);
+        outputView.displayAttendanceRecord(checkInDateTime);
     }
 
     private void updateAttendance() {
         String nickname = inputView.readUpdateNickname();
         LocalDate updateDate = inputView.readUpdateDate();
         LocalTime updateTime = inputView.readUpdateTime();
+        LocalDateTime newAttendanceDateTime = LocalDateTime.of(updateDate, updateTime);
+        AttendanceDateTime oldAttendanceDateTime = attendanceHistories.replaceAttendanceHistory(new Crew(nickname),
+                newAttendanceDateTime);
+        outputView.displayUpdateResult(oldAttendanceDateTime, newAttendanceDateTime);
     }
 
     private void checkAttendanceRecords() {
