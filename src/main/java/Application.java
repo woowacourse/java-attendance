@@ -1,18 +1,20 @@
 import controller.AttendanceController;
 import infrastructure.AttendanceFileReader;
-import infrastructure.SystemDateProvider;
+import infrastructure.DecemberDateProvider;
+import java.util.Scanner;
 import view.InputView;
 import view.OutputView;
 
 public class Application {
 
     public static void main(String[] args) {
-        InputView inputView = new InputView();
+        Scanner scanner = new Scanner(System.in);
+        InputView inputView = new InputView(scanner);
         OutputView outputView = new OutputView();
 
         AttendanceController attendanceController = new AttendanceController(inputView, outputView);
 
         AttendanceFileReader attendanceFileReader = new AttendanceFileReader();
-        attendanceController.run(attendanceFileReader, new SystemDateProvider());
+        attendanceController.run(attendanceFileReader, new DecemberDateProvider());
     }
 }
