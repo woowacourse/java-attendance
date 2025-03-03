@@ -49,6 +49,9 @@ public class AttendanceController {
         attendanceDate.possibleAttendance();
 
         String name = inputName();
+        if (isAlreadyAttendance(name)) {
+            return;
+        }
         LocalDateTime attendanceDateTime = inputAttendanceDateTime();
 
         attendances.checkAttendance(name, attendanceDateTime);
@@ -57,8 +60,19 @@ public class AttendanceController {
         outputView.printAttendanceRecord(attendanceDateTime, attendanceState);
     }
 
+    private boolean isAlreadyAttendance(String name) {
+        try {
+            attendances.validateAlreadyAttendance(name, attendanceDate.getLocalDate());
+        } catch (IllegalArgumentException e) {
+            outputView.printAlreadyAttendance(e.getMessage());
+            return true;
+        }
+        return false;
+    }
+
     void attendanceUpdate() {
         String name = inputUpdateName();
+        attendances.findAttendanceBy(name);
         LocalDateTime updateDateTime = inputUpdateDateTime();
 
         LocalDateTime beforeAttendance = attendances.getAttendanceRecordBy(name, updateDateTime.toLocalDate());

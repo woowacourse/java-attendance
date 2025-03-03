@@ -88,6 +88,45 @@ class AttendancesTest {
                 .doesNotThrowAnyException();
     }
 
+    @DisplayName("이미 출석한 크루의 경우 예외가 발생한다.")
+    @Test
+    void alreadyAttendance() {
+        //given
+        Attendance attendances1 = createAttendance("도기");
+        Attendance attendances2 = createAttendance("포비");
+
+        Attendances attendances = new Attendances();
+        attendances.add(attendances1);
+        attendances.add(attendances2);
+
+        String name = "도기";
+        LocalDate time = LocalDate.of(2024, 12, 2);
+
+        //when //then
+        assertThatThrownBy(() -> attendances.validateAlreadyAttendance(name, time))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 출석한 크루입니다. 이미 출석한 크루는 다시 출석할 수 없으며 수정기능을 이용할 수 있습니다.");
+    }
+
+    @DisplayName("출석 하지 않은 크루가 출석하면 예외가 발생하지 않는다.")
+    @Test
+    void nonAlreadyAttendance() {
+        //given
+        Attendance attendances1 = createAttendance("도기");
+        Attendance attendances2 = createAttendance("포비");
+
+        Attendances attendances = new Attendances();
+        attendances.add(attendances1);
+        attendances.add(attendances2);
+
+        String name = "도기";
+        LocalDate time = LocalDate.of(2024, 12, 4);
+
+        //when //then
+        assertThatCode(() -> attendances.validateAlreadyAttendance(name, time))
+                .doesNotThrowAnyException();
+    }
+
     @DisplayName("닉네임과 수정날짜(일), 수정시간을 받아 출석 기록을 수정 한다.")
     @Test
     void updateAttendance() {

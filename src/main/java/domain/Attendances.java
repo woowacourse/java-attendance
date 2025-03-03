@@ -44,7 +44,7 @@ public class Attendances {
         LocalDate date = LocalDate.of(2024, 12, 1);
         while (date.isBefore(dateTime)) {
 
-            if (Calender.isHolyDay(date)) {
+            if (Calender.isWeekend(date)) {
                 date = plusOneDay(date);
                 continue;
             }
@@ -123,6 +123,16 @@ public class Attendances {
 
         if (!hasCrew) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
+    }
+
+    public void validateAlreadyAttendance(String name, LocalDate localDate) {
+        boolean isAlready = attendances.stream()
+                .filter(crew -> crew.isSame(name))
+                .anyMatch(attendance -> attendance.isContains(localDate));
+
+        if (isAlready) {
+            throw new IllegalArgumentException("이미 출석한 크루입니다. 이미 출석한 크루는 다시 출석할 수 없으며 수정기능을 이용할 수 있습니다.");
         }
     }
 }
