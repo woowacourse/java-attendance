@@ -17,7 +17,7 @@ public class AttendanceBook {
 
     public boolean isSameByDate(final Attendance attendance) {
         return attendances.stream()
-                .anyMatch(o -> o.getAttendanceDateTime().getDateTime().equals(attendance.getAttendanceDateTime().getDateTime()));
+                .anyMatch(o -> o.getAttendanceDateTime().getDateTime().toLocalDate().equals(attendance.getAttendanceDateTime().getDateTime().toLocalDate()));
     }
 
     public Attendance findByDayOfMonth(final DayOfMonth dayOfMonth) {
