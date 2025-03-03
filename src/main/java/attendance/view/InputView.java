@@ -13,6 +13,7 @@ public class InputView {
     private final Scanner scanner = new Scanner(System.in);
 
     public OperationCommand readOperationCommand(final LocalDateTime today) {
+        System.out.println();
         System.out.println(String.join("", "오늘은 ", DATE_FORMATTER.format(today), "입니다. 기능을 선택해 주세요."));
         System.out.print("""
                 1. 출석 확인
