@@ -52,7 +52,8 @@ public class AttendanceController {
     }
 
     private void updateAttendance() {
-        System.out.println("2. 출석 수정");
+        String nickname = inputView.readUpdateNickname();
+        LocalDate updateDate = inputView.readUpdateDate();
     }
 
     private void checkAttendanceRecords() {
