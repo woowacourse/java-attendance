@@ -1,7 +1,5 @@
 package attendance.model.attendance.datetime;
 
-import attendance.model.attendance.datetime.date.AttendanceDate;
-import attendance.model.attendance.datetime.time.AttendanceTime;
 import attendance.model.campus.CampusOperationPolicy;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -12,10 +10,10 @@ import java.util.Optional;
 
 public class AttendanceDateTime {
 
-    private final AttendanceDate date;
-    private final AttendanceTime time;
+    private final LocalDate date;
+    private final LocalTime time;
 
-    private AttendanceDateTime(AttendanceDate date, AttendanceTime time) {
+    private AttendanceDateTime(LocalDate date, LocalTime time) {
         this.date = date;
         this.time = time;
     }
@@ -25,9 +23,11 @@ public class AttendanceDateTime {
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
+        validateDate(dateTime.toLocalDate(), campusOperationPolicy);
+        validateTime(dateTime.toLocalTime(), campusOperationPolicy);
         return new AttendanceDateTime(
-                AttendanceDate.policyApplied(dateTime.toLocalDate(), campusOperationPolicy),
-                AttendanceTime.policyApplied(dateTime.toLocalTime(), campusOperationPolicy)
+                dateTime.toLocalDate(),
+                dateTime.toLocalTime()
         );
     }
 
@@ -36,10 +36,31 @@ public class AttendanceDateTime {
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
+        validateDate(date, campusOperationPolicy);
         return new AttendanceDateTime(
-                AttendanceDate.policyApplied(date, campusOperationPolicy),
-                AttendanceTime.nullObject()
+                date,
+                null
         );
+    }
+
+    private static void validateDate(
+            final LocalDate date,
+            final CampusOperationPolicy campusOperationPolicy
+    ) {
+
+        if (!campusOperationPolicy.isOpenDate(date)) {
+            throw new IllegalArgumentException("캠퍼스 운영 일자가 아닙니다.");
+        }
+    }
+
+    private static void validateTime(
+            final LocalTime time,
+            final CampusOperationPolicy campusOperationPolicy
+    ) {
+
+        if (!campusOperationPolicy.isOpenTime(time)) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
+        }
     }
 
     public boolean isBeforeTime(final LocalTime time) {
@@ -47,23 +68,23 @@ public class AttendanceDateTime {
     }
 
     public boolean isSameDate(LocalDate date) {
-        return this.date.isSameDate(date);
+        return this.date.equals(date);
     }
 
     public boolean isNullTime() {
-        return time.getValue().isEmpty();
+        return time == null;
     }
 
     public LocalDate getDate() {
-        return date.getValue();
+        return date;
     }
 
     public boolean isSameDayOfWeek(final DayOfWeek dayOfWeek) {
-        return date.isSameDayOfWeek(dayOfWeek);
+        return date.getDayOfWeek().equals(dayOfWeek);
     }
 
     public Optional<LocalTime> getTime() {
-        return time.getValue();
+        return Optional.ofNullable(time);
     }
 
     @Override
