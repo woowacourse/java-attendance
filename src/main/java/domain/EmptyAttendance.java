@@ -7,12 +7,8 @@ import java.util.Objects;
 public class EmptyAttendance implements Attendance {
     private final AttendanceDate date;
 
-    private EmptyAttendance(LocalDate date) {
+    public EmptyAttendance(LocalDate date) {
         this.date = new AttendanceDate(date);
-    }
-
-    public static EmptyAttendance of(LocalDate date) {
-        return new EmptyAttendance(date);
     }
 
     @Override

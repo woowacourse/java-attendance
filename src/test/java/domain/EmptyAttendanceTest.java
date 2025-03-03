@@ -12,7 +12,7 @@ class EmptyAttendanceTest {
     @Test
     void test1() {
         // given
-        EmptyAttendance attendance = EmptyAttendance.of(LocalDate.of(2025, 2, 28));
+        EmptyAttendance attendance = new EmptyAttendance(LocalDate.of(2025, 2, 28));
 
         // when & then
         assertThatThrownBy(attendance::getTime).isInstanceOf(RuntimeException.class);

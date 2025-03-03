@@ -40,7 +40,7 @@ public class AttendanceStorage {
         return attendances.stream()
                 .filter(attendance -> attendance.isAttendedOn(date))
                 .findFirst()
-                .orElse(EmptyAttendance.of(date));
+                .orElse(new EmptyAttendance(date));
     }
 
     public List<Attendance> getAttendancesByDateRange(LocalDate start, LocalDate end) {

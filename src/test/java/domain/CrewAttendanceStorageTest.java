@@ -165,7 +165,7 @@ public class CrewAttendanceStorageTest {
         assertThat(attendance).isEqualTo(List.of(
                 new ExistAttendance(LocalDate.of(2025, 2, 24), LocalTime.of(13, 0)),
                 new ExistAttendance(LocalDate.of(2025, 2, 25), LocalTime.of(10, 0)),
-                EmptyAttendance.of(LocalDate.of(2025, 2, 26)),
+                new EmptyAttendance(LocalDate.of(2025, 2, 26)),
                 new ExistAttendance(LocalDate.of(2025, 2, 27), LocalTime.of(10, 0)),
                 new ExistAttendance(LocalDate.of(2025, 2, 28), LocalTime.of(10, 0))
         ));
