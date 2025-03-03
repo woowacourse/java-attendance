@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class DateUtilTest {
     @Test
@@ -31,5 +33,16 @@ class DateUtilTest {
 
         // then
         assertThat(attendAbleDates).containsExactly(2, 3, 4, 5, 6, 9, 10, 11);
+    }
+
+    @ParameterizedTest
+    @DisplayName("출석 가능한 날인지 확인한다")
+    @CsvSource(value = {"1, false", "2, true", "7, false", "25, false", "31, true"})
+    void should_return_true_when_attendAble_date(int date, boolean expected) {
+        // when
+        boolean result = DateUtil.isAttendAbleDate(date);
+
+        // then
+        assertThat(result).isEqualTo(expected);
     }
 }

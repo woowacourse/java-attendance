@@ -19,4 +19,16 @@ public class DateUtil {
                 .getDayOfWeek();
         return !(dayOfWeek == DayOfWeek.SUNDAY || dayOfWeek == DayOfWeek.SATURDAY);
     }
+
+    public static boolean isAttendAbleDate(int date) {
+        LocalDate targetDate = LocalDate.of(2024, 12, date);
+        return isAttendAbleDate(targetDate);
+    }
+
+    public static boolean isAttendAbleDate(LocalDate targetDate) {
+        boolean isWeekend = targetDate.getDayOfWeek()
+                .getValue() >= 6;
+        boolean isChristmas = targetDate.getDayOfMonth() == 25;
+        return !(isWeekend || isChristmas);
+    }
 }
