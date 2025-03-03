@@ -54,6 +54,26 @@ public class AttendanceManagerTest {
         }).isInstanceOf(IllegalArgumentException.class));
     }
 
+    @ParameterizedTest
+    @DisplayName("캠퍼스 운영 시간 외 출석을 등록하면 예외가 발생한다")
+    @CsvSource(value = {"07:59", "23:01"})
+    void should_throw_exception_when_attend_out_of_campus_operating_time(String time) {
+        // given
+        NickName nickName = new NickName("후우");
+        AttendanceRecord attendanceRecord = AttendanceRecord.of("10", time);
+        AttendanceManager attendanceManager = new AttendanceManager();
+        attendanceManager.register(nickName);
+
+        // when & then
+        assertAll(() -> assertThatThrownBy(() -> {
+            attendanceManager.attend(nickName, attendanceRecord);
+        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
+            attendanceManager.isAttended(nickName, attendanceRecord);
+        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
+            attendanceManager.edit(nickName, attendanceRecord);
+        }).isInstanceOf(IllegalArgumentException.class));
+    }
+
     @Nested
     @DisplayName("출석 등록 테스트")
     class AttendTest {

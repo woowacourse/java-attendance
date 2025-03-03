@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,9 @@ import util.DateUtil;
 
 public class AttendanceManager {
     private final Map<NickName, Attendances> attendanceManager;
+
+    private final LocalTime START_TIME = LocalTime.of(8, 0);
+    private final LocalTime END_TIME = LocalTime.of(23, 0);
 
     public AttendanceManager() {
         this.attendanceManager = new HashMap<>();
@@ -23,6 +27,7 @@ public class AttendanceManager {
     public void attend(NickName nickName, AttendanceRecord attendanceRecord) {
         validateNameExist(nickName);
         validateAttendAbleDate(attendanceRecord);
+        validateAttendAbleTime(attendanceRecord);
         Attendances attendances = attendanceManager.get(nickName);
         attendances.attend(attendanceRecord);
     }
@@ -30,6 +35,7 @@ public class AttendanceManager {
     public boolean isAttended(NickName nickName, AttendanceRecord checkAttendanceRecord) {
         validateNameExist(nickName);
         validateAttendAbleDate(checkAttendanceRecord);
+        validateAttendAbleTime(checkAttendanceRecord);
         Attendances attendances = attendanceManager.get(nickName);
         return attendances.isAttended(checkAttendanceRecord);
     }
@@ -37,6 +43,7 @@ public class AttendanceManager {
     public void edit(NickName nickName, AttendanceRecord editAttendanceRecord) {
         validateNameExist(nickName);
         validateAttendAbleDate(editAttendanceRecord);
+        validateAttendAbleTime(editAttendanceRecord);
         Attendances attendances = attendanceManager.get(nickName);
         attendances.edit(editAttendanceRecord);
     }
@@ -63,6 +70,13 @@ public class AttendanceManager {
         if (!DateUtil.isAttendAbleDate(attendanceRecord.getDate()
                 .getDayOfMonth())) {
             throw new IllegalArgumentException("등교일이 아닙니다.");
+        }
+    }
+
+    private void validateAttendAbleTime(AttendanceRecord attendanceRecord) {
+        LocalTime time = attendanceRecord.getTime();
+        if (time.isBefore(START_TIME) || time.isAfter(END_TIME)) {
+            throw new IllegalArgumentException("등교 시간이 아닙니다.");
         }
     }
 
