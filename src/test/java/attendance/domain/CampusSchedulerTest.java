@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import static attendance.fixture.TestFixture.makeAbsenceExceptMonday;
+import static attendance.fixture.TestFixture.makeAbsenceMonday;
 import static attendance.fixture.TestFixture.makeAttendanceExceptMonday;
 import static attendance.fixture.TestFixture.makeAttendanceMonday;
 import static attendance.fixture.TestFixture.makeCrewHistory;
@@ -114,18 +115,18 @@ class CampusSchedulerTest {
     @Test
     void 출석_상태별_횟수를_계산한다() {
         // Given
-        CrewHistory crewHistory = makeCrewHistory(makeAttendanceMonday(2), makeTardinessExceptMonday(3),
+        CrewHistory crewHistory = makeCrewHistory(makeAbsenceMonday(2), makeTardinessExceptMonday(3),
                 makeTardinessExceptMonday(4),
                 makeTardinessExceptMonday(5));
-        LocalDate nowDate = makeDecemberDate(6);
+        LocalDate nowDate = makeDecemberDate(10);
 
         // When
         Map<AttendanceState, Integer> result = campusScheduler.countByAttendanceState(crewHistory, nowDate);
 
         // Then
-        assertThat(result).contains(entry(AttendanceState.ATTENDANCE, 1),
+        assertThat(result).contains(entry(AttendanceState.ATTENDANCE, 0),
                 entry(AttendanceState.TARDINESS, 3),
-                entry(AttendanceState.ABSENCE, 0)
+                entry(AttendanceState.ABSENCE, 3)
         );
     }
 }
