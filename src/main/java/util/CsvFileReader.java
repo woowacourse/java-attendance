@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 public class CsvFileReader implements FileReader {
 
+    private static final int CATEGORY_LINE_INDEX = 1;
     private final String filePath;
 
     public CsvFileReader(String filePath) {
@@ -20,7 +21,8 @@ public class CsvFileReader implements FileReader {
         Path path = Path.of(filePath);
 
         try (Stream<String> lines = Files.lines(path)) {
-            return lines.collect(Collectors.toList());
+            return lines.skip(CATEGORY_LINE_INDEX)
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

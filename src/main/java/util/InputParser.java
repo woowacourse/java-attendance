@@ -10,7 +10,7 @@ public class InputParser {
         try {
             return LocalDate.parse(input);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(ErrorCode.INPUT_TIME_NOT_VALID.getMessage());
+            throw new IllegalArgumentException(ErrorCode.INPUT_DATE_NOT_VALID.getMessage());
         }
     }
 
@@ -20,5 +20,17 @@ public class InputParser {
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException(ErrorCode.INPUT_TIME_NOT_VALID.getMessage());
         }
+    }
+
+    public static String parseNameFromDateLine(String line) {
+        return line.split(",")[0];
+    }
+
+    public static LocalDate parseDateFromDataLine(String line) {
+        return parseToLocalDate(line.split(",")[1].split(" ")[0]);
+    }
+
+    public static LocalTime parseTimeFromDataLIne(String line) {
+        return parseToLocalTime(line.split(",")[1].split(" ")[1]);
     }
 }

@@ -9,8 +9,11 @@ import domain.AttendanceBook;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.DayType;
+import domain.ErrorCode;
 import domain.Penalty;
+import domain.TimeProvider;
 import domain.UserSelection;
+import dto.AddAttendanceRequest;
 import dto.AttendanceRecordResponse;
 import dto.AttendanceStatusCountResponse;
 import dto.CheckAttendanceResponse;
@@ -18,7 +21,6 @@ import dto.CrewWithPenaltyResponse;
 import dto.ModifyAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -31,77 +33,94 @@ import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
+    private static final int MAX_ATTEMPTS = 5;
 
     private final AttendanceBook attendanceBook;
     private final InputView inputView;
     private final OutputView outputView;
     private final FileReader fileReader;
-    private final LocalDate nowDate = LocalDate.now();
-    private final LocalTime nowTime = LocalTime.now();
     private final Map<UserSelection, Runnable> selection = new EnumMap<>(UserSelection.class);
+    private final TimeProvider timeProvider;
 
     public AttendanceController(AttendanceBook attendanceBook, InputView inputView, OutputView outputView,
-                                FileReader fileReader) {
+                                FileReader fileReader, TimeProvider timeProvider) {
         this.attendanceBook = attendanceBook;
         this.inputView = inputView;
         this.outputView = outputView;
         this.fileReader = fileReader;
+        this.timeProvider = timeProvider;
     }
 
     public void start() {
-        fileReader.readFile();
+        initializeAttendanceBook();
         initializeSelection();
-        askSelection();
+        retryRunnableUntilValid(this::askSelection);
+    }
+
+    private void initializeAttendanceBook() {
+        List<String> dataLines = fileReader.readFile();
+        List<AddAttendanceRequest> addAttendanceRequests = dataLines.stream()
+                .map(AddAttendanceRequest::fromDataLine)
+                .toList();
+        attendanceBook.initializeAttendanceBook(addAttendanceRequests);
     }
 
     private void initializeSelection() {
-        selection.put(UserSelection.CHECK_ATTENDANCE, () -> retryRunnableUntilValid(this::checkAttendance));
-        selection.put(UserSelection.MODIFY_ATTENDANCE, () -> retryRunnableUntilValid(this::modifyAttendance));
-        selection.put(UserSelection.GET_ATTENDANCE_RECORDS, () -> retryRunnableUntilValid(this::getAttendanceRecords));
-        selection.put(UserSelection.GET_CREWS_WITH_PENALTY, () -> retryRunnableUntilValid(this::getCrewsWithPenalty));
+        selection.put(UserSelection.CHECK_ATTENDANCE, this::checkAttendance);
+        selection.put(UserSelection.MODIFY_ATTENDANCE, this::modifyAttendance);
+        selection.put(UserSelection.GET_ATTENDANCE_RECORDS, this::getAttendanceRecords);
+        selection.put(UserSelection.GET_CREWS_WITH_PENALTY, this::getCrewsWithPenalty);
     }
 
     private void askSelection() {
         while (true) {
             UserSelection userSelection = retrySupplierUntilValid(
-                    () -> inputView.readUserSelection(OutputParser.parseDateInKorean(nowDate)));
+                    () -> inputView.readUserSelection(OutputParser.parseDateInKorean(timeProvider.getNowDate())));
 
             if (userSelection == UserSelection.QUIT) {
                 break;
             }
 
-            retryRunnableUntilValid(() -> selection.get(userSelection).run());
+            selection.get(userSelection).run();
         }
     }
 
     private void checkAttendance() {
-        DayType.validateIsWorkingDay(nowDate);
+        DayType.validateIsWorkingDay(timeProvider.getNowDate());
         String name = retrySupplierUntilValid(this::readName);
-        retryRunnableUntilValid(() -> AttendanceStatus.validateIsOperationHour(nowTime));
-        outputView.printCheckAttendanceResult(checkAttendance(name, nowDate, nowTime));
+        AttendanceStatus.validateIsOperationHour(timeProvider.getNowTime());
+        outputView.printCheckAttendanceResult(
+                checkAttendance(name, timeProvider.getNowDate(), timeProvider.getNowTime()));
     }
 
     private <T> T retrySupplierUntilValid(Supplier<T> supplier) {
-        while (true) {
+        int attempts = 0;
+
+        while (attempts < MAX_ATTEMPTS) {
             try {
                 return supplier.get();
-
             } catch (Exception e) {
+                attempts++;
                 outputView.printErrorMessage(e.getMessage());
             }
         }
+        throw new IllegalArgumentException(ErrorCode.INPUT_ATTEMPT_LIMIT_EXCEEDED.getMessage());
     }
 
     private void retryRunnableUntilValid(Runnable runnable) {
-        while (true) {
+        int attempts = 0;
+
+        while (attempts < MAX_ATTEMPTS) {
             try {
                 runnable.run();
-                break;
-
+                return;
             } catch (Exception e) {
+                attempts++;
                 outputView.printErrorMessage(e.getMessage());
             }
         }
+
+        throw new IllegalArgumentException(ErrorCode.INPUT_ATTEMPT_LIMIT_EXCEEDED.getMessage());
     }
 
     private void modifyAttendance() {
@@ -146,7 +165,7 @@ public class AttendanceController {
         return name;
     }
 
-    public CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
+    private CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
         attendanceBook.putAttendanceRecordByName(name, date, time);
         return new CheckAttendanceResponse(
                 OutputParser.parseDateInKorean(date), OutputParser.parseTimeToString(time),
@@ -154,7 +173,7 @@ public class AttendanceController {
         );
     }
 
-    public ModifyAttendanceResponse modifyAttendance(String name, LocalDate date, LocalTime timeToModify) {
+    private ModifyAttendanceResponse modifyAttendance(String name, LocalDate date, LocalTime timeToModify) {
         LocalTime originalTime = attendanceBook.findTimeByNameAndDate(name, date);
         attendanceBook.modifyAttendanceRecordByName(name, date, timeToModify);
         return new ModifyAttendanceResponse(
@@ -166,7 +185,7 @@ public class AttendanceController {
         );
     }
 
-    public List<AttendanceRecordResponse> getAttendanceRecordResponses(String name) {
+    private List<AttendanceRecordResponse> getAttendanceRecordResponses(String name) {
         return IntStream.rangeClosed(DECEMBER_DAYS_START, DECEMBER_DAYS_END)
                 .mapToObj(day -> createAttendanceRecordResponseByName(name, day))
                 .collect(Collectors.toList());
@@ -182,7 +201,7 @@ public class AttendanceController {
         );
     }
 
-    public AttendanceStatusCountResponse getAttendanceStatusCountResponseByName(String name) {
+    private AttendanceStatusCountResponse getAttendanceStatusCountResponseByName(String name) {
         return new AttendanceStatusCountResponse(
                 attendanceBook.getAttendanceStatusCountByName(name, AttendanceStatus.ATTEND),
                 attendanceBook.getAttendanceStatusCountByName(name, AttendanceStatus.LATE),
@@ -190,22 +209,13 @@ public class AttendanceController {
         );
     }
 
-    public String getPenaltyResponseByName(String name) {
+    private String getPenaltyResponseByName(String name) {
         int lateCount = attendanceBook.getAttendanceStatusCountByName(name, AttendanceStatus.LATE);
         int absentCount = attendanceBook.getAttendanceStatusCountByName(name, AttendanceStatus.ABSENT);
         return Penalty.findPenaltyMessageByAttendanceStatusCount(lateCount, absentCount);
     }
 
-    public List<CrewWithPenaltyResponse> getCrewWithPenaltyResponses() {
-        List<CrewWithPenaltyResponse> mergedResponses = new ArrayList<>();
-
-        Penalty.valuesWithoutNone().stream()
-                .map(this::createCrewsWithPenaltyResponseByPenalty)
-                .forEach(mergedResponses::addAll);
-        return mergedResponses;
-    }
-
-    private List<CrewWithPenaltyResponse> createCrewsWithPenaltyResponseByPenalty(Penalty penalty) {
+    private List<CrewWithPenaltyResponse> getCrewWithPenaltyResponses() {
         List<Crew> penaltyCrews = attendanceBook.findCrewsWithPenalty();
         return penaltyCrews.stream()
                 .map(CrewWithPenaltyResponse::fromCrew)
