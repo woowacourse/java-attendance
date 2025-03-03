@@ -5,7 +5,8 @@ import java.time.LocalTime;
 public enum AttendanceType {
     LATE(),
     ABSENCE(),
-    PRESENT();
+    PRESENT(),
+    NO_DATA();
 
     public static AttendanceType findAttendanceTypeByDateTime(LocalDateTime attendAt) {
         DayOfWeek dayOfWeek = attendAt.getDayOfWeek();

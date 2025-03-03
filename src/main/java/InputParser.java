@@ -21,7 +21,8 @@ public class InputParser {
     public static String parseAttendanceType(AttendanceType attendanceType) {
         Map<AttendanceType, String> valueOfAttendanceTypes = Map.of(AttendanceType.PRESENT, "출석",
                 AttendanceType.LATE, "지각",
-                AttendanceType.ABSENCE, "결석");
+                AttendanceType.ABSENCE, "결석",
+                AttendanceType.NO_DATA, "결석");
         return valueOfAttendanceTypes.get(attendanceType);
     }
 
@@ -39,9 +40,6 @@ public class InputParser {
     }
 
     public static String parseTimeToString(LocalTime time) {
-        if (time.getHour() == 0 && time.getMinute() == 0) {
-            return "--:--";
-        }
         return time.format(DateTimeFormatter.ofPattern("HH:mm", Locale.KOREAN));
     }
 

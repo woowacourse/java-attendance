@@ -37,7 +37,7 @@ public class AttendanceTypeCounter {
             }
 
             if (!contains(attendanceHistories, date)) {
-                attendanceTypeCount.put(LocalDateTime.of(date, LocalTime.of(0, 0)), AttendanceType.ABSENCE);
+                attendanceTypeCount.put(LocalDateTime.of(date, LocalTime.of(0, 0)), AttendanceType.NO_DATA);
                 continue;
             }
 

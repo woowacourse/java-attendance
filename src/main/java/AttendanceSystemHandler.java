@@ -92,7 +92,8 @@ public class AttendanceSystemHandler {
     }
 
     private void checkExpulsionCandidates() {
-        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
+//        LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
+        LocalDate date = LocalDate.of(2024, 12, 31);
 
         List<PenaltyResultOfCrew> expulsionCandidates = attendanceSystemManager.findExpulsionCandidates(date);
         OutputView.printExpulsionCandidates(expulsionCandidates);

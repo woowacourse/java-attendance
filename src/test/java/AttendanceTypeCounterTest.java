@@ -24,7 +24,7 @@ class AttendanceTypeCounterTest {
         Map<LocalDateTime, AttendanceType> expected = Map.of(
                 LocalDateTime.of(2024, 12, 2, 10, 0), AttendanceType.PRESENT,
                 LocalDateTime.of(2024, 12, 3, 10, 1), AttendanceType.PRESENT,
-                LocalDateTime.of(2024, 12, 4, 0, 0), AttendanceType.ABSENCE,
+                LocalDateTime.of(2024, 12, 4, 0, 0), AttendanceType.NO_DATA,
                 LocalDateTime.of(2024, 12, 5, 10, 31), AttendanceType.ABSENCE,
                 LocalDateTime.of(2024, 12, 6, 15, 0), AttendanceType.ABSENCE,
                 LocalDateTime.of(2024, 12, 9, 13, 6), AttendanceType.LATE
@@ -38,7 +38,7 @@ class AttendanceTypeCounterTest {
 
 
     @Test
-    @DisplayName("기록이 없는 날에 대해 결석으로 간주한다.")
+    @DisplayName("기록이 없는 날에 대해 NO_DATA 를 AttendanceType 으로 반환한다.")
     void test3() {
         Crew crew = new Crew("히로");
         LocalDateTime requestedDate = LocalDateTime.of(2024, 12, 4, 0, 0);
@@ -48,7 +48,7 @@ class AttendanceTypeCounterTest {
 
         Map<LocalDateTime, AttendanceType> result = Map.of(
                 LocalDateTime.of(2024, 12, 2, 10, 0), AttendanceType.PRESENT,
-                LocalDateTime.of(2024, 12, 3, 0, 0), AttendanceType.ABSENCE
+                LocalDateTime.of(2024, 12, 3, 0, 0), AttendanceType.NO_DATA
         );
 
         Map<LocalDateTime, AttendanceType> actual = AttendanceTypeCounter.count(requestedDate.toLocalDate(),
@@ -70,6 +70,25 @@ class AttendanceTypeCounterTest {
                 attendanceHistories);
 
         assertThat(actual.keySet()).doesNotContain(LocalDateTime.of(2024, 12, 1, 0, 0));
+    }
+
+    @Test
+    @DisplayName("기록이 없는 경우는 NO_DATA 를 AttendanceType 으로 저장한다.")
+    void test5() {
+        // given
+        Crew crew = new Crew("히로");
+        LocalDateTime requestedDate = LocalDateTime.of(2024, 12, 5, 0, 0);
+        List<AttendanceHistory> attendanceHistories = List.of(
+                new AttendanceHistory(crew, LocalDateTime.of(2024, 12, 2, 10, 0))
+        );
+
+        // when
+        Map<LocalDateTime, AttendanceType> attendanceTypeOfDates = AttendanceTypeCounter.count(
+                requestedDate.toLocalDate(),
+                attendanceHistories);
+        AttendanceType actual = attendanceTypeOfDates.get(LocalDateTime.of(2024, 12, 3, 0, 0));
+
+        assertThat(actual).isEqualTo(AttendanceType.NO_DATA);
     }
 
 }

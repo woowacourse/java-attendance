@@ -23,16 +23,6 @@ public class InputParserTest {
     }
 
     @Test
-    @DisplayName("0시 0분에 대해서는 기록이 없음을 의미하는 --:-- 를 반환한다")
-    void test4() {
-        // given
-        LocalDateTime time = LocalDateTime.of(2024, 12, 5, 0, 0);
-
-        // when & then
-        assertThat(InputParser.parseDateTimeToString(time)).isEqualTo("12월 05일 목요일 --:--");
-    }
-
-    @Test
     @DisplayName("LocalDateTime 을 12월 05일 목요일 09:59 와 같은 형태로 반환한다")
     void test2() {
         // given

@@ -28,7 +28,8 @@ public class AttendanceTypeCount {
     }
 
     public int getAbsenceCount() {
-        return attendanceTypeCount.getOrDefault(AttendanceType.ABSENCE, 0);
+        return attendanceTypeCount.getOrDefault(AttendanceType.ABSENCE, 0) + attendanceTypeCount.getOrDefault(
+                AttendanceType.NO_DATA, 0);
     }
 
     public int getLateCount() {
@@ -40,6 +41,9 @@ public class AttendanceTypeCount {
     }
 
     public int getCountByType(AttendanceType attendanceType) {
+        if (attendanceType.equals(AttendanceType.ABSENCE)) {
+            return getAbsenceCount();
+        }
         return attendanceTypeCount.getOrDefault(attendanceType, 0);
     }
 

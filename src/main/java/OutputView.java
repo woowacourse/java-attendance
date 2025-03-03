@@ -19,10 +19,17 @@ public class OutputView {
 
         List<Entry<LocalDateTime, AttendanceType>> sortedHistories = new ArrayList<>(historiesOfCrew.entrySet());
         sortedHistories.sort(Map.Entry.comparingByKey());
+
         sortedHistories.forEach(entry -> {
+            AttendanceType attendanceType = entry.getValue();
+
             String attendAt = InputParser.parseDateTimeToString(entry.getKey());
-            String attendanceType = InputParser.parseAttendanceType(entry.getValue());
-            System.out.printf("%s (%s)%n", attendAt, attendanceType);
+            if (attendanceType.equals(AttendanceType.NO_DATA)) {
+                attendAt = "--:--";
+            }
+
+            String parseAttendanceType = InputParser.parseAttendanceType(attendanceType);
+            System.out.printf("%s (%s)%n", attendAt, parseAttendanceType);
         });
 
         System.out.println();
@@ -33,7 +40,7 @@ public class OutputView {
                 AttendanceType.ABSENCE);
 
         attendanceTypeOrder.forEach(attendanceType -> {
-            System.out.printf("%s: %d회%n", InputParser.parseAttendanceType(AttendanceType.PRESENT),
+            System.out.printf("%s: %d회%n", InputParser.parseAttendanceType(attendanceType),
                     penaltyResultOfCrew.attendanceTypeCount().getCountByType(attendanceType));
         });
 
