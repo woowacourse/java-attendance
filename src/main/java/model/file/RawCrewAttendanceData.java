@@ -8,21 +8,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PastAttendances {
-    private final Map<String, List<LocalDateTime>> attendances;
+public class RawCrewAttendanceData {
+    private final Map<String, List<LocalDateTime>> data;
 
-    public static PastAttendances from(List<String> crewAttendanceData) {
+    public static RawCrewAttendanceData from(List<String> crewAttendanceData) {
         Map<String, List<LocalDateTime>> uniqueCrewNames = extractUniqueCrewData(crewAttendanceData);
         for (String data : crewAttendanceData) {
             String crewName = data.split(",")[0];
             LocalDateTime dateTime = parseAttendanceData(data);
             uniqueCrewNames.get(crewName).add(dateTime);
         }
-        return new PastAttendances(uniqueCrewNames);
+        return new RawCrewAttendanceData(uniqueCrewNames);
     }
 
-    public PastAttendances(Map<String, List<LocalDateTime>> attendances) {
-        this.attendances = attendances;
+    public RawCrewAttendanceData(Map<String, List<LocalDateTime>> data) {
+        this.data = data;
     }
 
     private static Map<String, List<LocalDateTime>> extractUniqueCrewData(List<String> crewAttendanceData) {
@@ -41,11 +41,11 @@ public class PastAttendances {
         return LocalDateTime.parse(dateAndTime, DateTimeFormat.YEAR_MONTH_DATE_TIME_FORMATTER);
     }
 
-    public Map<String, List<LocalDateTime>> getAttendances() {
-        return Collections.unmodifiableMap(attendances);
+    public Map<String, List<LocalDateTime>> getData() {
+        return Collections.unmodifiableMap(data);
     }
 
     public List<String> findAllCrewNames() {
-        return attendances.keySet().stream().toList();
+        return data.keySet().stream().toList();
     }
 }

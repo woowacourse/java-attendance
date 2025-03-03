@@ -15,7 +15,7 @@ import model.admininstration.AttendanceBook;
 import model.attendance.AttendanceStatistic;
 import model.admininstration.AttendanceStatistics;
 import model.attendance.AttendanceStatus;
-import model.file.PastAttendances;
+import model.file.RawCrewAttendanceData;
 import model.attendance.AttendanceHistory;
 import model.attendance.Crew;
 import model.admininstration.Crews;
@@ -39,10 +39,10 @@ public class AttendanceController {
     public void start() {
         try {
             List<String> rawCrewAttendanceData = readAttendanceFile();
-            PastAttendances pastAttendances = PastAttendances.from(rawCrewAttendanceData);
+            RawCrewAttendanceData pastAttendances = RawCrewAttendanceData.from(rawCrewAttendanceData);
             Crews crews = Crews.from(pastAttendances.findAllCrewNames());
             AttendanceBook attendanceBook = AttendanceBook.from(crews);
-            Map<Crew, List<LocalDateTime>> crewAttendanceData = crews.mapCrewWithNameIn(pastAttendances.getAttendances());
+            Map<Crew, List<LocalDateTime>> crewAttendanceData = crews.mapCrewWithNameIn(pastAttendances.getData());
             attendanceBook.update(crewAttendanceData);
 
             boolean continueService = true;

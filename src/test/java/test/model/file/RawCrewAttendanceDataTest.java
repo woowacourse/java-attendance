@@ -3,7 +3,7 @@ package test.model.file;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class PastAttendancesTest {
+public class RawCrewAttendanceDataTest {
 
     @DisplayName("")
     @Test
