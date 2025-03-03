@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatus.ABSENT;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public class CrewAttendance {
     }
 
     private int countAttendanceStatusBefore(final LocalDateTime today, final AttendanceStatus attendanceStatus) {
-        if (attendanceStatus.equals(AttendanceStatus.ABSENT)) {
+        if (attendanceStatus.equals(ABSENT)) {
             return countAbsent(today);
         }
         return (int) attendances.stream()
@@ -80,7 +82,8 @@ public class CrewAttendance {
     }
 
     private int updateAbsentCount(final LocalDateTime targetDay, final int count) {
-        if (!Campus.isOffDay(targetDay) && !isExistDay(targetDay)) {
+        if (!Campus.isOffDay(targetDay) &&
+            (!isExistDay(targetDay) || getAttendanceOn(targetDay).status().equals(ABSENT))) {
             return count + 1;
         }
         return count;
@@ -106,6 +109,6 @@ public class CrewAttendance {
         if (isExistDay(targetDay)) {
             return getAttendanceOn(targetDay).status();
         }
-        return AttendanceStatus.ABSENT;
+        return ABSENT;
     }
 }

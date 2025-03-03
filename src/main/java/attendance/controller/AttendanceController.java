@@ -34,4 +34,6 @@ public class AttendanceController {
         resultView.printAttendanceStatusCounts(crewAttendance, today);
         resultView.printWarningLevel(attendanceBook, nickname, today);
     }
+
+    private void showAttendance(AttendanceBook attendanceBook) {}
 }

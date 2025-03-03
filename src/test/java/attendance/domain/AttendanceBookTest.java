@@ -122,15 +122,16 @@ public class AttendanceBookTest {
     @Test
     void test6() {
         AttendanceBook attendanceBook = AttendanceBookTestFixture.createAttendanceBook();
+        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 13, 0);
 
-        Map<Crew, CrewAttendance> expelledCrews = attendanceBook.findCrewsBy(WarningLevel.EXPELLED);
-        Map<Crew, CrewAttendance> oneOnOneCrews = attendanceBook.findCrewsBy(WarningLevel.ONE_ON_ONE);
-        Map<Crew, CrewAttendance> warningCrews = attendanceBook.findCrewsBy(WarningLevel.WARNING);
-        Map<Crew, CrewAttendance> noneCrews = attendanceBook.findCrewsBy(WarningLevel.NONE);
+        Map<Crew, CrewAttendance> expelledCrews = attendanceBook.findCrewsBy(WarningLevel.EXPELLED, today);
+        Map<Crew, CrewAttendance> oneOnOneCrews = attendanceBook.findCrewsBy(WarningLevel.ONE_ON_ONE, today);
+        Map<Crew, CrewAttendance> warningCrews = attendanceBook.findCrewsBy(WarningLevel.WARNING, today);
+        Map<Crew, CrewAttendance> noneCrews = attendanceBook.findCrewsBy(WarningLevel.NONE, today);
 
         assertThat(expelledCrews.size()).isEqualTo(0);
-        assertThat(oneOnOneCrews.size()).isEqualTo(4);
-        assertThat(warningCrews.size()).isEqualTo(1);
-        assertThat(noneCrews.size()).isEqualTo(0);
+        assertThat(oneOnOneCrews.size()).isEqualTo(2);
+        assertThat(warningCrews.size()).isEqualTo(2);
+        assertThat(noneCrews.size()).isEqualTo(1);
     }
 }
