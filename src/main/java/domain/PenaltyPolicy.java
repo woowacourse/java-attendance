@@ -44,7 +44,7 @@ public enum PenaltyPolicy {
         return dangerTypes.contains(this);
     }
 
-    public int compareWithPriority(PenaltyPolicy penalty) {
-        return this.priority - penalty.priority;
+    public int compareWithPriority(PenaltyPolicy o) {
+        return this.priority - o.priority;
     }
 }
