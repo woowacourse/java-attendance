@@ -1,6 +1,7 @@
 package controller;
 
 import domain.AttendanceManager;
+import domain.AttendanceRecord;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.DateProvider;
@@ -37,6 +38,7 @@ public class AttendanceController {
         try {
             switch (command) {
                 case "1" -> attend(attendanceManager);
+                case "2" -> modifyAttendanceTime(attendanceManager);
                 default -> throw new IllegalArgumentException("[ERROR] 올바른 명령어를 입력해주세요.");
             }
         } catch (Exception e) {
@@ -55,4 +57,22 @@ public class AttendanceController {
         outputView.printAttendanceResult(attendanceTime, attendanceStatus);
     }
 
+    private void modifyAttendanceTime(AttendanceManager attendanceManager) {
+        String nickname = inputView.readNickname();
+        Crew crew = attendanceManager.findCrewExactlyByNickname(nickname);
+        AttendanceRecord attendanceRecord = crew.getAttendanceRecord();
+
+        int modifyDay = inputView.readModifyDay();
+        LocalTime modifyTime = inputView.readTime();
+
+        LocalDateTime beforeAttendanceTime = attendanceRecord.findAttendanceTimeByDay(modifyDay);
+        AttendanceStatus beforeAttendanceStatus = attendanceRecord.getAttendanceStatus(modifyDay);
+        outputView.printAttendance(beforeAttendanceTime, beforeAttendanceStatus);
+
+        attendanceRecord.modifyAttendanceTime(modifyDay, modifyTime);
+
+        LocalDateTime modifiedAttendanceTime = attendanceRecord.findAttendanceTimeByDay(modifyDay);
+        AttendanceStatus modifiedAttendanceStatus = attendanceRecord.getAttendanceStatus(modifyDay);
+        outputView.printModifiedAttendance(modifiedAttendanceTime, modifiedAttendanceStatus);
+    }
 }

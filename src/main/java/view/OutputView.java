@@ -7,8 +7,13 @@ import java.util.Locale;
 
 public class OutputView {
 
-    public void printAttendanceResult(LocalDateTime attendanceTime,
-                                      AttendanceStatus attendanceStatus) {
+    public void printAttendanceResult(LocalDateTime attendanceTime, AttendanceStatus attendanceStatus) {
+        printAttendance(attendanceTime, attendanceStatus);
+        System.out.println();
+        System.out.println();
+    }
+
+    public void printAttendance(LocalDateTime attendanceTime, AttendanceStatus attendanceStatus) {
         System.out.println();
         System.out.printf("%d월 %02d일 %s %02d:%02d (%s)",
                 attendanceTime.getMonthValue(),
@@ -18,13 +23,21 @@ public class OutputView {
                 attendanceTime.getMinute(),
                 attendanceStatus.getStatus()
         );
-        System.out.println();
-        System.out.println();
     }
 
     public void printErrorMessage(String message) {
         System.out.println();
         System.out.println(message);
+        System.out.println();
+    }
+
+    public void printModifiedAttendance(LocalDateTime modifiedAttendanceTime,
+                                        AttendanceStatus modifiedAttendanceStatus) {
+        System.out.printf("-> %02d:%02d (%s) 수정 완료!",
+                modifiedAttendanceTime.getHour(),
+                modifiedAttendanceTime.getMinute(),
+                modifiedAttendanceStatus.getStatus());
+        System.out.println();
         System.out.println();
     }
 }

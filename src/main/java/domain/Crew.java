@@ -33,4 +33,8 @@ public class Crew {
     public AttendanceStatus getAttendanceStatus(int dayOfMonth) {
         return attendanceRecord.getAttendanceStatus(dayOfMonth);
     }
+
+    public LocalDateTime findAttendanceTimeByDay(int dayOfMonth) {
+        return attendanceRecord.findAttendanceTimeByDay(dayOfMonth);
+    }
 }
