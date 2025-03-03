@@ -35,8 +35,7 @@ public class AttendanceBook {
 
     public List<Student> findExpulsionRiskStudents() {
         return students.stream()
-                .filter(student -> student.calculateTotalAbsentCount()
-                        >= AttendancePenalty.COUNSELING.getThresholdAbsenceCount())
+                .filter(Student::isAtRiskOfCounselingOrExpulsion)
                 .sorted(Comparator.comparing(Student::calculateTotalAbsentCount))
                 .collect(Collectors.toList());
     }
