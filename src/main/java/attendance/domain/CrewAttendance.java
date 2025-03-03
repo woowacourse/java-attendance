@@ -90,14 +90,22 @@ public class CrewAttendance {
         Map<LocalDate, AttendanceStatus> attendanceStatuses = new HashMap<>();
         for (int day = 1; day < today.getDayOfMonth(); day++) {
             LocalDateTime targetDay = today.minusDays(day);
-            if (!Campus.isOffDay(targetDay)) {
-                if (isExistDay(targetDay)) {
-                    attendanceStatuses.put(LocalDate.from(targetDay), getAttendanceOn(targetDay).status());
-                } else {
-                    attendanceStatuses.put(LocalDate.from(targetDay), AttendanceStatus.ABSENT);
-                }
-            }
+            update(attendanceStatuses, targetDay);
         }
         return Collections.unmodifiableMap(attendanceStatuses);
+    }
+
+    private void update(final Map<LocalDate, AttendanceStatus> attendanceStatuses, final LocalDateTime targetDay) {
+        if (!Campus.isOffDay(targetDay)) {
+            attendanceStatuses.put(LocalDate.from(targetDay), getAttendanceStatusOn(targetDay));
+        }
+    }
+
+    private AttendanceStatus getAttendanceStatusOn(final LocalDateTime targetDay) {
+        Campus.validateOperationDay(targetDay);
+        if (isExistDay(targetDay)) {
+            return getAttendanceOn(targetDay).status();
+        }
+        return AttendanceStatus.ABSENT;
     }
 }
