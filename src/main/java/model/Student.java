@@ -25,13 +25,13 @@ public class Student {
     public void registerAttendanceRecord(LocalDate todayDate, LocalTime attendanceTime) {
         attendanceTimeRecord.validateDuplicateAttendance(todayDate);
         CampusOperatingHours.validateOperatingHours(attendanceTime);
-        attendanceTimeRecord.registerAttendanceTimeRecord(todayDate, attendanceTime);
+        attendanceTimeRecord.putAttendanceTimeRecord(todayDate, attendanceTime);
     }
 
     public void modifyAttendanceRecord(int modifyDate, LocalTime modifyTime) {
         LocalDate localDate = LocalDate.of(2024, 12, modifyDate);
         CampusOperatingHours.validateOperatingHours(modifyTime);
-        attendanceTimeRecord.modifyAttendanceTimeRecord(localDate, modifyTime);
+        attendanceTimeRecord.putAttendanceTimeRecord(localDate, modifyTime);
     }
 
     public void updateNonAttendanceRecordStatusIsAbsent(LocalDate today) {
@@ -76,7 +76,7 @@ public class Student {
 
     private void registerAsAbsentIfNoAttendance(LocalDate date) {
         if (!attendanceTimeRecord.checkAttendanceRecordByLocalDate(date)) {
-            attendanceTimeRecord.putNullLocalTime(date);
+            attendanceTimeRecord.putAttendanceTimeRecord(date, null);
         }
     }
 
