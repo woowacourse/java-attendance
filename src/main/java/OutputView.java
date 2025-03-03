@@ -60,4 +60,21 @@ public class OutputView {
 
         System.out.println();
     }
+
+    public static void printUpdateHistory(AttendanceHistory oldHistory, AttendanceHistory newHistory) {
+        LocalDateTime oldAttendAt = oldHistory.getAttendAt();
+
+        String parseOldDateTime = InputParser.parseDateTimeToString(oldAttendAt);
+        AttendanceType oldAttendanceType = AttendanceType.findAttendanceTypeByDateTime(oldAttendAt);
+        String parseOldAttendanceType = InputParser.parseAttendanceType(oldAttendanceType);
+
+        LocalDateTime newAttendAt = newHistory.getAttendAt();
+
+        String parseNewDateTime = InputParser.parseTimeToString(newAttendAt.toLocalTime());
+        AttendanceType newAttendanceType = AttendanceType.findAttendanceTypeByDateTime(newAttendAt);
+        String parseNewAttendanceType = InputParser.parseAttendanceType(newAttendanceType);
+
+        System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n", parseOldDateTime, parseOldAttendanceType, parseNewDateTime,
+                parseNewAttendanceType);
+    }
 }

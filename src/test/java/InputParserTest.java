@@ -91,4 +91,17 @@ public class InputParserTest {
     }
 
 
+    @Test
+    @DisplayName("시각을 문자열로 파싱한다")
+    void test5() {
+        // given
+        LocalTime time = LocalTime.of(10, 4);
+
+        // when
+        String actual = InputParser.parseTimeToString(time);
+
+        // then
+        assertThat(actual).isEqualTo("10:04");
+    }
+
 }

@@ -15,7 +15,7 @@ public class InputParser {
     }
 
     public static String parseDateTimeToString(LocalDateTime dateTime) {
-        return parseTimeToKorean(dateTime.toLocalDate()) + " " + parseTimeToKorean(dateTime.toLocalTime());
+        return parseTimeToString(dateTime.toLocalDate()) + " " + parseTimeToString(dateTime.toLocalTime());
     }
 
     public static String parseAttendanceType(AttendanceType attendanceType) {
@@ -32,13 +32,13 @@ public class InputParser {
         return valueOfPenaltyTypes.get(penaltyType);
     }
 
-    private static String parseTimeToKorean(LocalDate date) {
+    private static String parseTimeToString(LocalDate date) {
         String datePart = date.format(DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN));
         String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         return datePart + " " + dayOfWeek;
     }
 
-    private static String parseTimeToKorean(LocalTime time) {
+    public static String parseTimeToString(LocalTime time) {
         if (time.getHour() == 0 && time.getMinute() == 0) {
             return "--:--";
         }

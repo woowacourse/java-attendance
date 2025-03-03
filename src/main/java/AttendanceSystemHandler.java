@@ -7,6 +7,8 @@ import java.util.Map;
 public class AttendanceSystemHandler {
     private final AttendanceSystemManager attendanceSystemManager;
     private final Crews crews;
+    private final AttendanceHistories attendanceHistories;
+
     private final Map<FunctionOption, Runnable> ACTION_FOR_OPTION = Map.of(
             FunctionOption.REGISTER_ATTENDANCE, this::registerAttendance,
             FunctionOption.UPDATE_ATTENDANCE, this::updateAttendance,
@@ -14,9 +16,11 @@ public class AttendanceSystemHandler {
             FunctionOption.CHECK_EXPULSION_CANDIDATES, this::checkExpulsionCandidates
     );
 
-    public AttendanceSystemHandler(AttendanceSystemManager attendanceSystemManager, Crews crews) {
+    public AttendanceSystemHandler(AttendanceSystemManager attendanceSystemManager, Crews crews,
+                                   AttendanceHistories attendanceHistories) {
         this.attendanceSystemManager = attendanceSystemManager;
         this.crews = crews;
+        this.attendanceHistories = attendanceHistories;
     }
 
     public void run() {
@@ -59,8 +63,10 @@ public class AttendanceSystemHandler {
 
         LocalDateTime newAttendanceAt = LocalDateTime.of(LocalDate.of(2024, 12, requestDate), newAttendanceTime);
 
-        // TODO: 출력 고민해보기
-        attendanceSystemManager.updateRegisteredAttendance(crew, newAttendanceAt);
+        AttendanceHistory oldHistory = attendanceHistories.findByCrewAndDate(crew, newAttendanceAt.toLocalDate());
+        AttendanceHistory newHistory = attendanceSystemManager.updateRegisteredAttendance(oldHistory, crew,
+                newAttendanceAt);
+        OutputView.printUpdateHistory(oldHistory, newHistory);
     }
 
     private void checkAttendanceHistoryOfCrew() {

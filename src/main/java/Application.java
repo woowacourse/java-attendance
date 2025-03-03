@@ -6,7 +6,8 @@ public class Application {
         Crews crews = new Crews(new ArrayList<>(List.of(new Crew("히로"))));
         AttendanceHistories attendanceHistories = new AttendanceHistories(new ArrayList<>());
         AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories, crews);
-        AttendanceSystemHandler attendanceSystemHandler = new AttendanceSystemHandler(attendanceSystemManager, crews);
+        AttendanceSystemHandler attendanceSystemHandler = new AttendanceSystemHandler(attendanceSystemManager, crews,
+                attendanceHistories);
 
         attendanceSystemHandler.run();
     }

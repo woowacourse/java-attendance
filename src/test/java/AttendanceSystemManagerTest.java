@@ -105,34 +105,21 @@ public class AttendanceSystemManagerTest {
     @Nested
     class TestForUpdate {
         @Test
-        @DisplayName("존재하지 않는 출석 기록을 수정하고자 하면 예외가 발생한다.")
-        void test2() {
-            // given
-            Crew crew = new Crew("히로");
-            Crews crews = new Crews(List.of());
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
-                    new AttendanceHistories(List.of()), crews);
-            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
-
-            // when
-            assertThatThrownBy(() -> attendanceSystemManager.updateRegisteredAttendance(crew, attendAt))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("조건에 해당하는 기록이 존재하지 않습니다.");
-        }
-
-        @Test
         @DisplayName("운영 시간이 아닌 시각으로 출석 시각을 바꾸려고 하는 경우 예외가 발생한다.")
         void test3() {
             // given
             Crew crew = new Crew("히로");
             Crews crews = new Crews(List.of(crew));
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+            AttendanceHistory oldHistory = new AttendanceHistory(crew, attendAt);
+
             LocalDateTime newAttendDate = LocalDateTime.of(2024, 12, 2, 7, 0);
             AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
-                    new AttendanceHistories(List.of(new AttendanceHistory(crew, attendAt))), crews);
+                    new AttendanceHistories(List.of(oldHistory)), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.updateRegisteredAttendance(crew, newAttendDate))
+            assertThatThrownBy(
+                    () -> attendanceSystemManager.updateRegisteredAttendance(oldHistory, crew, newAttendDate))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
         }

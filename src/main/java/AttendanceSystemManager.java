@@ -27,11 +27,11 @@ public class AttendanceSystemManager {
         return attendanceHistory;
     }
 
-    public void updateRegisteredAttendance(Crew crew, LocalDateTime requestedAt) {
-        AttendanceHistory oldAttendanceHistory = attendanceHistories.findByCrewAndDate(crew, requestedAt.toLocalDate());
+    public AttendanceHistory updateRegisteredAttendance(AttendanceHistory oldAttendanceHistory, Crew crew,
+                                                        LocalDateTime requestedAt) {
         AttendanceHistory newAttendanceHistory = new AttendanceHistory(crew, requestedAt);
-
         attendanceHistories.update(oldAttendanceHistory, newAttendanceHistory);
+        return newAttendanceHistory;
     }
 
     public Map<LocalDateTime, AttendanceType> findAllHistoriesOfCrew(Crew crew, LocalDate requestedAt) {
