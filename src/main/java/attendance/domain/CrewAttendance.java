@@ -3,8 +3,11 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class CrewAttendance {
 
@@ -33,7 +36,39 @@ public class CrewAttendance {
     }
 
     public AttendanceResult createAttendanceResult(LocalDate endAttendanceDate) {
-        return AttendanceResult.create(nickname, attendances, endAttendanceDate);
+        Map<AttendanceStatus, Integer> attendanceMap = new HashMap<>();
+        AttendanceDate currentDate = AttendanceDate.ATTENDANCE_START_DATE;
+        while (currentDate.isBeforeAndEqual(endAttendanceDate)) {
+            findAttendanceByDate(nickname, attendances, currentDate)
+                    .ifPresentOrElse(
+                            attendance -> putAttendance(attendance, attendanceMap),
+                            () -> putAbsentAttendance(attendanceMap)
+                    );
+            currentDate = currentDate.nextDate();
+        }
+        return new AttendanceResult(nickname, attendanceMap);
+    }
+
+    private Optional<Attendance> findAttendanceByDate(String nickname,
+                                                      List<Attendance> attendances,
+                                                      AttendanceDate attendanceDate) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isAlreadyAttend(nickname, attendanceDate))
+                .findFirst();
+    }
+
+    private void putAttendance(Attendance attendance, Map<AttendanceStatus, Integer> attendanceMap) {
+        attendanceMap.put(
+                attendance.getAttendanceStatus(),
+                attendanceMap.getOrDefault(attendance.getAttendanceStatus(), 0) + 1
+        );
+    }
+
+    private void putAbsentAttendance(Map<AttendanceStatus, Integer> attendanceMap) {
+        attendanceMap.put(
+                AttendanceStatus.ABSENT,
+                attendanceMap.getOrDefault(AttendanceStatus.ABSENT, 0) + 1
+        );
     }
 
     public List<Attendance> getAttendances() {

@@ -1,12 +1,8 @@
 package attendance.domain;
 
-import java.time.LocalDate;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class AttendanceResult implements Comparable<AttendanceResult> {
 
@@ -18,44 +14,6 @@ public class AttendanceResult implements Comparable<AttendanceResult> {
     public AttendanceResult(String nickname, Map<AttendanceStatus, Integer> attendanceStatus) {
         this.nickname = nickname;
         this.attendanceStatus = attendanceStatus;
-    }
-
-    public static AttendanceResult create(String nickname,
-                                          List<Attendance> attendances,
-                                          LocalDate attendanceEndDate) {
-        Map<AttendanceStatus, Integer> attendanceMap = new HashMap<>();
-        AttendanceDate currentDate = AttendanceDate.ATTENDANCE_START_DATE;
-        while (currentDate.isBeforeAndEqual(attendanceEndDate)) {
-            findAttendanceByDate(nickname, attendances, currentDate)
-                    .ifPresentOrElse(
-                            attendance -> putAttendance(attendance, attendanceMap),
-                            () -> putAbsentAttendance(attendanceMap)
-                    );
-            currentDate = currentDate.nextDate();
-        }
-        return new AttendanceResult(nickname, attendanceMap);
-    }
-
-    private static Optional<Attendance> findAttendanceByDate(String nickname,
-                                                             List<Attendance> attendances,
-                                                             AttendanceDate attendanceDate) {
-        return attendances.stream()
-                .filter(attendance -> attendance.isAlreadyAttend(nickname, attendanceDate))
-                .findFirst();
-    }
-
-    private static void putAttendance(Attendance attendance, Map<AttendanceStatus, Integer> attendanceMap) {
-        attendanceMap.put(
-                attendance.getAttendanceStatus(),
-                attendanceMap.getOrDefault(attendance.getAttendanceStatus(), 0) + 1
-        );
-    }
-
-    private static void putAbsentAttendance(Map<AttendanceStatus, Integer> attendanceMap) {
-        attendanceMap.put(
-                AttendanceStatus.ABSENT,
-                attendanceMap.getOrDefault(AttendanceStatus.ABSENT, 0) + 1
-        );
     }
 
     public WarningLevel getWarningLevel() {
