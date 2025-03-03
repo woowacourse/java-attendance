@@ -45,7 +45,7 @@ public enum AttendanceTime {
         return Arrays.stream(values())
                 .filter(value -> dayOfWeek.equals(value.dayOfWeek))
                 .findFirst()
-                .filter(value -> value.hour == dateTime.getHour()
+                .filter(value -> value.hour >= dateTime.getHour()
                         && value.minute + TARDY_MINUTE >= dateTime.getMinute())
                 .isPresent();
     }
