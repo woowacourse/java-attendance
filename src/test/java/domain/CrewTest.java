@@ -19,5 +19,4 @@ class CrewTest {
         //then
         assertThat(actual).isEqualTo(expected);
     }
-
 }
