@@ -5,101 +5,56 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class WeeklyAttendanceScheduleTest {
 
-    @Test
-    @DisplayName("월요일의 경우 출석 시작 시간 찾기")
-    void 월요일의_경우_출석_시작_시간_찾기() {
-        LocalDate localDate = LocalDate.of(2024, 12, 9);
-        LocalTime expect = LocalTime.of(13, 0);
+    @ParameterizedTest
+    @CsvSource({
+            "2024-12-09, 13:00",
+            "2024-12-10, 10:00",
+            "2024-12-11, 10:00",
+            "2024-12-12, 10:00",
+            "2024-12-13, 10:00"
+    })
+    @DisplayName("주중 출석 시작 시간 확인")
+    void 출석_시작_시간_찾기(LocalDate localDate, String expectedTime) {
+        LocalTime expect = LocalTime.parse(expectedTime);
         LocalTime result = WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(localDate);
         assertEquals(expect, result);
     }
 
-    @Test
-    @DisplayName("화요일 경우 출석 시작 시간 찾기")
-    void 화요일의_경우_출석_시작_시간_찾기() {
-        LocalDate localDate = LocalDate.of(2024, 12, 10);
-        LocalTime expect = LocalTime.of(10, 0);
-        LocalTime result = WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(localDate);
-        assertEquals(expect, result);
+    @ParameterizedTest
+    @CsvSource({
+            "2024-12-14",
+            "2024-12-15",
+            "2024-12-25"
+    })
+    @DisplayName("휴일에 대한 출석 시간 예외 처리")
+    void 휴일_출석_예외처리(LocalDate localDate) {
+        assertThatThrownBy(() -> WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(localDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] "
+                        +localDate.getMonthValue() + "월 "
+                        +localDate.getDayOfMonth()+"일 "
+                        +localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
+                        + "은 등교일이 아닙니다.");
     }
 
-    @Test
-    @DisplayName("수요일 경우 출석 시작 시간 찾기")
-    void 수요일의_경우_출석_시작_시간_찾기() {
-        LocalDate localDate = LocalDate.of(2024, 12, 11);
-        LocalTime expect = LocalTime.of(10, 0);
-        LocalTime result = WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(localDate);
-        assertEquals(expect, result);
-    }
-
-    @Test
-    @DisplayName("목요일 경우 출석 시작 시간 찾기")
-    void 목요일의_경우_출석_시작_시간_찾기() {
-        LocalDate localDate = LocalDate.of(2024, 12, 12);
-        LocalTime expect = LocalTime.of(10, 0);
-        LocalTime result = WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(localDate);
-        assertEquals(expect, result);
-    }
-
-    @Test
-    @DisplayName("금요일 경우 출석 시작 시간 찾기")
-    void 금요일의_경우_출석_시작_시간_찾기() {
-        LocalDate localDate = LocalDate.of(2024, 12, 13);
-        LocalTime expect = LocalTime.of(10, 0);
-        LocalTime result = WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(localDate);
-        assertEquals(expect, result);
-    }
-
-    @Test
-    @DisplayName("토요일의 경우 true 처리")
-    void 토요일의_경우_true_처리() {
-        LocalDate localDate = LocalDate.of(2024, 12, 14);
+    @ParameterizedTest
+    @CsvSource({
+            "2024-12-14, true",
+            "2024-12-15, true",
+            "2024-12-25, true"
+    })
+    @DisplayName("휴일에 대한 출석 여부 확인")
+    void 출석_여부_확인(LocalDate localDate, boolean expected) {
         boolean result = WeeklyAttendanceSchedule.checkHoliday(localDate);
-        assertTrue(result);
-    }
-
-    @Test
-    @DisplayName("일요일의 경우 true 처리")
-    void 일요일의_경우_ture_처리() {
-        LocalDate localDate = LocalDate.of(2024, 12, 15);
-        boolean result = WeeklyAttendanceSchedule.checkHoliday(localDate);
-        assertTrue(result);
-    }
-
-    @Test
-    @DisplayName("크리스마스의 경우 true 처리")
-    void 크리스마스의_경우_ture_처리() {
-        LocalDate localDate = LocalDate.of(2024, 12, 25);
-        boolean result = WeeklyAttendanceSchedule.checkHoliday(localDate);
-        assertTrue(result);
-    }
-
-    @Test
-    @DisplayName("토요일의 경우 예외 처리")
-    void 토요일의_경우_예외_처리() {
-        LocalDate localDate = LocalDate.of(2024, 12, 14);
-        assertThatThrownBy(() -> WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(localDate)).isInstanceOf(
-                IllegalArgumentException.class).hasMessage("[ERROR] 12월 14일 토요일은 등교일이 아닙니다.");
-    }
-
-    @Test
-    @DisplayName("일요일의 경우 예외 처리")
-    void 일요일의_경우_예외_처리() {
-        LocalDate localDate = LocalDate.of(2024, 12, 15);
-        assertThatThrownBy(() -> WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(localDate)).isInstanceOf(
-                IllegalArgumentException.class).hasMessage("[ERROR] 12월 15일 일요일은 등교일이 아닙니다.");
-    }
-
-    @Test
-    @DisplayName("공휴일의 경우 예외 처리")
-    void 크리스마스_경우_예외_처리() {
-        LocalDate localDate = LocalDate.of(2024, 12, 25);
-        assertThatThrownBy(() -> WeeklyAttendanceSchedule.findAttendanceScheduleByLocalDate(localDate)).isInstanceOf(
-                IllegalArgumentException.class).hasMessage("[ERROR] 12월 25일 수요일은 등교일이 아닙니다.");
+        assertEquals(expected, result);
     }
 }
