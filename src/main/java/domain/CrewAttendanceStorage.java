@@ -69,12 +69,14 @@ public class CrewAttendanceStorage {
 
     private List<String> getExpulsionRiskCrews(LocalDate startDate, LocalDate endDate) {
         return storages.keySet().stream()
-                .filter(crew -> {
-                    AttendanceStatistic statistic = storages.get(crew).getStatisticByDateRange(startDate, endDate);
-                    ExpulsionRiskStatus status = statistic.getExpulsionRiskStatus();
-                    return status != ExpulsionRiskStatus.NORMAL;
-                })
+                .filter(crew -> isRiskCrew(crew, startDate, endDate))
                 .toList();
+    }
+
+    private boolean isRiskCrew(String crew, LocalDate startDate, LocalDate endDate) {
+        AttendanceStatistic statistic = storages.get(crew).getStatisticByDateRange(startDate, endDate);
+        ExpulsionRiskStatus status = statistic.getExpulsionRiskStatus();
+        return status != ExpulsionRiskStatus.NORMAL;
     }
 
     private AttendanceStorage findAttendanceStorageByCrew(String crew) {
