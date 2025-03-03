@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import util.DateUtils;
@@ -43,9 +44,9 @@ public class AttendanceRecords {
     }
 
     private List<AttendanceDateTime> collectMissingDates(List<AttendanceDateTime> records, LocalDate fromInclusive, LocalDate toInclusive) {
-        List<LocalDate> presentDates = records.stream()
+        Set<LocalDate> presentDates = records.stream()
             .map(AttendanceDateTime::getDate)
-            .toList();
+            .collect(Collectors.toSet());
         return fromInclusive.datesUntil(toInclusive.plusDays(1))
             .filter(DateUtils::isWorkingDay)
             .filter(date -> !presentDates.contains(date))
