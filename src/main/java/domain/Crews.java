@@ -66,10 +66,6 @@ public class Crews {
         return crews;
     }
 
-    public Set<Crew> getCrews() {
-        return crews;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
