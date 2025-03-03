@@ -18,11 +18,20 @@ public class AttendanceLogs {
         logs = new HashSet<>();
     }
 
-    public void add(AttendanceLog attendanceLog) {
-        boolean isAdded = logs.add(attendanceLog);
-        if (!isAdded) {
+    public void add(AttendanceLog log) {
+        validateAttendanceNotDuplicate(log);
+        logs.add(log);
+    }
+
+    private void validateAttendanceNotDuplicate(AttendanceLog log) {
+        if (hasAttendanceOnSameDate(log)) {
             throw new IllegalArgumentException("금일 출석 기록이 존재하여 추가되지 않았습니다. 수정이 필요한 경우 출석 수정 기능을 사용해주세요.");
         }
+    }
+
+    private boolean hasAttendanceOnSameDate(AttendanceLog log) {
+        return logs.stream()
+                .anyMatch(existingLog -> existingLog.isSameNicknameAndDate(log.getNickname(), log.getAttendanceDate()));
     }
 
     public AttendanceLog findByNicknameAndAttendanceDate(Nickname nickname, LocalDate attendanceDate) {
@@ -96,8 +105,15 @@ public class AttendanceLogs {
     }
 
     public void edit(AttendanceLog updateAttendanceLog) {
-        logs.remove(updateAttendanceLog);
+        logs.removeIf(isSameNicknameAndDate(updateAttendanceLog));
         logs.add(updateAttendanceLog);
+    }
+
+    private Predicate<AttendanceLog> isSameNicknameAndDate(AttendanceLog updateAttendanceLog) {
+        return log -> log.isSameNicknameAndDate(
+                updateAttendanceLog.getNickname(),
+                updateAttendanceLog.getAttendanceDate()
+        );
     }
 
     public EnumMap<AttendanceType, Integer> countAttendanceTypes(Nickname nickname, LocalDate baseDate) {

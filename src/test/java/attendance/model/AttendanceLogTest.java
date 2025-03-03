@@ -1,5 +1,8 @@
 package attendance.model;
 
+import static attendance.model.TestFixtures.BELLO_NICKNAME;
+import static attendance.model.TestFixtures.LOCAL_DATE_2024_12_02;
+import static attendance.model.TestFixtures.LOCAL_TIME_10_00;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
@@ -18,25 +21,19 @@ class AttendanceLogTest {
     @DisplayName("닉네임과 등교 시간으로 출석 로그를 생성할 수 있다.")
     @Test
     void createTestWithNicknameAndAttendanceDateTime() {
-        // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
-
         // when & then
-        assertThatCode(() -> new AttendanceLog(nickname, attendanceDate, attendanceTime))
+        assertThatCode(() -> new AttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00))
                 .doesNotThrowAnyException();
     }
 
-    @DisplayName("닉네임과 등교 날짜가 같은 경우 같은 출석 로그로 간주한다.")
+    @DisplayName("닉네임과 등교 날짜, 시간 모두가 같은 경우 같은 출석 로그로 간주한다.")
     @Test
-    void shouldEquals_WhenNicknameAndAttendanceDateSame() {
+    void shouldEquals_WhenNicknameAndAttendanceDateTimeSame() {
         // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
-        AttendanceLog beforeAttendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
-        AttendanceLog afterAttendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+        LocalDate attendanceDate = LOCAL_DATE_2024_12_02;
+        LocalTime attendanceTime = LOCAL_TIME_10_00;
+        AttendanceLog beforeAttendanceLog = new AttendanceLog(BELLO_NICKNAME, attendanceDate, attendanceTime);
+        AttendanceLog afterAttendanceLog = new AttendanceLog(BELLO_NICKNAME, attendanceDate, attendanceTime);
 
         // when & then
         assertThat(beforeAttendanceLog.equals(afterAttendanceLog))
@@ -47,28 +44,21 @@ class AttendanceLogTest {
     @Test
     void getNicknameTest() {
         // given
-        Nickname belloNickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
-        AttendanceLog attendanceLog = new AttendanceLog(belloNickname, attendanceDate, attendanceTime);
+        AttendanceLog attendanceLog = new AttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00);
 
         // when
         Nickname nickname = attendanceLog.getNickname();
 
         // then
         assertThat(nickname)
-                .isEqualTo(belloNickname);
+                .isEqualTo(BELLO_NICKNAME);
     }
 
     @DisplayName("닉네임이 null인 경우 예외가 발생한다.")
     @Test
     void shouldThrowException_WhenNicknameIsNull() {
-        // given
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
-
         // when & then
-        assertThatCode(() -> new AttendanceLog(null, attendanceDate, attendanceTime))
+        assertThatCode(() -> new AttendanceLog(null, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("닉네임은 null일 수 없습니다.");
     }
@@ -77,11 +67,10 @@ class AttendanceLogTest {
     @Test
     void shouldThrowException_WhenAttendanceDateIsPublicHoliday() {
         // given
-        Nickname nickname = new Nickname("벨로");
         LocalDate christmas = LocalDate.of(2024, 12, 25);
 
         // when & then
-        assertThatCode(() -> new AttendanceLog(nickname, christmas))
+        assertThatCode(() -> new AttendanceLog(BELLO_NICKNAME, christmas))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("공휴일에는 출석할 수 없습니다.");
     }
@@ -93,11 +82,8 @@ class AttendanceLogTest {
             "2024-12-08"  // 일요일
     })
     void shouldThrowException_WhenAttendanceDateIsWeekend(@JavaTimeConversionPattern("yyyy-MM-dd") LocalDate weekend) {
-        // given
-        Nickname nickname = new Nickname("벨로");
-
         // when & then
-        assertThatCode(() -> new AttendanceLog(nickname, weekend))
+        assertThatCode(() -> new AttendanceLog(BELLO_NICKNAME, weekend))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주말에는 출석할 수 없습니다.");
     }
@@ -105,12 +91,8 @@ class AttendanceLogTest {
     @DisplayName("등교 날짜가 null인 경우 예외가 발생한다.")
     @Test
     void shouldThrowException_WhenAttendanceDateIsNull() {
-        // given
-        Nickname nickname = new Nickname("벨로");
-        LocalTime attendanceTime = LocalTime.of(10, 0);
-
         // when & then
-        assertThatCode(() -> new AttendanceLog(nickname, null, attendanceTime))
+        assertThatCode(() -> new AttendanceLog(BELLO_NICKNAME, null, LOCAL_TIME_10_00))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출석 날짜는 null일 수 없습니다.");
     }
@@ -119,10 +101,8 @@ class AttendanceLogTest {
     @Test
     void getAttendanceDateTest() {
         // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
-        AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+        LocalDate attendanceDate = LOCAL_DATE_2024_12_02;
+        AttendanceLog attendanceLog = new AttendanceLog(BELLO_NICKNAME, attendanceDate, LOCAL_TIME_10_00);
 
         // when
         LocalDate logAttendanceDate = attendanceLog.getAttendanceDate();
@@ -135,12 +115,8 @@ class AttendanceLogTest {
     @DisplayName("등교 시간이 없는 경우 결석으로 간주한다.")
     @Test
     void shouldAbsent_WhenAttendanceTimeIsNull() {
-        // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-
         // when
-        AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate);
+        AttendanceLog attendanceLog = new AttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02);
         boolean isAbsent = attendanceLog.isNotRecorded();
 
         // then
@@ -151,13 +127,8 @@ class AttendanceLogTest {
     @DisplayName("등교 시간이 있는 경우 결석으로 간주하지 않는다.")
     @Test
     void shouldAbsent_WhenAttendanceTimeExist() {
-        // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
-
         // when
-        AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+        AttendanceLog attendanceLog = new AttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, LOCAL_TIME_10_00);
         boolean isAbsent = attendanceLog.isNotRecorded();
 
         // then
@@ -169,12 +140,10 @@ class AttendanceLogTest {
     @Test
     void getAttendanceTimeTest() {
         // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
+        LocalTime attendanceTime = LOCAL_TIME_10_00;
 
         // when
-        AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+        AttendanceLog attendanceLog = new AttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, attendanceTime);
 
         // then
         assertThat(attendanceLog.getAttendanceTime())
@@ -185,12 +154,11 @@ class AttendanceLogTest {
     @Test
     void getAttendanceDateTimeTest() {
         // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        LocalTime attendanceTime = LocalTime.of(10, 0);
+        LocalDate attendanceDate = LOCAL_DATE_2024_12_02;
+        LocalTime attendanceTime = LOCAL_TIME_10_00;
 
         // when
-        AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+        AttendanceLog attendanceLog = new AttendanceLog(BELLO_NICKNAME, attendanceDate, attendanceTime);
 
         // then
         assertThat(attendanceLog.getAttendanceDateTime())
@@ -204,12 +172,8 @@ class AttendanceLogTest {
             "23:01",
     })
     void shouldThrowException_WhenAttendanceTimeNotInOpen(@JavaTimeConversionPattern("HH:mm") LocalTime outTime) {
-        // given
-        Nickname nickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-
         // when & then
-        assertThatCode(() -> new AttendanceLog(nickname, attendanceDate, outTime))
+        assertThatCode(() -> new AttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02, outTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("캠퍼스 운영시간(08:00~23:00) 외에는 출석할 수 없습니다.");
     }
@@ -226,9 +190,7 @@ class AttendanceLogTest {
                                                @JavaTimeConversionPattern("yyyy-MM-dd") LocalDate comparedDate,
                                                boolean expected) {
         // given
-        Nickname belloNickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        AttendanceLog attendanceLog = new AttendanceLog(belloNickname, attendanceDate);
+        AttendanceLog attendanceLog = new AttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02);
 
         // when
         boolean isSame = attendanceLog.isSameNicknameAndMonth(new Nickname(comparedNickname), comparedDate);
@@ -250,9 +212,7 @@ class AttendanceLogTest {
                                               @JavaTimeConversionPattern("yyyy-MM-dd") LocalDate comparedDate,
                                               boolean expected) {
         // given
-        Nickname belloNickname = new Nickname("벨로");
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
-        AttendanceLog attendanceLog = new AttendanceLog(belloNickname, attendanceDate);
+        AttendanceLog attendanceLog = new AttendanceLog(BELLO_NICKNAME, LOCAL_DATE_2024_12_02);
 
         // when
         boolean isSame = attendanceLog.isSameNicknameAndDate(new Nickname(comparedNickname), comparedDate);

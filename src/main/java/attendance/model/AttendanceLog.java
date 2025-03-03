@@ -115,11 +115,12 @@ public class AttendanceLog {
         }
         AttendanceLog that = (AttendanceLog) o;
         return Objects.equals(nickname, that.nickname)
-                && Objects.equals(attendanceDate, that.attendanceDate);
+                && Objects.equals(attendanceDate, that.attendanceDate)
+                && Objects.equals(attendanceTime, that.attendanceTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nickname, attendanceDate);
+        return Objects.hash(nickname, attendanceDate, attendanceTime);
     }
 }
