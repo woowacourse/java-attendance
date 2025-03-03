@@ -8,12 +8,14 @@ public enum ErrorMessage {
     INVALID_INPUT("올바르지 않은 입력값입니다."),
     NO_ATTENDANCES_FILE("출석 기록 파일을 찾을 수 없습니다"),
     INVALID_FILE_TIME_FORMAT("출석 정보 저장 형식이 잘못되었습니다. attendances.csv 파일을 확인해주세요"),
-    NO_SUCH_NICKNAME("[ERROR] 등록되지 않은 닉네임입니다.");
+    NO_SUCH_NICKNAME("등록되지 않은 닉네임입니다.");
 
+    private static final String prefix = "[ERROR] ";
     private final String message;
 
+
     ErrorMessage(String message) {
-        this.message = message;
+        this.message = prefix + message;
     }
 
     public String getMessage() {
