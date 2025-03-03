@@ -11,5 +11,12 @@ public class AttendanceController {
 
     public void run() {
         String inputOption = inputView.readOption();
+        if (inputOption.equals("3")) {
+            showCrewAttendance();
+        }
+    }
+
+    private void showCrewAttendance() {
+        String nickname = inputView.readNickname();
     }
 }
