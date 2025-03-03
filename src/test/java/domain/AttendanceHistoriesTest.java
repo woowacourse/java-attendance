@@ -285,7 +285,7 @@ public class AttendanceHistoriesTest {
     public class GetDisplayStatusTest {
         @Test
         @DisplayName("결석 2회를 경고 대상자로 판단할 수 있다.")
-        void test1() {
+        void testGetWarningStatus() {
             // given
             AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
                     DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, 0, 2);
@@ -299,7 +299,7 @@ public class AttendanceHistoriesTest {
         @ParameterizedTest(name = "결석 2회 지각 {0}회를 면담 대상자로 판단할 수 있다.")
         @DisplayName("결석 2회 지각 n회를 면담 대상자로 판단할 수 있다.")
         @ValueSource(ints = {3, 4, 5, 6})
-        void test2(int tardyCount) {
+        void testGetOneOnOneStatus(int tardyCount) {
             // given
             AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
                     DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, tardyCount, 2);
@@ -312,7 +312,7 @@ public class AttendanceHistoriesTest {
 
         @Test
         @DisplayName("결석 5회를 지각 1회를 제적 대상자로 판단할 수 있다.")
-        void test3() {
+        void testGetExpelledStatus() {
             // given
             AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
                     DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, 1, 5);

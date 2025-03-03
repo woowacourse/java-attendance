@@ -28,10 +28,8 @@ public enum DisciplinaryStatus {
     }
 
     private static int convertTardyToAbsent(int absentCount, int tardyCount) {
-        int totalCount = absentCount;
-        totalCount += (tardyCount / 3);
-        tardyCount -= (tardyCount / 3);
-        totalCount += tardyCount % 3;
-        return totalCount;
+        int convertedAbsences = tardyCount / 3;
+        int remainingTardies = tardyCount % 3;
+        return absentCount + convertedAbsences + remainingTardies;
     }
 }
