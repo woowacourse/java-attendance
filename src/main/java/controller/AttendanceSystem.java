@@ -58,16 +58,12 @@ public class AttendanceSystem {
         }
     }
 
-    private void checkPenaltyReceivedCrew() {
-        List<Crew> penaltyReceivedCrew = allCrew.getPenaltyReceivedCrew();
-        allCrew.sortPenaltyReceivedCrew(penaltyReceivedCrew);
-        OutputView.printPenaltyReceivedCrew(penaltyReceivedCrew);
-    }
-
-    private void checkCrewAttendanceHistory() {
+    private void checkAttendance() {
         String crewName = askCrewName();
         Crew crew = allCrew.findCrewByName(crewName);
-        OutputView.printCrewAttendanceHistory(crew);
+        List<String> hourAndMinute = List.of(askAttendanceTime().split(":"));
+        LocalTime time = LocalTime.of(parseInt(hourAndMinute.getFirst()), parseInt(hourAndMinute.getLast()));
+        printCheckedAttendance(crew.addAttendanceWithDateTime(LocalDateTime.of(today, time)));
     }
 
     private void modifyAttendance() {
@@ -78,12 +74,16 @@ public class AttendanceSystem {
         printModifyResult(crew.modifyAttendedTime(date, timeTo));
     }
 
-    private void checkAttendance() {
+    private void checkCrewAttendanceHistory() {
         String crewName = askCrewName();
         Crew crew = allCrew.findCrewByName(crewName);
-        List<String> hourAndMinute = List.of(askAttendanceTime().split(":"));
-        LocalTime time = LocalTime.of(parseInt(hourAndMinute.getFirst()), parseInt(hourAndMinute.getLast()));
-        printCheckedAttendance(crew.addAttendanceWithDateTime(LocalDateTime.of(today, time)));
+        OutputView.printCrewAttendanceHistory(crew);
+    }
+
+    private void checkPenaltyReceivedCrew() {
+        List<Crew> penaltyReceivedCrew = allCrew.getPenaltyReceivedCrew();
+        allCrew.sortPenaltyReceivedCrew(penaltyReceivedCrew);
+        OutputView.printPenaltyReceivedCrew(penaltyReceivedCrew);
     }
 
 }
