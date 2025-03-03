@@ -7,6 +7,7 @@ import view.OutputView;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class AttendanceController {
     public static final String FILE_PATH = "src/main/resources/attendances.csv";
@@ -41,6 +42,9 @@ public class AttendanceController {
             if (featureNumber.equals("3")) {
                 viewCrewHistory();
             }
+            if (featureNumber.equals("4")) {
+                viewDangerCrews();
+            }
             if (featureNumber.equals("Q")) {
                 break;
             }
@@ -69,6 +73,11 @@ public class AttendanceController {
         String nickname = inputView.readNickName();
         CheckInHistory checkInHistoryByName = getCheckInHistoryByName(nickname);
         outputView.printAttendanceHistory(nickname, systemDateProvider.now(), checkInHistoryByName);
+    }
+
+    private void viewDangerCrews() {
+        List<DangerCrew> dangerCrews = attendanceBook.findDangerCrews(systemDateProvider.now());
+        outputView.printDangerCrews(dangerCrews);
     }
 
     private CheckInTime getCheckInTimeForModify() {

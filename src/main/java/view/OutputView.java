@@ -6,6 +6,7 @@ import exception.AppException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
@@ -38,6 +39,17 @@ public class OutputView {
         }
         printAttendanceResult(checkInHistory, today);
         printIsCrewDanger(checkInHistory, today);
+    }
+
+    public void printDangerCrews(List<DangerCrew> crews) {
+        System.out.println("제적 위험자 조회 결과");
+
+        for (DangerCrew crew : crews) {
+            int lateCount = crew.getLateCount();
+            int absenceCount = crew.getAbsenceCount();
+            PenaltyStatus status = PenaltyStatus.determinePenalty(lateCount, absenceCount);
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", crew, absenceCount, lateCount, status);
+        }
     }
 
     private void printAttendanceForDay(int day, CheckInHistory checkInHistory) {

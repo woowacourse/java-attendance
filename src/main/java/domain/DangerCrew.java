@@ -15,6 +15,14 @@ public class DangerCrew implements Comparable<DangerCrew> {
         return new DangerCrew(crew, lateCount, absenceCount);
     }
 
+    public int getLateCount() {
+        return lateCount;
+    }
+
+    public int getAbsenceCount() {
+        return absenceCount;
+    }
+
     @Override
     public int compareTo(DangerCrew o) {
         int myLate = PenaltyStatus.convertAbsenceToLate(lateCount, absenceCount);
@@ -24,5 +32,10 @@ public class DangerCrew implements Comparable<DangerCrew> {
             return otherLate - myLate;
         }
         return this.crew.compareTo(o.crew);
+    }
+
+    @Override
+    public String toString() {
+        return crew.toString();
     }
 }

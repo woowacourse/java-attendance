@@ -55,4 +55,9 @@ public class Crew implements Comparable<Crew> {
     public int compareTo(Crew crew) {
         return name.compareTo(crew.name);
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
