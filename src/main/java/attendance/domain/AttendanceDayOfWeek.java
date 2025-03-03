@@ -43,8 +43,4 @@ public enum AttendanceDayOfWeek {
     public int getStartHour() {
         return startHour;
     }
-
-    public int getEndHour() {
-        return endHour;
-    }
 }
