@@ -33,7 +33,7 @@ public class AttendanceController {
     }
 
     public void run(LocalDate today, AttendanceBookInitializer attendanceBookInitializer) {
-        AttendanceBook attendanceBook = attendanceBookInitializer.Initialize();
+        AttendanceBook attendanceBook = attendanceBookInitializer.initialize();
         inputCommandAndExecuteUtilQuit(today, attendanceBook);
     }
 

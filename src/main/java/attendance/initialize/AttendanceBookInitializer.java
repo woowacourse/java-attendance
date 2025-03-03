@@ -18,7 +18,7 @@ public class AttendanceBookInitializer {
         this.attendanceInfoLinesReader = attendanceInfoLinesReader;
     }
 
-    public AttendanceBook Initialize() {
+    public AttendanceBook initialize() {
         List<AttendanceInfo> attendanceInfos = attendanceInfoLinesReader.readAttendanceInfos();
 
         Set<String> nicknames = new HashSet<>();

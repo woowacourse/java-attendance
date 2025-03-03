@@ -22,13 +22,11 @@ public class Attendance {
     }
 
     public boolean isAlreadyAttend(Attendance newAttendance) {
-        return nickname.equals(newAttendance.nickname) &&
-                attendanceDate.equals(newAttendance.attendanceDate);
+        return isAlreadyAttend(newAttendance.nickname, newAttendance.attendanceDate);
     }
 
     public boolean isAlreadyAttend(String nickname, AttendanceDate date) {
-        return this.nickname.equals(nickname) &&
-                attendanceDate.equals(date);
+        return this.nickname.equals(nickname) && attendanceDate.equals(date);
     }
 
     public void updateAttendanceTime(LocalTime updateTime) {
