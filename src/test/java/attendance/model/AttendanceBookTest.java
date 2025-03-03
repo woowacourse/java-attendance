@@ -22,8 +22,8 @@ class AttendanceBookTest {
     void shouldNotThrowException_WhenUseRegisterNickname() {
         // given
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        NicknameRoster nicknameRoster = new NicknameRoster(Set.of(new Nickname("벨로")));
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRoster);
+        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(new Nickname("벨로")));
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when & then
         assertThatCode(() -> attendanceBook.validateNicknameExists(new Nickname("벨로")))
@@ -35,8 +35,8 @@ class AttendanceBookTest {
     void shouldThrowException_WhenUseNoRegisterNickname() {
         // given
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        NicknameRoster nicknameRoster = new NicknameRoster(Set.of());
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRoster);
+        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of());
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when & then
         assertThatCode(() -> attendanceBook.validateNicknameExists(new Nickname("벨로")))
@@ -49,8 +49,8 @@ class AttendanceBookTest {
     void attendTest() {
         // given
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        NicknameRoster nicknameRoster = new NicknameRoster(Set.of(new Nickname("벨로")));
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRoster);
+        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(new Nickname("벨로")));
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
 
         // when
@@ -69,8 +69,8 @@ class AttendanceBookTest {
         // given
         AttendanceLogs attendanceLogs = new AttendanceLogs();
         attendanceLogs.add(new AttendanceLog(new Nickname("벨로"), LocalDate.of(2024, 12, 3), LocalTime.of(10, 31)));
-        NicknameRoster nicknameRoster = new NicknameRoster(Set.of(new Nickname("벨로")));
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRoster);
+        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(new Nickname("벨로")));
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
         LocalDateTime updateAttendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 5);
 
         // when
@@ -92,8 +92,8 @@ class AttendanceBookTest {
     void editTest_WhenNoAttendanceLog() {
         // given
         AttendanceLogs attendanceLogs = new AttendanceLogs();
-        NicknameRoster nicknameRoster = new NicknameRoster(Set.of(new Nickname("벨로")));
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRoster);
+        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(new Nickname("벨로")));
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
         LocalDateTime updateAttendanceDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
 
         // when
@@ -116,8 +116,8 @@ class AttendanceBookTest {
         // given
         AttendanceLogs attendanceLogs = new AttendanceLogs();
         attendanceLogs.add(new AttendanceLog(new Nickname("벨로"), LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)));
-        NicknameRoster nicknameRoster = new NicknameRoster(Set.of(new Nickname("벨로")));
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRoster);
+        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(new Nickname("벨로")));
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when & then
         assertThat(attendanceBook.findAttendanceLogsByNicknameAndInMonth(new Nickname("벨로"), LocalDate.of(2024, 12, 5)))
@@ -135,8 +135,8 @@ class AttendanceBookTest {
         AttendanceLogs attendanceLogs = new AttendanceLogs();
         attendanceLogs.add(new AttendanceLog(nickname, yesterday, attendanceTime));
         attendanceLogs.add(new AttendanceLog(nickname, today, attendanceTime));
-        NicknameRoster nicknameRoster = new NicknameRoster(attendanceLogs.getAllNicknames());
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRoster);
+        NicknameRegistry nicknameRegistry = new NicknameRegistry(attendanceLogs.getAllNicknames());
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when
         EnumMap<AttendanceType, Integer> map = attendanceBook.countAllAttendanceType(nickname, today);
@@ -158,7 +158,7 @@ class AttendanceBookTest {
         counted.put(AttendanceType.PRESENT, 1);
         counted.put(AttendanceType.LATE, 0);
         counted.put(AttendanceType.ABSENT, 2);
-        AttendanceBook attendanceBook = new AttendanceBook(new AttendanceLogs(), new NicknameRoster(Set.of()));
+        AttendanceBook attendanceBook = new AttendanceBook(new AttendanceLogs(), new NicknameRegistry(Set.of()));
 
         // when
         AttendanceWarningLevel warningLevel = attendanceBook.determineWarningLevel(counted);
@@ -174,7 +174,7 @@ class AttendanceBookTest {
         // given
         Nickname belloNickname = new Nickname("벨로");
         Nickname pobiNickname = new Nickname("포비");
-        NicknameRoster nicknameRoster = new NicknameRoster(Set.of(belloNickname, pobiNickname));
+        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(belloNickname, pobiNickname));
         AttendanceLogs attendanceLogs = new AttendanceLogs();
         // 벨로 결석 4회-미팅, 포비 결석 0회-클린
         attendanceLogs.add(new AttendanceLog(belloNickname, LocalDate.of(2024, 12, 2), LocalTime.of(15, 0)));
@@ -185,7 +185,7 @@ class AttendanceBookTest {
         attendanceLogs.add(new AttendanceLog(pobiNickname, LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)));
         attendanceLogs.add(new AttendanceLog(pobiNickname, LocalDate.of(2024, 12, 4), LocalTime.of(10, 0)));
         attendanceLogs.add(new AttendanceLog(pobiNickname, LocalDate.of(2024, 12, 5), LocalTime.of(10, 0)));
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRoster);
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when & then
         assertThat(attendanceBook.getAttendanceWarnings(LocalDate.of(2024, 12, 6)))
@@ -200,7 +200,7 @@ class AttendanceBookTest {
         // given
         Nickname belloNickname = new Nickname("벨로");
         Nickname pobiNickname = new Nickname("포비");
-        NicknameRoster nicknameRoster = new NicknameRoster(Set.of(belloNickname, pobiNickname));
+        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(belloNickname, pobiNickname));
         AttendanceLogs attendanceLogs = new AttendanceLogs();
         // 포비 결석 2회-경고, 벨로 결석 4회-미팅
         attendanceLogs.add(new AttendanceLog(pobiNickname, LocalDate.of(2024, 12, 2), LocalTime.of(15, 0)));
@@ -211,7 +211,7 @@ class AttendanceBookTest {
         attendanceLogs.add(new AttendanceLog(belloNickname, LocalDate.of(2024, 12, 3), LocalTime.of(11, 0)));
         attendanceLogs.add(new AttendanceLog(belloNickname, LocalDate.of(2024, 12, 4), LocalTime.of(11, 0)));
         attendanceLogs.add(new AttendanceLog(belloNickname, LocalDate.of(2024, 12, 5), LocalTime.of(11, 0)));
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRoster);
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when & then
         assertThat(attendanceBook.getAttendanceWarnings(LocalDate.of(2024, 12, 6)))
@@ -227,14 +227,14 @@ class AttendanceBookTest {
         // given
         Nickname belloNickname = new Nickname("벨로");
         Nickname pobiNickname = new Nickname("포비");
-        NicknameRoster nicknameRoster = new NicknameRoster(Set.of(belloNickname, pobiNickname));
+        NicknameRegistry nicknameRegistry = new NicknameRegistry(Set.of(belloNickname, pobiNickname));
         AttendanceLogs attendanceLogs = new AttendanceLogs();
         // 포비 결석 2회-미팅, 벨로 결석 2회-미팅
         attendanceLogs.add(new AttendanceLog(pobiNickname, LocalDate.of(2024, 12, 2), LocalTime.of(15, 0)));
         attendanceLogs.add(new AttendanceLog(pobiNickname, LocalDate.of(2024, 12, 3), LocalTime.of(11, 0)));
         attendanceLogs.add(new AttendanceLog(belloNickname, LocalDate.of(2024, 12, 2), LocalTime.of(15, 0)));
         attendanceLogs.add(new AttendanceLog(belloNickname, LocalDate.of(2024, 12, 3), LocalTime.of(11, 0)));
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRoster);
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceLogs, nicknameRegistry);
 
         // when & then
         assertThat(attendanceBook.getAttendanceWarnings(LocalDate.of(2024, 12, 4)))

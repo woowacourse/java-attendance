@@ -3,11 +3,11 @@ package attendance.model;
 import java.util.Collection;
 import java.util.Set;
 
-public class NicknameRoster {
+public class NicknameRegistry {
 
     private final Set<Nickname> nicknames;
 
-    public NicknameRoster(Collection<Nickname> nicknames) {
+    public NicknameRegistry(Collection<Nickname> nicknames) {
         this.nicknames = Set.copyOf(nicknames);
     }
 
@@ -15,7 +15,7 @@ public class NicknameRoster {
         return nicknames;
     }
 
-    public boolean isMissing(Nickname nickname) {
-        return !nicknames.contains(nickname);
+    public boolean isRegistered(Nickname nickname) {
+        return nicknames.contains(nickname);
     }
 }

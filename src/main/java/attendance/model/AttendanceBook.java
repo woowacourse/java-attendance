@@ -14,15 +14,15 @@ import java.util.List;
 public class AttendanceBook {
 
     private final AttendanceLogs attendanceLogs;
-    private final NicknameRoster nicknameRoster;
+    private final NicknameRegistry nicknameRegistry;
 
-    public AttendanceBook(AttendanceLogs attendanceLogs, NicknameRoster nicknameRoster) {
+    public AttendanceBook(AttendanceLogs attendanceLogs, NicknameRegistry nicknameRegistry) {
         this.attendanceLogs = attendanceLogs;
-        this.nicknameRoster = nicknameRoster;
+        this.nicknameRegistry = nicknameRegistry;
     }
 
     public void validateNicknameExists(Nickname nickname) {
-        if (nicknameRoster.isMissing(nickname)) {
+        if (!nicknameRegistry.isRegistered(nickname)) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }
     }
@@ -82,7 +82,7 @@ public class AttendanceBook {
     }
 
     public List<AttendanceWarning> getAttendanceWarnings(LocalDate baseDate) {
-        return nicknameRoster.getNicknames()
+        return nicknameRegistry.getNicknames()
                 .stream()
                 .map(nickname -> createAttendanceWarningFromLogs(baseDate, nickname))
                 .filter(AttendanceWarning::isNotClean)

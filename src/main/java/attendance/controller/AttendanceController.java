@@ -10,7 +10,7 @@ import attendance.model.AttendanceType;
 import attendance.model.AttendancesFile;
 import attendance.model.Command;
 import attendance.model.Nickname;
-import attendance.model.NicknameRoster;
+import attendance.model.NicknameRegistry;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -44,8 +44,8 @@ public class AttendanceController {
 
     private AttendanceBook createAttendanceBook() {
         final AttendanceLogs attendanceLogs = new AttendancesFile().load("src/main/resources/attendances.csv");
-        final NicknameRoster nicknameRoster = new NicknameRoster(attendanceLogs.getAllNicknames());
-        return new AttendanceBook(attendanceLogs, nicknameRoster);
+        final NicknameRegistry nicknameRegistry = new NicknameRegistry(attendanceLogs.getAllNicknames());
+        return new AttendanceBook(attendanceLogs, nicknameRegistry);
     }
 
     private void startAttendanceInteraction(LocalDate baseDate, AttendanceBook attendanceBook) {
