@@ -3,9 +3,9 @@ package controller;
 import domain.AttendanceState;
 import domain.Attendances;
 import domain.Calender;
+import domain.Crew;
 import domain.DateProvider;
 import domain.Dismissal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
@@ -79,7 +79,7 @@ public class AttendanceController {
 
     void attendanceHistory() {
         String name = inputName();
-        Map<LocalDateTime, AttendanceState> history = attendances.getHistory(name, LocalDate.of(2024, 12, 13));
+        Map<LocalDateTime, AttendanceState> history = attendances.getHistory(name, dateProvider.getLocalDate());
 
         outputView.printAttendanceHistory(name, history);
         Map<AttendanceState, Integer> attendanceStateCounts = attendances.calculate(history);
@@ -92,7 +92,9 @@ public class AttendanceController {
     }
 
     void dismissalHistory() {
-
+        Map<Crew, Map<AttendanceState, Integer>> absenceRecord = attendances.calculateAbsence(
+                dateProvider.getLocalDate());
+        outputView.printAbsenceRecord(absenceRecord);
     }
 
     void exit() {
