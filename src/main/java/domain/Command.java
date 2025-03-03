@@ -1,5 +1,6 @@
 package domain;
 
+import controller.command.AttendanceByCrew;
 import controller.command.AttendanceCheck;
 import controller.command.AttendanceCommand;
 import controller.command.AttendanceEdit;
@@ -10,7 +11,7 @@ import java.util.ResourceBundle;
 public enum Command {
     CHECK(AttendanceCheck::new),
     EDIT(AttendanceEdit::new),
-    VIEW_ATTENDANCE_BY_CREW(null),
+    VIEW_ATTENDANCE_BY_CREW(AttendanceByCrew::new),
     VIEW_AT_RISK_MEMBERS(null),
     QUIT(null);
 

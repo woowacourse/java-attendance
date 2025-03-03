@@ -1,5 +1,6 @@
 package controller.command;
 
+import controller.AttendanceCommandController;
 import domain.crew.Crew;
 import domain.crew.Crews;
 import domain.crew.Nickname;
@@ -15,7 +16,7 @@ public class AttendanceByCrew implements AttendanceCommand {
         final Crew crew = crews.findByNickname(nickname);
         final AttendanceRecords attendanceRecords = crew.getAttendanceRecords();
 
-        OutputView.printAttendances();
+        OutputView.printValidAttendances(AttendanceCommandController.SYSTEM_DATE_TIME, attendanceRecords);
     }
 
     private Nickname readNickname() {

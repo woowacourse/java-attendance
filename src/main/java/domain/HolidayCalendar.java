@@ -16,6 +16,13 @@ public enum HolidayCalendar {
         this.holidays = holidays;
     }
 
+    public static boolean isHoliday(final int inputMonth, final int day) {
+        final Month month = Month.of(inputMonth);
+        final HolidayCalendar holidayCalender = findByMonth(month);
+
+        return holidayCalender.holidays.contains(day);
+    }
+
     public static void validateHoliday(final LocalDate date) {
         final int day = date.getDayOfMonth();
         final HolidayCalendar holidayCalender = findByDate(date);
@@ -27,6 +34,13 @@ public enum HolidayCalendar {
 
     private static HolidayCalendar findByDate(final LocalDate localDate) {
         final Month month = localDate.getMonth();
+        return Arrays.stream(HolidayCalendar.values())
+                .filter(holidayCalendar -> holidayCalendar.month.equals(month))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("아직 준비되지 않은 달입니다."));
+    }
+
+    private static HolidayCalendar findByMonth(final Month month) {
         return Arrays.stream(HolidayCalendar.values())
                 .filter(holidayCalendar -> holidayCalendar.month.equals(month))
                 .findFirst()

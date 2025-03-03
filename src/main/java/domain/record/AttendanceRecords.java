@@ -40,6 +40,13 @@ public class AttendanceRecords {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출석 dateTime 입니다."));
     }
 
+    public AttendanceRecord findByDate(final LocalDate date) {
+        return attendanceRecords.stream()
+                .filter(attendanceRecord -> attendanceRecord.hasAttendanceDate(date))
+                .findAny()
+                .orElse(null);
+    }
+
     public void editAttendanceDateTime(final AttendanceRecord before, final AttendanceRecord after) {
         attendanceRecords.remove(before);
         attendanceRecords.add(after);
@@ -56,6 +63,10 @@ public class AttendanceRecords {
 
     public AttendanceStatusCounts getAttendanceStatusCounts() {
         return attendanceStatusCounts;
+    }
+
+    public SortedSet<AttendanceRecord> getAttendanceRecords() {
+        return attendanceRecords;
     }
 
     public AttendanceRecord findAttendanceRecord(final AttendanceDate attendanceDate) {
