@@ -1,16 +1,12 @@
 package controller;
 
-import domain.AttendanceDateTime;
-import domain.AttendanceDateTimes;
 import domain.AttendanceHistories;
-import domain.Crew;
+import domain.AttendanceHistoryGenerator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import view.FileInputView;
 import view.InputView;
 import view.Menu;
@@ -41,15 +37,7 @@ public class AttendanceController {
 
     private AttendanceHistories loadCsvData() {
         Map<String, List<LocalDateTime>> rawAttendanceData = fileInputView.readAttendanceFile();
-        Map<Crew, AttendanceDateTimes> rawAttendanceHistoryData = new HashMap<>();
-        for (Entry<String, List<LocalDateTime>> attendanceEntry : rawAttendanceData.entrySet()) {
-            Crew crew = new Crew(attendanceEntry.getKey());
-            AttendanceDateTimes attendanceDateTimes = new AttendanceDateTimes(attendanceEntry.getValue().stream()
-                    .map(AttendanceDateTime::new)
-                    .toList());
-            rawAttendanceHistoryData.put(crew, attendanceDateTimes);
-        }
-        return new AttendanceHistories(rawAttendanceHistoryData);
+        return AttendanceHistoryGenerator.generate(rawAttendanceData);
     }
 
     private void checkIn() {
