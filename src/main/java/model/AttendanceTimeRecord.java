@@ -18,29 +18,21 @@ public class AttendanceTimeRecord {
         this.attendanceTimeRecords = map;
     }
 
-    public void modifyAttendanceTimeRecord(LocalDate localDate, LocalTime modifyTime) {
-        attendanceTimeRecords.put(localDate, modifyTime);
-    }
-
-    public void registerAttendanceTimeRecord(LocalDate todayDate, LocalTime attendanceTime) {
-        attendanceTimeRecords.put(todayDate, attendanceTime);
+    public void putAttendanceTimeRecord(LocalDate localDate, LocalTime localTime){
+        attendanceTimeRecords.put(localDate, localTime);
     }
 
     public boolean checkAttendanceRecordByLocalDate(LocalDate localDate) {
         return attendanceTimeRecords.get(localDate) != null;
     }
 
-    public void putNullLocalTime(LocalDate localDate) {
-        attendanceTimeRecords.put(localDate, null);
-    }
-
-    public Map<LocalDate, LocalTime> getAttendanceTimeRecords() {
-        return attendanceTimeRecords;
-    }
-
     public void validateDuplicateAttendance(LocalDate today) {
         if (checkAttendanceRecordByLocalDate(today)) {
             throw new IllegalArgumentException("[ERROR] 출석기록이 존재합니다.");
         }
+    }
+
+    public Map<LocalDate, LocalTime> getAttendanceTimeRecords() {
+        return attendanceTimeRecords;
     }
 }
