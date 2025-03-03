@@ -46,7 +46,7 @@ public class AttendanceHistoriesTest {
         List<AttendanceHistory> attendanceHistories = new ArrayList<>();
         attendanceHistories.add(attendanceHistory);
         AttendanceHistories histories = new AttendanceHistories(attendanceHistories);
-        histories.addAttendanceHistory(name, new Attendance(LocalDateTime.of(2024, 12, 20, 10, 3));
+        histories.addAttendanceHistory(name, new Attendance(LocalDateTime.of(2024, 12, 20, 10, 3)));
 
         assertThat(histories.findByName(name).getAttendances().size()).isEqualTo(4);
 

@@ -20,4 +20,8 @@ public class AttendanceHistories {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 이름을 가진 출석 이력이 없습니다."));
     }
+
+    public void addAttendanceHistory(String name, Attendance attendance) {
+        findByName(name).addAttendance(attendance);
+    }
 }

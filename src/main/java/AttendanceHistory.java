@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AttendanceHistory {
@@ -7,7 +9,7 @@ public class AttendanceHistory {
 
     public AttendanceHistory(String name, List<Attendance> attendances) {
         this.name = name;
-        this.attendances = attendances;
+        this.attendances = new ArrayList<>(attendances);
     }
 
 
@@ -16,6 +18,10 @@ public class AttendanceHistory {
     }
 
     public List<Attendance> getAttendances() {
-        return attendances;
+        return Collections.unmodifiableList(attendances);
+    }
+
+    public void addAttendance(Attendance attendance) {
+        attendances.add(attendance);
     }
 }
