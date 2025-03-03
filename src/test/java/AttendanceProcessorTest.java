@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceSystemManagerTest {
+public class AttendanceProcessorTest {
     @Nested
     class TestForRegisterNewAttendance {
         @Test
@@ -23,11 +23,11 @@ public class AttendanceSystemManagerTest {
             Crews crews = new Crews(List.of(crew));
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
             AttendanceHistory attendanceHistory = new AttendanceHistory(crew, attendAt);
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
                     new AttendanceHistories(List.of(attendanceHistory)), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(crew, attendAt))
+            assertThatThrownBy(() -> attendanceProcessor.registerNewAttendance(crew, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("이미 존재하는 출석 기록입니다. 수정 기능을 이용해주세요.");
         }
@@ -39,11 +39,11 @@ public class AttendanceSystemManagerTest {
             Crew crew = new Crew("히로");
             Crews crews = new Crews(List.of(crew));
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 1, 10, 0);
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(crew, attendAt))
+            assertThatThrownBy(() -> attendanceProcessor.registerNewAttendance(crew, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("평일이거나 공휴일이 아닌 경우에만 출석할 수 있습니다.");
         }
@@ -55,11 +55,11 @@ public class AttendanceSystemManagerTest {
             Crew crew = new Crew("히로");
             Crews crews = new Crews(List.of(crew));
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 7, 0);
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            assertThatThrownBy(() -> attendanceSystemManager.registerNewAttendance(crew, attendAt))
+            assertThatThrownBy(() -> attendanceProcessor.registerNewAttendance(crew, attendAt))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
         }
@@ -72,12 +72,12 @@ public class AttendanceSystemManagerTest {
             Crews crews = new Crews(List.of(crew));
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
 
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
             assertThatCode(
-                    () -> attendanceSystemManager.registerNewAttendance(crew, attendAt)).doesNotThrowAnyException();
+                    () -> attendanceProcessor.registerNewAttendance(crew, attendAt)).doesNotThrowAnyException();
         }
 
         @Test
@@ -88,11 +88,11 @@ public class AttendanceSystemManagerTest {
             Crews crews = new Crews(List.of(crew));
             LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
 
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
                     new AttendanceHistories(new ArrayList<>()), crews);
 
             // when
-            AttendanceHistory attendanceHistory = attendanceSystemManager.registerNewAttendance(crew, attendAt);
+            AttendanceHistory attendanceHistory = attendanceProcessor.registerNewAttendance(crew, attendAt);
 
             // then
             Assertions.assertAll(
@@ -114,12 +114,12 @@ public class AttendanceSystemManagerTest {
             AttendanceHistory oldHistory = new AttendanceHistory(crew, attendAt);
 
             LocalDateTime newAttendDate = LocalDateTime.of(2024, 12, 2, 7, 0);
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
                     new AttendanceHistories(List.of(oldHistory)), crews);
 
             // when
             assertThatThrownBy(
-                    () -> attendanceSystemManager.updateRegisteredAttendance(oldHistory, crew, newAttendDate))
+                    () -> attendanceProcessor.updateRegisteredAttendance(oldHistory, crew, newAttendDate))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
         }
@@ -145,10 +145,10 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistory(crew, secondAttendAt),
                     new AttendanceHistory(crew, thirdAttendAt)));
 
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories, crews);
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(attendanceHistories, crews);
 
             // when
-            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(crew,
+            Map<LocalDateTime, AttendanceType> result = attendanceProcessor.findAllHistoriesOfCrew(crew,
                     LocalDate.of(2024, 12, 5));
 
             // then
@@ -173,10 +173,10 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistory(crew, firstAttendAt),
                     new AttendanceHistory(crew, thirdAttendAt)));
 
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories, crews);
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(attendanceHistories, crews);
 
             // when
-            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(crew,
+            Map<LocalDateTime, AttendanceType> result = attendanceProcessor.findAllHistoriesOfCrew(crew,
                     LocalDate.of(2024, 12, 5));
 
             // then
@@ -198,10 +198,10 @@ public class AttendanceSystemManagerTest {
                     new AttendanceHistory(crew, firstAttendAt),
                     new AttendanceHistory(crew, thirdAttendAt)));
 
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories, crews);
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(attendanceHistories, crews);
 
             // when
-            Map<LocalDateTime, AttendanceType> result = attendanceSystemManager.findAllHistoriesOfCrew(crew,
+            Map<LocalDateTime, AttendanceType> result = attendanceProcessor.findAllHistoriesOfCrew(crew,
                     LocalDate.of(2024, 12, 5));
 
             // then
@@ -226,11 +226,11 @@ public class AttendanceSystemManagerTest {
                     LocalDateTime.of(2024, 12, 5, 10, 1), AttendanceType.ABSENCE,
                     LocalDateTime.of(2024, 12, 6, 10, 1), AttendanceType.ABSENCE
             );
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
                     new AttendanceHistories(List.of()), new Crews(List.of(crew)));
 
             // when
-            PenaltyResultOfCrew penaltyResultOfCrew = attendanceSystemManager.getPenaltyResultOfCrew(crew,
+            PenaltyResultOfCrew penaltyResultOfCrew = attendanceProcessor.getPenaltyResultOfCrew(crew,
                     attendanceHistory);
 
             // then
@@ -257,11 +257,11 @@ public class AttendanceSystemManagerTest {
                             new AttendanceHistory(moru, LocalDateTime.of(2024, 12, 5, 10, 0))
                     ));
 
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories,
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(attendanceHistories,
                     new Crews(List.of()));
 
             // when
-            List<PenaltyResultOfCrew> expulsionCandidates = attendanceSystemManager.findExpulsionCandidates(
+            List<PenaltyResultOfCrew> expulsionCandidates = attendanceProcessor.findExpulsionCandidates(
                     requestedAt);
 
             // then
@@ -287,12 +287,12 @@ public class AttendanceSystemManagerTest {
                     hero, moru, hippo
             ));
 
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
                     new AttendanceHistories(List.of()), new Crews(List.of())
             );
 
             // when
-            List<PenaltyResultOfCrew> actual = attendanceSystemManager.sortExpulsionCandidates(
+            List<PenaltyResultOfCrew> actual = attendanceProcessor.sortExpulsionCandidates(
                     expulsionCandidates);
 
             // then
@@ -310,12 +310,12 @@ public class AttendanceSystemManagerTest {
 
             List<PenaltyResultOfCrew> expulsionCandidates = new ArrayList<>(List.of(hero, hippo, moru));
 
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
                     new AttendanceHistories(List.of()), new Crews(List.of())
             );
 
             // when
-            List<PenaltyResultOfCrew> actual = attendanceSystemManager.sortExpulsionCandidates(
+            List<PenaltyResultOfCrew> actual = attendanceProcessor.sortExpulsionCandidates(
                     expulsionCandidates);
 
             // then
@@ -333,12 +333,12 @@ public class AttendanceSystemManagerTest {
 
             List<PenaltyResultOfCrew> expulsionCandidates = new ArrayList<>(List.of(hero, razel, moru));
 
-            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
                     new AttendanceHistories(List.of()), new Crews(List.of())
             );
 
             // when
-            List<PenaltyResultOfCrew> actual = attendanceSystemManager.sortExpulsionCandidates(
+            List<PenaltyResultOfCrew> actual = attendanceProcessor.sortExpulsionCandidates(
                     expulsionCandidates);
 
             // then

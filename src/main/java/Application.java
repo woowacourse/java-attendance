@@ -5,8 +5,8 @@ public class Application {
     public static void main(String[] args) {
         Crews crews = new Crews(new ArrayList<>(List.of(new Crew("히로"))));
         AttendanceHistories attendanceHistories = new AttendanceHistories(new ArrayList<>());
-        AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(attendanceHistories, crews);
-        AttendanceWorkflow attendanceWorkflow = new AttendanceWorkflow(attendanceSystemManager, crews,
+        AttendanceProcessor attendanceProcessor = new AttendanceProcessor(attendanceHistories, crews);
+        AttendanceWorkflow attendanceWorkflow = new AttendanceWorkflow(attendanceProcessor, crews,
                 attendanceHistories);
 
         attendanceWorkflow.run();

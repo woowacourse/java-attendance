@@ -5,12 +5,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-public class AttendanceSystemManager {
+public class AttendanceProcessor {
 
     private final AttendanceHistories attendanceHistories;
     private final Crews crews;
 
-    public AttendanceSystemManager(AttendanceHistories attendanceHistories, Crews crews) {
+    public AttendanceProcessor(AttendanceHistories attendanceHistories, Crews crews) {
         this.attendanceHistories = attendanceHistories;
         this.crews = crews;
     }

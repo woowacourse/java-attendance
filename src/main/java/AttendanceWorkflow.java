@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceWorkflow {
-    private final AttendanceSystemManager attendanceSystemManager;
+    private final AttendanceProcessor attendanceProcessor;
     private final Crews crews;
     private final AttendanceHistories attendanceHistories;
 
@@ -16,9 +16,9 @@ public class AttendanceWorkflow {
             FunctionOption.CHECK_EXPULSION_CANDIDATES, this::checkExpulsionCandidates
     );
 
-    public AttendanceWorkflow(AttendanceSystemManager attendanceSystemManager, Crews crews,
+    public AttendanceWorkflow(AttendanceProcessor attendanceProcessor, Crews crews,
                               AttendanceHistories attendanceHistories) {
-        this.attendanceSystemManager = attendanceSystemManager;
+        this.attendanceProcessor = attendanceProcessor;
         this.crews = crews;
         this.attendanceHistories = attendanceHistories;
     }
@@ -47,7 +47,7 @@ public class AttendanceWorkflow {
         Crew crew = getRequestedCrew();
         LocalDateTime attendAt = LocalDateTime.of(getDateOfToday(), readAttendanceTime());
 
-        AttendanceHistory attendanceHistory = attendanceSystemManager.registerNewAttendance(crew, attendAt);
+        AttendanceHistory attendanceHistory = attendanceProcessor.registerNewAttendance(crew, attendAt);
         OutputView.printRegisteredHistory(attendanceHistory);
     }
 
@@ -58,7 +58,7 @@ public class AttendanceWorkflow {
         LocalDateTime newAttendanceAt = LocalDateTime.of(requestedDate, readAttendanceTimeToUpdate());
 
         AttendanceHistory oldHistory = attendanceHistories.findByCrewAndDate(crew, requestedDate);
-        AttendanceHistory newHistory = attendanceSystemManager.updateRegisteredAttendance(oldHistory, crew,
+        AttendanceHistory newHistory = attendanceProcessor.updateRegisteredAttendance(oldHistory, crew,
                 newAttendanceAt);
 
         OutputView.printUpdatedHistory(oldHistory, newHistory);
@@ -68,17 +68,17 @@ public class AttendanceWorkflow {
         Crew crew = getRequestedCrew();
         LocalDate date = getDateOfToday();
 
-        Map<LocalDateTime, AttendanceType> historiesOfCrew = attendanceSystemManager.findAllHistoriesOfCrew(crew, date);
+        Map<LocalDateTime, AttendanceType> historiesOfCrew = attendanceProcessor.findAllHistoriesOfCrew(crew, date);
         OutputView.printAttendanceHistories(crew, historiesOfCrew);
 
-        PenaltyResultOfCrew penaltyResultOfCrew = attendanceSystemManager.getPenaltyResultOfCrew(crew, historiesOfCrew);
+        PenaltyResultOfCrew penaltyResultOfCrew = attendanceProcessor.getPenaltyResultOfCrew(crew, historiesOfCrew);
         OutputView.printPenaltyResultOfCrew(penaltyResultOfCrew);
     }
 
     private void checkExpulsionCandidates() {
         LocalDate date = getDateOfToday();
 
-        List<PenaltyResultOfCrew> expulsionCandidates = attendanceSystemManager.findExpulsionCandidates(date);
+        List<PenaltyResultOfCrew> expulsionCandidates = attendanceProcessor.findExpulsionCandidates(date);
         OutputView.printExpulsionCandidates(expulsionCandidates);
     }
 
