@@ -1,6 +1,7 @@
 package domain;
 
 import controller.AttendanceController;
+import domain.attendance.Attendances;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +35,9 @@ public class AttendanceBookTest {
                 dateTime.toLocalDate().plusDays(7));
 
         // when
-        List<String> crews = attendanceBook.findWarningCrews();
+        Map<String, Attendances> crews = attendanceBook.findWarningCrews();
 
         // then
-        Assertions.assertThat(crews).contains("수양");
+        Assertions.assertThat(crews.keySet()).contains("수양");
     }
 }

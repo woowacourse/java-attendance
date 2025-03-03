@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
     private final Map<Crew, Attendances> attendances = new HashMap<>();
@@ -31,13 +32,14 @@ public class AttendanceBook {
         return attendances.get(findCrewByNickname(nickname));
     }
 
-    public List<String> findWarningCrews() {
-        return attendances.entrySet().stream()
+    public Map<String, Attendances> findWarningCrews() {
+        return attendances.entrySet()
+                .stream()
                 .filter(entry ->
                         AttendanceWarning.calculateWarning(entry.getValue().countAllAbsence())
                                 != AttendanceWarning.NONE)
-                .map(entry -> entry.getKey().getNickname())
-                .toList();
+                .collect(Collectors.toMap(entry ->
+                        entry.getKey().getNickname(), Entry::getValue));
     }
 
     private Crew findCrewByNickname(String nickname) {

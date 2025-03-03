@@ -1,6 +1,10 @@
 package controller.command;
 
 import domain.AttendanceBook;
+import domain.attendance.Attendances;
+import dto.WarningCrewInfoDto;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import view.OutputView;
 
@@ -13,13 +17,18 @@ public class WarningInfoCommand implements Consumer<AttendanceBook> {
 
     @Override
     public void accept(AttendanceBook attendanceBook) {
-        /*
-        제적 위험자 조회 결과
-        - 빙티: 결석 3회, 지각 4회 (면담)
-        - 이든: 결석 2회, 지각 5회 (면담)
-        - 빙봉: 결석 1회, 지각 6회 (면담)
-        - 쿠키: 결석 2회, 지각 3회 (면담)
-        - 짱수: 결석 0회, 지각 6회 (경고)
-         */
+        Map<String, Attendances> warningCrews = attendanceBook.findWarningCrews();
+        List<WarningCrewInfoDto> warningCrewInfoDtos = createWarningCrewInfoDtos(warningCrews);
+        outputView.printWarningCrews(warningCrewInfoDtos);
+    }
+
+    private List<WarningCrewInfoDto> createWarningCrewInfoDtos(Map<String, Attendances> sortedWarningCrews) {
+        return sortedWarningCrews.entrySet()
+                .stream()
+                .map(warningCrew -> new WarningCrewInfoDto(
+                        warningCrew.getKey(),
+                        warningCrew.getValue().countAbsence(),
+                        warningCrew.getValue().countTardy(),
+                        warningCrew.getValue().countAllAbsence())).toList();
     }
 }
