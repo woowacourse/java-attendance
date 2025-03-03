@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class Holidays {
 
-    public static final String HOLIDAYS_CSV_FILE_NAME = "attendances.csv";
+    public static final String HOLIDAYS_CSV_FILE_NAME = "holidays.csv";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final Set<LocalDate> holidays = new HashSet<>();
