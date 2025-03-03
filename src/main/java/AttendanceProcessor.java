@@ -106,8 +106,8 @@ public class AttendanceProcessor {
                         (PenaltyResultOfCrew candidate) -> priorityOfPenaltyTypes.getOrDefault(candidate.penaltyType(),
                                 4))
                 .thenComparing(
-                        (PenaltyResultOfCrew candidate) -> candidate.attendanceTypeCount().getAdjustedAbsenceCount())
-                .reversed()
+                        (PenaltyResultOfCrew candidate) -> candidate.attendanceTypeCount().getAdjustedAbsenceCount(),
+                        Comparator.reverseOrder())
                 .thenComparing((PenaltyResultOfCrew candidate) -> candidate.crew().getName()));
 
         return expulsionCandidates;
