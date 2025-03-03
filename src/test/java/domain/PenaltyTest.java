@@ -110,7 +110,8 @@ public class PenaltyTest {
             return Stream.of(
                 Arguments.arguments(0, 0),
                 Arguments.arguments(0, 1),
-                Arguments.arguments(3, 0)
+                Arguments.arguments(3, 0),
+                Arguments.arguments(2, 1)
             );
         }
     }
