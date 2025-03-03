@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.util.DateGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -16,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceStatusTest {
 
+    private static final DateGenerator dateGenerator = new TestDateGenerator();
+
     @ParameterizedTest
     @MethodSource
     @DisplayName("출석 목록으로 출결 상황을 종합한다")
@@ -30,9 +33,9 @@ class AttendanceStatusTest {
 
         // then
         assertAll(
-                () -> assertThat(result.getStateCount(AttendanceState.ATTENDANCE)).isEqualTo(attendanceExcepted),
-                () -> assertThat(result.getStateCount(AttendanceState.TARDY)).isEqualTo(tardyExcepted),
-                () -> assertThat(result.getStateCount(AttendanceState.ABSENCE)).isEqualTo(absenceExcepted)
+                () -> assertThat(result.getAttendanceStateCount()).isEqualTo(attendanceExcepted),
+                () -> assertThat(result.getTardyStateCount()).isEqualTo(tardyExcepted),
+                () -> assertThat(result.getAbsenceStateCount()).isEqualTo(absenceExcepted)
         );
     }
 
@@ -48,7 +51,7 @@ class AttendanceStatusTest {
     }
 
     private static Stream<Arguments> 출석_목록으로_출결_상황을_종합한다() {
-        LocalDate nowDate = LocalDate.now();
+        LocalDate nowDate = dateGenerator.generate();
         return Stream.of(
                 Arguments.of(List.of(
                         Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0)))
@@ -66,7 +69,7 @@ class AttendanceStatusTest {
     }
 
     private static Stream<Arguments> 출석_목록으로_출결_위험도를_판단한다() {
-        LocalDate nowDate = LocalDate.now();
+        LocalDate nowDate = dateGenerator.generate();
         return Stream.of(
                 Arguments.of(
                         List.of(Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0)))),
@@ -85,10 +88,18 @@ class AttendanceStatusTest {
                         Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(18, 0))),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(18, 0))),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(18, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(3), LocalTime.of(18, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(4), LocalTime.of(18, 0))),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(8), LocalTime.of(18, 0)))
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.of(18, 0))),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(6), LocalTime.of(18, 0))),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(7), LocalTime.of(18, 0)))
                 ), AttendanceRisk.WEEDING)
         );
+    }
+
+    private static class TestDateGenerator implements DateGenerator {
+
+        @Override
+        public LocalDate generate() {
+            return LocalDate.of(2025, 3, 19);
+        }
     }
 }

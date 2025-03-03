@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.util.DateGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,11 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceRecordsTest {
 
+    private static final DateGenerator dateGenerator = new TestDateGenerator();
+
     @Test
     @DisplayName("여러 출결 상황을 받아 정렬해 생성한다")
     void 여러_출결_상황을_받아_정렬해_생성한다() {
         // given
-        LocalDate nowDate = LocalDate.now();
+        LocalDate nowDate = dateGenerator.generate();
 
         List<String> nicknames = List.of("비타", "레오", "듀이", "꾹이", "몽이");
 
@@ -36,20 +39,20 @@ class AttendanceRecordsTest {
                         Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(3), LocalTime.MIDNIGHT))
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MIDNIGHT))
                 ),
                 List.of(
                         Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(3), LocalTime.MAX))
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX))
                 ),
                 List.of(
                         Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(3), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(4), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(6), LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(7), LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(8), LocalTime.MAX))
                 )
@@ -76,5 +79,13 @@ class AttendanceRecordsTest {
                 () -> assertThat(result.get(3).getNickname()).isEqualTo("레오"),
                 () -> assertThat(result.get(4).getNickname()).isEqualTo("비타")
         );
+    }
+
+    private static class TestDateGenerator implements DateGenerator {
+
+        @Override
+        public LocalDate generate() {
+            return LocalDate.of(2025, 3, 19);
+        }
     }
 }

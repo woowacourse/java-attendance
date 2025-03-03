@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import org.assertj.core.api.Assertions;
+import attendance.util.DateGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,14 +15,16 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendancesTest {
 
+    private static final DateGenerator dateGenerator = new TestDateGenerator();
+
     @Test
     @DisplayName("날짜와 시간으로 출석을 등록한다")
     void 날짜와_시간으로_출석을_등록한다() {
         // given
-        Attendance defaultAttendance = Attendance.fromDateTime(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+        Attendance defaultAttendance = Attendance.fromDateTime(LocalDateTime.of(dateGenerator.generate(), LocalTime.MAX));
         Attendances attendances = new Attendances(List.of(defaultAttendance));
 
-        LocalDateTime checkDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0));
+        LocalDateTime checkDateTime = LocalDateTime.of(dateGenerator.generate(), LocalTime.of(10, 0));
 
         // when
         Attendances newAttendances = attendances.registerAttendance(checkDateTime);
@@ -39,10 +41,10 @@ class AttendancesTest {
     @DisplayName("출석할때 이미 출석한 경우 예외가 발생한다")
     void 출석할때_이미_출석한_경우_예외가_발생한다() {
         // given
-        Attendance defaultAttendance = Attendance.fromDateTime(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0)));
+        Attendance defaultAttendance = Attendance.fromDateTime(LocalDateTime.of(dateGenerator.generate(), LocalTime.of(10, 0)));
         Attendances attendances = new Attendances(List.of(defaultAttendance));
 
-        LocalDateTime attendanceDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0));
+        LocalDateTime attendanceDateTime = LocalDateTime.of(dateGenerator.generate(), LocalTime.of(10, 0));
 
         // when & then
         assertThatIllegalArgumentException()
@@ -54,10 +56,10 @@ class AttendancesTest {
     @DisplayName("날짜와 시간으로 출석을 수정한다")
     void 날짜와_시간으로_출석을_수정한다() {
         // given
-        Attendance defaultAttendance = Attendance.fromDateTime(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0)));
+        Attendance defaultAttendance = Attendance.fromDateTime(LocalDateTime.of(dateGenerator.generate(), LocalTime.of(10, 0)));
         Attendances attendances = new Attendances(List.of(defaultAttendance));
 
-        LocalDateTime updateDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0));
+        LocalDateTime updateDateTime = LocalDateTime.of(dateGenerator.generate(), LocalTime.of(10, 0));
 
         // when
         Attendances newAttendances = attendances.updateAttendance(updateDateTime);
@@ -74,7 +76,7 @@ class AttendancesTest {
     @DisplayName("특정 이전 날짜의 출석 날짜, 시간과 출결 상황을 반환한다")
     void 특정_이전_날짜의_출석_날짜_시간과_출결_상황을_반환한다() {
         // given
-        LocalDate nowDate = LocalDate.now();
+        LocalDate nowDate = dateGenerator.generate();
 
         Attendances attendances = new Attendances(List.of(
                 Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.of(13, 0))),
@@ -91,7 +93,15 @@ class AttendancesTest {
         List<Attendance> result = attendances.getAttendancesBefore(nowDate);
 
         // then
-        Assertions.assertThat(result)
+        assertThat(result)
                 .containsExactlyElementsOf(exceptedRecord);
+    }
+
+    private static class TestDateGenerator implements DateGenerator {
+
+        @Override
+        public LocalDate generate() {
+            return LocalDate.of(2025, 3, 19);
+        }
     }
 }

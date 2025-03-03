@@ -144,20 +144,20 @@ class CrewAttendanceManagerTest {
                         Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(3), LocalTime.MIDNIGHT))
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MIDNIGHT))
                 )),
                 new Attendances(List.of(
                         Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(3), LocalTime.MAX))
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX))
                 )),
                 new Attendances(List.of(
                         Attendance.fromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(3), LocalTime.MAX)),
-                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(4), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX)),
+                        Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(6), LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(7), LocalTime.MAX)),
                         Attendance.fromDateTime(LocalDateTime.of(nowDate.minusDays(8), LocalTime.MAX))
                 ))
@@ -180,11 +180,11 @@ class CrewAttendanceManagerTest {
         );
     }
 
-    static class TestDateGenerator implements DateGenerator {
+    private static class TestDateGenerator implements DateGenerator {
 
         @Override
         public LocalDate generate() {
-            return LocalDate.of(2025, 2, 28);
+            return LocalDate.of(2025, 3, 19);
         }
     }
 }

@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.util.DateGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -15,6 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("출결 상태 테스트")
 class AttendanceStateTest {
 
+    private static final DateGenerator dateGenerator = new TestDateGenerator();
+
     @ParameterizedTest
     @MethodSource
     @DisplayName("등교 시간으로 출결 상황을 반환한다")
@@ -27,7 +30,7 @@ class AttendanceStateTest {
     }
 
     private static Stream<Arguments> shouldReturnAttendanceStatusBasedOnArrivalTime() {
-        LocalDate nowDate = LocalDate.now();
+        LocalDate nowDate = dateGenerator.generate();
 
         return Stream.of(
                 Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(9, 59)), AttendanceState.ATTENDANCE),
@@ -38,5 +41,13 @@ class AttendanceStateTest {
                 Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(10, 31)), AttendanceState.ABSENCE),
                 Arguments.of(LocalDateTime.of(nowDate, LocalTime.MAX), AttendanceState.ABSENCE)
         );
+    }
+
+    private static class TestDateGenerator implements DateGenerator {
+
+        @Override
+        public LocalDate generate() {
+            return LocalDate.of(2025, 3, 19);
+        }
     }
 }
