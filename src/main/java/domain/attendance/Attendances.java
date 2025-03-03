@@ -17,24 +17,16 @@ public class Attendances {
         attendances.forEach(this::editAttendanceDate);
     }
 
-    private void initAttendanceDate(LocalDate startDate, LocalDate endDate) {
-        if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("출석부 시작 날짜가 마지막 날짜보다 늦을 수 없습니다");
+    public AttendanceStatus attend(LocalDate endDate, LocalDateTime attendDateTime) {
+        if (has(attendDateTime.toLocalDate())) {
+            throw new IllegalArgumentException("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요");
         }
-        while (startDate.isBefore(endDate)) {
-            startDate = updateAttendanceDate(startDate);
+        if (attendDateTime.toLocalDate().isAfter(endDate)) {
+            throw new IllegalArgumentException("미래에 출석할 수 없습니다");
         }
-    }
-
-    private LocalDate updateAttendanceDate(LocalDate startDate) {
-        if (Holiday.isHoliday(startDate)
-                || startDate.getDayOfWeek().compareTo(DayOfWeek.FRIDAY) > Attendance.WEEKDAY) {
-            startDate = startDate.plusDays(1);
-            return startDate;
-        }
-        attendances.add(new Attendance(startDate));
-        startDate = startDate.plusDays(1);
-        return startDate;
+        Attendance attendance = new Attendance(attendDateTime);
+        this.attendances.add(attendance);
+        return attendance.getStatus();
     }
 
     public Attendance editAttendanceDate(LocalDateTime dateTime) {
@@ -47,28 +39,13 @@ public class Attendances {
         return beforeDateTime;
     }
 
-    private void deleteAttendanceDate(LocalDate date) {
-        attendances.remove(attendances.stream()
-                .filter(attendance -> attendance.has(date))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석이 존재하지 않습니다")));
-    }
-
     public boolean has(LocalDate day) {
         return attendances.stream()
                 .anyMatch(attendance -> attendance.has(day));
     }
 
-    public AttendanceStatus attend(LocalDate endDate, LocalDateTime attendDateTime) {
-        if (has(attendDateTime.toLocalDate())) {
-            throw new IllegalArgumentException("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요");
-        }
-        if (attendDateTime.toLocalDate().isAfter(endDate)) {
-            throw new IllegalArgumentException("미래에 출석할 수 없습니다");
-        }
-        Attendance attendance = new Attendance(attendDateTime);
-        this.attendances.add(attendance);
-        return attendance.getStatus();
+    public List<AttendanceDate> getAttendanceDates() {
+        return attendances.stream().map(Attendance::getDate).toList();
     }
 
     public int countAttendance() {
@@ -89,7 +66,11 @@ public class Attendances {
                 .count();
     }
 
-    public int countAbsencePerTardy() {
+    public int countAllAbsence() {
+        return countAbsence() + countAbsencePerTardy();
+    }
+
+    private int countAbsencePerTardy() {
         return countTardy() / 3;
     }
 
@@ -101,5 +82,32 @@ public class Attendances {
         if (dateTimes.size() != dates.size()) {
             throw new IllegalArgumentException("동일한 날짜의 출석 기록은 등록할 수 없습니다");
         }
+    }
+
+    private void initAttendanceDate(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("출석부 시작 날짜가 마지막 날짜보다 늦을 수 없습니다");
+        }
+        while (startDate.isBefore(endDate)) {
+            startDate = updateAttendanceDate(startDate);
+        }
+    }
+
+    private LocalDate updateAttendanceDate(LocalDate startDate) {
+        if (Holiday.isHoliday(startDate)
+                || startDate.getDayOfWeek().compareTo(DayOfWeek.FRIDAY) >= Attendance.WEEKDAY) {
+            startDate = startDate.plusDays(1);
+            return startDate;
+        }
+        attendances.add(new Attendance(startDate));
+        startDate = startDate.plusDays(1);
+        return startDate;
+    }
+
+    private void deleteAttendanceDate(LocalDate date) {
+        attendances.remove(attendances.stream()
+                .filter(attendance -> attendance.has(date))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석이 존재하지 않습니다")));
     }
 }
