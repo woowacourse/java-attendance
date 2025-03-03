@@ -9,9 +9,9 @@ import attendance.interfaces.EnumToTextConverter;
 
 public enum SanctionLevel implements EnumDisplayConverter {
     DISMISS(weight -> weight > 5),
-    NEED_MEETING(weight -> weight >= 3),
-    WARNING(weight -> weight > 1),
-    NONE(weight -> weight <= 1);
+    NEED_MEETING(weight -> weight >= 3 && weight <= 5),
+    WARNING(weight -> weight == 2),
+    NONE(weight -> weight == 1 || weight == 0);
 
     private static final String WEIGHT_BE_POSITIVE = "가중치는 음수가 될 수 없습니다: ";
     private static final String NOT_REGISTERED_CONVERTER = "컨버터가 등록되지 않았습니다.";
