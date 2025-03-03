@@ -58,6 +58,12 @@ public class Student {
         return AttendanceStatus.calculateAttendanceStatusCount(getAttendanceTimeRecords(), AttendanceStatus.LATE);
     }
 
+    public boolean isAtRiskOfCounselingOrExpulsion() {
+        AttendancePenalty attendancePenalty = AttendancePenalty.findPenaltyByAbsentCount(calculateTotalAbsentCount());
+        return attendancePenalty.equals(AttendancePenalty.COUNSELING) ||
+                attendancePenalty.equals(AttendancePenalty.EXPULSION);
+    }
+
     public Map<AttendanceStatus, Long> getAttendanceStatusCount() {
         Map<AttendanceStatus, Long> attendanceStatusCount = new HashMap<>();
         for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
