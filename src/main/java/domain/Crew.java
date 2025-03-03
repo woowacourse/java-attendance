@@ -29,4 +29,8 @@ public class Crew {
     public AttendanceRecord getAttendanceRecord() {
         return attendanceRecord;
     }
+
+    public AttendanceStatus getAttendanceStatus(int dayOfMonth) {
+        return attendanceRecord.getAttendanceStatus(dayOfMonth);
+    }
 }

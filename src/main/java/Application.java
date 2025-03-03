@@ -1,4 +1,5 @@
 import controller.AttendanceController;
+import domain.DateProvider;
 import infrastructure.AttendanceFileReader;
 import infrastructure.DecemberDateProvider;
 import java.util.Scanner;
@@ -12,9 +13,11 @@ public class Application {
         InputView inputView = new InputView(scanner);
         OutputView outputView = new OutputView();
 
-        AttendanceController attendanceController = new AttendanceController(inputView, outputView);
+        DateProvider decemberDateProvider = new DecemberDateProvider();
+        AttendanceController attendanceController = new AttendanceController(
+                inputView, outputView, decemberDateProvider);
 
         AttendanceFileReader attendanceFileReader = new AttendanceFileReader();
-        attendanceController.run(attendanceFileReader, new DecemberDateProvider());
+        attendanceController.run(attendanceFileReader);
     }
 }

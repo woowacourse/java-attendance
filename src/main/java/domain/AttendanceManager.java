@@ -34,6 +34,11 @@ public class AttendanceManager {
         return crews.size();
     }
 
+    public Crew findCrewExactlyByNickname(String nickname) {
+        return findCrewByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+    }
+
     private Optional<Crew> findCrewByNickname(String nickname) {
         return crews.stream()
                 .filter(crew -> crew.getNickname().equals(nickname))
