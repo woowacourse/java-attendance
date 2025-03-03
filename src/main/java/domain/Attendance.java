@@ -1,50 +1,49 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
-public class Attendance {
-    private LocalDateTime date;
+public class Attendance implements Comparable<Attendance> {
+    private final LocalDateTime dateTime;
 
-    public Attendance(LocalDateTime date) {
-        this.date = date;
+    public Attendance(LocalDateTime dateTime) {
+        validateDateTime(dateTime);
+        this.dateTime = dateTime;
+    }
+
+    private void validateDateTime(LocalDateTime dateTime) {
+        if (DayType.calculateDayType(dateTime.getDayOfMonth()) != DayType.WEEKDAY) {
+            throw new IllegalArgumentException(
+                    String.format("12월 %d일 %s요일은 등교일이 아닙니다.",
+                            dateTime.getDayOfMonth(),
+                            dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+        }
     }
 
     public AttendanceStatus calculateAttendanceStatus() {
-        return AttendanceStatus.calculateAttendanceStatus(date);
+        return AttendanceStatus.calculateAttendanceStatus(dateTime);
     }
 
-    public void updateAttendance(Time time) {
-        date = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(),
-                time.getHour(), time.getMinute());
+    public boolean isBefore(LocalDate today) {
+        return LocalDate.of(2024, 12, dateTime.getDayOfMonth()).isBefore(today);
     }
 
-    public boolean isSameDay(int date) {
-        return this.date.getDayOfMonth() == date;
+    public boolean isSameDay(int day) {
+        return dateTime.getDayOfMonth() == day;
     }
 
-    public int getDay() {
-        return date.getDayOfMonth();
-    }
-
-    public LocalDateTime getDate() {
-        return date;
+    public boolean isSameDay(Attendance attendance) {
+        return dateTime.getDayOfMonth() == attendance.dateTime.getDayOfMonth();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Attendance that = (Attendance) o;
-        return Objects.equals(date.getDayOfMonth(), that.date.getDayOfMonth());
+    public int compareTo(Attendance o) {
+        return dateTime.compareTo(o.dateTime);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(date.getDayOfMonth());
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 }

@@ -1,131 +1,97 @@
 package controller;
 
-import static domain.MenuOption.CHANGE_ATTENDANCE;
-import static domain.MenuOption.CHECK_ATTENDANCE;
-import static domain.MenuOption.SHOW_ALERT_CREW;
-import static domain.MenuOption.SHOW_CREW_ATTENDANCES;
-import static domain.MenuOption.getMenuOption;
-import static domain.MenuOption.isExit;
-
 import domain.Attendance;
-import domain.Crew;
-import domain.CrewGroup;
+import domain.AttendanceBook;
+import domain.Attendances;
+import domain.AttendancesFile;
 import domain.MenuOption;
 import domain.Time;
+import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import service.CrewLoader;
-import service.DateValidator;
+import java.util.Map;
 import view.InputView;
 import view.OutputView;
-import view.dto.AlertCrewDto;
-import view.dto.AlertCrewsDto;
-import view.dto.AttendanceLogDto;
-import view.dto.ChangeAttendanceLogDto;
-import view.dto.CrewAttendancesDto;
 
 public class Controller {
-    private static final LocalDateTime TODAY = LocalDateTime.of(2024, 12, 18, 10, 0);
+    private static final LocalDate TODAY = LocalDate.of(2024, 12, 18);
+    private static final Path PATH = Path.of("src", "main", "resources", "attendances.csv");
 
-    private final DateValidator dateValidator;
     private final InputView inputView;
     private final OutputView outputView;
 
-    public Controller(DateValidator dateValidator, InputView inputView, OutputView outputView) {
-        this.dateValidator = dateValidator;
+    public Controller(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
     }
 
-    public void run() {
-        CrewLoader crewLoader = new CrewLoader();
-        CrewGroup crewGroup = crewLoader.loadCrews(TODAY);
-
+    public void runAttendanceSystem() {
+        AttendanceBook attendanceBook = new AttendanceBook(new AttendancesFile().loadInitialAttendances(PATH, TODAY));
         try {
-            runCycle(crewGroup);
-        } catch (Exception e) {
-            outputView.printError(e.getMessage());
+            runMenuOption(attendanceBook);
+        } catch (UnsupportedOperationException ex) {
+            outputView.printAlreadyCheckedGuide(ex.getMessage());
+            runMenuOption(attendanceBook);
+        } catch (Exception ex) {
+            outputView.printException(ex.getMessage());
+            runMenuOption(attendanceBook);
         }
     }
 
-    private void runCycle(CrewGroup crewGroup) {
+    private void runMenuOption(AttendanceBook attendanceBook) {
         while (true) {
-            String option = inputView.insertMenuOption(TODAY);
-            if (isExit(option)) {
+            MenuOption menuOption = MenuOption.selectOption(inputView.readMenuOption(TODAY));
+            if (menuOption == MenuOption.QUIT) {
                 return;
             }
-            operateMenuOption(option, crewGroup);
+            if (menuOption == MenuOption.CHECK_ATTENDANCE) {
+                runCheckAttendance(attendanceBook);
+            }
+            if (menuOption == MenuOption.CHANGE_ATTENDANCE) {
+                runChangeAttendance(attendanceBook);
+            }
+            if (menuOption == MenuOption.SHOW_CREW_ATTENDANCE) {
+                runShowCrewAttendance(attendanceBook);
+            }
+            if (menuOption == MenuOption.SHOW_RISK_OF_EXPELLED_CREWS) {
+                runShowRiskOfExpelledCrews(attendanceBook);
+            }
         }
     }
 
-    private void operateMenuOption(String option, CrewGroup crewGroup) {
-        MenuOption menuOption = getMenuOption(option);
-        if (menuOption.equals(CHECK_ATTENDANCE)) {
-            attendanceCheck(crewGroup);
-        }
-        if (menuOption.equals(CHANGE_ATTENDANCE)) {
-            changeAttendance(crewGroup);
-        }
-        if (menuOption.equals(SHOW_CREW_ATTENDANCES)) {
-            showCrewAttendance(crewGroup);
-        }
-        if (menuOption.equals(SHOW_ALERT_CREW)) {
-            showAlertCrews(crewGroup);
-        }
+    private void runCheckAttendance(AttendanceBook attendanceBook) {
+        String nickname = inputView.readCheckAttendanceNickname();
+        Time time = inputView.readCheckAttendanceTime();
+
+        Attendance checkedAttendance = attendanceBook.addAttendanceForCrew(nickname,
+                LocalDateTime.of(TODAY.getYear(), TODAY.getMonth(), TODAY.getDayOfMonth(), time.getHour(),
+                        time.getMinute()));
+
+        outputView.printCheckAttendance(checkedAttendance);
     }
 
-    private void attendanceCheck(CrewGroup crewGroup) {
-        dateValidator.validateAttendanceCheckDate(TODAY);
+    private void runChangeAttendance(AttendanceBook attendanceBook) {
+        String nickname = inputView.readChangeAttendanceNickname();
+        int dayOfMonth = inputView.readChangeAttendanceDayOfMonth();
+        Time time = inputView.readChangeAttendanceTime();
 
-        String rawName = inputView.insertNickname();
-        Crew crew = crewGroup.searchCrew(rawName);
-        if (crew.isAlreadyChecked(TODAY)) {
-            outputView.printAlreadyCheckedGuide();
-            return;
-        }
+        Attendance originalAttendance = attendanceBook.getAttendanceByNicknameAndDate(nickname,
+                dayOfMonth);
+        Attendance changeAttendance = attendanceBook.updateAttendanceForCrew(nickname,
+                LocalDateTime.of(TODAY.getYear(), TODAY.getMonth(), dayOfMonth,
+                        time.getHour(), time.getMinute()), TODAY);
 
-        String rawTime = inputView.insertTime();
-        Time time = new Time(rawTime);
-        Attendance attendance = crew.addAttendance(
-                LocalDateTime.of(TODAY.getYear(), TODAY.getMonth(), TODAY.getDayOfMonth(),
-                        time.getHour(), time.getMinute()));
-
-        outputView.printAttendanceLog(AttendanceLogDto.from(attendance));
+        outputView.printChangeAttendance(originalAttendance, changeAttendance);
     }
 
-    private void changeAttendance(CrewGroup crewGroup) {
-        String rawName = inputView.insertChangeDateNickname();
-        Crew crew = crewGroup.searchCrew(rawName);
-
-        int date = inputView.insertChangeDate();
-        dateValidator.validateAttendanceChangeDate(date, TODAY);
-
-        String rawTime = inputView.insertChangeTime();
-        Time time = new Time(rawTime);
-
-        Attendance originalAttendanceCopy = new Attendance(crew.getSpecificAttendance(date).getDate());
-        Attendance changedAttendance = crew.changeAttendance(date, time);
-
-        outputView.printChangeLog(ChangeAttendanceLogDto.from(originalAttendanceCopy, changedAttendance));
+    private void runShowCrewAttendance(AttendanceBook attendanceBook) {
+        String nickname = inputView.readShowCrewAttendanceNickname();
+        Attendances crewRecords = attendanceBook.getAttendanceByNickname(nickname);
+        outputView.printCrewAttendances(nickname, crewRecords, TODAY);
     }
 
-    private void showCrewAttendance(CrewGroup crewGroup) {
-        String rawName = inputView.insertNickname();
-        Crew crew = crewGroup.searchCrew(rawName);
-
-        CrewAttendancesDto crewAttendancesDto = CrewAttendancesDto.from(crew);
-
-        outputView.printAttendancesLog(crewAttendancesDto);
-    }
-
-    private void showAlertCrews(CrewGroup crewGroup) {
-        List<AlertCrewDto> alertCrewDtos = crewGroup.getAllAttendanceAlertLevel()
-                .stream()
-                .map(AlertCrewDto::from)
-                .toList();
-
-        AlertCrewsDto alertCrewsDto = AlertCrewsDto.from(alertCrewDtos);
-
-        outputView.printAlertCrews(alertCrewsDto);
+    private void runShowRiskOfExpelledCrews(AttendanceBook attendanceBook) {
+        Map<String, Attendances> riskOfExpelledCrews = attendanceBook.getRiskOfExpelledCrews(TODAY);
+        outputView.printRiskOfExpelledCrews(riskOfExpelledCrews, TODAY);
     }
 }

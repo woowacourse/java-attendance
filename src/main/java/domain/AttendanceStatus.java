@@ -2,49 +2,47 @@ package domain;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public enum AttendanceStatus {
-    PRESENT(0, 5, "출석"),
-    LATE(5, 30, "지각"),
-    ABSENT(30, 0, "결석");
+    PRESENT("출석"),
+    LATE("지각"),
+    ABSENT("결석");
 
-    private static final int MONDAY_START_HOUR = 13;
-    private static final int REST_DAY_START_HOUR = 10;
-    private static final int ABSENT_LIMIT_MINUTE = 30;
-    private static final int LATE_LIMIT_MINUTE = 5;
+    private static final int PRESENT_LIMIT_TIME = 5;
+    private static final int LATE_LIMIT_TIME = 30;
     private static final int MONDAY = 1;
+    private static final int MONDAY_STANDARD_HOUR = 13;
+    private static final int OTHER_DAY_STANDARD_HOUR = 10;
 
-    final int lowerBound;
-    final int upperBound;
-    final String name;
+    final String korean;
 
-    AttendanceStatus(int lowerBound, int upperBound, String name) {
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
-        this.name = name;
+    AttendanceStatus(String korean) {
+        this.korean = korean;
     }
 
-    public static AttendanceStatus calculateAttendanceStatus(LocalDateTime date) {
-        LocalDateTime startTime = calculateStartTime(date, date.getDayOfWeek().getValue());
-        Duration duration = Duration.between(startTime, date);
-        if (duration.toMinutes() > LATE_LIMIT_MINUTE && duration.toMinutes() <= ABSENT_LIMIT_MINUTE) {
+    public static AttendanceStatus calculateAttendanceStatus(LocalDateTime dateTime) {
+        LocalTime standardTime = getStandardTime(dateTime);
+        LocalTime attendanceTime = LocalTime.of(dateTime.getHour(), dateTime.getMinute());
+
+        long timeDifference = Duration.between(standardTime, attendanceTime).toMinutes();
+        if (timeDifference <= PRESENT_LIMIT_TIME) {
+            return PRESENT;
+        }
+        if (timeDifference <= LATE_LIMIT_TIME) {
             return LATE;
         }
-        if (duration.toMinutes() > ABSENT_LIMIT_MINUTE) {
-            return ABSENT;
-        }
-        return PRESENT;
+        return ABSENT;
     }
 
-    private static LocalDateTime calculateStartTime(LocalDateTime date, int dayOfWeek) {
-        if (dayOfWeek == MONDAY) {
-            return LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), MONDAY_START_HOUR, 0);
+    private static LocalTime getStandardTime(LocalDateTime dateTime) {
+        if (dateTime.getDayOfWeek().getValue() == MONDAY) {
+            return LocalTime.of(MONDAY_STANDARD_HOUR, 0);
         }
-        return LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(),
-                REST_DAY_START_HOUR, 0);
+        return LocalTime.of(OTHER_DAY_STANDARD_HOUR, 0);
     }
 
-    public String getName() {
-        return name;
+    public String getKorean() {
+        return korean;
     }
 }

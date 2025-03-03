@@ -5,28 +5,20 @@ import java.util.Arrays;
 public enum MenuOption {
     CHECK_ATTENDANCE("1"),
     CHANGE_ATTENDANCE("2"),
-    SHOW_CREW_ATTENDANCES("3"),
-    SHOW_ALERT_CREW("4"),
-    EXIT("Q");
+    SHOW_CREW_ATTENDANCE("3"),
+    SHOW_RISK_OF_EXPELLED_CREWS("4"),
+    QUIT("Q");
 
-    final String menuOption;
+    final String keyOption;
 
-    MenuOption(String menuOption) {
-        this.menuOption = menuOption;
+    MenuOption(String keyOption) {
+        this.keyOption = keyOption;
     }
 
-    public static MenuOption getMenuOption(String menuOption) {
+    public static MenuOption selectOption(String option) {
         return Arrays.stream(MenuOption.values())
-                .filter(option -> option.menuOption.equals(menuOption))
+                .filter(optionOption -> optionOption.keyOption.equals(option))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("올바른 기능 입력이 아닙니다."));
-    }
-
-
-    public static boolean isExit(String menuOption) {
-        if (menuOption.equals(EXIT.menuOption)) {
-            return true;
-        }
-        return false;
+                .orElseThrow(() -> new IllegalArgumentException("올바른 번호를 입력해주세요"));
     }
 }
