@@ -13,9 +13,9 @@ public class Application {
         InputView inputView = new InputView(scanner);
         OutputView outputView = new OutputView();
 
-        DateProvider decemberDateProvider = new CustomDateProvider();
+        DateProvider customDateProvider = new CustomDateProvider();
         AttendanceController attendanceController = new AttendanceController(
-                inputView, outputView, decemberDateProvider);
+                inputView, outputView, customDateProvider);
 
         AttendanceFileReader attendanceFileReader = new AttendanceFileReader();
         attendanceController.run(attendanceFileReader);
