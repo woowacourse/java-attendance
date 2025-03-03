@@ -15,9 +15,9 @@ public final class AttendanceReader {
     private AttendanceReader() {
     }
 
-    public static void initAttendances(final AttendanceBook attendanceBook) {
+    public static void initAttendances(final AttendanceBook attendanceBook, Reader fileReader) {
 
-        List<String> contents = Reader.getContents(ATTENDANCE_FILE_PATH);
+        List<String> contents = fileReader.getContents(ATTENDANCE_FILE_PATH);
         contents.removeFirst();
 
         for (String content : contents) {

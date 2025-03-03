@@ -9,6 +9,7 @@ import attendance.domain.Function;
 import attendance.dto.CrewAttendanceDTO;
 import attendance.util.AttendanceReader;
 import attendance.util.Parser;
+import attendance.util.ReaderImpl;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.DayOfWeek;
@@ -40,7 +41,7 @@ public class AttendanceController {
 
     private static void initAttendances(final AttendanceBook attendanceBook) {
 
-        AttendanceReader.initAttendances(attendanceBook);
+        AttendanceReader.initAttendances(attendanceBook, new ReaderImpl());
         attendanceBook.initCrewsAbsence();
     }
 
