@@ -86,4 +86,13 @@ public class AttendanceRecordTest {
         assertThat(attendanceRecord.countStatus(AttendanceStatus.ABSENCE)).isEqualTo(1);
     }
 
+    @Test
+    void 해당_날짜에_결석인지_확인한다() {
+        AttendanceRecord attendanceRecord = new AttendanceRecord(() -> weekday);
+        attendanceRecord.add(LocalDateTime.of(2024, 12, 13, 10, 0));
+
+        assertThat(attendanceRecord.isAbsent(weekday)).isFalse();
+        assertThat(attendanceRecord.isAbsent(weekend)).isTrue();
+    }
+
 }
