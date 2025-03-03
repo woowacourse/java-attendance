@@ -49,7 +49,7 @@ public class AttendanceBook {
         return crewAttendance.countAttendanceStatusesBefore(today);
     }
 
-    public CrewAttendance getCrewAttendanceOf(final String nickname, final LocalDateTime today) {
+    public CrewAttendance getCrewAttendanceOf(final String nickname) {
         validateNickname(nickname);
         return crews.get(new Crew(nickname));
     }

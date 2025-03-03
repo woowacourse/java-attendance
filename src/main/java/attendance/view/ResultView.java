@@ -91,7 +91,7 @@ public class ResultView {
                 attendanceBook.getWarningLevelOf(nickname, today).getDisplayName());
     }
 
-    public void printWarningCrews(final AttendanceBook attendanceBook, final LocalDateTime today) {
+    public void printWarningCrews(final LocalDateTime today) {
         System.out.print(WARNING_CREWS_HEADER);
         List<WarningLevel> warningLevels = Arrays.stream(WarningLevel.values())
                 .filter(level -> level != WarningLevel.NONE)

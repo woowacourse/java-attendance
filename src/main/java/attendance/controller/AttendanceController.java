@@ -25,7 +25,6 @@ public class AttendanceController {
     private final ResultView resultView;
 
     public AttendanceController(final InputView inputView, final ResultView resultView) {
-
         this.inputView = inputView;
         this.resultView = resultView;
     }
@@ -48,14 +47,13 @@ public class AttendanceController {
     }
 
     private void modifyAttendance(final AttendanceBook attendanceBook) {
-        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
         String nickname = inputView.readNicknameForModify();
         int dayOfMonth = inputView.readDayForModify();
         LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
         LocalTime newTime = inputView.readTimeForModify();
         LocalDateTime newDateTime = LocalDateTime.of(targetDate, newTime);
 
-        CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf(nickname, today);
+        CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf(nickname);
         final Attendance prevAttendance = crewAttendance.getAttendanceOn(targetDate);
         crewAttendance.modify(newDateTime);
         Attendance newAttendance = crewAttendance.getAttendanceOn(targetDate);
@@ -69,14 +67,14 @@ public class AttendanceController {
         LocalDateTime newAttendance = LocalDateTime.of(LocalDate.from(today), attendanceTime);
 
         attendanceBook.addAttendance(nickname, newAttendance);
-        Attendance attendance = attendanceBook.getCrewAttendanceOf(nickname, today).getAttendanceOn(newAttendance);
+        Attendance attendance = attendanceBook.getCrewAttendanceOf(nickname).getAttendanceOn(newAttendance);
         resultView.printAttendance(attendance);
     }
 
     private void showCrewAttendance(AttendanceBook attendanceBook) {
         LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
         String nickname = inputView.readNickname();
-        CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf(nickname, today);
+        CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf(nickname);
         resultView.printCrewAttendanceHeader(nickname);
         resultView.printCrewAttendances(crewAttendance, today);
         resultView.printAttendanceStatusCounts(crewAttendance, today);
@@ -88,6 +86,6 @@ public class AttendanceController {
         for (WarningLevel warningLevel : WarningLevel.values()) {
             warningLevel.updateCrews(attendanceBook, today);
         }
-        resultView.printWarningCrews(attendanceBook, today);
+        resultView.printWarningCrews(today);
     }
 }

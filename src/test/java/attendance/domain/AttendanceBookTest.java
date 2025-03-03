@@ -36,7 +36,6 @@ public class AttendanceBookTest {
     @DisplayName("주어진 닉네임을 가진 크루의 CrewAttendance 반환 성공")
     @Test
     void test3() {
-        LocalDateTime today = LocalDateTime.of(2024, 12, 5, 13, 0);
         String nickname = "빙티";
         final LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 2, 13, 0);
         final LocalDateTime localDateTime2 = LocalDateTime.of(2024, 12, 3, 10, 7);
@@ -50,7 +49,7 @@ public class AttendanceBookTest {
             attendanceBook.addAttendance(nickname, attendance);
         }
 
-        CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf("빙티", today);
+        CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf("빙티");
 
         assertThat(crewAttendance)
                 .isNotNull()
