@@ -1,39 +1,76 @@
 package attendance.domain;
 
-import attendance.dto.CrewNameAndAcademicStatusDTO;
-import attendance.repository.AttendanceRepository;
+import java.time.LocalDate;
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AttendanceBook {
 
-    private final Set<String> names;
+    private final Set<String> crewNames;
+    private final Attendances attendances;
 
-    public AttendanceBook(final Set<String> names) {
-        this.names = names;
+    public AttendanceBook(final Set<String> crewNames, final Attendances attendances) {
+        this.crewNames = new HashSet<>(crewNames);
+        this.attendances = attendances;
     }
 
-    public void checkName(final String name) {
-        if (!names.contains(name)) {
-            throw new IllegalArgumentException("[ERROR] 출석부에 없는 크루원입니다.");
+    public void hasCrew(final String crewName) {
+        if (crewNames.contains(crewName)) {
+            return;
         }
+        throw new IllegalArgumentException("[ERROR] 출석부에 존재하지 않는 닉네임입니다.");
     }
 
-    public void initAbsent(final AttendanceRepository attendanceRepository) {
-        for (String name : names) {
-            attendanceRepository.initAbsent(name);
-        }
+    public long getCountAttendanceStatus(final Map<LocalDate, Attendance> monthlyAttendances,
+                                         AttendanceStatus attendanceStatus) {
+        return attendances.getStatusCount(monthlyAttendances, attendanceStatus);
     }
 
-    public List<CrewNameAndAcademicStatusDTO> getCrewAtRiskOfExpulsion(
-            final AttendanceRepository attendanceRepository,
-            final String academicStatus,
-            final int month) {
+    public AcademicStatus getAcademicStatusByCalendar(final Map<LocalDate, Attendance> monthlyAttendances) {
 
-        return names.stream()
-                .map(name -> attendanceRepository.getAcademicStatusByName(name, month))
-                .filter(dto -> dto.academicStatus().equals(academicStatus))
+        long late = getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.LATE);
+        long absent = getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.ABSENT);
+
+        return AcademicStatus.getStatus(late, absent);
+    }
+
+    public void addAttendance(final Attendance attendance) {
+        attendances.add(attendance);
+    }
+
+    public Attendance findAttendanceByCrewNameAndLocalDate(String crewName, LocalDate localDate) {
+        return attendances.findByCrewNameAndLocalDate(crewName, localDate);
+    }
+
+    public Map<LocalDate, Attendance> findAttendancesByCrewNameAndYearAndMonth(final String crewName, final int year,
+                                                                               final int month) {
+        return attendances.getMonthlyAttendanceMap(crewName, year, month);
+    }
+
+    public List<String> getExpulsionCrews(final AcademicStatus academicStatus,
+                                          final LocalDate localDate) {
+        return filterCrewsByAcademicStatus(academicStatus, localDate);
+    }
+
+    private List<String> filterCrewsByAcademicStatus(final AcademicStatus academicStatus,
+                                                     final LocalDate localDate) {
+        return crewNames.stream()
+                .map(crewName -> {
+                    Map<LocalDate, Attendance> monthlyAttendances = findAttendancesByCrewNameAndYearAndMonth(
+                            crewName, localDate.getYear(), localDate.getMonthValue());
+                    return new AbstractMap.SimpleEntry<>(crewName, monthlyAttendances);
+                })
+                .filter(entry -> getAcademicStatusByCalendar(entry.getValue()).equals(academicStatus))
+                .map(SimpleEntry::getKey)
                 .collect(Collectors.toList());
+    }
+
+    public Map<LocalDate, Attendance> getMonthlyAttendances(final String crewName, final int year, final int month) {
+        return attendances.getMonthlyAttendanceMap(crewName, year, month);
     }
 }

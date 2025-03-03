@@ -8,18 +8,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class AcademicStatusTest {
 
-    @DisplayName("지각과 결석의 횟수에 의해 학적 상태가 결정된다.")
+    @DisplayName("결석 횟수에 따라 학적 상태가 결정된다.")
     @ParameterizedTest
-    @CsvSource(value = {"6,제적", "3,면담", "2,경고", "1,없음"})
-    void 지각과_결석의_횟수에_의해_학적_상태가_결정된다(int count, String academicStatusValue) {
+    @CsvSource(value = {
+            "0,0, NOT", "2,0, WARNING", "3,0, INTERVIEW", "6,0, EXPELLED"
+    })
+    void 결석_횟수에_따라_학적_상태가_결정된다(int absent, int late, AcademicStatus status) {
 
-        // given
-
-        // when
-        String academicStatus = AcademicStatus.getAcademicStatus(0, count);
-
-        // then
-        assertThat(academicStatus).isEqualTo(academicStatusValue);
+        // when & then
+        assertThat(status).isEqualTo(AcademicStatus.getStatus(late, absent));
     }
-
 }

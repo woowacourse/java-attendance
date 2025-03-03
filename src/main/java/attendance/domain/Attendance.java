@@ -1,55 +1,59 @@
 package attendance.domain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Objects;
+
 public class Attendance {
 
-    private final static String MONDAY = "월요일";
-    private final static int MONDAY_EDUCATION_HOUR = 13;
-    private final static int EDUCATION_HOUR = 10;
-    private final static int LATE_MINUTE = 5;
-    private final static int ABSENT_MINUTE = 30;
-
     private final String crewName;
-    private Time attendanceTime;
+    private final Time attendanceTime;
 
     public Attendance(final String crewName, final Time attendanceTime) {
         this.crewName = crewName;
         this.attendanceTime = attendanceTime;
     }
 
-    public AttendanceStatus getAttendanceStatus() {
-        if (attendanceTime.getDayOfWeek().equals(MONDAY)) {
-
-            return AttendanceStatus.checkStatusWithCondition(attendanceTime, MONDAY_EDUCATION_HOUR, LATE_MINUTE,
-                    ABSENT_MINUTE);
-        }
-
-        return AttendanceStatus.checkStatusWithCondition(attendanceTime, EDUCATION_HOUR, LATE_MINUTE, ABSENT_MINUTE);
+    public Attendance modifyAttendanceTime(final LocalTime modifyTime) {
+        attendanceTime.modify(modifyTime);
+        return this;
     }
 
-    public boolean isAlreadyAttendance(final Attendance currentAttendance) {
+    public boolean isSameNameAndLocalDate(final String crewName, final LocalDate localDate) {
+        return this.crewName.equals(crewName) && attendanceTime.isSameLocalDate(localDate);
+    }
 
-        if (!crewName.equals(currentAttendance.crewName)) {
+    public boolean isSameCrewName(final String crewName) {
+        return this.crewName.equals(crewName);
+    }
+
+    public boolean isSameYearAndMonth(final int year, final int month) {
+        return attendanceTime.isSameYearAndMonth(year, month);
+    }
+
+    public AttendanceStatus checkStatus() {
+        return attendanceTime.getStatus();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        return attendanceTime.date().isEqual(currentAttendance.attendanceTime.date());
+        Attendance that = (Attendance) o;
+        return Objects.equals(crewName, that.crewName) &&
+                attendanceTime.isSameLocalDate(that.attendanceTime.getLocalDate());
     }
 
-
-    public boolean isSameByNameAndLocalDate(final String name, int year, int month, int day) {
-        return crewName.equals(name) && day == attendanceTime.getDay() && year == attendanceTime.getYear()
-                && month == attendanceTime.getMonth();
-    }
-
-    public void modifyAttendanceTime(final Time modifyTime) {
-        this.attendanceTime = modifyTime;
+    @Override
+    public int hashCode() {
+        return Objects.hash(crewName, attendanceTime.getLocalDate());
     }
 
     public Time getAttendanceTime() {
         return attendanceTime;
-    }
-
-    public String getCrewName() {
-        return crewName;
     }
 }

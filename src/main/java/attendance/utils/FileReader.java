@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class FileReader {
+public class FileReader {
+
     private FileReader() {
     }
 

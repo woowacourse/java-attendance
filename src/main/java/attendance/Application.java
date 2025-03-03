@@ -4,7 +4,7 @@ import attendance.controller.AttendanceController;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
-public class Main {
+public class Application {
 
     public static void main(String[] args) {
 
@@ -13,6 +13,6 @@ public class Main {
 
         AttendanceController attendanceController = new AttendanceController(inputView, outputView);
 
-        attendanceController.start();
+        attendanceController.run();
     }
 }

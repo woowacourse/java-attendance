@@ -2,11 +2,8 @@ package attendance.utils;
 
 import attendance.domain.Attendance;
 import attendance.domain.Time;
-import attendance.dto.AttendanceContentDTO;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,11 +15,10 @@ public final class AttendanceReader {
     private AttendanceReader() {
     }
 
-
-    public static AttendanceContentDTO getAttendanceRecordContent(final List<String> attendanceContents) {
+    public static Set<Attendance> getAttendancesOnFile(final List<String> attendanceContents) {
         attendanceContents.removeFirst();
-        final List<Attendance> attendances = new ArrayList<>();
-        final Set<String> names = new HashSet<>();
+
+        Set<Attendance> attendances = new HashSet<>();
 
         for (String content : attendanceContents) {
             String[] split = content.split(",");
@@ -30,13 +26,26 @@ public final class AttendanceReader {
             String crewName = split[0];
             LocalDateTime attendanceTime = LocalDateTime.parse(split[1], formatter);
 
-            LocalDate localDate = attendanceTime.toLocalDate();
-            String hour = String.format("%02d", attendanceTime.getHour());
-            String minute = String.format("%02d", attendanceTime.getMinute());
-
-            names.add(crewName);
-            attendances.add(new Attendance(crewName, new Time(localDate, hour, minute, false)));
+            attendances.add(new Attendance(crewName, new Time(attendanceTime)));
         }
-        return new AttendanceContentDTO(attendances, names);
+        return attendances;
+    }
+
+    public static Set<String> getCrewNamesOnFile(final List<String> attendanceContents) {
+
+        attendanceContents.removeFirst();
+
+        Set<String> crewNames = new HashSet<>();
+
+        for (String content : attendanceContents) {
+            String[] split = content.split(",");
+
+            String crewName = split[0];
+
+            crewNames.add(crewName);
+
+        }
+        return crewNames;
+
     }
 }

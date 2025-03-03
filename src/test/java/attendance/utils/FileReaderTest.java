@@ -8,19 +8,17 @@ import org.junit.jupiter.api.Test;
 
 class FileReaderTest {
 
-
-    @DisplayName("크루원의 닉네임과 출석일시를 가져온다.")
+    @DisplayName("파일을 읽어 리스트로 반환한다.")
     @Test
-    void 크루원_닉네임과_출석일시를_가져온다() {
+    void 파일을_읽어_리스트로_반환한다() {
 
-        //given
+        // given
         String filePath = "src/main/resources/attendances.csv";
 
-        //when
-        List<String> attendances = FileReader.parseToFile(filePath);
+        // when
+        List<String> file = FileReader.parseToFile(filePath);
 
-        //then
-        assertThat(attendances.size()).isEqualTo(43);
+        // then
+        assertThat(file.size()).isEqualTo(43);
     }
-
 }

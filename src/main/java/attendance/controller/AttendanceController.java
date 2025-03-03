@@ -1,27 +1,28 @@
 package attendance.controller;
 
-import static attendance.domain.AcademicStatus.EXPELLED;
-import static attendance.domain.AcademicStatus.INTERVIEW;
-import static attendance.domain.AcademicStatus.WARNING;
-
+import attendance.domain.AcademicStatus;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.Attendances;
+import attendance.domain.CrewAttendanceStatus;
 import attendance.domain.Time;
-import attendance.dto.AttendanceContentDTO;
-import attendance.repository.AttendanceRepository;
 import attendance.utils.AttendanceReader;
 import attendance.utils.FileReader;
+import attendance.utils.Parser;
 import attendance.view.InputView;
 import attendance.view.OutputView;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
 
 public class AttendanceController {
 
@@ -31,13 +32,16 @@ public class AttendanceController {
     private final static String HISTORY_FUNCTION = "3";
     private final static String RISK_OF_EXPULSION_FUNCTION = "4";
     private final static String QUIT_FUNCTION = "Q";
+    private final static String TIME_REGEX = "^([01]\\d|2[0-3]):[0-5]\\d$";
 
     private final InputView inputView;
     private final OutputView outputView;
-
     private AttendanceBook attendanceBook;
-    private AttendanceRepository attendanceRepository;
     private final Map<String, Supplier<Boolean>> functions;
+
+    private final int inputYear = LocalDate.now().getYear();
+    private final int inputMonth = 2;
+    private final int inputDay = LocalDate.now().getDayOfMonth();
 
 
     public AttendanceController(final InputView inputView, final OutputView outputView) {
@@ -46,20 +50,9 @@ public class AttendanceController {
         this.functions = initializeFunctions();
     }
 
-    public void start() {
-        initAttendanceSystem();
-
-        while (true) {
-            String functionValue = functionInput(LocalDateTime.now());
-            if (execute(functionValue)) {
-                return;
-            }
-        }
-    }
-
     private Map<String, Supplier<Boolean>> initializeFunctions() {
         return Map.of(
-                CHECK_FUNCTION, () -> executeWithExceptionHandling(this::attendanceCheckFunction),
+                CHECK_FUNCTION, () -> executeWithExceptionHandling(this::attendanceAddFunction),
                 MODIFY_FUNCTION, () -> executeWithExceptionHandling(this::attendanceModifyFunction),
                 HISTORY_FUNCTION, () -> executeWithExceptionHandling(this::attendanceHistoryByNameFunction),
                 RISK_OF_EXPULSION_FUNCTION, () -> executeWithExceptionHandling(this::crewAtRiskOfExpulsion),
@@ -67,7 +60,7 @@ public class AttendanceController {
         );
     }
 
-    private boolean executeWithExceptionHandling(Supplier<Boolean> function) {
+    private boolean executeWithExceptionHandling(final Supplier<Boolean> function) {
         try {
             return function.get();
         } catch (IllegalArgumentException e) {
@@ -76,14 +69,27 @@ public class AttendanceController {
         }
     }
 
-    private void initAttendanceSystem() {
-        AttendanceContentDTO attendanceRecordContent = AttendanceReader.getAttendanceRecordContent(
-                FileReader.parseToFile(FILE_PATH));
+    public void run() {
 
-        attendanceRepository = new AttendanceRepository(attendanceRecordContent.attendances());
-        attendanceBook = new AttendanceBook(attendanceRecordContent.names());
+        initAttendanceBook();
 
-        attendanceBook.initAbsent(attendanceRepository);
+        while (true) {
+            String functionValue = inputView.inputAttendanceFunction(LocalDateTime.now().getMonthValue(),
+                    LocalDateTime.now().getDayOfMonth(),
+                    LocalDateTime.now().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
+
+            if (execute(functionValue)) {
+                return;
+            }
+        }
+    }
+
+    private void initAttendanceBook() {
+
+        Set<Attendance> attendances = AttendanceReader.getAttendancesOnFile(FileReader.parseToFile(FILE_PATH));
+        Set<String> crewNames = AttendanceReader.getCrewNamesOnFile(FileReader.parseToFile(FILE_PATH));
+
+        attendanceBook = new AttendanceBook(crewNames, new Attendances(attendances));
     }
 
     public boolean execute(final String functionValue) {
@@ -95,81 +101,130 @@ public class AttendanceController {
         return false;
     }
 
-    private String functionInput(final LocalDateTime today) {
-        return inputView.inputFunction(today.getMonthValue(), today.getDayOfMonth(),
-                today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
-    }
-
-    public boolean attendanceCheckFunction() {
+    public boolean attendanceAddFunction() {
 
         String crewName = inputView.inputCrewName();
-        attendanceBook.checkName(crewName);
-        Time todayDateTime = createTime(LocalDate.now(), inputView.inputTime());
+        attendanceBook.hasCrew(crewName);
+        Time todayDateTime = createTime(LocalDate.now(), inputView.inputAttendTime());
 
         Attendance attendance = new Attendance(crewName, todayDateTime);
-        attendanceRepository.add(attendance);
+        attendanceBook.addAttendance(attendance);
 
-        outputView.printAttendance(todayDateTime, attendance.getAttendanceStatus().getValue());
+        outputView.printAttendance(todayDateTime, attendance.checkStatus().getValue());
 
         return false;
-    }
-
-    private Time createTime(final LocalDate date, final String attendanceTime) {
-        String[] split = attendanceTime.split(":");
-        return new Time(date, split[0], split[1], false);
     }
 
     public boolean attendanceModifyFunction() {
 
         String crewName = inputView.inputModifyCrewName();
-        attendanceBook.checkName(crewName);
-        int modifyDay = inputView.inputModifyDay();
-        String modifyTime = inputView.inputModifyTime();
+        attendanceBook.hasCrew(crewName);
+        int modifyDay = Parser.parseToInt(inputView.inputModifyDay());
+        String modifyTime = inputView.inputModifyAttendTime();
         modifyAttendance(modifyDay, modifyTime, crewName);
 
         return false;
     }
 
     private void modifyAttendance(final int modifyDay, final String modifyTime, final String crewName) {
-        int year = LocalDate.now().getYear();
-        int month = LocalDate.now().getMonthValue();
-        Time modifyDateTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);
+        int year = inputYear;
+        int month = inputMonth;
+        Time modifyDateTime = createTime(createLocalDate(year, month, modifyDay), modifyTime);
 
-        Attendance attendance = attendanceRepository.findAttendanceByNameAndLocalDate(crewName, year, month, modifyDay);
+        Attendance attendance = attendanceBook.findAttendanceByCrewNameAndLocalDate(crewName,
+                LocalDate.of(year, month, modifyDay));
 
         Time previousDateTime = attendance.getAttendanceTime();
-        String previousAttendanceStatus = attendance.getAttendanceStatus().getValue();
+        String previousAttendanceStatus = attendance.checkStatus().getValue();
 
-        attendance.modifyAttendanceTime(modifyDateTime);
+        attendance.modifyAttendanceTime(createLocalTime(modifyTime));
 
         outputView.printModifyAttendanceResult(previousDateTime, previousAttendanceStatus, modifyDateTime,
-                attendance.getAttendanceStatus().getValue());
+                attendance.checkStatus().getValue());
     }
 
     public boolean attendanceHistoryByNameFunction() {
 
         String crewName = inputView.inputCrewName();
 
-        attendanceBook.checkName(crewName);
-        List<Attendance> attendances = attendanceRepository.findAllAttendanceByName(crewName,
-                LocalDate.now().getMonthValue());
+        attendanceBook.hasCrew(crewName);
 
-        outputView.printNameAndAttendances(crewName, attendances);
+        Map<LocalDate, Attendance> monthlyAttendances = attendanceBook.findAttendancesByCrewNameAndYearAndMonth(
+                crewName, inputYear, inputMonth);
 
-        outputView.printAcademicStatusResult(
-                attendanceRepository.getAcademicStatusByName(crewName, LocalDate.now().getMonthValue()));
+        outputView.printNameAndAttendances(monthlyAttendances, crewName, inputYear, inputMonth);
+
+        long attend = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.ATTEND);
+        long late = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.LATE);
+        long absent = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.ABSENT);
+
+        AcademicStatus academicStatus = attendanceBook.getAcademicStatusByCalendar(monthlyAttendances);
+        outputView.printAcademicStatusResult(attend, late, absent, academicStatus);
 
         return false;
     }
 
     public boolean crewAtRiskOfExpulsion() {
-        outputView.printCrewsAtRiskOfExpulsionStartMessage();
+        outputView.printRiskOfExpulsionIntro();
 
-        Stream.of(EXPELLED.getValue(), INTERVIEW.getValue(), WARNING.getValue())
-                .map(value -> attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, value,
-                        LocalDate.now().getMonthValue()))
-                .forEach(outputView::printCrewsAtRiskOfExpulsion);
+        LocalDate localDate = LocalDate.of(inputYear, inputMonth, inputDay);
+
+        Stream.of(AcademicStatus.EXPELLED, AcademicStatus.INTERVIEW, AcademicStatus.WARNING)
+                .forEach(status -> printCrewsByAcademicStatus(status, localDate));
 
         return false;
+    }
+
+    private void printCrewsByAcademicStatus(final AcademicStatus status, final LocalDate targetDate) {
+        List<String> crewNames = attendanceBook.getExpulsionCrews(status, targetDate);
+
+        getSortedCrewsInfo(crewNames, status)
+                .forEach(crewStatus -> outputView.printCrewAtRiskOfExpulsion(
+                        crewStatus.getCrewName(),
+                        crewStatus.getAbsent(),
+                        crewStatus.getLate(),
+                        status
+                ));
+    }
+
+    private List<CrewAttendanceStatus> getSortedCrewsInfo(final List<String> crewNames, final AcademicStatus status) {
+        return crewNames.stream()
+                .map(crewName -> {
+                    Map<LocalDate, Attendance> monthlyAttendances =
+                            attendanceBook.getMonthlyAttendances(crewName, inputYear, inputMonth);
+                    long absent = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.ABSENT);
+                    long late = attendanceBook.getCountAttendanceStatus(monthlyAttendances, AttendanceStatus.LATE);
+
+                    return new CrewAttendanceStatus(crewName, absent, late);
+                })
+                .sorted(CrewAttendanceStatus.createSortingComparator())
+                .toList();
+
+    }
+
+    private Time createTime(final LocalDate date, final String attendanceTime) {
+        if (attendanceTime.matches(TIME_REGEX)) {
+            String[] split = attendanceTime.split(":");
+            return new Time(LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
+                    Parser.parseToInt(split[0]), Parser.parseToInt(split[1])));
+        }
+        throw new IllegalArgumentException("[ERROR] 올바른 시간 형식(HH:mm)으로 입력해주세요.");
+
+    }
+
+    private LocalTime createLocalTime(final String time) {
+        if (time.matches(TIME_REGEX)) {
+            String[] split = time.split(":");
+            return LocalTime.of(Parser.parseToInt(split[0]), Parser.parseToInt(split[1]));
+        }
+        throw new IllegalArgumentException("[ERROR] 올바른 시간 형식(HH:mm)으로 입력해주세요.");
+    }
+
+    private LocalDate createLocalDate(final int year, final int month, final int day) {
+        try {
+            return LocalDate.of(year, month, day);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("[ERROR] 올바르지 않은 입력입니다.");
+        }
     }
 }

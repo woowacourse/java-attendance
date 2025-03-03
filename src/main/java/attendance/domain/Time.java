@@ -1,79 +1,80 @@
 package attendance.domain;
 
-import attendance.utils.Parser;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public record Time(LocalDate date, String hour, String minute, boolean isAbsent) {
-    public Time {
-        if (!isAbsent) {
-            validatePossibleTime(date, hour, minute);
-            validateInRangeTime(hour, minute);
+public class Time {
+
+    private final static int CAMPUS_OPEN_HOUR = 8;
+    private final static int CAMPUS_CLOSE_HOUR = 23;
+    private LocalDateTime attendanceTime;
+
+    public Time(LocalDateTime attendanceTime) {
+        validateHoliday(attendanceTime);
+        validateCampusOperationTime(attendanceTime);
+        this.attendanceTime = attendanceTime;
+    }
+
+    private void validateCampusOperationTime(final LocalDateTime attendanceTime) {
+        if (attendanceTime.getHour() < CAMPUS_OPEN_HOUR || (attendanceTime.getHour() == CAMPUS_CLOSE_HOUR
+                && attendanceTime.getMinute() > 0)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }
 
-    private void validateInRangeTime(String hour, String minute) {
-        int parsingHour = Parser.parseInt(hour);
-        int parsingMinute = Parser.parseInt(minute);
-        if (parsingHour >= 24 || parsingHour < 0 || parsingMinute >= 60
-                || parsingMinute < 0) {
-            throw new IllegalArgumentException("[ERROR] 올바른 시간을 입력해주세요.");
-
+    private void validateHoliday(final LocalDateTime attendanceTime) {
+        if (attendanceTime.getDayOfWeek() == DayOfWeek.SATURDAY
+                || attendanceTime.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            throw new IllegalArgumentException("[ERROR] 주말 및 공휴일은 출석할 수 없습니다.");
         }
     }
 
-    private void validatePossibleTime(LocalDate date, String hour, String minute) {
-        validateAttendanceDate(date);
-        validateAttendanceTime(hour, minute);
+    public boolean isSameLocalDate(final LocalDate time) {
+        return this.attendanceTime.getYear() == time.getYear()
+                && this.attendanceTime.getMonth() == time.getMonth()
+                && this.attendanceTime.getDayOfMonth() == time.getDayOfMonth();
     }
 
-    private void validateAttendanceTime(String hour, String minute) {
-        int parsingHour = Parser.parseInt(hour);
-        int parsingMinute = Parser.parseInt(minute);
-
-        if (parsingHour < 8 || parsingHour == 23 && parsingMinute > 0) {
-            throw new IllegalArgumentException("[ERROR] 출석 가능한 시간이 아닙니다.");
-        }
+    public boolean isSameYearAndMonth(final int year, final int month) {
+        return this.attendanceTime.getYear() == year
+                && this.attendanceTime.getMonthValue() == month;
     }
 
-    private void validateAttendanceDate(LocalDate date) {
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-            String message = String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
-                    date.getMonthValue(), date.getDayOfMonth(),
-                    dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN));
-
-            throw new IllegalArgumentException(message);
-        }
+    public void modify(final LocalTime modifyTime) {
+        attendanceTime = attendanceTime
+                .withHour(modifyTime.getHour())
+                .withMinute(modifyTime.getMinute());
     }
 
-    public boolean isBefore(LocalDateTime localDateTime) {
-        if (!isAbsent) {
-            return !date.atTime(Parser.parseInt(hour), Parser.parseInt(minute)).isAfter(localDateTime);
-        }
-
-        return false;
+    public AttendanceStatus getStatus() {
+        return AttendanceStatus.getStatusByTime(attendanceTime);
     }
 
-    public int getYear() {
-        return date.getYear();
+    public LocalDate getLocalDate() {
+        return attendanceTime.toLocalDate();
     }
 
     public int getMonth() {
-        return date.getMonthValue();
+        return attendanceTime.getMonthValue();
     }
 
     public int getDay() {
-        return date.getDayOfMonth();
+        return attendanceTime.getDayOfMonth();
     }
 
     public String getDayOfWeek() {
-        return date.getDayOfWeek().getDisplayName(
-                TextStyle.FULL, Locale.KOREAN);
+        return attendanceTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 
+    public int getHour() {
+        return attendanceTime.getHour();
+    }
+
+    public int getMinute() {
+        return attendanceTime.getMinute();
+    }
 }
