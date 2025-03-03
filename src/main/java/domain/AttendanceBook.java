@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,14 +8,16 @@ import java.util.Map;
 public class AttendanceBook {
 
     private final Map<String, AttendResult> attendBook;
+    private final LocalDate today;
 
-    public AttendanceBook() {
+    public AttendanceBook(LocalDate today) {
         this.attendBook = new HashMap<>();
+        this.today = today;
     }
 
     public void register(final String name) {
         if (!attendBook.containsKey(name)) {
-            attendBook.put(name, new AttendResult());
+            attendBook.put(name, new AttendResult(today));
         }
     }
 
@@ -45,13 +48,13 @@ public class AttendanceBook {
     public WarningStatus judgeAttendStatus(String name) {
         checkContainsName(name);
         AttendResult attendResult = attendBook.get(name);
-        return attendResult.judgeWarningStatus(Current.TODAY.getDay());
+        return attendResult.judgeWarningStatus(today.getDayOfMonth());
     }
 
     public AttendCount countAttend(String name) {
         checkContainsName(name);
         AttendResult attendResult = attendBook.get(name);
-        return attendResult.countAttendStatus(Current.TODAY.getDay());
+        return attendResult.countAttendStatus(today.getDayOfMonth());
     }
 
     public List<WarningCrew> searchWarningCrew() {

@@ -1,10 +1,11 @@
-import static org.assertj.core.api.Assertions.assertThat;
-
 import domain.AttendCount;
 import domain.AttendReader;
 import domain.AttendanceBook;
+import domain.Current;
+import java.time.LocalDate;
 import java.util.List;
 import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,22 +17,24 @@ public class AttendReaderTest {
     @DisplayName("잘못된 경로의 파일을 읽으면 예외를 던진다")
     void throwExceptionWhenWrongPath() {
         //given
+        LocalDate today = Current.TODAY.getDate();
         String wrongPath = "wrong_path.csv";
         AttendReader attendReader = new AttendReader(wrongPath);
 
         //when & then
-        Assertions.assertThatThrownBy(attendReader::loadAttendanceBook);
+        Assertions.assertThatThrownBy(() -> attendReader.loadAttendanceBook(today));
     }
 
     @Test
     @DisplayName("잘못된 형식의 이름일 경우 예외를 던진다")
     void throwExceptionWhenWrongNameFormat() {
         //given
+        LocalDate today = Current.TODAY.getDate();
         String path = "wrong_name_format.csv";
         AttendReader attendReader = new AttendReader(path);
 
         //when & then
-        Assertions.assertThatThrownBy(attendReader::loadAttendanceBook);
+        Assertions.assertThatThrownBy(() -> attendReader.loadAttendanceBook(today));
     }
 
     @ParameterizedTest
@@ -42,21 +45,23 @@ public class AttendReaderTest {
     @DisplayName("잘못된 형식의 날짜일 경우 예외를 던진다")
     void throwExceptionWhenWrongDateTimeFormat(String path) {
         //given
+        LocalDate today = Current.TODAY.getDate();
         AttendReader attendReader = new AttendReader(path);
 
         //when & then
-        Assertions.assertThatThrownBy(attendReader::loadAttendanceBook);
+        Assertions.assertThatThrownBy(() -> attendReader.loadAttendanceBook(today));
     }
 
     @Test
     @DisplayName("csv 파일 데이터를 기반으로 출석 기록을 저장한다")
     void loadAttendByCsv() {
         //given
+        LocalDate today = Current.TODAY.getDate();
         String path = "attendances.csv";
         AttendReader attendReader = new AttendReader(path);
 
         //when
-        AttendanceBook attendanceBook = attendReader.loadAttendanceBook();
+        AttendanceBook attendanceBook = attendReader.loadAttendanceBook(today);
 
         //then
         List<String> names = List.of("빙티", "가나");

@@ -20,8 +20,8 @@ public class OperationTime {
         return !(isWeekend(targetDate) || Holiday.isHoliday(targetDate));
     }
 
-    public static boolean isOperationDate(final int targetDay) {
-        LocalDate date = LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), targetDay);
+    public static boolean isOperationDate(final int targetDay, final LocalDate today) {
+        LocalDate date = LocalDate.of(today.getYear(), today.getMonthValue(), targetDay);
         return isOperationDate(date);
     }
 

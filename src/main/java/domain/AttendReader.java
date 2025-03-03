@@ -13,8 +13,8 @@ public class AttendReader {
         this.csvPath = csvPath;
     }
 
-    public AttendanceBook loadAttendanceBook() {
-        AttendanceBook attendanceBook = new AttendanceBook();
+    public AttendanceBook loadAttendanceBook(LocalDate today) {
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         List<String> rows = CsvReader.readFile(csvPath);
         CsvReader.removeFirstRow(rows);
         for (String row : rows) {

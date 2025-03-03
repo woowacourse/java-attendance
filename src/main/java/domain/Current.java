@@ -1,25 +1,14 @@
 package domain;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.IntStream;
 
 public enum Current {
-    TODAY(13);
+    TODAY(2024, 12, 13);
 
-    private final int day;
     private final LocalDate date;
 
-    Current(final int day) {
-        this.day = day;
-        this.date = LocalDate.of(2024, 12, this.day);
-    }
-
-    public static List<LocalDate> getEducationDateUntilCurrent() {
-        return IntStream.range(1, TODAY.day)
-                .mapToObj(day -> LocalDate.of(TODAY.getYear(), TODAY.getMonth(), day))
-                .filter(OperationTime::isOperationDate)
-                .toList();
+    Current(final int year, final int month, final int day) {
+        this.date = LocalDate.of(year, month, day);
     }
 
     public LocalDate getDate() {
@@ -35,6 +24,6 @@ public enum Current {
     }
 
     public int getDay() {
-        return this.day;
+        return this.date.getDayOfMonth();
     }
 }

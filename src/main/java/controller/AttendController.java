@@ -6,7 +6,6 @@ import domain.AttendReader;
 import domain.AttendStatus;
 import domain.AttendanceBook;
 import domain.Command;
-import domain.Current;
 import domain.WarningCrew;
 import domain.WarningStatus;
 import java.time.LocalDate;
@@ -24,8 +23,9 @@ public class AttendController {
     private final OutputView outputView;
     private final Map<Command, Runnable> commands;
     private final AttendanceBook attendanceBook;
+    private final LocalDate today;
 
-    public AttendController(final InputView inputView, final OutputView outputView) {
+    public AttendController(final InputView inputView, final OutputView outputView, LocalDate today) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.commands = Map.of(
@@ -35,13 +35,14 @@ public class AttendController {
                 Command.FIND_WARNING, this::findWarningCrew,
                 Command.EXIT, this::close
         );
-        this.attendanceBook = new AttendReader(CSV_PATH).loadAttendanceBook();
+        this.today = today;
+        this.attendanceBook = new AttendReader(CSV_PATH).loadAttendanceBook(today);
     }
 
     private void addAttend() {
         String name = inputView.inputName();
         LocalTime time = inputView.inputAttendTime();
-        Attend attend = new Attend(Current.TODAY.getDate(), time);
+        Attend attend = new Attend(today, time);
         attendanceBook.addAttend(name, attend);
         AttendStatus attendStatus = attend.checkStatus();
         outputView.printAttendResult(attend, attendStatus);
@@ -49,7 +50,7 @@ public class AttendController {
 
     private void edit() {
         String name = inputView.inputName();
-        LocalDate editDate = inputView.inputDate();
+        LocalDate editDate = inputView.inputDate(today);
         LocalTime editTime = inputView.inputChangeTime();
         Attend after = new Attend(editDate, editTime);
         Attend before = attendanceBook.edit(name, after);
@@ -60,7 +61,7 @@ public class AttendController {
 
     private void searchAttend() {
         String name = inputView.inputName();
-        List<Attend> attends = attendanceBook.searchAttend(name, Current.TODAY.getDay());
+        List<Attend> attends = attendanceBook.searchAttend(name, today.getDayOfMonth());
         List<AttendStatus> attendStatuses = attends.stream()
                 .map(Attend::checkStatus)
                 .toList();
@@ -81,7 +82,7 @@ public class AttendController {
     public void run() {
         String command;
         do {
-            command = inputView.inputCommand(Current.TODAY.getDate());
+            command = inputView.inputCommand(today);
             runCommand(command);
         } while (!command.equals("Q"));
     }

@@ -1,6 +1,3 @@
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 import domain.Attend;
 import domain.AttendCount;
 import domain.AttendanceBook;
@@ -12,6 +9,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,7 +23,8 @@ public class AttendanceBookTest {
     @DisplayName("대상 닉네임이 존재하지 않으면 예외를 던진다")
     void throwExceptionNotExistName() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         Attend attend = new Attend(Current.TODAY.getDate());
 
@@ -36,7 +36,8 @@ public class AttendanceBookTest {
     @DisplayName("출석부에 닉네임을 등록한다")
     void registerName() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
 
         //when & then
@@ -48,7 +49,8 @@ public class AttendanceBookTest {
     void registerNameDuplicate() {
         //given
 
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         attendanceBook.register(name);
         Attend attend = new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0));
@@ -69,7 +71,8 @@ public class AttendanceBookTest {
     @DisplayName("대상 닉네임의 출석을 추가한다")
     void addAttendUsingName() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         Attend attend = new Attend(Current.TODAY.getDate());
         attendanceBook.register(name);
@@ -82,7 +85,8 @@ public class AttendanceBookTest {
     @DisplayName("대상 출석 데이터가 이미 존재하면 예외를 던진다")
     void throwExceptionExistAttend() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         Attend attend = new Attend(Current.TODAY.getDate());
         attendanceBook.register(name);
@@ -109,7 +113,8 @@ public class AttendanceBookTest {
     @DisplayName("대상 닉네임의 출석을 수정한다")
     void editAttendUsingName(Attend before, Attend after, Attend expected) {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         attendanceBook.register(name);
         attendanceBook.addAttend(name, before);
@@ -144,7 +149,8 @@ public class AttendanceBookTest {
     @DisplayName("대상 닉네임의 오늘 직전까지의 출석 현황을 조회한다")
     void searchAttendResultUsingName() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         attendanceBook.register(name);
         List<Attend> attends = createAttendUntilToday();
@@ -177,7 +183,8 @@ public class AttendanceBookTest {
     @DisplayName("대상 닉네임의 출석 위험을 판정한다 - 제적 대상")
     void judgeAttendStatusEXPELL() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         attendanceBook.register(name);
         List<Attend> attends = createExpelAttend();
@@ -196,7 +203,8 @@ public class AttendanceBookTest {
     @DisplayName("대상 닉네임의 출석 위험을 판정한다 - 면담 대상")
     void judgeAttendStatus() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         attendanceBook.register(name);
         List<Attend> attends = createAttendUntilToday();
@@ -229,7 +237,8 @@ public class AttendanceBookTest {
     @DisplayName("대상 닉네임의 출석 위험을 판정한다 - 경고 대상")
     void judgeAttendStatusWarning() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         attendanceBook.register(name);
         List<Attend> attends = createAttendUntilToday();
@@ -250,7 +259,8 @@ public class AttendanceBookTest {
     @DisplayName("대상 닉네임의 출석 위험을 판정한다 - 위험 없음")
     void judgeAttendStatusPASS() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         attendanceBook.register(name);
         List<Attend> attends = createPassAttend();
@@ -269,7 +279,8 @@ public class AttendanceBookTest {
     @DisplayName("대상 닉네임의 출석 상태 횟수를 계산한다")
     void calculateAttendCount() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         attendanceBook.register(name);
         List<Attend> attends = createAttendUntilToday();
@@ -289,7 +300,8 @@ public class AttendanceBookTest {
     @DisplayName("제적 위험 대상자를 찾는다")
     void searchWarningCrew() {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        LocalDate today = Current.TODAY.getDate();
+        AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
         attendanceBook.register(name);
         List<Attend> attends = createPassAttend();

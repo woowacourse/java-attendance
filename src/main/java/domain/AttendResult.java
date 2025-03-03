@@ -9,13 +9,16 @@ import java.util.stream.IntStream;
 public class AttendResult {
 
     private final List<Attend> attendResult;
+    private final LocalDate today;
 
-    public AttendResult(final List<Attend> attendResult) {
+    public AttendResult(final List<Attend> attendResult, final LocalDate today) {
         this.attendResult = new ArrayList<>(attendResult);
+        this.today = today;
     }
 
-    public AttendResult() {
+    public AttendResult(final LocalDate today) {
         this.attendResult = new ArrayList<>();
+        this.today = today;
     }
 
     public void addAttend(Attend targetAttend) {
@@ -56,13 +59,13 @@ public class AttendResult {
 
     public List<Attend> getAttendResult(final int targetDay) {
         return IntStream.range(1, targetDay)
-                .filter(OperationTime::isOperationDate)
+                .filter(day -> OperationTime.isOperationDate(day, today))
                 .mapToObj(this::findAttendByDay)
                 .toList();
     }
 
     public Attend findAttendByDay(int day) {
-        LocalDate date = LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), day);
+        LocalDate date = LocalDate.of(today.getYear(), today.getMonthValue(), day);
         return findAttendByDay(date);
     }
 
