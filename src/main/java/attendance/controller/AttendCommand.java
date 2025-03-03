@@ -28,15 +28,30 @@ public class AttendCommand implements Command {
 
     @Override
     public void execute(final CrewHistories crewHistories) {
-        LocalDate nowDate = LocalDate.now(clock);
-        campusScheduler.validateOperationDate(nowDate);
-        Nickname nickname = makeNickname();
-        crewHistories.validateHistoryNotExists(nickname, nowDate);
+        LocalDate nowDate = getValidNowDate();
+        Nickname nickname = getValidNickname(crewHistories, nowDate);
+        LocalDateTime attendanceTime = getValidAttendanceTime(nowDate);
 
-        LocalDateTime attendanceTime = LocalDateTime.of(nowDate, parseAttendanceTime());
-        campusScheduler.validateOperationTime(attendanceTime);
         crewHistories.addHistory(nickname, attendanceTime);
         resultView.showAttendance(attendanceTime, campusScheduler.calculateAttendanceState(attendanceTime));
+    }
+
+    private LocalDate getValidNowDate() {
+        LocalDate nowDate = LocalDate.now(clock);
+        campusScheduler.validateOperationDate(nowDate);
+        return nowDate;
+    }
+
+    private Nickname getValidNickname(final CrewHistories crewHistories, final LocalDate nowDate) {
+        Nickname nickname = makeNickname();
+        crewHistories.validateHistoryNotExists(nickname, nowDate);
+        return nickname;
+    }
+
+    private LocalDateTime getValidAttendanceTime(final LocalDate nowDate) {
+        LocalDateTime attendanceTime = LocalDateTime.of(nowDate, parseAttendanceTime());
+        campusScheduler.validateOperationTime(attendanceTime);
+        return attendanceTime;
     }
 
     private LocalTime parseAttendanceTime() {
