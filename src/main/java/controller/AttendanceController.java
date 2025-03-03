@@ -65,13 +65,13 @@ public class AttendanceController {
         if (Objects.equals(attendanceCommand, AttendanceCommand.LOOK_UP)) {
             outputView.askCrewNickName();
             final String name = inputView.readCrewName();
-            attendanceBook.validateExistCrew(name);
-            final List<AttendanceRecord> attendanceRecords = attendanceBook.lookUpAttendanceHistory(name);
+            final AttendancePaper attendancePaper = attendanceBook.getAttendancePaperByCrewName(name);
+            final List<AttendanceRecord> attendanceRecords = attendancePaper.lookUpAttendanceHistory();
             final List<AttendanceDetails> attendanceDetails = attendanceRecords.stream()
                     .map(this::convertToAttendanceDetails)
                     .toList();
-            final Map<AttendanceStatus, Integer> countAttendanceStatus = attendanceBook.countAttendanceStatus(name);
-            final Penalty penalty = attendanceBook.calculatePenalty(name);
+            final Map<AttendanceStatus, Integer> countAttendanceStatus = attendancePaper.countAttendanceStatus();
+            final Penalty penalty = attendancePaper.calculatePenalty();
             final AttendanceHistory attendanceHistory = AttendanceHistory.of(attendanceDetails, countAttendanceStatus,
                     penalty.getCode());
             outputView.printAttendanceHistory(name, attendanceHistory);

@@ -5,9 +5,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import util.DateTimeConvertor;
 
 public class AttendancePaper {
+
+    private static final int LATES_COUNT_PER_ABSENCE = 3;
+
     private final Long id;
     private final String crewName;
     private final Map<LocalDate, AttendanceRecord> attendanceRecords;
@@ -50,6 +54,24 @@ public class AttendancePaper {
         if (!attendanceRecords.containsKey(localDate)) {
             throw new IllegalArgumentException("[ERROR] 출석 기록이 존재하지 않습니다.");
         }
+    }
+
+    public List<AttendanceRecord> lookUpAttendanceHistory() {
+        return attendanceRecords.values().stream().toList();
+    }
+
+    public Map<AttendanceStatus, Integer> countAttendanceStatus() {
+        return attendanceRecords.values().stream()
+                .collect(Collectors.groupingBy(
+                        AttendanceRecord::status,
+                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue)
+                ));
+    }
+
+    public Penalty calculatePenalty() {
+        final Map<AttendanceStatus, Integer> countAttendanceStatus = countAttendanceStatus();
+        return Penalty.findByAbsenceCount((countAttendanceStatus.get(AttendanceStatus.ABSENCE)
+                + countAttendanceStatus.get(AttendanceStatus.LATE) / LATES_COUNT_PER_ABSENCE));
     }
 
     public boolean existAttendance(final LocalDate localDate) {
