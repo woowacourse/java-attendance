@@ -44,9 +44,9 @@ public class AttendancePaper implements Comparable<AttendancePaper> {
 
     public AttendanceModification modifyAttendance(final LocalDate localDate, final AttendanceTime attendanceTime) {
         final LocalTime localtime = attendanceTime.getLocalTime();
-        final AttendanceRecord beforeAttendanceRecord = getAttendanceRecordByDate(localDate);
+        final AttendanceRecord beforeAttendanceRecord = attendanceRecords.get(localDate);
         addAttendance(LocalDateTime.of(localDate, localtime));
-        final AttendanceRecord afterAttendanceRecord = getAttendanceRecordByDate(localDate);
+        final AttendanceRecord afterAttendanceRecord = attendanceRecords.get(localDate);
         return new AttendanceModification(beforeAttendanceRecord, afterAttendanceRecord);
     }
 
@@ -77,18 +77,6 @@ public class AttendancePaper implements Comparable<AttendancePaper> {
         return countAttendanceStatus.getOrDefault(AttendanceStatus.ABSENCE, 0) +
                 countAttendanceStatus.getOrDefault(AttendanceStatus.LATE, 0)
                         / LATES_COUNT_PER_ABSENCE;
-    }
-
-    public boolean existAttendance(final LocalDate localDate) {
-        return attendanceRecords.containsKey(localDate);
-    }
-
-    public AttendanceRecord getAttendanceRecordByDate(final LocalDate localDate) {
-        return attendanceRecords.get(localDate);
-    }
-
-    public List<AttendanceRecord> getAttendanceRecords() {
-        return attendanceRecords.values().stream().toList();
     }
 
     @Override

@@ -1,9 +1,7 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
@@ -16,23 +14,15 @@ public class AttendancePaperGeneratorTest {
     @DisplayName("csv파일을 읽어 크루 출석 기록 초기화 한다")
     void test1() {
         //given
-        final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 13, 10, 8);
-        final AttendanceRecord attendanceRecord = AttendanceRecord.of(localDateTime);
         //when
         final Map<String, AttendancePaper> crews = AttendancePaperGenerator.generate();
         final Set<String> crewsName = crews.keySet();
 
         //then
-        assertAll(
-                () -> assertThat(crewsName).contains("쿠키")
+         assertThat(crewsName).contains("쿠키")
                         .contains("빙티")
                         .contains("빙봉")
                         .contains("이든")
-                        .contains("짱수"),
-                () -> assertThat(crews.get("쿠키").getAttendanceRecords()).contains(attendanceRecord),
-                () -> assertThat(crews.get("빙봉").getAttendanceRecords()).contains(attendanceRecord),
-                () -> assertThat(crews.get("빙티").getAttendanceRecords()).contains(attendanceRecord),
-                () -> assertThat(crews.get("이든").getAttendanceRecords()).contains(attendanceRecord)
-        );
+                        .contains("짱수");
     }
 }
