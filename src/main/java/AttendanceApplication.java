@@ -1,4 +1,3 @@
-import components.DtoConverter;
 import components.SavedDataLoader;
 import controller.AttendanceController;
 import view.InputView;
@@ -8,7 +7,7 @@ public class AttendanceApplication {
 
     public static void main(String[] args) {
         AttendanceController attendanceController = new AttendanceController(new SavedDataLoader(), new InputView(),
-                new OutputView(), new DtoConverter());
+                new OutputView());
         attendanceController.run();
     }
 }

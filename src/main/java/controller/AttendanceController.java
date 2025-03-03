@@ -1,6 +1,5 @@
 package controller;
 
-import components.DtoConverter;
 import components.SavedDataLoader;
 import domain.AttendanceBook;
 import domain.AttendanceHistory;
@@ -9,12 +8,14 @@ import domain.AttendanceStatus;
 import domain.Crew;
 import domain.Crews;
 import domain.RiskOfExpulsionStatus;
+import dto.AttendanceRecordDto;
 import dto.RiskOfExpulsionCrewDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import utils.RetryHandler;
 import view.InputView;
 import view.OutputView;
@@ -24,14 +25,12 @@ public class AttendanceController {
     private final SavedDataLoader savedDataLoader;
     private final InputView inputView;
     private final OutputView outputView;
-    private final DtoConverter dtoConverter;
 
     public AttendanceController(final SavedDataLoader savedDataLoader, final InputView inputView,
-                                final OutputView outputView, final DtoConverter dtoConverter) {
+                                final OutputView outputView) {
         this.savedDataLoader = savedDataLoader;
         this.inputView = inputView;
         this.outputView = outputView;
-        this.dtoConverter = dtoConverter;
     }
 
     public void run() {
@@ -81,7 +80,7 @@ public class AttendanceController {
         }
         final AttendanceRecord attendanceRecord = attendanceHistory.attendance(LocalDateTime.of(now(), attendanceTime));
 
-        outputView.printAttendanceRecord(dtoConverter.convertToAttendanceRecordDto(attendanceRecord));
+        outputView.printAttendanceRecord(AttendanceRecordDto.from(attendanceRecord));
     }
 
     private void updateAttendance(final AttendanceBook attendanceBook, final Crews crews) {
@@ -98,8 +97,8 @@ public class AttendanceController {
         final AttendanceRecord afterAttendanceRecord = attendanceHistory.findByDate(
                 now().withDayOfMonth(updateMonthOfDay));
 
-        outputView.printUpdateAttendanceResult(dtoConverter.convertToAttendanceRecordDto(beforeAttendanceRecord),
-                dtoConverter.convertToAttendanceRecordDto(afterAttendanceRecord));
+        outputView.printUpdateAttendanceResult(AttendanceRecordDto.from(beforeAttendanceRecord),
+                AttendanceRecordDto.from(afterAttendanceRecord));
 
     }
 
@@ -115,26 +114,26 @@ public class AttendanceController {
     private AttendanceHistory outputAttendanceRecord(final AttendanceBook attendanceBook, final Crew crew) {
         final AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
         final List<AttendanceRecord> records = attendanceHistory.findAllUntilBeforeToday(now());
-        outputView.printAttendanceRecords(dtoConverter.convertToAttendanceRecordDtos(records));
+        outputView.printAttendanceRecords(AttendanceRecordDto.from(records));
         return attendanceHistory;
     }
 
     private void outputAttendanceStatistics(final AttendanceHistory attendanceHistory) {
         final Map<AttendanceStatus, Integer> statistics = attendanceHistory.calculateAttendanceStatusStatistics(now());
-        outputView.printAttendanceStatistics(dtoConverter.convertToStringStatistics(statistics));
+        outputView.printAttendanceStatistics(this.convertToStringStatistics(statistics));
     }
 
     private void outputRiskOfExpulsion(final AttendanceHistory attendanceHistory) {
         if (attendanceHistory.isRiskOfExpulsion(now())) {
             final RiskOfExpulsionStatus status = attendanceHistory.calculateRiskOfExpulsionStatus(now());
-            outputView.printRiskOfExpulsion(dtoConverter.convertRiskOfExpulsionStatusToString(status));
+            outputView.printRiskOfExpulsion(RiskOfExpulsionCrewDto.convertRiskOfExpulsionStatusToString(status));
         }
     }
 
     private void checkRiskOfExpulsionCrews(final AttendanceBook attendanceBook) {
         final List<AttendanceHistory> attendanceHistories = attendanceBook.calculateRiskOfExpulsionHistory(now());
-        final List<RiskOfExpulsionCrewDto> riskOfExpulsionCrewDtos = dtoConverter.convertToRiskOfExpulsionCrewDtos(
-                attendanceHistories, now());
+        final List<RiskOfExpulsionCrewDto> riskOfExpulsionCrewDtos = RiskOfExpulsionCrewDto.of(attendanceHistories,
+                now());
         outputView.printRiskOfExpulsionCrews(riskOfExpulsionCrewDtos);
     }
 
@@ -151,6 +150,15 @@ public class AttendanceController {
     private Crew inputUpdateCrew(final Crews crews) {
         final String crewName = inputView.readUpdateCrewName();
         return crews.findByName(crewName);
+    }
+
+    private Map<String, Integer> convertToStringStatistics(final Map<AttendanceStatus, Integer> statistics) {
+        return statistics.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        entry -> AttendanceRecordDto.convertAttendanceStatusToString(entry.getKey()),
+                        entry -> entry.getValue())
+                );
     }
 
     private LocalDate now() {
