@@ -37,9 +37,18 @@ public class AttendanceController {
     }
 
     private void modifyAttendance(final AttendanceBook attendanceBook) {
+        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
         String nickname = inputView.readNicknameForModify();
         int dayOfMonth = inputView.readDayForModify();
+        LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
         LocalTime newTime = inputView.readTimeForModify();
+        LocalDateTime newDateTime = LocalDateTime.of(targetDate, newTime);
+
+        CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf(nickname, today);
+        final Attendance prevAttendance = crewAttendance.getAttendanceOn(targetDate);
+        crewAttendance.modify(newDateTime);
+        Attendance newAttendance = crewAttendance.getAttendanceOn(targetDate);
+        resultView.printModifiedResult(prevAttendance, newAttendance);
     }
 
     private void registerAttendance(final AttendanceBook attendanceBook) {

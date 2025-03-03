@@ -17,8 +17,8 @@ public class InputView {
     private static final String ENTER_NICKNAME = "\n닉네임을 입력해 주세요.\n";
     private static final String ENTER_ATTENDANCE_TIME = "등교 시간을 입력해 주세요.\n";
     private static final String ENTER_NICKNAME_FOR_MODIFY = "\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.\n";
-    private static final String ENTER_DAY_FOR_MODIFY = "\n수정하려는 날짜(일)를 입력해 주세요.\n";
-    private static final String ENTER_TIME_FOR_MODIFY = "\n언제로 변경하겠습니까?\n";
+    private static final String ENTER_DAY_FOR_MODIFY = "수정하려는 날짜(일)를 입력해 주세요.\n";
+    private static final String ENTER_TIME_FOR_MODIFY = "언제로 변경하겠습니까?\n";
 
     private final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 

@@ -26,9 +26,18 @@ public class ResultView {
     private static final String WARNING_LEVEL_NOTICE_FORMAT = "\n\n%s 대상자입니다.\n";
     private static final String WARNING_CREWS_HEADER = "\n제적 위험자 조회 결과";
     private static final String WARNING_CREW_FORMAT = "\n- %s: 결석 %d회, 지각 %d회 " + ATTENDANCE_STATUS_FORMAT;
+    private static final String MODIFIED_RESULT_FORMAT = "%s -> %s " + ATTENDANCE_STATUS_FORMAT + " 수정 완료!";
 
     public void printAttendance(final Attendance attendance) {
         System.out.println(System.lineSeparator() + format(attendance));
+    }
+
+    public void printModifiedResult(final Attendance prevAttendance, final Attendance newAttendance) {
+        final String result = String.format(MODIFIED_RESULT_FORMAT,
+                format(prevAttendance),
+                newAttendance.record().time().toString(),
+                newAttendance.status().getDisplayName());
+        System.out.print(System.lineSeparator() + result);
     }
 
     public void printCrewAttendanceHeader(final String nickname) {
@@ -76,7 +85,8 @@ public class ResultView {
         }
     }
 
-    public void printWarningLevel(final AttendanceBook attendanceBook, final String nickname, final LocalDateTime today) {
+    public void printWarningLevel(final AttendanceBook attendanceBook, final String nickname,
+                                  final LocalDateTime today) {
         System.out.printf(WARNING_LEVEL_NOTICE_FORMAT,
                 attendanceBook.getWarningLevelOf(nickname, today).getDisplayName());
     }
@@ -92,7 +102,7 @@ public class ResultView {
                 final Map<AttendanceStatus, Integer> attendanceStatusCounts = entry.getValue()
                         .countAttendanceStatusesBefore(today);
                 final String result = String.format(WARNING_CREW_FORMAT,
-                       entry.getKey().nickname(),
+                        entry.getKey().nickname(),
                         attendanceStatusCounts.get(ABSENT),
                         attendanceStatusCounts.get(LATE),
                         warningLevel.getDisplayName());
