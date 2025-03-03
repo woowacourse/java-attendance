@@ -33,7 +33,9 @@ public class OutputView {
 
             String attendAt = InputParser.parseDateTimeToString(entry.getKey());
             if (attendanceType.equals(AttendanceType.NO_DATA)) {
-                attendAt = "--:--";
+                String parseDate = InputParser.parseDateToString(entry.getKey().toLocalDate());
+                attendAt = parseDate + " --:--";
+
             }
 
             String parseAttendanceType = InputParser.parseAttendanceType(attendanceType);
