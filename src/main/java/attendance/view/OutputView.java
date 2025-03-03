@@ -12,54 +12,70 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OutputView {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
     public void printDate(LocalDate date) {
-        System.out.print(date.format(DateTimeFormatter.ofPattern("\n오늘은 MM월 dd일 E요일입니다. ")));
+        System.out.printf("%n오늘은 %s입니다. ", date.format(DATE_FORMATTER));
     }
 
     public void printAttendance(AttendResult attendResult) {
-        System.out.print(attendResult.attendanceDateTime().format(DateTimeFormatter.ofPattern("\nMM월 dd일 E요일 HH:mm ")));
-        System.out.printf("(%s)%n", attendResult.attendanceType().getKoreanLabel());
+        System.out.printf("%n%s (%s)%n",
+                attendResult.attendanceDateTime().format(DATE_TIME_FORMATTER),
+                attendResult.attendanceType().getKoreanLabel());
     }
 
     public void printEditAttendanceLog(EditResult editResult) {
-        System.out.print(editResult.targetDate().format(DateTimeFormatter.ofPattern("\nMM월 dd일 E요일 ")));
+        StringBuilder message = new StringBuilder();
+        message.append("%n%s ".formatted(editResult.targetDate().format(DATE_FORMATTER)));
         if (editResult.beforeAttendanceTime() == null) {
-            System.out.print("--:-- ");
+            message.append("--:--");
         }
         if (editResult.beforeAttendanceTime() != null) {
-            System.out.print(editResult.beforeAttendanceTime().format(DateTimeFormatter.ofPattern("HH:mm ")));
+            message.append(editResult.beforeAttendanceTime().format(TIME_FORMATTER));
         }
-        System.out.printf("(%s) ", editResult.beforeAttendanceType().getKoreanLabel());
-        System.out.print(editResult.afterAttendanceTime().format(DateTimeFormatter.ofPattern("-> HH:mm ")));
-        System.out.printf("(%s) ", editResult.afterAttendanceType().getKoreanLabel());
-        System.out.printf("수정 완료!%n");
+        message.append(" (%s) -> %s (%s) 수정 완료!%n".formatted(
+                editResult.beforeAttendanceType().getKoreanLabel(),
+                editResult.afterAttendanceTime().format(TIME_FORMATTER),
+                editResult.afterAttendanceType().getKoreanLabel()));
+        System.out.print(message);
     }
 
     public void printAttendanceLogs(Nickname nickname, List<AttendanceLogDto> attendanceLogDtos) {
-        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", nickname);
-        attendanceLogDtos.forEach(this::printAttendanceLog);
-        System.out.println();
+        StringBuilder message = new StringBuilder();
+        message.append("%n이번 달 %s의 출석 기록입니다.%n%n".formatted(nickname));
+        attendanceLogDtos.forEach(attendanceLogDto -> message.append(formatAttendanceLog(attendanceLogDto)));
+        System.out.println(message);
     }
 
-    private void printAttendanceLog(AttendanceLogDto attendanceLogDto) {
+    private String formatAttendanceLog(AttendanceLogDto attendanceLogDto) {
         if (attendanceLogDto.attendanceTime() == null) {
-            System.out.print(
-                    attendanceLogDto.attendanceDate().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:-- ")));
-            System.out.printf("(%s)%n", AttendanceType.ABSENT.getKoreanLabel());
-            return;
+            return "%s --:-- (%s)%n".formatted(
+                    attendanceLogDto.attendanceDate().format(DATE_FORMATTER),
+                    AttendanceType.ABSENT.getKoreanLabel());
         }
-        System.out.print(attendanceLogDto.attendanceDate().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 ")));
-        System.out.print(attendanceLogDto.attendanceTime().format(DateTimeFormatter.ofPattern("HH:mm ")));
-        System.out.printf("(%s)%n", attendanceLogDto.attendanceType().getKoreanLabel());
+        return "%s %s (%s)%n".formatted(
+                attendanceLogDto.attendanceDate().format(DATE_FORMATTER),
+                attendanceLogDto.attendanceTime().format(TIME_FORMATTER),
+                attendanceLogDto.attendanceType().getKoreanLabel());
     }
 
     public void printAttendanceTypeCount(EnumMap<AttendanceType, Integer> count) {
-        Arrays.stream(AttendanceType.values())
-                .forEach(attendanceType ->
-                        System.out.printf("%s: %d회%n", attendanceType.getKoreanLabel(), count.get(attendanceType)));
+        System.out.println(formatAttendanceTypeCount(count));
+    }
+
+    private String formatAttendanceTypeCount(EnumMap<AttendanceType, Integer> count) {
+        return Arrays.stream(AttendanceType.values())
+                .map(attendanceType ->
+                        "%s: %d회".formatted(
+                                attendanceType.getKoreanLabel(),
+                                count.get(attendanceType)))
+                .collect(Collectors.joining("\n"));
     }
 
     public void printWarningLevel(AttendanceWarningLevel attendanceWarningLevel) {
@@ -76,8 +92,18 @@ public class OutputView {
             return;
         }
         System.out.println("\n제적 위험자 조회 결과");
-        warnings.forEach(warning -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
-                warning.nickname(), warning.absentCount(), warning.lateCount(), warning.koreanLabel()));
+        System.out.println(formatWarningList(warnings));
+    }
+
+    private String formatWarningList(List<AttendanceWarning> warnings) {
+        return warnings.stream()
+                .map(warning ->
+                        "- %s: 결석 %d회, 지각 %d회 (%s)".formatted(
+                                warning.nickname(),
+                                warning.absentCount(),
+                                warning.lateCount(),
+                                warning.koreanLabel()))
+                .collect(Collectors.joining("\n"));
     }
 
     public void printError(String errorMessage) {

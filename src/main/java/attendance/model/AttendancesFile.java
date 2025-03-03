@@ -15,7 +15,7 @@ public class AttendancesFile {
     private static final int EXPECTED_COLUMN_COUNT = CSV_HEADER_FORMAT.split(COLUMN_DELIMITER).length;
     private static final int NICKNAME_INDEX = 0;
     private static final int ATTENDANCE_DATE_TIME_INDEX = 1;
-    private static final String DATETIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
+    private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public AttendanceLogs load(String path) {
         try {
@@ -66,7 +66,7 @@ public class AttendancesFile {
 
     private LocalDateTime parseDateTime(String rawDateTime) {
         try {
-            return LocalDateTime.parse(rawDateTime, DateTimeFormatter.ofPattern(DATETIME_FORMAT_PATTERN));
+            return LocalDateTime.parse(rawDateTime, DATETIME_FORMAT);
         } catch (DateTimeParseException e) {
             throw new IllegalStateException("입력된 시간 형식이 올바르지 않습니다. 입력: %s".formatted(rawDateTime));
         }
