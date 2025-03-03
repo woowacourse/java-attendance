@@ -1,6 +1,5 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +7,7 @@ public class AttendanceWorkflow {
     private final AttendanceProcessor attendanceProcessor;
     private final Crews crews;
     private final AttendanceHistories attendanceHistories;
+    private final AttendanceSystemConsole console;
 
     private final Map<FunctionOption, Runnable> ACTION_FOR_OPTION = Map.of(
             FunctionOption.REGISTER_ATTENDANCE, this::registerAttendance,
@@ -17,10 +17,12 @@ public class AttendanceWorkflow {
     );
 
     public AttendanceWorkflow(AttendanceProcessor attendanceProcessor, Crews crews,
-                              AttendanceHistories attendanceHistories) {
+                              AttendanceHistories attendanceHistories,
+                              AttendanceSystemConsole console) {
         this.attendanceProcessor = attendanceProcessor;
         this.crews = crews;
         this.attendanceHistories = attendanceHistories;
+        this.console = console;
     }
 
     public void run() {
@@ -33,7 +35,7 @@ public class AttendanceWorkflow {
 
     private void processAttendanceSystem() {
         while (true) {
-            FunctionOption functionOption = getFunctionOption();
+            FunctionOption functionOption = console.getFunctionOption();
 
             if (functionOption == FunctionOption.QUIT) {
                 break;
@@ -45,7 +47,7 @@ public class AttendanceWorkflow {
 
     private void registerAttendance() {
         Crew crew = getRequestedCrew();
-        LocalDateTime attendAt = LocalDateTime.of(getDateOfToday(), readAttendanceTime());
+        LocalDateTime attendAt = LocalDateTime.of(console.getDateOfToday(), console.readAttendanceTime());
 
         AttendanceHistory attendanceHistory = attendanceProcessor.registerNewAttendance(crew, attendAt);
         OutputView.printRegisteredHistory(attendanceHistory);
@@ -53,9 +55,9 @@ public class AttendanceWorkflow {
 
     private void updateAttendance() {
         Crew crew = getRequestedCrewToUpdate();
-        LocalDate requestedDate = readAttendanceDateToUpdate();
+        LocalDate requestedDate = console.readAttendanceDateToUpdate();
 
-        LocalDateTime newAttendanceAt = LocalDateTime.of(requestedDate, readAttendanceTimeToUpdate());
+        LocalDateTime newAttendanceAt = LocalDateTime.of(requestedDate, console.readAttendanceTimeToUpdate());
 
         AttendanceHistory oldHistory = attendanceHistories.findByCrewAndDate(crew, requestedDate);
         AttendanceHistory newHistory = attendanceProcessor.updateRegisteredAttendance(oldHistory, crew,
@@ -66,7 +68,7 @@ public class AttendanceWorkflow {
 
     private void checkAttendanceHistoryOfCrew() {
         Crew crew = getRequestedCrew();
-        LocalDate date = getDateOfToday();
+        LocalDate date = console.getDateOfToday();
 
         Map<LocalDateTime, AttendanceType> historiesOfCrew = attendanceProcessor.findAllHistoriesOfCrew(crew, date);
         OutputView.printAttendanceHistories(crew, historiesOfCrew);
@@ -76,34 +78,10 @@ public class AttendanceWorkflow {
     }
 
     private void checkExpulsionCandidates() {
-        LocalDate date = getDateOfToday();
+        LocalDate date = console.getDateOfToday();
 
         List<PenaltyResultOfCrew> expulsionCandidates = attendanceProcessor.findExpulsionCandidates(date);
         OutputView.printExpulsionCandidates(expulsionCandidates);
-    }
-
-    private LocalDate getDateOfToday() {
-        return LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
-    }
-
-    private LocalDate getDateOfRequestedDate(int date) {
-        return LocalDate.of(2024, 12, date);
-    }
-
-    private LocalTime readAttendanceTime() {
-        String rawAttendanceTime = InputView.readAttendanceTime();
-        return InputParser.parseTime(rawAttendanceTime);
-    }
-
-    private LocalTime readAttendanceTimeToUpdate() {
-        String rawNewAttendanceTime = InputView.readNewAttendanceTime();
-        return InputParser.parseTime(rawNewAttendanceTime);
-    }
-
-    private LocalDate readAttendanceDateToUpdate() {
-        String rawRequestDate = InputView.readUpdateRequestDate();
-        int requestDate = InputParser.parseInteger(rawRequestDate);
-        return getDateOfRequestedDate(requestDate);
     }
 
     private Crew getRequestedCrew() {
@@ -114,10 +92,5 @@ public class AttendanceWorkflow {
     private Crew getRequestedCrewToUpdate() {
         String name = InputView.readNameToUpdate();
         return crews.findCrewByName(name);
-    }
-
-    private FunctionOption getFunctionOption() {
-        String optionSign = InputView.readOption();
-        return FunctionOption.findBySign(optionSign);
     }
 }
