@@ -75,9 +75,38 @@ public class CrewAttendanceTest {
         assertThat(newAttendance).isEqualTo(Attendance.of(newDateTime));
     }
 
-    @DisplayName("전날까지의 출석, 지각, 결석 횟수 계산 테스트")
+    @DisplayName("전날까지의 출석 상태 기록 조회 테스트")
     @Test
     void test5() {
+        LocalDateTime today = LocalDateTime.of(2024, 12, 16, 13, 0);
+
+        List<LocalDateTime> attendances = List.of(
+                LocalDateTime.of(2024, 12, 2, 13, 0), //출석
+                LocalDateTime.of(2024, 12, 3, 10, 7), //지각
+                LocalDateTime.of(2024, 12, 4, 10, 2), //출석
+                LocalDateTime.of(2024, 12, 5, 10, 6), //지각
+                LocalDateTime.of(2024, 12, 6, 10, 1), //출석
+                LocalDateTime.of(2024, 12, 10, 10, 3), //출석
+                LocalDateTime.of(2024, 12, 13, 10, 2), //출석
+                today
+        ); //결석 3회
+
+        CrewAttendance crewAttendance = new CrewAttendance();
+        for (LocalDateTime attendance : attendances) {
+            crewAttendance.add(attendance);
+        }
+
+        Map<LocalDate, AttendanceStatus> attendanceStatuses = crewAttendance.getAttendanceStatusesBefore(today);
+
+        assertThat(attendanceStatuses).hasSize(10);
+        assertThat(attendanceStatuses.get(LocalDate.of(2024, 12, 9))).isEqualTo(AttendanceStatus.ABSENT);
+        assertThat(attendanceStatuses.get(LocalDate.of(2024, 12, 11))).isEqualTo(AttendanceStatus.ABSENT);
+        assertThat(attendanceStatuses.get(LocalDate.of(2024, 12, 12))).isEqualTo(AttendanceStatus.ABSENT);
+    }
+
+    @DisplayName("전날까지의 출석, 지각, 결석 횟수 계산 테스트")
+    @Test
+    void test6() {
         LocalDateTime today = LocalDateTime.of(2024, 12, 16, 13, 0);
 
         List<LocalDateTime> attendances = List.of(
