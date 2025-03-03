@@ -1,34 +1,53 @@
 package domain;
 
+import static domain.AttendancePolicy.*;
+
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Objects;
 
-public record Attendance(LocalDateTime dateAndTime) {
-    private static final String HOLIDAY_MESSAGE = "주말 또는 공휴일은 캠퍼스 휴장입니다.";
+public class Attendance {
+    private final LocalDateTime dateAndTime;
 
-    public Attendance {
-        validateRunningTime(dateAndTime);
+    public Attendance(LocalDateTime dateAndTime) {
+        validateHoliday(dateAndTime.toLocalDate());
+        validateRunningTime(dateAndTime.toLocalTime());
+        this.dateAndTime = dateAndTime;
     }
 
-    public int getDayOfMonth() {
-        return dateAndTime.getDayOfMonth();
+    public Attendance(LocalDate date, LocalTime time) {
+        validateHoliday(date);
+        validateRunningTime(time);
+        this.dateAndTime = LocalDateTime.of(date, time);
     }
 
-    public Status getStatus() {
-        return Status.of(dateAndTime);
+    public LocalDate getDate() {
+        return dateAndTime.toLocalDate();
     }
 
-    public boolean isEqualDate(LocalDateTime targetDateAndTime) {
-        return dateAndTime.toLocalDate()
-                .isEqual(targetDateAndTime.toLocalDate());
+    public DayOfWeek getDayOfWeek() {
+        return dateAndTime.getDayOfWeek();
     }
 
-    private void validateRunningTime(LocalDateTime dateAndTime) {
-        DayOfWeek dayOfWeek = dateAndTime.getDayOfWeek();
-        if (dayOfWeek == DayOfWeek.SATURDAY
-                || dayOfWeek == DayOfWeek.SUNDAY
-                || dateAndTime.getDayOfMonth() == 25) {
-            throw new IllegalArgumentException(HOLIDAY_MESSAGE);
+    public LocalTime getTime() {
+        return dateAndTime.toLocalTime();
+    }
+
+    public boolean isSameDateWith(Attendance attendance) {
+        return dateAndTime.toLocalDate().equals(attendance.getDate());
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
         }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        Attendance other = (Attendance) object;
+        return Objects.equals(dateAndTime, other.dateAndTime);
     }
 }

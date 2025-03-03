@@ -1,4 +1,10 @@
 package dto;
 
-public record AttendanceCount(int attendanceCount, int lateCount, int absentCount) {
+import domain.CrewName;
+
+public record AttendanceCount(CrewName crewName,
+                              int attendCount,
+                              int lateCount,
+                              int absentCount,
+                              int consideredAbsentCount) {
 }

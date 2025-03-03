@@ -1,6 +1,9 @@
 package view;
 
-import domain.AttendanceBook;
+import static util.Constants.ERROR_HEADER;
+import static util.Constants.TIME_FORMAT;
+import static util.Constants.TODAY;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -8,48 +11,40 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class InputValidator {
-    private static final String MENU_REGEX = "[1234Qq]";
-    private static final String TIME_FORMAT = "HH:mm";
-    private static final LocalTime START_TIME = LocalTime.of(8, 0);
-    private static final LocalTime END_TIME = LocalTime.of(23, 0);
+    private static final String EMPTY_INPUT_ERROR = "입력된 것이 없습니다.";
+    private static final String TIME_FORMAT_ERROR = "시간 형식이 올바르지 않습니다.";
+    private static final String INVALID_DATE_ERROR = "날짜 형식이 올바르지 않습니다.";
 
-    private static final String MENU_NOT_EXISTED = "존재하는 메뉴 번호를 입력해주세요.";
-    private static final String NAME_NOT_EXISTED = "존재하지 않는 닉네임입니다.";
-    private static final String TIME_FORMAT_NOT_VALID = "올바르지 않은 시간 형식입니다.";
-    private static final String RUNNING_TIME_NOT_VALID = "캠퍼스 운영 시간이 아닙니다.";
-    private static final String DAY_NOT_VALID = "유효하지 않은 날짜(일) 입니다.";
-
-    public static void validateMenu(String menu) {
-        if (!menu.matches(MENU_REGEX)) {
-            throw new IllegalArgumentException(MENU_NOT_EXISTED);
+    public static void validateNotEmpty(String input) {
+        if(input.isBlank()) {
+            throw new IllegalArgumentException(ERROR_HEADER + EMPTY_INPUT_ERROR);
         }
     }
 
-    public static void validateName(String name, AttendanceBook attendanceBook) {
-        if (!attendanceBook.contains(name)) {
-            throw new IllegalArgumentException(NAME_NOT_EXISTED);
-        }
-    }
-
-    public static void validateTimeFormat(String time) {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
-        LocalTime localTime;
+    public static void validateTime(String time) {
+        validateNotEmpty(time);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
         try {
-            localTime = LocalTime.parse(time, timeFormatter);
+            LocalTime.parse(time, dateTimeFormatter);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(TIME_FORMAT_NOT_VALID);
-        }
-        if (localTime.isBefore(START_TIME) || localTime.isAfter(END_TIME)) {
-            throw new IllegalArgumentException(RUNNING_TIME_NOT_VALID);
+            throw new IllegalArgumentException(ERROR_HEADER + TIME_FORMAT_ERROR);
         }
     }
 
-    public static void validateDate(String dateInput) {
+    public static void validateDay(String day) {
+        validateNotEmpty(day);
         try {
-            int date = Integer.parseInt(dateInput);
-            LocalDate.of(2024, 12, date);
-        } catch (NumberFormatException | DateTimeException e) {
-            throw new IllegalArgumentException(DAY_NOT_VALID);
+            int dayNumber = Integer.parseInt(day);
+            validateNotFuture(dayNumber);
+            LocalDate.of(TODAY.getYear(), TODAY.getMonth(), dayNumber);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException(ERROR_HEADER + INVALID_DATE_ERROR);
+        }
+    }
+
+    private static void validateNotFuture(int day) {
+        if(day > TODAY.getDayOfMonth()) {
+            throw new IllegalArgumentException(ERROR_HEADER + INVALID_DATE_ERROR);
         }
     }
 }

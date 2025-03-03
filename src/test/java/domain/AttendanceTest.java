@@ -1,79 +1,69 @@
 package domain;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+import static util.Constants.ERROR_HEADER;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import view.InputValidator;
 
 public class AttendanceTest {
-    @Nested
-    @DisplayName("화수목금")
-    class NotMonday {
-        @DisplayName("출석 처리를 할 수 있다.")
-        @Test
-        void test2() {
-            Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 3, 9, 55));
-            assertThat(attendance.getStatus()).isEqualTo(Status.ATTEND);
-        }
+    LocalDate validDate = LocalDate.of(2024, 12, 3);
+    LocalTime validTime = LocalTime.of(10, 0);
 
-        @DisplayName("지각 처리를 할 수 있다.")
-        @Test
-        void test3() {
-            Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 3, 10, 6));
-            assertThat(attendance.getStatus()).isEqualTo(Status.LATE);
-        }
+    @DisplayName("출석 날짜와 시간을 입력하여 출석 기록을 저장한다.")
+    @Test
+    void test1() {
+        assertDoesNotThrow(() -> new Attendance(
+                LocalDateTime.of(validDate, validTime)));
 
-        @DisplayName("결석 처리를 할 수 있다.")
-        @Test
-        void test4() {
-            Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 3, 10, 31));
-            assertThat(attendance.getStatus()).isEqualTo(Status.ABSENCE);
-        }
     }
 
-    @Nested
-    @DisplayName("월")
-    class Monday {
-        @DisplayName("출석 처리를 할 수 있다.")
-        @Test
-        void test2() {
-            Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 2, 13, 5));
-            assertThat(attendance.getStatus()).isEqualTo(Status.ATTEND);
-        }
+    @DisplayName("캠퍼스 운영시간 전이면 예외가 발생한다.")
+    @Test
+    void test2() {
+        LocalTime beforeRunningTime = LocalTime.of(7, 59);
 
-        @DisplayName("지각 처리를 할 수 있다.")
-        @Test
-        void test3() {
-            Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 2, 13, 30));
-            assertThat(attendance.getStatus()).isEqualTo(Status.LATE);
-        }
-
-        @DisplayName("결석 처리를 할 수 있다.")
-        @Test
-        void test4() {
-            Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 2, 13, 31));
-            assertThat(attendance.getStatus()).isEqualTo(Status.ABSENCE);
-        }
+        assertThrowsIllegalArgumentException(
+                () -> new Attendance(validDate, beforeRunningTime));
     }
 
-    @Nested
-    @DisplayName("주말 및 공휴일 출석")
-    class HollyDays {
-        @Test
-        @DisplayName("성탄절은 공휴일이라 출석을 시도할 경우 예외가 발생한다.")
-        void test5() {
-            assertThatThrownBy(() -> new Attendance(LocalDateTime.of(2024, 12, 25, 9, 55)))
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
+    @DisplayName("캠퍼스 운영시간 후이면 예외가 발생한다.")
+    @Test
+    void test3() {
+        LocalTime afterRunningTime = LocalTime.of(7, 59);
 
-        @Test
-        @DisplayName("주말에 출석을 시도할 경우 예외가 발생한다.")
-        void test6() {
-            assertThatThrownBy(() -> new Attendance(LocalDateTime.of(2024, 12, 8, 9, 55)))
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
+        assertThrowsIllegalArgumentException(
+                () -> new Attendance(validDate, afterRunningTime));
+    }
 
+    @DisplayName("주말을 입력할 경우 예외가 발생한다.")
+    @Test
+    void test4() {
+        LocalDate weekend = LocalDate.of(2024, 12, 7);
+
+        assertThrowsIllegalArgumentException(
+                () -> new Attendance(weekend, validTime));
+    }
+
+    @DisplayName("공휴일을 입력할 경우 예외가 발생한다.")
+    @Test
+    void test5() {
+        LocalDate holiday = LocalDate.of(2024, 12, 25);
+
+        assertThrowsIllegalArgumentException(
+                () -> new Attendance(holiday, validTime));
+    }
+
+    void assertThrowsIllegalArgumentException(ThrowingCallable throwingCallable) {
+        assertThatThrownBy(throwingCallable)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ERROR_HEADER);
     }
 }

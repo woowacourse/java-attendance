@@ -2,86 +2,66 @@ package view;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static util.Constants.ERROR_HEADER;
 
-import domain.AttendanceBook;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class InputValidatorTest {
-    @DisplayName("기능 선택을 위해 [1, 2, 3, 4, Q(q)]의 문자를 입력할 시 정상 동작한다.")
+    @DisplayName("공백이 입력될 경우 예외가 발생한다.")
     @ParameterizedTest
-    @ValueSource(strings = {"1", "2", "3", "4", "Q", "q"})
-    void test1(String menu) {
-        assertDoesNotThrow(() -> InputValidator.validateMenu(menu));
+    @ValueSource(strings = {"", " "})
+    void test5(String validSelectedMenu) {
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateNotEmpty(validSelectedMenu));
     }
 
-    @DisplayName("기능 선택을 위해 [1, 2, 3, 4, Q(q)]의 문자를 입력할 시 예외가 발생한다.")
+    @DisplayName("시간 형식이 올바를 경우 정상적으로 검증을 마친다.")
     @ParameterizedTest
-    @ValueSource(strings = {"5", "a", "2200000000", "", " "})
-    void test2(String menu) {
-        assertThatThrownBy(() -> InputValidator.validateMenu(menu))
-                .isInstanceOf(IllegalArgumentException.class);
+    @ValueSource(strings = {"09:59", "10:00", "08:00", "23:00"})
+    void test6(String validTime) {
+        assertDoesNotThrow(
+                () -> InputValidator.validateTime(validTime));
     }
 
-    @DisplayName("존재하는 닉네임을 입력할 시 정상 동작한다.")
-    @Test
-    void test3() {
-        String name = "미미";
 
-        AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.enter(name);
-
-        assertDoesNotThrow(() -> InputValidator.validateName(name, attendanceBook));
-    }
-
-    @DisplayName("없는 닉네임을 입력할 시 예외가 발생한다.")
+    @DisplayName("시간 형식이 올바르지 않을 경우 예외가 발생한다.")
     @ParameterizedTest
-    @ValueSource(strings = {"없는이름", "", " "})
-    void test4() {
-        AttendanceBook attendanceBook = new AttendanceBook();
-
-        assertThatThrownBy(() -> InputValidator.validateName("없는 이름", attendanceBook));
+    @ValueSource(strings = {"9:59","a", "1", "10:3", "10;10"})
+    void test1(String invalidTime) {
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateTime(invalidTime));
     }
 
-    @DisplayName("시간을 hh:mm의 포맷에 맞게 입력한 경우 정상 동작한다.")
+    @DisplayName("날짜 형식이 올바를 경우 정상적으로 검증을 마친다.")
     @ParameterizedTest
-    @ValueSource(strings = {"09:59", "13:00"})
-    void test5(String time) {
-        assertDoesNotThrow(() -> InputValidator.validateTimeFormat(time));
+    @ValueSource(strings = {"2"})
+    void test8(String validDay) {
+        assertDoesNotThrow(
+                () -> InputValidator.validateDay(validDay));
     }
 
-    @DisplayName("시간을 hh:mm의 포맷에 맞지 않게 입력한 경우 예외가 발생한다.")
+    @DisplayName("날짜 형식이 올바르지 않을 경우 예외가 발생한다.")
     @ParameterizedTest
-    @ValueSource(strings = {"9:59", "", " "})
-    void test6(String time) {
-        assertThatThrownBy(() -> InputValidator.validateTimeFormat(time));
+    @ValueSource(strings = {"32", "0"})
+    void test3(String invalidDay) {
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateDay(invalidDay));
     }
 
-    @DisplayName("입력 시간이 캠퍼스 운영 시간 전인 경우 예외가 발생한다.")
-    @Test
-    void test7() {
-        assertThatThrownBy(() -> InputValidator.validateTimeFormat("07:59"));
-    }
-
-    @DisplayName("입력 시간이 캠퍼스 운영 시간 후인 경우 예외가 발생한다.")
-    @Test
-    void test8() {
-        assertThatThrownBy(() -> InputValidator.validateTimeFormat("23:01"));
-    }
-
-    @DisplayName("수정하려는 날짜(일)가 유효한 날짜일 경우 정상 동작한다.")
+    @DisplayName("오늘 이후의 날짜일 경우 예외가 발생한다.")
     @ParameterizedTest
-    @ValueSource(strings = {"1", "01", "31"})
-    void test9(String date) {
-        assertDoesNotThrow(() -> InputValidator.validateDate(date));
+    @ValueSource(strings = {"15"})
+    void test4(String invalidDay) {
+        assertThrowsIllegalArgumentException(
+                () -> InputValidator.validateDay(invalidDay));
     }
 
-    @DisplayName("수정하려는 날짜(일)가 없는 날짜인 경우 예외가 발생한다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"0", "", " ", "32", "a"})
-    void test10(String date) {
-        assertThatThrownBy(() -> InputValidator.validateTimeFormat(date));
+    void assertThrowsIllegalArgumentException(ThrowingCallable throwingCallable) {
+        assertThatThrownBy(throwingCallable)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ERROR_HEADER);
     }
 }

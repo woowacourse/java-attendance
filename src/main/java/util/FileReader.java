@@ -1,50 +1,70 @@
 package util;
 
-import domain.AttendanceBook;
+import static util.Constants.*;
+
+import domain.Attendance;
+import domain.AttendanceRecord;
+import domain.CrewName;
+import dto.InitialInformation;
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class FileReader {
-    private static final String PATH = "src/main/attendance.csv";
-    private static final String PATH_NOT_EXISTED = "파일 경로가 유효하지 않습니다.";
-    private static final String NAME_UNIT = ",";
-    private static final String DATE_UNIT = " ";
+    private static final String FILE_PATH_INVALID_ERROR = "파일 경로가 유효하지 않습니다.";
+    private static final String FILE_PATH = "src/main/java/attendances.csv";
+    private static final String PARSE_UNIT = " ";
+    private static final int NAME_INDEX = 0;
+    private static final int DATE_INDEX = 1;
+    private static final int TIME_INDEX = 2;
 
-    public static AttendanceBook readExistedAttendanceData() {
-        AttendanceBook attendanceBook = new AttendanceBook();
-        try {
-            java.io.FileReader fileReader = new java.io.FileReader(PATH);
-            Scanner scanner = new Scanner(fileReader);
-            readPerLine(attendanceBook, scanner);
-        } catch (FileNotFoundException e) {
-            System.out.println(PATH_NOT_EXISTED);
-        }
-        return attendanceBook;
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private final Map<CrewName, AttendanceRecord> initialInformation;
+
+    public FileReader() {
+        this.initialInformation = new HashMap<>();
     }
 
-    private static void readPerLine(AttendanceBook attendanceBook, Scanner scanner) {
+    public InitialInformation readAttendanceData() {
+        Scanner scanner = initializeReader();
         while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            String crewName = line.split(NAME_UNIT)[0];
-            addNewCrewWhenNotExisted(attendanceBook, crewName);
-            initializeCrewInfo(attendanceBook, line, crewName);
+            String[] nameAndDateAndTime = scanner.nextLine().split(PARSE_UNIT);
+            CrewName crewName = new CrewName(nameAndDateAndTime[NAME_INDEX]);
+            LocalDate date = LocalDate.parse(nameAndDateAndTime[DATE_INDEX], DateTimeFormatter.ofPattern(DATE_FORMAT));
+            LocalTime time = LocalTime.parse(nameAndDateAndTime[TIME_INDEX], DateTimeFormatter.ofPattern(TIME_FORMAT));
+            enterAttendance(crewName, date, time);
         }
+        return new InitialInformation(initialInformation);
     }
 
-    private static void addNewCrewWhenNotExisted(AttendanceBook attendanceBook, String name) {
-        if (!attendanceBook.contains(name)) {
-            attendanceBook.enter(name);
+    private Scanner initializeReader() {
+        Scanner scanner;
+        try {
+            scanner = new Scanner(new File(FILE_PATH));
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException(ERROR_HEADER + FILE_PATH_INVALID_ERROR);
         }
+        return scanner;
     }
 
-    private static void initializeCrewInfo(AttendanceBook attendanceBook, String line, String name) {
-        String[] dateAndTime = line.split(NAME_UNIT)[1].split(DATE_UNIT);
-        LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(dateAndTime[0]),
-                Integer.parseInt(dateAndTime[1]),
-                Integer.parseInt(dateAndTime[2]),
-                Integer.parseInt(dateAndTime[3]),
-                Integer.parseInt(dateAndTime[4]));
-        attendanceBook.add(name, localDateTime);
+    private void enterAttendance(CrewName crewName, LocalDate date, LocalTime time) {
+        Attendance attendance = new Attendance(date, time);
+        AttendanceRecord existedAttendanceRecord = initialInformation.get(crewName);
+        if (existedAttendanceRecord == null) {
+            initialInformation.put(crewName, initializeAttendanceRecord(attendance));
+            return;
+        }
+        existedAttendanceRecord.add(attendance);
+    }
+
+    private AttendanceRecord initializeAttendanceRecord(Attendance attendance) {
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.add(attendance);
+        return attendanceRecord;
     }
 }

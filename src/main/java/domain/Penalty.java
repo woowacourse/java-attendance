@@ -1,33 +1,37 @@
 package domain;
 
-import static util.Constants.*;
+import dto.AttendanceCount;
 
 public enum Penalty {
     EXPULSION("제적"),
-    INTERVIEW("면담"),
+    COUNSELING("면담"),
     WARNING("경고"),
-    NONE("비대상자");
+    NONE("X");
 
-    private final String message;
+    private static final int EXPULSION_CONDITION = 6;
+    private static final int COUNSELING_CONDITION = 3;
+    private static final int WARNING_CONDITION = 2;
 
-    Penalty(String message) {
-        this.message = message;
+    private final String expression;
+
+    Penalty(String expression) {
+        this.expression = expression;
     }
 
-    public static Penalty from(int absentCount) {
-        if (absentCount > EXPULSION_COUNT) {
+    public static Penalty from(AttendanceCount attendanceCount) {
+        if (attendanceCount.consideredAbsentCount() >= EXPULSION_CONDITION) {
             return EXPULSION;
         }
-        if (absentCount >= INTERVIEW_COUNT) {
-            return INTERVIEW;
+        if (attendanceCount.consideredAbsentCount() >= COUNSELING_CONDITION) {
+            return COUNSELING;
         }
-        if (absentCount == WARNING_COUNT) {
+        if (attendanceCount.consideredAbsentCount() == WARNING_CONDITION) {
             return WARNING;
         }
         return NONE;
     }
 
-    public String getMessage() {
-        return message;
+    public String getExpression() {
+        return expression;
     }
 }

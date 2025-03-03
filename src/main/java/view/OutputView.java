@@ -1,131 +1,101 @@
 package view;
 
 import domain.Attendance;
-import domain.AttendanceBook;
-import domain.AttendanceHistory;
-import domain.Status;
+import domain.AttendanceStatus;
 import domain.Penalty;
-import dto.AttendanceData;
-import dto.ModifyResult;
 import dto.AttendanceCount;
+import dto.AttendanceHistory;
+import dto.AttendanceLog;
+import dto.ModifyingResult;
+import dto.PenaltyCrewsInformation;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 public class OutputView {
-    private final LocalDate today;
-
-    public OutputView(LocalDate today) {
-        this.today = today;
+    public void showAttendanceResult(Attendance attendance) {
+        System.out.println("\n" + formatAttendance(attendance) + "\n");
     }
 
-    public void printAttendanceResult(Attendance attendance) {
-        System.out.println("\n" + formatDate(attendance.dateAndTime()) + "\n");
+    public void showModifyingResult(ModifyingResult modifyingResult) {
+        System.out.println("\n" + formatAttendance(modifyingResult.originalAttendance()) + " -> " +
+                formatTime(modifyingResult.modifiedAttendance()) + " " +
+                formatStatus(modifyingResult.modifiedAttendance()) + " 수정 완료!\n"
+        );
     }
 
-    public void printModifiedAttendance(ModifyResult modifyResult) {
-        LocalDateTime originalDateAndTime = modifyResult.getOriginalDateAndTime();
-        LocalDateTime newDateAndTime = modifyResult.getNewDateAndTime();
-
-        String originalOutput = formatDate(originalDateAndTime);
-        String newOutput = formatTimeAndState(newDateAndTime);
-
-        System.out.println("\n" + originalOutput
-                + " -> "
-                + newOutput
-                + " 수정 완료!" + "\n");
+    public void showAttendanceHistory(AttendanceHistory attendanceHistory) {
+        AttendanceCount attendanceCount = attendanceHistory.attendanceCount();
+        AttendanceLog attendanceLog = attendanceHistory.attendanceLog();
+        System.out.println("\n이번 달 " + attendanceCount.crewName().name() + "의 출석 기록입니다.\n");
+        for (Attendance attendance : attendanceLog.sortedAttendanceLog()) {
+            System.out.println(formatAttendance(attendance));
+        }
+        showCount(attendanceCount);
+        showPenalty(attendanceCount);
     }
 
-    public void printAttendanceHistory(AttendanceBook attendanceBook, String name) {
-        System.out.println("\n이번 달 " + name + "의 출석 기록입니다.\n");
-
-        AttendanceData attendanceData = attendanceBook.getAttendanceData(name, today);
-        List<Attendance> sortedAttendanceData = getSortedAttendanceData(attendanceData);
-        AttendanceCount attendanceCount = Status.getCount(attendanceData);
-
-        System.out.println(formatHistory(sortedAttendanceData) + "\n" +
-                formatCount(attendanceCount) + "\n" +
-                formatPenalty(attendanceCount));
+    public void showCount(AttendanceCount attendanceCount) {
+        System.out.println("\n" +
+                "출석: " + attendanceCount.attendCount() + "회\n" +
+                "지각: " + attendanceCount.lateCount() + "회\n" +
+                "결석: " + attendanceCount.absentCount() + "회\n");
     }
 
-    public void printPenaltyCrew(AttendanceBook attendanceBook) {
+    public void showPenalty(AttendanceCount attendanceCount) {
+        Penalty penalty = Penalty.from(attendanceCount);
+        if (penalty != Penalty.NONE) {
+            System.out.println(penalty.getExpression() + " 대상자입니다.\n");
+        }
+    }
+
+    public void showPenaltyCrews(PenaltyCrewsInformation penaltyCrewsInformation) {
         System.out.println("\n제적 위험자 조회 결과");
-        System.out.println(formatPenaltyInfo(attendanceBook));
-    }
-
-    private String formatHistory(List<Attendance> sortedAttendanceData) {
-        return sortedAttendanceData.stream()
-                .map(attendance -> formatDate(attendance.dateAndTime()))
-                .collect(Collectors.joining("\n"));
-    }
-
-    private List<Attendance> getSortedAttendanceData(AttendanceData attendanceData) {
-        return attendanceData.value()
-                .stream()
-                .sorted(Comparator.comparing(Attendance::getDayOfMonth))
-                .toList();
-    }
-
-    private String formatStatus(Entry<String, AttendanceHistory> data) {
-        AttendanceHistory attendanceHistory = data.getValue();
-        String nameAndCount = data.getKey() + ": "
-                + "결석 " + attendanceHistory.getOriginalAbsentCount() + "회, "
-                + "지각 " + attendanceHistory.getLateCount() + "회 ";
-        Penalty penalty = Penalty.from(attendanceHistory.getAbsentCount());
-        if (penalty == Penalty.NONE) {
-            return nameAndCount;
+        for (AttendanceCount attendanceCount : penaltyCrewsInformation.sortedPenaltyCrewsInformation()) {
+            showPenaltyCrew(attendanceCount);
         }
-        nameAndCount += "(" + penalty.getMessage() + ")";
-        return nameAndCount;
+        System.out.println();
     }
 
-    private String formatCount(AttendanceCount attendanceCount) {
-        return "\n출석: " + attendanceCount.attendanceCount() + "회\n"
-                + "지각: " + attendanceCount.lateCount() + "회\n"
-                + "결석: " + attendanceCount.absentCount() + "회\n";
-    }
-
-    private String formatPenalty(AttendanceCount attendanceCount) {
-        Penalty penalty = Penalty.from(attendanceCount.absentCount());
-        if (penalty == Penalty.NONE) {
-            return "";
-        }
-        return penalty.getMessage() + " 대상자입니다.\n";
-    }
-
-    public void printExceptionMessage(String message) {
+    public void showErrorMessage(String message) {
         System.out.println(message);
     }
 
-    private String formatDate(LocalDateTime dateAndTime) {
-        return dateAndTime.format(DateTimeFormatter.ofPattern("MM월 dd일 "))
-                + dateAndTime.getDayOfWeek()
-                .getDisplayName(TextStyle.FULL, Locale.KOREAN) + " "
-                + formatTimeAndState(dateAndTime);
+    private void showPenaltyCrew(AttendanceCount attendanceCount) {
+        if (Penalty.from(attendanceCount) == Penalty.NONE) {
+            return;
+        }
+        System.out.println("- " + attendanceCount.crewName().name() + ": " +
+                "결석 " + attendanceCount.absentCount() + "회, " +
+                "지각 " + attendanceCount.lateCount() + "회 " +
+                "(" + Penalty.from(attendanceCount).getExpression() + ")"
+        );
     }
 
-    private String formatTimeAndState(LocalDateTime dateAndTime) {
-        Status status = Status.of(dateAndTime);
-        if (status == Status.ABSENCE) {
-            return "--:-- " + "(" + status.getMessage() + ")";
-        }
-        return dateAndTime.format(DateTimeFormatter.ofPattern(
-                "HH:mm ", Locale.KOREAN)) + "(" + status.getMessage() + ")";
+    private String formatAttendance(Attendance attendance) {
+        return formatDate(attendance.getDate()) + " "
+                + formatDayOfWeek(attendance.getDate()) + " "
+                + formatTime(attendance) + " "
+                + formatStatus(attendance);
     }
 
-    private String formatPenaltyInfo(AttendanceBook attendanceBook) {
-        StringBuilder result = new StringBuilder();
-        for (Entry<String, AttendanceHistory> data : attendanceBook.getSorted()) {
-            if (Penalty.from(data.getValue().getAbsentCount()) != Penalty.NONE) {
-                result.append("- ").append(formatStatus(data)).append("\n");
-            }
+    private String formatDate(LocalDate date) {
+        return date.format(DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN));
+    }
+
+    private String formatDayOfWeek(LocalDate date) {
+        return date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+    }
+
+    private String formatTime(Attendance attendance) {
+        if (AttendanceStatus.isAbsentStatus(AttendanceStatus.from(attendance))) {
+            return "--:--";
         }
-        return result.toString();
+        return attendance.getTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    private String formatStatus(Attendance attendance) {
+        return "(" + AttendanceStatus.from(attendance).getExpression() + ")";
     }
 }
