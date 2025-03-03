@@ -14,8 +14,8 @@ import view.InputView;
 import view.OutputView;
 
 public class Controller {
-    private static final LocalDate today = LocalDate.of(2024, 12, 18);
-    private static final Path path = Path.of("src", "main", "resources", "attendances.csv");
+    private static final LocalDate TODAY = LocalDate.of(2024, 12, 18);
+    private static final Path PATH = Path.of("src", "main", "resources", "attendances.csv");
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -26,7 +26,7 @@ public class Controller {
     }
 
     public void runAttendanceSystem() {
-        AttendanceBook attendanceBook = new AttendanceBook(new AttendancesFile().loadInitialAttendances(path, today));
+        AttendanceBook attendanceBook = new AttendanceBook(new AttendancesFile().loadInitialAttendances(PATH, TODAY));
         try {
             runMenuOption(attendanceBook);
         } catch (UnsupportedOperationException ex) {
@@ -40,7 +40,7 @@ public class Controller {
 
     private void runMenuOption(AttendanceBook attendanceBook) {
         while (true) {
-            MenuOption menuOption = MenuOption.selectOption(inputView.readMenuOption(today));
+            MenuOption menuOption = MenuOption.selectOption(inputView.readMenuOption(TODAY));
             if (menuOption == MenuOption.QUIT) {
                 return;
             }
@@ -61,10 +61,10 @@ public class Controller {
 
     private void runCheckAttendance(AttendanceBook attendanceBook) {
         String nickname = inputView.readCheckAttendanceNickname();
-        Time time = new Time(inputView.readCheckAttendanceTime());
+        Time time = inputView.readCheckAttendanceTime();
 
         Attendance checkedAttendance = attendanceBook.addAttendanceForCrew(nickname,
-                LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), time.getHour(),
+                LocalDateTime.of(TODAY.getYear(), TODAY.getMonth(), TODAY.getDayOfMonth(), time.getHour(),
                         time.getMinute()));
 
         outputView.printCheckAttendance(checkedAttendance);
@@ -72,14 +72,14 @@ public class Controller {
 
     private void runChangeAttendance(AttendanceBook attendanceBook) {
         String nickname = inputView.readChangeAttendanceNickname();
-        String dayOfMonth = inputView.readChangeAttendanceDayOfMonth();
-        Time time = new Time(inputView.readChangeAttendanceTime());
+        int dayOfMonth = inputView.readChangeAttendanceDayOfMonth();
+        Time time = inputView.readChangeAttendanceTime();
 
         Attendance originalAttendance = attendanceBook.getAttendanceByNicknameAndDate(nickname,
-                Integer.parseInt(dayOfMonth));
+                dayOfMonth);
         Attendance changeAttendance = attendanceBook.updateAttendanceForCrew(nickname,
-                LocalDateTime.of(today.getYear(), today.getMonth(), Integer.parseInt(dayOfMonth),
-                        time.getHour(), time.getMinute()), today);
+                LocalDateTime.of(TODAY.getYear(), TODAY.getMonth(), dayOfMonth,
+                        time.getHour(), time.getMinute()), TODAY);
 
         outputView.printChangeAttendance(originalAttendance, changeAttendance);
     }
@@ -87,11 +87,11 @@ public class Controller {
     private void runShowCrewAttendance(AttendanceBook attendanceBook) {
         String nickname = inputView.readShowCrewAttendanceNickname();
         Attendances crewRecords = attendanceBook.getAttendanceByNickname(nickname);
-        outputView.printCrewAttendances(nickname, crewRecords, today);
+        outputView.printCrewAttendances(nickname, crewRecords, TODAY);
     }
 
     private void runShowRiskOfExpelledCrews(AttendanceBook attendanceBook) {
-        Map<String, Attendances> riskOfExpelledCrews = attendanceBook.getRiskOfExpelledCrews(today);
-        outputView.printRiskOfExpelledCrews(riskOfExpelledCrews, today);
+        Map<String, Attendances> riskOfExpelledCrews = attendanceBook.getRiskOfExpelledCrews(TODAY);
+        outputView.printRiskOfExpelledCrews(riskOfExpelledCrews, TODAY);
     }
 }

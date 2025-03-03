@@ -1,5 +1,6 @@
 package view;
 
+import domain.Time;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -32,11 +33,11 @@ public class InputView {
         return readInput();
     }
 
-    public String readCheckAttendanceTime() {
+    public Time readCheckAttendanceTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         String input = readInput();
         inputValidator.validateTimeFormat(input);
-        return input;
+        return new Time(input);
     }
 
     public String readChangeAttendanceNickname() {
@@ -44,18 +45,18 @@ public class InputView {
         return readInput();
     }
 
-    public String readChangeAttendanceDayOfMonth() {
+    public int readChangeAttendanceDayOfMonth() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         String input = readInput();
         inputValidator.validateDateFormat(input);
-        return input;
+        return Integer.parseInt(input);
     }
 
-    public String readChangeAttendanceTime() {
+    public Time readChangeAttendanceTime() {
         System.out.println("언제로 변경하겠습니까?");
         String input = readInput();
         inputValidator.validateTimeFormat(input);
-        return input;
+        return new Time(input);
     }
 
     public String readShowCrewAttendanceNickname() {

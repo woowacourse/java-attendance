@@ -1,5 +1,7 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -58,7 +60,7 @@ public class AttendanceBookTest {
         Attendance originalAttendance = attendanceBook.getAttendanceByNicknameAndDate(nickname, today.getDayOfMonth());
         Attendance updatedAttendance = attendanceBook.updateAttendanceForCrew(nickname, changeTestTime, today);
 
-        org.assertj.core.api.Assertions.assertThat(attendanceBook.getAttendanceByNickname(nickname).getRecords())
+        assertThat(attendanceBook.getAttendanceByNickname(nickname).getRecords())
                 .contains(updatedAttendance)
                 .doesNotContain(originalAttendance);
     }
@@ -79,9 +81,8 @@ public class AttendanceBookTest {
     void getCrewAttendanceTest() {
         String nickname = "test3";
         List<Attendance> crewRecords = attendanceBook.getAttendanceByNickname(nickname).getRecords();
-        Assertions.assertAll(
-                () -> org.assertj.core.api.Assertions.assertThat(crewRecords).hasSize(3)
-        );
+        assertThat(crewRecords).hasSize(3);
+
     }
 
     @DisplayName("크루들 중 제적 위험자들을 불러온다")
@@ -89,7 +90,7 @@ public class AttendanceBookTest {
     void getRiskOfExpelledCrewsTest() {
         LocalDate today = LocalDate.of(2024, 12, 5);
         Map<String, Attendances> riskOfExpelledCrews = attendanceBook.getRiskOfExpelledCrews(today);
-        org.assertj.core.api.Assertions.assertThat(riskOfExpelledCrews)
+        assertThat(riskOfExpelledCrews)
                 .hasSize(1)
                 .containsKeys("test3");
     }
