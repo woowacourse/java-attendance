@@ -23,6 +23,7 @@ public class CrewAttendanceManager {
     public CrewAttendanceManager(DateGenerator dateGenerator) {
         this.dateGenerator = dateGenerator;
         holidays = new Holidays();
+        holidays.initFromFile();
     }
 
     public void initAttendanceFromFile() {
