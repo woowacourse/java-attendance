@@ -84,7 +84,7 @@ public record AttendanceLogs(
     public int getAbsenceCount() {
         return Math.toIntExact(
                 values.stream()
-                        .filter(this::isAbsence)
+                        .filter(AttendanceLog::isAbsence)
                         .count()
         );
     }
@@ -96,17 +96,9 @@ public record AttendanceLogs(
     public int getLateCount() {
         return Math.toIntExact(
                 values.stream()
-                        .filter(this::isLate)
+                        .filter(AttendanceLog::isLate)
                         .count()
         );
-    }
-
-    private boolean isLate(AttendanceLog attendanceLog) {
-        return attendanceLog.getAttendanceStatus() == AttendanceStatus.LATE;
-    }
-
-    private boolean isAbsence(AttendanceLog attendanceLog) {
-        return attendanceLog.getAttendanceStatus() == AttendanceStatus.ABSENCE;
     }
 
     public void update(final AttendanceLog from, final AttendanceLog to) {
