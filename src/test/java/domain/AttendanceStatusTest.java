@@ -64,7 +64,7 @@ public class AttendanceStatusTest {
 
     @ParameterizedTest
     @CsvSource({
-        "2025-03-01T10:00:00", // 삼일절
+        "2025-03-03T10:00:00", // 삼일절 임시공휴일
         "2025-05-05T10:00:00" // 목요일 어린이날
     })
     void 공휴일에_출석_시_예외가_발생한다(LocalDateTime attendTime) {

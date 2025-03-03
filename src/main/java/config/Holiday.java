@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public enum Holiday {
-    INDEPENDENCE_MOVEMENT_DAY(3, 1),
+    INDEPENDENCE_MOVEMENT_DAY_TEMPORARY(3, 3),
     CHILDREN_DAY(5, 5);
 
     private final int month;
