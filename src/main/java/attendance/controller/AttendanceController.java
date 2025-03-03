@@ -56,7 +56,7 @@ public class AttendanceController {
 
     private void recordAttendance() {
         validateDate(systemDate);
-        Crew crew = getCrew(InputView.readNickname());
+        Crew crew = createCrew(InputView.readNickname());
 
         LocalTime inputAttendTime = InputView.readAttendTimeForRecord();
         Attendance attendance = new Attendance(systemDate, inputAttendTime);
@@ -71,7 +71,7 @@ public class AttendanceController {
         }
     }
 
-    private Crew getCrew(String inputNickname) {
+    private Crew createCrew(String inputNickname) {
         Nickname nickname = new Nickname(inputNickname);
         Crew crew = new Crew(nickname);
         attendanceBook.validateCrew(crew);
@@ -79,7 +79,7 @@ public class AttendanceController {
     }
 
     private void editAttendance() {
-        Crew crew = getCrew(InputView.readNicknameForEdit());
+        Crew crew = createCrew(InputView.readNicknameForEdit());
         int inputDay = InputView.readAttendDay();
         LocalDate attendDate = LocalDate.of(systemDate.getYear(), systemDate.getMonthValue(), inputDay);
         validateDate(attendDate);
@@ -92,7 +92,7 @@ public class AttendanceController {
     }
 
     private void checkRecords() {
-        Crew crew = getCrew(InputView.readNickname());
+        Crew crew = createCrew(InputView.readNickname());
 
         List<Attendance> attendances = attendanceBook.getRecordOfCrew(systemDate, crew);
         OutputView.printAttendanceRecordsUntilYesterday(crew, systemDate, attendances);
