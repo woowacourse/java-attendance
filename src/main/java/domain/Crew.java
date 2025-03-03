@@ -103,18 +103,7 @@ public class Crew {
     }
 
     public Penalty getPenalty() {
-        int penaltyStandard = getPenaltyStandard();
-        if (penaltyStandard > EXPEL.getCount()) {
-            return EXPEL;
-        }
-        if (penaltyStandard >= COUNSELLING.getCount()) {
-            return COUNSELLING;
-        }
-        if (penaltyStandard >= WARNING.getCount()) {
-            return WARNING;
-        }
-        return NONE;
+        return Penalty.getPenalty(getPenaltyStandard());
     }
-
 
 }

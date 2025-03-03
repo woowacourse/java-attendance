@@ -15,6 +15,19 @@ public enum Penalty {
         this.count = count;
     }
 
+    public static Penalty getPenalty(int penaltyStandard) {
+        if (penaltyStandard > EXPEL.getCount()) {
+            return EXPEL;
+        }
+        if (penaltyStandard >= COUNSELLING.getCount()) {
+            return COUNSELLING;
+        }
+        if (penaltyStandard >= WARNING.getCount()) {
+            return WARNING;
+        }
+        return NONE;
+    }
+
     public String getStatus() {
         return status;
     }
