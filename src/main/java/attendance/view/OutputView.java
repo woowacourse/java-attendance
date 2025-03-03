@@ -14,6 +14,8 @@ public class OutputView {
 
     public void printMenu(LocalDate today) {
         System.out.printf("""
+                        
+                        
                         오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.
                         1. 출석 확인
                         2. 출석 수정
@@ -50,11 +52,16 @@ public class OutputView {
     }
 
     public void printAttendanceRecord(AttendanceRecord attendanceRecord) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", attendanceRecord.getNickname());
+        AttendanceRiskView risk = AttendanceRiskView.findByName(attendanceRecord.getStatus().getRisk().name());
+        System.out.printf("\n이번 달 %s의 출석 기록입니다.\n\n", attendanceRecord.getNickname());
         attendanceRecord.getRecord().getAttendances()
-                .forEach(this::printAttendanceResult);
+                .forEach(attendance -> {
+                    this.printAttendanceResult(attendance);
+                    System.out.println();
+                });
 
         System.out.printf("""
+                        
                         출석: %d회
                         지각: %d회
                         결석: %d회
@@ -64,22 +71,23 @@ public class OutputView {
                 attendanceRecord.getStatus().getAttendanceStateCount(),
                 attendanceRecord.getStatus().getTardyStateCount(),
                 attendanceRecord.getStatus().getAbsenceStateCount(),
-                attendanceRecord.getStatus().getRisk()
+                risk.getName()
         );
     }
 
     public void printRiskCrewsSearch(AttendanceRecords attendanceRecords) {
-        System.out.println("제적 위험자 조회 결과");
+        System.out.println("\n제적 위험자 조회 결과");
         attendanceRecords.records()
-                .forEach(this::printAttendanceRecord);
+                .forEach(this::printRiskCrewSearch);
     }
 
     private void printRiskCrewSearch(AttendanceRecord attendanceRecord) {
-        System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)",
+        AttendanceRiskView risk = AttendanceRiskView.findByName(attendanceRecord.getStatus().getRisk().name());
+        System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
                 attendanceRecord.getNickname(),
                 attendanceRecord.getStatus().getAbsenceStateCount(),
                 attendanceRecord.getStatus().getTardyStateCount(),
-                attendanceRecord.getStatus().getRisk()
+                risk.getName()
         );
     }
 }

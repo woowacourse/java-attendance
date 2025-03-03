@@ -11,7 +11,7 @@ public class InputView {
     }
 
     public String readNickname() {
-        System.out.println("닉네임을 입력해 주세요.");
+        System.out.println("\n닉네임을 입력해 주세요.");
         return console.nextLine();
     }
 
