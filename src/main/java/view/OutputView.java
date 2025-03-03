@@ -53,7 +53,7 @@ public class OutputView {
         LocalDate date = attendanceDateTime.getDate();
         LocalTime time = attendanceDateTime.getTime();
 
-        if (time == null) {
+        if (status == AttendanceStatus.NOT_ATTENDED) {
             return String.format("%s (%s)", ABSENCE_FORMATTER.format(date), status);
         }
         return String.format("%s (%s)",

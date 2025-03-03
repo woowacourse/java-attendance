@@ -175,7 +175,8 @@ public class AttendanceBookTest {
         assertAll(
             () -> assertThat(map.get(AttendanceStatus.ON_TIME)).isEqualTo(1),
             () -> assertThat(map.get(AttendanceStatus.LATE)).isEqualTo(1),
-            () -> assertThat(map.get(AttendanceStatus.ABSENCE)).isEqualTo(3)
+            () -> assertThat(map.get(AttendanceStatus.ABSENCE)).isEqualTo(1),
+            () -> assertThat(map.get(AttendanceStatus.NOT_ATTENDED)).isEqualTo(2)
         );
     }
 

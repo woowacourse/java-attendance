@@ -9,7 +9,7 @@ public enum AttendanceStatus {
     ON_TIME("출석"),
     LATE("지각"),
     ABSENCE("결석"),
-    NONE("없음");
+    NOT_ATTENDED("결석");
 
     public static final int MONDAY_START_HOUR = 13;
     public static final int NOT_MONDAY_START_HOUR = 10;
@@ -51,7 +51,6 @@ public enum AttendanceStatus {
         }
         return ABSENCE;
     }
-
 
     @Override
     public String toString() {

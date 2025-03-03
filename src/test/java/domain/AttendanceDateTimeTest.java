@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -101,8 +102,11 @@ public class AttendanceDateTimeTest {
     void 시간없이_날짜만으로_결석이라는_의미의_출석일시를_생성할_수_있다() {
         var ofAbsence = AttendanceDateTime.ofAbsence(LocalDate.of(2025, 2, 26));
 
-        assertThat(ofAbsence.getDate()).isEqualTo(LocalDate.of(2025, 2, 26));
-        assertThat(ofAbsence.getTime()).isNull();
-        assertThat(ofAbsence.getAttendanceStatus()).isEqualTo(AttendanceStatus.ABSENCE);
+        assertAll(
+            () -> assertThat(ofAbsence.getDate()).isEqualTo(LocalDate.of(2025, 2, 26)),
+            () -> assertThat(ofAbsence.getTime()).isNull(),
+            () -> assertThat(ofAbsence.getAttendanceStatus())
+                .isEqualTo(AttendanceStatus.NOT_ATTENDED)
+        );
     }
 }

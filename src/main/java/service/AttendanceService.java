@@ -55,7 +55,7 @@ public class AttendanceService {
         Map<AttendanceStatus, Integer> map = book.countAttendanceStatuses(crew, fromInclusive, toInclusive);
         int onTime = map.get(AttendanceStatus.ON_TIME);
         int late = map.get(AttendanceStatus.LATE);
-        int absence = map.get(AttendanceStatus.ABSENCE);
+        int absence = map.get(AttendanceStatus.ABSENCE) + map.get(AttendanceStatus.NOT_ATTENDED);
 
         return new AttendanceStatusCount(onTime, late, absence);
     }
