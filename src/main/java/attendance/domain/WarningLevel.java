@@ -3,21 +3,24 @@ package attendance.domain;
 import static attendance.domain.AttendanceStatus.ABSENT;
 import static attendance.domain.AttendanceStatus.LATE;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Map;
 
 public enum WarningLevel {
-    EXPELLED("제적", 6),
-    ONE_ON_ONE("면담", 3),
-    WARNING("경고", 2),
-    NONE("해당없음", 0);
+    EXPELLED("제적", 6, Map.of()),
+    ONE_ON_ONE("면담", 3, Map.of()),
+    WARNING("경고", 2, Map.of()),
+    NONE("해당없음", 0, Map.of()),;
 
     private final String displayName;
     private final int absentCountUnderBound;
+    private Map<Crew, CrewAttendance> crews;
 
-    WarningLevel(final String displayName, final int absentCountUnderBound) {
+    WarningLevel(final String displayName, final int absentCountUnderBound, final Map<Crew, CrewAttendance> crews) {
         this.displayName = displayName;
         this.absentCountUnderBound = absentCountUnderBound;
+        this.crews = crews;
     }
 
     public static WarningLevel calculateBy(final Map<AttendanceStatus, Integer> attendanceStatusCounts) {
@@ -44,7 +47,15 @@ public enum WarningLevel {
         return absentCount >= warningLevel.absentCountUnderBound;
     }
 
+    public void updateCrews(final AttendanceBook attendanceBook, final LocalDateTime today) {
+        this.crews = attendanceBook.findCrewsBy(this, today);
+    }
+
     public String getDisplayName() {
         return displayName;
+    }
+
+    public Map<Crew, CrewAttendance> getCrews() {
+        return crews;
     }
 }

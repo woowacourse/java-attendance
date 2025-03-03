@@ -1,16 +1,21 @@
 package attendance.view;
 
 import static attendance.domain.AttendanceStatus.ABSENT;
+import static attendance.domain.AttendanceStatus.LATE;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.Crew;
 import attendance.domain.CrewAttendance;
+import attendance.domain.WarningLevel;
 import attendance.util.DateFormatter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 public class ResultView {
@@ -19,6 +24,8 @@ public class ResultView {
     private static final String ATTENDANCE_STATUS_FORMAT = "(%s)";
     private static final String ATTENDANCE_STATUS_COUNTS_FORMAT = "\n%s: %d회";
     private static final String WARNING_LEVEL_NOTICE_FORMAT = "\n\n%s 대상자입니다.\n";
+    private static final String WARNING_CREWS_HEADER = "\n제적 위험자 조회 결과";
+    private static final String WARNING_CREW_FORMAT = "\n- %s: 결석 %d회, 지각 %d회 " + ATTENDANCE_STATUS_FORMAT;
 
 
     public void printCrewAttendanceHeader(final String nickname) {
@@ -69,5 +76,25 @@ public class ResultView {
     public void printWarningLevel(final AttendanceBook attendanceBook, final String nickname, final LocalDateTime today) {
         System.out.printf(WARNING_LEVEL_NOTICE_FORMAT,
                 attendanceBook.getWarningLevelOf(nickname, today).getDisplayName());
+    }
+
+    public void printWarningCrews(final AttendanceBook attendanceBook, final LocalDateTime today) {
+        System.out.print(WARNING_CREWS_HEADER);
+        List<WarningLevel> warningLevels = Arrays.stream(WarningLevel.values())
+                .filter(level -> level != WarningLevel.NONE)
+                .toList();
+        for (WarningLevel warningLevel : warningLevels) {
+            final Map<Crew, CrewAttendance> crews = warningLevel.getCrews();
+            crews.entrySet().forEach(entry -> {
+                final Map<AttendanceStatus, Integer> attendanceStatusCounts = entry.getValue()
+                        .countAttendanceStatusesBefore(today);
+                final String result = String.format(WARNING_CREW_FORMAT,
+                       entry.getKey().nickname(),
+                        attendanceStatusCounts.get(ABSENT),
+                        attendanceStatusCounts.get(LATE),
+                        warningLevel.getDisplayName());
+                System.out.print(result);
+            });
+        }
     }
 }

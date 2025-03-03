@@ -3,6 +3,7 @@ package attendance.controller;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceLoader;
 import attendance.domain.CrewAttendance;
+import attendance.domain.WarningLevel;
 import attendance.view.DataSourceReader;
 import attendance.view.InputView;
 import attendance.view.ResultView;
@@ -23,6 +24,9 @@ public class AttendanceController {
         if (inputOption.equals("3")) {
             showCrewAttendance(attendanceBook);
         }
+        else if (inputOption.equals("4")) {
+            showWarningCrews(attendanceBook);
+        }
     }
 
     private void showCrewAttendance(AttendanceBook attendanceBook) {
@@ -35,5 +39,11 @@ public class AttendanceController {
         resultView.printWarningLevel(attendanceBook, nickname, today);
     }
 
-    private void showAttendance(AttendanceBook attendanceBook) {}
+    private void showWarningCrews(AttendanceBook attendanceBook) {
+        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
+        for (WarningLevel warningLevel : WarningLevel.values()) {
+            warningLevel.updateCrews(attendanceBook, today);
+        }
+        resultView.printWarningCrews(attendanceBook, today);
+    }
 }
