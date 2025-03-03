@@ -21,12 +21,19 @@ public class AttendanceBook {
     }
 
     public void addAttendance(final String nickname, final LocalDateTime attendance) {
+        validateNickname(nickname);
         CrewAttendance crewAttendance = addCrew(nickname);
         crewAttendance.add(attendance);
     }
 
     public int countCrews() {
         return crews.size();
+    }
+
+    public void validateNickname(final String nickname) {
+        if (!isCrew(nickname)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
 
     public boolean isCrew(final String nickname) {
@@ -43,6 +50,7 @@ public class AttendanceBook {
     }
 
     public CrewAttendance getCrewAttendanceOf(final String nickname, final LocalDateTime today) {
+        validateNickname(nickname);
         return crews.get(new Crew(nickname));
     }
 
