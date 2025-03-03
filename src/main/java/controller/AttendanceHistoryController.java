@@ -29,8 +29,7 @@ public class AttendanceHistoryController implements Controller {
         LocalDate endDate = CustomDate.now();
         LocalDate startDate = endDate.withDayOfMonth(1);
         try {
-            List<Attendance> attendances = crewAttendanceStorage
-                    .findAttendanceByDateRange(name, startDate, endDate);
+            List<Attendance> attendances = crewAttendanceStorage.findAttendanceByDateRange(name, startDate, endDate);
             AttendanceStatistic statistic = crewAttendanceStorage.findStatisticByDateRange(name, startDate, endDate);
 
             outputView.printAttendances(name, attendances);
