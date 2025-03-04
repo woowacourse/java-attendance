@@ -3,6 +3,7 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 public class AttendanceTime {
     private final LocalDate attendanceDate;
@@ -45,8 +46,8 @@ public class AttendanceTime {
         return attendanceDate;
     }
 
-    public LocalTime getAttendanceTime() {
-        return attendanceTime;
+    public Optional<LocalTime> getAttendanceTime() {
+        return Optional.ofNullable(attendanceTime);
     }
 
     public AttendanceTime modifyAttendanceTime(LocalDateTime inputTime) {

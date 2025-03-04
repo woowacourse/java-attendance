@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class OutputView {
 
@@ -22,12 +23,14 @@ public class OutputView {
 
     public void writeAttendanceRegister(AttendanceTime registerdAttendanceTime) {
         LocalDate attendanceDates = registerdAttendanceTime.getAttendanceDate();
-        LocalTime attendanceTimes = registerdAttendanceTime.getAttendanceTime();
-        LocalDateTime attendanceTime = LocalDateTime.of(attendanceDates, attendanceTimes);
-        AttendanceStatus attendanceStatus = registerdAttendanceTime.getAttendanceStatus();
-        String formattedDate = attendanceTime.format(dateTimeFormatter);
+        Optional<LocalTime> attendanceTimes = registerdAttendanceTime.getAttendanceTime();
+        attendanceTimes.ifPresent((time) -> {
+            LocalDateTime attendanceTime = LocalDateTime.of(attendanceDates, time);
+            AttendanceStatus attendanceStatus = registerdAttendanceTime.getAttendanceStatus();
+            String formattedDate = attendanceTime.format(dateTimeFormatter);
 
-        System.out.println(formattedDate + " (" + attendanceStatus.getName() + ")");
+            System.out.println(formattedDate + " (" + attendanceStatus.getName() + ")");
+        });
     }
 
     public void writeErrorMessage(String message) {
@@ -38,16 +41,17 @@ public class OutputView {
         AttendanceStatus beforeAttendanceStatus = beforeTime.getAttendanceStatus();
         AttendanceStatus updateAttendanceStatus = updateTime.getAttendanceStatus();
         LocalDate beforeAttendanceDate = beforeTime.getAttendanceDate();
-        LocalTime beforeAttendanceTime = beforeTime.getAttendanceTime();
-        if (beforeAttendanceTime == null) {
+        Optional<LocalTime> beforeAttendanceTime = beforeTime.getAttendanceTime();
+        if (beforeAttendanceTime.isEmpty()) {
             System.out.print(
                     beforeAttendanceDate.format(dateFormatter) + " --:-- " + "(" + beforeAttendanceStatus.getName()
                             + ")");
         }
-        LocalDateTime updateAttendanceTime = LocalDateTime.of(updateTime.getAttendanceDate(),
-                updateTime.getAttendanceTime());
-        String updateFormat = updateAttendanceTime.format(timeFormatter);
-        System.out.println(" -> " + updateFormat + " (" + updateAttendanceStatus.getName() + ") 수정 완료!");
+        updateTime.getAttendanceTime().ifPresent((time) -> {
+            LocalDateTime updateAttendanceTime = LocalDateTime.of(updateTime.getAttendanceDate(), time);
+            String updateFormat = updateAttendanceTime.format(timeFormatter);
+            System.out.println(" -> " + updateFormat + " (" + updateAttendanceStatus.getName() + ") 수정 완료!");
+        });
     }
 
     public void writeAttendanceCheck(Crew crewName, AttendanceRecord attendanceRecord) {
@@ -57,8 +61,12 @@ public class OutputView {
         for (AttendanceTime attendanceTime : attendanceRecord.getAttendanceRecord()) {
             AttendanceStatus status = attendanceTime.getAttendanceStatus();
             LocalDate localDate = attendanceTime.getAttendanceDate();
-            LocalTime localTime = attendanceTime.getAttendanceTime();
-            writeDefaultHyphen(localDate, localTime, status);
+            Optional<LocalTime> localTime = attendanceTime.getAttendanceTime();
+            localTime.ifPresentOrElse((time) -> {
+                writeNonNull(localDate, time, status);
+            }, () -> {
+                writeNull(localDate, status);
+            });
         }
         writeAttendanceRecord(attendanceRecord);
     }
@@ -85,11 +93,11 @@ public class OutputView {
         return "성실";
     }
 
-    private void writeDefaultHyphen(LocalDate localDate, LocalTime localTime, AttendanceStatus status) {
-        if (localTime == null) {
-            System.out.println(localDate.format(dateFormatter) + " --:-- " + "(" + status.getName() + ")");
-            return;
-        }
+    private void writeNull(LocalDate localDate, AttendanceStatus status) {
+        System.out.println(localDate.format(dateFormatter) + " --:-- " + "(" + status.getName() + ")");
+    }
+
+    private void writeNonNull(LocalDate localDate, LocalTime localTime, AttendanceStatus status) {
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
         System.out.println(localDateTime.format(dateTimeFormatter) + " (" + status.getName() + ")");
     }
