@@ -114,11 +114,8 @@ public class StudentsTest {
         AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 12));
         AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(8, 0));
 
-        students.findAttendanceTimeByAttendanceDate(name, attendanceDate);
-
         Assertions.assertEquals(
-                students.findStudentByName(name).getStudentAttendanceHistory().getAttendanceHistory()
-                        .get(attendanceDate), attendanceTime
+                students.findAttendanceTimeByAttendanceDate(name, attendanceDate), attendanceTime
         );
     }
 }
