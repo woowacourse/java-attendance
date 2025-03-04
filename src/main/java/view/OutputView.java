@@ -51,17 +51,17 @@ public class OutputView {
         System.out.println(String.format("%s -> %s (%s) 수정 완료!",getFormattedCheckedAttendance(modifyResult.getOldAttendance()), dateTime, status));
     }
 
-    public static void printCrewAttendanceHistory(Crew crew) {
-        System.out.println(getFormattedAttendanceHistory(crew.getAttendanceHistory()));
+    public static void printCrewAttendances(Crew crew) {
+        System.out.println(getFormattedAttendances(crew.getAttendances()));
         System.out.println(getFormattedPenaltyStatusCount(crew));
     }
 
-    private static String getFormattedAttendanceHistory(List<Attendance> attendanceHistory) {
-        StringBuilder formattedAttendanceHistory = new StringBuilder();
-        for (Attendance attendance : attendanceHistory) {
-            formattedAttendanceHistory.append(getFormattedCheckedAttendance(attendance)).append("\n");
+    private static String getFormattedAttendances(List<Attendance> attendances) {
+        StringBuilder formattedAttendances = new StringBuilder();
+        for (Attendance attendance : attendances) {
+            formattedAttendances.append(getFormattedCheckedAttendance(attendance)).append("\n");
         }
-        return formattedAttendanceHistory.toString();
+        return formattedAttendances.toString();
     }
 
     private static String getFormattedPenaltyStatusCount(Crew crew) {

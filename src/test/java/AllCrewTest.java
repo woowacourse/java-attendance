@@ -70,7 +70,7 @@ public class AllCrewTest {
         // when & then
         Assertions.assertAll(
                 () -> assertThat(allCrew.findCrewByName(name)
-                        .getAttendanceHistory())
+                        .getAttendances())
                         .containsExactly(attendance)
         );
     }
@@ -89,7 +89,7 @@ public class AllCrewTest {
         // when & then
         Assertions.assertAll(
                 () -> assertThat(allCrew.findCrewByName(name)
-                        .getAttendanceHistory())
+                        .getAttendances())
                         .containsExactly(attendance, attendance2)
         );
     }

@@ -11,16 +11,16 @@ import java.util.List;
 
 public class Crew {
     private final String name;
-    private List<Attendance> attendanceHistory;
+    private List<Attendance> attendances;
 
     public Crew(String name) {
         this.name = name;
-        attendanceHistory = new ArrayList<>();
+        attendances = new ArrayList<>();
     }
 
     public Attendance addAttendanceWithDateTime(LocalDateTime localDateTime) {
         Attendance attendance = new Attendance(localDateTime);
-        attendanceHistory.add(attendance);
+        attendances.add(attendance);
         return attendance;
     }
 
@@ -28,19 +28,19 @@ public class Crew {
         if (isEmptyDay(date)) {
             throw new IllegalArgumentException(EMPTY_DATE.getMessage());
         }
-        return attendanceHistory.stream()
+        return attendances.stream()
                 .filter(attendance -> attendance.getDayOfMonth() == date)
                 .findFirst()
                 .map(attendance -> attendance.changeTimeTo(localTime))
-                .orElse(null);
+                .orElseThrow();
     }
 
     public String getName() {
         return name;
     }
 
-    public List<Attendance> getAttendanceHistory() {
-        return attendanceHistory;
+    public List<Attendance> getAttendances() {
+        return attendances;
     }
 
     public boolean isSameName(String name) {
@@ -51,16 +51,16 @@ public class Crew {
         if (isAlreadyAttendedDay(attendance)) {
             throw new IllegalArgumentException(ALREADY_ATTENDED.getMessage());
         }
-        attendanceHistory.add(attendance);
+        attendances.add(attendance);
     }
 
     private boolean isEmptyDay(int date) {
-        return attendanceHistory.stream()
+        return attendances.stream()
                 .noneMatch(attendance -> attendance.getDayOfMonth() == date);
     }
 
     private boolean isAlreadyAttendedDay(Attendance newAttendance) {
-        return attendanceHistory.stream()
+        return attendances.stream()
                 .anyMatch(attendance -> attendance.getDayOfMonth() == newAttendance.getDayOfMonth());
     }
 
@@ -73,23 +73,23 @@ public class Crew {
     }
 
     private void addDummyAbsent(int day) {
-        attendanceHistory.add(new Attendance(LocalDateTime.of(2024, 12, day, 22, 59, 59)));
+        attendances.add(new Attendance(LocalDateTime.of(2024, 12, day, 22, 59, 59)));
     }
 
     public int getAttendCount() {
-        return (int) attendanceHistory.stream()
+        return (int) attendances.stream()
                 .filter(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.ATTEND)
                 .count();
     }
 
     public int getLateCount() {
-        return (int) attendanceHistory.stream()
+        return (int) attendances.stream()
                 .filter(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.LATE)
                 .count();
     }
 
     public int getAbsentCount() {
-        return (int) attendanceHistory.stream()
+        return (int) attendances.stream()
                 .filter(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.ABSENT)
                 .count();
     }

@@ -39,7 +39,7 @@ public class AttendanceSystem {
                 modifyAttendance();
             }
             if (option == MenuOption.CHECK_CREW_ATTENDANCE_HISTORY) {
-                checkCrewAttendanceHistory();
+                checkCrewattendances();
             }
             if (option == MenuOption.CHECK_PENALTY_RECEIVED_CREW) {
                 checkPenaltyReceivedCrew();
@@ -66,10 +66,10 @@ public class AttendanceSystem {
         printModifyResult(crew.modifyAttendedTime(date, timeTo));
     }
 
-    private void checkCrewAttendanceHistory() {
+    private void checkCrewattendances() {
         String crewName = askCrewName();
         Crew crew = allCrew.findCrewByName(crewName);
-        OutputView.printCrewAttendanceHistory(crew);
+        OutputView.printCrewAttendances(crew);
     }
 
     private void checkPenaltyReceivedCrew() {
