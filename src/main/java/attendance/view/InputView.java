@@ -1,6 +1,6 @@
 package attendance.view;
 
-import attendance.model.CustomLocalDateTime;
+import attendance.model.SystemDuration;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
@@ -10,7 +10,6 @@ public class InputView {
     private static Scanner scanner = new Scanner(System.in);
 
     public String inputCommand() {
-        CustomLocalDateTime customLocalDateTime = new CustomLocalDateTime();
         System.out.println(
                 String.format("""
                         오늘은 %s입니다. 기능을 선택해 주세요.
@@ -19,7 +18,7 @@ public class InputView {
                         3. 크루별 출석 기록 확인
                         4. 제적 위험자 확인
                         Q. 종료
-                        """, customLocalDateTime.now().format(normalFormatter))
+                        """, SystemDuration.getNow().format(normalFormatter))
         );
         return scanner.nextLine();
     }

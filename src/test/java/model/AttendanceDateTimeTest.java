@@ -1,87 +1,107 @@
 package model;
 
-import attendance.model.Attendance;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import attendance.model.AttendanceDate;
 import attendance.model.AttendanceDateTime;
-import attendance.model.AttendanceTime;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import java.time.LocalDate;
 import java.time.LocalTime;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class AttendanceDateTimeTest {
 
-    @ParameterizedTest
-    @CsvSource({
-            "2024-12-03, 10:00, ATTEND",
-            "2024-12-03, 10:06, LATE",
-            "2024-12-03, 10:31, ABSENCE"
-    })
-    void 출석_일시로_부터_출결_결과를_조회한다(String date, String time, Attendance expectedAttendance) {
+    @Test
+    @DisplayName("같은 경우")
+    void 출결일시에서_출결일이_같은지_확인한다_1() {
         // given
         AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
-                new AttendanceDate(LocalDate.parse(date)),
-                new AttendanceTime(LocalTime.parse(time))
+                new AttendanceDate(2024, 12, 10),
+                LocalTime.of(10, 5)
         );
+        AttendanceDate attendanceDate = new AttendanceDate(2024, 12, 10);
 
         // when
-        Attendance actualAttendance = attendanceDateTime.getAttendanceType();
+        boolean isEquals = attendanceDateTime.equalsDate(attendanceDate);
 
         // then
-        assertThat(actualAttendance).isEqualTo(expectedAttendance);
+        assertThat(isEquals).isTrue();
     }
 
     @Test
-    void 출석_일시를_수정한다() {
+    @DisplayName("다른 경우")
+    void 출결일시에서_출결일이_같은지_확인한다_2() {
         // given
         AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
-                new AttendanceDate(LocalDate.of(2024, 12, 3)),
-                new AttendanceTime(LocalTime.of(10, 31))
+                new AttendanceDate(2024, 12, 10),
+                LocalTime.of(10, 5)
         );
-        AttendanceTime modifyTime = new AttendanceTime(LocalTime.of(10, 5));
+        AttendanceDate attendanceDate = new AttendanceDate(2024, 12, 11);
 
         // when
-        attendanceDateTime.modifyAttendanceTime(modifyTime);
+        boolean isEquals = attendanceDateTime.equalsDate(attendanceDate);
 
         // then
-        assertThat(attendanceDateTime.getAttendanceTime()).isEqualTo(modifyTime);
+        assertThat(isEquals).isFalse();
     }
 
     @Test
-    void 출석_시간을_조회한다() {
+    void 출결일시에서_출결시간을_수정한다() {
         // given
-        AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(10, 31));
         AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
-                new AttendanceDate(LocalDate.of(2024, 12, 3)),
-                attendanceTime
+                new AttendanceDate(2024, 12, 10),
+                LocalTime.of(10, 5)
         );
+        LocalTime time = LocalTime.of(10, 7);
 
         // when
-        AttendanceTime actualAttendanceTime = attendanceDateTime.getAttendanceTime();
+        attendanceDateTime.modifyAttendanceTime(time);
 
         // then
-        assertThat(actualAttendanceTime).isEqualTo(attendanceTime);
+        assertThat(attendanceDateTime.getAttendanceTime()).isEqualTo(time);
     }
 
     @Test
-    void 출석일시를_깊은복사한다() {
+    @DisplayName("운영시간 이전인 경우")
+    void 캠퍼스_운영시간이_아닌_경우_예외가_발생한다_1() {
+        // given
+
+        // when & then
+        assertThatThrownBy(() -> new AttendanceDateTime(
+                new AttendanceDate(2024, 12, 10),
+                LocalTime.of(7, 59)
+        )).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("운영시간 이후인 경우")
+    void 캠퍼스_운영시간이_아닌_경우_예외가_발생한다_2() {
+        // given
+
+        // when & then
+        assertThatThrownBy(() -> new AttendanceDateTime(
+                new AttendanceDate(2024, 12, 10),
+                LocalTime.of(23, 1)
+        )).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 출결일시를_깊은복사_한다() {
         // given
         AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
-                new AttendanceDate(LocalDate.of(2024, 12, 10)),
-                new AttendanceTime(LocalTime.of(10, 9))
+                new AttendanceDate(2024, 12, 10),
+                LocalTime.of(10, 5)
         );
 
         // when
         AttendanceDateTime cloned = attendanceDateTime.copy();
 
         // then
-        assertThat(attendanceDateTime).isNotSameAs(cloned);
-        assertThat(cloned.getAttendanceDate().localDate()).isEqualTo(LocalDate.of(2024, 12, 10));
-        assertThat(cloned.getAttendanceTime().localTime()).isEqualTo(LocalTime.of(10, 9));
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(attendanceDateTime).isNotSameAs(cloned);
+        softly.assertThat(attendanceDateTime).isEqualTo(cloned);
+        softly.assertAll();
     }
 }
-

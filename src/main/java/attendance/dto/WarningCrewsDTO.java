@@ -1,13 +1,15 @@
 package attendance.dto;
 
-import attendance.model.AttendanceHistory;
+import attendance.model.AttendanceRecord;
 import attendance.model.AttendanceRegister;
+import attendance.model.SystemDuration;
+import java.time.LocalDate;
 import java.util.List;
 
-public record WarningCrewsDTO(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
+public record WarningCrewsDto(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
 
-    public static WarningCrewsDTO from(AttendanceRegister attendanceRegister) {
-        return new WarningCrewsDTO(
+    public static WarningCrewsDto from(AttendanceRegister attendanceRegister) {
+        return new WarningCrewsDto(
                 attendanceRegister.entryStream()
                         .map(entry -> WarningCrewDetailDTO.of(entry.getKey(), entry.getValue()))
                         .toList()
@@ -21,13 +23,14 @@ public record WarningCrewsDTO(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
             long convertLateCount,
             String warningType
     ) {
-        public static WarningCrewDetailDTO of(String crewName, AttendanceHistory attendanceHistory) {
+        public static WarningCrewDetailDTO of(String crewName, AttendanceRecord attendanceRecord) {
+            LocalDate now = SystemDuration.getNow();
             return new WarningCrewDetailDTO(
                     crewName,
-                    attendanceHistory.computeAbsenceCount(),
-                    attendanceHistory.computeLateCount(),
-                    attendanceHistory.convertLateCount(),
-                    attendanceHistory.getAttendanceWarning().name()
+                    attendanceRecord.computeAbsencesUntil(now),
+                    attendanceRecord.computeLateCount(),
+                    2,
+                    attendanceRecord.computePanaltyUntil(now).name()
             );
         }
     }

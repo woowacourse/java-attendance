@@ -11,10 +11,10 @@ public class CrewDataLoader {
     public static final DateTimeFormatter CSV_DATE_TIME_FORMATER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final int CREW_NAME_COLUMN_INDEX = 0;
     public static final int ATTENDANCE_DATE_TIME_COLUMN_INDEX = 1;
-    private final AttendanceRegister attendanceRegister;
+    private final AttendanceRegister register;
 
-    public CrewDataLoader(AttendanceRegister attendanceRegister) {
-        this.attendanceRegister = attendanceRegister;
+    public CrewDataLoader(AttendanceRegister register) {
+        this.register = register;
     }
 
     public void load(String path) {
@@ -25,10 +25,9 @@ public class CrewDataLoader {
             String[] parsed = parseRow(row);
             String crewName = parsed[CREW_NAME_COLUMN_INDEX];
             LocalDateTime dateTime = parseLocalDateTime(parsed[ATTENDANCE_DATE_TIME_COLUMN_INDEX]);
-            attendanceRegister.attend(crewName, new AttendanceDateTime(
-                    new AttendanceDate(dateTime.toLocalDate()),
-                    new AttendanceTime(dateTime.toLocalTime())
-            ));
+            register.addNewCrew(crewName);
+            AttendanceRecord attendanceRecord = register.findAttendanceRecordByName(crewName);
+            attendanceRecord.attend(new AttendanceDate(dateTime.toLocalDate()), dateTime.toLocalTime());
         });
     }
 

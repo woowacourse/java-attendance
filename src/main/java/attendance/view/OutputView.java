@@ -1,44 +1,54 @@
 package attendance.view;
 
-import attendance.dto.AttendanceDTO;
-import attendance.dto.AttendanceDTO.AttendanceDetailDTO;
-import attendance.dto.WarningCrewsDTO;
+import attendance.dto.AttendanceDto;
+import attendance.dto.AttendanceDto.AttendanceDetailDto;
+import attendance.dto.WarningCrewsDto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.Map;
 
 public class OutputView {
-
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE");
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private static final Map<String, String> ATTENDANCE_TYPE = Map.of(
+            "ATTEND", "출석",
+            "LATE", "지각",
+            "ABSENCE", "결석"
+    );
+    private static final Map<String, String> PANALTY_TYPE = Map.of(
+            "WARN", "경고",
+            "INTERVIEW", "면담",
+            "DISMISSAL", "제적"
+    );
 
-    public void printAttendanceHistory(AttendanceDTO attendanceDTO) {
+    public void printAttendanceHistory(AttendanceDto attendanceDto) {
         CustomStringBuilder stringBuilder = new CustomStringBuilder();
-        stringBuilder.appendLine(String.format("이번 달 %s의 출석 기록입니다.", attendanceDTO.crewName()));
-        attendanceDTO.attendanceDetailDTOs().stream()
-                .sorted(Comparator.comparing(AttendanceDetailDTO::attendanceDate))
+        stringBuilder.appendLine(String.format("이번 달 %s의 출석 기록입니다.", attendanceDto.crewName()));
+        attendanceDto.attendanceDetailDTOs().stream()
+                .sorted(Comparator.comparing(AttendanceDetailDto::attendanceDate))
                 .forEach(attendanceDetail -> stringBuilder.appendLine(generateAttendanceDetail(
                         attendanceDetail.attendanceDate(),
                         attendanceDetail.attendanceTime(),
                         attendanceDetail.attendanceType()
                 )));
-        stringBuilder.appendLine(String.format("출석: %d회", attendanceDTO.attendanceCount()));
-        stringBuilder.appendLine(String.format("지각: %d회", attendanceDTO.lateCount()));
-        stringBuilder.appendLine(String.format("결석: %d회", attendanceDTO.absenceCount()));
-        stringBuilder.appendLine(String.format("%s 대상자입니다.", attendanceDTO.warningType()));
+        stringBuilder.appendLine(String.format("출석: %d회", attendanceDto.attendanceCount()));
+        stringBuilder.appendLine(String.format("지각: %d회", attendanceDto.lateCount()));
+        stringBuilder.appendLine(String.format("결석: %d회", attendanceDto.absenceCount()));
+        stringBuilder.appendLine(String.format("%s 대상자입니다.", PANALTY_TYPE.get(attendanceDto.warningType())));
         stringBuilder.print();
     }
 
-    public void printAttendanceDetail(AttendanceDetailDTO attendanceDetailDTO) {
+    public void printAttendanceDetail(AttendanceDetailDto attendanceDetailDto) {
         System.out.println(generateAttendanceDetail(
-                attendanceDetailDTO.attendanceDate(),
-                attendanceDetailDTO.attendanceTime(),
-                attendanceDetailDTO.attendanceType()
+                attendanceDetailDto.attendanceDate(),
+                attendanceDetailDto.attendanceTime(),
+                attendanceDetailDto.attendanceType()
         ));
     }
 
-    public void printModifyResult(AttendanceDetailDTO before, AttendanceDetailDTO after) {
+    public void printModifyResult(AttendanceDetailDto before, AttendanceDetailDto after) {
         String beforeDetail = generateAttendanceDetail(
                 before.attendanceDate(),
                 before.attendanceTime(),
@@ -62,10 +72,10 @@ public class OutputView {
         if (localTime != null) {
             time = localTime.format(timeFormatter);
         }
-        return String.format("%s %s (%s)", date, time, attendanceType);
+        return String.format("%s %s (%s)", date, time, ATTENDANCE_TYPE.get(attendanceType));
     }
 
-    public void printWarningCrews(WarningCrewsDTO warningCrewsDTO) {
+    public void printWarningCrews(WarningCrewsDto warningCrewsDTO) {
         CustomStringBuilder stringBuilder = new CustomStringBuilder();
         stringBuilder.appendLine("제적 위험자 조회 결과");
         warningCrewsDTO.warningCrewDetailDTO().stream()
@@ -74,7 +84,7 @@ public class OutputView {
                         warningCrewDetailDTO.crewName(),
                         warningCrewDetailDTO.absenceCount(),
                         warningCrewDetailDTO.lateCount(),
-                        warningCrewDetailDTO.warningType()
+                        PANALTY_TYPE.get(warningCrewDetailDTO.warningType())
                 )));
         stringBuilder.print();
     }

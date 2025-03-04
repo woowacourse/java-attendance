@@ -1,36 +1,29 @@
 package attendance.model;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 public class AttendanceRegister {
-    private final Map<String, AttendanceHistory> register;
-    private final CustomLocalDateTime customLocalDateTime;
+    private final Map<String, AttendanceRecord> register = new HashMap<>();
 
-    public AttendanceRegister(Map<String, AttendanceHistory> register, CustomLocalDateTime customLocalDateTime) {
-        this.register = register;
-        this.customLocalDateTime = customLocalDateTime;
-    }
-
-    public AttendanceHistory findAttendanceHistoryByCrewName(String crewName) {
-        if (!register.containsKey(crewName)) {
-            throw new IllegalArgumentException("존재하지 않는 크루원 입니다.");
-        }
+    public AttendanceRecord findAttendanceRecordByName(String crewName) {
+        validateContainsCrewName(crewName);
         return register.get(crewName);
     }
 
-    public void attend(String crewName, AttendanceDateTime attendanceDateTime) {
-        AttendanceHistory attendanceHistory = register.getOrDefault(
-                crewName,
-                new AttendanceHistory(new ArrayList<>(), customLocalDateTime)
-        );
-        attendanceHistory.addAttendanceDateTime(attendanceDateTime);
-        register.put(crewName, attendanceHistory);
+    public void addNewCrew(String crewName) {
+        register.putIfAbsent(crewName, new AttendanceRecord());
     }
 
-    public Stream<Entry<String, AttendanceHistory>> entryStream() {
+    public Stream<Entry<String, AttendanceRecord>> entryStream() {
         return register.entrySet().stream();
+    }
+
+    private void validateContainsCrewName(String name) {
+        if (!register.containsKey(name)) {
+            throw new IllegalArgumentException("존재하지 않는 크루입니다.");
+        }
     }
 }
