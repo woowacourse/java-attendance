@@ -23,6 +23,16 @@ class CrewGroupTest {
             crewGroup.addCrew("가이온");
             assertThat(crewGroup.findByName("가이온")).isInstanceOf(Crew.class);
         }
+
+        @DisplayName("이미 존재하는 크루원을 넣으면 에러가 발샐")
+        @Test
+        void duplicatedCrew(){
+            CrewGroup crewGroup = new CrewGroup();
+
+            crewGroup.addCrew("가이온");
+
+            assertThatThrownBy(() -> crewGroup.addCrew("가이온")).isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
     @Nested
@@ -48,6 +58,7 @@ class CrewGroupTest {
         }
 
         @DisplayName("존재하지 않는 크루원을 조회하면 에러가 발생")
+        @Test
         void findMissingCrewByName(){
             assertThatThrownBy(() -> crewGroup.findByName("네오")).isInstanceOf(IllegalArgumentException.class);
         }
