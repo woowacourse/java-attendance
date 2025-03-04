@@ -182,7 +182,7 @@ public class ExistentAttendanceRecordTest {
     ExistentAttendanceRecord existentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025,2,28,10,0));
     ExistentAttendanceRecord modifiedExistentAttendanceRecord = existentAttendanceRecord.modifyTime(LocalTime.of(10,5));
     assertThat(existentAttendanceRecord).isNotSameAs(modifiedExistentAttendanceRecord);
-    assertThat(modifiedExistentAttendanceRecord.getDateTime().toLocalTime()).isEqualTo(LocalTime.of(10,5));
+    assertThat(modifiedExistentAttendanceRecord.getRecord().toLocalTime()).isEqualTo(LocalTime.of(10,5));
   }
 
 

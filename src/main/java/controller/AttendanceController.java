@@ -54,7 +54,7 @@ public class AttendanceController {
       String nickname = inputView.printInputCrewNickName();
       LocalDateTime dateTime = inputView.printInputAttendanceTime();
       ExistentAttendanceRecord checkedAttendanceRecord = attendanceBook.check(nickname, dateTime);
-      outputView.printCheckedAttendanceResult(checkedAttendanceRecord.getDateTime(),
+      outputView.printCheckedAttendanceResult(checkedAttendanceRecord.getRecord(),
           AttendanceStatus.from(checkedAttendanceRecord));
     } catch (RuntimeException exception) {
       System.out.println(exception.getMessage());

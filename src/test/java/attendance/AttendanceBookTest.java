@@ -46,7 +46,7 @@ public class AttendanceBookTest {
     ExistentAttendanceRecord existentAttendanceRecord = attendanceBook.check("히포",
         LocalDateTime.of(2025, 2, 28, 10, 0));
 
-    assertThat(existentAttendanceRecord.getDateTime()).isEqualTo(dateTime);
+    assertThat(existentAttendanceRecord.getRecord()).isEqualTo(dateTime);
   }
 
   @DisplayName("출석_확인_시_해당_출석_상태_확인")

@@ -34,7 +34,7 @@ public class AttendanceRecords {
     AttendanceRecord previousRecord = attendanceRecords.stream()
         .filter(record -> record.equals(updateAttendanceRecord))
         .findFirst()
-        .orElse(new AbsenceRecord(updateAttendanceRecord.getDateTime().toLocalDate()));
+        .orElse(new AbsenceRecord(updateAttendanceRecord.getRecord().toLocalDate()));
     if (previousRecord.isExists()) {
       attendanceRecords.remove(previousRecord);
     }

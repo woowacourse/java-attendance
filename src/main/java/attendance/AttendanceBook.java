@@ -101,10 +101,8 @@ public class AttendanceBook {
   public Map<Crew, Map<AttendanceStatus, Integer>> calculateCrewsAttendanceResult(
       LocalDate searchDate) {
     return attendanceBook.entrySet().stream()
-        .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                entry ->
-                    calculateAttendanceResult(entry.getKey().getName(), searchDate)
+        .collect(Collectors.toMap(Map.Entry::getKey,
+                entry -> calculateAttendanceResult(entry.getKey().getName(), searchDate)
             )
         );
   }

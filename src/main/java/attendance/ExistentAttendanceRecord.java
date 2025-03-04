@@ -55,10 +55,6 @@ public class ExistentAttendanceRecord implements AttendanceRecord {
     return time.isBefore(lateDeadline) || time.equals(lateDeadline);
   }
 
-  public LocalDateTime getDateTime() {
-    return LocalDateTime.of(date, time);
-  }
-
   @Override
   public boolean isSameYearAndMonth(LocalDate searchDate) {
     return date.getMonth().equals(searchDate.getMonth());
@@ -71,7 +67,7 @@ public class ExistentAttendanceRecord implements AttendanceRecord {
 
   @Override
   public LocalDateTime getRecord() {
-    return getDateTime();
+    return LocalDateTime.of(date, time);
   }
 
   @Override
