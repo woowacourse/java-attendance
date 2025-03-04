@@ -1,8 +1,16 @@
 package view;
 
+import static domain.AlertCode.COUNSELING;
+import static domain.AlertCode.EXPULSION;
+import static domain.AlertCode.NORMAL;
+import static domain.AlertCode.WARNING;
 import static domain.AttendanceCode.ABSENT;
+import static domain.AttendanceCode.LATE;
+import static domain.AttendanceCode.PRESENT;
 
+import domain.AlertCode;
 import domain.Attendance;
+import domain.AttendanceCode;
 import domain.AttendanceStatistics;
 import domain.Attendances;
 import java.time.LocalDate;
@@ -14,6 +22,18 @@ import util.DayConverter;
 
 public class OutputView {
     private static final String ABSENT_TIME = "--:--";
+    private static final Map<AlertCode, String> ALERT_CODE_STRING_MAP = Map.of(
+            NORMAL, "없음",
+            WARNING, "경고",
+            COUNSELING, "면담",
+            EXPULSION, "제적"
+    );
+
+    private static final Map<AttendanceCode, String> ATTENDANCE_CODE_STRING_MAP = Map.of(
+            PRESENT, "출석",
+            LATE, "경고",
+            ABSENT, "결석"
+    );
 
     public void printAllLog(String name, Attendances attendances, AttendanceStatistics attendanceStatistics) {
         System.out.printf("\n이번 달 %s의 출석 기록입니다.\n\n", name);
@@ -34,7 +54,7 @@ public class OutputView {
         System.out.printf("\n출석: %d회\n", attendanceStatistics.present());
         System.out.printf("지각: %d회\n", attendanceStatistics.late());
         System.out.printf("결석: %d회\n", attendanceStatistics.absent());
-        System.out.printf("\n%s 대상자입니다.", attendanceStatistics.alertCode().getName());
+        System.out.printf("\n%s 대상자입니다.", ALERT_CODE_STRING_MAP.get(attendanceStatistics.alertCode()));
     }
 
     public void printAttendanceLog(Attendance attendance) {
@@ -48,7 +68,7 @@ public class OutputView {
                 date.getDayOfMonth(),
                 DayConverter.getKoreanDayOfWeek(date),
                 time,
-                attendance.calculateAttendanceCode().getName()
+                ATTENDANCE_CODE_STRING_MAP.get(attendance.calculateAttendanceCode())
         );
     }
 
@@ -64,7 +84,7 @@ public class OutputView {
                 name,
                 attendanceStatistics.absent(),
                 attendanceStatistics.late(),
-                attendanceStatistics.alertCode().getName());
+                ALERT_CODE_STRING_MAP.get(attendanceStatistics.alertCode()));
     }
 
     public void printChangeLog(Attendance originalAttendance,
@@ -77,7 +97,7 @@ public class OutputView {
 
         printAttendanceLog(originalAttendance);
         System.out.printf(" -> %s (%s) 수정 완료!", time,
-                changedAttendance.calculateAttendanceCode().getName());
+                ATTENDANCE_CODE_STRING_MAP.get(changedAttendance.calculateAttendanceCode()));
     }
 
     public void printExceptionLog(Exception e) {

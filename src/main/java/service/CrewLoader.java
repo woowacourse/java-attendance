@@ -6,6 +6,7 @@ import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 import domain.Attendance;
 import domain.Attendances;
 import domain.CrewGroup;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -45,6 +46,8 @@ public class CrewLoader {
             List<LocalDate> allDate = DayConverter.getUntilToday(today);
             Set<LocalDate> absentDates = allDate.stream()
                     .filter(date -> !presentDate.contains(date))
+                    .filter(date -> date.getDayOfWeek() != DayOfWeek.SATURDAY
+                            && date.getDayOfWeek() != DayOfWeek.SUNDAY)
                     .collect(Collectors.toSet());
 
             List<Attendance> absentAttendances = absentDates.stream()

@@ -1,19 +1,18 @@
 package domain;
 
 public enum AttendanceCode {
-    PRESENT(0, 5, "출석"),
-    LATE(6, 30, "지각"),
-    ABSENT(31, 59, "결석"),
+    PRESENT(0, 5),
+    LATE(6, 30),
+    ABSENT(31, 59),
     ;
 
     private final int lowerBound;
     private final int upperBound;
-    private final String name;
 
-    AttendanceCode(int lowerBound, int upperBound, String name) {
+
+    AttendanceCode(int lowerBound, int upperBound) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
-        this.name = name;
     }
 
     public int getLowerBound() {
@@ -22,9 +21,5 @@ public enum AttendanceCode {
 
     public int getUpperBound() {
         return upperBound;
-    }
-
-    public String getName() {
-        return name;
     }
 }
