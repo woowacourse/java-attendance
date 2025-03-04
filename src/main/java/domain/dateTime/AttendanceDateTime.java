@@ -18,7 +18,7 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
     private final LocalDateTime dateTime;
 
     private AttendanceDateTime(final LocalDateTime dateTime) {
-        AttendanceDate.validate(dateTime.toLocalDate());
+        AttendanceDateValidator.validate(dateTime.toLocalDate());
         this.dateTime = dateTime;
     }
 

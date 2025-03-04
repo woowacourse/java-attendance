@@ -1,9 +1,7 @@
 package domain.dateTime;
 
 import controller.AttendanceCommandController;
-import domain.HolidayCalendar;
 import java.time.DateTimeException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public class AttendanceDate {
@@ -11,7 +9,7 @@ public class AttendanceDate {
     private final LocalDate date;
 
     private AttendanceDate(final LocalDate date) {
-        validate(date);
+        AttendanceDateValidator.validate(date);
         this.date = date;
     }
 
@@ -29,17 +27,6 @@ public class AttendanceDate {
         } catch (final DateTimeException e) {
             throw new IllegalArgumentException("유효하지 않은 날짜입니다. ex) 2월 30일은 존재하지 않습니다.");
         }
-    }
-
-    public static void validate(final LocalDate date) {
-        final DayOfWeek dayOfWeek = date.getDayOfWeek();
-        if (DayOfWeek.SATURDAY.equals(dayOfWeek)) {
-            throw new IllegalArgumentException("주말은 출석하실 수 없습니다.");
-        }
-        if (DayOfWeek.SUNDAY.equals(dayOfWeek)) {
-            throw new IllegalArgumentException("주말은 출석하실 수 없습니다.");
-        }
-        HolidayCalendar.validateHoliday(date);
     }
 
     public LocalDate getDate() {
