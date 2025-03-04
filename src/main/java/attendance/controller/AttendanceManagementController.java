@@ -82,28 +82,31 @@ public class AttendanceManagementController {
 
     private void startAttendanceManagementSystem(final Crews crews, final CrewAttendances crewAttendances) {
         while (true) {
-            try {
-                OperationCommand operationCommand = inputView.readOperationCommand(today);
-                if (operationCommand.equals(OperationCommand.QUIT)) {
-                    return;
-                }
-                if (operationCommand.equals(OperationCommand.ATTENDANCE_CONFIRMATION)) {
-                    runAttendanceConfirmOperation(crews, crewAttendances);
-                }
-                if (operationCommand.equals(OperationCommand.ATTENDANCE_MODIFICATION)) {
-                    runAttendanceModificationOperation(crews, crewAttendances);
-                }
-                if (operationCommand.equals(OperationCommand.CREW_ATTENDANCES_INQUIRY)) {
-                    runCrewAttendancesInquiryOperation(crews, crewAttendances);
-                }
-                if (operationCommand.equals(OperationCommand.PENALTY_CREWS_INQUIRY)) {
-                    runPenaltyCrewsInquiryOperation(crews, crewAttendances);
-                }
-            } catch (IllegalArgumentException e) {
-                resultView.printErrorMessage(e.getMessage());
+            OperationCommand operationCommand = RetryHandler.retryUntilSuccessWithReturn(
+                    () -> inputView.readOperationCommand(today), resultView);
+            if (operationCommand.equals(OperationCommand.QUIT)) {
+                return;
             }
+            executeOperation(operationCommand, crews, crewAttendances);
         }
 
+    }
+
+    private void executeOperation(final OperationCommand operationCommand, final Crews crews,
+                                  final CrewAttendances crewAttendances
+    ) {
+        if (operationCommand.equals(OperationCommand.ATTENDANCE_CONFIRMATION)) {
+            RetryHandler.retryUntilSuccess(() -> runAttendanceConfirmOperation(crews, crewAttendances), resultView);
+        }
+        if (operationCommand.equals(OperationCommand.ATTENDANCE_MODIFICATION)) {
+            RetryHandler.retryUntilSuccess(() -> runAttendanceModificationOperation(crews, crewAttendances), resultView);
+        }
+        if (operationCommand.equals(OperationCommand.CREW_ATTENDANCES_INQUIRY)) {
+            RetryHandler.retryUntilSuccess(() -> runCrewAttendancesInquiryOperation(crews, crewAttendances), resultView);
+        }
+        if (operationCommand.equals(OperationCommand.PENALTY_CREWS_INQUIRY)) {
+            RetryHandler.retryUntilSuccess(() -> runPenaltyCrewsInquiryOperation(crews, crewAttendances), resultView);
+        }
     }
 
     private void runAttendanceConfirmOperation(final Crews crews, final CrewAttendances crewAttendances) {
@@ -145,6 +148,13 @@ public class AttendanceManagementController {
         Crew crew = crews.findCrewByNickname(inputView.readAttendanceConfirmNickname());
         LocalDate yesterday = today.toLocalDate().minusDays(1L);
         Attendances attendancesUntilYesterday = crewAttendances.findAllCrewAttendanceUntilStandardDate(crew, yesterday);
+        printCrewAttendanceRecords(crewAttendances, attendancesUntilYesterday, crew, yesterday);
+    }
+
+    private void printCrewAttendanceRecords(
+            final CrewAttendances crewAttendances, final Attendances attendancesUntilYesterday,
+            final Crew crew, final LocalDate yesterday
+    ) {
         List<LocalDateTime> attendanceDateTimes = mapToLocalDateTimes(attendancesUntilYesterday);
         List<Boolean> attendanceExistences = mapToAttendanceExistences(attendancesUntilYesterday);
         List<String> attendanceStatuses = getAttendanceStatuses(attendancesUntilYesterday);
