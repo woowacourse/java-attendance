@@ -48,7 +48,7 @@ class CrewAttendanceManagerTest {
         addCrewAttendance(nickname, LocalDateTime.of(nowDate, LocalTime.MAX));
 
         LocalTime checkTime = LocalTime.of(10, 0);
-        
+
         // when
         Attendance result = attendanceManager.processAttendanceCheck(nickname, checkTime);
 
@@ -167,12 +167,12 @@ class CrewAttendanceManagerTest {
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MIDNIGHT))
                 )),
-                new Attendances(List.of( // 결석 3회
+                new Attendances(List.of( // 결석 3회 꾹이
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX))
                 )),
-                new Attendances(List.of( // 결석 6회
+                new Attendances(List.of( // 결석 6회 몽이
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX)),
