@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import util.DayConverter;
 import util.FileReader;
 
@@ -41,11 +43,12 @@ public class CrewLoader {
                     .toList();
 
             List<LocalDate> allDate = DayConverter.getUntilToday(today);
-            allDate.removeAll(presentDate);
+            Set<LocalDate> absentDates = allDate.stream()
+                    .filter(date -> !presentDate.contains(date))
+                    .collect(Collectors.toSet());
 
-            List<Attendance> absentAttendances = allDate.stream()
-                    .map(date -> new Attendance(LocalDateTime.of(date, ABSENT_TIME)))
-                    .filter(attendance -> !attendance.isHoliday())
+            List<Attendance> absentAttendances = absentDates.stream()
+                    .map(absentDate -> new Attendance(LocalDateTime.of(absentDate, ABSENT_TIME)))
                     .toList();
 
             rawCrewGroup.get(name).addAll(absentAttendances);
