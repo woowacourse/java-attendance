@@ -1,7 +1,10 @@
 package domain;
 
 import domain.attendance.Attendance;
+import domain.attendance.AttendanceStatus;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Crew {
@@ -11,6 +14,14 @@ public class Crew {
     public Crew(String name) {
         this.name = name;
         this.attendanceRecord = new Attendance();
+    }
+
+    public void fillAttend(LocalDateTime attendTime) {
+        attendanceRecord.addAttendance(attendTime);
+    }
+
+    public AttendanceStatus getStatusByLocalDate(LocalDate findDate){
+        return attendanceRecord.getAttendanceStatus(findDate);
     }
 
     @Override

@@ -59,6 +59,10 @@ public class Attendance {
         return attendanceDates.get(findLocalDate);
     }
 
+    public AttendanceStatus getAttendanceStatus(LocalDate findDate){
+        return findByLocalDate(findDate).getStatus();
+    }
+
     public List<AttendanceDate> getSortedAttendanceResult() {
         return attendanceDates.entrySet().stream()
                 .sorted(Comparator.comparingInt(value -> value.getKey().getDayOfMonth()))

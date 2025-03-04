@@ -71,16 +71,14 @@ public class AttendanceController {
 
     public static void attendCommand() {
         validateAttendDate();
-
         String attendCrewName = InputView.getCrewName();
-        Crew findCrew = crews.findByName(attendCrewName);
-
         LocalDateTime attendTime = InputView.getAttendTime();
         validateAttendTime(attendTime);
 
-        Attendance crewAttendance = findCrew.getAttendanceRecord();
-        crewAttendance.addAttendance(attendTime);
-        AttendanceStatus status = crewAttendance.findByLocalDate(LocalDate.from(attendTime)).getStatus();
+        crews.attendCrew(attendCrewName,attendTime);
+        LocalDate attendDate = LocalDate.from(attendTime);
+        AttendanceStatus status = crews.getCrewDateStatus(attendCrewName,attendDate);
+
         OutputView.printAddAttendance(attendTime, status);
     }
 

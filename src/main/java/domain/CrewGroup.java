@@ -1,7 +1,10 @@
 package domain;
 
+import domain.attendance.AttendanceStatus;
 import domain.attendance.StudentStatus;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +39,16 @@ public class CrewGroup {
 
     public boolean has(String crewName) {
         return crews.containsKey(crewName);
+    }
+
+    public void attendCrew(String crewName, LocalDateTime attendTime){
+        Crew findCrew = findByName(crewName);
+        findCrew.fillAttend(attendTime);
+    }
+
+    public AttendanceStatus getCrewDateStatus(String crewName, LocalDate findDate){
+        Crew findCrew = findByName(crewName);
+        return findCrew.getStatusByLocalDate(findDate);
     }
 
     public List<Crew> getSortedWarningCrews() {
