@@ -1,157 +1,114 @@
 package controller;
 
-import controller.dto.AttendanceHistoryDto;
-import controller.dto.AttendanceHistoryWithPenaltyTypeDto;
-import controller.dto.AttendanceRequestDto;
-import controller.dto.AttendanceTimeDto;
-import controller.dto.AttendanceTypeCountDto;
-import controller.dto.AttendanceUpdateResultDto;
-import domain.date.AttendanceDate;
-import domain.date.AttendanceDateTime;
-import io.CustomFileReader;
-import java.io.FileNotFoundException;
-import java.time.DayOfWeek;
-import java.time.format.TextStyle;
+import domain.AttendanceType;
+import domain.Crew;
+import dto.AttendanceStatusDto;
+import dto.AttendanceStatusesOfCrewDto;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 import service.AttendanceService;
 import view.FeatureType;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-    private final static int SERVICE_ABLE_MONTH = 12;
     private final AttendanceService attendanceService;
-    private int today;
+    private LocalDate currentDate;
 
     public AttendanceController(AttendanceService attendanceService) {
         this.attendanceService = attendanceService;
     }
 
     public void run() {
-        try {
-            configProgram();
-            startProgram();
-        } catch (Exception exception) {
-            OutputView.printErrorMessage(exception.getMessage());
+        FeatureType selectedFeature;
+        while (shouldContinue(selectedFeature = getFeature())) {
+            runFeature(selectedFeature);
         }
     }
 
-    public void runFeature(FeatureType featureType) {
-        if (featureType == FeatureType.APPLY_ATTENDANCE) {
-            applyAttendance();
+    private boolean shouldContinue(FeatureType featureType) {
+        return featureType != FeatureType.QUIT;
+    }
+
+    private FeatureType getFeature() {
+        int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
+        currentDate = LocalDate.of(2024, 12, currentDay);
+        OutputView.printToday(currentDate);
+        return InputView.askFeature();
+    }
+
+    private void runFeature(FeatureType featureType) {
+        if (featureType == FeatureType.CHECK_ATTENDANCE) {
+            runCheckAttendance();
             return;
         }
+
         if (featureType == FeatureType.EDIT_ATTENDANCE) {
-            editAttendance();
+            runEditAttendance();
             return;
         }
+
         if (featureType == FeatureType.CHECK_ATTENDANCE_OF_CREW) {
-            checkAttendanceOfCrew();
-            return;
-        }
-        if (featureType == FeatureType.CHECK_WARNING_CREW) {
-            checkWarningCrew();
-            return;
-        }
-    }
-
-    private void configProgram() throws FileNotFoundException {
-        readConfigFile();
-        today = InputView.readToday();
-    }
-
-    private void startProgram() {
-        while (true) {
-            printTodayMessage();
-            FeatureType featureType = InputView.readFeatureType();
-            if (featureType == FeatureType.QUIT) {
-                break;
-            }
-
-            runFeature(featureType);
-        }
-    }
-
-    private void printTodayMessage() {
-        DayOfWeek dayOfWeek = DayOfWeek.of(AttendanceDate.getDayOfWeek(today));
-        String parsedDayOfWeek = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN);
-
-        OutputView.printTodayMessage(SERVICE_ABLE_MONTH, today, parsedDayOfWeek);
-    }
-
-    private void readConfigFile() throws FileNotFoundException {
-        List<String> names = CustomFileReader.readCrewNames();
-        attendanceService.saveCrews(names);
-
-        List<AttendanceRequestDto> attendanceRequestDtos = CustomFileReader.readAttendanceInfo();
-        attendanceService.initializeAttendanceHistories(attendanceRequestDtos);
-    }
-
-
-    private void applyAttendance() {
-        if (validateDayForApply(today)) {
+            runCheckAttendanceOfCrew();
             return;
         }
 
-        String nickname = InputView.readNickname();
-        attendanceService.checkNicknameIsExisted(nickname);
-        attendanceService.checkAlreadyPresented(nickname, today);
-
-        AttendanceDateTime attendanceDateTime = getAttendanceDateTime(today);
-
-        AttendanceHistoryDto attendanceHistoryDto = attendanceService.applyAttendance(nickname, attendanceDateTime);
-        OutputView.printCheckedHistory(attendanceHistoryDto);
-    }
-
-
-    private void editAttendance() {
-        String nickname = InputView.readNicknameWillEditHistory();
-        attendanceService.checkNicknameIsExisted(nickname);
-        AttendanceDateTime newDateTime = getAttendanceDateTimeWillEditHistory();
-
-        if (validateDayForApply(newDateTime.getDay())) {
+        if (featureType == FeatureType.CHECK_CREW_OF_BAN_RISK) {
+            runCheckCrewOfBanRisk();
             return;
         }
 
-        AttendanceUpdateResultDto attendanceUpdateResultDto = attendanceService.editAttendance(nickname, newDateTime);
-        OutputView.printUpdatedResult(attendanceUpdateResultDto);
-    }
-
-    private boolean validateDayForApply(int day) {
-        int rawDayOfWeek = AttendanceDate.getDayOfWeek(day);
-        if (AttendanceDate.isRestDay(day)) {
-            OutputView.printAttendanceDayErrorMessage(12, today, DayOfWeek.of(rawDayOfWeek));
-            return true;
+        if (featureType == FeatureType.QUIT) {
+            return;
         }
-
-        return false;
     }
 
-    private void checkAttendanceOfCrew() {
-        String nickname = InputView.readNickname();
-        attendanceService.checkNicknameIsExisted(nickname);
+    private void runCheckAttendance() {
+        attendanceService.validateIsSchoolDay(currentDate);
+        String nickname = InputView.askNickname(false);
+        attendanceService.validateNicknameRegistered(nickname);
 
-        AttendanceHistoryWithPenaltyTypeDto attendanceHistoryWithPenaltyTypeDto = attendanceService.checkAttendanceOf(
-                nickname, today);
-        OutputView.printAttendanceHistories(nickname, attendanceHistoryWithPenaltyTypeDto);
+        LocalTime localTime = InputView.askAttendanceTime(false);
+        LocalDateTime dateTime = LocalDateTime.of(currentDate, localTime);
+
+        Crew crew = Crew.from(nickname);
+        attendanceService.validateHistoryNotDuplicated(crew, dateTime);
+
+        AttendanceStatusDto dto = attendanceService.addAttendanceHistory(crew, dateTime);
+        OutputView.printAttendanceStatus(dto);
     }
 
-    private void checkWarningCrew() {
-        List<AttendanceTypeCountDto> attendanceTypeCountDtos = attendanceService.checkWarningCrews(today);
-        OutputView.printBanWarningCrews(attendanceTypeCountDtos);
+    private void runEditAttendance() {
+        String nickname = InputView.askNickname(true);
+        attendanceService.validateNicknameRegistered(nickname);
+        Crew crew = Crew.from(nickname);
+
+        LocalDate localDate = InputView.askDayForEdit();
+        LocalTime localTime = InputView.askAttendanceTime(true);
+        LocalDateTime newDateTime = LocalDateTime.of(localDate, localTime);
+
+        attendanceService.validateHistoryNotDuplicated(crew, newDateTime);
+
+        List<AttendanceStatusDto> statusDtos = attendanceService.replaceAttendanceHistory(crew, newDateTime);
+        OutputView.printEditAttendanceStatus(statusDtos);
     }
 
-    private AttendanceDateTime getAttendanceDateTime(int day) {
-        AttendanceTimeDto attendanceTimeDto = InputView.readAttendanceTime();
+    private void runCheckAttendanceOfCrew() {
+        int untilDay = currentDate.getDayOfMonth(); // 오늘 날짜 이전까지 검색
+        String nickname = InputView.askNickname(false);
+        attendanceService.validateNicknameRegistered(nickname);
 
-        return AttendanceDateTime.of(day, attendanceTimeDto.hour(), attendanceTimeDto.minute());
+        AttendanceStatusesOfCrewDto statusesDto = attendanceService.getAllHistories(Crew.from(nickname), untilDay);
+        OutputView.printAttendanceStatus(statusesDto, nickname);
     }
 
-    private AttendanceDateTime getAttendanceDateTimeWillEditHistory() {
-        int day = InputView.readDay();
-        AttendanceTimeDto attendanceTimeDto = InputView.readAttendanceTimeWillEditHistory();
-
-        return AttendanceDateTime.of(day, attendanceTimeDto.hour(), attendanceTimeDto.minute());
+    private void runCheckCrewOfBanRisk() {
+        int untilDay = currentDate.getDayOfMonth();
+        Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = attendanceService.getAllAttendanceTypeCountOfCrew(untilDay);
+        OutputView.printCrewOfBanRisk(attendanceTypeCountOfCrew);
     }
 }

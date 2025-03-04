@@ -1,123 +1,148 @@
 package service;
 
-import controller.dto.AttendanceHistoryDto;
-import controller.dto.AttendanceHistoryWithPenaltyTypeDto;
-import controller.dto.AttendanceRequestDto;
-import controller.dto.AttendanceTypeCountDto;
-import controller.dto.AttendanceUpdateResultDto;
-import domain.date.AttendanceDate;
-import domain.date.AttendanceDateTime;
-import domain.attendance.AttendanceHistories;
-import domain.attendance.AttendanceHistory;
-import domain.attendance.AttendanceTypeCount;
-import domain.crew.Crew;
-import domain.crew.Crews;
-import domain.attendance.PenaltyType;
+import domain.AttendanceDateTime;
+import domain.AttendanceHistory;
+import domain.AttendanceStorage;
+import domain.AttendanceType;
+import domain.Crew;
+import domain.PenaltyType;
+import dto.AttendanceStatusDto;
+import dto.AttendanceStatusesOfCrewDto;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class AttendanceService {
-    private final Crews crews;
-    private final AttendanceHistories attendanceHistories;
+    private final AttendanceStorage attendanceStorage;
 
-    public AttendanceService(Crews crews, AttendanceHistories attendanceHistories) {
-        this.crews = crews;
-        this.attendanceHistories = attendanceHistories;
+    public AttendanceService(AttendanceStorage attendanceStorage) {
+        this.attendanceStorage = attendanceStorage;
     }
 
-    public void saveCrews(List<String> names) {
-        names.forEach(crews::add);
-    }
-
-    public void checkNicknameIsExisted(String nickname) {
-        crews.findCrewBy(nickname);
-    }
-
-    public void checkAlreadyPresented(String nickname, int day) {
-        Crew foundCrew = crews.findCrewBy(nickname);
-        List<AttendanceHistory> foundHistories = attendanceHistories.findAllHistoriesOf(foundCrew);
-
-        boolean isPresented = foundHistories.stream()
-                .anyMatch(attendanceHistory -> attendanceHistory.getDay() == day);
-
-        if (isPresented) {
-            throw new IllegalArgumentException("이미 출석 내역이 있어서 출석할 수 없습니다. 수정 기능을 이용해주세요.");
+    public void validateNicknameRegistered(String nickname) {
+        if (!attendanceStorage.containsSameNickname(nickname)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }
     }
 
-    public AttendanceHistoryDto applyAttendance(String nickname, AttendanceDateTime attendanceDateTime) {
-        Crew crew = crews.findCrewBy(nickname);
-        attendanceHistories.add(crew, attendanceDateTime);
-        return AttendanceHistoryDto.from(attendanceDateTime);
-    }
-
-    public AttendanceUpdateResultDto editAttendance(String nickname, AttendanceDateTime newDateTime) {
-        Crew crew = crews.findCrewBy(nickname);
-
-        AttendanceHistory newAttendanceHistory = AttendanceHistory.of(crew, newDateTime);
-        AttendanceHistory beforeAttendanceHistory = attendanceHistories.findHistoryBy(newAttendanceHistory);
-
-        attendanceHistories.update(beforeAttendanceHistory, newAttendanceHistory);
-
-        return AttendanceUpdateResultDto.from(beforeAttendanceHistory.getAttendanceDateTime(), newDateTime);
-    }
-
-    public AttendanceHistoryWithPenaltyTypeDto checkAttendanceOf(String nickname, int day) {
-        Crew crew = crews.findCrewBy(nickname);
-        List<AttendanceHistory> foundHistories = attendanceHistories.findHistoriesBefore(crew, day);
-
-        Map<Integer, AttendanceHistoryDto> historyDtoOfDay = new HashMap<>();
-        AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.from(day, foundHistories);
-
-        for (AttendanceHistory history : foundHistories) {
-            historyDtoOfDay.put(history.getDay(), AttendanceHistoryDto.from(history.getAttendanceDateTime()));
+    public void validateHistoryNotDuplicated(Crew crew, LocalDateTime localDateTime) {
+        if (attendanceStorage.containsSameHistoryOf(crew, localDateTime)) {
+            throw new IllegalArgumentException("해당 날짜에 출석 기록이 이미 존재합니다. 수정 기능을 이용해주세요.");
         }
+    }
 
-        for (int currentDay = 1; currentDay < day; currentDay++) {
-            if (AttendanceDate.isRestDay(currentDay)) {
+    public void validateIsSchoolDay(LocalDate localDate) {
+        if (AttendanceDateTime.generateWithoutTimeFrom(localDate).isRestDay()) {
+            throw new IllegalArgumentException(String.format("%d월 %d일 %s은 등교일이 아닙니다.",
+                    localDate.getMonthValue(),
+                    localDate.getDayOfMonth(),
+                    localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+        }
+    }
+
+    public AttendanceStatusDto addAttendanceHistory(Crew crew, LocalDateTime localDateTime) {
+        AttendanceHistory history = AttendanceHistory.of(crew, localDateTime);
+        attendanceStorage.add(history);
+        return AttendanceStatusDto.of(localDateTime, history.getAttendanceType());
+    }
+
+    public List<AttendanceStatusDto> replaceAttendanceHistory(Crew crew, LocalDateTime newLocalDateTime) {
+        AttendanceHistory newHistory = AttendanceHistory.of(crew, newLocalDateTime);
+        int replaceTargetIndex = attendanceStorage.indexOfSameDateAndCrew(newHistory);
+        AttendanceHistory oldHistory = attendanceStorage.getAttendanceHistory(replaceTargetIndex);
+
+        attendanceStorage.replace(newHistory);
+
+        LocalDateTime oldLocalDateTime = oldHistory.getAttendanceDateTime().getLocalDateTime();
+        AttendanceStatusDto oldStatusDto = AttendanceStatusDto.of(oldLocalDateTime, oldHistory.getAttendanceType());
+        AttendanceStatusDto newStatusDto = AttendanceStatusDto.of(newLocalDateTime, newHistory.getAttendanceType());
+
+        return List.of(oldStatusDto, newStatusDto);
+    }
+
+    public AttendanceStatusesOfCrewDto getAllHistories(Crew crew, int untilDay) {
+        List<AttendanceStatusDto> attendanceStatusDtos = new ArrayList<>();
+        Map<Integer, AttendanceHistory> historyForEachDay = getHistoryForEachDay(crew, untilDay);
+        Map<AttendanceType, Integer> attendanceTypeCount = getAttendanceTypeCount(historyForEachDay, untilDay);
+
+        for (int currentDay = 1; currentDay < untilDay; currentDay++) {
+            AttendanceHistory currentDayHistory = historyForEachDay.get(currentDay);
+            if (currentDayHistory.getAttendanceDateTime().isRestDay()) {
                 continue;
             }
-
-            if (!historyDtoOfDay.containsKey(currentDay)) {
-                AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(currentDay, 0, 0);
-                historyDtoOfDay.put(currentDay, AttendanceHistoryDto.from(attendanceDateTime));
-            }
+            attendanceStatusDtos.add(makeAttendanceStatus(currentDayHistory));
         }
 
-        PenaltyType penaltyType = PenaltyType.getPenaltyType(attendanceTypeCount.getTotalAbsenceCount());
-
-        return new AttendanceHistoryWithPenaltyTypeDto(historyDtoOfDay, penaltyType);
+        return new AttendanceStatusesOfCrewDto(attendanceStatusDtos, attendanceTypeCount, PenaltyType.getFrom(attendanceTypeCount));
     }
 
-    public List<AttendanceTypeCountDto> checkWarningCrews(int day) {
-        List<AttendanceTypeCountDto> attendanceTypeCountDtos = new ArrayList<>();
-        for (Crew crew : crews.getCrews()) {
-            List<AttendanceHistory> beforeHistoriesOfCrew = attendanceHistories.findHistoriesBefore(crew, day);
+    public Map<Crew, Map<AttendanceType, Integer>> getAllAttendanceTypeCountOfCrew(int untilDay) {
+        Set<Crew> registeredCrews = attendanceStorage.getCrews();
+        Map<Crew, Map<AttendanceType, Integer>> attendanceTypeCountOfCrew = new HashMap<>();
 
-            AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.from(day, beforeHistoriesOfCrew);
-            PenaltyType penaltyType = PenaltyType.getPenaltyType(attendanceTypeCount.getTotalAbsenceCount());
-            if (penaltyType == PenaltyType.NONE) {
+        for (Crew crew : registeredCrews) {
+            Map<Integer, AttendanceHistory> historyForEachDay = getHistoryForEachDay(crew, untilDay);
+            Map<AttendanceType, Integer> attendanceTypeCount = getAttendanceTypeCount(historyForEachDay, untilDay);
+            attendanceTypeCountOfCrew.put(crew, attendanceTypeCount);
+        }
+
+        return attendanceTypeCountOfCrew;
+    }
+
+    private AttendanceStatusDto makeAttendanceStatus(AttendanceHistory attendanceHistory) {
+        if (attendanceHistory.isRecorded()) {
+            return AttendanceStatusDto.of(
+                    attendanceHistory.getAttendanceDateTime().getLocalDateTime(),
+                    attendanceHistory.getAttendanceType()
+            );
+        }
+
+        return AttendanceStatusDto.generateNotRecordedOf(attendanceHistory.getAttendanceDateTime().getLocalDateTime());
+    }
+
+    private Map<Integer, AttendanceHistory> getHistoryForEachDay(Crew crew, int untilDay) {
+        List<AttendanceHistory> foundHistories = attendanceStorage.getAllHistoriesOf(crew, untilDay);
+        Map<Integer, AttendanceHistory> historyForEachDay = foundHistories.stream()
+                .collect(
+                        Collectors.toMap(
+                                history -> history.getAttendanceDateTime().getLocalDateTime().getDayOfMonth(),
+                                Function.identity()
+                        )
+                );
+
+        // 비어있는 값 (결석) 채우기
+        for (int currentDay = 1; currentDay < untilDay; currentDay++) {
+            if (historyForEachDay.containsKey(currentDay)) {
                 continue;
             }
-
-            attendanceTypeCountDtos.add(AttendanceTypeCountDto.of(crew, attendanceTypeCount, penaltyType));
+            AttendanceDateTime notRecordedAttendance = AttendanceDateTime.generateNotRecordedAttendanceOf(2024, 12, currentDay);
+            AttendanceHistory absenceHistory = AttendanceHistory.of(crew, notRecordedAttendance);
+            historyForEachDay.put(currentDay, absenceHistory);
         }
 
-        return attendanceTypeCountDtos;
+        return historyForEachDay;
     }
 
-    public void initializeAttendanceHistories(List<AttendanceRequestDto> attendanceRequestDtos) {
-        for (AttendanceRequestDto dto : attendanceRequestDtos) {
-            String nickname = dto.nickname();
 
-            Crew crew = crews.findCrewBy(nickname);
-            AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(dto.day(), dto.attendanceTimeDto().hour(),
-                    dto.attendanceTimeDto().minute());
+    private Map<AttendanceType, Integer> getAttendanceTypeCount(Map<Integer, AttendanceHistory> historyForEachDay, int untilDay) {
+        Map<AttendanceType, Integer> attendanceTypeCount = new HashMap<>();
 
-            attendanceHistories.add(crew, attendanceDateTime);
+        for (int currentDay = 1; currentDay < untilDay; currentDay++) {
+            AttendanceHistory currentDayHistory = historyForEachDay.get(currentDay);
+            if (currentDayHistory.getAttendanceDateTime().isRestDay()) {
+                continue;
+            }
+            attendanceTypeCount.merge(currentDayHistory.getAttendanceType(), 1, Integer::sum);
         }
+
+        return attendanceTypeCount;
     }
 }
