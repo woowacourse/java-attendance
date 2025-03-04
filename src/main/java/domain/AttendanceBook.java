@@ -1,5 +1,11 @@
 package domain;
 
+import static global.utils.DateTimeUtil.convertDateWithDayOfWeekFormat;
+import static global.utils.DateTimeUtil.getFixedRunningDate;
+import static global.utils.DateTimeUtil.isDateInAvailableAttendance;
+import static global.utils.DateTimeUtil.isOutOfRunningTime;
+import static global.utils.DateTimeUtil.isWeekday;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -8,8 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static global.utils.DateTimeUtil.*;
 
 public class AttendanceBook {
     private final Map<String, AttendanceRecord> attendance;

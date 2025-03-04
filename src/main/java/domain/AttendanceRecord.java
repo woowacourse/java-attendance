@@ -1,12 +1,14 @@
 package domain;
 
+import static global.utils.DateTimeUtil.getFirstDayOfMonth;
+import static global.utils.DateTimeUtil.getFixedRunningDate;
+import static global.utils.DateTimeUtil.isWeekday;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static global.utils.DateTimeUtil.*;
 
 public class AttendanceRecord {
     private final List<AttendanceDate> attendanceDates;

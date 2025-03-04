@@ -1,5 +1,7 @@
 package global.utils;
 
+import static view.utils.ViewUtil.getDayOfWeekMessage;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,8 +9,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-
-import static view.utils.ViewUtil.getDayOfWeekMessage;
 
 public class DateTimeUtil {
     public static final LocalDateTime FIXED_RUNNING_DATETIME = LocalDateTime.of(2024, 12, 16, 10, 0, 0);

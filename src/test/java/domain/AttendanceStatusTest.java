@@ -2,9 +2,8 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.Test;
 
 class AttendanceStatusTest {
 

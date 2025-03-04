@@ -1,18 +1,18 @@
 package controller;
 
+import static global.utils.DateTimeUtil.getFixedRunningDate;
+import static global.utils.DateTimeUtil.parseDateOfThisMonth;
+import static global.utils.DateTimeUtil.parseTime;
+
 import domain.AttendanceBook;
 import domain.AttendanceDate;
 import global.utils.DateTimeUtil;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import view.InputView;
 import view.Menu;
 import view.OutputView;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
-
-import static global.utils.DateTimeUtil.*;
 
 public class AttendanceController {
     private final InputView inputView;

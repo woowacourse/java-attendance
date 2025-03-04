@@ -2,7 +2,6 @@ package view.utils;
 
 import domain.AttendanceStatus;
 import domain.RiskStatus;
-
 import java.time.DayOfWeek;
 import java.time.format.TextStyle;
 import java.util.Locale;

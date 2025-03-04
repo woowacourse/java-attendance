@@ -1,14 +1,17 @@
 package view;
 
+import static global.utils.DateTimeUtil.convertDateWithDayOfWeekFormat;
+import static global.utils.DateTimeUtil.convertTimeFormat;
+import static view.utils.ViewUtil.getAttendanceStatusMessage;
+import static view.utils.ViewUtil.getEmptyStatusMessage;
+import static view.utils.ViewUtil.getRiskStatusMessage;
+
 import domain.AttendanceDate;
 import domain.AttendanceStatus;
 import domain.RiskStatus;
 import domain.RiskStatusResult;
 import global.utils.DateTimeUtil;
 import java.util.List;
-
-import static view.utils.ViewUtil.*;
-import static global.utils.DateTimeUtil.*;
 
 public class OutputView {
     public void printErrorMessage(Exception e) {

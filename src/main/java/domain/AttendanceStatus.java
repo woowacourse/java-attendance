@@ -1,11 +1,11 @@
 package domain;
 
+import static global.utils.DateTimeUtil.FIXED_RUNNING_DATETIME;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
-import static global.utils.DateTimeUtil.FIXED_RUNNING_DATETIME;
 
 public enum AttendanceStatus {
     ATTENDANCE,
