@@ -1,45 +1,36 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Attendance {
-    private final Day day;
-    private LocalTime attendanceTime;
 
-    public Attendance(Day day, LocalTime attendanceTime) {
-        validateDay(day);
-        this.day = day;
-        this.attendanceTime = attendanceTime;
+    private LocalDateTime localDateTime;
+
+    public Attendance(LocalDateTime localDateTime) {
+        validateWeekday(localDateTime);
+        this.localDateTime = localDateTime;
     }
 
-    private void validateDay(Day day) {
-        if (day.checkHoliday()) {
-            throw new IllegalArgumentException("[ERROR] 등교일이 아닙니다.");
+    private void validateWeekday(LocalDateTime localDateTime) {
+        DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            throw new IllegalArgumentException("[ERROR] 주말은 등교일이 아닙니다.");
         }
     }
 
-    public Boolean isEqualTo(LocalDate date) {
-        return day.isEqualTo(date);
+    public LocalDateTime updateAttendance(LocalTime localTime) {
+        localDateTime = LocalDateTime.of(localDateTime.toLocalDate(), localTime);
+        return localDateTime;
     }
 
-    public boolean isLate() {
-        return day.isLate(attendanceTime);
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
     }
 
-    public boolean isAbsent() {
-        return day.isAbsent(attendanceTime);
-    }
-
-    public void updateAttendanceTime(LocalTime attendanceTime) {
-        this.attendanceTime = attendanceTime;
-    }
-
-    public LocalTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
-    public Day getDay() {
-        return day;
+    public boolean isEqualTo(LocalDate date) {
+        return localDateTime.toLocalDate().equals(date);
     }
 }

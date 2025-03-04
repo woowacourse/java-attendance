@@ -1,6 +1,6 @@
 import controller.AttendanceController;
-import domain.AttendanceHistoryLoader;
-import domain.Crews;
+import domain.AttendancesLoader;
+import domain.TimeMachine;
 import view.InputView;
 import view.OutputView;
 
@@ -9,11 +9,13 @@ import java.io.IOException;
 
 public class Application {
     public static void main(String[] args) throws IOException {
-        AttendanceHistoryLoader attendanceHistoryLoader = new AttendanceHistoryLoader();
-        Crews crews = attendanceHistoryLoader.loadCrews(new FileReader("src/main/resources/attendances12.csv"));
         InputView inputView = new InputView();
         OutputView outputView = new OutputView();
-        AttendanceController attendanceController = new AttendanceController(crews, inputView, outputView);
-        attendanceController.run();
+        AttendancesLoader attendancesLoader = new AttendancesLoader(new FileReader("src/main/resources/attendances25_2.csv"));
+
+        TimeMachine.timeTravelAt(inputView.readTodayDate());
+        AttendanceController controller = new AttendanceController(inputView, outputView, attendancesLoader);
+
+        controller.run();
     }
 }

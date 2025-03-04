@@ -5,58 +5,54 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class InputView {
-    private static final String NICKNAME_INPUT_MESSAGE = "닉네임을 입력해 주세요.";
-    private static final String ATTENDANCE_INPUT_MESSAGE = "등교 시간을 입력해 주세요.";
-    private static final String EDIT_NICKNAME_INPUT_MESSAGE = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
-    private static final String EDIT_DAY_OF_MONTH_INPUT_MESSAGE = "수정하려는 날짜(일)를 입력해 주세요.";
-    private static final String ASK_NEW_TIME_FOR_CHANGE = "언제로 변경하겠습니까?";
-    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
 
-    private static Integer convertStringToInteger(String input) {
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("숫자만 입력 가능합니다.");
-        }
+    public InputView() {
+        this.scanner = new Scanner(System.in);
     }
 
-    public String getNickname() {
-        System.out.println(NICKNAME_INPUT_MESSAGE);
-        return scanner.nextLine();
-    }
-
-    public LocalTime getAttendanceTime() {
-        System.out.println(ATTENDANCE_INPUT_MESSAGE);
-        return convertStringToLocalTime(scanner.nextLine());
-    }
-
-    public String getEditNickname() {
-        System.out.println(EDIT_NICKNAME_INPUT_MESSAGE);
-        return scanner.nextLine();
-    }
-
-    public Integer getEditDayOfMonth() {
-        System.out.println(EDIT_DAY_OF_MONTH_INPUT_MESSAGE);
+    public Integer readTodayDate() {
+        System.out.println("오늘은 2월 며칠인가요? 일자를 입력해주세요.");
         return convertStringToInteger(scanner.nextLine());
     }
 
-    public LocalTime getNewTime() {
-        System.out.println(ASK_NEW_TIME_FOR_CHANGE);
-        return convertStringToLocalTime(scanner.nextLine());
-    }
-
-    public String getOption() {
+    public String readNickname() {
+        System.out.println("\n닉네임을 입력해 주세요.");
         return scanner.nextLine();
     }
 
-    private LocalTime convertStringToLocalTime(String timeInput) {
+    public LocalTime readAttendanceTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        return LocalTime.parse(scanner.nextLine(), formatter);
+    }
+
+    public String readUpdateNickname() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
+
+    public int readUpdateDayOfMonth() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return convertStringToInteger(scanner.nextLine());
+    }
+
+    public LocalTime readUpdateAttendanceTime() {
+        System.out.println("언제로 변경하시겠습니까?");
+        return LocalTime.parse(scanner.nextLine(), formatter);
+    }
+
+    public String readOptionNumber() {
+        return scanner.nextLine();
+    }
+
+    private Integer convertStringToInteger(String input) {
         try {
-            return LocalTime.parse(timeInput, formatter);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("[ERROR] 입력된 시간 형식이 적절하지 않습니다.");
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("[ERROR] 숫자만 입력 가능합니다.");
         }
     }
 }

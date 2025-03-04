@@ -1,94 +1,99 @@
 package controller;
 
 import domain.*;
-import domain.constant.StandardDate;
 import view.InputView;
 import view.OutputView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AttendanceController {
-    private static final String EXIT_OPTION = "Q";
 
-    private final Crews crews;
+    private static final String EXIT = "Q";
+
     private final InputView inputView;
     private final OutputView outputView;
-    private final Map<Command, Runnable> options;
+    private final Attendances attendances;
+    private final Map<Command, Runnable> commandOption = Map.of(
+            Command.ATTENDANCE_REGISTER, this::registerAttendance,
+            Command.ATTENDANCE_UPDATE, this::updateAttendance,
+            Command.ATTENDANCE_CHECK, this::identifyAttendanceLogsWithCrew,
+            Command.PENALTY_CHECK, this::identifyPenaltyCrews
+    );
 
-    public AttendanceController(Crews crews, InputView inputView, OutputView outputView) {
-        this.crews = crews;
+    public AttendanceController(InputView inputView, OutputView outputView, AttendancesLoader loader) throws IOException {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.options = Map.of(
-                Command.ATTEND, this::processAttendance,
-                Command.UPDATE, this::processAttendanceUpdate,
-                Command.HISTORY, this::processAttendanceHistory,
-                Command.PENALTY, this::processPenaltyCheck
-        );
+        this.attendances = initializeAttendances(loader);
+    }
+
+    public Attendances initializeAttendances(AttendancesLoader loader) throws IOException {
+        Attendances attendances = new Attendances(new HashMap<>());
+        attendances.initializeLogs(loader.load());
+        return attendances;
     }
 
     public void run() {
-        crews.recordAllAbsence(StandardDate.TODAY);
-
-        String inputOption = "";
-
-        while (!EXIT_OPTION.equals(inputOption)) {
-            outputView.printOptionMessage(StandardDate.TODAY.getDate());
-            inputOption = inputView.getOption();
-
-            selectCommandAndRun(inputOption);
+        attendances.recordAllAbsences();
+        String command = "";
+        while (!EXIT.equals(command)) {
+            outputView.printOptionMessage();
+            command = inputView.readOptionNumber();
+            runCommand(command);
         }
     }
 
-    public void selectCommandAndRun(String inputOption) {
-        Command command = Command.check(inputOption);
-        if (options.containsKey(command)) {
-            options.get(command).run();
+    public void runCommand(String inputOption) {
+        Command command = Command.identify(inputOption);
+        commandOption.get(command).run();
+    }
+
+    private void registerAttendance() {
+        Nickname nickname = attendances.checkCrewName(new Nickname(inputView.readNickname()));
+        LocalTime attendanceTime = inputView.readAttendanceTime();
+        LocalDateTime localDateTime = LocalDateTime.of(TimeMachine.dateOfNow(), attendanceTime);
+        attendances.addAttendanceLog(nickname, localDateTime);
+        outputView.printAttendanceCheckMessage(localDateTime);
+    }
+
+    private void updateAttendance() {
+        Nickname nickname = attendances.checkCrewName(new Nickname(inputView.readUpdateNickname()));
+        int updateDayOfMonth = inputView.readUpdateDayOfMonth();
+        validateDayOfMonth(updateDayOfMonth);
+        LocalDate updateDate = getUpdateDate(updateDayOfMonth);
+
+        Attendance originalAttendance = attendances.findLogWithNameAndDate(nickname, updateDate);
+        LocalDateTime originalDateTime = originalAttendance.getLocalDateTime();
+
+        LocalDateTime updateDateTime = LocalDateTime.of(updateDate, inputView.readUpdateAttendanceTime());
+        attendances.updateAttendance(nickname, updateDateTime);
+        outputView.printUpdatedAttendanceMessage(originalDateTime, updateDateTime);
+    }
+
+    private LocalDate getUpdateDate(int updateDayOfMonth) {
+        LocalDate today = TimeMachine.dateOfNow();
+        return LocalDate.of(today.getYear(), today.getMonthValue(), updateDayOfMonth);
+    }
+
+    private void identifyAttendanceLogsWithCrew() {
+        Nickname nickname = attendances.checkCrewName(new Nickname(inputView.readNickname()));
+        outputView.printAttendanceLogsWithCrew(nickname, attendances);
+
+    }
+
+    private void identifyPenaltyCrews() {
+        outputView.printPenaltyCrews(attendances);
+    }
+
+    private void validateDayOfMonth(int updateDate) {
+        LocalDate today = TimeMachine.dateOfNow();
+        int endDayOfMonth = today.lengthOfMonth();
+        if (1 > updateDate || endDayOfMonth < updateDate) {
+            throw new IllegalArgumentException("[ERROR] 수정 일자가 해당 월의 일자 범위를 벗어납니다.");
         }
-    }
-
-    public void processAttendance() {
-        StandardDate.TODAY.validateNonHoliday();
-        Crew crew = crews.findByNickname(inputView.getNickname());
-
-        if (crew.isAlreadyAttend(StandardDate.TODAY.getDate())) {
-            System.out.println("이미 출석 완료되었습니다. 수정 기능을 이용해주세요.");
-            return;
-        }
-
-        registerAttendance(crew);
-    }
-
-    private void registerAttendance(Crew crew) {
-        Attendance attendance = new Attendance(StandardDate.TODAY, inputView.getAttendanceTime());
-        crew.addAttendance(attendance);
-        outputView.printAttendanceInformation(attendance);
-    }
-
-    public void processAttendanceUpdate() {
-        Crew crew = crews.findByNickname(inputView.getEditNickname());
-        Attendance attendance = crew.findByDate(inputView.getEditDayOfMonth());
-        Attendance originalAttendance = new Attendance(attendance.getDay(), attendance.getAttendanceTime());
-        attendance.updateAttendanceTime(inputView.getNewTime());
-        outputView.printUpdatedAttendanceHistory(originalAttendance, attendance);
-    }
-
-    public void processAttendanceHistory() {
-        String nickname = inputView.getNickname();
-
-        outputView.printCrewAttendanceHistoryMessage(nickname);
-        outputView.printAttendanceHistoryWithCrew(crews.findByNickname(nickname));
-    }
-
-    public void processPenaltyCheck() {
-        List<Crew> penaltyCrews = crews.getAllCrews().stream()
-                .filter(crew -> crew.getPenaltyStatus() != PenaltyStatus.NONE)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        outputView.printPenaltyCrews(penaltyCrews);
     }
 }
-

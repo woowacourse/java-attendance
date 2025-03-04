@@ -4,16 +4,16 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public enum Holiday {
-    CHRISTMAS(LocalDate.of(2024, 12, 25));
+    WOOTECO_START_DAY(LocalDate.of(2025, 2, 11));
 
-    private final LocalDate holiday;
+    private final LocalDate date;
 
-    Holiday(LocalDate holiday) {
-        this.holiday = holiday;
+    Holiday(LocalDate date) {
+        this.date = date;
     }
 
-    public static boolean isHoliday(LocalDate date) {
+    public static boolean check(LocalDate date) {
         return Arrays.stream(values())
-                .anyMatch(holiday -> holiday.holiday.isEqual(date));
+                .anyMatch(holiday -> holiday.date.equals(date));
     }
 }
