@@ -10,8 +10,7 @@ public class AttendanceBook {
     private final AttendanceStatuses attendanceStatuses;
 
     public AttendanceBook() {
-        attendanceBook = new HashMap<>();
-        attendanceStatuses = new AttendanceStatuses();
+        this(new HashMap<>(), new HashMap<>());
     }
 
     public AttendanceBook(Map<AttendanceDate, AttendanceTime> attendanceBook, Map<AttendanceDate, AttendanceStatus> attendanceStatuses) {

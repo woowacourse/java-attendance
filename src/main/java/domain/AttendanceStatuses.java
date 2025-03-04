@@ -3,15 +3,10 @@ package domain;
 import util.Dates;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceStatuses {
     private final Map<AttendanceDate, AttendanceStatus> attendanceStatuses;
-
-    public AttendanceStatuses() {
-        attendanceStatuses = new HashMap<>();
-    }
 
     public AttendanceStatuses(Map<AttendanceDate, AttendanceStatus> attendanceStatuses) {
         this.attendanceStatuses = attendanceStatuses;
