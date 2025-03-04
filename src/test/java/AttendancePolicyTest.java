@@ -9,7 +9,6 @@ import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendancePolicyTest extends BaseAttendanceTest {
 
@@ -29,11 +28,9 @@ public class AttendancePolicyTest extends BaseAttendanceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"07:59", "23:01"})
-    void 캠퍼스_운영_시간이_아니면_예외가_발생한다(String time) {
-        LocalTime todayTime = LocalTime.of(
-                Integer.parseInt(time.split(":")[0]),
-                Integer.parseInt(time.split(":")[1]));
+    @CsvSource(value = {"07:59", "23:01"}, delimiter = ':')
+    void 캠퍼스_운영_시간이_아니면_예외가_발생한다(int hour, int minute) {
+        LocalTime todayTime = LocalTime.of(hour, minute);
 
         assertThatThrownBy(() -> new AttendancePolicy().validateCampusOpen(todayTime))
                 .isInstanceOf(IllegalArgumentException.class)
