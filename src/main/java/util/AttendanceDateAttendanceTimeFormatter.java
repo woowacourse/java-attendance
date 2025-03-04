@@ -21,7 +21,7 @@ public class AttendanceDateAttendanceTimeFormatter {
     private static final DateTimeFormatter HOUR_MINUTE = DateTimeFormatter.ofPattern(TIME_PATTERN);
 
     public static String createAttendanceResultMessage(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
-        if (attendanceTime.isZeroTime()) {
+        if (attendanceTime.isMissingAttendanceTime()) {
             return attendanceDate.toLocalDate().format(KOREAN_DATE_FORMATTER) + EMPTY_TIME_PATTERN;
         }
         return attendanceDate.toLocalDate().format(KOREAN_DATE_FORMATTER) + SPACE + attendanceTime.toLocalTime().format(HOUR_MINUTE);

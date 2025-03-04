@@ -15,7 +15,7 @@ public enum AttendanceStatusEvaluator {
     }
 
     public static AttendanceStatus calculateAttendanceStatus(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
-        if (attendanceTime.isZeroTime()) {
+        if (attendanceTime.isMissingAttendanceTime()) {
             return AttendanceStatus.ABSENT;
         }
         if (attendanceDate.isMonday()) {

@@ -40,7 +40,7 @@ public class AttendanceTimeTest {
     void test6() {
         AttendanceTime attendanceTime1 = new AttendanceTime(LocalTime.of(0, 0));
         Assertions.assertTrue(
-                attendanceTime1.isZeroTime()
+                attendanceTime1.isMissingAttendanceTime()
         );
     }
 }

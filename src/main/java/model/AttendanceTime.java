@@ -7,6 +7,7 @@ public class AttendanceTime {
     private final LocalTime attendanceTime;
     private static final LocalTime OPEN_TIME = LocalTime.of(8, 0);
     private static final LocalTime END_TIME = LocalTime.of(23, 0);
+    private static final LocalTime MISSING_ATTENDANCE_TIME = LocalTime.of(0, 0);
 
     public AttendanceTime(LocalTime attendanceTime) {
         this.attendanceTime = attendanceTime;
@@ -20,8 +21,8 @@ public class AttendanceTime {
         return attendanceTime.isBefore(OPEN_TIME) || attendanceTime.isAfter(END_TIME);
     }
 
-    public boolean isZeroTime() {
-        return this.toLocalTime().equals(LocalTime.of(0, 0));
+    public boolean isMissingAttendanceTime() {
+        return this.toLocalTime().equals(MISSING_ATTENDANCE_TIME);
     }
 
     public LocalTime toLocalTime() {
