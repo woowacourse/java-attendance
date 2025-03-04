@@ -86,14 +86,18 @@ public class AttendanceBookTest {
 
         // given
         final AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 2, 24), 10, 10));
+        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 3, 4), 10, 5));
+        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 3, 5), 10, 6));
+        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 3, 6), 10, 30));
+        attendanceBook.add("이름1", new AttendanceTime(LocalDate.of(2025, 3, 7), 10, 31));
 
         // when
-        attendanceBook.initCrewsAbsence();
+        final LocalDate localDate = LocalDate.of(2025, 3, 14);
+        attendanceBook.initCrewsAbsence(localDate);
 
         // then
         Assertions.assertThat(attendanceBook.getAttendancesByName("이름1").size())
-                .isEqualTo(LocalDate.now().getDayOfMonth() - getWeekendCount());
+                .isEqualTo(localDate.getDayOfMonth() - getWeekendCount(localDate) - 1);
     }
 
     @ParameterizedTest
@@ -154,12 +158,11 @@ public class AttendanceBookTest {
         );
     }
 
-    private int getWeekendCount() {
+    private int getWeekendCount(final LocalDate today) {
 
         int count = 0;
-        LocalDate now = LocalDate.now();
-        for (int day = 1; day < now.getDayOfMonth(); day++) {
-            LocalDate localDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            LocalDate localDate = LocalDate.of(today.getYear(), today.getMonthValue(), day);
             if (AttendanceTime.isWeekend(localDate.getDayOfWeek())) {
                 count++;
             }

@@ -39,10 +39,10 @@ public class AttendanceBook {
         return attendances.get(name).getHistory();
     }
 
-    public void initCrewsAbsence() {
+    public void initCrewsAbsence(final LocalDate today) {
 
         for (String name : attendances.keySet()) {
-            initAbsence(name);
+            initAbsence(name, today);
         }
     }
 
@@ -60,10 +60,10 @@ public class AttendanceBook {
         return expulsionCandidates;
     }
 
-    private void initAbsence(final String name) {
+    private void initAbsence(final String name, final LocalDate today) {
 
         LocalDate now = LocalDate.now();
-        for (int day = 1; day < now.getDayOfMonth(); day++) {
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
             LocalDate attendDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
             judgeAbsence(name, attendDate);
         }

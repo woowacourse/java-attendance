@@ -42,7 +42,7 @@ public class AttendanceController {
     private static void initAttendances(final AttendanceBook attendanceBook) {
 
         AttendanceReader.initAttendances(attendanceBook, new ReaderImpl());
-        attendanceBook.initCrewsAbsence();
+        attendanceBook.initCrewsAbsence(LocalDate.now());
     }
 
     private void runSystem(final AttendanceBook attendanceBook) {
