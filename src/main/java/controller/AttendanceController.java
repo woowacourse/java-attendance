@@ -1,6 +1,5 @@
 package controller;
 
-import static view.UserCommandType.INITIAL;
 import static view.UserCommandType.QUIT;
 import static view.UserCommandType.getCommand;
 import static view.UserCommandType.validateInput;
@@ -43,14 +42,16 @@ public class AttendanceController {
     public void run() {
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.load(today);
-        UserCommandType userCommandType = INITIAL;
+        UserCommandType userCommandType;
+        
         try {
-            while (userCommandType != QUIT) {
+            do {
                 String userInput = inputView.insertCommandType(today);
-                validateInput(userInput);
                 userCommandType = getCommand(userInput);
+                validateInput(userInput);
                 executeCommand(userCommandType, crewGroup);
             }
+            while (userCommandType != QUIT);
         } catch (Exception e) {
             outputView.printExceptionLog(e);
         }
