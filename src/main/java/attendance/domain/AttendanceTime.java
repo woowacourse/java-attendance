@@ -4,15 +4,12 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class AttendanceTime {
+public record AttendanceTime(LocalTime attendanceTime) {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    private final LocalTime attendanceTime;
-
-    public AttendanceTime(final LocalTime attendanceTime) {
+    public AttendanceTime {
         validateOutOfCampusOperationTime(attendanceTime);
-        this.attendanceTime = attendanceTime;
     }
 
     private void validateOutOfCampusOperationTime(final LocalTime attendanceTime) {
@@ -28,10 +25,6 @@ public class AttendanceTime {
                 && (attendanceTime.isBefore(endInclusive) || attendanceTime.equals(endInclusive));
     }
 
-    public LocalTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -41,11 +34,6 @@ public class AttendanceTime {
             return false;
         }
         return Objects.equals(attendanceTime, that.attendanceTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(attendanceTime);
     }
 
 }

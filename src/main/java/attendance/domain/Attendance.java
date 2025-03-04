@@ -71,11 +71,11 @@ public class Attendance implements Comparable<Attendance> {
     }
 
     public LocalDate getAttendanceLocalDate() {
-        return attendanceDate.getAttendanceDate();
+        return attendanceDate.attendanceDate();
     }
 
     public LocalTime getAttendanceLocalTime() {
-        return attendanceTime.getAttendanceTime();
+        return attendanceTime.attendanceTime();
     }
 
     public boolean hasRecord() {

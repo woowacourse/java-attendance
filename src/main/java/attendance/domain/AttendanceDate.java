@@ -6,16 +6,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Objects;
 
-public class AttendanceDate implements Comparable<AttendanceDate> {
+public record AttendanceDate(LocalDate attendanceDate) implements Comparable<AttendanceDate> {
 
     private static final DateTimeFormatter MONTH_DAY_DAY_OF_WEEK =
             DateTimeFormatter.ofPattern("M월 d일 E요일", Locale.KOREA);
 
-    private final LocalDate attendanceDate;
-
-    public AttendanceDate(final LocalDate attendanceDate) {
+    public AttendanceDate {
         validateCampusHoliday(attendanceDate);
-        this.attendanceDate = attendanceDate;
     }
 
     private void validateCampusHoliday(final LocalDate attendanceDate) {
@@ -42,10 +39,6 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
         return attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY);
     }
 
-    public LocalDate getAttendanceDate() {
-        return attendanceDate;
-    }
-
     @Override
     public int compareTo(final AttendanceDate o) {
         return this.attendanceDate.compareTo(o.attendanceDate);
@@ -60,11 +53,6 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
             return false;
         }
         return Objects.equals(attendanceDate, that.attendanceDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(attendanceDate);
     }
 
 }
