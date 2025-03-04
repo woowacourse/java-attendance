@@ -66,4 +66,16 @@ public class StudentsTest {
                 ),
                 new AttendanceTime(LocalTime.of(0, 0)));
     }
+
+    @Test
+    @DisplayName("학생의 이름과 일자를 받아 이미 출석한 요일인지 확인하는 메서드 테스트")
+    void test4() {
+        String name = "이든";
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 12));
+        org.assertj.core.api.Assertions.assertThatThrownBy(
+                () -> students.validateAlreadyExistAttendanceDate(name, attendanceDate)
+        )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 이미 출석한 요일입니다. 다시 출석하고 싶으면 수정 기능을 이용해 주세요.");
+    }
 }
