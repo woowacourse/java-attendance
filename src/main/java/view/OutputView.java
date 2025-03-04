@@ -19,14 +19,15 @@ import util.DateUtil;
 
 public final class OutputView {
 
+    private static final ResourceBundle RESOURCE_STATUS = ResourceBundle.getBundle("attendanceStatus");
+
     private OutputView() {
     }
 
     public static void printAttendanceCheck(final LocalDateTime time, final String attendanceStatus) {
-        final ResourceBundle bundle = ResourceBundle.getBundle("attendanceStatus");
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 dd일 EEEE HH:mm", Locale.KOREAN);
 
-        printF("%n %s (%s)%n", time.format(formatter), bundle.getString(attendanceStatus));
+        printF("%n %s (%s)%n", time.format(formatter), RESOURCE_STATUS.getString(attendanceStatus));
     }
 
     public static void printEditAttendanceDateTime(final AttendanceRecord beforeRecord,
@@ -36,13 +37,12 @@ public final class OutputView {
         final AttendanceDateTime afterAttendanceDateTime = afterRecord.getAttendanceDateTime();
         final LocalDateTime afterDateTime = afterAttendanceDateTime.getDateTime();
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 dd일 EEEE HH:mm", Locale.KOREAN);
-        final ResourceBundle bundle = ResourceBundle.getBundle("attendanceStatus");
 
         printF("%n %s (%s) -> %s (%s) 수정 완료!%n",
                 beforeDateTime.format(formatter),
-                bundle.getString(beforeRecord.getAttendanceStatus().name()),
+                RESOURCE_STATUS.getString(beforeRecord.getAttendanceStatus().name()),
                 afterDateTime.toLocalTime(),
-                bundle.getString(afterRecord.getAttendanceStatus().name())
+                RESOURCE_STATUS.getString(afterRecord.getAttendanceStatus().name())
         );
     }
 
@@ -63,13 +63,11 @@ public final class OutputView {
         printAttendanceCounts(attendanceRecords);
 
         if (disciplinaryStatus != DisciplinaryStatus.NONE) {
-            final ResourceBundle bundle = ResourceBundle.getBundle("disciplinaryStatus");
-            printF("%n%s 대상자입니다.%n", bundle.getString(disciplinaryStatus.name()));
+            printF("%n%s 대상자입니다.%n", RESOURCE_STATUS.getString(disciplinaryStatus.name()));
         }
     }
 
     private static void printAttendanceInRecord(final AttendanceRecord attendanceRecord) {
-        final ResourceBundle bundle = ResourceBundle.getBundle("attendanceStatus");
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 dd일 EEEE HH:mm", Locale.KOREAN);
         final DateTimeFormatter absenceFormat = DateTimeFormatter.ofPattern("M월 dd일 EEEE", Locale.KOREAN);
         final AttendanceDateTime attendanceDateTime = attendanceRecord.getAttendanceDateTime();
@@ -77,30 +75,29 @@ public final class OutputView {
         final AttendanceStatus attendanceStatus = attendanceRecord.getAttendanceStatus();
 
         if (dateTime.toLocalTime().equals(LocalTime.of(0, 0))) {
-            printF("%s --:-- (%s)%n", dateTime.format(absenceFormat), bundle.getString(attendanceStatus.name()));
+            printF("%s --:-- (%s)%n", dateTime.format(absenceFormat),
+                    RESOURCE_STATUS.getString(attendanceStatus.name()));
             return;
         }
 
-        printF("%s (%s)%n", dateTime.format(formatter), bundle.getString(attendanceStatus.name()));
+        printF("%s (%s)%n", dateTime.format(formatter), RESOURCE_STATUS.getString(attendanceStatus.name()));
     }
 
     private static void printAttendanceCounts(final AttendanceRecords attendanceRecords) {
         final AttendanceStatusCounts attendanceStatusCounts = attendanceRecords.getAttendanceStatusCounts();
-        final ResourceBundle resourceBundle = ResourceBundle.getBundle("attendanceStatus");
         final int present = attendanceStatusCounts.getAttendance();
         final int late = attendanceStatusCounts.getLate();
         final int absent = attendanceStatusCounts.getAbsence();
-        printF("%n%s: %d회%n", resourceBundle.getString("PRESENT"), present);
-        printF("%s: %d회%n", resourceBundle.getString("LATE".toUpperCase()), late);
-        printF("%s: %d회%n", resourceBundle.getString("ABSENT"), absent);
+        printF("%n%s: %d회%n", RESOURCE_STATUS.getString("PRESENT"), present);
+        printF("%s: %d회%n", RESOURCE_STATUS.getString("LATE".toUpperCase()), late);
+        printF("%s: %d회%n", RESOURCE_STATUS.getString("ABSENT"), absent);
     }
 
     public static void printRiskMembers(final List<Crew> disciplinaryCrews) {
         printF("%n제적 위험자 조회 결과%n");
         disciplinaryCrews.forEach(crew -> {
             final DisciplinaryStatus disciplinaryStatus = crew.getDisciplinaryStatus();
-            final ResourceBundle bundle = ResourceBundle.getBundle("disciplinaryStatus");
-            final String status = bundle.getString(disciplinaryStatus.name());
+            final String status = RESOURCE_STATUS.getString(disciplinaryStatus.name());
             final Nickname nickname = crew.getNickname();
             final AttendanceRecords attendanceRecords = crew.getAttendanceRecords();
             final AttendanceStatusCounts attendanceStatusCounts = attendanceRecords.getAttendanceStatusCounts();
