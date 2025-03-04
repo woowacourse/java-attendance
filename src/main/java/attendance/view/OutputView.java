@@ -6,7 +6,9 @@ import static attendance.domain.AttendanceStatus.LATENESS;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.EmptyLocalTime;
 import attendance.domain.LocalDateProvider;
+import attendance.domain.NullableLocalTime;
 import attendance.domain.WarningLevel;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -17,7 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class OutputView {
@@ -41,47 +43,50 @@ public class OutputView {
         this.checker = checker;
     }
 
-    public void printCheckAttendanceResult(LocalTime enterTime) {
+    public void printCheckAttendanceResult(NullableLocalTime enterTime) {
         LocalDate now = dateProvider.now();
         System.out.print(
                 createAttendanceDescription(now, enterTime, AttendanceStatus.of(now, enterTime)));
     }
 
-    private String createAttendanceDescription(LocalDate date, LocalTime enterTime, AttendanceStatus status) {
+    private String createAttendanceDescription(LocalDate date, NullableLocalTime enterTime, AttendanceStatus status) {
         return String.format(ATTENDANCE_DESCRIPTION_FORMAT,
                 date.getMonthValue(),
                 date.getDayOfMonth(),
                 getDisplayName(date),
-                formatAttendanceTime(Optional.ofNullable(enterTime)),
+                formatAttendanceTime(enterTime),
                 status.getStatus()
         );
     }
 
-    public void printModifyAttendanceResult(Optional<LocalTime> prevTime, LocalDate date, LocalTime modifyTime) {
+    public void printModifyAttendanceResult(NullableLocalTime prevTime, LocalDate date, NullableLocalTime modifyTime) {
         System.out.printf(MODIFY_ATTENDANCE_PRINT_FORMAT,
                 date.getMonthValue(),
                 date.getDayOfMonth(),
                 getDisplayName(date),
                 formatAttendanceTime(prevTime),
                 formatAttendanceStatus(date, prevTime),
-                formatAttendanceTime(Optional.ofNullable(modifyTime)),
-                formatAttendanceStatus(date, Optional.ofNullable(modifyTime))
+                formatAttendanceTime(modifyTime),
+                formatAttendanceStatus(date, modifyTime)
         );
     }
 
-    private String formatAttendanceTime(Optional<LocalTime> time) {
-        return time.map(this::toTimeString).orElse(EMPTY_ATTENDANCE_TIME_MESSAGE);
+    private String formatAttendanceTime(NullableLocalTime time) {
+        if (time.isPresent()) {
+            return toTimeString(time.getTime());
+        }
+        return EMPTY_ATTENDANCE_TIME_MESSAGE;
     }
 
     private String toTimeString(LocalTime time) {
         return time.format(PRINT_ATTENDANCE_TIME_FORMATTER);
     }
 
-    private String formatAttendanceStatus(LocalDate date, Optional<LocalTime> time) {
-        if (time.isEmpty()) {
-            return EMPTY_ATTENDANCE_STATUS_MESSAGE;
+    private String formatAttendanceStatus(LocalDate date, NullableLocalTime time) {
+        if (time.isPresent()) {
+            return AttendanceStatus.of(date, time).getStatus();
         }
-        return AttendanceStatus.of(date, time.get()).getStatus();
+        return EMPTY_ATTENDANCE_STATUS_MESSAGE;
     }
 
     public void printAttendanceRecords(String crewName, Map<LocalDate, Attendance> crewAttendances) {
@@ -90,7 +95,7 @@ public class OutputView {
         LocalDate now = dateProvider.now();
         IntStream.range(1, now.getDayOfMonth())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
-                .filter(checker::isCampusOpenDate)
+                .filter(date -> checker.isCampusOpenDate(date))
                 .forEach(date -> {
                     builder.append(toAttendanceRecordString(crewAttendances, date));
                 });
@@ -102,7 +107,7 @@ public class OutputView {
             Attendance attendance = crewAttendances.get(date);
             return createAttendanceDescription(date, attendance.time(), attendance.status());
         }
-        return createAttendanceDescription(date, null, ABSENCE);
+        return createAttendanceDescription(date, new EmptyLocalTime(), ABSENCE);
     }
 
     public void printAttendanceStatusCount(Map<AttendanceStatus, Integer> statusCounts) {
@@ -128,7 +133,7 @@ public class OutputView {
         builder.append(WARNING_CREW_PRINT_HEADER);
         List<Entry<String, Integer>> sortedCrewAbsence = totalAbsence.entrySet().stream()
                 .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()))
-                .toList();
+                .collect(Collectors.toList());
 
         appendWarningCrew(builder, crewsStatusCount, sortedCrewAbsence);
         System.out.println(builder);
@@ -154,11 +159,13 @@ public class OutputView {
 
     private Map<String, Integer> calculateTotalAbsence(Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount) {
         Map<String, Integer> totalAbsence = new HashMap<>();
-        crewsStatusCount.forEach((key, statusCount) -> {
-            int absenceCount = statusCount.get(AttendanceStatus.PRESENT) +
-                    WarningLevel.calculateTotalAbsenceCount(statusCount.get(LATENESS));
-            totalAbsence.put(key, absenceCount);
-        });
+        crewsStatusCount.entrySet()
+                .forEach(entry -> {
+                    Map<AttendanceStatus, Integer> statusCount = entry.getValue();
+                    int absenceCount = statusCount.get(AttendanceStatus.PRESENT) +
+                            WarningLevel.calculateTotalAbsenceCount(statusCount.get(LATENESS));
+                    totalAbsence.put(entry.getKey(), absenceCount);
+                });
         return totalAbsence;
     }
 

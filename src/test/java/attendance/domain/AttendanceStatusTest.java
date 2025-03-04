@@ -28,7 +28,7 @@ public class AttendanceStatusTest {
         LocalDate date = LocalDateTestFixture.createRegularDate();
         LocalTime time = LocalTime.of(hour, minute);
 
-        AttendanceStatus status = AttendanceStatus.of(date, time);
+        AttendanceStatus status = AttendanceStatus.of(date, new AttendanceLocalTime(time));
 
         assertThat(status).isEqualTo(expected);
     }
@@ -46,7 +46,7 @@ public class AttendanceStatusTest {
         LocalDate date = LocalDateTestFixture.createMondayDate();
         LocalTime time = LocalTime.of(hour, minute);
 
-        AttendanceStatus status = AttendanceStatus.of(date, time);
+        AttendanceStatus status = AttendanceStatus.of(date, new AttendanceLocalTime(time));
 
         assertThat(status).isEqualTo(expected);
     }

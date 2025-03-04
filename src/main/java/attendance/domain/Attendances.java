@@ -14,7 +14,7 @@ public class Attendances {
     }
 
     public void addAttendance(LocalDate date, LocalTime time) {
-        attendances.put(date, new Attendance(date, time));
+        attendances.put(date, new Attendance(date, new AttendanceLocalTime(time)));
     }
 
     public boolean isAttendedDate(LocalDate attendDate) {
@@ -26,6 +26,9 @@ public class Attendances {
     }
 
     public Attendance getCurrentAttendance(LocalDate date) {
-        return attendances.get(date);
+        if (attendances.containsKey(date)) {
+            return attendances.get(date);
+        }
+        return new Attendance(date, new EmptyLocalTime());
     }
 }

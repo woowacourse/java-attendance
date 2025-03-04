@@ -20,8 +20,8 @@ public class AttendanceTest {
         int minute = 30;
         LocalTime time = LocalTime.of(hour, minute);
         LocalDate date = LocalDateTestFixture.createRegularDate();
-        Attendance attendance = new Attendance(date, time);
-        LocalTime attendTime = attendance.time();
+        Attendance attendance = new Attendance(date, new AttendanceLocalTime(time));
+        LocalTime attendTime = attendance.time().getTime();
 
         assertThat(attendTime.getHour()).isEqualTo(10);
         assertThat(attendTime.getMinute()).isEqualTo(30);

@@ -1,8 +1,10 @@
 package attendance.controller;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceLocalTime;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.NullableLocalTime;
 import attendance.domain.WarningLevel;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -10,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class AttendanceController {
     private final Map<AttendanceCommand, Runnable> commands;
@@ -66,7 +67,7 @@ public class AttendanceController {
         LocalTime enterTime = inputView.inputEnterTime();
         attendanceManager.attend(crewName, enterTime);
 
-        outputView.printCheckAttendanceResult(enterTime);
+        outputView.printCheckAttendanceResult(new AttendanceLocalTime(enterTime));
     }
 
     private void modifyAttendance(AttendanceManager attendanceManager) {
@@ -74,9 +75,9 @@ public class AttendanceController {
         attendanceManager.validateExistCrew(crewName);
         LocalDate modifyDate = inputView.inputModifyDate();
         LocalTime modifyTime = inputView.inputModifyTime();
-        Optional<LocalTime> prevTime = attendanceManager.modify(crewName, modifyDate, modifyTime);
+        NullableLocalTime prevTime = attendanceManager.modify(crewName, modifyDate, modifyTime);
 
-        outputView.printModifyAttendanceResult(prevTime, modifyDate, modifyTime);
+        outputView.printModifyAttendanceResult(prevTime, modifyDate, new AttendanceLocalTime(modifyTime));
     }
 
     private void viewAttendanceRecord(AttendanceManager attendanceManager) {

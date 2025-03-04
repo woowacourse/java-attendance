@@ -24,11 +24,14 @@ public enum AttendanceStatus {
         this.mondayCondition = mondayCondition;
     }
 
-    public static AttendanceStatus of(LocalDate date, LocalTime time) {
-        if (isMonday(date)) {
-            return calculateMondayStatus(time);
+    public static AttendanceStatus of(LocalDate date, NullableLocalTime time) {
+        if (!time.isPresent()) {
+            return ABSENCE;
         }
-        return calculateRegularStatus(time);
+        if (isMonday(date)) {
+            return calculateMondayStatus(time.getTime());
+        }
+        return calculateRegularStatus(time.getTime());
     }
 
     private static AttendanceStatus calculateMondayStatus(LocalTime time) {

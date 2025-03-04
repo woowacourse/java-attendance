@@ -1,10 +1,9 @@
 package attendance.domain;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
-public record Attendance(LocalTime time, AttendanceStatus status) {
-    public Attendance(LocalDate date, LocalTime time) {
+public record Attendance(NullableLocalTime time, AttendanceStatus status) {
+    public Attendance(LocalDate date, NullableLocalTime time) {
         this(time, AttendanceStatus.of(date, time));
     }
 }

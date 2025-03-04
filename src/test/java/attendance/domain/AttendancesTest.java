@@ -30,7 +30,7 @@ class AttendancesTest {
         attendances.addAttendance(date, time);
 
         Attendance savedAttendance = attendances.getAttendances().get(date);
-        assertThat(savedAttendance.time()).isEqualTo(time);
+        assertThat(savedAttendance.time().getTime()).isEqualTo(time);
     }
 
     @Test
@@ -49,7 +49,7 @@ class AttendancesTest {
         Attendances attendances = new Attendances();
         LocalDate date = LocalDate.of(2024, 12, 5);
         LocalTime time = LocalTime.of(10, 5);
-        Attendance attendance = new Attendance(date, time);
+        Attendance attendance = new Attendance(date, new AttendanceLocalTime(time));
         attendances.addAttendance(date, time);
 
         assertThat(attendances.getCurrentAttendance(date)).isEqualTo(attendance);

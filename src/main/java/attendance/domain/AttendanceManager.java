@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class AttendanceManager {
     private final Map<String, Attendances> crewAttendances;
@@ -41,14 +40,13 @@ public class AttendanceManager {
         }
     }
 
-    public Optional<LocalTime> modify(String crewName, LocalDate date, LocalTime time) {
+    public NullableLocalTime modify(String crewName, LocalDate date, LocalTime time) {
         checker.checkCampusOpen(date, time);
         Attendances attendances = findAttendancesByName(crewName);
         Attendance prevAttendance = attendances.getCurrentAttendance(date);
 
         attendances.addAttendance(date, time);
-        return Optional.ofNullable(prevAttendance)
-                .map(Attendance::time);
+        return prevAttendance.time();
     }
 
     public WarningLevel calculateCrewWarningLevel(String crewName) {
