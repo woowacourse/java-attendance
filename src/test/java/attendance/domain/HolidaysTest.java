@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -15,14 +14,8 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 @DisplayName("휴일 테스트")
 class HolidaysTest {
 
-    private static final Holidays holidays = new Holidays();
-
-    @Test
-    @DisplayName("공휴일 파일을 읽어 휴일 객체를 생성한다")
-    void initializeHolidaysFromFile() {
-        assertThatNoException()
-                .isThrownBy(holidays::initFromFile);
-    }
+    private static final String TEST_HOLIDAYS_FILE = "testHolidays.csv";
+    private static final Holidays holidays = new Holidays(TEST_HOLIDAYS_FILE);
 
     @ParameterizedTest(name = "평일 날짜: {0}")
     @CsvSource({
@@ -35,7 +28,6 @@ class HolidaysTest {
     @DisplayName("평일에 출석할 경우 예외가 발생하지 않는다")
     void shouldNotThrowExceptionWhenAttendingOnWeekday() {
         // given
-        Holidays holidays = new Holidays();
         LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
 
         // when & then
@@ -51,9 +43,6 @@ class HolidaysTest {
     })
     @DisplayName("주말에 출석할 경우 예외가 발생한다")
     void shouldThrowExceptionWhenAttendingOnWeekend(LocalDate attendanceDate) {
-        // given
-        Holidays holidays = new Holidays();
-
         // that
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> holidays.validateAttendanceDate(attendanceDate))
@@ -69,7 +58,6 @@ class HolidaysTest {
     @DisplayName("공휴일에 출석할 경우 예외가 발생한다")
     void shouldThrowExceptionWhenAttendingOnHoliday(LocalDate attendanceDate) {
         // given
-        Holidays holidays = new Holidays();
         holidays.addHoliday(attendanceDate);
 
         // when & then

@@ -13,16 +13,13 @@ import java.util.Set;
 
 public class Holidays {
 
-    public static final String HOLIDAYS_CSV_FILE_NAME = "holidays.csv";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    private final Set<LocalDate> holidays = new HashSet<>();
+    private final Set<LocalDate> holidays;
 
-    public void initFromFile() {
-        FileUtil.readFile(HOLIDAYS_CSV_FILE_NAME)
-                .stream()
-                .map(line -> DateTimeParser.parseDate(line, DATE_FORMATTER))
-                .forEach(holidays::add);
+    public Holidays(final String fileName) {
+        this.holidays = new HashSet<>();
+        initFromFile(fileName);
     }
 
     public void addHoliday(final LocalDate date) {
@@ -37,6 +34,13 @@ public class Holidays {
         if (isHoliday(attendanceDate)) {
             throw new IllegalArgumentException(formatErrorMessage(attendanceDate));
         }
+    }
+
+    private void initFromFile(String fileName) {
+        FileUtil.readFile(fileName)
+                .stream()
+                .map(line -> DateTimeParser.parseDate(line, DATE_FORMATTER))
+                .forEach(holidays::add);
     }
 
     private boolean isHoliday(final LocalDate date) {
