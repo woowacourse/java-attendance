@@ -15,7 +15,7 @@ import util.parser.DateTimeParser;
 import util.parser.FileParser;
 
 @Nested
-public class CoachTest {
+public class AttendanceManagerTest {
 
     @Nested
     @DisplayName("크루 생성 테스트")
@@ -28,11 +28,11 @@ public class CoachTest {
             Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
             AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
-            Coach coach = new Coach(attendanceBook);
+            AttendanceManager attendanceManager = new AttendanceManager(attendanceBook);
             String name = "빙봉";
             LocalDateTime dateTime = DateTimeParser.parseStringToDateTime("2024-12-09 10:02");
 
-            assertThatNoException().isThrownBy(() -> coach.attendCrew(name, dateTime));
+            assertThatNoException().isThrownBy(() -> attendanceManager.attendCrew(name, dateTime));
         }
 
         @Test
@@ -42,11 +42,11 @@ public class CoachTest {
             Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
             AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
-            Coach coach = new Coach(attendanceBook);
+            AttendanceManager attendanceManager = new AttendanceManager(attendanceBook);
             String name = "빙봉";
             LocalDateTime dateTime = DateTimeParser.parseStringToDateTime("2024-12-25 10:02");
 
-            assertThatThrownBy(() -> coach.attendCrew(name, dateTime));
+            assertThatThrownBy(() -> attendanceManager.attendCrew(name, dateTime));
         }
 
         @Test
@@ -56,11 +56,11 @@ public class CoachTest {
             Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
             AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
-            Coach coach = new Coach(attendanceBook);
+            AttendanceManager attendanceManager = new AttendanceManager(attendanceBook);
             String name = "빙봉";
             LocalDateTime dateTime = DateTimeParser.parseStringToDateTime("2024-12-09 23:13");
 
-            assertThatThrownBy(() -> coach.attendCrew(name, dateTime));
+            assertThatThrownBy(() -> attendanceManager.attendCrew(name, dateTime));
         }
     }
 
@@ -75,11 +75,11 @@ public class CoachTest {
             Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
             AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
-            Coach coach = new Coach(attendanceBook);
+            AttendanceManager attendanceManager = new AttendanceManager(attendanceBook);
             String name = "빙봉";
             LocalDateTime editedDateTime = DateTimeParser.parseStringToDateTime("2024-12-06 10:02");
 
-            assertThatNoException().isThrownBy(() -> coach.editCrew(name, editedDateTime));
+            assertThatNoException().isThrownBy(() -> attendanceManager.editCrew(name, editedDateTime));
         }
 
         @Test
@@ -89,11 +89,11 @@ public class CoachTest {
             Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
             AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
-            Coach coach = new Coach(attendanceBook);
+            AttendanceManager attendanceManager = new AttendanceManager(attendanceBook);
             String name = "빙봉";
             LocalDateTime dateTime = DateTimeParser.parseStringToDateTime("2024-12-25 10:02");
 
-            assertThatThrownBy(() -> coach.editCrew(name, dateTime));
+            assertThatThrownBy(() -> attendanceManager.editCrew(name, dateTime));
         }
 
         @Test
@@ -103,11 +103,11 @@ public class CoachTest {
             Map<String, List<LocalDateTime>> attendanceData = FileParser.parseScannerToMap(scanner);
             AttendanceBook attendanceBook = new AttendanceBook(attendanceData);
 
-            Coach coach = new Coach(attendanceBook);
+            AttendanceManager attendanceManager = new AttendanceManager(attendanceBook);
             String name = "빙봉";
             LocalDateTime dateTime = DateTimeParser.parseStringToDateTime("2024-12-06 23:13");
 
-            assertThatThrownBy(() -> coach.editCrew(name, dateTime));
+            assertThatThrownBy(() -> attendanceManager.editCrew(name, dateTime));
         }
     }
 }

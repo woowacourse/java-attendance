@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import util.parser.DateTimeParser;
 
-public class Coach {
+public class AttendanceManager {
 
     private static final String NOT_OPERATING_TIME_ERROR_MESSAGE = "캠퍼스 운영 시간이 아닙니다.";
     private static final String HOLIDAY_ERROR_MESSAGE = "휴일입니다.";
@@ -14,7 +14,7 @@ public class Coach {
     private final LocalTime operatingStart;
     private final LocalTime operatingEnd;
 
-    public Coach(AttendanceBook attendanceBook) {
+    public AttendanceManager(AttendanceBook attendanceBook) {
         this.attendanceBook = attendanceBook;
         this.operatingStart = DateTimeParser.parseStringToTime("08:00");
         this.operatingEnd = DateTimeParser.parseStringToTime("23:00");

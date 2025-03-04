@@ -2,7 +2,7 @@ package controller;
 
 import domain.AttendanceBook;
 import domain.AttendanceStatus;
-import domain.Coach;
+import domain.AttendanceManager;
 import domain.Crew;
 import domain.DailyRecord;
 import domain.Feature;
@@ -27,13 +27,13 @@ public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceBook attendanceBook;
-    private final Coach coach;
+    private final AttendanceManager attendanceManager;
 
     public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.attendanceBook = createAttendanceBook();
-        this.coach = new Coach(attendanceBook);
+        this.attendanceManager = new AttendanceManager(attendanceBook);
     }
 
     public void start() {
@@ -44,7 +44,7 @@ public class AttendanceController {
         String name = inputView.readAttendedName();
         LocalTime time = DateTimeParser.parseStringToTime(inputView.readAttendedTime());
 
-        DailyRecord record = coach.attendCrew(name, LocalDateTime.of(localDate, time));
+        DailyRecord record = attendanceManager.attendCrew(name, LocalDateTime.of(localDate, time));
         outputView.printDateTimeRecord(localDate, record);
     }
 
@@ -55,7 +55,7 @@ public class AttendanceController {
         LocalTime time = DateTimeParser.parseStringToTime(inputView.readEditedTime());
 
         DailyRecord oldRecord = attendanceBook.findCrewByName(name).findRecordByDate(date);
-        DailyRecord newRecord = coach.editCrew(name, LocalDateTime.of(date, time));
+        DailyRecord newRecord = attendanceManager.editCrew(name, LocalDateTime.of(date, time));
         outputView.printEditedResult(date, oldRecord, newRecord);
     }
 
