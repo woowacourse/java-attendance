@@ -99,7 +99,7 @@ public class AttendanceBook {
 
 
     private void validateCrewExistance(Crew crew) {
-        if (attendanceRecord.get(crew) == null) {
+        if (!attendanceRecord.containsKey(crew)) {
             throw new IllegalArgumentException("등록되지 않는 크루입니다");
         }
     }

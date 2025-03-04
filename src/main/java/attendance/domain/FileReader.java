@@ -37,6 +37,5 @@ public class FileReader {
         } catch (Exception e) {
             throw new IllegalArgumentException("파일을 읽어들이는 중에 오류가 발생했습니다.");
         }
-        return null;
     }
 }
