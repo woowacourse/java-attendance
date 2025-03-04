@@ -9,7 +9,7 @@ public record AttendanceEditDto(
         LocalDateTime before,
         AttendanceDate afterAttendance,
         LocalDateTime after) {
-    public static AttendanceEditDto from(AttendanceDate before, AttendanceDate after){
+    public static AttendanceEditDto from(AttendanceDate before, AttendanceDate after) {
         return new AttendanceEditDto(before, before.getAttendanceAt(), after, after.getAttendanceAt());
     }
 

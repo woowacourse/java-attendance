@@ -43,12 +43,12 @@ public class CrewGroup {
         return crews.containsKey(crewName);
     }
 
-    public void attendCrew(String crewName, LocalDateTime attendTime){
+    public void attendCrew(String crewName, LocalDateTime attendTime) {
         Crew findCrew = findByName(crewName);
         findCrew.fillAttend(attendTime);
     }
 
-    public AttendanceEditDto editCrewAttendance(String crewName, LocalDateTime editTime){
+    public AttendanceEditDto editCrewAttendance(String crewName, LocalDateTime editTime) {
         Crew findCrew = findByName(crewName);
         AttendanceDate beforeRecord = findCrew.getAttendTimeByLocalDate(LocalDate.from(editTime));
         findCrew.editAttendanceTime(editTime);
@@ -56,7 +56,7 @@ public class CrewGroup {
         return AttendanceEditDto.from(beforeRecord, afterRecord);
     }
 
-    public AttendanceStatus getCrewDateStatus(String crewName, LocalDate findDate){
+    public AttendanceStatus getCrewDateStatus(String crewName, LocalDate findDate) {
         Crew findCrew = findByName(crewName);
         return findCrew.getStatusByLocalDate(findDate);
     }

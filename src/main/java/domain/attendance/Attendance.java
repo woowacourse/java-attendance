@@ -25,7 +25,7 @@ public class Attendance {
         if (!has(editDate)) {
             throw new IllegalArgumentException("수정하려는 날짜가 존재하지 않습니다.");
         }
-        attendanceDates.put(editDate,new AttendanceDate(editLocalDateTime));
+        attendanceDates.put(editDate, new AttendanceDate(editLocalDateTime));
     }
 
     public void addAttendance(LocalDateTime attendanceDateTime) {
@@ -59,7 +59,7 @@ public class Attendance {
         return attendanceDates.get(findLocalDate);
     }
 
-    public AttendanceStatus getAttendanceStatus(LocalDate findDate){
+    public AttendanceStatus getAttendanceStatus(LocalDate findDate) {
         return findByLocalDate(findDate).getStatus();
     }
 

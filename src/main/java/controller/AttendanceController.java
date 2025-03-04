@@ -3,8 +3,6 @@ package controller;
 import DTO.AttendanceEditDto;
 import domain.Crew;
 import domain.CrewGroup;
-import domain.attendance.Attendance;
-import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceStatus;
 import view.FileInputView;
 import view.InputView;
@@ -76,9 +74,9 @@ public class AttendanceController {
         LocalDateTime attendTime = InputView.getAttendTime();
         validateAttendTime(attendTime);
 
-        crews.attendCrew(attendCrewName,attendTime);
+        crews.attendCrew(attendCrewName, attendTime);
         LocalDate attendDate = LocalDate.from(attendTime);
-        AttendanceStatus status = crews.getCrewDateStatus(attendCrewName,attendDate);
+        AttendanceStatus status = crews.getCrewDateStatus(attendCrewName, attendDate);
 
         OutputView.printAddAttendance(attendTime, status);
     }
@@ -102,14 +100,6 @@ public class AttendanceController {
 
         AttendanceEditDto editDto = crews.editCrewAttendance(findCrewName, editTime);
         OutputView.printEditResult(editDto);
-
-//        Crew findCrew = crews.findByName(findCrewName);
-//        Attendance crewRecord = findCrew.getAttendanceRecord();
-//        AttendanceDate findDate = crewRecord.findByLocalDate(LocalDate.from(editTime));
-//        AttendanceDate oldRecord = new AttendanceDate(findDate.getAttendanceAt());
-//        crewRecord.editAttendance(editTime);
-
-//        OutputView.printEditResult(oldRecord, findDate);
     }
 
     public static void findWarningCrews() {

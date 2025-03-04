@@ -21,7 +21,7 @@ public class Crew {
         attendanceRecord.addAttendance(attendTime);
     }
 
-    public AttendanceStatus getStatusByLocalDate(LocalDate findDate){
+    public AttendanceStatus getStatusByLocalDate(LocalDate findDate) {
         return attendanceRecord.getAttendanceStatus(findDate);
     }
 
@@ -29,7 +29,7 @@ public class Crew {
         return attendanceRecord.findByLocalDate(from);
     }
 
-    public void editAttendanceTime(LocalDateTime editTime){
+    public void editAttendanceTime(LocalDateTime editTime) {
         AttendanceDate editDate = attendanceRecord.findByLocalDate(LocalDate.from(editTime));
         editDate.editLocalDate(editTime);
     }
