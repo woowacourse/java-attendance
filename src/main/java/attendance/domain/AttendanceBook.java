@@ -15,7 +15,6 @@ public class AttendanceBook {
         this.attendanceRecord = attendanceRecord;
     }
 
-    //1. 출석등록
     public Attendance registerAttendance(Crew crew, LocalDateTime newAttendanceDateTime) {
         validateCrewExistance(crew);
         AttendanceLog attendanceLog = attendanceRecord.get(crew);
@@ -23,7 +22,6 @@ public class AttendanceBook {
         return attendanceLog.registerAttendance(newAttendanceDateTime);
     }
 
-    //2. 출석수정
     public List<Attendance> modifyAttendance(Crew crew, LocalDateTime newALocalDateTime) {
         validateCrewExistance(crew);
         AttendanceLog attendanceLog = attendanceRecord.get(crew);
@@ -31,7 +29,6 @@ public class AttendanceBook {
     }
 
 
-    //3. 출석 확인
     public List<Attendance> checkAttendancesRecord(Crew crew) {
         validateCrewExistance(crew);
         AttendanceLog attendanceLog = attendanceRecord.get(crew);
@@ -46,11 +43,9 @@ public class AttendanceBook {
         return new AttendanceStatus(attendanceCount, lateCount, absentCount);
     }
 
-    // 4. 제적 위험자 확인
     public Map<Crew, AttendanceStatus> checkExpelledCrews() {
         Map<Crew, AttendanceStatus> crewAttendanceStatuses = new HashMap<>();
 
-        // AttendanceLog에서 출석 상태 카운트하여 AttendanceStatus 객체 생성
         for (Map.Entry<Crew, AttendanceLog> entry : attendanceRecord.entrySet()) {
             AttendanceLog attendanceLog = entry.getValue();
             int attendanceCount = attendanceLog.countAttendanceStatus(Subject.ATTENDANCE);
@@ -72,14 +67,12 @@ public class AttendanceBook {
                 return -status1.getSubjectStatus().compareTo(status2.getSubjectStatus());
             }
 
-            // 2. lateCount + absentCount 기준 내림차순 정렬
             int total1 = status1.getLateCount() + status1.getAbsentCount();
             int total2 = status2.getLateCount() + status2.getAbsentCount();
             if (total1 != total2) {
                 return Integer.compare(total2, total1);  // 내림차순
             }
 
-            // 3. 만약 lateCount + absentCount이 동일하면, absentCount 기준 내림차순 정렬
             if (status1.getAbsentCount() != status2.getAbsentCount()) {
                 return Integer.compare(status2.getAbsentCount(), status1.getAbsentCount());  // 내림차순
             }
@@ -95,8 +88,6 @@ public class AttendanceBook {
         }
         return sortedCrewAttendanceStatuses;
     }
-
-
 
     private void validateCrewExistance(Crew crew) {
         if (!attendanceRecord.containsKey(crew)) {
