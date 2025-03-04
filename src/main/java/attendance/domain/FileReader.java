@@ -27,7 +27,6 @@ public class FileReader {
                 Crew crew = new Crew(parts[0]);
                 LocalDateTime localDateTime = LocalDateTime.parse(parts[1], dateTimeFormatter);
 
-                Attendance attendance = new Attendance(localDateTime);
                 AttendanceLog attendanceLog = crewAttendanceLogRecord.getOrDefault(crew, new AttendanceLog(new ArrayList<>()));
                 attendanceLog.registerAttendance(localDateTime);
 
@@ -36,7 +35,7 @@ public class FileReader {
 
             return new AttendanceBook(crewAttendanceLogRecord);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("파일을 읽어들이는 중에 오류가 발생했습니다.");
         }
         return null;
     }
