@@ -30,7 +30,13 @@ public class DailyRecord {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         DailyRecord other = (DailyRecord) obj;
-        return attendedTime.equals(other.attendedTime);
+        return attendedTime.equals(other.attendedTime) && status == other.status;
     }
 }
