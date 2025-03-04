@@ -1,5 +1,6 @@
 package domain.attendance;
 
+import controller.AttendanceController;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public class Attendances {
             throw new IllegalArgumentException("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요");
         }
         if (attendDateTime.toLocalDate().isAfter(endDate)) {
-            throw new IllegalArgumentException("미래에 출석할 수 없습니다");
+            throw new IllegalArgumentException("미래의 출석 정보를 등록할 수 없습니다");
         }
         Attendance attendance = new Attendance(attendDateTime);
         this.attendances.add(attendance);
@@ -30,10 +31,13 @@ public class Attendances {
     }
 
     public Attendance editAttendanceDate(LocalDateTime dateTime) {
+        if (dateTime.toLocalDate().isAfter(AttendanceController.END_DATE)) {
+            throw new IllegalArgumentException("미래의 출석 정보를 등록할 수 없습니다.");
+        }
         Attendance beforeDateTime = attendances.stream()
                 .filter(attendance -> attendance.has(dateTime.toLocalDate()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석이 존재하지 않습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("주말 혹은 공휴일에 출석할 수 없습니다."));
         deleteAttendanceDate(dateTime.toLocalDate());
         attendances.add(new Attendance(dateTime));
         return beforeDateTime;

@@ -54,8 +54,11 @@ public class EditCommand implements Consumer<AttendanceBook> {
 
         Attendances attendances = attendanceBook.findAttendancesByCrew(nickname);
 
+        if (date.isEqual(AttendanceController.END_DATE) && !attendances.has(date)) {
+            throw new IllegalArgumentException("먼저 출석 후에 수정해주세요.");
+        }
         if (!attendances.has(date)) {
-            throw new IllegalArgumentException("아직 수정할 수 없습니다.");
+            throw new IllegalArgumentException("미래의 날짜는 수정할 수 없습니다.");
         }
         return date;
     }
