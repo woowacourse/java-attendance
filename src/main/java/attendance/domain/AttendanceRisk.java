@@ -3,20 +3,23 @@ package attendance.domain;
 import java.util.Arrays;
 
 public enum AttendanceRisk {
-    WEEDING(6),
-    INTERVIEW(3),
-    WARNING(2),
-    NONE(Integer.MIN_VALUE); // 임계값을 특별히 정의하지 않았습니다. (Integer.MIN_VALUE 사용)
+    WEEDING(6, Integer.MAX_VALUE),
+    INTERVIEW(3, 5),
+    WARNING(2, 2),
+    NONE(Integer.MIN_VALUE, 1);
 
-    private final int threshold;
+    private final int minThreshold;
+    private final int maxThreshold;
 
-    AttendanceRisk(final int threshold) {
-        this.threshold = threshold;
+    AttendanceRisk(final int minThreshold, final int maxThreshold) {
+        this.minThreshold = minThreshold;
+        this.maxThreshold = maxThreshold;
     }
 
     public static AttendanceRisk evaluate(final int absence, final int tardy) {
+        int allAbsence = calculateAllAbsence(absence, tardy);
         return Arrays.stream(values())
-                .filter(type -> type.threshold <= calculateAllAbsence(absence, tardy))
+                .filter(type -> type.minThreshold <= allAbsence && type.maxThreshold >= allAbsence)
                 .findFirst()
                 .orElse(NONE);
     }
