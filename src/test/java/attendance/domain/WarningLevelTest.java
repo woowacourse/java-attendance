@@ -7,64 +7,34 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
-@DisplayName("제적 상황 Enum")
+@DisplayName("제적 위험 단계")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class WarningLevelTest {
-    @Test
-    void 결석이_2회_이상이면_경고_대상자를_반환한다() {
-        Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
-        attendanceStatuses.put(AttendanceStatus.ABSENCE, 2);
-        attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
-        attendanceStatuses.put(AttendanceStatus.LATENESS, 0);
+public class WarningLevelTest {
 
-        assertThat(WarningLevel.of(attendanceStatuses))
-                .isEqualTo(WarningLevel.WARNING);
+    @ParameterizedTest
+    @CsvSource({
+            "0, 6, REMOVE",
+            "2, 6, REMOVE",
+            "3, 5, REMOVE",
+            "5, 5, REMOVE",
+            "0, 5, COUNSELING",
+            "0, 3, COUNSELING",
+            "3, 2, COUNSELING",
+            "2, 2, WARNING",
+            "5, 1, WARNING",
+            "6, 0, WARNING",
+            "3, 0, NONE",
+            "0, 0, NONE"
+    })
+    void 출석_상태에_맞게_제적_위험_상황을_반환한다(int latenessCount, int absenceCount, WarningLevel expected) {
+        Map<AttendanceStatus, Integer> statusCount = new EnumMap<>(AttendanceStatus.class);
+
+        statusCount.put(AttendanceStatus.LATENESS, latenessCount);
+        statusCount.put(AttendanceStatus.ABSENCE, absenceCount);
+
+        assertThat(WarningLevel.from(statusCount)).isEqualTo(expected);
     }
-
-    @Test
-    void 결석이_3회_이상이면_면담_대상자를_반환한다() {
-        Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
-        attendanceStatuses.put(AttendanceStatus.ABSENCE, 3);
-        attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
-        attendanceStatuses.put(AttendanceStatus.LATENESS, 0);
-
-        assertThat(WarningLevel.of(attendanceStatuses))
-                .isEqualTo(WarningLevel.COUNSELING);
-    }
-
-    @Test
-    void 결석이_6회_이상이면_제적_대상자를_반환한다() {
-        Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
-        attendanceStatuses.put(AttendanceStatus.ABSENCE, 6);
-        attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
-        attendanceStatuses.put(AttendanceStatus.LATENESS, 0);
-
-        assertThat(WarningLevel.of(attendanceStatuses))
-                .isEqualTo(WarningLevel.REMOVE);
-    }
-
-    @Test
-    void 결석이_2회_미만이면_경고_해당_없음을_반환한다() {
-        Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
-        attendanceStatuses.put(AttendanceStatus.ABSENCE, 1);
-        attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
-        attendanceStatuses.put(AttendanceStatus.LATENESS, 0);
-
-        assertThat(WarningLevel.of(attendanceStatuses))
-                .isEqualTo(WarningLevel.NONE);
-    }
-
-    @Test
-    void 지각_3회당_결석_1회로_반환한다() {
-        Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
-        attendanceStatuses.put(AttendanceStatus.ABSENCE, 5);
-        attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
-        attendanceStatuses.put(AttendanceStatus.LATENESS, 5);
-
-        assertThat(WarningLevel.of(attendanceStatuses))
-                .isEqualTo(WarningLevel.REMOVE);
-    }
-
 }

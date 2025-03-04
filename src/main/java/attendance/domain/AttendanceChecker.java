@@ -1,10 +1,10 @@
 package attendance.domain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public interface AttendanceChecker {
-    void checkCampusHour(int hour, int minute);
+    void checkCampusOpen(LocalDate date, LocalTime time);
 
-    void validateCampusDay(int day);
-
-    boolean isCampusDay(int day);
-
+    boolean isCampusOpenDate(LocalDate date);
 }

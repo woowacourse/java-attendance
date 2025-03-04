@@ -5,37 +5,34 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 public enum WarningLevel {
-    REMOVE("제적", count -> count >= 6),
-    COUNSELING("면담", count -> count >= 3),
-    WARNING("경고", count -> count >= 2),
-    NONE("해당 없음", count -> count >= 0);
-    private final String level;
-    private final Predicate<Integer> predicate;
+    REMOVE("제적", absenceCount -> absenceCount > 5),
+    COUNSELING("면담", absenceCount -> absenceCount >= 3),
+    WARNING("경고", absenceCount -> absenceCount >= 2),
+    NONE("해당 없음", absenceCount -> absenceCount >= 0);
 
-    WarningLevel(String level, Predicate<Integer> predicate) {
-        this.level = level;
-        this.predicate = predicate;
+    private final String description;
+    private final Predicate<Integer> condition;
+
+    WarningLevel(String description, Predicate<Integer> condition) {
+        this.description = description;
+        this.condition = condition;
     }
 
-    public static WarningLevel of(final Map<AttendanceStatus, Integer> attendanceStatus) {
-        int totalAbsence = calculateTotalAbsence(attendanceStatus);
-        return Arrays.stream(WarningLevel.values())
-                .filter(warningLevel -> warningLevel.predicate.test(totalAbsence))
+    public static WarningLevel from(Map<AttendanceStatus, Integer> statusCount) {
+        int absenceCount = statusCount.get(AttendanceStatus.ABSENCE) + calculateTotalAbsenceCount(
+                statusCount.get(AttendanceStatus.LATENESS));
+
+        return Arrays.stream(values())
+                .filter(level -> level.condition.test(absenceCount))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("결석 정보가 올바르지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("결석 횟수는 0보다 커야 합니다."));
     }
 
-    private static int calculateTotalAbsence(final Map<AttendanceStatus, Integer> attendanceStatuses) {
-        return attendanceStatuses.get(AttendanceStatus.ABSENCE) + convertLateness(
-                attendanceStatuses.get(AttendanceStatus.LATENESS));
-    }
-
-
-    private static int convertLateness(int latenessCount) {
+    public static int calculateTotalAbsenceCount(int latenessCount) {
         return latenessCount / 3;
     }
 
-    public String getLevel() {
-        return level;
+    public String getDescription() {
+        return description;
     }
 }

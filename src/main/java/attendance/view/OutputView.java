@@ -4,146 +4,177 @@ import static attendance.domain.AttendanceStatus.ABSENCE;
 import static attendance.domain.AttendanceStatus.LATENESS;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.Crews;
+import attendance.domain.EmptyLocalTime;
+import attendance.domain.LocalDateProvider;
+import attendance.domain.NullableLocalTime;
 import attendance.domain.WarningLevel;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class OutputView {
-    private static final String DATE_FORMAT = "%02d월 %02d일 %s";
-    private static final String ATTENDANCE_RESULT_FORMAT = "%s %s (%s)\n";
-    private static final String MODIFY_SUCCESS_FORMAT = "\n%s %s (%s) -> %s (%s) 수정 완료!\n";
-    private static final String QUERY_ATTENDANCE_HEADER_FORMAT = "\n이번 달 %s의 출석 기록입니다.\n\n";
-    private static final String ATTENDANCE_STATUS_FORMAT = "%s: %d회\n";
-    private static final String ABSENCE_TIME_FORMAT = "--:--";
-    private static final String WARNING_FORMAT = "%s 대상자입니다.\n";
-    private static final String WARNING_CREW_HEADER_FORMAT = "제적 위험자 조회 결과\n";
-    private static final String WARNING_CREW_RESULT_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)\n";
-    private static final String TODAY_IS = "\n오늘은 %s입니다. 기능을 선택해 주세요.\n";
     private static final String ERROR_MESSAGE_PREFIX = "[ERROR] ";
-    private static final String OPERATION_OPTION_MESSAGE =
-            """
-                    1. 출석 확인
-                    2. 출석 수정
-                    3. 크루별 출석 기록 확인
-                    4. 제적 위험자 확인
-                    Q. 종료
-                    """;
+    private static final String ATTENDANCE_DESCRIPTION_FORMAT = "%02d월 %02d일 %s %s (%s)\n";
+    private static final String MODIFY_ATTENDANCE_PRINT_FORMAT = "%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!\n";
+    private static final DateTimeFormatter PRINT_ATTENDANCE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final String EMPTY_ATTENDANCE_TIME_MESSAGE = "--:--";
+    private static final String EMPTY_ATTENDANCE_STATUS_MESSAGE = "--";
+    private static final String ATTENDANCE_RECORD_HEADER_FORMAT = "이번 달 %s의 출석 기록입니다.\n";
+    private static final String ATTENDANCE_STATUS_COUNT_FORMAT = "%s: %d회\n";
+    private static final String CREW_WARNING_LEVEL_FORMAT = "%s 대상자 입니다.\n\n";
+    private static final String WARNING_CREW_PRINT_HEADER = "제적 위험자 조회 결과\n";
+    private static final String WARNING_CREW_PRINT_FORMAT = "- %s: %s %d회, %s %d회 (%s)\n";
 
-    public static void printOptions() {
-        int today = LocalDateTime.now().getDayOfMonth();
-        System.out.printf(TODAY_IS, convertDate(LocalDateTime.of(2024, 12, today, 0, 0)));
-        System.out.print(OPERATION_OPTION_MESSAGE);
+    private final LocalDateProvider dateProvider;
+    private final AttendanceChecker checker;
+
+    public OutputView(LocalDateProvider dateProvider, AttendanceChecker checker) {
+        this.dateProvider = dateProvider;
+        this.checker = checker;
     }
 
-    public static void printAddedAttendance(LocalDateTime localDateTime) {
-        LocalTime time = localDateTime.toLocalTime();
-        System.out.printf(ATTENDANCE_RESULT_FORMAT,
-                convertDate(localDateTime),
-                time.toString(),
-                AttendanceStatus.checkAttendance(localDateTime).getStatus());
+    public void printCheckAttendanceResult(NullableLocalTime enterTime) {
+        LocalDate now = dateProvider.now();
+        System.out.print(
+                createAttendanceDescription(now, enterTime, AttendanceStatus.of(now, enterTime)));
     }
 
-    public static void printModifiedAttendance(Attendance prevAttendance, LocalDateTime newAttendanceTime) {
-        System.out.printf(MODIFY_SUCCESS_FORMAT,
-                convertDate(newAttendanceTime),
-                prevAttendance.time().toString(),
-                prevAttendance.attendanceStatus().getStatus(),
-                newAttendanceTime.toLocalTime().toString(),
-                AttendanceStatus.checkAttendance(newAttendanceTime).getStatus());
+    private String createAttendanceDescription(LocalDate date, NullableLocalTime enterTime, AttendanceStatus status) {
+        return String.format(ATTENDANCE_DESCRIPTION_FORMAT,
+                date.getMonthValue(),
+                date.getDayOfMonth(),
+                getDisplayName(date),
+                formatAttendanceTime(enterTime),
+                status.getStatus()
+        );
     }
 
-    private static String convertDate(LocalDateTime localDateTime) {
-        return String.format(DATE_FORMAT,
-                localDateTime.getMonthValue(),
-                localDateTime.getDayOfMonth(),
-                localDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
+    public void printModifyAttendanceResult(NullableLocalTime prevTime, LocalDate date, NullableLocalTime modifyTime) {
+        System.out.printf(MODIFY_ATTENDANCE_PRINT_FORMAT,
+                date.getMonthValue(),
+                date.getDayOfMonth(),
+                getDisplayName(date),
+                formatAttendanceTime(prevTime),
+                formatAttendanceStatus(date, prevTime),
+                formatAttendanceTime(modifyTime),
+                formatAttendanceStatus(date, modifyTime)
+        );
     }
 
-    public static void printQueryAttendance(String name, Crews crews) {
-        int today = LocalDate.now().getDayOfMonth();
-        Map<LocalDate, Attendance> crewAttendances = crews.queryCrewAttendance(name, today);
-
-        System.out.printf(QUERY_ATTENDANCE_HEADER_FORMAT, name);
-
-        printCrewAttendances(today, crewAttendances);
-        printAttendanceStatus(name, crews, today);
-        printCrewWarningLevel(name, crews, today);
-    }
-
-    private static void printCrewAttendances(final int today, final Map<LocalDate, Attendance> crewAttendances) {
-        for (int day = 1; day < today; day++) {
-            LocalDate date = LocalDate.of(2024, 12, day);
-            printAttendances(crewAttendances, date, day);
+    private String formatAttendanceTime(NullableLocalTime time) {
+        if (time.isPresent()) {
+            return toTimeString(time.getTime());
         }
-        System.out.println();
+        return EMPTY_ATTENDANCE_TIME_MESSAGE;
     }
 
-    private static void printAttendances(final Map<LocalDate, Attendance> crewAttendances, final LocalDate date,
-                                         final int day) {
-        if (!crewAttendances.containsKey(date)) {
-            return;
+    private String toTimeString(LocalTime time) {
+        return time.format(PRINT_ATTENDANCE_TIME_FORMATTER);
+    }
+
+    private String formatAttendanceStatus(LocalDate date, NullableLocalTime time) {
+        if (time.isPresent()) {
+            return AttendanceStatus.of(date, time).getStatus();
         }
-        Attendance attendance = crewAttendances.get(date);
+        return EMPTY_ATTENDANCE_STATUS_MESSAGE;
+    }
 
-        if (attendance.time() == null) {
-            System.out.printf("%s %s (%s)\n", convertDate(LocalDateTime.of(date, LocalTime.of(0, 0))),
-                    ABSENCE_TIME_FORMAT,
-                    attendance.attendanceStatus().getStatus());
-            return;
+    public void printAttendanceRecords(String crewName, Map<LocalDate, Attendance> crewAttendances) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(String.format(ATTENDANCE_RECORD_HEADER_FORMAT, crewName)).append("\n");
+        LocalDate now = dateProvider.now();
+        IntStream.range(1, now.getDayOfMonth())
+                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
+                .filter(date -> checker.isCampusOpenDate(date))
+                .forEach(date -> {
+                    builder.append(toAttendanceRecordString(crewAttendances, date));
+                });
+        System.out.println(builder);
+    }
+
+    private String toAttendanceRecordString(Map<LocalDate, Attendance> crewAttendances, LocalDate date) {
+        if (crewAttendances.containsKey(date)) {
+            Attendance attendance = crewAttendances.get(date);
+            return createAttendanceDescription(date, attendance.time(), attendance.status());
         }
-        printAddedAttendance(LocalDateTime.of(2024, 12, day, attendance.getHour(), attendance.getMinute()));
+        return createAttendanceDescription(date, new EmptyLocalTime(), ABSENCE);
     }
 
-    private static void printAttendanceStatus(String name, Crews crews, int today) {
-        Map<AttendanceStatus, Integer> statuses = crews.queryCrewAttendanceStatus(name, today);
-
-        statuses.keySet().forEach(status -> {
-            System.out.printf(ATTENDANCE_STATUS_FORMAT, status.getStatus(), statuses.get(status));
-        });
-        System.out.println();
+    public void printAttendanceStatusCount(Map<AttendanceStatus, Integer> statusCounts) {
+        StringBuilder builder = new StringBuilder();
+        statusCounts.keySet()
+                .forEach(status -> {
+                    builder.append(String.format(ATTENDANCE_STATUS_COUNT_FORMAT, status.getStatus(),
+                            statusCounts.get(status)));
+                });
+        System.out.println(builder);
     }
 
-    private static void printCrewWarningLevel(String name, Crews crews, int today) {
-        WarningLevel level = crews.queryWarningLevelByName(name, today);
+    public void printCrewWarningLevel(WarningLevel level) {
         if (level == WarningLevel.NONE) {
             return;
         }
-        System.out.printf(WARNING_FORMAT, level.getLevel());
+        System.out.printf(CREW_WARNING_LEVEL_FORMAT, level.getDescription());
     }
 
-    public static void printWarningCrews(Crews crews) {
-        System.out.print(WARNING_CREW_HEADER_FORMAT);
+    public void printWarningCrews(Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount) {
+        Map<String, Integer> totalAbsence = calculateTotalAbsence(crewsStatusCount);
+        StringBuilder builder = new StringBuilder();
+        builder.append(WARNING_CREW_PRINT_HEADER);
+        List<Entry<String, Integer>> sortedCrewAbsence = totalAbsence.entrySet().stream()
+                .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()))
+                .collect(Collectors.toList());
 
-        int today = LocalDate.now().getDayOfMonth();
-        Arrays.stream(WarningLevel.values()).sequential().forEach(level -> {
-            List<String> names = crews.findByWarningLevel(level, today);
-            List<String> formattedStatusCounts = formatStatusCount(crews, names, today);
-            formattedStatusCounts.forEach(System.out::print);
-        });
+        appendWarningCrew(builder, crewsStatusCount, sortedCrewAbsence);
+        System.out.println(builder);
     }
 
-    private static List<String> formatStatusCount(final Crews crews,
-                                                  final List<String> names,
-                                                  final int today) {
-        return names.stream().map(name -> {
-            final Map<AttendanceStatus, Integer> crewStatuses = crews.queryCrewAttendanceStatus(
-                    name, today);
-            WarningLevel level = WarningLevel.of(crewStatuses);
-
-            return String.format(WARNING_CREW_RESULT_FORMAT, name, crewStatuses.get(ABSENCE),
-                    crewStatuses.get(LATENESS), level.getLevel());
-        }).toList();
+    private static void appendWarningCrew(StringBuilder builder,
+                                          Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount,
+                                          List<Entry<String, Integer>> sortedCrewAbsence) {
+        sortedCrewAbsence.stream()
+                .filter(entry -> WarningLevel.from(crewsStatusCount.get(entry.getKey())) != WarningLevel.NONE)
+                .forEach(entry -> {
+                    Map<AttendanceStatus, Integer> statusCount = crewsStatusCount.get(entry.getKey());
+                    builder.append(String.format(WARNING_CREW_PRINT_FORMAT,
+                            entry.getKey(),
+                            ABSENCE.getStatus(),
+                            statusCount.get(ABSENCE),
+                            LATENESS.getStatus(),
+                            statusCount.get(LATENESS),
+                            WarningLevel.from(statusCount).getDescription()
+                    ));
+                });
     }
 
-    public static void printErrorMessage(Exception exception) {
-        System.out.println(ERROR_MESSAGE_PREFIX + exception.getMessage());
+    private Map<String, Integer> calculateTotalAbsence(Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount) {
+        Map<String, Integer> totalAbsence = new HashMap<>();
+        crewsStatusCount.entrySet()
+                .forEach(entry -> {
+                    Map<AttendanceStatus, Integer> statusCount = entry.getValue();
+                    int absenceCount = statusCount.get(AttendanceStatus.PRESENT) +
+                            WarningLevel.calculateTotalAbsenceCount(statusCount.get(LATENESS));
+                    totalAbsence.put(entry.getKey(), absenceCount);
+                });
+        return totalAbsence;
+    }
+
+
+    public void printErrorMessage(Exception error) {
+        System.out.println(ERROR_MESSAGE_PREFIX + error.getMessage());
+    }
+
+    private static String getDisplayName(LocalDate date) {
+        return date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA);
     }
 }

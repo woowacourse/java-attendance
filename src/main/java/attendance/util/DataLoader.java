@@ -1,32 +1,14 @@
 package attendance.util;
 
-import attendance.domain.Crew;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
+import attendance.domain.Attendances;
+import attendance.domain.Holiday;
 import java.util.List;
+import java.util.Map;
 
-public class DataLoader {
+public interface DataLoader {
 
-    public static List<Crew> loadAll(final List<String> datas) {
-        List<Crew> attendances = new ArrayList<>();
-        datas.forEach(data -> {
-            List<String> seperatedData = Arrays.stream(data.split(",")).toList();
-            String name = seperatedData.get(0);
-            LocalDateTime localDateTime = LocalDateTime.parse(seperatedData.get(1).replace(" ", "T"));
-            findAttendanceByName(attendances, name).attend(localDateTime);
-        });
-        return attendances;
-    }
+    Map<String, Attendances> loadAttendancesData();
 
-    private static Crew findAttendanceByName(List<Crew> attendances, String name) {
-        return attendances.stream()
-                .filter(attendance -> attendance.isNameMatch(name))
-                .findFirst()
-                .orElseGet(() -> {
-                    Crew newAttendance = new Crew(name);
-                    attendances.add(newAttendance);
-                    return newAttendance;
-                });
-    }
+    List<Holiday> loadHolidayData();
+
 }
