@@ -8,6 +8,7 @@ import java.util.Map;
 public interface DataLoader {
 
     Map<String, Attendances> loadAttendancesData();
+
     List<Holiday> loadHolidayData();
 
 }

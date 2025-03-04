@@ -7,7 +7,7 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
-public class DefaultAttendanceChecker implements AttendanceChecker{
+public class DefaultAttendanceChecker implements AttendanceChecker {
     private static final String CAMPUS_CLOSED_ERROR_FORMAT = "%02d월 %02d일 %s은 등교일이 아닙니다.\n";
     private static final int CAMPUS_OPEN_HOUR = 8;
     private static final int CAMPUS_OPEN_MINUTE = 0;
@@ -41,7 +41,7 @@ public class DefaultAttendanceChecker implements AttendanceChecker{
         }
     }
 
-    private boolean isHoliday(LocalDate date){
+    private boolean isHoliday(LocalDate date) {
         return holidays.stream()
                 .anyMatch(holiday -> holiday.isMatch(date));
     }

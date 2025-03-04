@@ -54,7 +54,7 @@ public class AttendanceController {
     private void execute(AttendanceCommand command) {
         try {
             commands.get(command).run();
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e);
         }
     }

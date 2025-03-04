@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CsvDataLoader implements DataLoader{
+public class CsvDataLoader implements DataLoader {
     private static final String ATTENDANCE_FILE_PATH = "src/main/resources/attendances.csv";
     private static final int ATTENDANCE_FILE_HEADER_COUNT = 1;
     private static final String HOLIDAY_FILE_PATH = "src/main/resources/holidays.csv";
@@ -50,7 +50,7 @@ public class CsvDataLoader implements DataLoader{
     }
 
     @Override
-    public List<Holiday> loadHolidayData(){
+    public List<Holiday> loadHolidayData() {
         List<Holiday> holidays = new ArrayList<>();
         List<String> readFile = DataFileReader.readFile(HOLIDAY_FILE_PATH, HOLIDAY_FILE_HEADER_COUNT);
         readFile
@@ -62,7 +62,7 @@ public class CsvDataLoader implements DataLoader{
                         int day = Integer.parseInt(split[HOLIDAY_DAY_INDEX]);
                         Holiday holiday = new Holiday(name, month, day);
                         holidays.add(holiday);
-                    } catch (NumberFormatException e){
+                    } catch (NumberFormatException e) {
                         throw new RuntimeException("[ERROR] 날짜 정보는 숫자여야 합니다.");
                     }
                 });
