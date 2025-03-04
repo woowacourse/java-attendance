@@ -2,70 +2,74 @@ package attendance.domain;
 
 import attendance.constant.Holiday;
 import attendance.util.DateUtil;
+import attendance.util.FormattedErrorMessage;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import java.time.LocalTime;
 
 public class Attendance {
 
-    private LocalDateTime attendanceDateTime;
-    private AttendanceStatus status;
+    private final LocalDate attendDate;
+    private final LocalTime attendTime;
 
-    private Attendance(LocalDateTime attendanceDateTime) {
-        validateDayOfWeek(attendanceDateTime);
-        validateHoliday(attendanceDateTime);
-        this.status = AttendanceStatus.determineStatus(attendanceDateTime);
-        this.attendanceDateTime = attendanceDateTime;
+    private Attendance(LocalDate attendDate, LocalTime attendTime) {
+        this.attendDate = attendDate;
+        this.attendTime = attendTime;
     }
 
-    public static Attendance of(LocalDateTime attendanceDateTime) {
-        return new Attendance(attendanceDateTime);
+    public static Attendance of(LocalDate attendDate, LocalTime attendTime) {
+        validateAttendDate(attendDate);
+        validateAttendTime(attendTime);
+        return new Attendance(attendDate, attendTime);
     }
 
-    private void validateDayOfWeek(LocalDateTime attendanceDateTime) {
-        if (DateUtil.isWeekend(attendanceDateTime.toLocalDate())) {
-            throw new IllegalArgumentException();
+    public static Attendance of(LocalDate attendDate) {
+        validateAttendDate(attendDate);
+        return new Attendance(attendDate, java.time.LocalTime.MIN);
+    }
+
+    private static void validateAttendDate(LocalDate attendDate) {
+        if (DateUtil.isWeekend(attendDate)) {
+            throw new IllegalArgumentException(FormattedErrorMessage.INVALID_ATTEND_DATE_ERROR.getDateFormatMessage(attendDate));
+        }
+
+        if (Holiday.isHoliday(attendDate)) {
+            throw new IllegalArgumentException(FormattedErrorMessage.INVALID_ATTEND_DATE_ERROR.getDateFormatMessage(attendDate));
         }
     }
 
-    private void validateHoliday(LocalDateTime attendanceDateTime) {
-        LocalDate date = attendanceDateTime.toLocalDate();
-        if (Holiday.isHoliday(date)) {
-            throw new IllegalArgumentException();
+    private static void validateAttendTime(LocalTime attendTime) {
+        if (CampusOperatingTime.notInOperation(attendTime)) {
+            throw new IllegalArgumentException(FormattedErrorMessage.INVALID_ATTEND_TIME_ERROR.getTimeFormatMessage(attendTime));
         }
     }
 
-    public AttendanceStatus getStatus() {
-        return status;
+    public AttendanceStatus determineStatus() {
+        return AttendanceStatus.determine(attendDate, attendTime);
     }
 
-    public void modify(LocalDateTime modifiedDateTime) {
-        this.status = AttendanceStatus.determineStatus(modifiedDateTime);
-        this.attendanceDateTime = modifiedDateTime;
+    public boolean isSameDate(Attendance newAttendance) {
+        return attendDate.isEqual(newAttendance.attendDate);
     }
 
-    public LocalDateTime getAttendanceDateTime() {
-        return attendanceDateTime;
+    public boolean isSameDate(LocalDate inputDate) {
+        return attendDate.isEqual(inputDate);
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (object == null || getClass() != object.getClass()) return false;
-        Attendance that = (Attendance) object;
-        return Objects.equals(attendanceDateTime, that.attendanceDateTime) && status == that.status;
+    public boolean isSameYearAndMonth(LocalDate inputDate) {
+        return attendDate.getYear() == inputDate.getYear()
+                && attendDate.getMonthValue() == inputDate.getMonthValue();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(attendanceDateTime, status);
+    public boolean isNoRecordOfTime() {
+        return attendTime.equals(LocalTime.MIN);
     }
 
-    @Override
-    public String toString() {
-        return "Attendance{" +
-                "attendanceDateTime=" + attendanceDateTime +
-                ", status=" + status +
-                '}';
+    public LocalDate getAttendDate() {
+        return attendDate;
+    }
+
+    public LocalTime getAttendTime() {
+        return attendTime;
     }
 }

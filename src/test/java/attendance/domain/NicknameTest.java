@@ -1,0 +1,31 @@
+package attendance.domain;
+
+import attendance.util.ErrorMessage;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+@DisplayName("닉네임 테스트")
+public class NicknameTest {
+
+    @ParameterizedTest(name = "{index} : {1}")
+    @MethodSource("getEmptyOrNullNickname")
+    void 닉네임이_빈칸이거나_널이면_예외가_발생한다(String nickname, String message) {
+        assertThatThrownBy(() -> new Nickname(nickname))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorMessage.NICKNAME_MISSING_ERROR.getMessage());
+    }
+
+    static Stream<Arguments> getEmptyOrNullNickname() {
+        return Stream.of(
+            Arguments.of("", "empty"),
+            Arguments.of(" ", "blank"),
+            Arguments.of(null, "null")
+        );
+    }
+}

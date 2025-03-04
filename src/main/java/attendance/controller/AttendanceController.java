@@ -1,122 +1,108 @@
 package attendance.controller;
 
 import attendance.constant.Holiday;
+import attendance.constant.Option;
 import attendance.domain.Attendance;
-import attendance.domain.AttendanceStatus;
-import attendance.domain.AttendancesBook;
+import attendance.domain.AttendanceBook;
+import attendance.domain.Attendances;
 import attendance.domain.Crew;
-import attendance.domain.Crews;
-import attendance.domain.Penalty;
-import attendance.file.AttendanceFileReader;
-import attendance.file.AttendanceFileReader.FileContents;
+import attendance.domain.Nickname;
+import attendance.domain.StatusStatistics;
+import attendance.infrastructure.Initializer;
 import attendance.util.DateUtil;
+import attendance.util.FormattedErrorMessage;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
 public class AttendanceController {
 
-    private final AttendancesBook attendancesBook;
-    private final Crews crews;
+    private final AttendanceBook attendanceBook;
+    private final LocalDate systemDate;
+    private final Map<Option, Runnable> function = Map.of(
+            Option.RECORD, this::recordAttendance,
+            Option.EDIT, this::editAttendance,
+            Option.CHECK_RECORD, this::checkRecords,
+            Option.CHECK_PENALTY, this::checkPenalty
+    );
 
-    public AttendanceController() {
-        String path = "src/main/resources/attendances.csv";
-        FileContents fileContents = AttendanceFileReader.read(path);
-        attendancesBook = fileContents.attendancesBook();
-        crews = fileContents.crews();
+    public AttendanceController(Initializer initializer) {
+        this.attendanceBook = initializer.initAttendanceBook();
+        this.systemDate = initializer.initSystemDate();
     }
 
     public void run() {
         while (true) {
-            String inputFunction = InputView.readFunction();
+            String inputFunction = InputView.readFunction(systemDate);
+            if (Option.isQuit(inputFunction)) {
+                break;
+            }
             try {
-                performFunction(inputFunction);
-                if (inputFunction.equals("Q")) {
-                    break;
-                }
+                execute(inputFunction);
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                OutputView.printErrorMessage(e.getMessage());
             }
         }
     }
 
-    private void performFunction(String inputFunction) {
-        if (inputFunction.equals("1")) {
-            validateAttendanceDate(LocalDate.now());
-            recordAttendance();
-        }
-        if (inputFunction.equals("2")) {
-            modifyAttendance();
-        }
-        if (inputFunction.equals("3")) {
-            checkAttendanceRecordOfCrew();
-        }
-        if (inputFunction.equals("4")) {
-            OutputView.printPenaltyOfCrews(crews.getCrews(), attendancesBook);
-        }
-    }
-
-    private void validateAttendanceDate(LocalDate attendDate) {
-        if (DateUtil.isWeekend(attendDate) || Holiday.isHoliday(attendDate)) {
-            throw new IllegalArgumentException(String.format("%n[ERROR] %s은 등교일이 아닙니다.", attendDate.format(
-                DateTimeFormatter.ofPattern(OutputView.DATE_FORMATTER, Locale.KOREAN))));
-        }
+    private void execute(String inputFunction) {
+        Option selectedOption = Option.select(inputFunction);
+        Runnable runnable = function.get(selectedOption);
+        runnable.run();
     }
 
     private void recordAttendance() {
-        Crew crew = getCrew();
-        LocalTime checkInTime = getCheckInTime();
-        LocalDateTime attendanceDateTime = LocalDateTime.of(LocalDate.now(), checkInTime);
-        Attendance attendance = Attendance.of(attendanceDateTime);
-        attendancesBook.addAttendance(crew, attendance);
-        OutputView.printAttendanceResult(attendance);
+        validateDate(systemDate);
+        Crew crew = createCrew(InputView.readNickname());
+
+        LocalTime inputAttendTime = InputView.readAttendTimeForRecord();
+        Attendance attendance = Attendance.of(systemDate, inputAttendTime);
+
+        attendanceBook.add(crew, attendance);
+        OutputView.printRecordAttendanceResult(attendance);
     }
 
-    private Crew getCrew() {
-        String inputNickName = InputView.readNickName();
-        return crews.getCrew(inputNickName);
+    private void validateDate(LocalDate inputDate) {
+        if (DateUtil.isWeekend(inputDate) || Holiday.isHoliday(inputDate)) {
+            throw new IllegalArgumentException(FormattedErrorMessage.INVALID_ATTEND_DATE_ERROR.getDateFormatMessage(systemDate));
+        }
     }
 
-    private LocalTime getCheckInTime() {
-        String inputCheckInTime = InputView.readCheckInTime();
-        return LocalTime.parse(inputCheckInTime);
+    private Crew createCrew(String inputNickname) {
+        Nickname nickname = new Nickname(inputNickname);
+        Crew crew = new Crew(nickname);
+        attendanceBook.validateContainsCrew(crew);
+        return crew;
     }
 
-    private void modifyAttendance() {
-        String nickName = InputView.readModifyingNickName();
-        Crew crew = crews.getCrew(nickName);
-        LocalDate modifyingCheckInDate = getModifyingCheckInDate();
-        validateAttendanceDate(modifyingCheckInDate);
-        LocalTime modifyingCheckInTime = getModifyingCheckInTime();
+    private void editAttendance() {
+        Crew crew = createCrew(InputView.readNicknameForEdit());
+        int inputDay = InputView.readAttendDay();
+        LocalDate attendDate = LocalDate.of(systemDate.getYear(), systemDate.getMonthValue(), inputDay);
+        validateDate(attendDate);
+        LocalTime inputTime = InputView.readAttendTimeForEdit();
 
-        Attendance previousAttendance = attendancesBook.getExistAttendanceOfCrew(crew, modifyingCheckInDate);
-        Attendance modifiedAttendance = attendancesBook.modify(crew, previousAttendance, modifyingCheckInTime);
-        OutputView.printModifyingResult(previousAttendance, modifiedAttendance);
+        Attendance newAttendance = Attendance.of(attendDate, inputTime);
+        Attendance oldAttendance = attendanceBook.findAttendanceByCrew(crew, attendDate);
+        attendanceBook.update(crew, oldAttendance, newAttendance);
+        OutputView.printEditAttendanceResult(oldAttendance, newAttendance);
     }
 
-    private LocalTime getModifyingCheckInTime() {
-        String inputModifyingCheckinTime = InputView.readModifyingCheckinTime();
-        return LocalTime.parse(inputModifyingCheckinTime);
+    private void checkRecords() {
+        Crew crew = createCrew(InputView.readNickname());
+
+        Attendances attendances = attendanceBook.getRecordOfCrew(systemDate, crew);
+        OutputView.printAttendanceRecordsUntilYesterday(crew, systemDate, attendances);
+
+        StatusStatistics statusStatistics = new StatusStatistics(attendances, systemDate);
+        OutputView.printStatusStatistics(statusStatistics);
     }
 
-    private LocalDate getModifyingCheckInDate() {
-        String inputModifyingCheckinDate = InputView.readModifyingCheckinDate();
-        return LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), Integer.parseInt(inputModifyingCheckinDate));
-    }
-
-    private void checkAttendanceRecordOfCrew() {
-        Crew crew = getCrew();
-        List<Attendance> attendancesOfCrew = attendancesBook.getAttendancesOfCrew(crew, LocalDate.now());
-        int attendanceCount = attendancesBook.countAttendanceStatus(attendancesOfCrew, AttendanceStatus.CHECKIN);
-        int lateCount = attendancesBook.countAttendanceStatus(attendancesOfCrew, AttendanceStatus.LATE);
-        int absenceCount = attendancesBook.countAttendanceStatus(attendancesOfCrew, AttendanceStatus.ABSENCE);
-        Penalty penalty = Penalty.determine(absenceCount, lateCount);
-        OutputView.printAttendancesAndPenalty(attendancesOfCrew, crew, attendanceCount, lateCount, absenceCount, penalty);
+    public void checkPenalty() {
+        Map<Crew, StatusStatistics> crewsAndStatistics = attendanceBook.getSortedCrewsAndStatistics(systemDate);
+        OutputView.printPenaltyCrews(crewsAndStatistics);
     }
 }

@@ -1,39 +1,46 @@
 package attendance.domain;
 
 public enum Penalty {
-    REMOVAL("제적"),
-    INTERVIEW("면담"),
-    WARNING("경고"),
-    NONE("")
+
+    REMOVAL("제적", 5),
+    INTERVIEW("면담", 3),
+    WARNING("경고", 2),
+    NONE(null, 0)
     ;
 
-    private static final int LATE_PER_ABSENCE = 3;
-    private static final int WARNING_LIMIT = 2;
-    private static final int INTERVIEW_LIMIT = 3;
-    private static final int REMOVAL_LIMIT = 5;
+    private static final int LATE_PER_ABSENT = 3;
 
-    private final String status;
+    private String name;
+    private int boundary;
 
-    Penalty(String status) {
-        this.status = status;
+    Penalty(String name, int boundary) {
+        this.name = name;
+        this.boundary = boundary;
     }
 
-    public String getStatus() {
-        return status;
+    public static int calculateTotalAbsent(int late, int absent) {
+        return absent + (late / LATE_PER_ABSENT);
     }
 
-    public static Penalty determine(int absenceCount, int lateCount) {
-        absenceCount = absenceCount + lateCount / LATE_PER_ABSENCE;
-        if (absenceCount > REMOVAL_LIMIT) {
-            return Penalty.REMOVAL;
+    public static Penalty determine(int late, int absent) {
+        int totalAbsent = calculateTotalAbsent(late, absent);
+
+        if (totalAbsent == WARNING.boundary) {
+            return WARNING;
         }
-        if (absenceCount >= INTERVIEW_LIMIT) {
-            return Penalty.INTERVIEW;
+
+        if (totalAbsent >= INTERVIEW.boundary && totalAbsent <= REMOVAL.boundary) {
+            return INTERVIEW;
         }
-        if (absenceCount == WARNING_LIMIT) {
-            return Penalty.WARNING;
+
+        if (totalAbsent > REMOVAL.boundary) {
+            return REMOVAL;
         }
-        return Penalty.NONE;
+
+        return NONE;
     }
 
+    public String getName() {
+        return name;
+    }
 }

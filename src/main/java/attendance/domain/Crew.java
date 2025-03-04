@@ -4,27 +4,25 @@ import java.util.Objects;
 
 public class Crew {
 
-    private String nickName;
+    private final Nickname nickname;
 
-    public Crew(String nickName) {
-        this.nickName = nickName;
+    public Crew(Nickname nickname) {
+        this.nickname = nickname;
     }
 
-    public String getNickName() {
-        return nickName;
+    public Nickname getNickname() {
+        return nickname;
     }
 
     @Override
-    public final boolean equals(Object o) {
-        if (!(o instanceof Crew crew)) {
-            return false;
-        }
-
-        return Objects.equals(nickName, crew.nickName);
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        Crew crew = (Crew) object;
+        return Objects.equals(nickname, crew.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(nickName);
+        return Objects.hashCode(nickname);
     }
 }
