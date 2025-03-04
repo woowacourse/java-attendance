@@ -11,6 +11,7 @@ class HolidayTest {
     void test() {
         // given
         LocalDateTime christmas = LocalDateTime.of(2024, 12, 25, 10, 0);
+
         // when
         boolean isHoliday = Holiday.isHoliday(christmas.toLocalDate());
 
