@@ -3,6 +3,7 @@ package view;
 import domain.Attend;
 import domain.AttendCount;
 import domain.AttendStatus;
+import domain.Nickname;
 import domain.WarningCrew;
 import domain.WarningStatus;
 import java.time.LocalTime;
@@ -36,10 +37,10 @@ public class OutputView {
         return result;
     }
 
-    public void printSearchedAttend(final String name, final List<Attend> attends,
+    public void printSearchedAttend(final Nickname name, final List<Attend> attends,
                                     final List<AttendStatus> attendStatuses, final AttendCount attendCount,
                                     final WarningStatus warningStatus) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", name);
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", name.nickname());
         for (int i = 0; i < attends.size(); i++) {
             String date = DateTimeFormat.DATE.formatDate(attends.get(i).getDate());
             String time = formatAttendTime(attends.get(i));
@@ -70,7 +71,7 @@ public class OutputView {
             AttendCount attendCount = warningCrew.attendCount();
             String warningStatus = WarningStatusFormatter.findStatusText(warningCrew.warningStatus());
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
-                    warningCrew.name(), attendCount.absenceCount(), attendCount.lateCount(), warningStatus);
+                    warningCrew.name().nickname(), attendCount.absenceCount(), attendCount.lateCount(), warningStatus);
         }
         System.out.println();
     }

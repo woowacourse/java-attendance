@@ -2,6 +2,7 @@ import domain.AttendCount;
 import domain.AttendReader;
 import domain.AttendanceBook;
 import domain.Current;
+import domain.Nickname;
 import java.time.LocalDate;
 import java.util.List;
 import org.assertj.core.api.Assertions;
@@ -52,6 +53,12 @@ public class AttendReaderTest {
         Assertions.assertThatThrownBy(() -> attendReader.loadAttendanceBook(today));
     }
 
+    private static List<Nickname> createNickname(List<String> names) {
+        return names.stream()
+                .map(Nickname::new)
+                .toList();
+    }
+
     @Test
     @DisplayName("csv 파일 데이터를 기반으로 출석 기록을 저장한다")
     void loadAttendByCsv() {
@@ -65,7 +72,10 @@ public class AttendReaderTest {
 
         //then
         List<String> names = List.of("빙티", "가나");
-        List<AttendCount> attendCounts = names.stream().map(attendanceBook::countAttend).toList();
+        List<Nickname> nicknames = createNickname(names);
+        List<AttendCount> attendCounts = nicknames.stream()
+                .map(attendanceBook::countAttend)
+                .toList();
         List<AttendCount> expectedCounts = List.of(
                 new AttendCount(3, 0, 6),
                 new AttendCount(1, 1, 7));

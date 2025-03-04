@@ -27,11 +27,12 @@ public class AttendReader {
         List<String> splitRow = CsvReader.splitRow(row);
         String name = splitRow.get(0);
         isEmptyString(name);
-        attendanceBook.register(name);
-        addAttendPerUser(attendanceBook, name, splitRow.get(1));
+        Nickname nickName = new Nickname(name);
+        attendanceBook.register(nickName);
+        addAttendPerUser(attendanceBook, nickName, splitRow.get(1));
     }
 
-    private void addAttendPerUser(final AttendanceBook attendanceBook, final String name, final String rawDateTime) {
+    private void addAttendPerUser(final AttendanceBook attendanceBook, final Nickname name, final String rawDateTime) {
         isEmptyString(rawDateTime);
         String[] splitDateTime = rawDateTime.split(" ");
         Attend attend = createAttend(splitDateTime);

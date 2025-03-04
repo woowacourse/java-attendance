@@ -6,6 +6,7 @@ import domain.AttendReader;
 import domain.AttendStatus;
 import domain.AttendanceBook;
 import domain.Command;
+import domain.Nickname;
 import domain.WarningCrew;
 import domain.WarningStatus;
 import java.time.LocalDate;
@@ -40,7 +41,7 @@ public class AttendController {
     }
 
     private void addAttend() {
-        String name = inputView.inputName();
+        Nickname name = inputView.inputName();
         LocalTime time = inputView.inputAttendTime();
         Attend attend = new Attend(today, time);
         attendanceBook.addAttend(name, attend);
@@ -49,7 +50,7 @@ public class AttendController {
     }
 
     private void edit() {
-        String name = inputView.inputName();
+        Nickname name = inputView.inputName();
         LocalDate editDate = inputView.inputDate(today);
         LocalTime editTime = inputView.inputChangeTime();
         Attend after = new Attend(editDate, editTime);
@@ -60,7 +61,7 @@ public class AttendController {
     }
 
     private void searchAttend() {
-        String name = inputView.inputName();
+        Nickname name = inputView.inputName();
         List<Attend> attends = attendanceBook.searchAttend(name, today.getDayOfMonth());
         List<AttendStatus> attendStatuses = attends.stream()
                 .map(Attend::checkStatus)

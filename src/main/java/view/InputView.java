@@ -1,5 +1,6 @@
 package view;
 
+import domain.Nickname;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,9 +21,10 @@ public class InputView {
         return inputString();
     }
 
-    public String inputName() {
+    public Nickname inputName() {
         System.out.println("닉네임을 입력해 주세요.");
-        return inputString();
+        String input = inputString();
+        return new Nickname(input);
     }
 
     private String inputString() {

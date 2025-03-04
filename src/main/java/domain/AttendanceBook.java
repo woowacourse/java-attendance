@@ -7,7 +7,8 @@ import java.util.Map;
 
 public class AttendanceBook {
 
-    private final Map<String, AttendResult> attendBook;
+    //    private final Map<String, AttendResult> attendBook;
+    private final Map<Nickname, AttendResult> attendBook;
     private final LocalDate today;
 
     public AttendanceBook(LocalDate today) {
@@ -15,43 +16,43 @@ public class AttendanceBook {
         this.today = today;
     }
 
-    public void register(final String name) {
+    public void register(final Nickname name) {
         if (!attendBook.containsKey(name)) {
             attendBook.put(name, new AttendResult(today));
         }
     }
 
-    public void addAttend(final String name, final Attend attend) {
+    public void addAttend(final Nickname name, final Attend attend) {
         checkContainsName(name);
         AttendResult attendResult = attendBook.get(name);
         attendResult.addAttend(attend);
     }
 
-    private void checkContainsName(final String name) {
+    private void checkContainsName(final Nickname name) {
         if (!attendBook.containsKey(name)) {
             throw new IllegalArgumentException("존재하지 않는 닉네임입니다.");
         }
     }
 
-    public Attend edit(final String name, final Attend afterAttend) {
+    public Attend edit(final Nickname name, final Attend afterAttend) {
         checkContainsName(name);
         AttendResult attendResult = attendBook.get(name);
         return attendResult.edit(afterAttend);
     }
 
-    public List<Attend> searchAttend(String name, final int day) {
+    public List<Attend> searchAttend(Nickname name, final int day) {
         checkContainsName(name);
         AttendResult attendResult = attendBook.get(name);
         return attendResult.getAttendResult(day);
     }
 
-    public WarningStatus judgeAttendStatus(String name) {
+    public WarningStatus judgeAttendStatus(Nickname name) {
         checkContainsName(name);
         AttendResult attendResult = attendBook.get(name);
         return attendResult.judgeWarningStatus(today.getDayOfMonth());
     }
 
-    public AttendCount countAttend(String name) {
+    public AttendCount countAttend(Nickname name) {
         checkContainsName(name);
         AttendResult attendResult = attendBook.get(name);
         return attendResult.countAttendStatus(today.getDayOfMonth());

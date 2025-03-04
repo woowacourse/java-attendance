@@ -2,6 +2,7 @@ import domain.Attend;
 import domain.AttendCount;
 import domain.AttendanceBook;
 import domain.Current;
+import domain.Nickname;
 import domain.WarningCrew;
 import domain.WarningStatus;
 import java.time.LocalDate;
@@ -26,10 +27,11 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
+        Nickname nickname = new Nickname(name);
         Attend attend = new Attend(Current.TODAY.getDate());
 
         //when & then
-        Assertions.assertThatThrownBy(() -> attendanceBook.addAttend(name, attend));
+        Assertions.assertThatThrownBy(() -> attendanceBook.addAttend(nickname, attend));
     }
 
     @Test
@@ -39,9 +41,10 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
+        Nickname nickname = new Nickname(name);
 
         //when & then
-        assertDoesNotThrow(() -> attendanceBook.register(name));
+        assertDoesNotThrow(() -> attendanceBook.register(nickname));
     }
 
     @Test
@@ -52,14 +55,15 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
-        attendanceBook.register(name);
+        Nickname nickname = new Nickname(name);
+        attendanceBook.register(nickname);
         Attend attend = new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0));
-        attendanceBook.addAttend(name, attend);
-        List<Attend> before = attendanceBook.searchAttend(name, 3);
+        attendanceBook.addAttend(nickname, attend);
+        List<Attend> before = attendanceBook.searchAttend(nickname, 3);
 
         //when
-        attendanceBook.register(name);
-        List<Attend> after = attendanceBook.searchAttend(name, 3);
+        attendanceBook.register(nickname);
+        List<Attend> after = attendanceBook.searchAttend(nickname, 3);
 
         //then
         LocalTime beforeTime = before.getFirst().getTime();
@@ -74,11 +78,12 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
+        Nickname nickname = new Nickname(name);
         Attend attend = new Attend(Current.TODAY.getDate());
-        attendanceBook.register(name);
+        attendanceBook.register(nickname);
 
         //when & then
-        assertDoesNotThrow(() -> attendanceBook.addAttend(name, attend));
+        assertDoesNotThrow(() -> attendanceBook.addAttend(nickname, attend));
     }
 
     @Test
@@ -88,13 +93,14 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
+        Nickname nickname = new Nickname(name);
         Attend attend = new Attend(Current.TODAY.getDate());
-        attendanceBook.register(name);
-        attendanceBook.addAttend(name, attend);
+        attendanceBook.register(nickname);
+        attendanceBook.addAttend(nickname, attend);
 
         //when & then
         Attend anotherAttend = new Attend(Current.TODAY.getDate(), LocalTime.of(11, 0));
-        Assertions.assertThatThrownBy(() -> attendanceBook.addAttend(name, anotherAttend));
+        Assertions.assertThatThrownBy(() -> attendanceBook.addAttend(nickname, anotherAttend));
     }
 
     private static Stream<Arguments> provideBeforeAndAfterAttend() {
@@ -116,11 +122,12 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
-        attendanceBook.register(name);
-        attendanceBook.addAttend(name, before);
+        Nickname nickname = new Nickname(name);
+        attendanceBook.register(nickname);
+        attendanceBook.addAttend(nickname, before);
 
         //when
-        Attend actual = attendanceBook.edit(name, after);
+        Attend actual = attendanceBook.edit(nickname, after);
 
         //then
         assertThat(actual).isEqualTo(expected);
@@ -152,14 +159,15 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
-        attendanceBook.register(name);
+        Nickname nickname = new Nickname(name);
+        attendanceBook.register(nickname);
         List<Attend> attends = createAttendUntilToday();
         for (Attend attend : attends) {
-            attendanceBook.addAttend(name, attend);
+            attendanceBook.addAttend(nickname, attend);
         }
 
         //when
-        List<Attend> actual = attendanceBook.searchAttend(name, Current.TODAY.getDay());
+        List<Attend> actual = attendanceBook.searchAttend(nickname, Current.TODAY.getDay());
 
         //then
         assertThat(actual).isEqualTo(attends);
@@ -186,14 +194,15 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
-        attendanceBook.register(name);
+        Nickname nickname = new Nickname(name);
+        attendanceBook.register(nickname);
         List<Attend> attends = createExpelAttend();
         for (Attend attend : attends) {
-            attendanceBook.addAttend(name, attend);
+            attendanceBook.addAttend(nickname, attend);
         }
 
         //when
-        WarningStatus actual = attendanceBook.judgeAttendStatus(name);
+        WarningStatus actual = attendanceBook.judgeAttendStatus(nickname);
 
         //then
         assertThat(actual).isEqualTo(WarningStatus.EXPEL);
@@ -206,14 +215,15 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
-        attendanceBook.register(name);
+        Nickname nickname = new Nickname(name);
+        attendanceBook.register(nickname);
         List<Attend> attends = createAttendUntilToday();
         for (Attend attend : attends) {
-            attendanceBook.addAttend(name, attend);
+            attendanceBook.addAttend(nickname, attend);
         }
 
         //when
-        WarningStatus actual = attendanceBook.judgeAttendStatus(name);
+        WarningStatus actual = attendanceBook.judgeAttendStatus(nickname);
 
         //then
         assertThat(actual).isEqualTo(WarningStatus.INTERVIEW);
@@ -240,16 +250,17 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
-        attendanceBook.register(name);
+        Nickname nickname = new Nickname(name);
+        attendanceBook.register(nickname);
         List<Attend> attends = createAttendUntilToday();
         for (Attend attend : attends) {
-            attendanceBook.addAttend(name, attend);
+            attendanceBook.addAttend(nickname, attend);
         }
-        attendanceBook.edit(name, createAttendDateAndTime(12, 10, 0));
-        attendanceBook.edit(name, createAttendDateAndTime(11, 10, 0));
+        attendanceBook.edit(nickname, createAttendDateAndTime(12, 10, 0));
+        attendanceBook.edit(nickname, createAttendDateAndTime(11, 10, 0));
 
         //when
-        WarningStatus actual = attendanceBook.judgeAttendStatus(name);
+        WarningStatus actual = attendanceBook.judgeAttendStatus(nickname);
 
         //then
         assertThat(actual).isEqualTo(WarningStatus.WARNING);
@@ -262,14 +273,15 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
-        attendanceBook.register(name);
+        Nickname nickname = new Nickname(name);
+        attendanceBook.register(nickname);
         List<Attend> attends = createPassAttend();
         for (Attend attend : attends) {
-            attendanceBook.addAttend(name, attend);
+            attendanceBook.addAttend(nickname, attend);
         }
 
         //when
-        WarningStatus actual = attendanceBook.judgeAttendStatus(name);
+        WarningStatus actual = attendanceBook.judgeAttendStatus(nickname);
 
         //then
         assertThat(actual).isEqualTo(WarningStatus.PASS);
@@ -282,14 +294,15 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
-        attendanceBook.register(name);
+        Nickname nickname = new Nickname(name);
+        attendanceBook.register(nickname);
         List<Attend> attends = createAttendUntilToday();
         for (Attend attend : attends) {
-            attendanceBook.addAttend(name, attend);
+            attendanceBook.addAttend(nickname, attend);
         }
 
         //when
-        AttendCount actual = attendanceBook.countAttend(name);
+        AttendCount actual = attendanceBook.countAttend(nickname);
 
         //then
         AttendCount expected = new AttendCount(3, 3, 3);
@@ -303,17 +316,19 @@ public class AttendanceBookTest {
         LocalDate today = Current.TODAY.getDate();
         AttendanceBook attendanceBook = new AttendanceBook(today);
         String name = "플린트";
-        attendanceBook.register(name);
+        Nickname nickname = new Nickname(name);
+        attendanceBook.register(nickname);
         List<Attend> attends = createPassAttend();
         for (Attend attend : attends) {
-            attendanceBook.addAttend(name, attend);
+            attendanceBook.addAttend(nickname, attend);
         }
 
         String warningName = "가나다";
-        attendanceBook.register(warningName);
+        Nickname warningNickname = new Nickname(warningName);
+        attendanceBook.register(warningNickname);
         List<Attend> warningAttend = createAttendUntilToday();
         for (Attend attend : warningAttend) {
-            attendanceBook.addAttend(warningName, attend);
+            attendanceBook.addAttend(warningNickname, attend);
         }
 
         //when
@@ -321,7 +336,7 @@ public class AttendanceBookTest {
 
         //then
         List<WarningCrew> expected = List.of(
-                new WarningCrew(warningName, new AttendCount(3, 3, 3), WarningStatus.INTERVIEW)
+                new WarningCrew(warningNickname, new AttendCount(3, 3, 3), WarningStatus.INTERVIEW)
         );
         assertThat(actual).isEqualTo(expected);
     }
