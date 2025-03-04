@@ -3,8 +3,8 @@ package domain;
 import static domain.AttendanceCode.ABSENT;
 import static domain.AttendanceCode.LATE;
 import static domain.AttendanceCode.PRESENT;
-import static domain.DayOfWeek.MONDAY;
-import static domain.DayOfWeek.TUESDAY;
+import static domain.CampusTime.MONDAY;
+import static domain.CampusTime.REST_DAY;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -19,11 +19,11 @@ public class Attendance implements Comparable<Attendance> {
     public Attendance(LocalDateTime attendanceTime) {
         this.attendanceTime = attendanceTime;
     }
-    
+
     public AttendanceCode calculateAttendanceCode() {
         LocalTime time = attendanceTime.toLocalTime();
-        Duration duration = Duration.between(TUESDAY.getOpenTime(), time);
-        if (attendanceTime.getDayOfWeek().getValue() == MONDAY.getDayOfWeekCode()) {
+        Duration duration = Duration.between(REST_DAY.getOpenTime(), time);
+        if (MONDAY.contain(attendanceTime.getDayOfWeek())) {
             duration = Duration.between(MONDAY.getOpenTime(), time);
         }
 

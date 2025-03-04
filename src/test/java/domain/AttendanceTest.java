@@ -64,6 +64,5 @@ class AttendanceTest {
         Attendance attendance = new Attendance(testDate);
 
         Assertions.assertTrue(attendance.isSameDay(testDate.toLocalDate()));
-
     }
 }
