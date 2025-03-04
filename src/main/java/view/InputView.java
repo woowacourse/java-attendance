@@ -1,76 +1,48 @@
 package view;
 
+import model.Command;
 
-import static util.Constants.FIXED_MONTH;
-
-import domain.AttendanceDateTime;
-import domain.Command;
 import java.util.Scanner;
-import util.DayOfWeekKorean;
 
-public final class InputView {
+public class InputView {
 
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner sc = new Scanner(System.in);
 
-    private InputView() {
+    public static String readCommand(final DateInfoDto dto) {
+        System.out.println(String.format("오늘은 %s입니다. 기능을 선택해 주세요.", dto.getFormattedDate()));
+        readCommandIntro();
+        return sc.nextLine();
     }
 
-    public static String readCommand(final AttendanceDateTime attendanceDateTime) {
-        System.out.println(
-                getMessageFormat(attendanceDateTime));
-        for (Command command : Command.values()) {
-            System.out.println(String.format("%s. %s", command.getCommandNumber(), command.getCommandName()));
-
+    private static void readCommandIntro() {
+        for (final Command command : Command.values()) {
+            System.out.println(String.format("%s. %s", command.getSymbol(), command.getDisplayName()));
         }
-        final String input = scanner.nextLine();
-        validateInput(input);
-
-        return input;
     }
 
-    public static String readNickName() {
+    public static String readNickname() {
+        System.out.println();
         System.out.println("닉네임을 입력해 주세요.");
-        final String input = scanner.nextLine();
-        validateInput(input);
-        return input;
+        return sc.nextLine();
     }
 
-    public static String readUpdateNickName() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        final String input = scanner.nextLine();
-        validateInput(input);
-        return input;
-    }
-
-    public static String readDateTime() {
+    public static String readAttendanceTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        final String input = scanner.nextLine();
-        validateInput(input);
-        return input;
+        return sc.nextLine();
     }
 
-    public static String readUpdateDateTime() {
+    public static String readNicknameByUpdate() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return sc.nextLine();
+    }
+
+    public static String readDayOfMonthByUpdate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return sc.nextLine();
+    }
+
+    public static String readAttendanceTimeByUpdate() {
         System.out.println("언제로 변경하겠습니까?");
-        final String input = scanner.nextLine();
-        validateInput(input);
-        return input;
-    }
-
-    public static String readUpdateDate() {
-        System.out.println("수정하려는 날짜(일)을 입력해 주세요.");
-        final String input = scanner.nextLine();
-        validateInput(input);
-        return input;
-    }
-
-    private static void validateInput(final String input) {
-        if (input.isBlank()) {
-            throw new IllegalArgumentException("값을 입력해주세요.");
-        }
-    }
-
-    private static String getMessageFormat(final AttendanceDateTime attendanceDateTime) {
-        return String.format("오늘은 %s월 %s일 %s입니다. 기능을 선택해주세요.", FIXED_MONTH, attendanceDateTime.getDayOfMonth(),
-                DayOfWeekKorean.getKoreanName(attendanceDateTime.getDayOfWeek()));
+        return sc.nextLine();
     }
 }

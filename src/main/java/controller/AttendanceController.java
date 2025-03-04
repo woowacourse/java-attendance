@@ -1,82 +1,113 @@
 package controller;
 
-import domain.Attendance;
-import domain.AttendanceDateTime;
-import domain.Attendances;
-import domain.Command;
-import domain.Crew;
-import domain.Crews;
-import domain.Nickname;
+import model.*;
+import view.*;
+
 import java.time.LocalDate;
-import java.time.LocalTime;
-import util.CrewGenerator;
-import util.CsvReader;
-import domain.DayOfMonth;
-import view.InputView;
-import view.OutputView;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AttendanceController {
 
-    private static final String CSV_PATH = "src/main/resources/attendances.csv";
+    private final AttendanceManager manager;
 
-    public void start() {
-        while (true) {
-            final AttendanceDateTime fixedAttendanceDateTime = AttendanceDateTime.getDefaultDateTime();
-            final String input = InputView.readCommand(fixedAttendanceDateTime);
-            final Command command = Command.findByCommandNumber(input);
-            final Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH), fixedAttendanceDateTime.getDate());
-            if (command.equals(Command.QUIT)) {
-                break;
-            }
-            command.execute(crews, fixedAttendanceDateTime);
+    public AttendanceController(final AttendanceManager manager) {
+        this.manager = manager;
+    }
+
+    public void run(final AttendanceDateTime todayDateTime) {
+        updateAttendanceRecord(todayDateTime);
+        commandProcess(todayDateTime);
+    }
+
+    private void commandProcess(final AttendanceDateTime todayDateTime) {
+        final String symbolInput = InputView.readCommand(new DateInfoDto(todayDateTime));
+        final Command command = Command.findBySymbol(symbolInput);
+
+        if (command.equals(Command.QUIT)) {
+            return ;
         }
+        if (command.equals(Command.ATTENDANCE_CHECK)) {
+            processAttendanceCheck(todayDateTime);
+        } else if (command.equals(Command.ATTENDANCE_CORRECTION)) {
+            processAttendanceCorrection();
+        } else if (command.equals(Command.CHECK_ATTENDANCE_RECORDS_BY_CREW)) {
+            processCrewAttendanceBook(todayDateTime);
+        } else if (command.equals(Command.IDENTIFICATION_OF_THE_RISK_OF_EXPULSION)) {
+            processRiskOfExpulsion();
+        }
+        commandProcess(todayDateTime);
     }
 
-    public static void processCheckAttendees(final Crews crews, final AttendanceDateTime attendanceDateTime) {
-        Attendance.validate(attendanceDateTime);
-        final Crew crew = findCrewByNickNameInput(crews);
-        final String inputTime = InputView.readDateTime();
-        final LocalDate fixedDate = attendanceDateTime.getDate();
-        crew.validateAttended(attendanceDateTime);
-        final AttendanceDateTime newAttendanceDateTime = AttendanceDateTime.ofTimeString(fixedDate, inputTime);
-        final Attendance newAttendance = new Attendance(newAttendanceDateTime);
-        crew.add(newAttendance);
-        OutputView.printAttendance(newAttendance);
+    private void processAttendanceCheck(final AttendanceDateTime todayDateTime) {
+        Attendance.validatePossibleDate(todayDateTime);
+        final Nickname nickname = new Nickname(InputView.readNickname());
+        final Crew crew = manager.findCrewByNickname(nickname);
+        final LocalDate date = todayDateTime.getDateTime().toLocalDate();
+        final AttendanceTime attendanceTime = AttendanceTime.of(InputView.readAttendanceTime());
+        BusinessHours.validateOperatingTime(attendanceTime);
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(date, attendanceTime);
+        final Attendance attendance = Attendance.of(attendanceDateTime);
+        manager.saveAttendance(crew, attendance);
+        OutputView.printAttendance(TypeInfoDto.of(attendance));
     }
 
-    public static void processEditAttendance(final Crews crews) {
-        final String inputNickName = InputView.readUpdateNickName();
-        final Nickname nickname = new Nickname(inputNickName);
-        final Crew crew = crews.findByNickname(nickname);
-        final int displayDay = readDisplayName();
-        final Attendances attendances = crew.getAttendances();
-        final Attendance findAttendance = attendances.findAttendance(displayDay);
-        readUpdateDateTime(attendances, findAttendance);
-        final Attendance newAttendance = attendances.findAttendance(displayDay);
-        OutputView.printUpdateAttendance(findAttendance, newAttendance);
+    private void processAttendanceCorrection() {
+        final Nickname nickname = new Nickname(InputView.readNicknameByUpdate());
+        final Crew crew = manager.findCrewByNickname(nickname);
+        final AttendanceBook attendanceBook = manager.findAttendanceBookByCrew(crew);
+
+        final DayOfMonth dayOfMonth = DayOfMonth.of(InputView.readDayOfMonthByUpdate());
+        final Attendance oldAttendance = attendanceBook.findByDayOfMonth(dayOfMonth);
+        final AttendanceDateTime oldDateTime = oldAttendance.getAttendanceDateTime();
+
+        final AttendanceTime attendanceTime = AttendanceTime.of(InputView.readAttendanceTimeByUpdate());
+        BusinessHours.validateOperatingTime(attendanceTime);
+        oldAttendance.validateSameTime(attendanceTime);
+        final AttendanceDateTime newDateTime = AttendanceDateTime.of(oldDateTime.getDateTime().toLocalDate(), attendanceTime);
+        final Attendance newAttendance = Attendance.of(newDateTime);
+
+        attendanceBook.update(oldAttendance, newAttendance);
+        OutputView.printAttendanceCorrection(TypeInfoDto.of(oldAttendance), TypeInfoDto.of(newAttendance));
     }
 
-    public static void processAttendanceRecordByCrew(final Crews crews) {
-        final Crew crew = findCrewByNickNameInput(crews);
-        OutputView.printCrewAttendances(crew);
+    private void processCrewAttendanceBook(final AttendanceDateTime todayDateTime) {
+        final Nickname nickname = new Nickname(InputView.readNickname());
+        final Crew crew = manager.findCrewByNickname(nickname);
+        final AttendanceBook attendanceBook = manager.findAttendanceBookByCrew(crew);
+
+        final AttendanceBook recordAttendanceBook = attendanceBook.getBefore(todayDateTime);
+        final List<AttendanceStatus> statuses = recordAttendanceBook.getStatuses();
+        final AttendanceCountsDto countsDto = new AttendanceCountsDto(AttendanceStatus.countStatus(statuses));
+        final ExpulsionType expulsionType = ExpulsionType.find(countsDto);
+        final ExpulsionInfoDto expulsionInfo = new ExpulsionInfoDto(countsDto, expulsionType);
+
+        final List<TypeInfoDto> typeInfoDtos = new ArrayList<>();
+        for (final Attendance attendance : recordAttendanceBook.getAttendances()) {
+            typeInfoDtos.add(TypeInfoDto.of(attendance));
+        }
+        OutputView.printCrewAttendanceBook(crew, typeInfoDtos, expulsionInfo);
     }
 
-    private static Crew findCrewByNickNameInput(Crews crews) {
-        final String inputNickName = InputView.readNickName();
-        final Nickname nickname = new Nickname(inputNickName);
-        return crews.findByNickname(nickname);
+    private void processRiskOfExpulsion() {
+        final Map<Crew, AttendanceBook> attendanceBooks = manager.getAttendanceBooks();
+        final Map<Crew, ExpulsionInfoDto> expulsionInfoDtosByCrew = new HashMap<>();
+        for (final Crew crew : attendanceBooks.keySet()) {
+            final AttendanceBook attendanceBook = attendanceBooks.get(crew);
+            final List<AttendanceStatus> statuses = attendanceBook.getStatuses();
+            final AttendanceCountsDto countsDto = new AttendanceCountsDto(AttendanceStatus.countStatus(statuses));
+            final ExpulsionType expulsionType = ExpulsionType.find(countsDto);
+            final ExpulsionInfoDto expulsionInfoDto = new ExpulsionInfoDto(countsDto, expulsionType);
+            expulsionInfoDtosByCrew.put(crew, expulsionInfoDto);
+        }
+        OutputView.printRiskOfExpulsion(expulsionInfoDtosByCrew);
     }
 
-    private static int readDisplayName() {
-        final String oldDayOfMonthInput = InputView.readUpdateDate();
-        final int dayOfMonthInput = Integer.parseInt(oldDayOfMonthInput);
-        final DayOfMonth dayOfMonth = new DayOfMonth(dayOfMonthInput);
-        return dayOfMonth.getDisplayDay();
-    }
-
-    private static void readUpdateDateTime(Attendances attendances, Attendance findAttendance) {
-        final String inputUpdateTime = InputView.readUpdateDateTime();
-        final LocalTime updateTime = LocalTime.parse(inputUpdateTime);
-        attendances.updateTime(findAttendance, updateTime);
+    private void updateAttendanceRecord(final AttendanceDateTime todayDateTime) {
+        final int todayDayOfMonth = todayDateTime.getDateTime().getDayOfMonth();
+        final int toDayOfMonth = ValidManager.getInstance().getLastByDayOfMonth(todayDayOfMonth);
+        manager.updateAttendanceRecord(toDayOfMonth);
     }
 }

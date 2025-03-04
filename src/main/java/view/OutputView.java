@@ -1,135 +1,72 @@
 package view;
 
-import domain.Attendance;
-import domain.AttendanceCounter;
-import domain.AttendanceDateTime;
-import domain.AttendanceStatus;
-import domain.Attendances;
-import domain.Crew;
-import domain.Crews;
-import domain.Nickname;
-import domain.Punishment;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import util.Constants;
+import model.AttendanceStatus;
+import model.Crew;
+import model.ExpulsionType;
 
-public final class OutputView {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-    private OutputView() {
+public class OutputView {
+
+    public static void printAttendance(final TypeInfoDto dto) {
+        System.out.println(String.format("%s", dto.getFormattedDateTime()));
     }
 
-    public static void printAttendance(final Attendance attendance) {
-        printAttendanceByFormatter(attendance);
+    public static void printAttendanceCorrection(final TypeInfoDto oldDto, final TypeInfoDto newDto) {
+        System.out.println(String.format("%s -> %s 수정 완료!", oldDto.getFormattedDateTime(), newDto.getFormattedTime()));
+        System.out.println();
     }
 
-    public static void printUpdateAttendance(final Attendance oldAttendance, final Attendance newAttendance) {
-        final LocalDateTime oldLocalDateTime = oldAttendance.getLocalDateTime();
-        final AttendanceStatus oldAttendanceStatus = oldAttendance.getAttendanceStatus();
-        final LocalDateTime newLocalDateTime = newAttendance.getLocalDateTime();
-        final AttendanceStatus newAttendanceStatus = newAttendance.getAttendanceStatus();
-        final LocalTime newLocalTime = AttendanceDateTime.getTime(newLocalDateTime);
-
-        System.out.println(
-                String.format("%s (%s) -> %s (%s) 수정 완료!",
-                        oldLocalDateTime.format(AttendanceDateTime.KOREAN_DATE_TIME_FORMAT),
-                        oldAttendanceStatus.getDisplayName(), newLocalTime, newAttendanceStatus.getDisplayName()));
-    }
-
-    public static void printCrewAttendances(final Crew crew) {
-        final Nickname nickname = crew.getNickname();
-        final Attendances attendances = crew.getAttendances();
-        final AttendanceCounter attendanceCounter = AttendanceCounter.of(attendances);
-        final int sum = sumPunishmentCount(attendanceCounter);
-        final Punishment punishment = Punishment.findByAbsenceCount(sum);
-
-        printCrewAttendancesFormat(nickname, attendances, attendanceCounter, punishment);
-    }
-
-    private static void printCrewAttendancesFormat(Nickname nickname, Attendances attendances,
-                                                   AttendanceCounter attendanceCounter,
-                                                   Punishment punishment) {
-        System.out.println(String.format("이번 달 %s의 출석 기록입니다.", nickname.getNickname()));
+    public static void printCrewAttendanceBook(final Crew crew, final List<TypeInfoDto> typeInfoDtos, final ExpulsionInfoDto expulsionInfoDto) {
+        System.out.println();
+        System.out.println(String.format("이번 달 %s의 출석 기록입니다.", crew.getNickname().getValue()));
+        System.out.println();
+        for (final TypeInfoDto dto : typeInfoDtos) {
+            System.out.println(String.format("%s", dto.getFormattedDateTime()));
+        }
         System.out.println();
 
-        printAttendances(attendances);
+        final Map<AttendanceStatus, Integer> map = expulsionInfoDto.countsDto().map();
+
+        for (final AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
+            final String statusDisplayName = attendanceStatus.getDisplayName();
+            final int count = map.get(attendanceStatus);
+            System.out.println(String.format("%s: %d회", statusDisplayName, count));
+        }
         System.out.println();
 
-        printAttendanceCounterResult(attendanceCounter);
-        System.out.println(String.format("%s 대상자입니다.", punishment.getPunishmentName()));
-    }
-
-    private static void printAttendances(Attendances attendances) {
-        for (Attendance attendance : attendances.getAttendances()) {
-            printAttendanceByFormatter(attendance);
+        final String expulsionDisplayName = expulsionInfoDto.expulsionType().getDisplayName();
+        if (!expulsionDisplayName.equals(ExpulsionType.NONE.getDisplayName())) {
+            System.out.println(String.format("%s 대상자입니다.", expulsionDisplayName));
         }
-    }
-
-    private static void printAttendanceByFormatter(Attendance attendance) {
-        final AttendanceDateTime attendanceDateTime = attendance.getAttendanceDateTime();
-        final AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
-        final LocalTime time = attendanceDateTime.getTime();
-        DateTimeFormatter formatter = adjustFormatter(time);
-        printAttendance(attendanceDateTime, attendanceStatus, formatter);
-    }
-
-    private static DateTimeFormatter adjustFormatter(LocalTime time) {
-        if (time.equals(Constants.ABSENCE_TIME)) {
-            return AttendanceDateTime.ABSENCE_DATE_TIME_FORMAT;
-        }
-        return AttendanceDateTime.KOREAN_DATE_TIME_FORMAT;
-    }
-
-    private static void printAttendance(AttendanceDateTime attendanceDateTime,
-                                        AttendanceStatus attendanceStatus, DateTimeFormatter formatter) {
-        final LocalDateTime localDateTime = attendanceDateTime.getDateTime();
-        System.out.println(
-                String.format("%s (%s)",
-                        localDateTime.format(formatter),
-                        attendanceStatus.getDisplayName()));
-    }
-
-    public static void printAllExpulsion(final Crews crews) {
-        System.out.println("제적 위험자 조회");
-        for (Crew crew : crews.getSortedCrews()) {
-            printExpulsionByCrew(crew);
-        }
-    }
-
-    private static void printExpulsionByCrew(Crew crew) {
-        final String nickname = crew.getNickname().getNickname();
-        final Attendances attendances = crew.getAttendances();
-        final AttendanceCounter attendanceCounter = AttendanceCounter.of(attendances);
-        final int sumPunishmentCount = sumPunishmentCount(attendanceCounter);
-        final Punishment punishment = Punishment.findByAbsenceCount(sumPunishmentCount);
-        if (punishment.equals(Punishment.NONE)) {
-            return;
-        }
-        printPunishmentResult(nickname, attendanceCounter, punishment);
-    }
-
-    private static void printPunishmentResult(String nickname, AttendanceCounter attendanceCounter,
-                                              Punishment punishment) {
-        System.out.println(String.format("- %s: 결석 %d회, 지각 %d회 (%s)",
-                nickname,
-                attendanceCounter.getAbsenceCount(),
-                attendanceCounter.getTardinessCount(),
-                punishment.getPunishmentName()));
-    }
-
-    private static int sumPunishmentCount(AttendanceCounter attendanceCounter) {
-        final int absence = attendanceCounter.getAbsenceCount();
-        final int tardiness = attendanceCounter.getTardinessCount();
-        return (tardiness * 3) + absence;
-    }
-
-    private static void printAttendanceCounterResult(AttendanceCounter attendanceCounter) {
-        System.out.println(String.format("%s: %d회", AttendanceStatus.ATTENDANCE.getDisplayName(),
-                attendanceCounter.getAttendanceCount()));
-        System.out.println(String.format("%s: %d회", AttendanceStatus.TARDINESS.getDisplayName(),
-                attendanceCounter.getTardinessCount()));
-        System.out.println(String.format("%s: %d회", AttendanceStatus.ABSENCE.getDisplayName(),
-                attendanceCounter.getAbsenceCount()));
         System.out.println();
+    }
+
+    public static void printRiskOfExpulsion(final Map<Crew, ExpulsionInfoDto> expulsionInfoDtosByCrew) {
+        final List<Crew> keySet = getCrews(expulsionInfoDtosByCrew);
+
+        keySet.forEach(crew -> System.out.println(String.format("%s: 결석 %d회, 지각 %d회 (%s)",
+                crew.getNickname().getValue(),
+                expulsionInfoDtosByCrew.get(crew).countsDto().getMap().get(AttendanceStatus.ABSENCE),
+                expulsionInfoDtosByCrew.get(crew).countsDto().getMap().get(AttendanceStatus.TARDINESS),
+                expulsionInfoDtosByCrew.get(crew).expulsionType().getDisplayName())));
+        System.out.println();
+    }
+
+    private static List<Crew> getCrews(final Map<Crew, ExpulsionInfoDto> expulsionInfoDtosByCrew) {
+        final List<Crew> keySet = new ArrayList<>(expulsionInfoDtosByCrew.keySet());
+
+        keySet.sort((crew1, crew2) -> {
+            final ExpulsionInfoDto info1 = expulsionInfoDtosByCrew.get(crew1);
+            final ExpulsionInfoDto info2 = expulsionInfoDtosByCrew.get(crew2);
+
+            final int discriminationCount1 = ExpulsionType.calculateDiscriminationCount(info1.countsDto());
+            final int discriminationCount2 = ExpulsionType.calculateDiscriminationCount(info2.countsDto());
+
+            return Integer.compare(discriminationCount2, discriminationCount1);
+        });
+        return keySet;
     }
 }

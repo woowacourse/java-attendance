@@ -1,30 +1,47 @@
 package util;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 class CsvReaderTest {
 
     @Test
-    void 파일을_정상적으로_가져온다() {
-        List<String[]> parsedResult = CsvReader.readFile("src/main/resources/attendances.csv");
+    @DisplayName("csv 파일을 읽어오는 기능이 잘 작동하는지")
+    void readFileSuccess() {
 
-        Map<String, String> attendances = new HashMap<>();
-        for (int i = 0; i < 4; i++) {
-            attendances.put(parsedResult.get(i)[0], parsedResult.get(i)[1]);
-        }
-        Map<String, String> expectedResult = Map.of(
-                "쿠키", "2024-12-13 10:08",
-                "빙봉", "2024-12-13 10:07",
-                "빙티", "2024-12-13 10:07",
-                "이든", "2024-12-13 10:07");
+        // given
+        final String FILE_PATH = "src/main/resources/attendances.csv";
+        final List<String[]> expected = List.of(
+                new String[]{"쿠키", "2024-12-13 10:08"},
+                new String[]{"빙봉", "2024-12-13 10:07"},
+                new String[]{"빙티", "2024-12-13 10:07"},
+                new String[]{"이든", "2024-12-13 10:07"},
+                new String[]{"빙봉", "2024-12-12 11:11"}
+        );
 
-        for (String nickname : expectedResult.keySet()) {
-            String localDateTime = attendances.get(nickname);
-            Assertions.assertThat(localDateTime).isEqualTo(expectedResult.get(nickname));
-        }
+        // when
+        final Stream<String[]> parsedFile = CsvReader.readFile(FILE_PATH).stream()
+                .limit(5);
+
+        // then
+        Assertions.assertThat(parsedFile).containsAll(expected);
+    }
+
+    @Test
+    @DisplayName("유효하지 않는 파일 경로일 때 예외 처리")
+    void readFileFailureByInvalidPath() {
+
+        // given
+        final String FILE_PATH = "src/main/resources/invalidPath";
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(
+                () -> CsvReader.readFile(FILE_PATH)
+        ).isInstanceOf(IllegalStateException.class);
     }
 }

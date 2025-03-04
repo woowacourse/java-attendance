@@ -1,24 +1,24 @@
 package util;
 
+import model.AttendanceDateTime;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public final class HolidayManager {
 
-    private static final Set<Integer> HOLIDAYS = new HashSet<>();
-
-    private HolidayManager() {
-    }
+    private final static Set<Integer> holidays = new HashSet<>();
 
     static {
-        HOLIDAYS.add(25);
+        holidays.add(25);
     }
 
-    public static boolean isHoliday(final Integer dayOfMonth) {
-        return HOLIDAYS.contains(dayOfMonth);
+    public static boolean isHoliday(final AttendanceDateTime attendanceDateTime) {
+        final int dayOfMonth = attendanceDateTime.getDateTime().getDayOfMonth();
+        return holidays.contains(dayOfMonth);
     }
 
-    public static Set<Integer> getHOLIDAYS() {
-        return HOLIDAYS;
+    public static Set<Integer> getHolidays() {
+        return holidays;
     }
 }
