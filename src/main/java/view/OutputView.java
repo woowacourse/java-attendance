@@ -1,134 +1,105 @@
 package view;
 
-import domain.AbsentPolicy;
-import domain.AttendanceDate;
-import domain.AttendanceDateTime;
-import domain.AttendanceSheet;
-import domain.AttendanceSheets;
-import domain.AttendanceState;
-import domain.AttendanceStatics;
-import domain.AttendanceTime;
-import domain.Calendar;
-import dto.AttendanceStatusDTO;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import model.AbsentPenalty;
+import model.Attendance;
+import model.CrewAttendances;
 
 public class OutputView {
-
-    public static void printAddInformation(int hour, int minute, AttendanceDateTime attendanceDateTime) {
-        AttendanceDate attendanceDate = attendanceDateTime.getAttendanceDate();
-
+    public void printAddInformation(Attendance attendance) {
         System.out.print(System.lineSeparator());
-        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)%n", Calendar.DECEMBER.month, attendanceDate.getDayOfMonth(),
-                attendanceDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN), hour, minute,
-                convertAttendanceStateToString(attendanceDateTime.check()));
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)%n",
+                attendance.getMonth(), attendance.getDay(), getKoreanWeek(attendance.getDayOfWeek()),
+                attendance.getHour(), attendance.getMinute(), getAttendStatus(attendance));
         System.out.print(System.lineSeparator());
     }
 
-    public static void printUpdateInformation(AttendanceStatusDTO before, AttendanceStatusDTO after) {
+    public void printUpdateInformation(Attendance attendance, Attendance updateAttendance) {
         System.out.print(System.lineSeparator());
-        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!%n", Calendar.DECEMBER.month,
-                before.attendanceDateTime().getDay(),
-                before.attendanceDateTime().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                before.attendanceDateTime().getHour(), before.attendanceDateTime().getMinute(),
-                convertAttendanceStateToString(before.attendanceState()), after.attendanceDateTime().getHour(),
-                after.attendanceDateTime().getMinute(), convertAttendanceStateToString(after.attendanceState()));
-        System.out.print(System.lineSeparator());
-    }
-
-    public static void printAttendanceSheetsByCrew(String nickname, List<AttendanceSheet> attendancesByNickname,
-                                                   AttendanceSheets attendanceSheets, LocalDate today) {
-        AttendanceStatics attendanceStatics = attendanceSheets.calculateAttendanceStaticsBy(nickname, today);
-        printAttendanceSheetIntro(nickname);
-        printAttendanceSheets(attendancesByNickname, today.getDayOfMonth());
-        printAttendanceStatistics(attendanceStatics);
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> ",
+                attendance.getMonth(), attendance.getDay(), getKoreanWeek(attendance.getDayOfWeek()),
+                attendance.getHour(), attendance.getMinute(), getAttendStatus(attendance));
+        System.out.printf("%02d:%02d (%s) 수정 완료!%n",
+                updateAttendance.getHour(), updateAttendance.getMinute(), getAttendStatus(updateAttendance));
         System.out.print(System.lineSeparator());
     }
 
-    public static void printAttendanceSheetIntro(String nickname) {
+    public void printCrewAttendanceRecords(CrewAttendances crewAttendances, LocalDate today) {
         System.out.print(System.lineSeparator());
-        System.out.printf(ViewMessage.CURRENT_MONTH_ATTENDANCE_SHEET, nickname);
-    }
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n", crewAttendances.getNickname());
+        System.out.print(System.lineSeparator());
 
-    public static void printAttendanceSheets(List<AttendanceSheet> attendanceSheets, int todayDate) {
-        for (int day = Calendar.DECEMBER.startDay; day < todayDate; day++) {
-            LocalDate date = LocalDate.of(2024, Calendar.DECEMBER.month, day);
-            printAttendanceSheet(attendanceSheets, date);
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            LocalDate date = today.withDayOfMonth(day);
+            if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY
+                    || date.isEqual(LocalDate.of(2024, 12, 25))) continue;
+
+            System.out.printf("%02d월 %02d일 %s ", date.getMonth().getValue(), day, getKoreanWeek(date.getDayOfWeek()));
+            if (crewAttendances.isAlreadyAttend(date)) {
+                Attendance attendance = crewAttendances.findAttendance(date);
+                System.out.printf("%02d:%02d (%s)%n", attendance.getHour(), attendance.getMinute(), getAttendStatus(attendance));
+                continue;
+            }
+
+            System.out.printf("--:-- (결석)%n");
         }
+        System.out.print(System.lineSeparator());
 
+        System.out.printf("출석: %d회%n", crewAttendances.calculateAttendCountUntilDate(today));
+        System.out.printf("지각: %d회%n", crewAttendances.calculateLateCountUntilDate(today));
+        System.out.printf("결석: %d회%n", crewAttendances.calculateAbsentCountUntilDate(today));
+        System.out.print(System.lineSeparator());
+        AbsentPenalty absentPenalty = crewAttendances.determineAttendPenalty(today);
+        if (absentPenalty != AbsentPenalty.NONE) {
+            System.out.printf("%s 대상자입니다.%n", getAbsentPenalty(absentPenalty));
+        }
         System.out.print(System.lineSeparator());
     }
 
-    private static void printAttendanceSheet(List<AttendanceSheet> attendanceSheets, LocalDate date) {
-        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            return;
-        }
-
-        AttendanceSheet attendanceSheet = attendanceSheets.stream()
-                .filter(sheet -> sheet.isSameDay(date.getDayOfMonth()))
-                .findAny()
-                .orElse(null);
-        String koreanDayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-
-        if (attendanceSheet == null) {
-            System.out.printf(ViewMessage.ABSENT_FORMAT, date.getDayOfMonth(), koreanDayOfWeek);
-            return;
-        }
-
-        AttendanceDateTime attendanceDateTime = attendanceSheet.getAttendanceDateTime();
-        AttendanceTime attendanceTime = attendanceDateTime.getAttendanceTime();
-        System.out.printf(ViewMessage.ATTENDANCE_FORMAT, date.getDayOfMonth(), koreanDayOfWeek,
-                attendanceTime.getHour(), attendanceTime.getMinute(),
-                convertAttendanceStateToString(attendanceDateTime.check()));
+    private String getKoreanWeek(DayOfWeek dayOfWeek) {
+        return dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 
-    public static void printAttendanceStatistics(AttendanceStatics attendanceStatics) {
-        System.out.printf(ViewMessage.STATISTICS_FORMAT, attendanceStatics.getAttendCount(),
-                attendanceStatics.getLateCount(), attendanceStatics.getAbsentCount());
-        printAbsentPolicy(attendanceStatics.calculateAbsentPolicy());
-    }
-
-    public static void printAbsentPolicy(AbsentPolicy absentPolicy) {
-        if (absentPolicy == AbsentPolicy.NONE) {
-            return;
-        }
-        System.out.printf(ViewMessage.ABSENT_POLICY_FORMAT, convertAbsentPolicyToString(absentPolicy));
-    }
-
-    public static void printRiskOfExpulsionBanner() {
-        System.out.println(ViewMessage.RISK_OF_EXPULSION_BANNER);
-    }
-
-    public static void printRiskOfExpulsion(String name, AttendanceStatics attendanceStatics) {
-        System.out.printf(ViewMessage.RISK_OF_EXPULSION_FORMAT, name, attendanceStatics.getAbsentCount(),
-                attendanceStatics.getLateCount(),
-                convertAbsentPolicyToString(attendanceStatics.calculateAbsentPolicy()));
-    }
-
-    public static String convertAbsentPolicyToString(AbsentPolicy policy) {
-        if (policy == AbsentPolicy.EXPULSION) {
+    private String getAbsentPenalty(AbsentPenalty absentPenalty) {
+        if (absentPenalty == AbsentPenalty.DISMISSAL) {
             return "제적";
         }
 
-        if (policy == AbsentPolicy.WARNING) {
+        if (absentPenalty == AbsentPenalty.INTERVIEW) {
+            return "면담";
+        }
+
+        if (absentPenalty == AbsentPenalty.WARNING) {
             return "경고";
         }
 
-        return "면담";
+        return "";
     }
 
-    public static String convertAttendanceStateToString(AttendanceState state) {
-        if (state == AttendanceState.ABSENT) {
+    private String getAttendStatus(Attendance attendance) {
+        if (attendance.isAbsent()) {
             return "결석";
         }
 
-        if (state == AttendanceState.LATE) {
+        if (attendance.isLate()) {
             return "지각";
         }
 
         return "출석";
+    }
+
+    public void printRiskOfDismissal(List<CrewAttendances> riskCrews, LocalDate today) {
+        System.out.print(System.lineSeparator());
+        System.out.println("제적 위험자 조회 결과");
+        for (CrewAttendances crew : riskCrews) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                    crew.getNickname(), crew.calculateAbsentCountUntilDate(today), crew.calculateLateCountUntilDate(today),
+                    getAbsentPenalty(crew.determineAttendPenalty(today)));
+        }
+        System.out.print(System.lineSeparator());
     }
 }
