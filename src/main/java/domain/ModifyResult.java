@@ -1,10 +1,10 @@
 package domain;
 
-public class AttendanceUpdateResult {
+public class ModifyResult {
     private final Attendance oldAttendance;
     private final Attendance newAttendance;
 
-    AttendanceUpdateResult(Attendance oldAttendance, Attendance newAttendance) {
+    public ModifyResult(Attendance oldAttendance, Attendance newAttendance) {
         this.oldAttendance = oldAttendance;
         this.newAttendance = newAttendance;
     }
@@ -12,6 +12,7 @@ public class AttendanceUpdateResult {
     public Attendance getOldAttendance() {
         return oldAttendance;
     }
+
     public Attendance getNewAttendance() {
         return newAttendance;
     }

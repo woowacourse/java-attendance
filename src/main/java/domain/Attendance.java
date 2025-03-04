@@ -1,56 +1,38 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import java.time.LocalTime;
 
 public class Attendance {
-    private final LocalDateTime dateAndTime;
-    private final AttendanceStatus attendanceStatus;
+    private LocalDateTime dateTime;
+    private AttendanceStatus status;
 
-    public Attendance(LocalDateTime localDateTime) {
-        dateAndTime = localDateTime;
-        this.attendanceStatus = AttendanceStatus.checkAttendanceState(localDateTime);
+    public Attendance(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+        this.status = AttendanceStatus.getStatusByAttendedTime(dateTime);
     }
 
-    public LocalDateTime getDateAndTime() {
-        return dateAndTime;
+    public LocalDate getLocalDate() {
+        return dateTime.toLocalDate();
+    }
+
+    public LocalTime getLocalTime() {
+        return dateTime.toLocalTime();
     }
 
     public int getDayOfMonth() {
-        return dateAndTime.getDayOfMonth();
+        return dateTime.getDayOfMonth();
     }
 
-    public AttendanceStatus getStatus() {
-        return attendanceStatus;
+    public AttendanceStatus getAttendanceStatus() {
+        return status;
     }
 
-    public String getStatusValue() {
-        return attendanceStatus.getStringValue();
-    }
-
-    public String getFormattedAttended() {
-        LocalDateTime dateAndTime = getDateAndTime();
-        return dateAndTime.format(DateTimeFormatter.ofPattern("MM월 dd일 "))
-                + dateAndTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + " "
-                + getFormattedTimeAndState();
-    }
-
-    public String getFormattedTimeAndState() {
-        String state = getStatusValue();
-        if (state.equals("결석")) {
-            return "--:-- " + "(" + state + ")";
-        }
-        return getDateAndTime().format(DateTimeFormatter.ofPattern("HH:mm ", Locale.KOREAN)) + "("
-                + getStatus() + ")";
-    }
-
-    public boolean isEqualDate(LocalDateTime localDateTime) {
-        return dateAndTime.toLocalDate().isEqual(localDateTime.toLocalDate());
-    }
-
-    public boolean isEqualDayOfMonth(int dayOfMonth) {
-        return dateAndTime.getDayOfMonth() == dayOfMonth;
+    public ModifyResult changeTimeTo(LocalTime time) {
+        Attendance oldAttendance = new Attendance(dateTime);
+        dateTime = LocalDateTime.of(dateTime.toLocalDate(), time);
+        status = AttendanceStatus.getStatusByAttendedTime(dateTime);
+        return new ModifyResult(oldAttendance, this);
     }
 }

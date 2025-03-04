@@ -1,100 +1,81 @@
 package controller;
 
-import domain.*;
+import static java.lang.Integer.parseInt;
+import static view.OutputView.getFormattedDayInfo;
+import static view.OutputView.printCheckedAttendance;
+import static view.OutputView.printModifyResult;
+import static view.UserInputView.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import view.FileInputView;
+import view.MenuOption;
+import domain.AllCrew;
+import domain.Crew;
 import view.OutputView;
 import view.UserInputView;
 
-import static domain.MenuOption.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 public class AttendanceSystem {
-    private final FileInputView fileInputView;
-    private final UserInputView userInputView;
-    private final OutputView outputView;
+    private final LocalDate today;
     private final AllCrew allCrew;
-    private final LocalDate todayDate;
 
-    private static final Pattern quitPattern = Pattern.compile(QUIT_REGEX.getValue());
-
-    public AttendanceSystem(LocalDate todayDate) {
-        this.todayDate = todayDate;
-        this.userInputView = new UserInputView(todayDate);
-        this.outputView = new OutputView();
-        this.fileInputView = new FileInputView();
-        this.allCrew = new AllCrew();
+    public AttendanceSystem() {
+        today = LocalDate.now();
+        allCrew = new AllCrew();
+        allCrew.updateFile("src/main/resources/attendances.csv");
+        allCrew.fillAllCrewsEmptyDateWithAbsent(today.minusDays(1));
     }
 
-    public void start() {
-        fileInputView.readAttendanceFile(allCrew);
-        allCrew.updateAbsentHistory(todayDate.minusDays(1));
-        boolean onRunning = true;
-        while (onRunning) {
-            String menuInput = userInputView.askMenu();
-            onRunning = executeMenu(menuInput);
+    public void run() {
+        while (true) {
+            System.out.println("오늘은 " + getFormattedDayInfo(today) + "입니다. 기능을 선택해 주세요.");
+            MenuOption option = UserInputView.askMenuOption();
+            if (option == MenuOption.CHECK_ATTENDANCE) {
+                checkAttendance();
+            }
+            if (option == MenuOption.MODIFY_ATTENDANCE) {
+                modifyAttendance();
+            }
+            if (option == MenuOption.CHECK_CREW_ATTENDANCE_HISTORY) {
+                checkCrewattendances();
+            }
+            if (option == MenuOption.CHECK_PENALTY_RECEIVED_CREW) {
+                checkPenaltyReceivedCrew();
+            }
+            if (option == MenuOption.QUIT) {
+                return;
+            }
         }
-    }
-
-    private boolean executeMenu(String menuInput) {
-        MenuOption menuOption = MenuOption.getMenuOption(menuInput);
-        if (menuOption == CHECK_ATTENDANCE) {
-            checkAttendance();
-        }
-        if (menuOption == MODIFY_ATTENDANCE) {
-            modifyAttendance();
-        }
-        if (menuOption == CHECK_CREW_ATTENDANCE_HISTORY) {
-            checkCrewAttendanceHistory();
-        }
-        if (menuOption == CHECK_DANGEROUS_CREW) {
-            checkDangerousCrew();
-        }
-        if (quitPattern.matcher(menuInput).matches()){
-            return false;
-        }
-        return true;
-    }
-
-    private void checkDangerousCrew() {
-        allCrew.sortAllCrewOrderByWarningInfo();
-        List<Crew> allAbsentPenaltyReceivedCrew = allCrew.getAllAbsentPenaltyReceivedCrew();
-        outputView.printAllDangerousCrew(allAbsentPenaltyReceivedCrew);
-    }
-
-    private void checkCrewAttendanceHistory() {
-        String name = userInputView.askNickNameForCheckAttendanceInfo();
-        Crew crew = allCrew.findCrewByName(name);
-        crew.sortAttendanceInfo();
-        outputView.printAttendanceHistory(crew);
     }
 
     private void checkAttendance() {
-        String name = userInputView.askNickNameForCheckAttendance();
-        ArrayList<String> time = userInputView.askAttendanceTimeForCheckAttendance();
-        outputView.printCheckedAttendance(allCrew.addCrewAttendanceByName(name, LocalDateTime.of(todayDate.getYear(),
-                todayDate.getMonthValue(),
-                todayDate.getDayOfMonth(),
-                Integer.parseInt(time.get(0)),
-                Integer.parseInt(time.get(1)))));
+        String crewName = askCrewName();
+        Crew crew = allCrew.findCrewByName(crewName);
+        List<String> hourAndMinute = List.of(askAttendanceTime().split(":"));
+        LocalTime time = LocalTime.of(parseInt(hourAndMinute.getFirst()), parseInt(hourAndMinute.getLast()));
+        printCheckedAttendance(crew.addAttendanceWithDateTime(LocalDateTime.of(today, time)));
     }
 
     private void modifyAttendance() {
-        String name = userInputView.askNickNameForModifyAttendanceInfo();
-        int day = userInputView.askDayForModifyAttendanceInfo();
-        ArrayList<String> time = userInputView.askAttendanceTimeForModifyAttendance();
-        LocalDateTime dateTime = LocalDateTime.of(todayDate.getYear(),
-                todayDate.getMonthValue(),
-                day,
-                Integer.parseInt(time.get(0)),
-                Integer.parseInt(time.get(1)));
-        AttendanceUpdateResult attendanceUpdateResult = allCrew.modifyCrewAttendanceByName(name, dateTime);
-        outputView.printModifyAttendance(attendanceUpdateResult.getOldAttendance(), attendanceUpdateResult.getNewAttendance());
+        Crew crew = allCrew.findCrewByName(askCrewName());
+        int date = parseInt(askAttendedDate());
+        List<String> hourAndMinute = List.of(askTimeForModify().split(":"));
+        LocalTime timeTo = LocalTime.of(parseInt(hourAndMinute.getFirst()), parseInt(hourAndMinute.getLast()));
+        printModifyResult(crew.modifyAttendedTime(date, timeTo));
     }
-}
 
+    private void checkCrewattendances() {
+        String crewName = askCrewName();
+        Crew crew = allCrew.findCrewByName(crewName);
+        OutputView.printCrewAttendances(crew);
+    }
+
+    private void checkPenaltyReceivedCrew() {
+        List<Crew> penaltyReceivedCrew = allCrew.getPenaltyReceivedCrew();
+        allCrew.sortPenaltyReceivedCrew(penaltyReceivedCrew);
+        OutputView.printPenaltyReceivedCrew(penaltyReceivedCrew);
+    }
+
+}

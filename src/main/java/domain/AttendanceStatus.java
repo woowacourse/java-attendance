@@ -1,58 +1,64 @@
 package domain;
 
-import static domain.AttendanceStandard.ABSENT_DEADLINE;
-import static domain.AttendanceStandard.CLOSE_TIME;
-import static domain.AttendanceStandard.LATE_DEADLINE;
-import static domain.AttendanceStandard.MONDAY_START_HOUR;
-import static domain.AttendanceStandard.NON_MONDAY_START_HOUR;
-import static domain.AttendanceStandard.OPEN_TIME;
-
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static error.ErrorMessage.CLOSED_DAY;
+import static error.ErrorMessage.CLOSED_TIME;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
+
 public enum AttendanceStatus {
-    ATTENDED("출석"),
-    LATE("지각"),
-    ABSENT("결석");
+    ATTEND("출석", 0),
+    LATE("지각", 5),
+    ABSENT("결석", 30);
 
     private final String status;
+    private final int timeLimit;
 
-    AttendanceStatus(String status) {
+    private static final int OPEN_TIME = 8;
+    private static final int CLOSE_TIME = 23;
+    private static final int CHRISTMAS = 25;
+
+    AttendanceStatus(String status, int timeLimit) {
         this.status = status;
+        this.timeLimit = timeLimit;
     }
 
-    public static AttendanceStatus checkAttendanceState(LocalDateTime localDateTime) {
-        int hour = localDateTime.getHour();
-        int minute = localDateTime.getMinute();
-        DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
-        validateRunningTime(localDateTime, dayOfWeek, hour);
-        int startHour = NON_MONDAY_START_HOUR.getTime();
-        if (dayOfWeek == DayOfWeek.MONDAY) {
-            startHour = MONDAY_START_HOUR.getTime();
+    public static AttendanceStatus getStatusByAttendedTime(LocalDateTime attendedTime) {
+        validateCampusIsOpen(attendedTime);
+        int startTime = 10;
+        if (attendedTime.getDayOfWeek() == DayOfWeek.MONDAY) {
+            startTime = 13;
         }
-        return decideAttendanceState(startHour, hour, minute);
-    }
-
-    private static AttendanceStatus decideAttendanceState(int startHour, int hour, int minute) {
-        if (hour < startHour || (hour == startHour && minute < LATE_DEADLINE.getTime())) {
-            return ATTENDED;
+        if ((attendedTime.getHour() == startTime && attendedTime.getMinute() > ABSENT.timeLimit) || (attendedTime.getHour() > startTime)) {
+            return ABSENT;
         }
-        if ((hour == startHour) && minute <= ABSENT_DEADLINE.getTime()) {
+        if (attendedTime.getHour() == startTime && attendedTime.getMinute() > LATE.timeLimit) {
             return LATE;
         }
-        return ABSENT;
+        return ATTEND;
     }
 
-    private static void validateRunningTime(LocalDateTime localDateTime, DayOfWeek dayOfWeek, int hour) {
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDateTime.getDayOfMonth() == 25) {
-            throw new IllegalArgumentException("주말 또는 공휴일은 캠퍼스 휴장");
-        }
-        if (hour < OPEN_TIME.getTime() || hour == CLOSE_TIME.getTime()) {
-            throw new IllegalArgumentException("캠퍼스 운영 시간이 아님");
-        }
+    public static void validateCampusIsOpen(LocalDateTime attendedTime) {
+        if (isWeekendOrChristmas(attendedTime.toLocalDate()))
+            throw new IllegalArgumentException(CLOSED_DAY.getMessage());
+        if (isNotOpenTime(attendedTime))
+            throw new IllegalArgumentException(CLOSED_TIME.getMessage());
     }
 
-    public String getStringValue() {
+    private static boolean isNotOpenTime(LocalDateTime attendedTime) {
+        return attendedTime.getHour() < OPEN_TIME || attendedTime.getHour() == CLOSE_TIME;
+    }
+
+    static boolean isWeekendOrChristmas(LocalDate attendedDay) {
+        return (attendedDay.getDayOfWeek() == SATURDAY)
+                || (attendedDay.getDayOfWeek() == SUNDAY)
+                || attendedDay.getDayOfMonth() == CHRISTMAS;
+    }
+
+    public String getValue() {
         return status;
     }
 }

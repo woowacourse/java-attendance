@@ -1,70 +1,102 @@
 package domain;
 
+import error.ErrorMessage;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static error.ErrorMessage.NO_SUCH_NICKNAME;
 
 public class AllCrew {
     private final List<Crew> allCrew;
 
     public AllCrew() {
-        this.allCrew = new ArrayList<>();
+        allCrew = new ArrayList<Crew>();
     }
 
-    public void addCrew(Crew crew) {
+    public void updateFile(String filePath) {
+        processAllCrewFileData(readFileData(filePath));
+    }
+
+    public List<String> readFileData(String filePath) {
+        List<String> lines = new ArrayList<>();
+        try {
+            lines = Files.readAllLines(Path.of(filePath));
+        } catch (IOException e) {
+            throw new IllegalArgumentException(ErrorMessage.NO_ATTENDANCES_FILE.getMessage());
+        }
+        return lines;
+    }
+
+    private void processAllCrewFileData(List<String> rawData) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MM dd HH mm");
+        for (String line : rawData) {
+            List<String> crewNameAndAttendanceTime = List.of(line.split("-"));
+            String rawDateTime = crewNameAndAttendanceTime.get(1);
+            loadCrewData(rawDateTime, formatter, crewNameAndAttendanceTime);
+        }
+    }
+
+    private void loadCrewData(String rawDateTime, DateTimeFormatter formatter, List<String> crewNameAndAttendanceTime) {
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(rawDateTime, formatter);
+            Attendance attendance = new Attendance(dateTime);
+            addCrewInfoWithNameAndAttendance(crewNameAndAttendanceTime.getFirst(), attendance);
+        } catch (DateTimeParseException e) {
+            throw new DateTimeException(ErrorMessage.INVALID_FILE_TIME_FORMAT.getMessage());
+        }
+    }
+
+    public void addCrewInfoWithNameAndAttendance(String crewName, Attendance attendance) {
+        if (containsCrewName(crewName)) {
+            findCrewByName(crewName).addAttendance(attendance);
+            return;
+        }
+        Crew crew = new Crew(crewName);
+        crew.addAttendance(attendance);
         allCrew.add(crew);
     }
 
-    public boolean isContainedCrewName(String crewName) {
+    public boolean containsCrewName(String crewName) {
+        return allCrew.stream().anyMatch(crew -> crew.isSameName(crewName));
+    }
+
+    public Crew findCrewByName(String crewName) {
         return allCrew.stream()
-                .anyMatch(crew -> crew.isSameName(crewName));
-    }
-
-    public Attendance addCrewAttendanceByName(String name, LocalDateTime dateTime) {
-        Crew crew = findCrewByName(name);
-        return crew.addAttendance(dateTime);
-    }
-
-    public AttendanceUpdateResult modifyCrewAttendanceByName(String name, LocalDateTime dateTime) {
-        Crew crew = findCrewByName(name);
-        return crew.update(dateTime);
-    }
-
-    public Crew findCrewByName(String name) {
-        return allCrew.stream()
-                .filter(crew -> crew.isSameName(name))
+                .filter(crew -> crew.isSameName(crewName))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
+                .orElseThrow(() -> new NoSuchElementException(NO_SUCH_NICKNAME.getMessage()));
     }
 
-    public void sortAllCrewOrderByWarningInfo() {
-        allCrew.sort(new Comparator<Crew>() {
-            @Override
-            public int compare(Crew o1, Crew o2) {
-                // 내림차순 정렬
-                int result =
-                        (o2.getAbsentCount() + (o2.getLateCount() / 3)) - (o1.getAbsentCount() + (o1.getLateCount() / 3));
-                if (result != 0) {
-                    return result;
-                }
-                return o1.getName().compareTo(o2.getName());    // 같으면 이름순 정렬
-            }
-        });
-    }
-
-    public void updateAbsentHistory(LocalDate date) {
-        allCrew.forEach(crew -> crew.updateAbsentUntil(date));
-    }
-
-    public List<Crew> getAllAbsentPenaltyReceivedCrew() {
-        List<Crew> allWarningCrew = new ArrayList<>();
+    public void fillAllCrewsEmptyDateWithAbsent(LocalDate date) {
         for (Crew crew : allCrew) {
-            if (crew.getAbsentPenalty() != AbsentPenalty.NONE){
-                allWarningCrew.add(crew);
-            }
+            crew.fillEmptyDateWithAbsent(date);
         }
-        return allWarningCrew;
     }
+
+    public int getAbsentCountWithCrewName(String crewName) {
+        return findCrewByName(crewName).getAbsentCount();
+    }
+
+    public List<Crew> getPenaltyReceivedCrew() {
+        return allCrew.stream()
+                .filter(crew -> crew.getPenalty() != Penalty.NONE)
+                .collect(Collectors.toList());
+    }
+
+    public void sortPenaltyReceivedCrew(List<Crew> penaltyReceivedCrew) {
+        penaltyReceivedCrew
+                .sort(Comparator.comparing(Crew::getPenaltyStandard)
+                        .reversed()
+                        .thenComparing(Crew::getName));
+    }
+
 }

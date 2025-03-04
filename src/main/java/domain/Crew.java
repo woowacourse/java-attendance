@@ -1,142 +1,105 @@
 package domain;
 
-import java.time.DayOfWeek;
+import static domain.AttendanceStatus.isWeekendOrChristmas;
+import static error.ErrorMessage.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-
-import static domain.AttendanceStatus.*;
-import static domain.AbsentPenalty.*;
 
 public class Crew {
     private final String name;
-    private final List<Attendance> attendanceInfo;
+    private List<Attendance> attendances;
 
     public Crew(String name) {
         this.name = name;
-        this.attendanceInfo = new ArrayList<>();
+        attendances = new ArrayList<>();
     }
 
-    public Attendance addAttendance(LocalDateTime localDateTime) {
-        if (isAlreadyAttendedDay(localDateTime)) {
-            throw new IllegalArgumentException("이미 출석 되었습니다.");
-        }
+    public Attendance addAttendanceWithDateTime(LocalDateTime localDateTime) {
         Attendance attendance = new Attendance(localDateTime);
-        attendanceInfo.add(attendance);
+        attendances.add(attendance);
         return attendance;
     }
 
-    public boolean isSameName(String name) {
-        return name.equals(this.name);
-    }
-
-    public List<Attendance> getAttendanceInfo() {
-        return attendanceInfo;
-    }
-
-    public void sortAttendanceInfo() {
-        attendanceInfo.sort(Comparator.comparing(Attendance::getDayOfMonth));
+    public ModifyResult modifyAttendedTime(int date, LocalTime localTime) {
+        if (isEmptyDay(date)) {
+            throw new IllegalArgumentException(EMPTY_DATE.getMessage());
+        }
+        return attendances.stream()
+                .filter(attendance -> attendance.getDayOfMonth() == date)
+                .findFirst()
+                .map(attendance -> attendance.changeTimeTo(localTime))
+                .orElseThrow();
     }
 
     public String getName() {
         return name;
     }
 
-    private boolean isAlreadyAttendedDay(LocalDateTime localDateTime) {
-        return attendanceInfo.stream()
-                .anyMatch(attendance ->
-                        attendance.isEqualDate(localDateTime));
+    public List<Attendance> getAttendances() {
+        return attendances;
     }
 
-    public AttendanceUpdateResult update(LocalDateTime newDateAndTime) {
-        if (!isAlreadyAttendedDay(newDateAndTime)) {
-            throw new IllegalArgumentException("해당 날짜에 출석 기록이 없습니다.");
+    public boolean isSameName(String name) {
+        return this.name.equals(name);
+    }
+
+    public void addAttendance(Attendance attendance) {
+        if (isAlreadyAttendedDay(attendance)) {
+            throw new IllegalArgumentException(ALREADY_ATTENDED.getMessage());
         }
-        Attendance oldAttendance = attendanceInfo.stream()
-                .filter(attendance -> attendance.isEqualDate(newDateAndTime))
-                .findFirst()
-                .orElseThrow();
-        attendanceInfo.remove(oldAttendance);
-        Attendance newAttendance = new Attendance(newDateAndTime);
-        attendanceInfo.add(newAttendance);
-        return new AttendanceUpdateResult(oldAttendance, newAttendance);
+        attendances.add(attendance);
     }
 
-    public void updateAbsentUntil(LocalDate lastDate) {
-        for (int date = 1; date <= lastDate.getDayOfMonth(); date++) {
-            DayOfWeek todayDayOfWeek = LocalDate.of(2024, 12, date).getDayOfWeek();
-            if (todayDayOfWeek == DayOfWeek.SATURDAY || todayDayOfWeek == DayOfWeek.SUNDAY || date == 25) {
-                continue;
+    private boolean isEmptyDay(int date) {
+        return attendances.stream()
+                .noneMatch(attendance -> attendance.getDayOfMonth() == date);
+    }
+
+    private boolean isAlreadyAttendedDay(Attendance newAttendance) {
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.getDayOfMonth() == newAttendance.getDayOfMonth());
+    }
+
+    public void fillEmptyDateWithAbsent(LocalDate localDate) {
+        for (int day = 1; day <= localDate.getDayOfMonth(); day++) {
+            if (isEmptyDay(day) && !isWeekendOrChristmas(LocalDate.of(2024, 12, day))) {
+                addDummyAbsent(day);
             }
-            if (!containsDayOfMonth(date)) {
-                // absentTime - 15:00
-                attendanceInfo.add(new Attendance(LocalDateTime.of(2024, 12, date, 15, 0)));
-            }
         }
     }
 
-
-    public String getFormatedAttendanceInfo() {
-        StringBuilder formatedAttendanceInfo = new StringBuilder();
-        for (Attendance attendance : attendanceInfo) {
-            formatedAttendanceInfo.append(attendance.getFormattedAttended()).append("\n");
-        }
-        return formatedAttendanceInfo.toString();
+    private void addDummyAbsent(int day) {
+        attendances.add(new Attendance(LocalDateTime.of(2024, 12, day, 22, 59, 59)));
     }
 
-    public String getFormatedAttendanceStateInfo() {
-        return "출석: " + getAttendanceCount() + "회\n"
-                + "지각: " + getLateCount() + "회\n"
-                + "결석: " + getAbsentCount() + "회\n";
-    }
-
-
-    public String getFormatedWarningStatus() {
-        AbsentPenalty absentPenalty = getAbsentPenalty();
-        if (absentPenalty == AbsentPenalty.NONE) {
-            return "";
-        }
-        return absentPenalty.getPenalty() + " 대상자입니다.";
-    }
-
-
-
-    public AbsentPenalty getAbsentPenalty() {
-        int absentCount = getAbsentCount() + getLateCount() / 3;
-        if (absentCount > EXPEL.getAbsentCount()) {
-            return EXPEL;
-        }
-        if (absentCount >= COUNSELING.getAbsentCount()) {
-            return COUNSELING;
-        }
-        if (absentCount >= WARNING.getAbsentCount()) {
-            return WARNING;
-        }
-        return NONE;
-    }
-
-    public int getAttendanceCount() {
-        return getStateCount(ATTENDED);
-    }
-
-    public int getLateCount() {
-        return getStateCount(LATE);
-    }
-
-    public int getAbsentCount() {
-        return getStateCount(ABSENT);
-    }
-
-    private int getStateCount(AttendanceStatus status) {
-        return (int) attendanceInfo.stream()
-                .filter(a -> a.getStatus() == status)
+    public int getAttendCount() {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.ATTEND)
                 .count();
     }
 
-    private boolean containsDayOfMonth(int dayOfMonth) {
-        return attendanceInfo.stream()
-                .anyMatch(attendance -> attendance.isEqualDayOfMonth(dayOfMonth));
+    public int getLateCount() {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.LATE)
+                .count();
     }
+
+    public int getAbsentCount() {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.ABSENT)
+                .count();
+    }
+
+    public int getPenaltyStandard() {
+        return getAbsentCount() + (getLateCount() / 3);
+    }
+
+    public Penalty getPenalty() {
+        return Penalty.getPenalty(getPenaltyStandard());
+    }
+
 }
