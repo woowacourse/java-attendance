@@ -1,8 +1,9 @@
 package attendance.view;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AttendanceStateViewTest {
 
@@ -16,7 +17,7 @@ class AttendanceStateViewTest {
         AttendanceStateView result = AttendanceStateView.findByName(name);
 
         // then
-        Assertions.assertThat(result.getName())
+        assertThat(result.getName())
                 .isEqualTo("출석");
     }
 }
