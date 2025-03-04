@@ -1,186 +1,165 @@
 package controller;
 
-import domain.DateTimeGenerator;
-import domain.ResponseConverter;
-import domain.UpdatedAttendanceSnapshot;
-import domain.constants.AnswerCommand;
-import domain.Attendance;
-import domain.constants.AttendanceStatus;
-import domain.AttendanceSystem;
-import domain.AttendanceSystemFactory;
+import domain.AttendanceSavedDataLoader;
+import domain.AttendanceBook;
+import domain.AttendanceHistory;
+import domain.AttendanceRecord;
+import domain.AttendanceStatus;
 import domain.Crew;
-import domain.constants.ExpulsionStatus;
-import domain.constants.UserCommand;
-import dto.AttendanceResponse;
+import domain.Crews;
+import domain.RiskOfExpulsionStatus;
+import dto.AttendanceRecordDto;
+import dto.RiskOfExpulsionCrewDto;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import util.LoopTemplate;
+import java.util.stream.Collectors;
+import utils.RetryHandler;
 import view.InputView;
 import view.OutputView;
+import view.UserCommand;
 
 public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
-    private final DateTimeGenerator dateTimeGenerator;
-    private final AttendanceSystemFactory attendanceSystemFactory;
-    private final ResponseConverter responseConverter;
 
-    public AttendanceController(
-            final InputView inputView,
-            final OutputView outputView,
-            final DateTimeGenerator dateTimeGenerator,
-            final AttendanceSystemFactory attendanceSystemFactory,
-            final ResponseConverter responseConverter
-    ) {
+    public AttendanceController(final InputView inputView, final OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.dateTimeGenerator = dateTimeGenerator;
-        this.attendanceSystemFactory = attendanceSystemFactory;
-        this.responseConverter = responseConverter;
     }
 
     public void run() {
-        final AttendanceSystem attendanceSystem =
-                attendanceSystemFactory.createAttendanceSystem(dateTimeGenerator.generateDate());
-        retryUntilCommandQuit(attendanceSystem);
+        final AttendanceSavedDataLoader savedDataLoader = new AttendanceSavedDataLoader();
+        final AttendanceBook attendanceBook = new AttendanceBook();
+        final Crews crews = savedDataLoader.loadCrews();
+        crews.registerCrewsToAttendanceBook(attendanceBook);
+        savedDataLoader.loadAttendances(attendanceBook, crews);
+        retryUntilQuit(attendanceBook, crews);
     }
 
-    private void retryUntilCommandQuit(final AttendanceSystem attendanceSystem) {
-        UserCommand command = inputUserCommand();
-        while (command != UserCommand.QUIT) {
-            selectOperation(attendanceSystem, command);
-            command = inputUserCommand();
+    private void retryUntilQuit(final AttendanceBook attendanceBook, final Crews crews) {
+        UserCommand userCommand = inputUserCommand();
+        while (userCommand != UserCommand.QUIT) {
+            runCommandNotException(userCommand, attendanceBook, crews);
+            userCommand = inputUserCommand();
         }
     }
 
-    public void selectOperation(final AttendanceSystem attendanceSystem, final UserCommand userCommand) {
+    private void runCommandNotException(final UserCommand userCommand, final AttendanceBook attendanceBook,
+                                        final Crews crews) {
+        try {
+            runCommand(userCommand, attendanceBook, crews);
+        } catch (final IllegalArgumentException | IllegalStateException e) {
+            outputView.printExceptionMessage(e.getMessage());
+        }
+    }
+
+    private void runCommand(final UserCommand userCommand, final AttendanceBook attendanceBook, final Crews crews) {
         switch (userCommand) {
-            case ADD_ATTENDANCE -> addAttendance(attendanceSystem);
-            case UPDATE_ATTENDANCE -> updateAttendance(attendanceSystem);
-            case LOOKUP_CREW_ATTENDANCE -> responseCrewAttendanceHistory(attendanceSystem);
-            case LOOKUP_EXPULSION_CREWS -> responseExpulsionCrews(attendanceSystem);
+            case CHECK_ATTENDANCE -> attendance(attendanceBook, crews);
+            case UPDATE_ATTENDANCE -> updateAttendance(attendanceBook, crews);
+            case CHECK_ATTENDANCE_HISTORY -> checkAttendanceForEachCrew(attendanceBook, crews);
+            case CHECK_RISK_OF_EXPULSION_CREWS -> checkRiskOfExpulsionCrews(attendanceBook);
         }
     }
 
-    private void addAttendance(final AttendanceSystem attendanceSystem) {
-        if (!attendanceSystem.isAttendanceDay(dateTimeGenerator.generateDate())) {
-            outputView.printNotAttendanceDay();
+    private void attendance(final AttendanceBook attendanceBook, final Crews crews) {
+        final Crew crew = RetryHandler.retryUntilNotException(this::inputCrew, crews,
+                outputView::printExceptionMessage);
+        final LocalTime attendanceTime = RetryHandler.retryUntilNotException(inputView::readAttendanceTime,
+                outputView::printExceptionMessage);
+
+        final AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
+        if (attendanceHistory.isAlreadyAttendance(now())) {
+            outputView.printIntroduceUpdate();
             return;
         }
-        final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, attendanceSystem, outputView);
-        if (attendanceSystem.isAlreadyTodayAttendance(crewName, dateTimeGenerator.generateDate())) {
-            updateAttendanceIfAlreadyTodayAttendance(attendanceSystem, crewName);
-            return;
+        final AttendanceRecord attendanceRecord = attendanceHistory.attendance(LocalDateTime.of(now(), attendanceTime));
+
+        outputView.printAttendanceRecord(AttendanceRecordDto.from(attendanceRecord));
+    }
+
+    private void updateAttendance(final AttendanceBook attendanceBook, final Crews crews) {
+        final Crew crew = RetryHandler.retryUntilNotException(this::inputUpdateCrew, crews,
+                outputView::printExceptionMessage);
+        final int updateMonthOfDay = RetryHandler.retryUntilNotException(inputView::readUpdateMonthOfDay,
+                outputView::printExceptionMessage);
+        final LocalTime updateTime = RetryHandler.retryUntilNotException(inputView::readUpdateTime,
+                outputView::printExceptionMessage);
+
+        final AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
+        final AttendanceRecord beforeAttendanceRecord = attendanceHistory.updateTimeByDate(
+                LocalDateTime.of(now().withDayOfMonth(updateMonthOfDay), updateTime));
+        final AttendanceRecord afterAttendanceRecord = attendanceHistory.findByDate(
+                now().withDayOfMonth(updateMonthOfDay));
+
+        outputView.printUpdateAttendanceResult(AttendanceRecordDto.from(beforeAttendanceRecord),
+                AttendanceRecordDto.from(afterAttendanceRecord));
+
+    }
+
+    private void checkAttendanceForEachCrew(final AttendanceBook attendanceBook, final Crews crews) {
+        final Crew crew = RetryHandler.retryUntilNotException(this::inputCrew, crews,
+                outputView::printExceptionMessage);
+        outputView.printIntroduceAttendanceRecords(crew.getName());
+        final AttendanceHistory attendanceHistory = outputAttendanceRecord(attendanceBook, crew);
+        outputAttendanceStatistics(attendanceHistory);
+        outputRiskOfExpulsion(attendanceHistory);
+    }
+
+    private AttendanceHistory outputAttendanceRecord(final AttendanceBook attendanceBook, final Crew crew) {
+        final AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
+        final List<AttendanceRecord> records = attendanceHistory.findAllUntilBeforeToday(now());
+        outputView.printAttendanceRecords(AttendanceRecordDto.from(records));
+        return attendanceHistory;
+    }
+
+    private void outputAttendanceStatistics(final AttendanceHistory attendanceHistory) {
+        final Map<AttendanceStatus, Integer> statistics = attendanceHistory.calculateAttendanceStatusStatistics(now());
+        outputView.printAttendanceStatistics(this.convertToStringStatistics(statistics));
+    }
+
+    private void outputRiskOfExpulsion(final AttendanceHistory attendanceHistory) {
+        if (attendanceHistory.isRiskOfExpulsion(now())) {
+            final RiskOfExpulsionStatus status = attendanceHistory.calculateRiskOfExpulsionStatus(now());
+            outputView.printRiskOfExpulsion(RiskOfExpulsionCrewDto.convertRiskOfExpulsionStatusToString(status));
         }
-        final Attendance attendance = LoopTemplate.tryCatchLoop(this::attendance, crewName, attendanceSystem
-                , outputView);
-        final AttendanceResponse attendanceResponse = responseConverter.convertAttendanceToResponse(attendance);
-        outputView.printCrewAttendances(List.of(attendanceResponse));
     }
 
-    private Attendance attendance(final String crewName, final AttendanceSystem attendanceSystem) {
-        outputView.printAddAttendanceDate();
-        final LocalTime attendanceTime = inputView.readTime();
-        final Attendance attendance =
-                attendanceSystem.attendance(crewName, attendanceTime, dateTimeGenerator.generateDate());
-        return attendance;
-    }
-
-    private void updateAttendanceByToday(final AttendanceSystem attendanceSystem, final String crewName) {
-        final LocalTime targetTime = LoopTemplate.tryCatchLoop(this::inputUpdateTime, outputView);
-        final UpdatedAttendanceSnapshot updatedAttendanceSnapshot =
-                attendanceSystem.updateTodayAttendance(crewName, targetTime, dateTimeGenerator.generateDate());
-        outputView.printUpdateAttendanceResult(
-                responseConverter.convertUpdatedAttendanceSnapshotToResponse(updatedAttendanceSnapshot));
-    }
-
-    private void updateAttendanceIfAlreadyTodayAttendance(
-            final AttendanceSystem attendanceSystem,
-            final String crewName
-    ) {
-        outputView.printIntroduceAnswerCommand();
-        final AnswerCommand answerCommand = LoopTemplate.tryCatchLoop(inputView::readAnswerCommand, outputView);
-        if (answerCommand == AnswerCommand.YES) {
-            updateAttendanceByToday(attendanceSystem, crewName);
-        }
-    }
-
-    private void updateAttendance(final AttendanceSystem attendanceSystem) {
-        final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewNameForUpdate, attendanceSystem, outputView);
-        final int dayOfMonth = LoopTemplate.tryCatchLoop(this::inputDayOfMonthForUpdate, crewName, attendanceSystem,
-                outputView);
-        final LocalTime targetTime = LoopTemplate.tryCatchLoop(this::inputUpdateTime, outputView);
-        final UpdatedAttendanceSnapshot updatedAttendanceSnapshot =
-                attendanceSystem.updateAttendanceByCrewNameAndDay(targetTime, crewName, dayOfMonth,
-                        dateTimeGenerator.generateDate());
-        outputView.printUpdateAttendanceResult(
-                responseConverter.convertUpdatedAttendanceSnapshotToResponse(updatedAttendanceSnapshot));
-    }
-
-    private void responseCrewAttendanceHistory(final AttendanceSystem attendanceSystem) {
-        final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, attendanceSystem, outputView);
-        outputView.printAttendanceHistoryTitle(crewName);
-        outputAttendances(attendanceSystem, crewName);
-        outputRiskOfAttendancesCount(attendanceSystem, crewName);
-        outputRiskOfExpulsionStatus(attendanceSystem, crewName);
-
-    }
-
-    private void outputAttendances(final AttendanceSystem attendanceSystem, final String crewName) {
-        final List<AttendanceResponse> attendanceResponses =
-                responseConverter.convertAttendancesToResponses(attendanceSystem.getAttendancesByCrew(crewName));
-        outputView.printCrewAttendances(attendanceResponses);
-    }
-
-    private void outputRiskOfAttendancesCount(final AttendanceSystem attendanceSystem, final String crewName) {
-        final Map<AttendanceStatus, Integer> attendanceStatistics =
-                attendanceSystem.calculateAttendanceStatisticsByCrew(crewName);
-        outputView.printAttendancesStatistics(attendanceStatistics);
-    }
-
-    private void outputRiskOfExpulsionStatus(final AttendanceSystem attendanceSystem, final String crewName) {
-        final ExpulsionStatus expulsionStatus = attendanceSystem.calculateExpulsionStatusByCrew(crewName);
-        outputView.printCrewExpulsionStatus(expulsionStatus);
-    }
-
-    private void responseExpulsionCrews(final AttendanceSystem attendanceSystem) {
-        final List<Crew> crews = attendanceSystem.calculateRiskOfExpulsionCrews();
-        outputView.printExpulsionCrewResponses(responseConverter.convertExpulsionCrewResponses(crews));
+    private void checkRiskOfExpulsionCrews(final AttendanceBook attendanceBook) {
+        final List<AttendanceHistory> attendanceHistories = attendanceBook.calculateRiskOfExpulsionHistory(now());
+        final List<RiskOfExpulsionCrewDto> riskOfExpulsionCrewDtos = RiskOfExpulsionCrewDto.of(attendanceHistories,
+                now());
+        outputView.printRiskOfExpulsionCrews(riskOfExpulsionCrewDtos);
     }
 
     private UserCommand inputUserCommand() {
-        outputView.printToday(dateTimeGenerator.generateDate());
-        outputView.printIntroduceOperation();
-        final UserCommand userCommand = inputView.readChoiceOperation();
-        return userCommand;
+        outputView.printIntroduceCommand(now());
+        return inputView.readUserCommand();
     }
 
-    private String inputCrewName(final AttendanceSystem attendanceSystem) {
-        outputView.printAddAttendanceCrewName();
+    private Crew inputCrew(final Crews crews) {
         final String crewName = inputView.readCrewName();
-        attendanceSystem.validateCrewByName(crewName);
-        return crewName;
+        return crews.findByName(crewName);
     }
 
-    private LocalTime inputUpdateTime() {
-        outputView.printUpdateAttendanceDate();
-        final LocalTime targetTime = inputView.readTime();
-        return targetTime;
+    private Crew inputUpdateCrew(final Crews crews) {
+        final String crewName = inputView.readUpdateCrewName();
+        return crews.findByName(crewName);
     }
 
-    private int inputDayOfMonthForUpdate(final String crewName, final AttendanceSystem attendanceSystem) {
-        outputView.printUpdateAttendanceDayOfMonth();
-        final int dayOfMonth = inputView.readDayOfMonth();
-        attendanceSystem.validateUpdateAttendanceDay(crewName, dayOfMonth, dateTimeGenerator.generateDate());
-        return dayOfMonth;
+    private Map<String, Integer> convertToStringStatistics(final Map<AttendanceStatus, Integer> statistics) {
+        return statistics.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        entry -> AttendanceRecordDto.convertAttendanceStatusToString(entry.getKey()),
+                        entry -> entry.getValue())
+                );
     }
 
-    private String inputCrewNameForUpdate(final AttendanceSystem attendanceSystem) {
-        outputView.printUpdateAttendanceCrewName();
-        final String crewName = inputView.readCrewName();
-        attendanceSystem.validateCrewByName(crewName);
-        return crewName;
+    private LocalDate now() {
+        return LocalDate.of(2024, 12, 13);
     }
-
 }

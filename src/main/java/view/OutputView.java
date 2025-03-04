@@ -1,128 +1,102 @@
 package view;
 
-import domain.constants.AttendanceStatus;
-import domain.constants.ExpulsionStatus;
-import dto.AttendanceResponse;
-import dto.ExpulsionCrewResponse;
-import dto.UpdatedAttendanceSnapshotResponse;
+
+import dto.AttendanceRecordDto;
+import dto.RiskOfExpulsionCrewDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.TextStyle;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class OutputView {
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm");
+    private static final DateTimeFormatter EMPTY_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--");
+    private static final DateTimeFormatter INTRO_DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter EMPTY_FORMATTER = DateTimeFormatter.ofPattern("--:--");
 
-    public void printToday(final LocalDate today) {
-        System.out.printf(System.lineSeparator() + "오늘은 %d월 %d일 %s입니다. 기능을 선택해주세요." + System.lineSeparator(),
-                today.getMonthValue(),
-                today.getDayOfMonth(), today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
+    public void printIntroduceCommand(final LocalDate date) {
+        System.out.printf("\n오늘은 %s입니다. 기능을 선택해 주세요.\n", date.format(INTRO_DATE_FORMATTER));
     }
 
-    public void printIntroduceOperation() {
-        System.out.println("1. 출석 확인");
-        System.out.println("2. 출석 수정");
-        System.out.println("3. 출석 크루별 출석 기록");
-        System.out.println("4. 제적 위험자 확인");
-        System.out.println("Q. 종료");
+    public void printUpdateAttendanceResult(final AttendanceRecordDto before, final AttendanceRecordDto after) {
+        System.out.printf("%s -> %s", formatAttendanceRecord(before), formatAttendanceTime(after));
     }
 
-    public void printIntroduceAnswerCommand() {
-        System.out.println("이미 출석이 존재합니다. 수정하시겠습니까? (Y/N)");
+    private String formatAttendanceTime(final AttendanceRecordDto attendanceRecordDto) {
+        if (attendanceRecordDto.getAttendanceTime().isEmpty()) {
+            return String.format("%s (%s)", attendanceRecordDto.getAttendanceDate().format(EMPTY_FORMATTER),
+                    attendanceRecordDto.getAttendanceStatus());
+        }
+        return String.format("%s (%s)",
+                LocalDateTime.of(attendanceRecordDto.getAttendanceDate(), attendanceRecordDto.getAttendanceTime().get())
+                        .format(TIME_FORMATTER),
+                attendanceRecordDto.getAttendanceStatus());
     }
 
-    public void printAddAttendanceCrewName() {
-        System.out.println("닉네임을 입력해주세요.");
-    }
-
-    public void printAddAttendanceDate() {
-        System.out.println("등교 시간을 입력해 주세요.");
-    }
-
-    public void printUpdateAttendanceCrewName() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-    }
-
-    public void printUpdateAttendanceDayOfMonth() {
-        System.out.println("수정하려는 날짜(일)을 입력해 주세요.");
-    }
-
-    public void printUpdateAttendanceDate() {
-        System.out.println("언제로 변경하겠습니까?");
-    }
-
-    public void printUpdateAttendanceResult(final UpdatedAttendanceSnapshotResponse updatedAttendanceSnapshotResponse) {
-        final AttendanceResponse before = updatedAttendanceSnapshotResponse.before();
-        final AttendanceResponse after = updatedAttendanceSnapshotResponse.after();
-        System.out.printf(System.lineSeparator() + "%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!" + System.lineSeparator(),
-                before.attendanceDate().getMonthValue(), before.attendanceDate().getDayOfMonth(),
-                before.attendanceDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
-                formatAttendanceTimeByEmpty(before.attendanceDate(), before.isEmpty()),
-                before.attendanceStatus().getName(),
-                formatAttendanceTimeByEmpty(after.attendanceDate(), after.isEmpty()),
-                after.attendanceStatus().getName()
-        );
-    }
-
-    public void printAttendanceHistoryTitle(final String crewName) {
+    public void printIntroduceAttendanceRecords(final String crewName) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", crewName);
     }
 
-    public void printCrewAttendances(final List<AttendanceResponse> attendanceResponses) {
-        final String crewAttendanceHistory = attendanceResponses.stream()
-                .sorted((o1, o2) -> o1.attendanceDate().compareTo(o2.attendanceDate()))
-                .map(this::formatAttendanceResponse)
-                .collect(Collectors.joining("\n"));
-        System.out.println(System.lineSeparator() + crewAttendanceHistory);
+    public void printAttendanceRecords(final List<AttendanceRecordDto> attendanceRecordDto) {
+        attendanceRecordDto.forEach(this::printAttendanceRecord);
     }
 
-    public void printExpulsionCrewResponses(final List<ExpulsionCrewResponse> expulsionCrewResponses) {
+    public void printAttendanceRecord(final AttendanceRecordDto attendanceRecordDto) {
+        System.out.println(formatAttendanceRecord(attendanceRecordDto));
+    }
+
+    private String formatAttendanceRecord(final AttendanceRecordDto attendanceRecordDto) {
+        if (attendanceRecordDto.getAttendanceTime().isEmpty()) {
+            return String.format(attendanceRecordDto.getAttendanceDate().format(EMPTY_TIME_FORMATTER) + " (%s)",
+                    attendanceRecordDto.getAttendanceStatus());
+        }
+        return String.format(
+                LocalDateTime.of(attendanceRecordDto.getAttendanceDate(), attendanceRecordDto.getAttendanceTime().get())
+                        .format(DATE_TIME_FORMATTER) + " (%s)",
+                attendanceRecordDto.getAttendanceStatus());
+    }
+
+    public void printAttendanceStatistics(final Map<String, Integer> attendanceStatistics) {
+        attendanceStatistics.entrySet()
+                .stream()
+                .forEach(entry -> System.out.printf("%s: %d회\n", entry.getKey(), entry.getValue()));
+    }
+
+    public void printRiskOfExpulsion(final String expulsionStatus) {
+        System.out.printf("%s 대상자입니다.\n", expulsionStatus);
+    }
+
+
+    public void printRiskOfExpulsionCrews(final List<RiskOfExpulsionCrewDto> riskOfExpulsionCrewDtos) {
         System.out.println("제적 위험자 조회 결과");
-        final String message = expulsionCrewResponses.stream()
-                .map(expulsionCrewResponse -> String.format("- %s: 결석 %d회, 지각 %d회 (%s)", expulsionCrewResponse.name(),
-                        expulsionCrewResponse.attendanceStatusCount().get(AttendanceStatus.ABSENCE),
-                        expulsionCrewResponse.attendanceStatusCount().get(AttendanceStatus.LATE),
-                        expulsionCrewResponse.expulsionStatus().getName()))
-                .collect(Collectors.joining(System.lineSeparator()));
-        System.out.println(message);
+        sortByAbsenceCountAndLateCount(riskOfExpulsionCrewDtos);
+        riskOfExpulsionCrewDtos.forEach(this::printRiskOfExpulsionCrew);
     }
 
-    private String formatAttendanceResponse(final AttendanceResponse attendanceResponse) {
-        final LocalDateTime attendanceDate = attendanceResponse.attendanceDate();
-        final String status = attendanceResponse.attendanceStatus().getName();
-        return String.format("%02d월 %02d일 %s %s (%s)", attendanceDate.getMonthValue(),
-                attendanceDate.getDayOfMonth(),
-                attendanceDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                formatAttendanceTimeByEmpty(attendanceDate, attendanceResponse.isEmpty()), status);
+    private void sortByAbsenceCountAndLateCount(final List<RiskOfExpulsionCrewDto> riskOfExpulsionCrewDtos) {
+        riskOfExpulsionCrewDtos.sort((c1, c2) -> {
+            final int c1Value = c1.absenceCount() + c1.lateCount() / 3;
+            final int c2Value = c2.absenceCount() + c2.lateCount() / 3;
+            if (c1Value == c2Value) {
+                return c1.crewName().compareTo(c2.crewName());
+            }
+            return Integer.compare(c2Value, c1Value);
+        });
     }
 
-    private String formatAttendanceTimeByEmpty(final LocalDateTime attendanceDate, final boolean isAttendanceEmpty) {
-        if (isAttendanceEmpty) {
-            return "--:--";
-        }
-        return String.format("%02d:%02d", attendanceDate.getHour(), attendanceDate.getMinute());
+    private void printRiskOfExpulsionCrew(final RiskOfExpulsionCrewDto riskOfExpulsionCrewDto) {
+        System.out.printf("- %s: 결석 %d회, 지각 %d회, (%s)\n",
+                riskOfExpulsionCrewDto.crewName(), riskOfExpulsionCrewDto.absenceCount(),
+                riskOfExpulsionCrewDto.lateCount(), riskOfExpulsionCrewDto.expulsionStatus());
     }
 
-    public void printAttendancesStatistics(final Map<AttendanceStatus, Integer> attendanceStatuses) {
-        final String statistics = attendanceStatuses.entrySet().stream()
-                .map(entry -> String.format("%s: %d회", entry.getKey().getName(), entry.getValue()))
-                .collect(Collectors.joining("\n"));
-        System.out.println(System.lineSeparator() + statistics);
-    }
-
-    public void printCrewExpulsionStatus(final ExpulsionStatus expulsionStatus) {
-        if (expulsionStatus != ExpulsionStatus.NORMAL) {
-            System.out.printf(System.lineSeparator() + "%s 대상자입니다.\n", expulsionStatus.getName());
-        }
+    public void printIntroduceUpdate() {
+        System.out.println("이미 출석이 존재합니다. 수정 기능을 사용해주세요.\n");
     }
 
     public void printExceptionMessage(final String message) {
-        System.out.println(message);
-    }
-
-    public void printNotAttendanceDay() {
-        System.out.println("오늘은 등교일이 아닙니다.");
+        System.out.println("[ERROR] " + message);
     }
 }
