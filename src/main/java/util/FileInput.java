@@ -45,24 +45,7 @@ public class FileInput {
         List<String> fileInformation = readFile();
         Map<String, StudentAttendanceHistory> studentInformationInFile = new HashMap<>();
         try{
-            for (String studentInformation : fileInformation) {
-                if (!studentInformation.matches(FILE_INFORMATION_REGEX)) {
-                    throw new IllegalArgumentException(ERROR_INVALID_FILE_FORMAT);
-                }
-
-                String[] studentNameAndAttendanceDateTimeInformation = studentInformation.split(",");
-                String studentName = studentNameAndAttendanceDateTimeInformation[NAME_INDEX];
-                studentInformationInFile.putIfAbsent(studentName, new StudentAttendanceHistory(new HashMap<>()));
-
-                String timeInformation = studentNameAndAttendanceDateTimeInformation[ATTENDANCE_DATE_TIME_INDEX];
-                String[] attendanceDateAndAttendanceTime = timeInformation.split(" ");
-                AttendanceDate attendanceDate = new AttendanceDate(
-                        LocalDate.parse(attendanceDateAndAttendanceTime[ATTENDANCE_DATE_INDEX], ATTENDANCE_DATE_FORMATTER));
-                AttendanceTime attendanceTime = new AttendanceTime(
-                        LocalTime.parse(attendanceDateAndAttendanceTime[ATTENDANCE_TIME_INDEX], ATTENDANCE_TIME_FORMATTER));
-                StudentAttendanceHistory history = studentInformationInFile.get(studentName);
-                history.getAttendanceHistory().put(attendanceDate, attendanceTime);
-            }
+            parseAndStoreStudentAttendance(fileInformation, studentInformationInFile);
             return studentInformationInFile;
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -70,6 +53,28 @@ public class FileInput {
         }
 
 }
+
+    private static void parseAndStoreStudentAttendance(List<String> fileInformation,
+                                  Map<String, StudentAttendanceHistory> studentInformationInFile) {
+        for (String studentInformation : fileInformation) {
+            if (!studentInformation.matches(FILE_INFORMATION_REGEX)) {
+                throw new IllegalArgumentException(ERROR_INVALID_FILE_FORMAT);
+            }
+
+            String[] studentNameAndAttendanceDateTimeInformation = studentInformation.split(",");
+            String studentName = studentNameAndAttendanceDateTimeInformation[NAME_INDEX];
+            studentInformationInFile.putIfAbsent(studentName, new StudentAttendanceHistory(new HashMap<>()));
+
+            String timeInformation = studentNameAndAttendanceDateTimeInformation[ATTENDANCE_DATE_TIME_INDEX];
+            String[] attendanceDateAndAttendanceTime = timeInformation.split(" ");
+            AttendanceDate attendanceDate = new AttendanceDate(
+                    LocalDate.parse(attendanceDateAndAttendanceTime[ATTENDANCE_DATE_INDEX], ATTENDANCE_DATE_FORMATTER));
+            AttendanceTime attendanceTime = new AttendanceTime(
+                    LocalTime.parse(attendanceDateAndAttendanceTime[ATTENDANCE_TIME_INDEX], ATTENDANCE_TIME_FORMATTER));
+            StudentAttendanceHistory history = studentInformationInFile.get(studentName);
+            history.getAttendanceHistory().put(attendanceDate, attendanceTime);
+        }
+    }
 
     private static List<String> readFile() {
         List<String> fileInformation = new ArrayList<>();
