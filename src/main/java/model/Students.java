@@ -11,6 +11,13 @@ public class Students {
         this.students = new ArrayList<>(students);
     }
 
+    public void addAttendanceDateTime(String studentName, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        students.stream()
+                .filter(student -> student.isSameName(studentName))
+                .findFirst()
+                .ifPresent(student -> student.addAttendanceDateTime(attendanceDate, attendanceTime));
+    }
+
     public void validateAlreadyExistAttendanceDate(String studentName, AttendanceDate today) {
         students.stream()
                 .filter(student -> student.isSameName(studentName))
