@@ -40,8 +40,9 @@ public class CrewHistories {
         }
     }
 
-    public LocalDateTime modify(final String nickname, final LocalDateTime modifyingDateTime) {
+    public LocalDateTime modify(final String nickname, final LocalDateTime modifyingDateTime, final LocalDate nowDate) {
         validateKeyExists(nickname);
+        validatePreviousDate(LocalDate.from(modifyingDateTime), nowDate);
         CrewHistory crewHistory = histories.get(nickname);
         return crewHistory.modify(modifyingDateTime);
     }
@@ -54,6 +55,12 @@ public class CrewHistories {
     public CrewHistory findHistory(final String nickname) {
         validateKeyExists(nickname);
         return histories.get(nickname);
+    }
+
+    private void validatePreviousDate(final LocalDate date, final LocalDate nowDate) {
+        if (date.equals(nowDate) || date.isAfter(nowDate)) {
+            throw new IllegalArgumentException("[ERROR] 과거의 날짜만 가능합니다.");
+        }
     }
 
     private void createIfNotExists(final String nickname) {

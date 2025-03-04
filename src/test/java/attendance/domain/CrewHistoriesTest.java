@@ -130,9 +130,10 @@ class CrewHistoriesTest {
         LocalDateTime attendanceTime = makeDateTime(3, 10, 0);
         crewHistories.addHistory(nickname, attendanceTime);
         LocalDateTime modifyingTime = makeDateTime(3, 11, 0);
+        LocalDate nowDate = makeDecemberDate(4);
 
         // When
-        LocalDateTime previousHistory = crewHistories.modify(nickname, modifyingTime);
+        LocalDateTime previousHistory = crewHistories.modify(nickname, modifyingTime, nowDate);
 
         // Then
         Assertions.assertAll(
