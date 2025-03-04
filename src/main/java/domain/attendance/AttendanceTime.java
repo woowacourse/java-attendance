@@ -26,9 +26,9 @@ public enum AttendanceTime {
         this.minute = minute;
     }
 
-    public static boolean isOperatingTime(LocalDateTime dateTime) {
-        return (START_TIME.equals(dateTime.toLocalTime()) || START_TIME.isBefore(dateTime.toLocalTime())) &&
-                (END_TIME.equals(dateTime.toLocalTime()) || END_TIME.isAfter(dateTime.toLocalTime()));
+    public static boolean isOperatingTime(LocalTime time) {
+        return (START_TIME.equals(time) || START_TIME.isBefore(time)) &&
+                (END_TIME.equals(time) || END_TIME.isAfter(time));
     }
 
     public static boolean isAttendance(LocalDateTime dateTime) {

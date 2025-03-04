@@ -39,7 +39,7 @@ public class Attendance {
 
     private void validate(LocalDateTime dateTime) {
         validate(dateTime.toLocalDate());
-        if (!AttendanceTime.isOperatingTime(dateTime)) {
+        if (!AttendanceTime.isOperatingTime(dateTime.toLocalTime())) {
             throw new IllegalArgumentException("캠퍼스 운영 시간에만 출석할 수 있습니다");
         }
     }

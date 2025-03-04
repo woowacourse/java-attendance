@@ -13,12 +13,11 @@ public class DateTimeConverter {
     private static final DateTimeFormatter BASIC_DAY_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일");
     private static final DateTimeFormatter BASIC_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    // todo: illegalArgumentException 다시 정하기
     public static LocalDateTime convertStringToLocalDateTime(String dateTime) {
         try {
             return LocalDateTime.parse(dateTime, FILE_FORMATTER);
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("잘못된 형식을 입력하였습니다");
+            throw new IllegalArgumentException("잘못된 날짜 형식을 입력하였습니다 [" + dateTime + "]");
         }
     }
 
@@ -28,7 +27,7 @@ public class DateTimeConverter {
                     date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
 
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("잘못된 형식을 입력하였습니다");
+            throw new IllegalArgumentException("잘못된 형식을 입력하였습니다 [" + date + "]");
         }
     }
 
