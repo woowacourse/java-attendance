@@ -16,20 +16,12 @@ public class Attendances {
     public Attendances registerAttendance(final LocalDateTime dateTime) {
         Attendance before = findAttendanceByDate(dateTime.toLocalDate());
         validateAlreadyAttendance(before);
-
-        List<Attendance> newAttendances = new ArrayList<>(attendances);
-        newAttendances.remove(before);
-        newAttendances.add(Attendance.createFromDateTime(dateTime));
-        return new Attendances(newAttendances);
+        return new Attendances(createUpdateAttendances(dateTime, before));
     }
 
     public Attendances updateAttendance(final LocalDateTime dateTime) {
         Attendance before = findAttendanceByDate(dateTime.toLocalDate());
-
-        List<Attendance> newAttendances = new ArrayList<>(attendances);
-        newAttendances.remove(before);
-        newAttendances.add(Attendance.createFromDateTime(dateTime));
-        return new Attendances(newAttendances);
+        return new Attendances(createUpdateAttendances(dateTime, before));
     }
 
     public Attendance findAttendanceByDate(final LocalDate date) {
@@ -45,13 +37,20 @@ public class Attendances {
                 .toList();
     }
 
+    public List<Attendance> getAttendances() {
+        return attendances;
+    }
+
     private void validateAlreadyAttendance(final Attendance before) {
         if (before.isNotDefaultTime()) {
             throw new IllegalArgumentException("[ERROR] 이미 출석이 등록되었습니다. 수정 기능을 이용 해주세요.");
         }
     }
 
-    public List<Attendance> getAttendances() {
-        return attendances;
+    private List<Attendance> createUpdateAttendances(final LocalDateTime dateTime, final Attendance before) {
+        List<Attendance> newAttendances = new ArrayList<>(attendances);
+        newAttendances.remove(before);
+        newAttendances.add(Attendance.createFromDateTime(dateTime));
+        return newAttendances;
     }
 }
