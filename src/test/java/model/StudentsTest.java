@@ -104,5 +104,18 @@ public class StudentsTest {
         students.modifyAttendanceDateTime(name, attendanceDate, attendanceTime);
 
         Assertions.assertEquals(students.findStudentByName(name).getStudentAttendanceHistory().getAttendanceHistory()
-                .get(attendanceDate), attendanceTime);}
+                .get(attendanceDate), attendanceTime);
+    }
+
+    @Test
+    @DisplayName("학생 이름, 일자를 받아 해당 일자에 입실한 시간 찾는 메서드 테스트")
+    void test7() {
+        String name = "이든";
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 12));
+        AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(8, 0));
+
+        Assertions.assertEquals(
+                students.findAttendanceTimeByAttendanceDate(name, attendanceDate), attendanceTime
+        );
+    }
 }
