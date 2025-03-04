@@ -1,105 +1,184 @@
 package attendance.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import org.junit.jupiter.api.Test;
 
-class CrewTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+public class CrewTest {
 
     @Test
-    void 이미_출석한_경우_예외_반환() {
-        Crew crew = new Crew("훌라",
-                new Attendances(LocalDate.of(2024,12,17), List.of(LocalDateTime.of(2024, 12, 16, 11, 0))));
+    @DisplayName("닉네임과 출석 기록이 들어오면, 크루의 출석 기록이 추가되고, Attendance를 리턴한다")
+    void crewAddAttendanceTest1() {
+        Crew crew = new Crew("모루");
+        assertThat(crew.addAttendance(LocalDateTime.of(2024, 12, 11, 8, 0)))
+                .isInstanceOf(Attendance.class);
+    }
 
-        assertThatThrownBy(() -> crew.existInAttendances(LocalDate.of(2024,12,16)))
+    @Test
+    @DisplayName("출석 시간이 운영 시간이 아니면 예외")
+    void crewAddAttendanceTest2() {
+        Crew crew = new Crew("모루");
+        assertThatThrownBy(() -> crew.addAttendance(LocalDateTime.of(2024, 12, 11, 6, 0)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 이미_출석하지않은_경우_예외_반환X() {
-        Crew crew = new Crew("훌라",
-                new Attendances(LocalDate.of(2024,12,11), List.of(LocalDateTime.of(2024, 12, 16, 11, 0))));
-
-        assertThatCode(() -> crew.existInAttendances(LocalDate.of(2024,12,17))).doesNotThrowAnyException();
+    @DisplayName("출석일이 운영일이 아니면 예외")
+    void crewAddAttendanceTest3() {
+        Crew crew = new Crew("모루");
+        assertThatThrownBy(() -> crew.addAttendance(LocalDateTime.of(2024, 12, 8, 10, 0)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 결석_2회_이상_경고_대상자() {
-        Crew crew = new Crew("훌라",
-                new Attendances(LocalDate.of(2024,12,5),
-                        List.of(LocalDateTime.of(2024, 12, 2, 11, 0))));
-        assertThat(crew.checkWarning()).isEqualTo(Warning.WARN);
+    @DisplayName("크루의 출석 기록에 출석이 추가됐는지 확인")
+    void crewAddAttendanceTest4() {
+        Crew crew = new Crew("모루");
+        crew.addAttendance(LocalDateTime.of(2024, 12, 11, 8, 0));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 12, 8, 0));
+
+        assertThat(crew.getAttendances().size()).isEqualTo(2);
     }
 
-    @Test
-    void 결석_3회_이상_면담_대상자() {
-        Crew crew = new Crew("훌라", new Attendances(LocalDate.of(2024,12,6),
-                        List.of(LocalDateTime.of(2024, 12, 2, 11, 0),
-                                LocalDateTime.of(2024, 12, 3, 11, 0))));
+    @Nested
+    @DisplayName("크루의 출석 기록에서 출석 상태 세기")
+    class CountAttendanceStatusTest {
+        @Test
+        @DisplayName("크루의 출석 기록에서 출석 횟수 세기")
+        void countAttendanceStatusTest1() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 8, 0));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 8, 0));
 
-        assertThat(crew.checkWarning()).isEqualTo(Warning.INTERVIEW);
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 4));
+
+            assertThat(crew.getAttendanceCount(AttendanceStatus.ATTEND)).isEqualTo(2);
+        }
+
+        @Test
+        @DisplayName("크루의 출석 기록에서 지각 횟수 세기")
+        void countAttendanceStatusTest2() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 10, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 4, 10, 6));
+
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 5));
+
+            assertThat(crew.getAttendanceCount(AttendanceStatus.LATE)).isEqualTo(3);
+        }
+
+        @Test
+        @DisplayName("크루의 출석 기록에서 결석 횟수 세기")
+        void countAttendanceStatusTest3() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 14, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 11, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 4, 11, 6));
+
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 5));
+            assertThat(crew.getAttendanceCount(AttendanceStatus.ABSENCE)).isEqualTo(3);
+        }
     }
 
-    @Test
-    void 결석_5회_이상_제적_대상자() {
-        Crew crew = new Crew("훌라", new Attendances(LocalDate.of(2024,12,21),
-                List.of(LocalDateTime.of(2024, 12, 16, 14, 0))));
+    @Nested
+    @DisplayName("결석 횟수에 따라 경고 메시지 출력")
+    class CheckAbsenceRuleTest {
+        @Test
+        @DisplayName("결석 2번은 경고 대상자")
+        void checkWarningTest1() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 14, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 11, 6));
 
-        assertThat(crew.checkWarning()).isEqualTo(Warning.EXPULSION);
-    }
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 4));
 
-    @Test
-    void 지각_결석_5회_이상_제적_대상자() {
-        Crew crew = new Crew("훌라", new Attendances(LocalDate.of(2024,12,21),
-                List.of(LocalDateTime.of(2024, 12, 16, 14, 0),
-                        LocalDateTime.of(2024, 12, 17, 11, 0),
-                        LocalDateTime.of(2024, 12, 18, 11, 0),
-                        LocalDateTime.of(2024, 12, 19, 11, 0),
-                        LocalDateTime.of(2024, 12, 20, 11, 0))));
+            assertThat(crew.checkAbsenceRule()).isEqualTo(AbsenceRule.WARNING);
+        }
 
-        assertThat(crew.checkWarning()).isEqualTo(Warning.EXPULSION);
-    }
+        @Test
+        @DisplayName("결석 3번은 면담 대상자")
+        void checkWarningTest2() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 14, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 11, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 4, 11, 6));
 
-    @Test
-    void 정상_출석이면_대상자가_아니다() {
-        Crew crew = new Crew("훌라", new Attendances(LocalDate.of(2024,12,6),
-                List.of(LocalDateTime.of(2024, 12, 2, 9, 0),
-                        LocalDateTime.of(2024, 12, 3, 9, 0),
-                        LocalDateTime.of(2024, 12, 4, 9, 0),
-                        LocalDateTime.of(2024, 12, 5, 9, 0),
-                        LocalDateTime.of(2024, 12, 6, 9, 0))));
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 5));
 
-        assertThat(crew.checkWarning()).isEqualTo(Warning.NONE);
-    }
+            assertThat(crew.checkAbsenceRule()).isEqualTo(AbsenceRule.COUNSELING);
+        }
 
-    @Test
-    void 지각_3회_결석_1회는_경고_대상자() {
-        Crew crew = new Crew("훌라", new Attendances(LocalDate.of(2024,12,6),
-                List.of(LocalDateTime.of(2024, 12, 2, 13, 6),
-                        LocalDateTime.of(2024, 12, 3, 10, 6),
-                        LocalDateTime.of(2024, 12, 4, 10, 6),
-                        LocalDateTime.of(2024, 12, 5, 11, 0))));
+        @Test
+        @DisplayName("결석 5번은 제적 대상자")
+        void checkWarningTest3() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 14, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 11, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 4, 11, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 5, 14, 6));
+            crew.addAttendance(LocalDateTime.of(2024, 12, 6, 11, 6));
 
-        assertThat(crew.checkWarning()).isEqualTo(Warning.WARN);
-    }
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 7));
 
-    @Test
-    void 출석_수정을_성공하면_수정한_기록을_받는다() {
-        Crew crew = new Crew("훌라", new Attendances(LocalDate.of(2024,12,21),
-                List.of(LocalDateTime.of(2024, 12, 16, 9, 0),
-                        LocalDateTime.of(2024, 12, 17, 9, 0),
-                        LocalDateTime.of(2024, 12, 18, 9, 0),
-                        LocalDateTime.of(2024, 12, 19, 9, 0),
-                        LocalDateTime.of(2024, 12, 20, 9, 0))));
+            assertThat(crew.checkAbsenceRule()).isEqualTo(AbsenceRule.EXPULSION);
+        }
 
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 20, 11, 0);
+        @Test
+        @DisplayName("지각 3번과 결석 2번은 면담 대상자")
+        void checkWarningTest4() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 10, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 4, 10, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 5, 14, 6)); //결석
+            crew.addAttendance(LocalDateTime.of(2024, 12, 6, 11, 6)); //결석
 
-        Attendance attendance = crew.updateAttendance(localDateTime);
-        assertThat(attendance.getDateTime()).isEqualTo(localDateTime);
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 7));
+
+            assertThat(crew.checkAbsenceRule()).isEqualTo(AbsenceRule.COUNSELING);
+        }
+
+        @Test
+        @DisplayName("지각 5번과 결석 2번은 면담 대상자")
+        void checkWarningTest5() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 10, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 4, 10, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 6, 10, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 9, 14, 6)); //결석
+            crew.addAttendance(LocalDateTime.of(2024, 12, 10, 11, 6)); //결석
+
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 11));
+
+            assertThat(crew.checkAbsenceRule()).isEqualTo(AbsenceRule.COUNSELING);
+        }
+
+        @Test
+        @DisplayName("지각 6번과 결석 3번은 제적 대상자")
+        void checkWarningTest6() {
+            Crew crew = new Crew("모루");
+            crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 3, 13, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 4, 10, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 6, 10, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 9, 14, 6)); //지각
+            crew.addAttendance(LocalDateTime.of(2024, 12, 10, 11, 6)); //결석
+            crew.addAttendance(LocalDateTime.of(2024, 12, 11, 11, 6)); //결석
+            crew.addAttendance(LocalDateTime.of(2024, 12, 12, 11, 6)); //결석
+
+            crew.countAttendanceStatus(LocalDate.of(2024, 12, 13));
+
+            assertThat(crew.checkAbsenceRule()).isEqualTo(AbsenceRule.EXPULSION);
+        }
     }
 }

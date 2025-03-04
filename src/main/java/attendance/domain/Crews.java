@@ -1,44 +1,65 @@
 package attendance.domain;
 
-import static attendance.domain.exception.CrewsExceptionMessage.NOT_REGISTERED_NICKNAME;
+import java.util.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import static attendance.domain.exception.CrewsExceptionMessage.ALREADY_EXIST_CREW;
+import static attendance.domain.exception.CrewsExceptionMessage.NOT_EXIST_NICKNAME;
 
 public class Crews {
+
     private final List<Crew> crews;
 
-    public Crews(final List<Crew> crews) {
+    public Crews() {
+        this.crews = new ArrayList<>();
+    }
+
+    public Crews(List<Crew> crews) {
         this.crews = new ArrayList<>(crews);
     }
 
-    public static Crews init(Map<String, List<LocalDateTime>> crewsAttendances, LocalDate now) {
-        List<Crew> crews = new ArrayList<>();
-        for (Map.Entry<String, List<LocalDateTime>> crewAttendances : crewsAttendances.entrySet()) {
-            Attendances attendances = new Attendances(now, crewAttendances.getValue());
-            crews.add(new Crew(crewAttendances.getKey(), attendances));
-        }
-        return new Crews(crews);
+    public Crew create(final String nickname) {
+        crews.stream().filter(crew -> crew.isEqualCrew(nickname))
+                .findAny()
+                .ifPresent(crew -> {
+                    throw new IllegalArgumentException(ALREADY_EXIST_CREW);
+                });
+
+        Crew crew = new Crew(nickname);
+        crews.add(crew);
+        return crew;
     }
 
-    public Crew findByName(final String nickname) {
+    public List<Attendance> findCrewAttendanceByNickname(final String nickname) {
+        return findCrewByNickname(nickname).getAttendances();
+    }
+
+    public Crew findCrewByNickname(final String nickname) {
         return crews.stream()
-                .filter(crew -> crew.isEqualToNickname(nickname))
+                .filter(crew -> crew.isEqualCrew(nickname))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(NOT_REGISTERED_NICKNAME));
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_NICKNAME));
     }
 
-    public int size() {
-        return crews.size();
+    public Map<AbsenceRule, List<Crew>> findWarningExpulsionCrews() {
+        Map<AbsenceRule, List<Crew>> warningExpulsionCrews = new EnumMap<>(AbsenceRule.class);
+        initWarningExpulsionCrews(warningExpulsionCrews);
+
+        for (Crew crew : crews) {
+            warningExpulsionCrews
+                    .computeIfAbsent(crew.checkAbsenceRule(), k -> new ArrayList<>())
+                    .add(crew);
+        }
+        warningExpulsionCrews.forEach((key, value) -> value.sort(Crew::compareTo));
+        return warningExpulsionCrews;
     }
 
-    public List<Crew> collectWarningCrews() {
-        return crews.stream()
-                .filter(crew -> !crew.checkWarning().equals(Warning.NONE))
-                .sorted(Crew::compareTo)
-                .toList();
+    private void initWarningExpulsionCrews(final Map<AbsenceRule, List<Crew>> warningExpulsionCrews) {
+        for (AbsenceRule absenceRule : AbsenceRule.values()) {
+            warningExpulsionCrews.put(absenceRule, new ArrayList<>());
+        }
+    }
+
+    public List<Crew> getCrews() {
+        return Collections.unmodifiableList(crews);
     }
 }

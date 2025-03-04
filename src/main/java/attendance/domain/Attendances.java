@@ -1,93 +1,65 @@
 package attendance.domain;
 
-import static attendance.domain.exception.AttendanceExceptionMessage.ALREADY_ATTENDANCE;
-import static attendance.domain.exception.AttendanceExceptionMessage.NOT_IN_ATTENDANCE;
-
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import static attendance.domain.exception.AttendancesExceptionMessage.ALREADY_EXIST_ATTENDANCE;
+
 public class Attendances {
-    private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
-    private static final List<DayOfWeek> WEEKENDS = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+    private static final int FIRST_DAY = 1;
 
     private final List<Attendance> attendances;
 
-    public Attendances(LocalDate now, List<LocalDateTime> crewAttendances) {
-        List<Attendance> attendances = new ArrayList<>();
-        for (LocalDate day = LocalDate.of(now.getYear(), now.getMonth(), 1); day.isBefore(now); day = day.plusDays(1L)) {
-            if (isHoliday(day)) {
-                continue;
+    public Attendances() {
+        this.attendances = new ArrayList<>();
+    }
+
+    public Attendances(final List<Attendance> attendances) {
+        this.attendances = new ArrayList<>(attendances);
+    }
+
+    public Attendance add(final Attendance attendanceInput) {
+        for (Attendance attendance : attendances) {
+            if(attendance.isEqualAttendanceDate(attendanceInput)) {
+                throw new IllegalArgumentException(ALREADY_EXIST_ATTENDANCE);
             }
-            attendances.add(createAbsenceAttendanceByDate(crewAttendances, day));
         }
-        this.attendances = attendances;
+        attendances.add(attendanceInput);
+        return attendanceInput;
     }
 
-    public void addAttendance(final Attendance attendance) {
-        attendances.add(attendance);
+    public void remove(final Attendance beforeAttendance) {
+        attendances.removeIf(attendance -> attendance.isEqualAttendanceDate(beforeAttendance));
     }
 
-    public void existInAttendances(final LocalDate date) {
-        attendances.stream()
-                .filter(attendance -> attendance.isEqualToDate(date))
-                .findAny()
-                .ifPresent((attendance) -> {
-                    throw new IllegalArgumentException(ALREADY_ATTENDANCE);
-                });
+    public void fillAbsentAttendances(LocalDate today) {
+        for(LocalDate date = LocalDate.of(today.getYear(), today.getMonth(), FIRST_DAY); date.isBefore(today); date = date.plusDays(FIRST_DAY)) {
+            if(!isExistAttendanceByDate(date) && !Holiday.checkHoliday(date.atStartOfDay())) {
+                add(new Attendance(LocalDateTime.of(date, LocalTime.MIN)));
+            }
+        }
     }
 
-    public long countAttend() {
+    public long countAttendanceStatus(final AttendanceStatus status) {
         return attendances.stream()
-                .filter(attendance -> attendance.getStatus().equals(AttendanceStatus.ATTEND))
+                .filter(attendance -> attendance.isEqualStatus(status))
                 .count();
     }
 
-    public long countAbsence() {
-        return attendances.stream()
-                .filter(attendance -> {
-                    AttendanceStatus status = attendance.getStatus();
-                    return status.equals(AttendanceStatus.ABSENCE) || status.equals(AttendanceStatus.LATE_ABSENCE);
-                })
-                .count();
-    }
-
-    public long countLate() {
-        return attendances.stream()
-                .filter(attendance -> attendance.getStatus().equals(AttendanceStatus.LATE))
-                .count();
-    }
-
-    public Attendance findAttendanceByDate(final LocalDate updateDate) {
-        return attendances.stream()
-                .filter(attendance -> attendance.isEqualToDate(updateDate))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
-    }
-
-    public Attendance updateAttendance(final LocalDateTime dateTime) {
-        return attendances.stream()
-                .filter(attendance -> attendance.isEqualToDate(LocalDate.from(dateTime)))
-                .findFirst()
-                .map(attendance -> attendance.updateDateTime(dateTime))
-                .orElseThrow(() -> new IllegalArgumentException(NOT_IN_ATTENDANCE));
-    }
-
-    private Attendance createAbsenceAttendanceByDate(List<LocalDateTime> attendances, LocalDate day) {
-        return attendances.stream()
-                .filter(attendance -> day.equals(LocalDate.from(attendance)))
-                .findFirst()
-                .map(Attendance::new)
-                .orElse(new Attendance(day.atStartOfDay(), AttendanceStatus.ABSENCE));
-    }
-
-    private boolean isHoliday(LocalDate day) {
-        return WEEKENDS.contains(day.getDayOfWeek()) || day.equals(CHRISTMAS);
+    private boolean isExistAttendanceByDate(final LocalDate today) {
+        for (Attendance attendance : attendances) {
+            if(attendance.isEqualDate(today)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<Attendance> getAttendances() {
-        return attendances;
+        return Collections.unmodifiableList(attendances);
     }
 }

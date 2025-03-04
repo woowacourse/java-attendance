@@ -1,57 +1,74 @@
 package attendance.view;
 
-import static attendance.view.exception.InputExceptionMessage.DATE_NOT_INTEGER;
-import static attendance.view.exception.InputExceptionMessage.INVALID_DATE_RANGE;
-import static attendance.view.message.InputMessage.INPUT_ATTEND_TIME;
-import static attendance.view.message.InputMessage.INPUT_NICKNAME;
-import static attendance.view.message.InputMessage.INPUT_UPDATE_DATE;
-import static attendance.view.message.InputMessage.INPUT_UPDATE_TIME;
-import static attendance.view.message.InputMessage.START_MESSAGE;
-
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
+import static attendance.view.InputMessage.*;
+
 public class InputView {
-    public static final int START_DAY_OF_MONTH = 1;
+
+    private static final String TIME_FORMAT = "[HH:mm][HH:m][H:mm][H:m]";
 
     Scanner scanner = new Scanner(System.in);
 
-    public String inputMenu(LocalDate now) {
-        System.out.printf(START_MESSAGE, now.getMonthValue(), now.getDayOfMonth(), now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
-        return scanner.nextLine();
+    public String selectCommand(LocalDate today) {
+        System.out.printf(SELECT_COMMAND_TITLE,
+                today.getMonthValue(), today.getDayOfMonth(), today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
+
+        System.out.println(SELECT_COMMAND_MENU);
+        return scanner.nextLine().trim();
     }
 
     public String inputNickname() {
         System.out.println(INPUT_NICKNAME);
-        return scanner.nextLine();
+        return scanner.nextLine().toLowerCase();
     }
 
-    public String inputAttendTime() {
-        System.out.println(INPUT_ATTEND_TIME);
-        return scanner.nextLine();
+    public LocalTime inputAttendanceTime() {
+        try {
+            System.out.println(INPUT_ATTENDANCE_TIME);
+            String attendanceTimeInput = scanner.nextLine().trim();
+
+            return formatTime(attendanceTimeInput);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException(TIME_FORMAT_EXCEPTION);
+        }
     }
 
-    public int inputUpdateDate(LocalDate now) {
+    public String inputUpdateCrew() {
+        System.out.println(INPUT_UPDATE_NICKNAME);
+        return scanner.nextLine().trim();
+    }
+
+    public int inputUpdateDate() {
         try {
             System.out.println(INPUT_UPDATE_DATE);
-            int date = Integer.parseInt(scanner.nextLine());
-            validateDayOfMonth(date, now);
-            return date;
+            String updateDate = scanner.nextLine().trim();
+
+            return Integer.parseInt(updateDate);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(DATE_NOT_INTEGER);
+            throw new IllegalArgumentException(INTEGER_EXCEPTION);
         }
     }
 
-    public String inputUpdateTime() {
-        System.out.println(INPUT_UPDATE_TIME);
-        return scanner.nextLine();
+    public LocalTime inputUpdateAttendanceTime() {
+        try{
+            System.out.println(INPUT_UPDATE_ATTENDANCE_TIME);
+            String updateTimeInput = scanner.nextLine().trim();
+
+            return formatTime(updateTimeInput);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException(TIME_FORMAT_EXCEPTION);
+        }
     }
 
-    private void validateDayOfMonth(int number, LocalDate date) {
-        if (number >= START_DAY_OF_MONTH && number > date.lengthOfMonth()) {
-            throw new IllegalArgumentException(String.format(INVALID_DATE_RANGE, START_DAY_OF_MONTH, date.lengthOfMonth()));
-        }
+    private LocalTime formatTime(final String timeInput) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
+        return LocalTime.parse(timeInput, formatter);
     }
 }

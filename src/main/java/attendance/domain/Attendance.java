@@ -3,61 +3,80 @@ package attendance.domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Objects;
 
-public class Attendance {
-    public static final int MONDAY_START_HOUR = 13;
-    public static final int START_HOUR = 10;
-    public static final int ABSENCE_CRITERIA = 30;
-    public static final int LATE_CRITERIA = 5;
+import static attendance.domain.exception.AttendanceExceptionMessage.NOT_OPEN_TIME_EXCEPTION;
 
-    private LocalDateTime dateTime;
-    private AttendanceStatus status;
+public class Attendance implements Comparable<Attendance> {
+
+    private static final LocalTime OPEN_HOUR = LocalTime.of(8, 0);
+    private static final LocalTime CLOSE_HOUR = LocalTime.of(23, 0);
+    private static final int NOT_MONDAY_START_TIME = 10;
+    private static final int MONDAY_START_TIME = 13;
+
+    private final LocalDateTime dateTime;
+    private final AttendanceStatus status;
 
     public Attendance(final LocalDateTime dateTime) {
+        Holiday.isHoliday(dateTime);
+        if (Objects.equals(LocalTime.from(dateTime), LocalTime.MIN)) {
+            this.dateTime = dateTime;
+            this.status = AttendanceStatus.ABSENCE;
+            return;
+        }
+        checkCampusOpen(dateTime);
+
         this.dateTime = dateTime;
-        this.status = checkAttendanceStatus(dateTime);
+        this.status = AttendanceStatus.of(dateTime);
     }
 
-    public Attendance(final LocalDateTime dateTime, final AttendanceStatus status) {
-        this.dateTime = dateTime;
-        this.status = status;
-    }
-
-    public AttendanceStatus checkAttendanceStatus(final LocalDateTime time) {
-        int hour = time.getHour();
-        int minute = time.getMinute();
-
-        if (time.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return attend(hour, minute, MONDAY_START_HOUR);
+    public static int checkStartHour(final LocalDateTime attendanceDateTime) {
+        int startHour = NOT_MONDAY_START_TIME;
+        if (attendanceDateTime.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+            startHour = MONDAY_START_TIME;
         }
-        return attend(hour, minute, START_HOUR);
+        return startHour;
     }
 
-    private AttendanceStatus attend(final int hour, final int minute, final int startHour) {
-        if (hour >= startHour) {
-            return attendAfterStart(hour, minute, startHour);
+    public Attendance updateAttendanceTime(final LocalTime updateTime) {
+        return new Attendance(LocalDateTime.of(LocalDate.from(this.dateTime), updateTime));
+    }
+
+    public boolean isEqualDate(final LocalDate date) {
+        return LocalDate.from(dateTime).isEqual(date);
+    }
+
+    public boolean isEqualStatus(final AttendanceStatus value) {
+        return this.status.equals(value);
+    }
+
+    public boolean isEqualAttendanceDate(final Attendance attendance) {
+        return attendance.dateTime.equals(this.dateTime);
+    }
+
+    private void checkCampusOpen(final LocalDateTime attendanceDateTime) {
+        LocalTime attendanceTime = LocalTime.from(attendanceDateTime);
+        if (attendanceTime.isBefore(OPEN_HOUR) || attendanceTime.isAfter(CLOSE_HOUR)) {
+            throw new IllegalArgumentException(NOT_OPEN_TIME_EXCEPTION);
         }
-        return AttendanceStatus.ATTEND;
     }
 
-    private static AttendanceStatus attendAfterStart(int hour, int minute, int startHour) {
-        if (hour > startHour || minute > ABSENCE_CRITERIA) {
-            return AttendanceStatus.LATE_ABSENCE;
-        }
-        if (minute > LATE_CRITERIA) {
-            return AttendanceStatus.LATE;
-        }
-        return AttendanceStatus.ATTEND;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Attendance that = (Attendance) o;
+        return Objects.equals(dateTime, that.dateTime) && Objects.equals(status, that.status);
     }
 
-    public boolean isEqualToDate(final LocalDate today) {
-        return today.equals(LocalDate.from(dateTime));
+    @Override
+    public int hashCode() {
+        return Objects.hash(dateTime, status);
     }
 
-    public Attendance updateDateTime(final LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-        this.status = checkAttendanceStatus(dateTime);
-        return this;
+    @Override
+    public int compareTo(final Attendance o) {
+        return this.dateTime.compareTo(o.dateTime);
     }
 
     public LocalDateTime getDateTime() {
@@ -68,5 +87,3 @@ public class Attendance {
         return status;
     }
 }
-
-
