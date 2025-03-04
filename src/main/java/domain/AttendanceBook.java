@@ -7,7 +7,6 @@ import java.util.Map;
 
 public class AttendanceBook {
 
-    //    private final Map<String, AttendResult> attendBook;
     private final Map<Nickname, AttendResult> attendBook;
     private final LocalDate today;
 
