@@ -1,31 +1,33 @@
 package attendance.domain;
 
 import java.util.Arrays;
+import java.util.Map;
+
+import static attendance.domain.AttendanceStatusChecker.*;
 
 public enum ExpulsionStatus {
+    EXPULSION(6),
+    INTERVIEW(3),
+    WARNING(2),
+    NONE(0);
 
-    EXPULSION("제적", 6),
-    INTERVIEW("면담", 3),
-    WARNING("경고", 2),
-    NONE("없음", 0);
+    private final int absentStandard;
 
-    private final String text;
-    private final int absenceStandard;
-
-    ExpulsionStatus(final String text, final int absenceStandard) {
-        this.text = text;
-        this.absenceStandard = absenceStandard;
+    ExpulsionStatus(int absentStandard) {
+        this.absentStandard = absentStandard;
     }
 
-    public static ExpulsionStatus findByAbsentCount(final int absentCount) {
+    public static ExpulsionStatus from(final long absentCount) {
         return Arrays.stream(values())
-                .filter(status -> status.absenceStandard <= absentCount)
+                .filter(expulsionStatus -> expulsionStatus.absentStandard <= absentCount)
                 .findAny()
                 .orElse(NONE);
     }
 
-    public String getText() {
-        return text;
+    public static boolean isExpulsionCrew(ExpulsionStatus expulsionStatus) {
+        if (expulsionStatus.equals(NONE)) {
+            return false;
+        }
+        return true;
     }
-
 }

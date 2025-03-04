@@ -1,11 +1,10 @@
 package attendance.domain;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public enum Holiday {
-
-    새해_첫날(1, 1),
+    새해(1, 1),
     삼일절(3, 1),
     어린이날(5, 5),
     현충일(6, 6),
@@ -22,9 +21,10 @@ public enum Holiday {
         this.day = day;
     }
 
-    public static boolean isExists(final LocalDate localDate) {
+    public static boolean isHoliday(final LocalDateTime dateTime) {
+        int month = dateTime.getMonthValue();
+        int day = dateTime.getDayOfMonth();
         return Arrays.stream(values())
-                .anyMatch(holiday ->
-                        holiday.month == localDate.getMonthValue() && holiday.day == localDate.getDayOfMonth());
+                .anyMatch(holiday -> holiday.month == month && holiday.day == day);
     }
 }

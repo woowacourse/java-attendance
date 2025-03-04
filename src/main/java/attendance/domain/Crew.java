@@ -5,7 +5,8 @@ import java.util.Objects;
 public class Crew {
 
     public static final int MINIMUM_NICKNAME_LENGTH = 2;
-    public static final int MAXIMUM_NICKNAME_LENGTH = 4;
+    public static final int MAXIMUM_NICKNAME_LENGTH = 5;
+
     private final String nickname;
 
     public Crew(final String nickname) {
@@ -14,10 +15,9 @@ public class Crew {
     }
 
     private void validateLength(final String nickname) {
-        if (nickname.length() < MINIMUM_NICKNAME_LENGTH || nickname.length() > MAXIMUM_NICKNAME_LENGTH) {
-            throw new IllegalArgumentException(
-                    "닉네임은 %d글자 이상, %d글자 이하만 가능합니다.".formatted(MINIMUM_NICKNAME_LENGTH, MAXIMUM_NICKNAME_LENGTH)
-            );
+        final int nicknameLength = nickname.replace(" ", "").length();
+        if (!(MINIMUM_NICKNAME_LENGTH <= nicknameLength && nicknameLength <= MAXIMUM_NICKNAME_LENGTH)) {
+            throw new IllegalArgumentException("크루의 닉네임은 공백 제외 2글자 이상, 5글자 이하로 입력해 주세요.");
         }
     }
 
@@ -27,12 +27,8 @@ public class Crew {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Crew crew = (Crew) o;
         return Objects.equals(nickname, crew.nickname);
     }
@@ -41,5 +37,4 @@ public class Crew {
     public int hashCode() {
         return Objects.hash(nickname);
     }
-
 }

@@ -1,77 +1,62 @@
 package attendance.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class AttendancesTest {
+import java.time.LocalDate;
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
 
-    @Test
-    void 찾으려는_날짜를_입력하면_출석_기록을_찾아준다() {
-        // given
-        List<LocalDateTime> attendanceDateTimes = List.of(LocalDateTime.of(2025, 2, 3, 10, 0));
-        LocalDateTime today = LocalDateTime.of(2025, 2, 4, 10, 0);
-        Attendances attendances = new Attendances(attendanceDateTimes, today);
+import static org.assertj.core.api.Assertions.*;
 
-        // when & then
-        assertThat(attendances.findAttendanceByLocalDate(LocalDate.of(2025, 2, 3))).isNotNull();
+public class AttendancesTest {
+
+    private Attendances attendances;
+
+    @BeforeEach
+    void 초기화() {
+        List<AttendanceDateTime> attendanceDateTimes = new ArrayList<>(List.of(
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(25).atTime(10, 4)),
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(26).atTime(10, 4)),
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(27).atTime(10, 4))
+        ));
+        this.attendances = new Attendances(attendanceDateTimes);
     }
 
-    @Test
-    void 오늘_날짜를_알려주면_전날까지의_해당_크루의_출석_기록을_알려준다() {
-        // Given
-        List<LocalDateTime> attendanceDateTimes = List.of(LocalDateTime.of(2025, 2, 3, 10, 0));
-        LocalDateTime today = LocalDateTime.of(2025, 2, 6, 10, 0);
-        Attendances attendances = new Attendances(attendanceDateTimes, today);
-
-        // When & Then
-        assertThat(attendances.findAllBeforeToday(today)).hasSize(3);
-    }
-
-    @CsvSource(value = {
-            "4,false", "3,true"
+    @CsvSource({
+            "27, true",
+            "28, false"
     })
     @ParameterizedTest
-    void 날짜를_알려주면_해당_날짜의_출석기록이_존재하는지_알려준다(int day, boolean expected) {
-        List<LocalDateTime> attendanceDateTimes = List.of(LocalDateTime.of(2025, 2, 3, 10, 0));
-        LocalDateTime today = LocalDateTime.of(2025, 2, 4, 10, 0);
-        Attendances attendances = new Attendances(attendanceDateTimes, today);
+    void 주어진_date에_저장된_출석날짜_객체가_있는지_확인한다(int day, boolean expected) {
+        // Given
+        AttendanceDateTime findDateTime = new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(day).atTime(10, 0));
 
-        assertThat(attendances.existsByLocalDate(LocalDate.of(2025, 2, day))).isEqualTo(expected);
+        // When & Then
+        assertThat(attendances.isSameDateExists(findDateTime)).isEqualTo(expected);
     }
 
     @Test
-    void 현재_출석_상태_별_횟수를_알려준다() {
-        Attendances attendances = new Attendances(List.of(
-                LocalDateTime.of(2025, 2, 3, 10, 0),
-                LocalDateTime.of(2025, 2, 4, 10, 6),
-                LocalDateTime.of(2025, 2, 5, 10, 31)
-        ), LocalDateTime.of(2025, 2, 6, 10, 0));
+    void 날짜가_주어지면_해당_날짜의_출석날짜_객체를_반환한다() {
+        // Given
+        LocalDate findDate = Year.of(2025).atMonth(2).atDay(27);
 
-        assertThat(attendances.calculateStatusCount()).containsKeys("출석", "지각", "결석")
-                .containsValues(1, 1, 1);
+        // When & Then
+        assertThat(attendances.findByLocalDate(findDate))
+                .isEqualTo(new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(27).atTime(10, 4)));
     }
 
     @Test
-    void 현재_출석_상태를_통해_제적_위험_대상인지_알려준다() {
-        Attendances attendances = new Attendances(List.of(
-                LocalDateTime.of(2025, 2, 4, 10, 31),
-                LocalDateTime.of(2025, 2, 5, 10, 31),
-                LocalDateTime.of(2025, 2, 6, 10, 31),
-                LocalDateTime.of(2025, 2, 7, 10, 31),
-                LocalDateTime.of(2025, 2, 11, 10, 31),
-                LocalDateTime.of(2025, 2, 12, 10, 30),
-                LocalDateTime.of(2025, 2, 13, 10, 30),
-                LocalDateTime.of(2025, 2, 14, 10, 30)
-        ), LocalDateTime.of(2025, 2, 15, 10, 0));
+    void 출석하지_않은_날짜로_찾으면_출석날짜_객체를_반환하지_않는다() {
+        // Given
+        LocalDate absentDate = Year.of(2025).atMonth(2).atDay(28);
 
-        assertThat(attendances.calculateExpulsionStatus()).isEqualTo(ExpulsionStatus.EXPULSION);
+        // When & Then
+        assertThatThrownBy(() -> attendances.findByLocalDate(absentDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 일자에 출석하지 않았습니다.");
     }
-
 }
