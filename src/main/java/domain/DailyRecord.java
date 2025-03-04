@@ -13,13 +13,6 @@ public class DailyRecord {
         this.status = AttendanceStatus.of(dayOfWeek, attendedTime);
     }
 
-    public String getFormattedTime() {
-        if (attendedTime.equals(LocalTime.MIN)) {
-            return "--:--";
-        }
-        return attendedTime.toString();
-    }
-
     public LocalTime getAttendedTime() {
         return attendedTime;
     }

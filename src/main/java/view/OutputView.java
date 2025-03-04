@@ -48,7 +48,7 @@ public class OutputView {
             DailyRecord record = records.get(date);
             System.out.printf(DATE_TIME_RECORD_FORMAT, date.getMonthValue(), date.getDayOfMonth(),
                 date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                record.getFormattedTime(), record.getStatus().getName());
+                getFormattedTime(record.getAttendedTime()), record.getStatus().getName());
         }
     }
 
@@ -72,5 +72,12 @@ public class OutputView {
     public void printWarningCrew(String name, int absent, int late, Penalty penalty) {
         System.out.printf(WARNING_CREW_FORMAT, name, AttendanceStatus.ABSENT.getName(), absent,
             AttendanceStatus.LATE.getName(), late, penalty.getName());
+    }
+
+    private String getFormattedTime(LocalTime time) {
+        if (time.equals(LocalTime.MIN)) {
+            return "--:--";
+        }
+        return time.toString();
     }
 }
