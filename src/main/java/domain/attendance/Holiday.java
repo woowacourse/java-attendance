@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public enum Holiday {
-    CHRISTMAS(12,25);
+    CHRISTMAS(12, 25);
 
     private int month;
     private int day;
@@ -14,7 +14,7 @@ public enum Holiday {
         this.day = day;
     }
 
-    public static boolean isHoliday(LocalDate attendTime){
+    public static boolean isHoliday(LocalDate attendTime) {
         return Arrays.stream(values())
                 .anyMatch(holiday -> holiday.getMonth() == attendTime.getMonth().getValue()
                         && holiday.getDay() == attendTime.getDayOfMonth());

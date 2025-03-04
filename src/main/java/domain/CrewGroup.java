@@ -14,32 +14,32 @@ public class CrewGroup {
             .thenComparing((Crew c) -> c.getAttendanceRecord().getTardyCount(), Comparator.reverseOrder())
             .thenComparing(Crew::getName);
 
-    private final Map<String,Crew> crews;
+    private final Map<String, Crew> crews;
 
     public CrewGroup() {
         this.crews = new HashMap<>();
     }
 
-    public void addCrew(String crewName){
-        if(has(crewName)){
+    public void addCrew(String crewName) {
+        if (has(crewName)) {
             throw new IllegalArgumentException("중복 되는 닉네임입니다.");
         }
-        crews.put(crewName,new Crew(crewName));
+        crews.put(crewName, new Crew(crewName));
     }
 
-    public Crew findByName(String crewName){
-        if(!has(crewName)){
+    public Crew findByName(String crewName) {
+        if (!has(crewName)) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }
         return crews.get(crewName);
     }
 
-    public boolean has(String crewName){
+    public boolean has(String crewName) {
         return crews.containsKey(crewName);
     }
 
     public List<Crew> getSortedWarningCrews() {
-        Predicate<Map.Entry<String,Crew>> isNotNoneStatus = crewEntry -> !crewEntry.getValue()
+        Predicate<Map.Entry<String, Crew>> isNotNoneStatus = crewEntry -> !crewEntry.getValue()
                 .getAttendanceRecord()
                 .getStudentStatus()
                 .equals(StudentStatus.NONE);

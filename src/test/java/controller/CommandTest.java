@@ -9,10 +9,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class CommandTest {
     @Nested
-    class covertCommandTest{
+    class covertCommandTest {
         @DisplayName("1의 경우 ")
         @Test
-        void command1Test(){
+        void command1Test() {
             String commandLine = "1";
 
             Command command = Command.convertToCommand(commandLine);
@@ -22,7 +22,7 @@ class CommandTest {
 
         @DisplayName("2의 경우 ")
         @Test
-        void command2Test(){
+        void command2Test() {
             String commandLine = "2";
 
             Command command = Command.convertToCommand(commandLine);
@@ -32,7 +32,7 @@ class CommandTest {
 
         @DisplayName("3의 경우 ")
         @Test
-        void command3Test(){
+        void command3Test() {
             String commandLine = "3";
 
             Command command = Command.convertToCommand(commandLine);
@@ -42,7 +42,7 @@ class CommandTest {
 
         @DisplayName("4의 경우 ")
         @Test
-        void command4Test(){
+        void command4Test() {
             String commandLine = "4";
 
             Command command = Command.convertToCommand(commandLine);
@@ -52,7 +52,7 @@ class CommandTest {
 
         @DisplayName("q와 Q의 경우 ")
         @Test
-        void commandQTest(){
+        void commandQTest() {
             String exitCommandLowerCase = "q";
             String exitCommandUpperCase = "q";
 
@@ -65,7 +65,7 @@ class CommandTest {
 
         @DisplayName("그 외의 경우 에러를 발생")
         @Test
-        void commandError(){
+        void commandError() {
             String errorCommand = "o";
 
             assertThatThrownBy(() -> Command.convertToCommand(errorCommand)).isInstanceOf(IllegalArgumentException.class);

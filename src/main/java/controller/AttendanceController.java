@@ -26,7 +26,7 @@ import static util.DateTimeUtils.*;
 public class AttendanceController {
     private static CrewGroup crews;
     private static Command currentCommand;
-    private static Map<Command,Runnable> commandHandler;
+    private static Map<Command, Runnable> commandHandler;
     private static boolean runFlag;
 
     public AttendanceController() {
@@ -34,42 +34,42 @@ public class AttendanceController {
         handlerRegister();
     }
 
-    public void run(){
+    public void run() {
         loadFile();
         runFlag = true;
         OutputView.printWelcomeMessage();
-        while(runFlag){
+        while (runFlag) {
             operateCommand();
             OutputView.printWelcomeMessage();
         }
     }
 
-    private static void handlerRegister(){
+    private static void handlerRegister() {
         commandHandler = new HashMap<>();
         commandHandler.put(ATTEND, AttendanceController::attendCommand);
         commandHandler.put(EDIT, AttendanceController::editCrewAttendance);
         commandHandler.put(FIND_CREW_RECORD, AttendanceController::findCrewCommand);
         commandHandler.put(FIND_WARNING_CREWS, AttendanceController::findWarningCrews);
-        commandHandler.put(EXIT,() -> runFlag = false);
+        commandHandler.put(EXIT, () -> runFlag = false);
     }
 
-    private static void operateCommand(){
-        try{
+    private static void operateCommand() {
+        try {
             currentCommand = InputView.getCommand();
             commandHandler.get(currentCommand).run();
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             OutputView.printErrorMessage(e.getMessage());
         }
     }
 
-    private static void validateAttendDate(){
-        if(!isAttendanceDay(TODAY_DATE_NOW)){
+    private static void validateAttendDate() {
+        if (!isAttendanceDay(TODAY_DATE_NOW)) {
             throw new IllegalArgumentException(TODAY_DATE_NOW.format(localDayFormatter)
                     + TODAY_DATE_NOW.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + "은 등교일이 아닙니다.");
         }
     }
 
-    public static void attendCommand(){
+    public static void attendCommand() {
         validateAttendDate();
 
         String attendCrewName = InputView.getCrewName();
@@ -81,23 +81,23 @@ public class AttendanceController {
         Attendance crewAttendance = findCrew.getAttendanceRecord();
         crewAttendance.addAttendance(attendTime);
         AttendanceStatus status = crewAttendance.findByLocalDate(LocalDate.from(attendTime)).getStatus();
-        OutputView.printAddAttendance(attendTime,status);
+        OutputView.printAddAttendance(attendTime, status);
     }
 
-    private static void validateAttendTime(LocalDateTime attendTime){
-        if(!isOnCampusOperatingTime(LocalTime.from(attendTime))){
+    private static void validateAttendTime(LocalDateTime attendTime) {
+        if (!isOnCampusOperatingTime(LocalTime.from(attendTime))) {
             throw new IllegalArgumentException(attendTime.getHour() + "시 " + attendTime.getMinute() + "분은 캠퍼스 운영시간이 아닙니다.");
         }
     }
 
-    public static void findCrewCommand(){
+    public static void findCrewCommand() {
         String findCrewName = InputView.getCrewName();
         Crew findCrew = crews.findByName(findCrewName);
 
-        OutputView.printCrewAttendance(findCrewName ,findCrew.getAttendanceRecord());
+        OutputView.printCrewAttendance(findCrewName, findCrew.getAttendanceRecord());
     }
 
-    public static void editCrewAttendance(){
+    public static void editCrewAttendance() {
         String findCrewName = InputView.getEditCrewName();
         Crew findCrew = crews.findByName(findCrewName);
         Attendance crewRecord = findCrew.getAttendanceRecord();
@@ -110,15 +110,15 @@ public class AttendanceController {
         OutputView.printEditResult(oldRecord, findDate);
     }
 
-    public static void findWarningCrews(){
+    public static void findWarningCrews() {
         List<Crew> warningCrews = crews.getSortedWarningCrews();
         OutputView.printWarningCrews(warningCrews);
     }
 
-    private static void loadFile(){
+    private static void loadFile() {
         try {
             crews = FileInputView.loadInitFileData();
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new IllegalArgumentException("IOException 발생");
         }
     }

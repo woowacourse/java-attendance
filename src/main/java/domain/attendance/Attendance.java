@@ -20,86 +20,86 @@ public class Attendance {
         this.attendanceDates = new HashMap<>();
     }
 
-    public void editAttendance(LocalDateTime editLocalDateTime){
+    public void editAttendance(LocalDateTime editLocalDateTime) {
         LocalDate editDate = LocalDate.from(editLocalDateTime);
-        if(!has(editDate)){
+        if (!has(editDate)) {
             throw new IllegalArgumentException("수정하려는 날짜가 존재하지 않습니다.");
         }
         findByLocalDate(editDate).editLocalDate(editLocalDateTime);
     }
 
-    public void addAttendance(LocalDateTime  attendanceDateTime) {
+    public void addAttendance(LocalDateTime attendanceDateTime) {
         LocalDate attendanceDate = LocalDate.from(attendanceDateTime);
         validateAttendanceTime(attendanceDateTime);
-        if(isAttendanceDay(attendanceDate)){
-            attendanceDates.put(attendanceDate,new AttendanceDate(attendanceDateTime));
+        if (isAttendanceDay(attendanceDate)) {
+            attendanceDates.put(attendanceDate, new AttendanceDate(attendanceDateTime));
         }
     }
 
-    private void validateAttendanceTime(LocalDateTime attendanceDateTime){
+    private void validateAttendanceTime(LocalDateTime attendanceDateTime) {
         LocalDate attendanceDate = LocalDate.from(attendanceDateTime);
-        if(has(attendanceDate)){
+        if (has(attendanceDate)) {
             throw new IllegalArgumentException("출석 기록이 이미 존재합니다.");
         }
-        if(attendanceDateTime.isAfter(TODAY_DATE_TIME_NOW)){
+        if (attendanceDateTime.isAfter(TODAY_DATE_TIME_NOW)) {
             throw new IllegalArgumentException("출석 시간이 옳바르지 않습니다.");
         }
-        if(!isOnCampusOperatingTime(LocalTime.from(attendanceDateTime))){
+        if (!isOnCampusOperatingTime(LocalTime.from(attendanceDateTime))) {
             throw new IllegalArgumentException("캠퍼스 운영시간이 아닙니다.");
         }
-        if(!isAttendanceDay(attendanceDate)){
+        if (!isAttendanceDay(attendanceDate)) {
             throw new IllegalArgumentException("캠퍼스 운영일이 아닙니다.");
         }
     }
 
     public AttendanceDate findByLocalDate(LocalDate findLocalDate) {
-        if(!has(findLocalDate)){
+        if (!has(findLocalDate)) {
             throw new IllegalArgumentException("존재하지 않는 출석 입니다.");
         }
         return attendanceDates.get(findLocalDate);
     }
 
-    public List<AttendanceDate> getSortedAttendanceResult(){
+    public List<AttendanceDate> getSortedAttendanceResult() {
         return attendanceDates.entrySet().stream()
                 .sorted(Comparator.comparingInt(value -> value.getKey().getDayOfMonth()))
                 .map(Map.Entry::getValue)
                 .toList();
     }
 
-    public boolean has(LocalDate findDate){
+    public boolean has(LocalDate findDate) {
         return attendanceDates.containsKey(findDate);
     }
 
-    public int getAttendanceCount(){
+    public int getAttendanceCount() {
         return Math.toIntExact(attendanceDates.entrySet().stream()
                 .filter(localDateAttendanceDateEntry -> localDateAttendanceDateEntry.getValue().isAttendance())
                 .count());
     }
 
-    public int getTardyCount(){
+    public int getTardyCount() {
         return Math.toIntExact(attendanceDates.entrySet().stream()
                 .filter(localDateAttendanceDateEntry -> localDateAttendanceDateEntry.getValue().isTardy())
                 .count());
     }
 
-    public int getAbsenceCount(){
+    public int getAbsenceCount() {
         return getExistAbsenceCount() + getMissingAttendanceCount();
     }
 
-    private int getExistAbsenceCount(){
+    private int getExistAbsenceCount() {
         return Math.toIntExact(attendanceDates.entrySet().stream()
                 .filter(localDateAttendanceDateEntry -> localDateAttendanceDateEntry.getValue().isAbsence())
                 .count());
     }
 
-    private int getMissingAttendanceCount(){
-        return Math.toIntExact(IntStream.range(1,NOW_DAY)
-                .mapToObj(day -> LocalDate.of(NOW_YEAR,NOW_MONTH,day))
+    private int getMissingAttendanceCount() {
+        return Math.toIntExact(IntStream.range(1, NOW_DAY)
+                .mapToObj(day -> LocalDate.of(NOW_YEAR, NOW_MONTH, day))
                 .filter(date -> !has(date) && isAttendanceDay(date))
                 .count());
     }
 
-    public StudentStatus getStudentStatus(){
+    public StudentStatus getStudentStatus() {
         return calcStudentStatus(getAbsenceIncludingTardyCount());
     }
 

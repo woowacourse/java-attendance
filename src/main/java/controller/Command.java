@@ -16,7 +16,7 @@ public enum Command {
         this.controlCommand = controlCommand;
     }
 
-    public static Command convertToCommand(String commandLine){
+    public static Command convertToCommand(String commandLine) {
         return Arrays.stream(values())
                 .filter(command -> command.getControlCommand().equals(commandLine.toUpperCase()))
                 .findFirst()

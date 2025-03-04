@@ -14,11 +14,11 @@ public enum AttendanceStatus {
         this.status = status;
     }
 
-    public static AttendanceStatus calcAttendanceStatus(DayOfWeek day, LocalTime attendanceTime){
-        if(TimeTable.isOverAbsenceTimeLimit(day, attendanceTime)){
+    public static AttendanceStatus calcAttendanceStatus(DayOfWeek day, LocalTime attendanceTime) {
+        if (TimeTable.isOverAbsenceTimeLimit(day, attendanceTime)) {
             return ABSENCE;
         }
-        if(TimeTable.isOverTardyTimeLimit(day, attendanceTime)){
+        if (TimeTable.isOverTardyTimeLimit(day, attendanceTime)) {
             return TARDY;
         }
         return ATTENDANCE;

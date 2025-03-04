@@ -16,10 +16,11 @@ import static org.assertj.core.api.Assertions.*;
 
 class AttendanceDateTest {
     @Nested
-    class AttendanceDateConstructTest{
+    class AttendanceDateConstructTest {
         AttendanceDate attendanceDate;
+
         @BeforeEach
-        void setUpLocalDate(){
+        void setUpLocalDate() {
             attendanceDate = new AttendanceDate(LocalDateTime.of(
                     2025,
                     2,
@@ -30,21 +31,21 @@ class AttendanceDateTest {
 
         @DisplayName("AttendanceDate의 요일을 검사한다.")
         @Test
-        void checkDayOfWeek(){
+        void checkDayOfWeek() {
             assertThat(attendanceDate.getDayOfWeek()).isEqualTo(THURSDAY);
         }
     }
 
     @Nested
-    class AttendanceDateStatusTest{
+    class AttendanceDateStatusTest {
         @Nested
-        class IsMonday{
+        class IsMonday {
             @DisplayName("10:05 경우 출석")
             @Test
-            void weekOfDayAttendanceTest(){
-                List<AttendanceDate> list =  IntStream.range(1,28)
-                        .filter(day -> isAttendanceDay(LocalDate.of(2025,2,day)))
-                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025,2,day,13,5)))
+            void weekOfDayAttendanceTest() {
+                List<AttendanceDate> list = IntStream.range(1, 28)
+                        .filter(day -> isAttendanceDay(LocalDate.of(2025, 2, day)))
+                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025, 2, day, 13, 5)))
                         .toList();
 
                 list.stream()
@@ -54,10 +55,10 @@ class AttendanceDateTest {
 
             @DisplayName("10:05 이후의 경우 지각")
             @Test
-            void weekOfDayTardyTest(){
-                List<AttendanceDate> list =  IntStream.range(1,28)
-                        .filter(day -> isAttendanceDay(LocalDate.of(2025,2,day)))
-                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025,2,day,13,6)))
+            void weekOfDayTardyTest() {
+                List<AttendanceDate> list = IntStream.range(1, 28)
+                        .filter(day -> isAttendanceDay(LocalDate.of(2025, 2, day)))
+                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025, 2, day, 13, 6)))
                         .toList();
 
                 list.stream()
@@ -67,10 +68,10 @@ class AttendanceDateTest {
 
             @DisplayName("10:030 이후의 경우 결석")
             @Test
-            void weekOfDayTAbsenceTest(){
-                List<AttendanceDate> list =  IntStream.range(1,28)
-                        .filter(day -> isAttendanceDay(LocalDate.of(2025,2,day)))
-                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025,2,day,13,31)))
+            void weekOfDayTAbsenceTest() {
+                List<AttendanceDate> list = IntStream.range(1, 28)
+                        .filter(day -> isAttendanceDay(LocalDate.of(2025, 2, day)))
+                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025, 2, day, 13, 31)))
                         .toList();
 
                 list.stream()
@@ -80,13 +81,13 @@ class AttendanceDateTest {
         }
 
         @Nested
-        class ExceptMonday{
+        class ExceptMonday {
             @DisplayName("10:05 경우 출석")
             @Test
-            void weekOfDayAttendanceTest(){
-                List<AttendanceDate> list =  IntStream.range(1,28)
-                        .filter(day -> isAttendanceDay(LocalDate.of(2025,2,day)))
-                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025,2,day,10,5)))
+            void weekOfDayAttendanceTest() {
+                List<AttendanceDate> list = IntStream.range(1, 28)
+                        .filter(day -> isAttendanceDay(LocalDate.of(2025, 2, day)))
+                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025, 2, day, 10, 5)))
                         .toList();
 
                 list.stream()
@@ -96,10 +97,10 @@ class AttendanceDateTest {
 
             @DisplayName("10:05 이후의 경우 지각")
             @Test
-            void weekOfDayTardyTest(){
-                List<AttendanceDate> list =  IntStream.range(1,28)
-                        .filter(day -> isAttendanceDay(LocalDate.of(2025,2,day)))
-                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025,2,day,10,6)))
+            void weekOfDayTardyTest() {
+                List<AttendanceDate> list = IntStream.range(1, 28)
+                        .filter(day -> isAttendanceDay(LocalDate.of(2025, 2, day)))
+                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025, 2, day, 10, 6)))
                         .toList();
 
                 list.stream()
@@ -109,10 +110,10 @@ class AttendanceDateTest {
 
             @DisplayName("10:30 이후의 경우 결석")
             @Test
-            void weekOfDayTAbsenceTest(){
-                List<AttendanceDate> list =  IntStream.range(1,28)
-                        .filter(day -> isAttendanceDay(LocalDate.of(2025,2,day)))
-                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025,2,day,10,31)))
+            void weekOfDayTAbsenceTest() {
+                List<AttendanceDate> list = IntStream.range(1, 28)
+                        .filter(day -> isAttendanceDay(LocalDate.of(2025, 2, day)))
+                        .mapToObj(day -> new AttendanceDate(LocalDateTime.of(2025, 2, day, 10, 31)))
                         .toList();
 
                 list.stream()

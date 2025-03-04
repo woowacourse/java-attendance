@@ -11,9 +11,9 @@ import java.io.IOException;
 class FileInputViewTest {
     @DisplayName("파일 입력 테스트")
     @Test
-    void FilesTest(){
+    void FilesTest() {
         try {
-            CrewGroup crews= FileInputView.loadInitFileData();
+            CrewGroup crews = FileInputView.loadInitFileData();
 
             Assertions.assertThat(crews.has("빙봉")).isTrue();
             Assertions.assertThat(crews.has("빙티")).isTrue();
@@ -21,7 +21,7 @@ class FileInputViewTest {
             Assertions.assertThat(crews.has("가이온")).isFalse();
 
             Assertions.assertThat(crews.findByName("빙봉").getAttendanceRecord().getAbsenceCount()).isEqualTo(1);
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
