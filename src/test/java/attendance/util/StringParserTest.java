@@ -4,10 +4,12 @@ import static attendance.fixture.TestFixture.makeDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class StringParserTest {
@@ -93,5 +95,28 @@ class StringParserTest {
         assertThatThrownBy(() -> StringParser.parseInt(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 숫자 형식의 문자열이 아닙니다.");
+    }
+
+    @Test
+    void 현재_날짜와_일자를_받아_LocalDate를_생성한다() {
+        // Given
+        LocalDate now = LocalDate.of(2024, 12, 13);
+        String day = "3";
+        LocalDate expected = now.withDayOfMonth(3);
+
+        // When & Then
+        assertThat(StringParser.parseLocalDate(day, now)).isEqualTo(expected);
+    }
+
+    @Test
+    void 존재하지_않은_일자일_경우_예외가_발생한다() {
+        // Given
+        LocalDate now = LocalDate.of(2024, 12, 13);
+        String day = "33";
+
+        // When & Then
+        Assertions.assertThatThrownBy(() -> StringParser.parseLocalDate(day, now))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 존재하지 않은 날짜(일)입니다.");
     }
 }

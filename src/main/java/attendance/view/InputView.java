@@ -1,5 +1,6 @@
 package attendance.view;
 
+import attendance.util.StringParser;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -40,9 +41,10 @@ public class InputView {
         return readLine();
     }
 
-    public String readModifyingDay() {
+    public LocalDate readModifyingDay(final LocalDate now) {
         System.out.println(TITLE_MODIFYING_DAY);
-        return readLine();
+        String input = readLine();
+        return StringParser.parseLocalDate(input, now);
     }
 
     public String readModifyingTime() {

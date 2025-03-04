@@ -6,11 +6,9 @@ import attendance.util.StringParser;
 import attendance.view.InputView;
 import attendance.view.ResultView;
 import java.time.Clock;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.MonthDay;
 
 public class ModifyCommand implements Command {
 
@@ -36,43 +34,22 @@ public class ModifyCommand implements Command {
 
         LocalDate modifyingDate = getModifyingDate(now);
         crewHistories.validateHistoryExists(nickname, modifyingDate);
-        modify(crewHistories, modifyingDate, nickname);
+        modify(crewHistories, modifyingDate, nickname, now);
     }
 
     private LocalDate getModifyingDate(final LocalDate now) {
-        LocalDate modifyingDate = makeDate(now);
+        LocalDate modifyingDate = inputView.readModifyingDay(now);
         campusScheduler.validateOperationDate(modifyingDate);
-        validatePreviousDate(modifyingDate, now);
         return modifyingDate;
     }
 
-    private LocalDate makeDate(final LocalDate now) {
-        String dayInput = inputView.readModifyingDay();
-        int day = StringParser.parseInt(dayInput);
-        MonthDay monthDay = makeMonthDay(now, day);
-        return LocalDate.of(now.getYear(), monthDay.getMonthValue(), monthDay.getDayOfMonth());
-    }
-
-    private void validatePreviousDate(final LocalDate date, final LocalDate nowDate) {
-        if (date.equals(nowDate) || date.isAfter(nowDate)) {
-            throw new IllegalArgumentException("[ERROR] 과거의 날짜만 가능합니다.");
-        }
-    }
-
-    private MonthDay makeMonthDay(final LocalDate now, final int day) {
-        try {
-            return MonthDay.of(now.getMonthValue(), day);
-        } catch (DateTimeException exception) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않은 날짜(일)입니다.");
-        }
-    }
-
-    private void modify(final CrewHistories crewHistories, final LocalDate modifyingDate, final String nickname) {
+    private void modify(final CrewHistories crewHistories, final LocalDate modifyingDate, final String nickname,
+                        final LocalDate nowDate) {
         LocalTime modifyingTime = makeTime();
         LocalDateTime modifyingDateTime = LocalDateTime.of(modifyingDate, modifyingTime);
         campusScheduler.validateOperationTime(modifyingDateTime);
 
-        LocalDateTime previousDateTime = crewHistories.modify(nickname, modifyingDateTime);
+        LocalDateTime previousDateTime = crewHistories.modify(nickname, modifyingDateTime, nowDate);
         resultView.showModifyingAttendance(previousDateTime, campusScheduler.calculateAttendanceState(previousDateTime),
                 modifyingTime, campusScheduler.calculateAttendanceState(modifyingDateTime));
     }

@@ -1,7 +1,10 @@
 package attendance.util;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -20,6 +23,20 @@ public class StringParser {
             return LocalTime.parse(input, TIME_FORMATTER);
         } catch (DateTimeParseException exception) {
             throw new IllegalArgumentException("[ERROR] HH:mm 형식이 아닙니다.");
+        }
+    }
+
+    public static LocalDate parseLocalDate(final String inputDay, final LocalDate nowDate) {
+        int day = StringParser.parseInt(inputDay);
+        MonthDay monthDay = makeMonthDay(nowDate, day);
+        return LocalDate.of(nowDate.getYear(), monthDay.getMonthValue(), monthDay.getDayOfMonth());
+    }
+
+    private static MonthDay makeMonthDay(final LocalDate now, final int day) {
+        try {
+            return MonthDay.of(now.getMonthValue(), day);
+        } catch (DateTimeException exception) {
+            throw new IllegalArgumentException("[ERROR] 존재하지 않은 날짜(일)입니다.");
         }
     }
 
