@@ -17,11 +17,11 @@ public enum Dismissal {
     }
 
     public static Dismissal findDismissalBy(final int lateCount, int absenceCount) {
-        absenceCount = calculateAbsenceCountBy(lateCount, absenceCount);
-        return calcualteDismissal(absenceCount);
+        final int totalAbsenceCount = calculateAbsenceCountBy(lateCount, absenceCount);
+        return calcualteDismissal(totalAbsenceCount);
     }
 
-    private static int calculateAbsenceCountBy(final int lateCount, int absenceCount) {
+    private static int calculateAbsenceCountBy(final int lateCount, final int absenceCount) {
         return absenceCount + lateCount / ABSENCE_CONVERSION_RATE;
     }
 
