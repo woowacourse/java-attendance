@@ -22,7 +22,7 @@ public class AttendanceModifyController {
         AttendanceStatus attendanceStatusBeforeModify = AttendanceStatusEvaluator.calculateAttendanceStatus(attendanceDate, attendanceTimeBeforeModify);
 
         AttendanceTime attendanceTimeToModify = InputView.getUserAttendanceTimeUntilValidateToModify();
-        students.findStudentByName(studentName).modifyAttendanceDateTime(attendanceDate, attendanceTimeToModify);
+        students.modifyAttendanceDateTime(studentName, attendanceDate, attendanceTimeToModify);
 
         AttendanceStatus attendanceStatusAfterModify = AttendanceStatusEvaluator.calculateAttendanceStatus(attendanceDate, attendanceTimeToModify);
 
