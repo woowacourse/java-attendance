@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 public class AttendanceBook {
     private final Map<Crew, AttendanceRecord> attendanceBook;
-    private static final int DEFAULT_VALUE = 0;
 
     public AttendanceBook(Crews crews, LocalDate now) {
         this.attendanceBook = new HashMap<>();
