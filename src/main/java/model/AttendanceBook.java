@@ -52,7 +52,7 @@ public class AttendanceBook {
 
     public AttendanceBook getBefore(final AttendanceDateTime todayDateTime) {
         final List<Attendance> attendancesList = new ArrayList<>(attendances);
-        final int toIdx = findLargestIdxLessThan(attendancesList, todayDateTime);
+        final int toIdx = findLargestIdxLessThan(attendancesList, todayDateTime) + 1;
         final List<Attendance> attendances = attendancesList.subList(0, toIdx);
         return new AttendanceBook(new TreeSet<>(attendances));
     }

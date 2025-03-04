@@ -82,29 +82,36 @@ public final class ValidManager {
     }
 
     public int getLastByDayOfMonth(final int dayOfMonth) {
-        return findLastlyIdxThan(dayOfMonth);
+        final List<Integer> list = getValidDates().stream().toList();
+        return findLastlyIdxThan(list, dayOfMonth);
     }
 
     public Set<Integer> getValidDates() {
         return validDates;
     }
 
-    private int findLastlyIdxThan(final int target) {
+    private int findLastlyIdxThan(final List<Integer> list, final int target) {
         int left = 0;
-        int right = makeValidDates().size() - 1;
+        int right = list.size() - 1;
 
-        return findIdx(target, left, right);
+        int idx = findIdx(list, target, left, right);
+
+        if (idx >= 0 && list.get(idx) == target) {
+            idx = Math.max(idx - 1, 0);
+        }
+
+        return list.get(idx);
     }
 
-    private static int findIdx(final int target, int left, int right) {
+    private static int findIdx(final List<Integer> list, final int target, int left, int right) {
         while (left <= right) {
             final int mid = (left + right) / 2;
-            if (target >= mid) {
+            if (target > list.get(mid)) {
                 left = mid + 1;
             } else {
                 right = mid - 1;
             }
         }
-        return right - 1;
+        return right;
     }
 }

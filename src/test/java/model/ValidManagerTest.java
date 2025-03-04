@@ -39,4 +39,19 @@ class ValidManagerTest {
         // then
         datesTo.forEach(dayOfMonth -> Assertions.assertThat(dayOfMonth < todayDayOfMonth).isTrue());
     }
+
+    @Test
+    @DisplayName("입력 일자보다 유효한 출석일인 가장 최근 과거 날을 잘 찾아오는지")
+    void getLastByDayOfMonth() {
+
+        // given
+        final AttendanceDateTime todayDateTime = AttendanceDateTime.of("2024-12-17 10:00");
+        final int todayDayOfMonth = todayDateTime.getDateTime().getDayOfMonth();
+        final int toDayOfMonth =  ValidManager.getInstance().getLastByDayOfMonth(todayDayOfMonth);
+
+        // when
+
+        // then
+        Assertions.assertThat(toDayOfMonth).isEqualTo(16);
+    }
 }
