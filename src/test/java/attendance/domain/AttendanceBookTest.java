@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -20,18 +21,18 @@ public class AttendanceBookTest {
         //given
         Crew crew = new Crew("우가");
         Crews crews = new Crews(Set.of(crew));
-        LocalDateTime now = LocalDateTime.of(2025, 2, 28, 9, 59);
+        LocalDate now = LocalDate.of(2025, 2, 28);
 
         assertDoesNotThrow(() -> new AttendanceBook(crews, now));
     }
 
     @ParameterizedTest
-    @CsvSource(value = "2025, 2, 28, 9, 59, 19")
-    void 현재_날짜_이전날까지_출석부_없는_평일날_생성(int year, int month, int day, int hour, int minute, int expectedResult) {
+    @CsvSource(value = "2025, 2, 28, 19")
+    void 현재_날짜_이전날까지_출석부_없는_평일날_생성(int year, int month, int day, int expectedResult) {
         //given
         Crew crew = new Crew("우가");
         Crews crews = new Crews(Set.of(crew));
-        LocalDateTime now = LocalDateTime.of(year, month, day, hour, minute);
+        LocalDate now = LocalDate.of(year, month, day);
 
         //when
         AttendanceBook attendanceBook = new AttendanceBook(crews, now);
@@ -53,8 +54,8 @@ public class AttendanceBookTest {
         Crews crews = new Crews(Set.of(crew));
 
         LocalDateTime inputTime = LocalDateTime.of(2025, 2, 27, 9, 59);
-        LocalDateTime currentTime = LocalDateTime.of(2025, 2, 21, 9, 59);
-        AttendanceBook attendanceBook = new AttendanceBook(crews, currentTime);
+        LocalDate currentDate = LocalDate.of(2025, 2, 21);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
 
         Assertions.assertThatThrownBy(() -> attendanceBook.registerAttendance(crew1, inputTime))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -75,8 +76,8 @@ public class AttendanceBookTest {
 
         Crews crews = new Crews(Set.of(crew));
 
-        LocalDateTime currentTime = LocalDateTime.of(2025, 2, 21, 9, 59);
-        AttendanceBook attendanceBook = new AttendanceBook(crews, currentTime);
+        LocalDate currentDate = LocalDate.of(2025, 2, 21);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
 
         LocalDateTime inputTime = LocalDateTime.of(year, month, day, hour, minute);
         Assertions.assertThat(attendanceBook.registerAttendance(crew, inputTime).getAttendanceStatus())
@@ -92,17 +93,15 @@ public class AttendanceBookTest {
         Crew crew1 = new Crew(invalidCrewName);
         Crews crews = new Crews(Set.of(crew));
 
-        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 28, 9, 59);
-        LocalDateTime modifyDateTime = currentDateTime.withDayOfMonth(24).withHour(12).withMinute(59);
+        LocalDate currentDate = LocalDate.of(2025, 2, 28);
+        LocalDateTime modifyDateTime = currentDate.withDayOfMonth(24).atTime(12, 59);
 
-        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
-        Assertions.assertThatThrownBy(() -> attendanceBook.findBeforeAttendanceRecord(crew1, modifyDateTime))
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
+        Assertions.assertThatThrownBy(() -> attendanceBook.findAttendanceRecord(crew1, modifyDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 해당 크루를 찾을 수 없습니다.");
     }
 
-    //출석부가 출석 기록에게 (이 날)을 메시지로 보내서 기록 있냐고 요청하고 있으면 달라고 함
-    //출석 기록이 있다고 반환함 -> 이전값 -> new AttendanceTime으로 해야할 듯(출석부에서) , 주소가 같으니까 바뀌어버리니까
     @Test
     void 출석_수정_이전_기록_가져오기() {
         //given
@@ -110,12 +109,12 @@ public class AttendanceBookTest {
         Crew crew = new Crew(crewName);
         Crews crews = new Crews(Set.of(crew));
 
-        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 28, 9, 59);
-        LocalDateTime modifyDateTime = currentDateTime.withDayOfMonth(24).withHour(12).withMinute(59);
+        LocalDate currentDate = LocalDate.of(2025, 2, 28);
+        LocalDateTime modifyDateTime = currentDate.withDayOfMonth(24).atTime(12, 59);
 
-        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
 
-        Assertions.assertThat(attendanceBook.findBeforeAttendanceRecord(crew, modifyDateTime)
+        Assertions.assertThat(attendanceBook.findAttendanceRecord(crew, modifyDateTime)
                 .getAttendanceTime().getDayOfMonth()).isEqualTo(24);
     }
 
@@ -133,8 +132,8 @@ public class AttendanceBookTest {
         String crewName = "우가";
         Crew crew = new Crew(crewName);
         Crews crews = new Crews(Set.of(crew));
-        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 28, 9, 59);
-        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+        LocalDate currentDate = LocalDate.of(2025, 2, 28);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
 
         //when
         LocalDateTime modifyTime = LocalDateTime.of(year, month, day, hour, minute);
@@ -152,8 +151,8 @@ public class AttendanceBookTest {
         Crew crew = new Crew(crewName);
         Crews crews = new Crews(Set.of(crew));
 
-        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 28, 9, 59);
-        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+        LocalDate currentDate = LocalDate.of(2025, 2, 28);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
 
         //when & then
         Assertions.assertThat(attendanceBook.findAttendanceRecord(crew).getAttendanceRecord().size()).isEqualTo(19);
@@ -172,8 +171,8 @@ public class AttendanceBookTest {
 
         Crews crews = new Crews(Set.of(crew1, crew2, crew3));
 
-        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
-        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+        LocalDate currentDate = LocalDate.of(2025, 2, 24);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
 
         attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 25, 10, 31));
         attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 24, 13, 6));
@@ -201,8 +200,8 @@ public class AttendanceBookTest {
 
         Crews crews = new Crews(Set.of(crew1, crew2, crew3));
 
-        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
-        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+        LocalDate currentDate = LocalDate.of(2025, 2, 24);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
 
         attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 25, 10, 31));
         attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 24, 13, 6));
@@ -237,8 +236,8 @@ public class AttendanceBookTest {
 
         Crews crews = new Crews(Set.of(crew1, crew2, crew3));
 
-        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
-        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+        LocalDate currentDate = LocalDate.of(2025, 2, 24);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
 
         attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 24, 13, 31));
         attendanceBook.registerAttendance(crew1, LocalDateTime.of(2025, 2, 25, 10, 31));
@@ -274,8 +273,8 @@ public class AttendanceBookTest {
 
         Crews crews = new Crews(Set.of(crew1, crew2, crew3));
 
-        LocalDateTime currentDateTime = LocalDateTime.of(2025, 2, 24, 9, 59);
-        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+        LocalDate currentDate = LocalDate.of(2025, 2, 24);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
 
         attendanceBook.registerAttendance(crew2, LocalDateTime.of(2025, 2, 24, 13, 31));
         attendanceBook.registerAttendance(crew2, LocalDateTime.of(2025, 2, 25, 10, 31));

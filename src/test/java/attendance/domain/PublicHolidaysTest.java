@@ -18,7 +18,7 @@ public class PublicHolidaysTest {
         LocalDate currentDate = LocalDate.of(year, month, day);
 
         //when
-        Assertions.assertThatThrownBy(() -> PublicHolidays.checkPublicHolidays(currentDate))
+        Assertions.assertThatThrownBy(() -> PublicHolidays.isPublicHolidays(currentDate))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorMessage.NOT_ATTENDANCE_WEEKEND.getMessage());
     }

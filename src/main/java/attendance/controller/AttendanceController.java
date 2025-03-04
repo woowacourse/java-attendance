@@ -4,10 +4,8 @@ import attendance.controller.constant.CommandOption;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceTime;
-import attendance.domain.CampusOperationTime;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
-import attendance.domain.PublicHolidays;
 import attendance.domain.RiskCrew;
 import attendance.exception.CustomException;
 import attendance.utils.AttendanceBookParser;
@@ -16,6 +14,7 @@ import attendance.utils.Parser;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Supplier;
@@ -30,27 +29,27 @@ public class AttendanceController {
     }
 
     public void start() throws IOException {
-        final LocalDateTime currentDateTime = LocalDateTime.now().withYear(2024).withMonth(12).withDayOfMonth(31);
+        final LocalDate currentDate = LocalDate.of(2024, 12, 25);
         final AttendanceBookParser parser = new AttendanceBookParser(FileLoader.fileReadLine("attendances.csv"));
         final Crews crews = parser.getCrews();
-        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDateTime);
+        AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
         initializeFileData(parser, attendanceBook);
 
-        CommandOption commandOption = readCommandOption(currentDateTime);
+        CommandOption commandOption = readCommandOption(currentDate);
         while (!commandOption.equals(CommandOption.QUIT)) {
-            handleAttendanceCommand(commandOption, attendanceBook, currentDateTime, crews);
-            commandOption = readCommandOption(currentDateTime);
+            handleAttendanceCommand(commandOption, attendanceBook, currentDate, crews);
+            commandOption = readCommandOption(currentDate);
         }
     }
 
     private void handleAttendanceCommand(CommandOption commandOption, AttendanceBook attendanceBook,
-                                         LocalDateTime currentDateTime, Crews crews) {
+                                         LocalDate currentDate, Crews crews) {
         if (commandOption.equals(CommandOption.ATTENDANCE_CHECK)) {
-            registerAttendance(attendanceBook, currentDateTime, crews);
+            registerAttendance(attendanceBook, currentDate, crews);
             return;
         }
         if (commandOption.equals(CommandOption.ATTENDANCE_MODIFY)) {
-            modifyAttendance(attendanceBook, currentDateTime, crews);
+            modifyAttendance(attendanceBook, currentDate, crews);
             return;
         }
         if (commandOption.equals(CommandOption.ATTENDANCE_RECORD_CHECK)) {
@@ -70,22 +69,27 @@ public class AttendanceController {
         });
     }
 
-    private void registerAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime, Crews crews) {
-        if (checkPublicHolidays(currentDateTime) || checkCampusOperationTime(currentDateTime)) {
-            return;
-        }
+    private void registerAttendance(AttendanceBook attendanceBook, LocalDate currentDate, Crews crews) {
         Crew inputCrewName = readCrewName(crews);
-        LocalDateTime attendanceTime = readAttendanceTime(currentDateTime);
-        AttendanceTime registerdAttendanceTime = attendanceBook.registerAttendance(inputCrewName, attendanceTime);
-        outputView.writeAttendanceRegister(registerdAttendanceTime);
+        LocalDateTime attendanceTime = readAttendanceTime(currentDate);
+        registeredAttendance(attendanceBook, inputCrewName, attendanceTime);
     }
 
-    private void modifyAttendance(AttendanceBook attendanceBook, LocalDateTime currentDateTime, Crews crews) {
+    private void registeredAttendance(AttendanceBook attendanceBook, Crew inputCrewName, LocalDateTime attendanceTime) {
+        try {
+            AttendanceTime registeredAttendanceTime = attendanceBook.registerAttendance(inputCrewName, attendanceTime);
+            outputView.writeAttendanceRegister(registeredAttendanceTime);
+        } catch (CustomException customException) {
+            outputView.writeErrorMessage(customException.getMessage());
+        }
+    }
+
+    private void modifyAttendance(AttendanceBook attendanceBook, LocalDate currentDate, Crews crews) {
         Crew inputCrewName = readModifyCrewName(crews);
-        LocalDateTime inputModifyDay = readModifyDay(currentDateTime);
+        LocalDate inputModifyDay = readModifyDay(currentDate);
         LocalDateTime inputModifyDayTime = readModifyTime(inputModifyDay);
 
-        AttendanceTime beforeTime = attendanceBook.findBeforeAttendanceRecord(inputCrewName, inputModifyDayTime);
+        AttendanceTime beforeTime = attendanceBook.findAttendanceRecord(inputCrewName, inputModifyDayTime);
         AttendanceTime updateTime = attendanceBook.modifyAttendance(inputCrewName, inputModifyDayTime);
         outputView.writeAttendanceModify(beforeTime, updateTime);
     }
@@ -105,44 +109,24 @@ public class AttendanceController {
         return retryInput(() -> crews.findCrew(inputView.readModifyCrewName()));
     }
 
-    private LocalDateTime readModifyDay(LocalDateTime currentDateTime) {
-        return retryInput(() -> Parser.toDateTime(inputView.readModifyDay(), currentDateTime));
+    private LocalDate readModifyDay(LocalDate currentDate) {
+        return retryInput(() -> Parser.toDateTime(inputView.readModifyDay(), currentDate));
     }
 
-    private LocalDateTime readModifyTime(LocalDateTime modifyDayTime) {
-        return retryInput(() -> Parser.toTime(inputView.readModifyTime(), modifyDayTime));
+    private LocalDateTime readModifyTime(LocalDate modifyDay) {
+        return retryInput(() -> Parser.toTime(inputView.readModifyTime(), modifyDay));
     }
 
     private Crew readCrewName(Crews crews) {
         return retryInput(() -> crews.findCrew(inputView.readCrewName()));
     }
 
-    private LocalDateTime readAttendanceTime(LocalDateTime currentDateTime) {
-        return retryInput(() -> Parser.toTime(inputView.readAttendanceTime(), currentDateTime));
+    private LocalDateTime readAttendanceTime(LocalDate currentDate) {
+        return retryInput(() -> Parser.toTime(inputView.readAttendanceTime(), currentDate));
     }
 
-    private CommandOption readCommandOption(LocalDateTime currentDateTime) {
-        return retryInput(() -> CommandOption.from(inputView.readCommandOption(currentDateTime)));
-    }
-
-    private boolean checkCampusOperationTime(LocalDateTime currentDateTime) {
-        try {
-            CampusOperationTime.isOperation(currentDateTime.getHour());
-        } catch (CustomException customException) {
-            outputView.writeErrorMessage(customException.getMessage());
-            return true;
-        }
-        return false;
-    }
-
-    private boolean checkPublicHolidays(LocalDateTime currentDateTime) {
-        try {
-            PublicHolidays.checkPublicHolidays(currentDateTime.toLocalDate());
-        } catch (CustomException customException) {
-            outputView.writeErrorMessage(customException.getMessage());
-            return true;
-        }
-        return false;
+    private CommandOption readCommandOption(LocalDate currentDate) {
+        return retryInput(() -> CommandOption.from(inputView.readCommandOption(currentDate)));
     }
 
     private <T> T retryInput(final Supplier<T> supplier) {

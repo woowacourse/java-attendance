@@ -14,7 +14,7 @@ public enum PublicHolidays {
         this.localDate = localDate;
     }
 
-    public static void checkPublicHolidays(final LocalDate currentDate) {
+    public static void isPublicHolidays(final LocalDate currentDate) {
         DayOfWeek currentDayOfWeek = currentDate.getDayOfWeek();
         if (currentDayOfWeek.equals(DayOfWeek.SATURDAY) || currentDayOfWeek.equals(DayOfWeek.SUNDAY)
                 || PublicHolidays.CHRISTMAS.localDate.equals(currentDate)) {

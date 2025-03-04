@@ -3,6 +3,7 @@ package attendance.domain;
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,52 +16,51 @@ public class AttendanceBook {
     private final Map<Crew, AttendanceRecord> attendanceBook;
     private static final int DEFAULT_VALUE = 0;
 
-    public AttendanceBook(Crews crews, LocalDateTime now) {
+    public AttendanceBook(Crews crews, LocalDate now) {
         this.attendanceBook = new HashMap<>();
         initializeAttendanceBook(crews, now);
     }
 
-    private void initializeAttendanceBook(Crews crews, LocalDateTime now) {
+    private void initializeAttendanceBook(Crews crews, LocalDate now) {
         for (Crew crew : crews.getCrews()) {
             attendanceBook.put(crew, putDefaultValue(now));
         }
     }
 
-    private AttendanceRecord putDefaultValue(LocalDateTime now) {
+    private AttendanceRecord putDefaultValue(LocalDate now) {
         List<AttendanceTime> attendanceTimes = new ArrayList<>();
         for (int i = 1; i < now.getDayOfMonth(); i++) {
-            LocalDateTime dateTime = now.withDayOfMonth(i).withHour(DEFAULT_VALUE).withMinute(DEFAULT_VALUE);
-            excludeWeekend(dateTime, attendanceTimes);
+            LocalDateTime dateTime = now.withDayOfMonth(i).atTime(DEFAULT_VALUE, DEFAULT_VALUE);
+            if (!EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(dateTime.getDayOfWeek())) {
+                attendanceTimes.add(new AttendanceTime(dateTime));
+            }
         }
         return new AttendanceRecord(attendanceTimes);
     }
 
-    private void excludeWeekend(LocalDateTime dateTime, List<AttendanceTime> attendanceTimes) {
-        if (!EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(dateTime.getDayOfWeek())) {
-            attendanceTimes.add(new AttendanceTime(dateTime));
-        }
-    }
-
-    public AttendanceTime registerAttendance(Crew inputCrewName, LocalDateTime inputTime) {
-        Crew crew = findRegisteredCrew(inputCrewName.getName());
+    public AttendanceTime registerAttendance(Crew crewName, LocalDateTime attendanceTime) {
+        CampusOperationTime.isOperation(attendanceTime.getHour());
+        PublicHolidays.isPublicHolidays(attendanceTime.toLocalDate());
+        Crew crew = findRegisteredCrew(crewName.getName());
         AttendanceRecord attendanceRecord = attendanceBook.get(crew);
-        AttendanceRecord newAttendanceRecord = attendanceRecord.registerAttendance(inputTime);
+        AttendanceRecord newAttendanceRecord = attendanceRecord.registerAttendance(attendanceTime);
         attendanceBook.put(crew, newAttendanceRecord);
-        return newAttendanceRecord.findAttendanceRecord(inputTime);
+        return newAttendanceRecord.findAttendanceRecord(attendanceTime);
     }
 
-    public AttendanceTime findBeforeAttendanceRecord(Crew inputCrewName, LocalDateTime inputTime) {
-        Crew crew = findRegisteredCrew(inputCrewName.getName());
+
+    public AttendanceTime findAttendanceRecord(Crew crewName, LocalDateTime recordedTime) {
+        Crew crew = findRegisteredCrew(crewName.getName());
         AttendanceRecord attendanceRecord = attendanceBook.get(crew);
-        return attendanceRecord.findAttendanceRecord(inputTime);
+        return attendanceRecord.findAttendanceRecord(recordedTime);
     }
 
-    public AttendanceTime modifyAttendance(Crew inputCrewName, LocalDateTime inputTime) {
-        Crew crew = findRegisteredCrew(inputCrewName.getName());
+    public AttendanceTime modifyAttendance(Crew crewName, LocalDateTime modifyTime) {
+        Crew crew = findRegisteredCrew(crewName.getName());
         AttendanceRecord attendanceRecord = attendanceBook.get(crew);
-        AttendanceRecord updatedAttendanceRecord = attendanceRecord.modifyAttendanceTime(inputTime);
+        AttendanceRecord updatedAttendanceRecord = attendanceRecord.modifyAttendanceTime(modifyTime);
         attendanceBook.put(crew, updatedAttendanceRecord);
-        return updatedAttendanceRecord.findAttendanceRecord(inputTime);
+        return updatedAttendanceRecord.findAttendanceRecord(modifyTime);
     }
 
     public AttendanceRecord findAttendanceRecord(Crew inputCrewName) {

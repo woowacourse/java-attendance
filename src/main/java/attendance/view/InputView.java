@@ -1,6 +1,6 @@
 package attendance.view;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class InputView {
     private static final Scanner scanner = new Scanner(System.in);
 
-    public String readCommandOption(LocalDateTime now) {
+    public String readCommandOption(LocalDate now) {
         int month = now.getMonthValue();
         int day = now.getDayOfMonth();
         String dayName = now.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA);
