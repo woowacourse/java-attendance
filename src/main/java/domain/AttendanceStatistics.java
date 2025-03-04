@@ -1,31 +1,19 @@
 package domain;
 
-public class AttendanceStatistics {
-    private int present;
-    private int late;
-    private int absent;
-    private AttendanceAlertLevel alertLevel;
+import static domain.Attendances.LATE_WEIGHT;
 
-    public void updateStatus(Attendances attendances) {
-        this.present = attendances.countPresent();
-        this.late = attendances.countLate();
-        this.absent = attendances.countAbsent();
-        this.alertLevel = attendances.calculateAttendanceAlertLevel();
-    }
+public record AttendanceStatistics(int present, int late, int absent, AlertCode alertCode) implements
+        Comparable<AttendanceStatistics> {
 
-    public int getPresent() {
-        return present;
-    }
-
-    public int getLate() {
-        return late;
-    }
-
-    public int getAbsent() {
-        return absent;
-    }
-
-    public AttendanceAlertLevel getAlertLevel() {
-        return alertLevel;
+    @Override
+    public int compareTo(AttendanceStatistics o) {
+        int myCriteria = absent * LATE_WEIGHT + late;
+        int otherCriteria = o.absent * LATE_WEIGHT + o.late;
+        if (myCriteria > otherCriteria) {
+            return -1;
+        } else if (myCriteria < otherCriteria) {
+            return 1;
+        }
+        return 0;
     }
 }

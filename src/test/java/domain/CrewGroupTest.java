@@ -2,40 +2,52 @@ package domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class CrewGroupTest {
-    @DisplayName("크루를 검색합니다.")
-    @Test
-    void searchCrewTest() {
-        CrewGroup crewGroup = new CrewGroup();
-        crewGroup.addCrew("아마", LocalDateTime.of(2024, 12, 2, 13, 0));
-        crewGroup.addCrew("아마", LocalDateTime.of(2024, 12, 3, 15, 0));
+    private final CrewGroup crewGroup = new CrewGroup();
+    private final Attendances specificAttendances = new Attendances(
+            List.of(new Attendance(LocalDateTime.of(2024, 12, 2, 10, 3))));
 
-        Assertions.assertNotNull(crewGroup.searchCrew("아마"));
+    @BeforeEach
+    void makeTestCrewGroup() {
+        crewGroup.add("민지", new Attendances(List.of(
+                new Attendance(LocalDateTime.of(2024, 12, 2, 13, 31)),
+                new Attendance(LocalDateTime.of(2024, 12, 3, 13, 31)),
+                new Attendance(LocalDateTime.of(2024, 12, 4, 13, 31)))));
+        crewGroup.add("아마", specificAttendances);
+        crewGroup.add("가콩", new Attendances(List.of(
+                new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)))));
+        crewGroup.add("김수한무", new Attendances(List.of(
+                new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)))));
+        crewGroup.add("거북이", new Attendances(List.of(
+                new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)))));
     }
 
-    @DisplayName("크루가 존재하지 않으면 에러를 발생합니다.")
-    @Test
-    void searchCrewErrorTest() {
-        CrewGroup crewGroup = new CrewGroup();
-        crewGroup.addCrew("아마", LocalDateTime.of(2024, 12, 2, 13, 0));
-        crewGroup.addCrew("가콩", LocalDateTime.of(2024, 12, 3, 15, 0));
-
-        Assertions.assertThrows(IllegalArgumentException.class, () -> crewGroup.searchCrew("이든"));
+    @ParameterizedTest
+    @DisplayName("크루 이름이 없으면 예외가 발생합니다.")
+    @ValueSource(strings = {"하하", "호호", "안녕", "제임스 하든"})
+    void invalidCrewNameTest(String value) {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> crewGroup.validateCrewName(value));
     }
 
-    @DisplayName("제적 위험자를 계산합니다")
     @Test
-    void calculateAttendanceAlertLevelTest() {
-        CrewGroup crewGroup = new CrewGroup();
-        crewGroup.addCrew("아마", LocalDateTime.of(2024, 12, 2, 14, 0));
-        crewGroup.addCrew("아마", LocalDateTime.of(2024, 12, 3, 10, 45));
-        crewGroup.addCrew("아마", LocalDateTime.of(2024, 12, 4, 10, 31));
+    @DisplayName("특정 크루의 출석을 불러오는지 확인합니다.")
+    void getSpecificAttendancesTest() {
+        String name = "아마";
+        Assertions.assertEquals(specificAttendances, crewGroup.getSpecificAttendances(name));
+    }
 
-        List<Crew> alertCrews = crewGroup.getAllAttendanceAlertLevel();
-        Assertions.assertTrue(alertCrews.contains(new Crew("아마")));
+    @Test
+    @DisplayName("제적 대상 학생을 구합니다.")
+    void getAlertCrewsTest() {
+        Map<String, Attendances> alertCrews = crewGroup.getAlertCrews();
+        Assertions.assertTrue(alertCrews.containsKey("민지"));
     }
 }

@@ -2,58 +2,91 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class AttendancesTest {
-    private final Attendances attendances = new Attendances();
+    private final List<Attendance> testAttendance = List.of(
+            new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)),
+            new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)),
+            new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)),
+            new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)),
+            new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)),
+            new Attendance(LocalDateTime.of(2024, 12, 9, 13, 6)),
+            new Attendance(LocalDateTime.of(2024, 12, 10, 10, 6)),
+            new Attendance(LocalDateTime.of(2024, 12, 11, 10, 6)),
+            new Attendance(LocalDateTime.of(2024, 12, 12, 10, 31)),
+            new Attendance(LocalDateTime.of(2024, 12, 13, 10, 31)));
 
-    void makeTestAttendances() {
-        attendances.addAttendance(new Attendance(LocalDateTime.of(2024, 12, 2, 13, 31)));
-        attendances.addAttendance(new Attendance(LocalDateTime.of(2024, 12, 3, 10, 10)));
-        attendances.addAttendance(new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
-        attendances.addAttendance(new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
-        attendances.addAttendance(new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
-        attendances.addAttendance(new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
-        attendances.addAttendance(new Attendance(LocalDateTime.of(2024, 12, 10, 13, 0)));
-    }
+    private Attendances attendances;
 
     @BeforeEach
-    void make() {
-        makeTestAttendances();
+    void makeTestAttendances() {
+        attendances = new Attendances(testAttendance);
     }
 
-    @DisplayName("현재 몇 회의 출석을 했는지 확인합니다.")
     @Test
+    @DisplayName("특정 날짜의 출석을 불러오는지 확인합니다.")
+    void getSpecificAttendanceTest() {
+        DayOfMonth dayOfMonth = new DayOfMonth(3); // 불러올 날짜
+
+        Assertions.assertEquals(new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)),
+                attendances.getSpecificAttendance(dayOfMonth, LocalDate.of(2024, 12, 6))
+        );
+    }
+
+    @Test
+    @DisplayName("없는 날짜를 불러올 시 예외가 발생합니다.")
+    void validateFutureDateTest() {
+        DayOfMonth dayOfMonth = new DayOfMonth(20); // 불러올 날짜
+        LocalDate testToday = LocalDate.of(2024, 12, 6);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> attendances.getSpecificAttendance(dayOfMonth, testToday));
+    }
+
+    @Test
+    @DisplayName("특정 날짜의 출석을 특정 시간으로 변경합니다.")
+    void changeAttendanceTest() {
+        DayOfMonth dayOfMonth = new DayOfMonth(2);
+        LocalTime changeTime = LocalTime.of(11, 0);
+
+        Assertions.assertEquals(new Attendance(LocalDateTime.of(2024, 12, 2, 11, 0)),
+                attendances.changeAttendance(dayOfMonth, LocalDate.of(2024, 12, 6), changeTime));
+    }
+
+    @Test
+    @DisplayName("특정 출석 날짜가 존재하는지 확인합니다.")
+    void isAttendanceExistTest() {
+        LocalDate testDate = LocalDate.of(2024, 12, 3);
+        Assertions.assertTrue(attendances.isExist(testDate));
+    }
+
+    @Test
+    @DisplayName("올바른 출석 횟수를 세는지 확인합니다.")
     void calculatePresentTest() {
-        Assertions.assertEquals(4, attendances.countPresent());
+        Assertions.assertEquals(5, attendances.calculatePresent());
     }
 
-    @DisplayName("현재 몇 회의 결석을 했는지 확인합니다.")
     @Test
+    @DisplayName("올바른 지각 횟수를 세는지 확인합니다.")
     void calculateLateTest() {
-        Assertions.assertEquals(1, attendances.countLate());
+        Assertions.assertEquals(3, attendances.calculateLate());
     }
 
-    @DisplayName("현재 몇 회의 지각을 했는지 확인합니다.")
     @Test
+    @DisplayName("올바른 결석 횟수를 세는지 확인합니다.")
     void calculateAbsentTest() {
-        Assertions.assertEquals(2, attendances.countAbsent());
+        Assertions.assertEquals(2, attendances.calculateAbsent());
     }
 
-    @DisplayName("특정 날짜의 출석이 존재하는지 확인합니다.")
     @Test
-    void checkAlreadyExistTest() {
-        LocalDate testDay = LocalDate.of(2024, 12, 3);
-        Assertions.assertNotNull(attendances.getSpecificAttendance(testDay));
-    }
-
-    @DisplayName("현재 출석 상태가 어떤 제적 상태인지 확인합니다.")
-    @Test
-    void calculateAttendanceAlertLevel() {
-        Assertions.assertEquals(attendances.calculateAttendanceAlertLevel(),
-                AttendanceAlertLevel.CAUTION);
+    @DisplayName("올바른 출석 제적 상태를 계산하는지 확인합니다.")
+    void calculateAlertTest() {
+        Assertions.assertEquals(AlertCode.COUNSELING, attendances.calucateAlertCode());
     }
 }

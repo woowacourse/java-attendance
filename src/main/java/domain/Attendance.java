@@ -1,54 +1,86 @@
 package domain;
 
+import static domain.AttendanceCode.ABSENT;
+import static domain.AttendanceCode.LATE;
+import static domain.AttendanceCode.PRESENT;
+import static domain.CampusTime.MONDAY;
+import static domain.CampusTime.REST_DAY;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Objects;
+import util.DayConverter;
 
-public class Attendance {
-    public static final int MONDAY_START_HOUR = 13;
-    public static final int REST_DAY_START_HOUR = 10;
-    public static final int ABSENT_LIMIT_MINUTE = 30;
-    public static final int LATE_LIMIT_MINUTE = 5;
-    public static final int MONDAY = 1;
+public class Attendance implements Comparable<Attendance> {
+    private final LocalDateTime attendanceTime;
 
-    private LocalDateTime date;
-
-    public Attendance(LocalDateTime date) {
-        this.date = date;
+    public Attendance(LocalDateTime attendanceTime) {
+        this.attendanceTime = attendanceTime;
     }
 
-    public AttendanceStatus calculateAttendanceStatus() {
-        int dayOfWeek = date.getDayOfWeek().getValue();
-        LocalDateTime startDate = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(),
-                REST_DAY_START_HOUR, 0);
-        if (dayOfWeek == MONDAY) {
-            startDate = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), MONDAY_START_HOUR, 0);
+    public AttendanceCode calculateAttendanceCode() {
+        LocalTime time = attendanceTime.toLocalTime();
+        Duration duration = Duration.between(REST_DAY.getOpenTime(), time);
+        if (MONDAY.contain(attendanceTime.getDayOfWeek())) {
+            duration = Duration.between(MONDAY.getOpenTime(), time);
         }
 
-        Duration duration = Duration.between(startDate, date);
-        if (duration.toMinutes() > LATE_LIMIT_MINUTE && duration.toMinutes() <= ABSENT_LIMIT_MINUTE) {
-            return AttendanceStatus.LATE;
+        if (duration.toMinutes() <= PRESENT.getUpperBound()) {
+            return PRESENT;
         }
-        if (duration.toMinutes() > ABSENT_LIMIT_MINUTE) {
-            return AttendanceStatus.ABSENT;
+        if (duration.toMinutes() >= LATE.getLowerBound() && duration.toMinutes() <= LATE.getUpperBound()) {
+            return LATE;
         }
-        return AttendanceStatus.PRESENT;
+        return ABSENT;
     }
 
-    public void updateAttendance(Time time) {
-        date = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(),
-                time.getHour(), time.getMinute());
+    public boolean isHoliday() {
+        DayOfMonth dayOfMonth = new DayOfMonth(attendanceTime.getDayOfMonth());
+        return dayOfMonth.isHoliday(attendanceTime.toLocalDate());
     }
 
-    public boolean isSameDay(LocalDate specificDate) {
-        return date.toLocalDate().isEqual(specificDate);
+    public void validateHoliday() {
+        if (isHoliday()) {
+            throw new IllegalArgumentException(
+                    String.format("%d월 %d일 %s은 등교일이 아닙니다.",
+                            attendanceTime.getMonth().getValue(),
+                            attendanceTime.getDayOfMonth(),
+                            DayConverter.getKoreanDayOfWeek(attendanceTime.toLocalDate())));
+        }
     }
 
-    public int getDay() {
-        return date.getDayOfMonth();
+    public LocalDateTime getAttendanceTime() {
+        return attendanceTime;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public boolean isSameDay(LocalDate localDate) {
+        return attendanceTime.toLocalDate().equals(localDate);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attendance that = (Attendance) o;
+        return Objects.equals(attendanceTime, that.attendanceTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendanceTime);
+    }
+
+    @Override
+    public int compareTo(Attendance o) {
+        if (attendanceTime.isAfter(o.getAttendanceTime())) {
+            return 1;
+        }
+        return -1;
     }
 }

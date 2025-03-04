@@ -1,35 +1,32 @@
 package domain;
 
-import java.time.LocalDateTime;
+import static domain.AlertCode.NORMAL;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CrewGroup {
-    private final Map<String, Crew> crews = new HashMap<>();
+    private final Map<String, Attendances> crewInformation = new HashMap<>();
 
-    public void addCrew(String nickname, LocalDateTime date) {
-        crews.put(nickname, crews.getOrDefault(nickname, new Crew(nickname)));
-        Crew crew = crews.get(nickname);
-        crew.addAttendance(date);
+    public void add(String name, Attendances attendances) {
+        crewInformation.put(name, attendances);
     }
 
-    public Crew searchCrew(String nickname) {
-        if (!crews.containsKey(nickname)) {
+    public void validateCrewName(String name) {
+        if (!crewInformation.containsKey(name)) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }
-        return crews.get(nickname);
     }
 
-    public void addAllAbsent(LocalDateTime today) {
-        crews.values()
-                .forEach(crew -> crew.addAbsent(today));
+    public Attendances getSpecificAttendances(String name) {
+        validateCrewName(name);
+        return crewInformation.get(name);
     }
 
-    public List<Crew> getAllAttendanceAlertLevel() {
-        return crews.values()
-                .stream()
-                .filter(crew -> !crew.getAttendanceAlertLevel().equals(AttendanceAlertLevel.NORMAL))
-                .toList();
+    public Map<String, Attendances> getAlertCrews() {
+        return crewInformation.entrySet().stream()
+                .filter(stringAttendancesEntry -> stringAttendancesEntry.getValue().calucateAlertCode() != NORMAL)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

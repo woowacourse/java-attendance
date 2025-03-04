@@ -1,33 +1,36 @@
 package controller;
 
-import static util.Day.validateDay;
-import static view.UserCommandType.ALERT_CREW_CHECK;
-import static view.UserCommandType.ATTENDANCE_CHANGE;
-import static view.UserCommandType.ATTENDANCE_CHECK;
-import static view.UserCommandType.ATTENDANCE_SHOW;
 import static view.UserCommandType.QUIT;
-import static view.UserCommandType.getUserCommand;
+import static view.UserCommandType.getCommand;
+import static view.UserCommandType.validateInput;
 
+import controller.commands.Command;
 import domain.Attendance;
 import domain.AttendanceStatistics;
-import domain.Crew;
+import domain.Attendances;
 import domain.CrewGroup;
+import domain.DayOfMonth;
 import domain.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import service.CrewLoader;
-import util.Day;
 import view.InputView;
 import view.OutputView;
 import view.UserCommandType;
-import view.dto.AlertCrewDTO;
-import view.dto.AlertCrewsDTO;
-import view.dto.AttendanceLogDTO;
-import view.dto.ChangeAttendanceLogDTO;
-import view.dto.CrewAttendancesDTO;
 
 public class AttendanceController {
+    private static final LocalDate today = LocalDate.of(2024, 12, 16);
+    private static final LocalTime startTime = LocalTime.of(8, 0);
+    private static final LocalTime endTime = LocalTime.of(23, 0);
+    private static final LocalTime INITIAL_TIME = LocalTime.of(10, 0);
+
+    private final Map<UserCommandType, Command> commands = new HashMap<>();
     private final InputView inputView;
     private final OutputView outputView;
 
@@ -37,100 +40,90 @@ public class AttendanceController {
     }
 
     public void run() {
-        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 10, 0);
         CrewLoader crewLoader = new CrewLoader();
-        CrewGroup crewGroup = crewLoader.loadCrews(today);
-
+        CrewGroup crewGroup = crewLoader.load(today);
+        UserCommandType userCommandType;
+        
         try {
-            while (true) {
-                String rawFunction = inputView.insertFunction(today);
-                UserCommandType userCommandType = getUserCommand(rawFunction);
-                if (userCommandType.equals(QUIT)) {
-                    break;
-                }
-
-                runCycle(userCommandType, crewGroup, today);
+            do {
+                String userInput = inputView.insertCommandType(today);
+                userCommandType = getCommand(userInput);
+                validateInput(userInput);
+                executeCommand(userCommandType, crewGroup);
             }
+            while (userCommandType != QUIT);
         } catch (Exception e) {
-            outputView.printError(e.getMessage());
+            outputView.printExceptionLog(e);
         }
     }
 
-    private void runCycle(UserCommandType userCommandType, CrewGroup crewGroup, LocalDateTime today) {
-        if (userCommandType.equals(ATTENDANCE_CHECK)) {
-            checkAttendance(crewGroup, today);
-            return;
-        }
-        if (userCommandType.equals(ATTENDANCE_CHANGE)) {
-            changeAttendance(crewGroup, today);
-            return;
-        }
-        if (userCommandType.equals(ATTENDANCE_SHOW)) {
-            showCrewAttendance(crewGroup);
-            return;
-        }
-        if (userCommandType.equals(ALERT_CREW_CHECK)) {
-            showAlertCrews(crewGroup);
-        }
+    public void register(UserCommandType userCommandType, Command command) {
+        commands.put(userCommandType, command);
     }
 
-    private void checkAttendance(CrewGroup crewGroup, LocalDateTime today) {
-        validateDay(today.getDayOfMonth(), today);
-        String rawName = inputView.insertNickname();
-        Crew crew = crewGroup.searchCrew(rawName);
+    public void executeCommand(UserCommandType userCommandType, CrewGroup crewGroup) {
+        Command command = commands.get(userCommandType);
+        command.execute(crewGroup);
+    }
 
-        if (crew.isAlreadyChecked(today)) {
-            outputView.printGuide();
+    public void markAttendance(CrewGroup crewGroup) {
+        Attendance attendanceValidator = new Attendance(LocalDateTime.of(today, INITIAL_TIME));
+        attendanceValidator.validateHoliday();
+
+        String name = inputView.insertName();
+        Attendances attendances = crewGroup.getSpecificAttendances(name);
+        if (attendances.isExist(today)) {
+            outputView.printUseChange();
             return;
         }
 
         String rawTime = inputView.insertTime();
         Time time = new Time(rawTime);
-        LocalDateTime attendanceTime = LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(),
-                time.getHour(), time.getMinute());
-        Attendance attendance = crew.addAttendance(attendanceTime);
+        time.validateTime(startTime, endTime);
 
-        outputView.printAttendanceLog(AttendanceLogDTO.from(attendance));
+        Attendance attendance = new Attendance(LocalDateTime.of(today, time.convertTime()));
+        attendances.addAttendance(attendance);
+
+        outputView.printAttendanceLog(attendance);
     }
 
-    private void changeAttendance(CrewGroup crewGroup, LocalDateTime today) {
-        String rawName = inputView.insertChangeDateNickname();
-        Crew crew = crewGroup.searchCrew(rawName);
+    public void changeAttendance(CrewGroup crewGroup) {
+        String name = inputView.insertChangeName();
+        crewGroup.validateCrewName(name);
+        Attendances attendances = crewGroup.getSpecificAttendances(name);
 
-        int changeDate = inputView.insertChangeDate();
+        int changeDay = inputView.insertChangeDayOfMonth();
+        DayOfMonth dayOfMonth = new DayOfMonth(changeDay);
+        Attendance originalAttendance = attendances.getSpecificAttendance(dayOfMonth, today);
 
-        validateDay(changeDate, today);
         String rawTime = inputView.insertChangeTime();
         Time time = new Time(rawTime);
+        time.validateTime(startTime, endTime);
 
-        LocalDate changeLocalDate = Day.toLocalDate(changeDate, today);
-
-        Attendance originalAttendance = crew.getSpecificAttendance(changeLocalDate);
-        Attendance copy = new Attendance(originalAttendance.getDate());
-        Attendance changedAttendance = crew.changeAttendance(changeLocalDate, time);
-
-        outputView.printChangeLog(ChangeAttendanceLogDTO.from(copy, changedAttendance));
+        Attendance changeAttendance = attendances.changeAttendance(dayOfMonth, today, time.convertTime());
+        outputView.printChangeLog(originalAttendance, changeAttendance);
     }
 
-    private void showCrewAttendance(CrewGroup crewGroup) {
-        String rawName = inputView.insertNickname();
-        Crew crew = crewGroup.searchCrew(rawName);
-        AttendanceStatistics crewAttendanceStatistics = new AttendanceStatistics();
-        crewAttendanceStatistics.updateStatus(crew.getAttendances());
+    public void showCrewAttendanceLog(CrewGroup crewGroup) {
+        String name = inputView.insertName();
+        Attendances attendances = crewGroup.getSpecificAttendances(name);
+        AttendanceStatistics attendanceStatistics = attendances.makeStatistics();
 
-        CrewAttendancesDTO crewAttendancesDTO = CrewAttendancesDTO.from(crew, crewAttendanceStatistics);
-
-        outputView.printAttendancesLog(crewAttendancesDTO);
+        outputView.printAllLog(name, attendances, attendanceStatistics);
     }
 
-    private void showAlertCrews(CrewGroup crewGroup) {
-        List<AlertCrewDTO> alertCrewDTDs = crewGroup.getAllAttendanceAlertLevel()
-                .stream()
-                .map(AlertCrewDTO::from)
-                .toList();
+    public void showAlertCrews(CrewGroup crewGroup) {
+        Map<String, Attendances> alertCrews = crewGroup.getAlertCrews();
 
-        AlertCrewsDTO alertCrewsDTO = AlertCrewsDTO.from(alertCrewDTDs);
+        Map<String, AttendanceStatistics> alertCrewStatistics = alertCrews.entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey, v -> v.getValue().makeStatistics()));
 
-        outputView.printAlertCrews(alertCrewsDTO);
+        alertCrewStatistics = alertCrewStatistics.entrySet().stream()
+                .sorted(Map.Entry.<String, AttendanceStatistics>comparingByValue()
+                        .thenComparing(Map.Entry::getKey))
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+        outputView.printAlertCrews(alertCrewStatistics);
     }
 }

@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class FileReader {
-    public List<String> readFile() {
+    public static List<String> readFile() {
         Path path = Paths.get("src", "main", "resources", "attendances.csv");
         return convertFile(path);
     }
 
-    protected List<String> convertFile(Path path) {
+    protected static List<String> convertFile(Path path) {
         try (Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8)) {
             return lines.skip(1).toList();
         } catch (IOException e) {

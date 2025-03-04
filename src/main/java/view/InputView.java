@@ -1,53 +1,25 @@
 package view;
 
-import java.time.LocalDateTime;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import static view.InputValidator.validateInteger;
+import static view.InputValidator.validateTime;
+
+import java.time.LocalDate;
 import java.util.Scanner;
+import util.DayConverter;
 
 public class InputView {
-    private final InputValidator inputValidator;
-
-    public InputView(InputValidator inputValidator) {
-        this.inputValidator = inputValidator;
+  
+    private String readLine() {
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
     }
 
-    public String insertNickname() {
-        System.out.println("닉네임을 입력해 주세요.");
-        return getInput();
-    }
+    public String insertCommandType(LocalDate today) {
+        System.out.printf("\n오늘은 %d월 %02d일 %s입니다. 기능을 선택해 주세요.\n",
+                today.getMonth().getValue(),
+                today.getDayOfMonth(),
+                DayConverter.getKoreanDayOfWeek(today));
 
-    public String insertChangeDateNickname() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        return getInput();
-    }
-
-    public String insertChangeTime() {
-        System.out.println("언제로 변경하겠습니까?");
-        String input = getInput();
-        inputValidator.validateTimeFormat(input);
-        return input;
-    }
-
-    public String insertTime() {
-        System.out.println("등교 시간을 입력해 주세요.");
-        String input = getInput();
-        inputValidator.validateTimeFormat(input);
-        return input;
-    }
-
-    public int insertChangeDate() {
-        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        String input = getInput();
-        inputValidator.validateInteger(input);
-        return Integer.parseInt(input);
-    }
-
-    public String insertFunction(LocalDateTime today) {
-        String dayOfWeekKorean = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        System.out.println(
-                String.format("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.", today.getMonth().getValue(), today.getDayOfMonth(),
-                        dayOfWeekKorean));
         System.out.print("""
                 1. 출석 확인
                 2. 출석 수정
@@ -55,11 +27,37 @@ public class InputView {
                 4. 제적 위험자 확인
                 Q. 종료
                 """);
-        return getInput();
+        return readLine();
     }
 
-    private String getInput() {
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine().trim();
+    public String insertTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        String rawTime = readLine();
+        validateTime(rawTime);
+        return rawTime;
+    }
+
+    public String insertChangeName() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return readLine();
+    }
+
+    public int insertChangeDayOfMonth() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        String rawDayOfMonth = readLine();
+        validateInteger(rawDayOfMonth);
+        return Integer.parseInt(rawDayOfMonth);
+    }
+
+    public String insertChangeTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        String rawTime = readLine();
+        validateTime(rawTime);
+        return rawTime;
+    }
+
+    public String insertName() {
+        System.out.println("\n닉네임을 입력해 주세요.");
+        return readLine();
     }
 }
