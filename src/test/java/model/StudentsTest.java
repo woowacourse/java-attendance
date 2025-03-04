@@ -104,5 +104,5 @@ public class StudentsTest {
         students.modifyAttendanceDateTime(name, attendanceDate, attendanceTime);
 
         Assertions.assertEquals(students.findStudentByName(name).getStudentAttendanceHistory().getAttendanceHistory()
-                .get(attendanceDate), attendanceTime);    }
+                .get(attendanceDate), attendanceTime);}
 }
