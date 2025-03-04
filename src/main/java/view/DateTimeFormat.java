@@ -1,24 +1,24 @@
 package view;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public enum DateTimeFormat {
     DATE("MM월 dd일 E요일"),
     TIME("HH:mm");
+    
+    private final DateTimeFormatter formatter;
 
-    private final String dateTimePattern;
-    private final DateTimeFormatter dateTimeFormatter;
-
-    DateTimeFormat(String dateTimePattern) {
-        this.dateTimePattern = dateTimePattern;
-        this.dateTimeFormatter = createDateTimeFormatter();
+    DateTimeFormat(final String format) {
+        this.formatter = DateTimeFormatter.ofPattern(format);
     }
 
-    private DateTimeFormatter createDateTimeFormatter() {
-        return DateTimeFormatter.ofPattern(dateTimePattern);
+    public String formatDate(LocalDate date) {
+        return DATE.formatter.format(date);
     }
 
-    public DateTimeFormatter getDateTimeFormatter() {
-        return dateTimeFormatter;
+    public String formatTime(LocalTime time) {
+        return TIME.formatter.format(time);
     }
 }

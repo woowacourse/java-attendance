@@ -1,35 +1,25 @@
+import static org.assertj.core.api.Assertions.assertThat;
+
 import domain.AttendCount;
-import domain.WarningStatus;
-import java.util.stream.Stream;
-import org.assertj.core.api.Assertions;
+import domain.AttendStatus;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
 public class AttendCountTest {
 
-    private static Stream<Arguments> provideAttendCountAndWarningStatus() {
-        return Stream.of(
-                Arguments.of(new AttendCount(0, 0, 0), WarningStatus.CLEAR),
-                Arguments.of(new AttendCount(0, 0, 1), WarningStatus.CLEAR),
-                Arguments.of(new AttendCount(0, 0, 2), WarningStatus.WARNING),
-                Arguments.of(new AttendCount(0, 3, 1), WarningStatus.WARNING),
-                Arguments.of(new AttendCount(0, 0, 3), WarningStatus.INTERVIEW),
-                Arguments.of(new AttendCount(0, 3, 3), WarningStatus.INTERVIEW),
-                Arguments.of(new AttendCount(0, 0, 6), WarningStatus.EXPEL),
-                Arguments.of(new AttendCount(0, 4, 5), WarningStatus.EXPEL)
-        );
-    }
+    @Test
+    @DisplayName("출석 상태의 개수를 세야 한다.")
+    void countAttendStatus() {
+        //given
+        List<AttendStatus> attendStatus = Arrays.stream(AttendStatus.values()).toList();
 
-    @ParameterizedTest
-    @MethodSource("provideAttendCountAndWarningStatus")
-    @DisplayName("제적 위험자를 계산하는 기능")
-    void countWarningCrews(AttendCount attendCount, WarningStatus actual) {
         //when
-        WarningStatus warningStatus = attendCount.judgeWarning();
+        AttendCount actual = AttendCount.createCount(attendStatus);
 
         //then
-        Assertions.assertThat(warningStatus).isEqualTo(actual);
+        AttendCount expected = new AttendCount(1, 1, 1);
+        assertThat(actual).isEqualTo(expected);
     }
 }

@@ -1,19 +1,22 @@
 package domain;
 
-public record AttendCount(long attend, long late, long absence) {
+import java.util.List;
 
-    private static final int ABSENCE_LATE_RATIO = 3;
-
-    public WarningStatus judgeWarning() {
-        long totalAbsenceCount = calculateTotalAbsenceCount();
-        return WarningStatus.judgeWarningStatus(totalAbsenceCount);
+public record AttendCount(long attendCount, long lateCount, long absenceCount) {
+    public static AttendCount createCount(final List<AttendStatus> attendStatus) {
+        long attendCount = countStatus(attendStatus, AttendStatus.ATTEND);
+        long lateCount = countStatus(attendStatus, AttendStatus.LATE);
+        long absenceCount = countStatus(attendStatus, AttendStatus.ABSENCE);
+        return new AttendCount(attendCount, lateCount, absenceCount);
     }
 
-    public long calculateRank() {
-        return absence * ABSENCE_LATE_RATIO + late;
+    private static long countStatus(List<AttendStatus> attendStatus, AttendStatus targetStatus) {
+        return attendStatus.stream()
+                .filter(status -> status.equals(targetStatus))
+                .count();
     }
 
-    private long calculateTotalAbsenceCount() {
-        return late / ABSENCE_LATE_RATIO + absence;
+    public long rank() {
+        return this.lateCount + this.absenceCount * 3;
     }
 }

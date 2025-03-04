@@ -4,25 +4,31 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum WarningStatus {
-    CLEAR((totalAbsenceCount) -> totalAbsenceCount < WarningStatus.LATE_BOUNDARY),
-    WARNING((totalAbsenceCount) -> totalAbsenceCount == WarningStatus.LATE_BOUNDARY),
-    INTERVIEW((totalAbsenceCount) -> totalAbsenceCount > WarningStatus.LATE_BOUNDARY
-            && totalAbsenceCount <= WarningStatus.ABSENCE_BOUNDARY),
-    EXPEL((totalAbsenceCount) -> totalAbsenceCount > WarningStatus.ABSENCE_BOUNDARY);
+    PASS(totalCount -> totalCount < WarningStatus.WARNING_BOUND),
+    WARNING(totalCount -> totalCount == WarningStatus.WARNING_BOUND),
+    INTERVIEW(totalCount -> WarningStatus.INTERVIEW_BOUND <= totalCount && totalCount <= WarningStatus.EXPEL_BOUND),
+    EXPEL(totalCount -> totalCount > WarningStatus.EXPEL_BOUND);
 
-    private static final int LATE_BOUNDARY = 2;
-    private static final int ABSENCE_BOUNDARY = 5;
+    private static final long LATE_ABSENCE_RATIO = 3;
+    private static final long WARNING_BOUND = 2;
+    private static final long INTERVIEW_BOUND = 3;
+    private static final long EXPEL_BOUND = 5;
 
-    private final Predicate<Long> matchCondition;
+    private Predicate<Long> condition;
 
-    WarningStatus(Predicate<Long> matchCondition) {
-        this.matchCondition = matchCondition;
+    WarningStatus(Predicate<Long> condition) {
+        this.condition = condition;
     }
 
-    public static WarningStatus judgeWarningStatus(long totalAbsenceCount) {
+    public static WarningStatus judgeWarningStatus(final AttendCount attendCount) {
+        long totalAbsence = calculateTotalAbsence(attendCount);
         return Arrays.stream(WarningStatus.values())
-                .filter(warningStatus -> warningStatus.matchCondition.test(totalAbsenceCount))
+                .filter(warningStatus -> warningStatus.condition.test(totalAbsence))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("경고 상태 판정 실패"));
+                .orElseThrow(() -> new IllegalArgumentException("경고 판정 실패"));
+    }
+
+    private static long calculateTotalAbsence(final AttendCount attendCount) {
+        return attendCount.lateCount() / LATE_ABSENCE_RATIO + attendCount.absenceCount();
     }
 }

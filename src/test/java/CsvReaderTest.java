@@ -1,79 +1,84 @@
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 import domain.CsvReader;
 import java.util.List;
+import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class CsvReaderTest {
 
     @Test
-    @DisplayName("CSV 형식의 파일 정상 읽기 테스트")
-    void csvFileReadTest() {
+    @DisplayName("Csv 파일을 각 행을 String으로 읽어온다")
+    void readCsvFile() {
         //given
-        String filePath = "attendances.csv";
-
-        //when & then
-        assertDoesNotThrow(() -> CsvReader.readCsv(filePath));
-    }
-
-    @Test
-    @DisplayName("CSV 형식의 파일을 읽고 1번째 행을 없애는 기능 테스트")
-    void removeFirstRowOfCsvFileTest() {
-        //given
-        String filePath = "attendances.csv";
+        String path = "attendances.csv";
 
         //when
-        List<String> result = CsvReader.readCsv(filePath);
+        List<String> actual = CsvReader.readFile(path);
 
-        // then
-        assertThat(result).doesNotContain("nickname,datetime");
+        //then
+        List<String> expected = List.of(
+                "nickname,datetime",
+                "빙티,2024-12-02 10:00", "빙티,2024-12-03 10:00", "빙티,2024-12-05 10:00",
+                "가나,2024-12-02 10:05", "가나,2024-12-03 10:06", "가나,2024-12-05 10:31"
+        );
+        assertThat(actual).containsExactlyElementsOf(expected);
     }
 
     @Test
-    @DisplayName("CSV 형식이 맞지 않은 파일을 읽을 시 예외 처리")
-    void throwExceptionWhenNotMatchFileFormat() {
+    @DisplayName("Csv 파일을 각 행을 String으로 읽고 첫 행을 없앤다.")
+    void readCsvFileWithoutFirstRow() {
         //given
-        String filePath = "attendances_format_fail.csv";
-        List<String> rows = CsvReader.readCsv(filePath);
+        String path = "attendances.csv";
 
-        //when & then
-        assertThatThrownBy(() -> CsvReader.parseName(rows.getFirst())).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("파일 행 구조가 잘못되었습니다.");
+        //when
+        List<String> actual = CsvReader.readFile(path);
+        CsvReader.removeFirstRow(actual);
+
+        //then
+        List<String> expected = List.of(
+                "빙티,2024-12-02 10:00", "빙티,2024-12-03 10:00", "빙티,2024-12-05 10:00",
+                "가나,2024-12-02 10:05", "가나,2024-12-03 10:06", "가나,2024-12-05 10:31"
+        );
+        assertThat(actual).containsExactlyElementsOf(expected);
     }
 
     @Test
-    @DisplayName("날짜 형식이 맞지 않은 파일을 읽을 시 예외 처리")
-    void throwExceptionWhenNotMatchDateFormat() {
+    @DisplayName("존재하지 않는 Csv 파일을 읽을 경우, 예외를 던진다")
+    void throwExceptionWhenNotExistCsvFile() {
         //given
-        String row = "플린트,2024:12:03 08:00";
+        String path = "notExist.csv";
 
         //when & then
-        assertThatThrownBy(() -> CsvReader.parseAttend(row)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("날짜 형식이 잘못되었습니다.");
+        Assertions.assertThatThrownBy(() -> CsvReader.readFile(path));
     }
 
     @Test
-    @DisplayName("시간 형식이 맞지 않은 파일을 읽을 시 예외 처리")
-    void throwExceptionWhenNotMatchTimeFormat() {
+    @DisplayName("하나의 행을 분리한다")
+    void splitRow() {
         //given
-        String row = "플린트,2024-12-03 08-00";
+        String path = "attendances.csv";
+        List<String> lines = CsvReader.readFile(path);
+        CsvReader.removeFirstRow(lines);
+        String row = lines.getFirst();
 
-        //when & then
-        assertThatThrownBy(() -> CsvReader.parseAttend(row)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("시간 형식이 잘못되었습니다.");
+        //when
+        List<String> actual = CsvReader.splitRow(row);
+
+        //then
+        List<String> expected = List.of("빙티", "2024-12-02 10:00");
+        assertThat(actual).containsExactlyElementsOf(expected);
     }
 
     @Test
-    @DisplayName("datetime 형식이 맞지 않은 파일을 읽을 시 예외 처리")
-    void throwExceptionWhenNotMatchDateTimeFormat() {
+    @DisplayName("잘못된 형식의 행을 분리할 경우, 예외를 던진다")
+    void throwExceptionWhenWrongFormatCsvFile() {
         //given
-        String row = "플린트,2024-12-03/08:00";
+        String path = "wrong_format.csv";
+        List<String> lines = CsvReader.readFile(path);
+        CsvReader.removeFirstRow(lines);
 
         //when & then
-        assertThatThrownBy(() -> CsvReader.parseAttend(row)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("datetime 형식이 잘못되었습니다.");
+        Assertions.assertThatThrownBy(() -> CsvReader.splitRow(lines.getFirst()));
     }
 }

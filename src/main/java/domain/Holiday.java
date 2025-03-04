@@ -1,31 +1,21 @@
 package domain;
 
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.Arrays;
 
 public enum Holiday {
     CHRISTMAS(12, 25);
 
-    private final int month;
-    private final int day;
-    private final LocalDate date;
+    private final MonthDay date;
 
-    Holiday(int month, int day) {
-        this.month = month;
-        this.day = day;
-        this.date = createDate();
+    Holiday(final int month, final int day) {
+        this.date = MonthDay.of(month, day);
     }
 
-    private LocalDate createDate() {
-        return LocalDate.of(Current.TODAY.getYear(), this.month, this.day);
-    }
-
-    public static boolean isHoliday(LocalDate targetDate) {
+    public static boolean isHoliday(final LocalDate targetDate) {
+        MonthDay targetDay = MonthDay.from(targetDate);
         return Arrays.stream(Holiday.values())
-                .anyMatch(holiday -> holiday.isEqualDate(targetDate));
-    }
-
-    private boolean isEqualDate(LocalDate localDate) {
-        return this.date.isEqual(localDate);
+                .anyMatch(holiday -> holiday.date.equals(targetDay));
     }
 }

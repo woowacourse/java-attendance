@@ -3,23 +3,22 @@ package domain;
 import java.util.Arrays;
 
 public enum Command {
-    UNKNOWN(null),
-    ATTEND("1"),
+    ADD("1"),
     EDIT("2"),
-    SEARCH_ATTEND("3"),
-    SEARCH_WARNING_CREW("4");
+    SEARCH("3"),
+    FIND_WARNING("4"),
+    EXIT("Q");
 
     private final String command;
 
-    Command(String command) {
+    Command(final String command) {
         this.command = command;
     }
 
-    public static Command judgeCommand(String commandInput) {
+    public static Command findCommand(String targetCommand) {
         return Arrays.stream(Command.values())
-                .filter(command -> command.command != null)
-                .filter(command -> command.command.equals(commandInput))
+                .filter(command -> command.command.equals(targetCommand))
                 .findAny()
-                .orElse(UNKNOWN);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 명령어 입니다."));
     }
 }

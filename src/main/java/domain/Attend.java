@@ -1,9 +1,7 @@
 package domain;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Attend {
@@ -11,83 +9,43 @@ public class Attend {
     private final LocalDate date;
     private final LocalTime time;
 
-    private Attend(LocalDate date, LocalTime time) {
-        validateDateIsNotNull(date);
+    public Attend(final LocalDate date, final LocalTime time) {
+        OperationTime.checkIsOperationDate(date);
         this.date = date;
         this.time = time;
     }
 
-    private void validateDateIsNotNull(LocalDate date) {
-        if (date == null) {
-            throw new IllegalArgumentException("date는 null이 될 수 없음");
-        }
+    public Attend(final LocalDate date) {
+        this(date, null);
     }
 
-    public static Attend fromDay(final int day) {
-        OperationTime.validateDay(day);
-        return new Attend(LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), day), null);
+    public boolean equalsDay(final int day) {
+        return date.getDayOfMonth() == day;
     }
 
-    public static Attend fromTime(LocalTime time) {
-        return new Attend(Current.TODAY.getDate(), time);
+    public AttendStatus checkStatus() {
+        return AttendStatus.checkAttendStatus(this);
     }
 
-    public static Attend of(final LocalDate day, final LocalTime time) {
-        return new Attend(day, time);
-    }
-
-    public String formatDate(DateTimeFormatter dateTimeFormatter) {
-        return this.date.format(dateTimeFormatter);
-    }
-
-    public String formatTime(DateTimeFormatter dateTimeFormatter) {
-        return this.time.format(dateTimeFormatter);
-    }
-
-    public boolean isDayOff() {
-        return this.date.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue()
-                || Holiday.isHoliday(this.date);
-    }
-
-    public boolean isTimeOff(LocalTime startTime, LocalTime endTime) {
-        return hasTime() && (this.time.isBefore(startTime) || this.time.isAfter(endTime));
-    }
-
-    public boolean isBefore(final LocalTime targetTime) {
-        return hasTime() && this.time.isBefore(targetTime);
-    }
-
-    public boolean isEqual(final LocalTime targetTime) {
-        return hasTime() && this.time.equals(targetTime);
-    }
-
-    public boolean isAfter(final LocalTime targetTime) {
-        return hasTime() && this.time.isAfter(targetTime);
-    }
-
-    public boolean hasTime() {
+    public boolean checkTimeNull() {
         return this.time != null;
     }
 
-    public boolean isDayEqual(Attend attend) {
-        return getDay() == attend.getDay();
+    public LocalDate getDate() {
+        return date;
     }
 
-    public boolean isDayEqual(final int day) {
-        return getDay() == day;
-    }
-
-    public int getDay() {
-        return this.date.getDayOfMonth();
+    public LocalTime getTime() {
+        return time;
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (object == null || getClass() != object.getClass()) {
             return false;
         }
         Attend attend = (Attend) object;
-        return Objects.equals(date, attend.date) && Objects.equals(time, attend.time);
+        return Objects.equals(date, attend.date);
     }
 
     @Override

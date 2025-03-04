@@ -1,5 +1,6 @@
 import domain.Attend;
 import domain.AttendStatus;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
@@ -10,25 +11,35 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendStatusTest {
 
-    private static Stream<Arguments> provideStatusAndResult() {
+    private static Attend createAttend(final String date, final String time) {
+        return new Attend(LocalDate.parse(date), LocalTime.parse(time));
+    }
+
+    private static Attend createAttendOnlyDate(final String date) {
+        return new Attend(LocalDate.parse(date));
+    }
+
+    private static Stream<Arguments> provideAttendAndStatus() {
         return Stream.of(
-                Arguments.of(AttendStatus.ATTEND, LocalTime.of(10, 0)),
-                Arguments.of(AttendStatus.LATE, LocalTime.of(10, 6)),
-                Arguments.of(AttendStatus.ABSENCE, LocalTime.of(10, 31))
+                Arguments.of(createAttend("2024-12-02", "13:05"), AttendStatus.ATTEND),
+                Arguments.of(createAttend("2024-12-03", "10:05"), AttendStatus.ATTEND),
+                Arguments.of(createAttend("2024-12-02", "13:06"), AttendStatus.LATE),
+                Arguments.of(createAttend("2024-12-03", "10:06"), AttendStatus.LATE),
+                Arguments.of(createAttend("2024-12-02", "13:31"), AttendStatus.ABSENCE),
+                Arguments.of(createAttend("2024-12-03", "10:31"), AttendStatus.ABSENCE),
+                Arguments.of(createAttendOnlyDate("2024-12-02"), AttendStatus.ABSENCE),
+                Arguments.of(createAttendOnlyDate("2024-12-03"), AttendStatus.ABSENCE)
         );
     }
 
     @ParameterizedTest
-    @MethodSource("provideStatusAndResult")
-    @DisplayName("출석 시간을 기반으로 출결을 판정하는 기능")
-    void test(AttendStatus actual, LocalTime time) {
-        //given
-        Attend attend = Attend.fromTime(time);
-
+    @MethodSource("provideAttendAndStatus")
+    @DisplayName("요일에 따른 출석 상태 판정 기능")
+    void checkAttendStatusUsingDateAndTime(Attend attend, AttendStatus expected) {
         //when
-        AttendStatus result = AttendStatus.findAttendStatus(attend);
+        AttendStatus actual = AttendStatus.checkAttendStatus(attend);
 
         //then
-        Assertions.assertThat(result).isEqualTo(actual);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 }

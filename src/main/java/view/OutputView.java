@@ -3,93 +3,76 @@ package view;
 import domain.Attend;
 import domain.AttendCount;
 import domain.AttendStatus;
-import domain.AttendanceResult;
+import domain.Nickname;
 import domain.WarningCrew;
 import domain.WarningStatus;
-import dto.AttendResultDto;
-import java.util.Comparator;
+import java.time.LocalTime;
 import java.util.List;
 
 public class OutputView {
-
-    public void printEditResult(Attend before, Attend after, AttendStatus beforeStatus, AttendStatus afterStatus) {
-        System.out.print(formatAttendAndStatus(before, beforeStatus));
-        System.out.print(" -> ");
-        System.out.print(formatAttendAndStatus(after, afterStatus));
-        System.out.println(" 수정 완료!");
-        System.out.println();
+    public void printAttendResult(final Attend attend, final AttendStatus attendStatus) {
+        String dateFormat = DateTimeFormat.DATE.formatDate(attend.getDate());
+        String timeFormat = formatAttendTime(attend);
+        String attendStatusFormat = AttendStatusFormat.findStatusFormat(attendStatus);
+        System.out.printf("%s %s (%s)%n%n", dateFormat, timeFormat, attendStatusFormat);
     }
 
-    public void printAttendResult(Attend attend, AttendStatus attendStatus) {
-        System.out.println(formatAttendAndStatus(attend, attendStatus));
-        System.out.println();
+    public void printEditResult(final Attend before, final AttendStatus beforeStatus,
+                                final Attend after, final AttendStatus afterStatus) {
+        String date = DateTimeFormat.DATE.formatDate(before.getDate());
+        String beforeTime = formatAttendTime(before);
+        String afterTime = formatAttendTime(after);
+        String beforeStatusFormat = AttendStatusFormat.findStatusFormat(beforeStatus);
+        String afterStatusFormat = AttendStatusFormat.findStatusFormat(afterStatus);
+        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n%n",
+                date, beforeTime, beforeStatusFormat, afterTime, afterStatusFormat);
     }
 
-    public void printAttendanceResult(AttendResultDto attendResultDto) {
-        String name = attendResultDto.name();
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", name);
-        List<AttendanceResult> attendResult = attendResultDto.attendanceResults();
-        AttendCount attendCount = attendResultDto.attendCount();
-        printAttendanceStatus(attendResult);
+    private String formatAttendTime(Attend attend) {
+        String result = "--:--";
+        if (attend.checkTimeNull()) {
+            LocalTime time = attend.getTime();
+            result = DateTimeFormat.TIME.formatTime(time);
+        }
+        return result;
+    }
+
+    public void printSearchedAttend(final Nickname name, final List<Attend> attends,
+                                    final List<AttendStatus> attendStatuses, final AttendCount attendCount,
+                                    final WarningStatus warningStatus) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", name.nickname());
+        for (int i = 0; i < attends.size(); i++) {
+            String date = DateTimeFormat.DATE.formatDate(attends.get(i).getDate());
+            String time = formatAttendTime(attends.get(i));
+            String attendStatus = AttendStatusFormat.findStatusFormat(attendStatuses.get(i));
+            System.out.printf("%s %s (%s)%n", date, time, attendStatus);
+        }
+        System.out.println();
         printAttendCount(attendCount);
-        printWarningMessage(attendCount);
-    }
-
-    private void printAttendanceStatus(List<AttendanceResult> attendResult) {
-        for (AttendanceResult attendanceResult : attendResult) {
-            Attend attend = attendanceResult.attend();
-            AttendStatus attendStatus = attendanceResult.attendStatus();
-            System.out.println(formatAttendAndStatus(attend, attendStatus));
-        }
         System.out.println();
+        printWarningStatus(warningStatus);
     }
 
-    private String formatAttendAndStatus(Attend attend, AttendStatus attendStatus) {
-        String date = attend.formatDate(DateTimeFormat.DATE.getDateTimeFormatter());
-        String time = "--:--";
-        if (attend.hasTime()) {
-            time = attend.formatTime(DateTimeFormat.TIME.getDateTimeFormatter());
+    private void printAttendCount(final AttendCount attendCount) {
+        System.out.printf("출석: %d%n", attendCount.attendCount());
+        System.out.printf("지각: %d%n", attendCount.lateCount());
+        System.out.printf("결석: %d%n", attendCount.absenceCount());
+    }
+
+    private void printWarningStatus(final WarningStatus warningStatus) {
+        if (warningStatus != WarningStatus.PASS) {
+            System.out.printf("%s 대상자 입니다.%n%n", WarningStatusFormatter.findStatusText(warningStatus));
         }
-        String status = AttendMessage.formatAttendStatus(attendStatus);
-        return String.format("%s %s (%s)", date, time, status);
     }
 
-    private void printAttendCount(AttendCount attendCount) {
-        System.out.println(formatAttendCount(attendCount));
-        System.out.println();
-    }
-
-    private String formatAttendCount(AttendCount attendCount) {
-        return String.format("출석: %d회%n"
-                + "지각: %d회%n"
-                + "결석: %d회", attendCount.attend(), attendCount.late(), attendCount.absence());
-    }
-
-    private static void printWarningMessage(AttendCount attendCount) {
-        WarningStatus warningStatus = attendCount.judgeWarning();
-        String warningMessage = WarningMessage.formatWarningStatus(warningStatus);
-        System.out.println(warningMessage);
-    }
-
-    public void printWarningCrews(List<WarningCrew> warningCrews) {
+    public void printWarningCrew(final List<WarningCrew> warningCrews) {
         System.out.println("제적 위험자 조회 결과");
-        List<WarningCrew> sorted = warningCrews.stream()
-                .sorted(Comparator.comparing(warningCrew -> ((WarningCrew) warningCrew).attendCount().calculateRank())
-                        .reversed())
-                .toList();
-        for (WarningCrew warningCrew : sorted) {
-            String message = formatWarningCrew(warningCrew);
-            System.out.println(message);
+        for (WarningCrew warningCrew : warningCrews) {
+            AttendCount attendCount = warningCrew.attendCount();
+            String warningStatus = WarningStatusFormatter.findStatusText(warningCrew.warningStatus());
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                    warningCrew.name().nickname(), attendCount.absenceCount(), attendCount.lateCount(), warningStatus);
         }
         System.out.println();
-    }
-
-    private String formatWarningCrew(WarningCrew warningCrew) {
-        WarningStatus warningStatus = warningCrew.attendCount().judgeWarning();
-        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)"
-                , warningCrew.name()
-                , warningCrew.attendCount().absence()
-                , warningCrew.attendCount().late()
-                , WarningMessage.formatWarningStatusShort(warningStatus));
     }
 }

@@ -1,124 +1,75 @@
 package view;
 
+import domain.Nickname;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class InputView {
 
-    private final Scanner scanner;
+    private final Scanner scanner = new Scanner(System.in);
 
-    public InputView() {
-        this.scanner = new Scanner(System.in);
-    }
-
-    public String inputCommand(LocalDate today) {
-        System.out.printf("오늘은 %s 입니다. 기능을 선택해 주세요.%n", today.format(DateTimeFormatter.ofPattern("MM월 dd일 E요일")));
+    public String inputCommand(final LocalDate today) {
+        System.out.printf("오늘은 %s입니다. 기능을 선택해 주세요.%n", DateTimeFormat.DATE.formatDate(today));
         System.out.println("""
                 1. 출석 확인
                 2. 출석 수정
                 3. 크루별 출석 기록 확인
                 4. 제적 위험자 확인
-                Q. 종료
-                """);
-        String input = scanner.nextLine();
-        validateEmptyInput(input);
-        return input;
+                Q. 종료""");
+        return inputString();
     }
 
-    public String inputNickName() {
+    public Nickname inputName() {
         System.out.println("닉네임을 입력해 주세요.");
+        String input = inputString();
+        return new Nickname(input);
+    }
+
+    private String inputString() {
         String input = scanner.nextLine();
-        validateEmptyInput(input);
+        checkEmptyInput(input);
         return input;
     }
 
-    public String inputEditNickName() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        String input = scanner.nextLine();
-        validateEmptyInput(input);
-        return input;
-    }
-
-    public LocalDate inputDate() {
+    public LocalDate inputDate(LocalDate today) {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        String input = scanner.nextLine();
-        validateEmptyInput(input);
-        validateDateInput(input);
-        return parseDate(input);
+        String input = inputString();
+        try {
+            int day = Integer.parseInt(input);
+            return LocalDate.of(today.getYear(), today.getMonth(), day);
+        } catch (NumberFormatException | DateTimeException e) {
+            throw new IllegalArgumentException("잘못된 날짜 입력입니다");
+        }
     }
 
-    public LocalTime inputTime() {
+    public LocalTime inputAttendTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        String input = scanner.nextLine();
-        validateEmptyInput(input);
-        validateTimeInput(input);
-        return parseTime(input);
+        return inputTime();
     }
 
-    public LocalTime inputEditTime() {
+    public LocalTime inputChangeTime() {
         System.out.println("언제로 변경하겠습니까?");
-        String input = scanner.nextLine();
-        validateEmptyInput(input);
-        validateTimeInput(input);
-        return parseTime(input);
+        return inputTime();
     }
 
-    private void validateEmptyInput(String input) {
+    private LocalTime inputTime() {
+        String input = inputString();
+        try {
+            return LocalTime.parse(input);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("잘못된 시간 입력입니다");
+        }
+    }
+
+    private void checkEmptyInput(final String input) {
         if (input == null || input.isBlank()) {
-            throw new IllegalArgumentException("공백은 입력할 수 없습니다.");
+            throw new IllegalArgumentException("빈 입력입니다.");
         }
     }
 
-    private LocalTime parseTime(String input) {
-        validateTimeInput(input);
-        String[] parse = input.split(":");
-        return LocalTime.of(Integer.parseInt(parse[0]), Integer.parseInt(parse[1]));
-    }
-
-    private void validateTimeInput(String input) {
-        String[] parse = input.strip().split(":");
-        if (parse.length < 2) {
-            throw new IllegalArgumentException("입력 형식이 잘못되었습니다.");
-        }
-        Arrays.stream(parse)
-                .forEach(this::validateIntInput);
-        int hour = Integer.parseInt(parse[0]);
-        int minute = Integer.parseInt(parse[1]);
-        validateHour(hour);
-        validateMinute(minute);
-    }
-
-    private LocalDate parseDate(String input) {
-        validateDateInput(input);
-        return LocalDate.of(2024, 12, Integer.parseInt(input));
-    }
-
-    private void validateDateInput(String input) {
-        validateIntInput(input);
-        int day = Integer.parseInt(input);
-        if (day < 1 || day > 31) {
-            throw new IllegalArgumentException("1-31만 가능");
-        }
-    }
-
-    private void validateIntInput(String input) {
-        if (!input.matches("\\d+")) {
-            throw new IllegalArgumentException("숫자만 입력 가능");
-        }
-    }
-
-    private void validateHour(int hour) {
-        if (hour < 0 || hour > 23) {
-            throw new IllegalArgumentException("hour는 0-23만 가능");
-        }
-    }
-
-    private void validateMinute(int minute) {
-        if (minute < 0 || minute > 59) {
-            throw new IllegalArgumentException("minute는 0-59만 가능");
-        }
+    public void close() {
+        this.scanner.close();
     }
 }

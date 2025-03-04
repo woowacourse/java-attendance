@@ -1,27 +1,30 @@
 package domain;
 
+import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.function.Predicate;
+import java.util.function.BiFunction;
 
 public enum AttendStatus {
-    ATTEND((attend) -> attend.hasTime() && attend.isBefore(OperationTime.LATE_TIME.getTime())),
-    LATE((attend) -> attend.hasTime()
-            && (attend.isEqual(OperationTime.LATE_TIME.getTime()) || attend.isAfter(OperationTime.LATE_TIME.getTime()))
-            && attend.isBefore(OperationTime.ABSENCE_TIME.getTime())),
-    ABSENCE((attend) -> !attend.hasTime()
-            || attend.isEqual(OperationTime.ABSENCE_TIME.getTime())
-            || attend.isAfter(OperationTime.ABSENCE_TIME.getTime()));
+    ATTEND((localTime, timeBoundary)
+            -> localTime != null && (localTime.equals(timeBoundary.lateTime()) || localTime.isBefore(
+            timeBoundary.lateTime()))),
+    LATE((localTime, timeBoundary)
+            -> localTime != null
+            && localTime.isAfter(timeBoundary.lateTime()) && !localTime.isAfter(timeBoundary.absenceTime())),
+    ABSENCE((localTime, timeBoundary)
+            -> localTime == null || localTime.isAfter(timeBoundary.absenceTime()));
 
-    private final Predicate<Attend> matchCondition;
+    private final BiFunction<LocalTime, TimeBoundary, Boolean> condition;
 
-    AttendStatus(Predicate<Attend> matchCondition) {
-        this.matchCondition = matchCondition;
+    AttendStatus(final BiFunction<LocalTime, TimeBoundary, Boolean> condition) {
+        this.condition = condition;
     }
 
-    public static AttendStatus findAttendStatus(Attend attend) {
+    public static AttendStatus checkAttendStatus(Attend attend) {
+        TimeBoundary timeBoundary = TimeBoundary.createTimeBoundary(attend.getDate());
         return Arrays.stream(AttendStatus.values())
-                .filter(attendStatus -> attendStatus.matchCondition.test(attend))
-                .findFirst()
+                .filter(attendStatus -> attendStatus.condition.apply(attend.getTime(), timeBoundary))
+                .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("출석 상태 판정 실패"));
     }
 }

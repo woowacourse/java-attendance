@@ -1,34 +1,14 @@
 package domain;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.IntStream;
 
 public enum Current {
-    TODAY;
+    TODAY(2024, 12, 13);
 
     private final LocalDate date;
 
-    Current() {
-        this.date = LocalDate.of(2024, 12, 13);
-    }
-
-    public static boolean isDayOff(int day) {
-        LocalDate targetDate = LocalDate.of(TODAY.getYear(), TODAY.getMonth(), day);
-        return targetDate.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue()
-                || Holiday.isHoliday(targetDate);
-    }
-
-    public List<Integer> getAttendUntilDay() {
-        return IntStream.range(1, getDay())
-                .filter(day -> !isDayOff(day))
-                .boxed()
-                .toList();
-    }
-
-    public int getLengthOfMonth() {
-        return getDate().lengthOfMonth();
+    Current(final int year, final int month, final int day) {
+        this.date = LocalDate.of(year, month, day);
     }
 
     public LocalDate getDate() {
@@ -40,7 +20,7 @@ public enum Current {
     }
 
     public int getMonth() {
-        return this.date.getMonthValue();
+        return this.date.getMonth().getValue();
     }
 
     public int getDay() {

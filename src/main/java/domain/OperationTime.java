@@ -1,39 +1,31 @@
 package domain;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
-public enum OperationTime {
-    START_TIME(LocalTime.of(8, 0)),
-    LATE_TIME(LocalTime.of(10, 5)),
-    ABSENCE_TIME(LocalTime.of(10, 30)),
-    END_TIME(LocalTime.of(23, 0));
+public class OperationTime {
 
-    private final LocalTime time;
-
-    OperationTime(LocalTime time) {
-        this.time = time;
+    public static boolean isContainsOperationTime(final LocalTime targetTime) {
+        return !targetTime.isBefore(LocalTime.of(8, 0)) && !targetTime.isAfter(LocalTime.of(23, 0));
     }
 
-    public static void validateAttendableDay(Attend attend) {
-        if (attend.isDayOff()) {
-            throw new IllegalArgumentException("쉬는날은 출석할 수 없음");
+    public static void checkIsOperationDate(final LocalDate targetDate) {
+        if (!isOperationDate(targetDate)) {
+            throw new IllegalArgumentException("운영일이 아닙니다.");
         }
     }
 
-    public static void validateAttendableTime(Attend attend) {
-        if (attend.isTimeOff(START_TIME.time, END_TIME.time)) {
-            throw new IllegalArgumentException("운영 시간 외에는 출석할 수 없음");
-        }
+    public static boolean isOperationDate(final LocalDate targetDate) {
+        return !(isWeekend(targetDate) || Holiday.isHoliday(targetDate));
     }
 
-    public static void validateDay(int day) {
-        int lengthOfMonth = Current.TODAY.getLengthOfMonth();
-        if (day < 1 || day > lengthOfMonth) {
-            throw new IllegalArgumentException(String.format("day는 1 이상 %d 이하여야 함", lengthOfMonth));
-        }
+    public static boolean isOperationDate(final int targetDay, final LocalDate today) {
+        LocalDate date = LocalDate.of(today.getYear(), today.getMonthValue(), targetDay);
+        return isOperationDate(date);
     }
 
-    public LocalTime getTime() {
-        return time;
+    private static boolean isWeekend(final LocalDate targetDate) {
+        return targetDate.getDayOfWeek() == DayOfWeek.SUNDAY || targetDate.getDayOfWeek() == DayOfWeek.SATURDAY;
     }
 }

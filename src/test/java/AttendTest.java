@@ -1,13 +1,12 @@
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import domain.Attend;
+import domain.AttendStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -15,143 +14,75 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendTest {
 
-    static Stream<Arguments> provideAttendForIsSame() {
+    @ParameterizedTest
+    @CsvSource(value = {"2024-12-02,2,true", "2024-12-02,3,false"})
+    @DisplayName("출석일이 주어진 값과 같은지 판정하는 기능")
+    void checkAttendStatus(LocalDate date, int day, boolean expected) {
+        //given
+        Attend attend = new Attend(date);
+
+        //when
+        boolean actual = attend.equalsDay(day);
+
+        //then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "2024-12-02,13:05,ATTEND", "2024-12-03,10:05,ATTEND",
+            "2024-12-02,13:30,LATE", "2024-12-03,10:30,LATE",
+            "2024-12-02,13:31,ABSENCE", "2024-12-03,10:31,ABSENCE",
+            "2024-12-02,,ABSENCE", "2024-12-03,,ABSENCE"
+    })
+    @DisplayName("평일 교육일 기반 출석 상태 판정 기능")
+    void checkAttendStatus(LocalDate date, LocalTime time, AttendStatus expected) {
+        //given
+        Attend attend = new Attend(date, time);
+
+        //when
+        AttendStatus actual = attend.checkStatus();
+
+        //then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> provideAttendsAndExpect() {
         return Stream.of(
-                Arguments.of(Attend.fromDay(1), Attend.fromDay(1), true),
-                Arguments.of(Attend.fromDay(1), Attend.fromDay(2), false)
-        );
-    }
-
-    static Stream<Arguments> provideAttendForIsDayOff() {
-        return Stream.of(
-                Arguments.of(Attend.fromDay(1), true),
-                Arguments.of(Attend.fromDay(2), false)
-        );
-    }
-
-    @Test
-    @DisplayName("day 를 기반으로 한 Attend 생성 테스트")
-    void testAttendCreateUsingDate() {
-        //given
-        int targetDay = 3;
-
-        //when
-        Attend attend = Attend.fromDay(targetDay);
-
-        //then
-        assertThat(attend.getDay()).isEqualTo(3);
-    }
-
-    @Test
-    @DisplayName("time 을 기반으로 한 Attend 생성 테스트")
-    void testAttendCreateUsingTime() {
-        //given
-        LocalTime targetTime = LocalTime.of(9, 59, 0);
-
-        //when
-        Attend attend = Attend.fromTime(targetTime);
-
-        //then
-        assertThat(attend.isEqual(targetTime)).isTrue();
-    }
-
-    @Test
-    @DisplayName("day, time 을 기반으로 한 Attend 생성 테스트")
-    void testAttendCreateUsingDayAndTime() {
-        //given
-        LocalDate day = LocalDate.of(2024, 12, 3);
-        LocalTime time = LocalTime.of(9, 59);
-
-        //when
-        var result = Attend.of(day, time);
-
-        //then
-        assertAll(
-                () -> assertThat(result.getDay()).isEqualTo(3),
-                () -> assertThat(result.isEqual(time)).isTrue()
+                Arguments.of(
+                        new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                        new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(11, 0)),
+                        true
+                ),
+                Arguments.of(
+                        new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                        new Attend(LocalDate.of(2024, 12, 2)),
+                        true
+                ),
+                Arguments.of(
+                        new Attend(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                        new Attend(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                        false
+                )
         );
     }
 
     @ParameterizedTest
-    @MethodSource("provideAttendForIsSame")
-    @DisplayName("같은 날짜인지 확인 - Attend 이용")
-    void compareAttendIsSameUsingDay(Attend attend, Attend compareAttend, boolean actual) {
-
+    @MethodSource("provideAttendsAndExpect")
+    @DisplayName("날짜를 기반으로 Attend가 같은지 판정하는 기능")
+    void equalsUsingOnlyDateNotUseTime(Attend attend, Attend anotherAttend, boolean expected) {
         //when
-        boolean result = attend.isDayEqual(compareAttend);
-
+        boolean actual = attend.equals(anotherAttend);
         //then
-        Assertions.assertThat(result).isEqualTo(actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"1,1,true", "2,3,false"})
-    @DisplayName("같은 날짜인지 확인 - day 이용")
-    void compareAttendIsSameUsingDay(int day, int compareDay, boolean actual) {
-        //given
-        Attend attend = Attend.fromDay(day);
-        Attend compare = Attend.fromDay(day);
-
-        //when
-        boolean result = attend.isDayEqual(compareDay);
-
-        //then
-        Assertions.assertThat(result).isEqualTo(actual);
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideAttendForIsDayOff")
-    @DisplayName("출석 대상 일자인지 확인")
-    void checkAttendDayIsNormalDay(Attend attend, boolean actual) {
-        //when
-        var expected = attend.isDayOff();
-
-        //then
-        assertThat(expected).isEqualTo(actual);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"09:59,10:00,true", "10:00,10:00,false", "10:01,10:00,false"})
-    @DisplayName("Attend 시간이 대상 시간 이전인지 확인")
-    void checkAttendTimeIsBefore(String time, String compareTime, boolean actual) {
-        //given
-        Attend attend = Attend.fromTime(LocalTime.parse(time));
-        LocalTime compare = LocalTime.parse(compareTime);
-
-        //when
-        var result = attend.isBefore(compare);
-
-        //then
-        assertThat(result).isEqualTo(actual);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"09:59,10:00,false", "10:00,10:00,true", "10:01,10:00,false"})
-    @DisplayName("Attend 시간이 대상 시간과 동일한지 확인")
-    void checkAttendTimeIsEqual(String time, String compareTime, boolean actual) {
-        //given
-        Attend attend = Attend.fromTime(LocalTime.parse(time));
-        LocalTime compare = LocalTime.parse(compareTime);
-
-        //when
-        var result = attend.isEqual(compare);
-
-        //then
-        assertThat(result).isEqualTo(actual);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"09:59,10:00,false", "10:00,10:00,false", "10:01,10:00,true"})
-    @DisplayName("Attend 시간이 대상 시간 이후인지 확인")
-    void checkAttendTimeIsAfter(String time, String compareTime, boolean actual) {
-        //given
-        Attend attend = Attend.fromTime(LocalTime.parse(time));
-        LocalTime compare = LocalTime.parse(compareTime);
-
-        //when
-        var result = attend.isAfter(compare);
-
-        //then
-        assertThat(result).isEqualTo(actual);
+    @CsvSource(value = {"2024-12-01", "2024-12-25"})
+    @DisplayName("운영일이 아닌 날짜의 attend를 생성 시도할 때 예외 처리")
+    void throwExceptionWhenDateIsNotOperationDate(LocalDate date) {
+        //when & then
+        Assertions.assertThatThrownBy(() -> new Attend(date))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

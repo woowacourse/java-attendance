@@ -1,47 +1,84 @@
-import domain.Attend;
+import domain.AttendCount;
 import domain.AttendReader;
 import domain.AttendanceBook;
+import domain.Current;
+import domain.Nickname;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendReaderTest {
 
     @Test
-    @DisplayName("csv 파일을 기반으로 한 AttendanceBook 생성 테스트")
-    void loadAttendanceBookTest() {
+    @DisplayName("잘못된 경로의 파일을 읽으면 예외를 던진다")
+    void throwExceptionWhenWrongPath() {
         //given
-        String filePath = "attendances.csv";
-        AttendReader attendReader = new AttendReader(filePath);
-        String name = "빙티";
-        AttendanceBook actual = new AttendanceBook();
-        List<Attend> attends = List.of(Attend.of(LocalDate.of(2024, 12, 2), LocalTime.of(10, 5)),
-                Attend.of(LocalDate.of(2024, 12, 3), LocalTime.of(8, 0)));
-        actual.registerName(name);
-        for (Attend attend : attends) {
-            actual.attend(name, attend);
-        }
+        LocalDate today = Current.TODAY.getDate();
+        String wrongPath = "wrong_path.csv";
+        AttendReader attendReader = new AttendReader(wrongPath);
 
-        //when
-        AttendanceBook expected = attendReader.loadAttendanceBook();
-
-        //then
-        List<Attend> expectedAttends = expected.getAttends(name);
-        List<Attend> actualAttends = actual.getAttends(name);
-        Assertions.assertThat(expectedAttends).containsExactlyElementsOf(actualAttends);
+        //when & then
+        Assertions.assertThatThrownBy(() -> attendReader.loadAttendanceBook(today));
     }
 
     @Test
-    @DisplayName("잘못된 csv 파일을 읽으면 예외 발생")
-    void throwExceptionWhenReadWrongCsv() {
-        String filePath = "attendances_format_fail.csv";
-        AttendReader attendReader = new AttendReader(filePath);
+    @DisplayName("잘못된 형식의 이름일 경우 예외를 던진다")
+    void throwExceptionWhenWrongNameFormat() {
+        //given
+        LocalDate today = Current.TODAY.getDate();
+        String path = "wrong_name_format.csv";
+        AttendReader attendReader = new AttendReader(path);
 
         //when & then
-        Assertions.assertThatThrownBy(attendReader::loadAttendanceBook).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("파일 행 구조가 잘못되었습니다.");
+        Assertions.assertThatThrownBy(() -> attendReader.loadAttendanceBook(today));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"empty_date_time.csv",
+            "wrong_date_time_format.csv",
+            "wrong_date_format.csv",
+            "wrong_time_format.csv"})
+    @DisplayName("잘못된 형식의 날짜일 경우 예외를 던진다")
+    void throwExceptionWhenWrongDateTimeFormat(String path) {
+        //given
+        LocalDate today = Current.TODAY.getDate();
+        AttendReader attendReader = new AttendReader(path);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> attendReader.loadAttendanceBook(today));
+    }
+
+    private static List<Nickname> createNickname(List<String> names) {
+        return names.stream()
+                .map(Nickname::new)
+                .toList();
+    }
+
+    @Test
+    @DisplayName("csv 파일 데이터를 기반으로 출석 기록을 저장한다")
+    void loadAttendByCsv() {
+        //given
+        LocalDate today = Current.TODAY.getDate();
+        String path = "attendances.csv";
+        AttendReader attendReader = new AttendReader(path);
+
+        //when
+        AttendanceBook attendanceBook = attendReader.loadAttendanceBook(today);
+
+        //then
+        List<String> names = List.of("빙티", "가나");
+        List<Nickname> nicknames = createNickname(names);
+        List<AttendCount> attendCounts = nicknames.stream()
+                .map(attendanceBook::countAttend)
+                .toList();
+        List<AttendCount> expectedCounts = List.of(
+                new AttendCount(3, 0, 6),
+                new AttendCount(1, 1, 7));
+        assertThat(attendCounts).containsExactlyElementsOf(expectedCounts);
     }
 }

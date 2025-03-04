@@ -1,96 +1,67 @@
 package domain;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
 
-    private final Map<String, Attends> attendsPerCrew;
+    private final Map<Nickname, AttendResult> attendBook;
+    private final LocalDate today;
 
-    public AttendanceBook() {
-        this.attendsPerCrew = new HashMap<>();
+    public AttendanceBook(LocalDate today) {
+        this.attendBook = new HashMap<>();
+        this.today = today;
     }
 
-    public void registerName(String name) {
-        attendsPerCrew.putIfAbsent(name, new Attends(new ArrayList<>()));
-    }
-
-    public void attend(String name, Attend attend) {
-        validateIsNameExist(name);
-        OperationTime.validateAttendableDay(attend);
-        OperationTime.validateAttendableTime(attend);
-        Attends attends = attendsPerCrew.get(name);
-        attends.addAttend(attend);
-    }
-
-    public Attends findByName(String name) {
-        validateIsNameExist(name);
-        return attendsPerCrew.get(name);
-    }
-
-    public void edit(String name, Attend attend) {
-        validateIsNameExist(name);
-        OperationTime.validateAttendableDay(attend);
-        OperationTime.validateAttendableTime(attend);
-        Attends attends = attendsPerCrew.get(name);
-        attends.edit(attend);
-    }
-
-    public List<Attend> getAttends(String name) {
-        validateIsNameExist(name);
-        List<Integer> days = Current.TODAY.getAttendUntilDay();
-        return attendsPerCrew.get(name)
-                .getAttends(days);
-    }
-
-    private void validateIsNameExist(String name) {
-        if (!attendsPerCrew.containsKey(name)) {
-            throw new IllegalArgumentException("출석부에 존재하지 않는 크루입니다.");
+    public void register(final Nickname name) {
+        if (!attendBook.containsKey(name)) {
+            attendBook.put(name, new AttendResult(today));
         }
     }
 
-    public Attend findByNameAndDay(String name, int day) {
-        Attends attends = attendsPerCrew.get(name);
-        return attends.findByDay(day);
+    public void addAttend(final Nickname name, final Attend attend) {
+        checkContainsName(name);
+        AttendResult attendResult = attendBook.get(name);
+        attendResult.addAttend(attend);
     }
 
-    public List<WarningCrew> checkWarningCrews(List<Integer> days) {
-        List<WarningCrew> result = new ArrayList<>();
-        for (final String name : attendsPerCrew.keySet()) {
-            AttendCount attendCount = checkAttendance(name, days).countAttendStatus();
-            WarningStatus warningStatus = attendCount.judgeWarning();
-            WarningCrew warningCrew = new WarningCrew(name, attendCount);
-            addWarningCrew(result, warningCrew, warningStatus);
+    private void checkContainsName(final Nickname name) {
+        if (!attendBook.containsKey(name)) {
+            throw new IllegalArgumentException("존재하지 않는 닉네임입니다.");
         }
-        return result;
     }
 
-    public AttendanceResults checkAttendance(String name, List<Integer> days) {
-        Attends attends = findByName(name);
-        List<AttendanceResult> result = days.stream()
-                .map(day -> getAttendanceResult(attends, day))
+    public Attend edit(final Nickname name, final Attend afterAttend) {
+        checkContainsName(name);
+        AttendResult attendResult = attendBook.get(name);
+        return attendResult.edit(afterAttend);
+    }
+
+    public List<Attend> searchAttend(Nickname name, final int day) {
+        checkContainsName(name);
+        AttendResult attendResult = attendBook.get(name);
+        return attendResult.getAttendResult(day);
+    }
+
+    public WarningStatus judgeAttendStatus(Nickname name) {
+        checkContainsName(name);
+        AttendResult attendResult = attendBook.get(name);
+        return attendResult.judgeWarningStatus(today.getDayOfMonth());
+    }
+
+    public AttendCount countAttend(Nickname name) {
+        checkContainsName(name);
+        AttendResult attendResult = attendBook.get(name);
+        return attendResult.countAttendStatus(today.getDayOfMonth());
+    }
+
+    public List<WarningCrew> searchWarningCrew() {
+        List<WarningCrew> warningCrews = attendBook.keySet().stream()
+                .filter(name -> judgeAttendStatus(name) != WarningStatus.PASS)
+                .map(name -> new WarningCrew(name, countAttend(name), judgeAttendStatus(name)))
                 .toList();
-        return new AttendanceResults(result);
-    }
-
-    private void addWarningCrew(List<WarningCrew> result, WarningCrew warningCrew, WarningStatus warningStatus) {
-        if (warningStatus != WarningStatus.CLEAR) {
-            result.add(warningCrew);
-        }
-    }
-
-    private AttendanceResult getAttendanceResult(Attends attends, int day) {
-        if (attends.hasDayEqualsAttend(day)) {
-            Attend attend = attends.findByDay(day);
-            return new AttendanceResult(attend, checkAttendance(attend));
-        }
-        Attend attend = Attend.fromDay(day);
-        return new AttendanceResult(attend, AttendStatus.ABSENCE);
-    }
-
-    public AttendStatus checkAttendance(Attend attend) {
-        return AttendStatus.findAttendStatus(attend);
+        return WarningCrew.sort(warningCrews);
     }
 }
