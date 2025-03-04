@@ -44,7 +44,7 @@ public class AttendanceBook {
         return crewGroup.findCrewByName(name).determinePenaltyStatus(nowDate);
     }
 
-    public List<Crew> checkExpulsionRiskCrew(LocalDate nowDate) {
+    public List<Crew> findExpulsionRiskCrews(LocalDate nowDate) {
         List<Crew> crewsAtRisk = crewGroup.getCrewsAtRisk(nowDate);
         return sortCrews(crewsAtRisk, nowDate);
     }

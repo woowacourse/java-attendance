@@ -26,6 +26,10 @@ public enum Penalty {
         return PASS;
     }
 
+    public boolean isPenaltyCrew() {
+        return this != PASS;
+    }
+
     public String getDescription() {
         return description;
     }

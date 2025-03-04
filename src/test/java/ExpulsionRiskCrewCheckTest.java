@@ -24,13 +24,13 @@ public class ExpulsionRiskCrewCheckTest {
     @DisplayName("전날까지의 크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
     @Test
     void should_IdentifyExpulsionRiskCrew_When_GivenAttendanceRecords() {
-        assertThat(attendanceBook.checkExpulsionRiskCrew(nowDate).size()).isEqualTo(5);
+        assertThat(attendanceBook.findExpulsionRiskCrews(nowDate).size()).isEqualTo(5);
     }
 
     @DisplayName("제적 대상자, 면담 대상자, 경고 대상자순으로 정렬한다.")
     @Test
     void should_SortRiskCrews_ByPenaltyStatus() {
-        List<Crew> riskCrewResult = attendanceBook.checkExpulsionRiskCrew(nowDate);
+        List<Crew> riskCrewResult = attendanceBook.findExpulsionRiskCrews(nowDate);
 
         assertThat(riskCrewResult.getFirst().determinePenaltyStatus(nowDate)).isSameAs(Penalty.COUNSEL);
         assertThat(riskCrewResult.get(1).determinePenaltyStatus(nowDate)).isSameAs(Penalty.COUNSEL);
@@ -42,7 +42,7 @@ public class ExpulsionRiskCrewCheckTest {
     @DisplayName("대상 항목별 정렬 순서는 지각 3회를 결석 1회로 간주하여 내림차순한다.")
     @Test
     void should_SortRiskCrews_ByAdjustedAbsences() {
-        List<Crew> riskCrewResult = attendanceBook.checkExpulsionRiskCrew(nowDate);
+        List<Crew> riskCrewResult = attendanceBook.findExpulsionRiskCrews(nowDate);
         Crew firstRankedCrew = riskCrewResult.getFirst();
         Crew secondRankedCrew = riskCrewResult.get(1);
         Crew thirdRankedCrew = riskCrewResult.get(2);
@@ -68,7 +68,7 @@ public class ExpulsionRiskCrewCheckTest {
     @DisplayName("출석 상태가 같으면 닉네임으로 오름차순 정렬한다.")
     @Test
     void should_SortRiskCrews_ByName_When_SamePenaltyStatus() {
-        List<Crew> riskCrewResult = attendanceBook.checkExpulsionRiskCrew(nowDate);
+        List<Crew> riskCrewResult = attendanceBook.findExpulsionRiskCrews(nowDate);
         Crew thirdRankedCrew = riskCrewResult.get(2);
         Crew fourthRankedCrew = riskCrewResult.get(3);
 
