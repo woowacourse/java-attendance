@@ -13,10 +13,10 @@ public class AttendanceRecord implements Comparable<AttendanceRecord> {
 
     public AttendanceRecord(final AttendanceDateTime attendanceDateTime) {
         this.attendanceDateTime = attendanceDateTime;
-        this.attendanceStatus = determinAttendanceStatus(attendanceDateTime);
+        this.attendanceStatus = determineAttendanceStatus(attendanceDateTime);
     }
 
-    private AttendanceStatus determinAttendanceStatus(final AttendanceDateTime attendanceDateTime) {
+    private AttendanceStatus determineAttendanceStatus(final AttendanceDateTime attendanceDateTime) {
         final AttendanceTimePolicy attendanceTimePolicy = AttendanceTimePolicy.findByAttendanceDateTime(
                 attendanceDateTime);
         return AttendanceStatus.findByAttendanceDateTime(attendanceDateTime, attendanceTimePolicy);
