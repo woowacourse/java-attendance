@@ -46,7 +46,6 @@ public final class OutputView {
         );
     }
 
-
     public static void printValidAttendances(final LocalDateTime localDateTime,
                                              final AttendanceRecords attendanceRecords,
                                              final DisciplinaryStatus disciplinaryStatus) {
