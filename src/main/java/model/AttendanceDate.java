@@ -3,6 +3,7 @@ package model;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Objects;
+import util.AttendanceDateAttendanceTimeFormatter;
 
 public class AttendanceDate implements Comparable<AttendanceDate> {
     private final LocalDate attendanceDate;
@@ -12,6 +13,12 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
 
     public AttendanceDate(LocalDate attendanceDate) {
         this.attendanceDate = attendanceDate;
+    }
+
+    public void validateHoliday() {
+        if (isHoliday()) {
+            throw new IllegalArgumentException(AttendanceDateAttendanceTimeFormatter.createNonSchoolDayMessage(attendanceDate));
+        }
     }
 
     public boolean isHoliday() {

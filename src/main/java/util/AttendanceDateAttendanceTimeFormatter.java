@@ -1,5 +1,6 @@
 package util;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import model.AttendanceDate;
@@ -27,8 +28,8 @@ public class AttendanceDateAttendanceTimeFormatter {
         return attendanceDate.toLocalDate().format(KOREAN_DATE_FORMATTER) + SPACE + attendanceTime.toLocalTime().format(HOUR_MINUTE);
     }
 
-    public static String createNonSchoolDayMessage(AttendanceDate attendanceDate) {
-        return ERROR + attendanceDate.toLocalDate().format(KOREAN_DATE_FORMATTER) + "은 등교일이 아닙니다.";
+    public static String createNonSchoolDayMessage(LocalDate attendanceDate) {
+        return ERROR + attendanceDate.format(KOREAN_DATE_FORMATTER) + "은 등교일이 아닙니다.";
     }
 
     public static String createTodayInformation(AttendanceDate attendanceDate) {
