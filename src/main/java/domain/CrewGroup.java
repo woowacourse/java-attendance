@@ -1,5 +1,7 @@
 package domain;
 
+import DTO.AttendanceEditDto;
+import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceStatus;
 import domain.attendance.StudentStatus;
 
@@ -44,6 +46,14 @@ public class CrewGroup {
     public void attendCrew(String crewName, LocalDateTime attendTime){
         Crew findCrew = findByName(crewName);
         findCrew.fillAttend(attendTime);
+    }
+
+    public AttendanceEditDto editCrewAttendance(String crewName, LocalDateTime editTime){
+        Crew findCrew = findByName(crewName);
+        AttendanceDate beforeRecord = findCrew.getAttendTimeByLocalDate(LocalDate.from(editTime));
+        findCrew.editAttendanceTime(editTime);
+        AttendanceDate afterRecord = findCrew.getAttendTimeByLocalDate(LocalDate.from(editTime));
+        return AttendanceEditDto.from(beforeRecord, afterRecord);
     }
 
     public AttendanceStatus getCrewDateStatus(String crewName, LocalDate findDate){

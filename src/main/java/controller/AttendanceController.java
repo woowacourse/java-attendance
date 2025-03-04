@@ -1,5 +1,6 @@
 package controller;
 
+import DTO.AttendanceEditDto;
 import domain.Crew;
 import domain.CrewGroup;
 import domain.attendance.Attendance;
@@ -97,15 +98,18 @@ public class AttendanceController {
 
     public static void editCrewAttendance() {
         String findCrewName = InputView.getEditCrewName();
-        Crew findCrew = crews.findByName(findCrewName);
-        Attendance crewRecord = findCrew.getAttendanceRecord();
         LocalDateTime editTime = InputView.getEditTime();
-        AttendanceDate findDate = crewRecord.findByLocalDate(LocalDate.from(editTime));
 
-        AttendanceDate oldRecord = new AttendanceDate(findDate.getAttendanceAt());
-        crewRecord.editAttendance(editTime);
+        AttendanceEditDto editDto = crews.editCrewAttendance(findCrewName, editTime);
+        OutputView.printEditResult(editDto);
 
-        OutputView.printEditResult(oldRecord, findDate);
+//        Crew findCrew = crews.findByName(findCrewName);
+//        Attendance crewRecord = findCrew.getAttendanceRecord();
+//        AttendanceDate findDate = crewRecord.findByLocalDate(LocalDate.from(editTime));
+//        AttendanceDate oldRecord = new AttendanceDate(findDate.getAttendanceAt());
+//        crewRecord.editAttendance(editTime);
+
+//        OutputView.printEditResult(oldRecord, findDate);
     }
 
     public static void findWarningCrews() {

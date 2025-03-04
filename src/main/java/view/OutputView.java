@@ -1,5 +1,6 @@
 package view;
 
+import DTO.AttendanceEditDto;
 import domain.Crew;
 import domain.attendance.*;
 
@@ -79,7 +80,10 @@ public class OutputView {
         System.out.println(crewAttendanceResult.getStudentStatus().getDescription() + " 대상자 입니다.");
     }
 
-    public static void printEditResult(AttendanceDate oldRecord, AttendanceDate newRecord) {
+    public static void printEditResult(AttendanceEditDto editDto) {
+        AttendanceDate oldRecord = editDto.beforeAttendance();
+        AttendanceDate newRecord = editDto.afterAttendance();
+
         LocalDateTime oldDateRecord = oldRecord.getAttendanceAt();
         LocalDateTime newDateRecord = newRecord.getAttendanceAt();
 
