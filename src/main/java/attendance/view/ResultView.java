@@ -6,7 +6,6 @@ import attendance.domain.AttendanceCounter;
 import attendance.domain.AttendanceState;
 import attendance.domain.CampusScheduler;
 import attendance.domain.CrewHistory;
-import attendance.domain.Nickname;
 import attendance.domain.RiskAtExpulsion;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,9 +66,9 @@ public class ResultView {
                 getAttendanceState(afterAttendanceState));
     }
 
-    public void showAttendanceHistory(final Nickname nickname, final CrewHistory crewHistory,
+    public void showAttendanceHistory(final String nickname, final CrewHistory crewHistory,
                                       final LocalDate nowDate, final CampusScheduler campusScheduler) {
-        System.out.printf(LINE + TITLE_INQUIRY_CREW + LINE + LINE, nickname.getValue());
+        System.out.printf(LINE + TITLE_INQUIRY_CREW + LINE + LINE, nickname);
         LocalDate date = nowDate.withDayOfMonth(1);
         while (date.isBefore(nowDate)) {
             showEveryDateHistory(crewHistory, campusScheduler, date);
@@ -88,32 +87,32 @@ public class ResultView {
         System.out.printf(LINE + FORMAT_EXPULSION + LINE, getRiskAtExpulsion(riskAtExpulsion));
     }
 
-    public void showExpulsionCrews(final Map<Nickname, AttendanceCounter> result) {
+    public void showExpulsionCrews(final Map<String, AttendanceCounter> result) {
         System.out.println(LINE + TITLE_EXPULSION);
-        Map<Nickname, AttendanceCounter> sortedResult = result.entrySet().stream()
+        Map<String, AttendanceCounter> sortedResult = result.entrySet().stream()
                 .sorted(makeComparator())
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (x, y) -> y, LinkedHashMap::new));
-        for (Entry<Nickname, AttendanceCounter> entry : sortedResult.entrySet()) {
+        for (Entry<String, AttendanceCounter> entry : sortedResult.entrySet()) {
             showExpulsionCrew(entry.getKey(), entry.getValue());
         }
     }
 
-    private Comparator<Entry<Nickname, AttendanceCounter>> makeComparator() {
+    private Comparator<Entry<String, AttendanceCounter>> makeComparator() {
         return Comparator.comparingInt(
-                        (Entry<Nickname, AttendanceCounter> e) -> e.getValue().getCount(AttendanceState.ABSENCE) * 3
+                        (Entry<String, AttendanceCounter> e) -> e.getValue().getCount(AttendanceState.ABSENCE) * 3
                                 + e.getValue().getCount(AttendanceState.TARDINESS))
                 .reversed()
-                .thenComparing(e -> e.getKey().getValue());
+                .thenComparing(e -> e.getKey());
     }
 
-    private void showExpulsionCrew(final Nickname nickname, final AttendanceCounter counter) {
+    private void showExpulsionCrew(final String nickname, final AttendanceCounter counter) {
         int absentCount = counter.getCount(ABSENCE);
         int lateCount = counter.getCount(AttendanceState.TARDINESS);
         RiskAtExpulsion riskAtExpulsion = RiskAtExpulsion.of(absentCount, lateCount);
         if (riskAtExpulsion == RiskAtExpulsion.NOT_APPLICABLE) {
             return;
         }
-        System.out.printf(FORMAT_EXPULSION_WITH_COUNT + LINE, nickname.getValue(), absentCount, lateCount,
+        System.out.printf(FORMAT_EXPULSION_WITH_COUNT + LINE, nickname, absentCount, lateCount,
                 getRiskAtExpulsion(riskAtExpulsion));
     }
 

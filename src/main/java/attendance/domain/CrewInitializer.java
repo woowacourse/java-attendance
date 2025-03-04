@@ -17,16 +17,14 @@ public class CrewInitializer {
     public CrewHistories initialize() {
         CrewHistories crewHistories = new CrewHistories(new HashMap<>());
         for (Entry<String, List<LocalDateTime>> entry : attendances.entrySet()) {
-            Nickname nickname = new Nickname(entry.getKey());
-            addHistory(entry, crewHistories, nickname);
+            addHistory(entry, crewHistories);
         }
         return crewHistories;
     }
 
-    private void addHistory(final Entry<String, List<LocalDateTime>> entry, final CrewHistories crewHistories,
-                           final Nickname nickname) {
+    private void addHistory(final Entry<String, List<LocalDateTime>> entry, final CrewHistories crewHistories) {
         for (LocalDateTime attendanceTime : entry.getValue()) {
-            crewHistories.addHistory(nickname, attendanceTime);
+            crewHistories.addHistory(entry.getKey(), attendanceTime);
         }
     }
 }

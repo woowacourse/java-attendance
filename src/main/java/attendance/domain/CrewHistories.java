@@ -10,53 +10,53 @@ import java.util.Optional;
 
 public class CrewHistories {
 
-    private final Map<Nickname, CrewHistory> histories;
+    private final Map<String, CrewHistory> histories;
 
-    public CrewHistories(final Map<Nickname, CrewHistory> histories) {
+    public CrewHistories(final Map<String, CrewHistory> histories) {
         this.histories = new HashMap<>(histories);
     }
 
-    public void addHistory(final Nickname nickname, final LocalDateTime attendanceDateTime) {
+    public void addHistory(final String nickname, final LocalDateTime attendanceDateTime) {
         createIfNotExists(nickname);
         CrewHistory crewHistory = histories.get(nickname);
         crewHistory.add(attendanceDateTime);
     }
 
-    public void validateHistoryNotExists(final Nickname nickname, final LocalDate attendanceDate) {
+    public void validateHistoryNotExists(final String nickname, final LocalDate attendanceDate) {
         validateKeyExists(nickname);
         CrewHistory crewHistory = histories.get(nickname);
         crewHistory.validateNotExists(attendanceDate);
     }
 
-    public void validateHistoryExists(final Nickname nickname, final LocalDate attendanceDate) {
+    public void validateHistoryExists(final String nickname, final LocalDate attendanceDate) {
         validateKeyExists(nickname);
         CrewHistory crewHistory = histories.get(nickname);
         crewHistory.validateExists(attendanceDate);
     }
 
-    public void validateKeyExists(final Nickname nickname) {
+    public void validateKeyExists(final String nickname) {
         if (!histories.containsKey(nickname)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
     }
 
-    public LocalDateTime modify(final Nickname nickname, final LocalDateTime modifyingDateTime) {
+    public LocalDateTime modify(final String nickname, final LocalDateTime modifyingDateTime) {
         validateKeyExists(nickname);
         CrewHistory crewHistory = histories.get(nickname);
         return crewHistory.modify(modifyingDateTime);
     }
 
-    public Optional<LocalDateTime> findHistoryOfDate(final Nickname nickname, final LocalDate date) {
+    public Optional<LocalDateTime> findHistoryOfDate(final String nickname, final LocalDate date) {
         CrewHistory crewHistory = histories.get(nickname);
         return crewHistory.find(date);
     }
 
-    public CrewHistory findHistory(final Nickname nickname) {
+    public CrewHistory findHistory(final String nickname) {
         validateKeyExists(nickname);
         return histories.get(nickname);
     }
 
-    private void createIfNotExists(final Nickname nickname) {
+    private void createIfNotExists(final String nickname) {
         if (!histories.containsKey(nickname)) {
             histories.put(nickname, new CrewHistory(new HashMap<>()));
         }
@@ -75,7 +75,7 @@ public class CrewHistories {
         return Objects.hashCode(histories);
     }
 
-    public Map<Nickname, CrewHistory> getHistories() {
+    public Map<String, CrewHistory> getHistories() {
         return Collections.unmodifiableMap(histories);
     }
 }

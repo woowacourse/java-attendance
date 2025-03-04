@@ -5,7 +5,6 @@ import attendance.domain.AttendanceState;
 import attendance.domain.CampusScheduler;
 import attendance.domain.CrewHistories;
 import attendance.domain.CrewHistory;
-import attendance.domain.Nickname;
 import attendance.domain.RiskAtExpulsion;
 import attendance.view.InputView;
 import attendance.view.ResultView;
@@ -30,7 +29,7 @@ public class InquiryCrewCommand implements Command {
     @Override
     public void execute(final CrewHistories crewHistories) {
         LocalDate nowDate = LocalDate.now(clock);
-        Nickname nickname = makeNickname();
+        String nickname = inputView.readNickname();
         crewHistories.validateKeyExists(nickname);
         CrewHistory history = crewHistories.findHistory(nickname);
         resultView.showAttendanceHistory(nickname, history, nowDate, campusScheduler);
@@ -46,10 +45,5 @@ public class InquiryCrewCommand implements Command {
 
         resultView.showCountByAttendanceState(attendanceCount, lateCount, absentCount);
         resultView.showExpulsion(RiskAtExpulsion.of(absentCount, lateCount));
-    }
-
-    private Nickname makeNickname() {
-        String nickname = inputView.readNickname();
-        return new Nickname(nickname);
     }
 }

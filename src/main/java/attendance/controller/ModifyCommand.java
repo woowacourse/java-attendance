@@ -2,7 +2,6 @@ package attendance.controller;
 
 import attendance.domain.CampusScheduler;
 import attendance.domain.CrewHistories;
-import attendance.domain.Nickname;
 import attendance.util.StringParser;
 import attendance.view.InputView;
 import attendance.view.ResultView;
@@ -32,17 +31,12 @@ public class ModifyCommand implements Command {
     public void execute(final CrewHistories crewHistories) {
         LocalDate now = LocalDate.now(clock);
 
-        Nickname nickname = makeNickname();
+        String nickname = inputView.readModifyingNickname();
         crewHistories.validateKeyExists(nickname);
 
         LocalDate modifyingDate = getModifyingDate(now);
         crewHistories.validateHistoryExists(nickname, modifyingDate);
         modify(crewHistories, modifyingDate, nickname);
-    }
-
-    private Nickname makeNickname() {
-        String nickname = inputView.readModifyingNickname();
-        return new Nickname(nickname);
     }
 
     private LocalDate getModifyingDate(final LocalDate now) {
@@ -73,7 +67,7 @@ public class ModifyCommand implements Command {
         }
     }
 
-    private void modify(final CrewHistories crewHistories, final LocalDate modifyingDate, final Nickname nickname) {
+    private void modify(final CrewHistories crewHistories, final LocalDate modifyingDate, final String nickname) {
         LocalTime modifyingTime = makeTime();
         LocalDateTime modifyingDateTime = LocalDateTime.of(modifyingDate, modifyingTime);
         campusScheduler.validateOperationTime(modifyingDateTime);

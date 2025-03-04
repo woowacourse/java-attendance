@@ -4,7 +4,6 @@ import attendance.domain.AttendanceCounter;
 import attendance.domain.CampusScheduler;
 import attendance.domain.CrewHistories;
 import attendance.domain.CrewHistory;
-import attendance.domain.Nickname;
 import attendance.view.ResultView;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -28,17 +27,17 @@ public class InquiryExplusionCommand implements Command {
     @Override
     public void execute(final CrewHistories crewHistories) {
         LocalDate nowDate = LocalDate.now(clock);
-        Map<Nickname, AttendanceCounter> result = makeAttendanceCounterByNickname(crewHistories, nowDate);
+        Map<String, AttendanceCounter> result = makeAttendanceCounterByNickname(crewHistories, nowDate);
         resultView.showExpulsionCrews(result);
     }
 
-    private Map<Nickname, AttendanceCounter> makeAttendanceCounterByNickname(final CrewHistories crewHistories,
+    private Map<String, AttendanceCounter> makeAttendanceCounterByNickname(final CrewHistories crewHistories,
                                                                              final LocalDate nowDate) {
-        Map<Nickname, AttendanceCounter> result = new HashMap<>();
-        for (Entry<Nickname, CrewHistory> entry : crewHistories.getHistories().entrySet()) {
+        Map<String, AttendanceCounter> result = new HashMap<>();
+        for (Entry<String, CrewHistory> entry : crewHistories.getHistories().entrySet()) {
             CrewHistory history = entry.getValue();
             AttendanceCounter counter = campusScheduler.countByAttendanceState(history, nowDate);
-            Nickname nickname = entry.getKey();
+            String nickname = entry.getKey();
             result.put(nickname, counter);
         }
         return result;

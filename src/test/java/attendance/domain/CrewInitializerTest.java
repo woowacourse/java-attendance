@@ -31,9 +31,9 @@ class CrewInitializerTest {
 
         // Then
         assertThat(crewHistories).isEqualTo(new CrewHistories(Map.of(
-                new Nickname("빙봉"), makeCrewHistory(makeAttendanceMonday(2), makeAttendanceExceptMonday(3)),
-                new Nickname("빙티"), makeCrewHistory(makeTardinessMonday(2), makeTardinessExceptMonday(3)),
-                new Nickname("짱수"), makeCrewHistory(makeAbsenceMonday(2), makeAbsenceExceptMonday(3))
+                "빙봉", makeCrewHistory(makeAttendanceMonday(2), makeAttendanceExceptMonday(3)),
+                "빙티", makeCrewHistory(makeTardinessMonday(2), makeTardinessExceptMonday(3)),
+                "짱수", makeCrewHistory(makeAbsenceMonday(2), makeAbsenceExceptMonday(3))
         )));
     }
 }

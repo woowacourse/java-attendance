@@ -31,7 +31,7 @@ class CrewHistoriesTest {
     @Test
     void 크루의_출석_기록을_저장한다() {
         // Given
-        Nickname nickname = new Nickname("밍트");
+        String nickname = "밍트";
         LocalDateTime yesterdayAttendanceTime = makeDefaultAttendanceTime();
         crewHistories.addHistory(nickname, yesterdayAttendanceTime);
 
@@ -48,7 +48,7 @@ class CrewHistoriesTest {
     @Test
     void 크루의_출석_기록이_존재하지_않은_경우_새롭게_만들어_저장한다() {
         // Given
-        Nickname nickname = new Nickname("밍트");
+        String nickname = "밍트";
         LocalDateTime attendanceTime = makeDefaultAttendanceTime();
 
         // When
@@ -61,7 +61,7 @@ class CrewHistoriesTest {
     @Test
     void 닉네임으로_출석_기록이_존재하지_않는지_조회한다() {
         // Given
-        Nickname nickname = new Nickname("밍트");
+        String nickname = "밍트";
         LocalDateTime yesterdayAttendanceTime = makeDefaultAttendanceTime();
         crewHistories.addHistory(nickname, yesterdayAttendanceTime);
         LocalDate today = makeDecemberDate(4);
@@ -74,7 +74,7 @@ class CrewHistoriesTest {
     @Test
     void 이미_출석_기록이_존재하는_경우_예외가_발생한다() {
         // Given
-        Nickname nickname = new Nickname("밍트");
+        String nickname = "밍트";
         LocalDateTime yesterdayAttendanceTime = makeDefaultAttendanceTime();
         crewHistories.addHistory(nickname, yesterdayAttendanceTime);
         LocalDate yesterday = LocalDate.from(yesterdayAttendanceTime);
@@ -88,7 +88,7 @@ class CrewHistoriesTest {
     @Test
     void 닉네임으로_출석_기록이_존재하는지_조회한다() {
         // Given
-        Nickname nickname = new Nickname("밍트");
+        String nickname = "밍트";
         LocalDateTime yesterdayAttendanceTime = makeDateTime(3, 10, 0);
         crewHistories.addHistory(nickname, yesterdayAttendanceTime);
         LocalDate today = makeDecemberDate(3);
@@ -101,7 +101,7 @@ class CrewHistoriesTest {
     @Test
     void 출석_기록이_존재하지_않는_경우_예외가_발생한다() {
         // Given
-        Nickname nickname = new Nickname("밍트");
+        String nickname = "밍트";
         LocalDateTime attendanceTime = makeDateTime(3, 10, 0);
         crewHistories.addHistory(nickname, attendanceTime);
         LocalDate modifyingDate = makeDecemberDate(2);
@@ -115,7 +115,7 @@ class CrewHistoriesTest {
     @Test
     void 존재하지_않은_닉네임으로_조회하는_경우_예외가_발생한다() {
         // Given
-        Nickname nickname = new Nickname("밍트");
+        String nickname = "밍트";
 
         // When & Then
         assertThatThrownBy(() -> crewHistories.validateKeyExists(nickname))
@@ -126,7 +126,7 @@ class CrewHistoriesTest {
     @Test
     void 출석_기록을_수정한다() {
         // Given
-        Nickname nickname = new Nickname("밍트");
+        String nickname = "밍트";
         LocalDateTime attendanceTime = makeDateTime(3, 10, 0);
         crewHistories.addHistory(nickname, attendanceTime);
         LocalDateTime modifyingTime = makeDateTime(3, 11, 0);
@@ -145,7 +145,7 @@ class CrewHistoriesTest {
     @Test
     void 하나의_출석_기록을_조회한다() {
         // Given
-        Nickname nickname = new Nickname("밍트");
+        String nickname = "밍트";
         LocalDateTime attendanceTime = makeDateTime(3, 10, 0);
         crewHistories.addHistory(nickname, attendanceTime);
 
@@ -159,7 +159,7 @@ class CrewHistoriesTest {
     @Test
     void 출석_기록이_존재하지_않은_경우_빈값을_반환한다() {
         // Given
-        Nickname nickname = new Nickname("밍트");
+        String nickname = "밍트";
         LocalDateTime yesterdayAttendanceTime = makeDateTime(3, 10, 0);
         crewHistories.addHistory(nickname, yesterdayAttendanceTime);
         LocalDate today = makeDecemberDate(4);
@@ -174,7 +174,7 @@ class CrewHistoriesTest {
     @Test
     void 출석_기록을_조회한다() {
         // Given
-        Nickname nickname = new Nickname("밍트");
+        String nickname = "밍트";
         crewHistories.addHistory(nickname, makeAttendanceExceptMonday(2));
         crewHistories.addHistory(nickname, makeAttendanceMonday(3));
         crewHistories.addHistory(nickname, makeAttendanceMonday(4));

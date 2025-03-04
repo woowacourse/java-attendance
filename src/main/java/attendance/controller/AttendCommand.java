@@ -2,7 +2,6 @@ package attendance.controller;
 
 import attendance.domain.CampusScheduler;
 import attendance.domain.CrewHistories;
-import attendance.domain.Nickname;
 import attendance.util.StringParser;
 import attendance.view.InputView;
 import attendance.view.ResultView;
@@ -29,7 +28,7 @@ public class AttendCommand implements Command {
     @Override
     public void execute(final CrewHistories crewHistories) {
         LocalDate nowDate = getValidNowDate();
-        Nickname nickname = getValidNickname(crewHistories, nowDate);
+        String nickname = getValidNickname(crewHistories, nowDate);
         LocalDateTime attendanceTime = getValidAttendanceTime(nowDate);
 
         crewHistories.addHistory(nickname, attendanceTime);
@@ -42,8 +41,8 @@ public class AttendCommand implements Command {
         return nowDate;
     }
 
-    private Nickname getValidNickname(final CrewHistories crewHistories, final LocalDate nowDate) {
-        Nickname nickname = makeNickname();
+    private String getValidNickname(final CrewHistories crewHistories, final LocalDate nowDate) {
+        String nickname = inputView.readNickname();
         crewHistories.validateHistoryNotExists(nickname, nowDate);
         return nickname;
     }
@@ -57,10 +56,5 @@ public class AttendCommand implements Command {
     private LocalTime parseAttendanceTime() {
         String attendanceTime = inputView.readAttendanceTime();
         return StringParser.parseLocalTime(attendanceTime);
-    }
-
-    private Nickname makeNickname() {
-        String nickname = inputView.readNickname();
-        return new Nickname(nickname);
     }
 }
