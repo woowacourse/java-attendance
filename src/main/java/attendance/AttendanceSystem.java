@@ -33,8 +33,6 @@ public class AttendanceSystem {
     }
 
     public void run() {
-        crewAttendanceManager.initAttendanceFromFile();
-
         while (true) {
             Menu menu = displayMenuAndReadCommand();
 

@@ -14,21 +14,17 @@ import java.util.stream.IntStream;
 
 public class CrewAttendanceManager {
 
-    public static final String ATTENDANCES_CSV_FILE_NAME = "attendances.csv";
+    public static final String HOLIDAYS_CSV_FILE_NAME = "holidays.csv";
 
     private final Map<String, Attendances> crewAttendance = new HashMap<>();
     private final DateGenerator dateGenerator;
     private final Holidays holidays;
 
-    public CrewAttendanceManager(DateGenerator dateGenerator) {
-        this.dateGenerator = dateGenerator;
-        holidays = new Holidays();
-        holidays.initFromFile();
-    }
+    public CrewAttendanceManager(DateGenerator dateGenerator, final String fileName) {
+        initAttendanceFromFile(fileName);
 
-    public void initAttendanceFromFile() {
-        List<String> fileLines = FileUtil.readFile(ATTENDANCES_CSV_FILE_NAME);
-        fileLines.forEach(this::initAttendanceFromLine);
+        this.dateGenerator = dateGenerator;
+        holidays = new Holidays(HOLIDAYS_CSV_FILE_NAME);
     }
 
     public void addNewCrew(final String nickname, final Attendances attendances) {
@@ -72,6 +68,11 @@ public class CrewAttendanceManager {
                 .map(this::getAttendanceRecord)
                 .toList();
         return new AttendanceRecords(records);
+    }
+
+    private void initAttendanceFromFile(final String fileName) {
+        List<String> fileLines = FileUtil.readFile(fileName);
+        fileLines.forEach(this::initAttendanceFromLine);
     }
 
     private void initAttendanceFromLine(final String line) {

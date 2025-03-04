@@ -11,21 +11,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("출석 매니저 테스트")
 class CrewAttendanceManagerTest {
 
+    private static final String TEST_ATTENDANCE_FILE = "testAttendances.csv";
     private final DateGenerator dateGenerator = new TestDateGenerator();
-    private final CrewAttendanceManager attendanceManager = new CrewAttendanceManager(dateGenerator);
-
-    @Test
-    @DisplayName("출석 파일을 읽어 출석 매니저를 생성한다")
-    void initializeAttendanceManagerFromFile() {
-        assertThatNoException()
-                .isThrownBy(attendanceManager::initAttendanceFromFile);
-    }
+    private final CrewAttendanceManager attendanceManager = new CrewAttendanceManager(dateGenerator, TEST_ATTENDANCE_FILE);
 
     @Test
     @DisplayName("동일한 닉네임의 크루가 없으면 예외가 발생한다")
