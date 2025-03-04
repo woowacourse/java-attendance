@@ -6,6 +6,7 @@ import domain.dateTime.AttendanceDateTime;
 import domain.record.AttendanceRecord;
 import domain.record.AttendanceRecords;
 import domain.record.AttendanceStatusCounts;
+import java.time.LocalDateTime;
 
 public class Crew implements Comparable<Crew> {
 
@@ -50,12 +51,13 @@ public class Crew implements Comparable<Crew> {
         return nickname;
     }
 
-    public AttendanceRecord findAttendanceRecordByDate(AttendanceDate attendanceDate) {
-        return attendanceRecords.findAttendanceRecord(attendanceDate);
+    public AttendanceRecord findAttendanceRecordByDate(final AttendanceDate attendanceDate) {
+        return attendanceRecords.findAttendanceRecord(attendanceDate.getDate());
     }
 
     public AttendanceRecord editAttendanceDateTime(final AttendanceDateTime wantedAttendanceDateTime) {
-        final AttendanceRecord beforeRecord = attendanceRecords.findMatchingAttendanceDate(wantedAttendanceDateTime);
+        final LocalDateTime dateTime = wantedAttendanceDateTime.getDateTime();
+        final AttendanceRecord beforeRecord = attendanceRecords.findAttendanceRecord(dateTime.toLocalDate());
         final AttendanceRecord afterRecord = new AttendanceRecord(wantedAttendanceDateTime);
 
         attendanceRecords.editAttendanceDateTime(beforeRecord, afterRecord);

@@ -2,7 +2,6 @@ package domain.record;
 
 import domain.AttendanceStatus;
 import domain.DisciplinaryStatus;
-import domain.dateTime.AttendanceDate;
 import domain.dateTime.AttendanceDateTime;
 import java.time.LocalDate;
 import java.util.EnumMap;
@@ -33,12 +32,11 @@ public class AttendanceRecords {
         return new AttendanceStatusCounts(absenceCount, lateCount, attendanceCount);
     }
 
-    public AttendanceRecord findMatchingAttendanceDate(final AttendanceDateTime attendanceDateTime) {
-        final LocalDate localDate = attendanceDateTime.getDateTime().toLocalDate();
+    public AttendanceRecord findAttendanceRecord(final LocalDate date) {
         return attendanceRecords.stream()
-                .filter(attendanceRecord -> attendanceRecord.hasAttendanceDate(localDate))
+                .filter(attendanceRecord -> attendanceRecord.hasAttendanceDate(date))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출석 dateTime 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜에는 출석 기록이 존재하지 않습니다."));
     }
 
     public AttendanceRecord findByDate(final LocalDate date) {
@@ -71,14 +69,6 @@ public class AttendanceRecords {
 
     public AttendanceStatusCounts getAttendanceStatusCounts() {
         return attendanceStatusCounts;
-    }
-
-    public AttendanceRecord findAttendanceRecord(final AttendanceDate attendanceDate) {
-        final LocalDate date = attendanceDate.getDate();
-        return attendanceRecords.stream()
-                .filter(attendanceRecord -> attendanceRecord.hasAttendanceDate(date))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 날짜에는 출석 기록이 존재하지 않습니다."));
     }
 
     public DisciplinaryStatus findDisciplinaryStatus() {
