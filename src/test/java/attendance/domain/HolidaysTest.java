@@ -19,7 +19,7 @@ class HolidaysTest {
 
     @Test
     @DisplayName("공휴일 파일을 읽어 휴일 객체를 생성한다")
-    void 공휴일_파일을_읽어_휴일을_저장한다() {
+    void initializeHolidaysFromFile() {
         assertThatNoException()
                 .isThrownBy(holidays::initFromFile);
     }

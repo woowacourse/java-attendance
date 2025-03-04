@@ -22,14 +22,14 @@ class CrewAttendanceManagerTest {
 
     @Test
     @DisplayName("출석 파일을 읽어 출석 매니저를 생성한다")
-    void 출석_파일을_읽어_출석_매니저를_생성한다() {
+    void initializeAttendanceManagerFromFile() {
         assertThatNoException()
                 .isThrownBy(attendanceManager::initAttendanceFromFile);
     }
 
     @Test
     @DisplayName("동일한 닉네임의 크루가 없으면 예외가 발생한다")
-    void 동일한_닉네임의_크루가_없으면_예외가_발생한다() {
+    void throwExceptionIfNicknameNotExists() {
         // given
         String nickname = "ERROR";
 
@@ -41,7 +41,7 @@ class CrewAttendanceManagerTest {
 
     @Test
     @DisplayName("닉네임과 입력 시간으로 크루의 출석을 등록한다")
-    void 닉네임과_입력_시간으로_크루의_출석을_등록한다() {
+    void registerCrewAttendanceByNicknameAndTime() {
         // given
         String nickname = "비타";
         LocalDate nowDate = dateGenerator.generate();
@@ -61,7 +61,7 @@ class CrewAttendanceManagerTest {
 
     @Test
     @DisplayName("닉네임과 입력 일자와 시간으로 크루의 출석을 수정한다")
-    void 닉네임과_입력_일자와_시간으로_크루의_출석을_수정한다() {
+    void updateCrewAttendanceByNicknameAndDateTime() {
         // given
         String nickname = "비타";
         LocalDate nowDate = dateGenerator.generate();
@@ -86,7 +86,7 @@ class CrewAttendanceManagerTest {
 
     @Test
     @DisplayName("닉네임의 전날 출석 날짜, 시간과 출결 상황을 반환한다")
-    void 닉네임의_전날_출석_날짜_시간과_출결_상황을_반환한다() {
+    void returnPreviousDayAttendanceStatusByNickname() {
         // given
         String nickname = "비타";
         LocalDate nowDate = dateGenerator.generate();
@@ -106,7 +106,7 @@ class CrewAttendanceManagerTest {
 
     @Test
     @DisplayName("정렬된 출결 상황 위험자를 반환한다")
-    void 정렬된_출결_상황_위험자를_반환한다() {
+    void returnSortedAttendanceRiskList() {
         // given
         List<String> nicknames = List.of("비타", "레오", "듀이", "꾹이", "몽이");
         List<String> excepted = List.of("몽이", "꾹이", "듀이", "레오", "비타");

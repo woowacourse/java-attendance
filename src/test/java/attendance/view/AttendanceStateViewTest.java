@@ -9,7 +9,7 @@ class AttendanceStateViewTest {
 
     @Test
     @DisplayName("이름과 동일한 출력문을 반환한다")
-    void 이름과_동일한_출력문을_반환한다() {
+    void returnOutputMatchingName() {
         // given
         String name = "ATTENDANCE";
 

@@ -14,7 +14,7 @@ class AttendanceRiskTest {
     @ParameterizedTest
     @MethodSource
     @DisplayName("결석 횟수로 위험도를 판단해 반환한다")
-    void 결석과_지각_횟수로_위험도를_판단해_반환한다(int absence, int tardy, AttendanceRisk excepted) {
+    void evaluateRiskBasedOnAbsencesAndTardies(int absence, int tardy, AttendanceRisk excepted) {
         // when
         AttendanceRisk result = AttendanceRisk.evaluate(absence, tardy);
 
@@ -22,7 +22,7 @@ class AttendanceRiskTest {
         Assertions.assertThat(result).isEqualTo(excepted);
     }
 
-    private static Stream<Arguments> 결석과_지각_횟수로_위험도를_판단해_반환한다() {
+    private static Stream<Arguments> evaluateRiskBasedOnAbsencesAndTardies() {
         return Stream.of(
                 Arguments.of(1, 2, AttendanceRisk.NONE),
                 Arguments.of(1, 3, AttendanceRisk.WARNING),

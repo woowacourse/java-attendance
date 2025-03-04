@@ -18,7 +18,7 @@ class AttendanceRecordsTest {
 
     @Test
     @DisplayName("여러 출결 상황을 받아 정렬해 생성한다")
-    void 여러_출결_상황을_받아_정렬해_생성한다() {
+    void createAndSortAttendanceRecords() {
         // given
         LocalDate nowDate = dateGenerator.generate();
 

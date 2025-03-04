@@ -20,7 +20,7 @@ class AttendanceTest {
     @ParameterizedTest
     @MethodSource
     @DisplayName("날짜와 시간으로 출석을 생성한다")
-    void 날짜와_시간으로_출석을_생성한다(LocalDateTime dateTime, AttendanceState state) {
+    void createAttendanceFromDateTime(LocalDateTime dateTime, AttendanceState state) {
         // when
         Attendance result = Attendance.createFromDateTime(dateTime);
 
@@ -37,7 +37,7 @@ class AttendanceTest {
             "2025-03-05T10:00, 2025-03-06, false",
     })
     @DisplayName("동일한 날짜인지 판단해 반환한다")
-    void 동일한_날짜인지_판단해_반환한다(LocalDateTime dateTime, LocalDate date, boolean excepted) {
+    void isSameDate(LocalDateTime dateTime, LocalDate date, boolean excepted) {
         // given
         Attendance attendance = Attendance.createFromDateTime(dateTime);
 
@@ -51,7 +51,7 @@ class AttendanceTest {
     @ParameterizedTest
     @MethodSource
     @DisplayName("기본 시간인지 판단해 반환한다")
-    void 기본_시간인지_판단해_반환한다(LocalDateTime dateTime, boolean excepted) {
+    void isNotDefaultTime(LocalDateTime dateTime, boolean excepted) {
         // given
         Attendance attendance = Attendance.createFromDateTime(dateTime);
 
@@ -68,7 +68,7 @@ class AttendanceTest {
             "2025-03-05T10:00, 2025-03-06, true",
     })
     @DisplayName("이전 날짜인지 판단해 반환한다")
-    void 이전_날짜인지_판단해_반환한다(LocalDateTime dateTime, LocalDate date, boolean excepted) {
+    void isDateBefore(LocalDateTime dateTime, LocalDate date, boolean excepted) {
         // given
         Attendance attendance = Attendance.createFromDateTime(dateTime);
 
@@ -82,7 +82,7 @@ class AttendanceTest {
     @ParameterizedTest
     @MethodSource
     @DisplayName("출결 상황이 동일한지 판단해 반환한다")
-    void 출결_상황이_동일한지_판단해_반환한다(LocalDateTime dateTime, AttendanceState state, boolean excepted) {
+    void isSameState(LocalDateTime dateTime, AttendanceState state, boolean excepted) {
         // given
         Attendance attendance = Attendance.createFromDateTime(dateTime);
 
@@ -99,7 +99,7 @@ class AttendanceTest {
             "2025-03-05T10:00, 2025-03-06T10:00, false",
     })
     @DisplayName("동일한 객체인지 판단해 반환한다")
-    void 동일한_객체인지_판단해_반환한다(LocalDateTime dateTime, LocalDateTime otherDateTime, boolean excepted) {
+    void isEqualObject(LocalDateTime dateTime, LocalDateTime otherDateTime, boolean excepted) {
         // given
         Attendance attendance = Attendance.createFromDateTime(dateTime);
         Attendance otherAttendance = Attendance.createFromDateTime(otherDateTime);
@@ -111,7 +111,7 @@ class AttendanceTest {
         assertThat(result).isEqualTo(excepted);
     }
 
-    private static Stream<Arguments> 날짜와_시간으로_출석을_생성한다() {
+    private static Stream<Arguments> createAttendanceFromDateTime() {
         return Stream.of(
                 Arguments.of(LocalDateTime.of(2025, 3, 5, 10, 0, 0), AttendanceState.ATTENDANCE),
                 Arguments.of(LocalDateTime.of(2025, 3, 5, 10, 6, 0), AttendanceState.TARDY),
@@ -119,14 +119,14 @@ class AttendanceTest {
         );
     }
 
-    private static Stream<Arguments> 기본_시간인지_판단해_반환한다() {
+    private static Stream<Arguments> isNotDefaultTime() {
         return Stream.of(
                 Arguments.of(LocalDateTime.of(LocalDate.of(2025, 3, 5), LocalTime.MAX), false),
                 Arguments.of(LocalDateTime.of(LocalDate.of(2025, 3, 5), LocalTime.MIN), true)
         );
     }
 
-    private static Stream<Arguments> 출결_상황이_동일한지_판단해_반환한다() {
+    private static Stream<Arguments> isSameState() {
         return Stream.of(
                 Arguments.of(LocalDateTime.of(2025, 3, 5, 10, 0, 0), AttendanceState.ATTENDANCE, true),
                 Arguments.of(LocalDateTime.of(2025, 3, 5, 10, 6, 0), AttendanceState.TARDY, true),

@@ -22,7 +22,7 @@ class AttendanceStatusTest {
     @ParameterizedTest
     @MethodSource
     @DisplayName("출석 목록으로 출결 상황을 종합한다")
-    void 출석_목록으로_출결_상황을_종합한다(
+    void summarizeAttendanceStatusFromRecords(
             List<Attendance> attendances,
             int attendanceExcepted,
             int tardyExcepted,
@@ -42,7 +42,7 @@ class AttendanceStatusTest {
     @ParameterizedTest
     @MethodSource
     @DisplayName("출석 목록으로 출결 위험도를 판단한다")
-    void 출석_목록으로_출결_위험도를_판단한다(List<Attendance> attendances, AttendanceRisk excepted) {
+    void evaluateRiskBasedOnAttendanceRecords(List<Attendance> attendances, AttendanceRisk excepted) {
         // when
         AttendanceStatus result = AttendanceStatus.fromAttendances(attendances);
 
@@ -50,7 +50,7 @@ class AttendanceStatusTest {
         assertThat(result.getRisk()).isEqualTo(excepted);
     }
 
-    private static Stream<Arguments> 출석_목록으로_출결_상황을_종합한다() {
+    private static Stream<Arguments> summarizeAttendanceStatusFromRecords() {
         LocalDate nowDate = dateGenerator.generate();
         return Stream.of(
                 Arguments.of(List.of(
@@ -68,7 +68,7 @@ class AttendanceStatusTest {
         );
     }
 
-    private static Stream<Arguments> 출석_목록으로_출결_위험도를_판단한다() {
+    private static Stream<Arguments> evaluateRiskBasedOnAttendanceRecords() {
         LocalDate nowDate = dateGenerator.generate();
         return Stream.of(
                 Arguments.of(
