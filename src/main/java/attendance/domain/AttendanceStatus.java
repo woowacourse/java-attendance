@@ -20,9 +20,9 @@ public class AttendanceStatus {
 
     private String determineSubjectStatus() {
         int adjustedAbsences = absentCount + lateCount / LATE_TO_ABSENT_RATIO;
-        if (adjustedAbsences > DISMISSAL_THRESHOLD) return "제적";
-        if (adjustedAbsences >= COUNSELING_THRESHOLD) return "면담";
-        if (adjustedAbsences >= WARNING_THRESHOLD) return "경고";
+        if (adjustedAbsences > DISMISSAL_THRESHOLD) return SubjectStatus.DISMISSED.getStatus();
+        if (adjustedAbsences >= COUNSELING_THRESHOLD) return SubjectStatus.COUNSELING.getStatus();
+        if (adjustedAbsences >= WARNING_THRESHOLD) return SubjectStatus.WARNING.getStatus();
         return null;
     }
 
