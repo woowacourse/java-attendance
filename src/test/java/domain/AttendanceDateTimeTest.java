@@ -1,0 +1,112 @@
+package domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Test;
+
+@DisplayNameGeneration(ReplaceUnderscores.class)
+@DisplayName("출석 날짜와 시간 객체에 대한 테스트")
+public class AttendanceDateTimeTest {
+
+    @Test
+    void 날짜와_시간을_통해서_출석_가능한_시간에_출석일시를_생성한다() {
+        AttendanceDateTime attendance = AttendanceDateTime.of(2025, 2, 26, 10, 0);
+
+        assertThat(attendance).isNotNull();
+    }
+
+    @Test
+    void LocalDateTime으로부터_출석일시를_생성한다() {
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 26, 10, 0);
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.from(localDateTime);
+
+        assertThat(attendanceDateTime.getDate()).isEqualTo(localDateTime.toLocalDate());
+        assertThat(attendanceDateTime.getTime()).isEqualTo(localDateTime.toLocalTime());
+    }
+
+    @Test
+    void 문자열을_파싱하여_출석일시를_생성할_수_있다() {
+        String dateTimeString = "2025-02-26T10:00";
+
+        AttendanceDateTime result = AttendanceDateTime.parse(dateTimeString);
+
+        assertThat(result.getDate()).isEqualTo(LocalDate.of(2025, 2, 26));
+        assertThat(result.getTime()).isEqualTo(LocalTime.of(10, 0));
+    }
+
+    @Test
+    void 출석일시는_생성_시_주어진_날짜와_시간을_가진다() {
+        AttendanceDateTime attendance = AttendanceDateTime.of(2025, 2, 26, 10, 0);
+
+        var date = LocalDate.of(2025, 2, 26);
+        var time = LocalTime.of(10, 0);
+        assertThat(attendance.getDate()).isEqualTo(date);
+        assertThat(attendance.getTime()).isEqualTo(time);
+    }
+
+    @Test
+    void _평일8시_전에_출석일시를_생성하려하면_예외가_발생한다() {
+        assertThatThrownBy(() -> AttendanceDateTime.of(2025, 2, 26, 7, 59))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void _평일23시_후에_출석일시를_생성하려하면_예외가_발생한다() {
+        assertThatThrownBy(() -> AttendanceDateTime.of(2025, 2, 26, 23, 1))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 주말날짜로_출석일시를_생성하려하면_예외가_발생한다() {
+        var weekend = LocalDateTime.of(2025, 2, 23, 10, 0);
+        assertThatThrownBy(() -> AttendanceDateTime.from(weekend))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 공휴일_날짜로_출석일시를_생성하려하면_예외가_발생한다() {
+        var weekend = LocalDateTime.of(2025, 5, 5, 10, 0);
+        assertThatThrownBy(() -> AttendanceDateTime.from(weekend))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 날짜가_출석일시와_같은_날짜인지_확인할_수_있다() {
+        var attendanceDate20250226 = AttendanceDateTime.parse("2025-02-26T10:00");
+        var date20250226 = LocalDate.of(2025, 2, 26);
+
+        boolean result = attendanceDate20250226.isSameDate(date20250226);
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void 날짜가_출석일시와_다른_날짜인지_확인할_수_있다() {
+        var attendanceDate20250225 = AttendanceDateTime.parse("2025-02-25T10:00");
+        var date20250226 = LocalDate.of(2025, 2, 26);
+
+        boolean result = attendanceDate20250225.isSameDate(date20250226);
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void 시간없이_날짜만으로_결석이라는_의미의_출석일시를_생성할_수_있다() {
+        var ofAbsence = AttendanceDateTime.ofAbsence(LocalDate.of(2025, 2, 26));
+
+        assertAll(
+            () -> assertThat(ofAbsence.getDate()).isEqualTo(LocalDate.of(2025, 2, 26)),
+            () -> assertThat(ofAbsence.getTime()).isNull(),
+            () -> assertThat(ofAbsence.getAttendanceStatus())
+                .isEqualTo(AttendanceStatus.NOT_ATTENDED)
+        );
+    }
+}
