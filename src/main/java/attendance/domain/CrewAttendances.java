@@ -146,7 +146,7 @@ public class CrewAttendances {
             if (totalRiskCount != otherTotalRiskCount) {
                 return otherTotalRiskCount - totalRiskCount;
             }
-            return o1.getNickname().compareTo(o2.getNickname());
+            return o1.nickname().compareTo(o2.nickname());
         };
     }
 

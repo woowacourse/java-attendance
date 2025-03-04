@@ -148,7 +148,7 @@ public class AttendanceManagementController {
         List<LocalDateTime> attendanceDateTimes = mapToLocalDateTimes(attendancesUntilYesterday);
         List<Boolean> attendanceExistences = mapToAttendanceExistences(attendancesUntilYesterday);
         List<String> attendanceStatuses = getAttendanceStatuses(attendancesUntilYesterday);
-        resultView.printCrewAttendancesUntilYesterday(crew.getNickname(), attendanceDateTimes, attendanceExistences,
+        resultView.printCrewAttendancesUntilYesterday(crew.nickname(), attendanceDateTimes, attendanceExistences,
                 attendanceStatuses);
         resultView.printAttendanceStatusCount(crewAttendances.calculateAttendanceCount(crew, yesterday),
                 crewAttendances.calculateLateCount(crew, yesterday),
@@ -185,7 +185,7 @@ public class AttendanceManagementController {
         LocalDate yesterday = today.toLocalDate().minusDays(1L);
         List<Crew> penaltyCrews = crewAttendances.findPenaltyCrewsSortedByRisk(crews.findAllCrew(), yesterday);
         resultView.printPenaltyCrews();
-        penaltyCrews.forEach(penaltyCrew -> resultView.printPenaltyCrewInformation(penaltyCrew.getNickname(),
+        penaltyCrews.forEach(penaltyCrew -> resultView.printPenaltyCrewInformation(penaltyCrew.nickname(),
                 crewAttendances.calculateAbsentCount(penaltyCrew, yesterday),
                 crewAttendances.calculateLateCount(penaltyCrew, yesterday),
                 crewAttendances.calculateExpulsionStatus(penaltyCrew, yesterday).getText()

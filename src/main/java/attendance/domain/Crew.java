@@ -1,17 +1,12 @@
 package attendance.domain;
 
-import java.util.Objects;
-
-public class Crew {
+public record Crew(String nickname) {
 
     private static final int MIN_NICKNAME_LENGTH = 2;
     private static final int MAX_NICKNAME_LENGTH = 4;
 
-    private final String nickname;
-
-    public Crew(final String nickname) {
+    public Crew {
         validateLength(nickname);
-        this.nickname = nickname;
     }
 
     private void validateLength(final String nickname) {
@@ -24,26 +19,6 @@ public class Crew {
 
     public boolean isSameNickname(final String otherNickname) {
         return this.nickname.equals(otherNickname);
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Crew crew)) {
-            return false;
-        }
-        return Objects.equals(nickname, crew.nickname);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(nickname);
     }
 
 }
