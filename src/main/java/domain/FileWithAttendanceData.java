@@ -11,6 +11,7 @@ import java.util.List;
 
 public class FileWithAttendanceData {
 
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final AttendanceBook attendanceBook;
 
     public FileWithAttendanceData(AttendanceBook attendanceBook) {
@@ -43,12 +44,10 @@ public class FileWithAttendanceData {
     }
 
     private void addCrew(List<String> fields) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
         String crewName = fields.get(0);
         String dateTimeString = fields.get(1);
 
-        LocalDateTime attendanceDateTime = LocalDateTime.parse(dateTimeString, formatter);
+        LocalDateTime attendanceDateTime = LocalDateTime.parse(dateTimeString, FORMATTER);
         LocalDate attendanceDate = attendanceDateTime.toLocalDate();
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
 

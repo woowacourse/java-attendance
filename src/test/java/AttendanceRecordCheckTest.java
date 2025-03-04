@@ -39,7 +39,7 @@ public class AttendanceRecordCheckTest {
 
     @DisplayName("경고, 면담, 제적에 해당하는 경우 상태를 정확하게 판단한다.")
     @Test
-    void should_() {
+    void should_DeterminePenaltyStatus_When_PenaltyApplies() {
         String name = "빙티";
         LocalDate nowDate = LocalDate.of(2024, 12, 16);
 

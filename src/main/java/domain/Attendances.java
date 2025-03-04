@@ -36,6 +36,7 @@ public class Attendances {
     }
 
     public boolean hasAlreadyAttended(LocalDate date) {
-        return attendances.stream().anyMatch(attendance -> attendance.hasSameDate(date));
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.hasSameDate(date));
     }
 }
