@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 import model.AttendanceDate;
 import model.AttendanceTime;
+import model.Student;
 import model.StudentAttendanceHistory;
+import model.Students;
 
 public class FileInput {
     private final static String FILE_INFORMATION_REGEX = "[가-힣]+,\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}";
@@ -28,7 +30,18 @@ public class FileInput {
 
     private FileInput() {}
 
-    public static Map<String, StudentAttendanceHistory> readFileAndMakeStudentInformation() {
+    public static Students readFileAndMakeStudents() {
+        List<Student> students = new ArrayList<>();
+        Map<String, StudentAttendanceHistory> studentInformationInFile = FileInput.readFileAndMakeStudentInformation();
+
+        for (String studentName : studentInformationInFile.keySet()) {
+            students.add(new Student(studentName, studentInformationInFile.get(studentName)));
+        }
+
+        return new Students(students);
+    }
+
+    private static Map<String, StudentAttendanceHistory> readFileAndMakeStudentInformation() {
         List<String> fileInformation = readFile();
         Map<String, StudentAttendanceHistory> studentInformationInFile = new HashMap<>();
         try{
@@ -39,18 +52,14 @@ public class FileInput {
 
                 String[] studentNameAndAttendanceDateTimeInformation = studentInformation.split(",");
                 String studentName = studentNameAndAttendanceDateTimeInformation[NAME_INDEX];
-                String timeInformation = studentNameAndAttendanceDateTimeInformation[ATTENDANCE_DATE_TIME_INDEX];
-
-                String[] attendanceDateAndAttendanceTime = timeInformation.split(" ");
-
-                AttendanceDate attendanceDate = new AttendanceDate(
-                        LocalDate.parse(attendanceDateAndAttendanceTime[ATTENDANCE_DATE_INDEX], ATTENDANCE_DATE_FORMATTER));
-
-                AttendanceTime attendanceTime = new AttendanceTime(
-                        LocalTime.parse(attendanceDateAndAttendanceTime[ATTENDANCE_TIME_INDEX], ATTENDANCE_TIME_FORMATTER));
-
                 studentInformationInFile.putIfAbsent(studentName, new StudentAttendanceHistory(new HashMap<>()));
 
+                String timeInformation = studentNameAndAttendanceDateTimeInformation[ATTENDANCE_DATE_TIME_INDEX];
+                String[] attendanceDateAndAttendanceTime = timeInformation.split(" ");
+                AttendanceDate attendanceDate = new AttendanceDate(
+                        LocalDate.parse(attendanceDateAndAttendanceTime[ATTENDANCE_DATE_INDEX], ATTENDANCE_DATE_FORMATTER));
+                AttendanceTime attendanceTime = new AttendanceTime(
+                        LocalTime.parse(attendanceDateAndAttendanceTime[ATTENDANCE_TIME_INDEX], ATTENDANCE_TIME_FORMATTER));
                 StudentAttendanceHistory history = studentInformationInFile.get(studentName);
                 history.getAttendanceHistory().put(attendanceDate, attendanceTime);
             }

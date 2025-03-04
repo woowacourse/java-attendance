@@ -3,6 +3,7 @@ package controller;
 import java.time.LocalDate;
 import model.AttendanceDate;
 import model.Students;
+import util.FileInput;
 import view.InputView;
 
 public class AttendanceManagementController {
@@ -13,7 +14,7 @@ public class AttendanceManagementController {
     }
 
     public void attendanceManagementStart() {
-        Students students = StudentLoaderController.readFileAndMakeStudents();
+        Students students = FileInput.readFileAndMakeStudents();
         AttendanceDate attendanceStartDate = new AttendanceDate(LocalDate.of(2024, 12, 1));
         AttendanceDate today = todayDateGenerator.generate();
         students.updateMissingAttendanceRecords(attendanceStartDate, today);
