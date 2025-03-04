@@ -18,7 +18,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class OutputView {
@@ -53,39 +52,36 @@ public class OutputView {
                 date.getMonthValue(),
                 date.getDayOfMonth(),
                 getDisplayName(date),
-                formatAttendanceTime(enterTime),
+                formatAttendanceTime(Optional.ofNullable(enterTime)),
                 status.getStatus()
         );
     }
 
-    public void printModifyAttendanceResult(LocalTime prevTime, LocalDate date, LocalTime modifyTime) {
+    public void printModifyAttendanceResult(Optional<LocalTime> prevTime, LocalDate date, LocalTime modifyTime) {
         System.out.printf(MODIFY_ATTENDANCE_PRINT_FORMAT,
                 date.getMonthValue(),
                 date.getDayOfMonth(),
                 getDisplayName(date),
                 formatAttendanceTime(prevTime),
                 formatAttendanceStatus(date, prevTime),
-                formatAttendanceTime(modifyTime),
-                formatAttendanceStatus(date, modifyTime)
+                formatAttendanceTime(Optional.ofNullable(modifyTime)),
+                formatAttendanceStatus(date, Optional.ofNullable(modifyTime))
         );
     }
 
-    private String formatAttendanceTime(LocalTime time) {
-        if (Optional.ofNullable(time).isEmpty()) {
-            return EMPTY_ATTENDANCE_TIME_MESSAGE;
-        }
-        return toTimeString(time);
+    private String formatAttendanceTime(Optional<LocalTime> time) {
+        return time.map(this::toTimeString).orElse(EMPTY_ATTENDANCE_TIME_MESSAGE);
     }
 
     private String toTimeString(LocalTime time) {
         return time.format(PRINT_ATTENDANCE_TIME_FORMATTER);
     }
 
-    private String formatAttendanceStatus(LocalDate date, LocalTime time) {
-        if (Optional.ofNullable(time).isEmpty()) {
+    private String formatAttendanceStatus(LocalDate date, Optional<LocalTime> time) {
+        if (time.isEmpty()) {
             return EMPTY_ATTENDANCE_STATUS_MESSAGE;
         }
-        return AttendanceStatus.of(date, time).getStatus();
+        return AttendanceStatus.of(date, time.get()).getStatus();
     }
 
     public void printAttendanceRecords(String crewName, Map<LocalDate, Attendance> crewAttendances) {
@@ -94,7 +90,7 @@ public class OutputView {
         LocalDate now = dateProvider.now();
         IntStream.range(1, now.getDayOfMonth())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonthValue(), day))
-                .filter(date -> checker.isCampusOpenDate(date))
+                .filter(checker::isCampusOpenDate)
                 .forEach(date -> {
                     builder.append(toAttendanceRecordString(crewAttendances, date));
                 });
@@ -132,7 +128,7 @@ public class OutputView {
         builder.append(WARNING_CREW_PRINT_HEADER);
         List<Entry<String, Integer>> sortedCrewAbsence = totalAbsence.entrySet().stream()
                 .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()))
-                .collect(Collectors.toList());
+                .toList();
 
         appendWarningCrew(builder, crewsStatusCount, sortedCrewAbsence);
         System.out.println(builder);
@@ -158,13 +154,11 @@ public class OutputView {
 
     private Map<String, Integer> calculateTotalAbsence(Map<String, Map<AttendanceStatus, Integer>> crewsStatusCount) {
         Map<String, Integer> totalAbsence = new HashMap<>();
-        crewsStatusCount.entrySet()
-                .forEach(entry -> {
-                    Map<AttendanceStatus, Integer> statusCount = entry.getValue();
-                    int absenceCount = statusCount.get(AttendanceStatus.PRESENT) +
-                            WarningLevel.calculateTotalAbsenceCount(statusCount.get(LATENESS));
-                    totalAbsence.put(entry.getKey(), absenceCount);
-                });
+        crewsStatusCount.forEach((key, statusCount) -> {
+            int absenceCount = statusCount.get(AttendanceStatus.PRESENT) +
+                    WarningLevel.calculateTotalAbsenceCount(statusCount.get(LATENESS));
+            totalAbsence.put(key, absenceCount);
+        });
         return totalAbsence;
     }
 

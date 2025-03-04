@@ -41,15 +41,14 @@ public class AttendanceManager {
         }
     }
 
-    public LocalTime modify(String crewName, LocalDate date, LocalTime time) {
+    public Optional<LocalTime> modify(String crewName, LocalDate date, LocalTime time) {
         checker.checkCampusOpen(date, time);
         Attendances attendances = findAttendancesByName(crewName);
         Attendance prevAttendance = attendances.getCurrentAttendance(date);
 
         attendances.addAttendance(date, time);
         return Optional.ofNullable(prevAttendance)
-                .map(Attendance::time)
-                .orElse(null);
+                .map(Attendance::time);
     }
 
     public WarningLevel calculateCrewWarningLevel(String crewName) {

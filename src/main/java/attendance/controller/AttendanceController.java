@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class AttendanceController {
     private final Map<AttendanceCommand, Runnable> commands;
@@ -73,7 +74,7 @@ public class AttendanceController {
         attendanceManager.validateExistCrew(crewName);
         LocalDate modifyDate = inputView.inputModifyDate();
         LocalTime modifyTime = inputView.inputModifyTime();
-        LocalTime prevTime = attendanceManager.modify(crewName, modifyDate, modifyTime);
+        Optional<LocalTime> prevTime = attendanceManager.modify(crewName, modifyDate, modifyTime);
 
         outputView.printModifyAttendanceResult(prevTime, modifyDate, modifyTime);
     }
