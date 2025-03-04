@@ -2,12 +2,18 @@ package domain;
 
 import domain.attendance.StudentStatus;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
 public class CrewGroup {
+    public static final Comparator<Crew> CREW_COMPARATOR = Comparator
+            .comparingInt((Crew c) -> c.getAttendanceRecord().getAbsenceCount()).reversed()
+            .thenComparing((Crew c) -> c.getAttendanceRecord().getTardyCount(), Comparator.reverseOrder())
+            .thenComparing(Crew::getName);
+
     private final Map<String,Crew> crews;
 
     public CrewGroup() {
@@ -41,7 +47,7 @@ public class CrewGroup {
         return crews.entrySet().stream()
                 .filter(isNotNoneStatus)
                 .map(Map.Entry::getValue)
-                .sorted(Crew.CREW_COMPARATOR)
+                .sorted(CREW_COMPARATOR)
                 .toList();
     }
 }

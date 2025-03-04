@@ -2,15 +2,9 @@ package domain;
 
 import domain.attendance.Attendance;
 
-import java.util.Comparator;
 import java.util.Objects;
 
 public class Crew {
-    public static final Comparator<Crew> CREW_COMPARATOR = Comparator
-            .comparingInt((Crew c) -> c.attendanceRecord.getAbsenceCount()).reversed()
-            .thenComparing((Crew c) -> c.attendanceRecord.getTardyCount(), Comparator.reverseOrder())
-            .thenComparing(Crew::getName);
-
     private final String name;
     private final Attendance attendanceRecord;
 
