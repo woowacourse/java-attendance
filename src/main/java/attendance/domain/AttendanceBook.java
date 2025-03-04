@@ -51,47 +51,104 @@ public class AttendanceBook {
             int attendanceCount = attendanceLog.countAttendanceStatus(Subject.ATTENDANCE);
             int lateCount = attendanceLog.countAttendanceStatus(Subject.LATE);
             int absentCount = attendanceLog.countAttendanceStatus(Subject.ABSENT);
+package attendance.domain;
 
-            AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceCount, lateCount, absentCount);
-            crewAttendanceStatuses.put(entry.getKey(), attendanceStatus);
-        }
+import java.time.LocalDateTime;
+import java.util.*;
 
-        List<Map.Entry<Crew, AttendanceStatus>> sortedEntries = new ArrayList<>(crewAttendanceStatuses.entrySet());
+            public class AttendanceBook {
 
-        Collections.sort(sortedEntries, (entry1, entry2) -> {
-            AttendanceStatus status1 = entry1.getValue();
-            AttendanceStatus status2 = entry2.getValue();
+                private final Map<Crew, AttendanceLog> attendanceRecord;
 
-            // 1. subjectStatus 우선순위 비교 (제적 -> 면담 -> 경고 -> 정상)
-            if (!status1.getSubjectStatus().equals(status2.getSubjectStatus())) {
-                return -status1.getSubjectStatus().compareTo(status2.getSubjectStatus());
+                public AttendanceBook(Map<Crew, AttendanceLog> attendanceRecord) {
+                    this.attendanceRecord = attendanceRecord;
+                }
+
+                public Attendance registerAttendance(Crew crew, LocalDateTime newAttendanceDateTime) {
+                    validateCrewExistance(crew);
+                    AttendanceLog attendanceLog = attendanceRecord.get(crew);
+
+                    return attendanceLog.registerAttendance(newAttendanceDateTime);
+                }
+
+                public List<Attendance> modifyAttendance(Crew crew, LocalDateTime newALocalDateTime) {
+                    validateCrewExistance(crew);
+                    AttendanceLog attendanceLog = attendanceRecord.get(crew);
+                    return attendanceLog.modifyAttendanceRecord(newALocalDateTime);
+                }
+
+                public List<Attendance> checkAttendancesRecord(Crew crew) {
+                    validateCrewExistance(crew);
+                    AttendanceLog attendanceLog = attendanceRecord.get(crew);
+                    return attendanceLog.checkAttendancesRecord();
+                }
+
+                public AttendanceStatus checkAttendanceCrewStatus(Crew crew) {
+                    AttendanceLog attendanceLog = attendanceRecord.get(crew);
+                    int attendanceCount = attendanceLog.countAttendanceStatus(Subject.ATTENDANCE);
+                    int lateCount = attendanceLog.countAttendanceStatus(Subject.LATE);
+                    int absentCount = attendanceLog.countAttendanceStatus(Subject.ABSENT);
+                    return new AttendanceStatus(attendanceCount, lateCount, absentCount);
+                }
+
+                public Map<Crew, AttendanceStatus> checkExpelledCrews() {
+                    Map<Crew, AttendanceStatus> crewAttendanceStatuses = createAttendanceStatuses();
+                    List<Map.Entry<Crew, AttendanceStatus>> sortedEntries = sortAttendanceStatuses(crewAttendanceStatuses);
+                    return convertToMap(sortedEntries);
+                }
+
+                private Map<Crew, AttendanceStatus> createAttendanceStatuses() {
+                    Map<Crew, AttendanceStatus> crewAttendanceStatuses = new HashMap<>();
+                    for (Map.Entry<Crew, AttendanceLog> entry : attendanceRecord.entrySet()) {
+                        AttendanceStatus attendanceStatus = createAttendanceStatus(entry.getValue());
+                        crewAttendanceStatuses.put(entry.getKey(), attendanceStatus);
+                    }
+                    return crewAttendanceStatuses;
+                }
+
+                private AttendanceStatus createAttendanceStatus(AttendanceLog attendanceLog) {
+                    int attendanceCount = attendanceLog.countAttendanceStatus(Subject.ATTENDANCE);
+                    int lateCount = attendanceLog.countAttendanceStatus(Subject.LATE);
+                    int absentCount = attendanceLog.countAttendanceStatus(Subject.ABSENT);
+                    return new AttendanceStatus(attendanceCount, lateCount, absentCount);
+                }
+
+                private List<Map.Entry<Crew, AttendanceStatus>> sortAttendanceStatuses(Map<Crew, AttendanceStatus> crewAttendanceStatuses) {
+                    List<Map.Entry<Crew, AttendanceStatus>> sortedEntries = new ArrayList<>(crewAttendanceStatuses.entrySet());
+                    sortedEntries.sort(this::compareAttendanceStatus);
+                    return sortedEntries;
+                }
+
+                private int compareAttendanceStatus(Map.Entry<Crew, AttendanceStatus> entry1, Map.Entry<Crew, AttendanceStatus> entry2) {
+                    AttendanceStatus status1 = entry1.getValue();
+                    AttendanceStatus status2 = entry2.getValue();
+
+                    int statusComparison = -status1.getSubjectStatus().compareTo(status2.getSubjectStatus());
+                    if (statusComparison != 0) return statusComparison;
+
+                    int totalComparison = Integer.compare(
+                        (status2.getLateCount() + status2.getAbsentCount()),
+                        (status1.getLateCount() + status1.getAbsentCount())
+                    );
+                    if (totalComparison != 0) return totalComparison;
+
+                    int absentComparison = Integer.compare(status2.getAbsentCount(), status1.getAbsentCount());
+                    if (absentComparison != 0) return absentComparison;
+
+                    return entry1.getKey().getName().compareTo(entry2.getKey().getName());
+                }
+
+                private Map<Crew, AttendanceStatus> convertToMap(List<Map.Entry<Crew, AttendanceStatus>> sortedEntries) {
+                    Map<Crew, AttendanceStatus> sortedMap = new LinkedHashMap<>();
+                    for (Map.Entry<Crew, AttendanceStatus> entry : sortedEntries) {
+                        sortedMap.put(entry.getKey(), entry.getValue());
+                    }
+                    return sortedMap;
+                }
+
+                private void validateCrewExistance(Crew crew) {
+                    if (!attendanceRecord.containsKey(crew)) {
+                        throw new IllegalArgumentException("등록되지 않는 크루입니다");
+                    }
+                }
             }
-
-            int total1 = status1.getLateCount() + status1.getAbsentCount();
-            int total2 = status2.getLateCount() + status2.getAbsentCount();
-            if (total1 != total2) {
-                return Integer.compare(total2, total1);  // 내림차순
-            }
-
-            if (status1.getAbsentCount() != status2.getAbsentCount()) {
-                return Integer.compare(status2.getAbsentCount(), status1.getAbsentCount());  // 내림차순
-            }
-
-
-            // 4. 동일하면 Crew 이름 기준 오름차순 정렬
-            return entry1.getKey().getName().compareTo(entry2.getKey().getName());
-        });
-
-        Map<Crew, AttendanceStatus> sortedCrewAttendanceStatuses = new HashMap<>();
-        for (Map.Entry<Crew, AttendanceStatus> entry : sortedEntries) {
-            sortedCrewAttendanceStatuses.put(entry.getKey(), entry.getValue());
-        }
-        return sortedCrewAttendanceStatuses;
-    }
-
-    private void validateCrewExistance(Crew crew) {
-        if (!attendanceRecord.containsKey(crew)) {
-            throw new IllegalArgumentException("등록되지 않는 크루입니다");
-        }
-    }
-}
