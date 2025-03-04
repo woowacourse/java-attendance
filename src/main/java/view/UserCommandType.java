@@ -27,18 +27,18 @@ public enum UserCommandType {
     public static UserCommandType getCommand(String rawCommand) {
         validateInput(rawCommand);
         return getCommandTypes().get(rawCommand);
+
     }
 
     private static Map<String, UserCommandType> getCommandTypes() {
         Map<String, UserCommandType> types = new HashMap<>();
 
         for (UserCommandType userCommandType : UserCommandType.values()) {
+
             types.put(userCommandType.getCommandCode(), userCommandType);
         }
-
         return types;
     }
-
 
     public static void validateInput(String userInput) {
         if (!Arrays.stream(UserCommandType.values()).map(UserCommandType::getCommandCode).toList()

@@ -52,7 +52,6 @@ class AttendanceTest {
     @DisplayName("공휴일에 출석을 시도하면 예외가 발생합니다.")
     void attendanceInHolidayTest() {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 25, 10, 0);
-        List<Integer> holidays = List.of(25);
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> new Attendance(attendanceTime).validateHoliday());
     }

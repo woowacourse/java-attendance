@@ -8,7 +8,7 @@ import java.util.Scanner;
 import util.DayConverter;
 
 public class InputView {
-
+  
     private String readLine() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
