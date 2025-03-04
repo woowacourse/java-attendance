@@ -1,5 +1,6 @@
 package model;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,13 @@ public class Students {
 
     public Students(List<Student> students) {
         this.students = new ArrayList<>(students);
+    }
+
+    public void validateAlreadyExistAttendanceDate(String studentName, AttendanceDate today) {
+        students.stream()
+                .filter(student -> student.isSameName(studentName))
+                .findFirst()
+                .ifPresent(student -> student.validateAlreadyExistAttendanceDate(today));
     }
 
     public Student findStudentByName(String studentName) {
