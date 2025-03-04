@@ -28,10 +28,13 @@ public class AttendanceHistories {
 
     public AttendanceHistory findByCrewAndDate(Crew crew, LocalDate date) {
         return attendanceHistories.stream()
-                .filter(attendanceHistory -> attendanceHistory.isAboutSameCrew(crew)
-                        && attendanceHistory.isAboutSameDate(date))
+                .filter(history -> isSameHistory(history, crew, date))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("조건에 해당하는 기록이 존재하지 않습니다."));
+    }
+
+    private boolean isSameHistory(AttendanceHistory attendanceHistory, Crew crew, LocalDate date) {
+        return attendanceHistory.isAboutSameCrew(crew) && attendanceHistory.isAboutSameDate(date);
     }
 
     public List<AttendanceHistory> findAllHistoriesOfCrewDateBefore(Crew crew, LocalDate requestedDate) {
