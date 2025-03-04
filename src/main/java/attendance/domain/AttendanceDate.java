@@ -4,7 +4,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.util.Objects;
 
 public record AttendanceDate(LocalDate attendanceDate) implements Comparable<AttendanceDate> {
 
@@ -42,17 +41,6 @@ public record AttendanceDate(LocalDate attendanceDate) implements Comparable<Att
     @Override
     public int compareTo(final AttendanceDate o) {
         return this.attendanceDate.compareTo(o.attendanceDate);
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof AttendanceDate that)) {
-            return false;
-        }
-        return Objects.equals(attendanceDate, that.attendanceDate);
     }
 
 }

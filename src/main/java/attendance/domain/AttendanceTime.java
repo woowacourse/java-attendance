@@ -2,7 +2,6 @@ package attendance.domain;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 public record AttendanceTime(LocalTime attendanceTime) {
 
@@ -23,17 +22,6 @@ public record AttendanceTime(LocalTime attendanceTime) {
     public boolean isBetweenInclusive(final LocalTime startInclusive, final LocalTime endInclusive) {
         return (attendanceTime.isAfter(startInclusive) || attendanceTime.equals(startInclusive))
                 && (attendanceTime.isBefore(endInclusive) || attendanceTime.equals(endInclusive));
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof AttendanceTime that)) {
-            return false;
-        }
-        return Objects.equals(attendanceTime, that.attendanceTime);
     }
 
 }
