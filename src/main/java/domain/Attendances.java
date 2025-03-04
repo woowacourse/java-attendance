@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Attendances {
+
     private final List<Attendance> attendances;
 
     public Attendances() {

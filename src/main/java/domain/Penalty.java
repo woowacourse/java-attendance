@@ -1,6 +1,7 @@
 package domain;
 
 public enum Penalty {
+
     EXPULSION("제적"),
     COUNSEL("면담"),
     WARNING("경고"),

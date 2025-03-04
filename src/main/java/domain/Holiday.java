@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public enum Holiday {
+
     CHRISTMAS(12, 25);
 
     private final int month;

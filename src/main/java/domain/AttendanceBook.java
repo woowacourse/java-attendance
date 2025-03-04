@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class AttendanceBook {
+
     private final CrewGroup crewGroup;
 
     public AttendanceBook() {

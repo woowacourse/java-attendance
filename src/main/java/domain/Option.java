@@ -3,6 +3,7 @@ package domain;
 import java.util.Arrays;
 
 public enum Option {
+    
     ATTEND("1"),
     EDIT("2"),
     CHECK_RECORDS("3"),
