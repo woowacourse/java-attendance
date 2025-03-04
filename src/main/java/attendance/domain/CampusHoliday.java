@@ -3,8 +3,9 @@ package attendance.domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
-public enum Holiday {
+public enum CampusHoliday {
 
     새해_첫날(1, 1),
     삼일절(3, 1),
@@ -15,24 +16,25 @@ public enum Holiday {
     한글일(10, 9),
     크리스마스(12, 25);
 
+    private static final List<DayOfWeek> CAMPUS_CLOSED_DAY_OF_WEEK = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
     private final int month;
     private final int day;
 
-    Holiday(final int month, final int day) {
+    CampusHoliday(final int month, final int day) {
         this.month = month;
         this.day = day;
     }
 
     public static boolean isExistsInPublicHolidays(final LocalDate localDate) {
-        Holiday[] publicHolidays = values();
-        return Arrays.stream(publicHolidays)
-                .map(holiday -> LocalDate.of(localDate.getYear(), holiday.month, holiday.day))
+        CampusHoliday[] publicCampusHolidays = values();
+        return Arrays.stream(publicCampusHolidays)
+                .map(campusHoliday -> LocalDate.of(localDate.getYear(), campusHoliday.month, campusHoliday.day))
                 .anyMatch(holidayDate -> holidayDate.isEqual(localDate));
     }
 
-    public static boolean isWeekend(final LocalDate localDate) {
+    public static boolean isCampusClosingDay(final LocalDate localDate) {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        return dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY);
+        return CAMPUS_CLOSED_DAY_OF_WEEK.contains(dayOfWeek);
     }
 
 }

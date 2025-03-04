@@ -23,7 +23,7 @@ public record AttendanceDate(LocalDate attendanceDate) implements Comparable<Att
     }
 
     private boolean isCampusHoliday(final LocalDate attendanceDate) {
-        return Holiday.isWeekend(attendanceDate) || Holiday.isExistsInPublicHolidays(attendanceDate);
+        return CampusHoliday.isCampusClosingDay(attendanceDate) || CampusHoliday.isExistsInPublicHolidays(attendanceDate);
     }
 
     public boolean isSameDate(final LocalDate localDate) {

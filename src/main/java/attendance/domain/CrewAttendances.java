@@ -47,7 +47,7 @@ public class CrewAttendances {
     private void addAttendanceWithoutWeekendAndHoliday(final LocalDate targetDate, final List<Attendance> attendances,
                                                        final List<LocalDateTime> ascendingAttendanceDateTimes
     ) {
-        if (Holiday.isWeekend(targetDate) || Holiday.isExistsInPublicHolidays(targetDate)) {
+        if (CampusHoliday.isCampusClosingDay(targetDate) || CampusHoliday.isExistsInPublicHolidays(targetDate)) {
             return;
         }
         attendances.add(createAttendance(ascendingAttendanceDateTimes, targetDate));
