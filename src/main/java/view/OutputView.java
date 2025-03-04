@@ -51,10 +51,24 @@ public class OutputView {
 
     public void printRiskStatusResult(List<RiskStatusResult> riskStatusResults) {
         System.out.println("제적 위험자 조회 결과");
-        riskStatusResults.forEach(riskStatusResult -> {
+        sortRiskStatusResult(riskStatusResults).forEach(riskStatusResult -> {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", riskStatusResult.name(), riskStatusResult.absenceCount(), riskStatusResult.tardyCount(), getRiskStatusMessage(riskStatusResult.riskStatus()));
         });
         System.out.println();
 
+    }
+
+    private List<RiskStatusResult> sortRiskStatusResult(List<RiskStatusResult> riskStatusResults) {
+        return riskStatusResults.stream()
+                .sorted((o1, o2) -> {
+                    int totalCount1 = o1.absenceCount() + o1.tardyCount() / 3;
+                    int totalCount2 = o2.absenceCount() + o2.tardyCount() / 3;
+
+                    if (totalCount1 == totalCount2) {
+                        return o1.name().compareTo(o2.name());
+                    }
+
+                    return totalCount1 - totalCount2;
+                }).toList();
     }
 }
