@@ -21,8 +21,7 @@ public class AttendanceBook {
     }
 
     public boolean has(String findNickname) {
-        return attendances.keySet().stream()
-                .anyMatch(crew -> crew.equals(findNickname));
+        return attendances.containsKey(new Crew(findNickname));
     }
 
     public Attendances findAttendancesByCrew(String nickname) {
@@ -45,7 +44,7 @@ public class AttendanceBook {
     private Crew findCrewByNickname(String nickname) {
         return attendances.keySet()
                 .stream()
-                .filter(crew -> crew.equals(nickname))
+                .filter(crew -> attendances.containsKey(new Crew(nickname)))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다"));
     }
