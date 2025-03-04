@@ -10,8 +10,8 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("출결 상황 종합 테스트")
 class AttendanceRecordsTest {
 
     private static final DateGenerator dateGenerator = new TestDateGenerator();
@@ -23,32 +23,43 @@ class AttendanceRecordsTest {
         LocalDate nowDate = dateGenerator.generate();
 
         List<String> nicknames = List.of("비타", "레오", "듀이", "꾹이", "몽이");
+        List<String> excepted = List.of("몽이", "꾹이", "듀이", "레오", "비타");
 
+        AttendanceRecords attendanceRecords = createInitRecords(nowDate, nicknames);
+
+        // when
+        List<AttendanceRecord> records = attendanceRecords.getRecords();
+
+        List<String> result = records.stream()
+                .map(AttendanceRecord::getNickname)
+                .toList();
+
+        // then
+        assertThat(result)
+                .containsExactlyElementsOf(excepted);
+    }
+
+    private static AttendanceRecords createInitRecords(final LocalDate nowDate, final List<String> nicknames) {
         List<List<Attendance>> attendances = List.of(
-                List.of(
-                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                List.of( // 결석 2회 비타
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
                 ),
-                List.of(
-                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                List.of( // 결석 2회 레오
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX))
                 ),
-                List.of(
-                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                List.of( // 결석 2회 지각 1회 듀이
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MIDNIGHT))
                 ),
-                List.of(
-                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                List.of( // 결석 3회 꾹이
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX))
                 ),
-                List.of(
-                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.MAX)),
+                List.of( // 결석 6회 몽이
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.MAX)),
                         Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.MAX)),
@@ -66,19 +77,7 @@ class AttendanceRecordsTest {
                 AttendanceRecord.fromNicknameAndAttendances(nicknames.get(4), attendances.get(4))
         );
 
-        AttendanceRecords records = new AttendanceRecords(attendanceRecords);
-
-        // when
-        List<AttendanceRecord> result = records.getRecords();
-
-        // then
-        assertAll(
-                () -> assertThat(result.get(0).getNickname()).isEqualTo("몽이"),
-                () -> assertThat(result.get(1).getNickname()).isEqualTo("꾹이"),
-                () -> assertThat(result.get(2).getNickname()).isEqualTo("듀이"),
-                () -> assertThat(result.get(3).getNickname()).isEqualTo("레오"),
-                () -> assertThat(result.get(4).getNickname()).isEqualTo("비타")
-        );
+        return new AttendanceRecords(attendanceRecords);
     }
 
     private static class TestDateGenerator implements DateGenerator {
