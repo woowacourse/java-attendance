@@ -24,7 +24,7 @@ class HolidaysTest {
                 .isThrownBy(holidays::initFromFile);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "평일 날짜: {0}")
     @CsvSource({
             "2024-12-02",
             "2024-12-03",
@@ -43,7 +43,7 @@ class HolidaysTest {
                 .isThrownBy(() -> holidays.validateAttendanceDate(attendanceDate));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "주말 날짜: {0}")
     @CsvSource({
             "2024-12-01",
             "2024-12-07",
@@ -60,7 +60,7 @@ class HolidaysTest {
                 .withMessage(formatErrorMessage(attendanceDate));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "공휴일 날짜: {0}")
     @CsvSource({
             "2024-12-25",
             "2025-01-01",

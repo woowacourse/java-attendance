@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 @DisplayName("캠퍼스 운영 시간 테스트")
 class CampusTimeTest {
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "출석 시간: {0}")
     @CsvSource({
             "08:00",
             "15:30",
@@ -24,7 +24,7 @@ class CampusTimeTest {
                 .isThrownBy(() -> CampusTime.validateOperateTime(attendanceTime));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "출석 시간: {0}")
     @CsvSource({
             "07:59",
             "23:01"

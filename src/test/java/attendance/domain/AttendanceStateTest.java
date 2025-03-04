@@ -18,7 +18,7 @@ class AttendanceStateTest {
 
     private static final DateGenerator dateGenerator = new TestDateGenerator();
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "등교 시간: {0}, 출결 상황: {1}")
     @MethodSource
     @DisplayName("등교 시간으로 출결 상황을 반환한다")
     void shouldReturnAttendanceStatusBasedOnArrivalTime(LocalDateTime dateTime, AttendanceState excepted) {

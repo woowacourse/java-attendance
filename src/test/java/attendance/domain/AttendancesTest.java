@@ -17,11 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("출석 종합 테스트")
 class AttendancesTest {
 
     private static final DateGenerator dateGenerator = new TestDateGenerator();
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "출석 시간: {0}, 출결 상황 결과: {1}")
     @MethodSource
     @DisplayName("등교 시간으로 출석을 등록한다")
     void registerAttendanceBasedOnArrivalTime(LocalTime checkTime, AttendanceState exceptedState) {
@@ -57,7 +58,7 @@ class AttendancesTest {
                 .withMessage("[ERROR] 이미 출석이 등록되었습니다. 수정 기능을 이용 해주세요.");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "날짜&시간: {0}, 출결 상황 결과: {1}")
     @MethodSource
     @DisplayName("날짜와 시간으로 출석을 수정한다")
     void updateAttendanceBasedOnDateAndTime(LocalDateTime updateDateTime, AttendanceState exceptedState) {

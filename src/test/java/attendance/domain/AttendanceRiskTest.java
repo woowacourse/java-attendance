@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 @DisplayName("출결 위험도 테스트")
 class AttendanceRiskTest {
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "결석 횟수: {0}, 지각 횟수: {1}, 위험도 결과: {2}")
     @MethodSource
     @DisplayName("결석 횟수로 위험도를 판단해 반환한다")
     void evaluateRiskBasedOnAbsencesAndTardies(int absence, int tardy, AttendanceRisk excepted) {

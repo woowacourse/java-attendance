@@ -15,11 +15,12 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("출석 상태 테스트")
 class AttendanceStatusTest {
 
     private static final DateGenerator dateGenerator = new TestDateGenerator();
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "출석 목록: {0}, 출결 상황: {1}, 지각 상황: {2}, 결석 상황: {3}")
     @MethodSource
     @DisplayName("출석 목록으로 출결 상황을 종합한다")
     void summarizeAttendanceStatusFromRecords(
@@ -39,7 +40,7 @@ class AttendanceStatusTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "출석 목록: {0}, 출결 위험도 결과: {1}")
     @MethodSource
     @DisplayName("출석 목록으로 출결 위험도를 판단한다")
     void evaluateRiskBasedOnAttendanceRecords(List<Attendance> attendances, AttendanceRisk excepted) {

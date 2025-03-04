@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("출석 테스트")
 class AttendanceTest {
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "날짜&시간: {0}, 결과: {1}")
     @MethodSource
     @DisplayName("날짜와 시간으로 출석을 생성한다")
     void createAttendanceFromDateTime(LocalDateTime dateTime, AttendanceState state) {
@@ -31,7 +31,7 @@ class AttendanceTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "날짜&시간: {0}, 다른 날짜: {1}, 결과: {2}")
     @CsvSource({
             "2025-03-05T10:00, 2025-03-05, true",
             "2025-03-05T10:00, 2025-03-06, false",
@@ -48,7 +48,7 @@ class AttendanceTest {
         assertThat(result).isEqualTo(excepted);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "날짜&시간: {0}, 결과: {1}")
     @MethodSource
     @DisplayName("기본 시간인지 판단해 반환한다")
     void isNotDefaultTime(LocalDateTime dateTime, boolean excepted) {
@@ -62,7 +62,7 @@ class AttendanceTest {
         assertThat(result).isEqualTo(excepted);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "날짜&시간: {0}, 다른 날짜: {1}, 결과: {2}")
     @CsvSource({
             "2025-03-05T10:00, 2025-03-04, false",
             "2025-03-05T10:00, 2025-03-06, true",
@@ -79,7 +79,7 @@ class AttendanceTest {
         assertThat(result).isEqualTo(excepted);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "출석 날짜: {0}, 출결 상태: {1}, 결과: {2}")
     @MethodSource
     @DisplayName("출결 상황이 동일한지 판단해 반환한다")
     void isSameState(LocalDateTime dateTime, AttendanceState state, boolean excepted) {
@@ -93,7 +93,7 @@ class AttendanceTest {
         assertThat(result).isEqualTo(excepted);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "날짜&시간: {0}, 다른 날짜&시간: {1}, 결과: {2}")
     @CsvSource({
             "2025-03-05T10:00, 2025-03-05T10:00, true",
             "2025-03-05T10:00, 2025-03-06T10:00, false",

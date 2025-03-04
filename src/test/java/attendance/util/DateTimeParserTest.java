@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("날짜와 시간 파싱 테스트")
 class DateTimeParserTest {
 
     @Test

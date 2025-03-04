@@ -11,10 +11,10 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-@DisplayName("메뉴 테스트")
+@DisplayName("메뉴 출력 테스트")
 class MenuTest {
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "입력: {0}, 검증 메뉴 결과: {1} ")
     @MethodSource
     @DisplayName("입력과 일치한 메뉴를 반환한다")
     void shouldReturnMenuMatchingInput(String input, Menu excepted) {
