@@ -1,6 +1,11 @@
 package attendance.domain;
 
 public class AttendanceStatus {
+    private static final int LATE_TO_ABSENT_RATIO = 3;
+    private static final int DISMISSAL_THRESHOLD = 5;
+    private static final int COUNSELING_THRESHOLD = 3;
+    private static final int WARNING_THRESHOLD = 2;
+
     private final int attendanceCount;
     private final int lateCount;
     private final int absentCount;
@@ -14,10 +19,10 @@ public class AttendanceStatus {
     }
 
     private String determineSubjectStatus() {
-        int adjustedAbsences = absentCount + lateCount / 3;
-        if (adjustedAbsences > 5) return "제적";
-        if (adjustedAbsences >= 3) return "면담";
-        if (adjustedAbsences >= 2) return "경고";
+        int adjustedAbsences = absentCount + lateCount / LATE_TO_ABSENT_RATIO;
+        if (adjustedAbsences > DISMISSAL_THRESHOLD) return "제적";
+        if (adjustedAbsences >= COUNSELING_THRESHOLD) return "면담";
+        if (adjustedAbsences >= WARNING_THRESHOLD) return "경고";
         return null;
     }
 

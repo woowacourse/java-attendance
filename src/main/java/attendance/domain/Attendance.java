@@ -7,6 +7,16 @@ import java.time.LocalTime;
 
 public class Attendance {
 
+    private static final int WEEKEND_HOLIDAY = 25;
+    private static final LocalTime START_TIME = LocalTime.of(8, 0);
+    private static final LocalTime END_TIME = LocalTime.of(23, 0);
+
+    private static final LocalTime MONDAY_ATTENDANCE_LIMIT = LocalTime.of(13, 5);
+    private static final LocalTime MONDAY_LATE_LIMIT = LocalTime.of(13, 30);
+
+    private static final LocalTime OTHER_DAYS_ATTENDANCE_LIMIT = LocalTime.of(10, 5);
+    private static final LocalTime OTHER_DAYS_LATE_LIMIT = LocalTime.of(10, 30);
+
     private final LocalDate attendanceDate;
     private final LocalTime attendanceTime;
     private final String attendanceStatus;
@@ -19,35 +29,34 @@ public class Attendance {
         this.attendanceStatus = determineAttendanceStatus();
     }
 
-
     private void validateAttendanceDate(LocalDate localDate) {
         if (localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)
-                || localDate.getDayOfMonth() == 25) {
+            || localDate.getDayOfMonth() == WEEKEND_HOLIDAY) {
             throw new IllegalArgumentException("주말 및 공휴일은 출석을 받지않습니다");
         }
     }
 
     private void validateAttendanceTime(LocalTime localTime) {
-        if (localTime.isBefore(LocalTime.of(8, 0)) || localTime.isAfter(LocalTime.of(23, 0))) {
+        if (localTime.isBefore(START_TIME) || localTime.isAfter(END_TIME)) {
             throw new IllegalArgumentException("[ERROR] 지정된 시간이 아니면 등교가 불가능합니다.");
         }
     }
 
     private String determineAttendanceStatus() {
         if (attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
-            if (attendanceTime.isBefore(LocalTime.of(13, 5)) || attendanceTime.equals(LocalTime.of(13, 5))) {
+            if (!attendanceTime.isAfter(MONDAY_ATTENDANCE_LIMIT)) {
                 return Subject.ATTENDANCE.getStatus();
             }
-            if (attendanceTime.isBefore(LocalTime.of(13, 30)) || attendanceTime.equals(LocalTime.of(13, 30))) {
+            if (!attendanceTime.isAfter(MONDAY_LATE_LIMIT)) {
                 return Subject.LATE.getStatus();
             }
             return Subject.ABSENT.getStatus();
         }
 
-        if (attendanceTime.isBefore(LocalTime.of(10, 5)) || attendanceTime.equals(LocalTime.of(10, 5))) {
+        if (!attendanceTime.isAfter(OTHER_DAYS_ATTENDANCE_LIMIT)) {
             return Subject.ATTENDANCE.getStatus();
         }
-        if (attendanceTime.isBefore(LocalTime.of(10, 30)) || attendanceTime.equals(LocalTime.of(10, 30))) {
+        if (!attendanceTime.isAfter(OTHER_DAYS_LATE_LIMIT)) {
             return Subject.LATE.getStatus();
         }
         return Subject.ABSENT.getStatus();
