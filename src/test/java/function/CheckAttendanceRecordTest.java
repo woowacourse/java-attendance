@@ -1,69 +1,83 @@
 package function;
 
-import static constants.TestTimeMaker.EXCEPT_MONDAY_ATTEND;
-import static constants.TestTimeMaker.MONDAY_ATTEND;
+import static constants.TestDataMaker.ABSENT_EXCEPT_MONDAY;
+import static constants.TestDataMaker.ATTEND_MONDAY;
+import static constants.TestDataMaker.LATE_EXCEPT_MONDAY;
+import static constants.TestDataMaker.MONDAY_DATE;
+import static constants.TestDataMaker.THURSDAY_DATE;
+import static constants.TestDataMaker.TUESDAY_DATE;
+import static constants.TestDataMaker.WEDNESDAY_DATE;
+import static domain.policy.AttendancePolicy.ABSENT_STATUS;
+import static domain.policy.AttendancePolicy.ATTEND_STATUS;
+import static domain.policy.AttendancePolicy.LATE_STATUS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceBook;
-import domain.AttendanceStatus;
-import domain.Calendar;
-import dto.AttendanceRecordResponse;
-import dto.TotalRecordsResponse;
-import java.time.LocalDate;
+import domain.PenaltyDiscriminator;
+import domain.policy.PenaltyPolicy;
+import dto.CheckAttendanceRecordResponse;
+import dto.PenaltyResponse;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import view.ErrorCode;
+import view.ErrorMessage;
 
 public class CheckAttendanceRecordTest {
     private AttendanceBook attendanceBook;
 
     @BeforeEach
-    void setup() {
+    void SetUp() {
+        // given
         attendanceBook = new AttendanceBook();
-        attendanceBook.initialize("쿠키", Map.of(LocalDate.of(2024, 12, 2), MONDAY_ATTEND));
-        attendanceBook.initialize("쿠키", Map.of(LocalDate.of(2024, 12, 3), EXCEPT_MONDAY_ATTEND));
-        attendanceBook.initialize("쿠키", Map.of(LocalDate.of(2024, 12, 4), EXCEPT_MONDAY_ATTEND));
+        attendanceBook.registerCrew("쿠키", MONDAY_DATE, ATTEND_MONDAY);
+        attendanceBook.registerCrew("쿠키", TUESDAY_DATE, LATE_EXCEPT_MONDAY);
+        attendanceBook.registerCrew("쿠키", THURSDAY_DATE, ABSENT_EXCEPT_MONDAY);
     }
 
     @Test
-    @DisplayName("닉네임을_입력하면_전날까지의_크루_출석_기록을_출력해야_한다")
-    void 닉네임을_입력하면_전날까지의_크루_출석_기록을_출력해야_한다() {
-        List<AttendanceRecordResponse> record = attendanceBook.checkAttendanceHistoryByCrew("쿠키");
+    @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 기록을 출력해야 한다.")
+    void Using_Name_To_Check_Attendance_Record() {
+        // when
+        List<CheckAttendanceRecordResponse> responses = attendanceBook.checkAttendanceRecord("쿠키");
 
-        assertThat(record.getFirst().date()).isEqualTo(LocalDate.of(2024, 12, 2));
-        assertThat(record.get(1).date()).isEqualTo(LocalDate.of(2024, 12, 3));
-        assertThat(record.get(2).date()).isEqualTo(LocalDate.of(2024, 12, 4));
+        // then
+        assertThat(responses.getFirst().date()).isEqualTo(MONDAY_DATE);
+        assertThat(responses.getFirst().time()).isEqualTo(ATTEND_MONDAY);
+        assertThat(responses.getFirst().attendanceStatus()).isEqualTo(ATTEND_STATUS.getStatus());
 
-        assertThat(record.getFirst().time()).isEqualTo(MONDAY_ATTEND);
-        assertThat(record.get(1).time()).isEqualTo(EXCEPT_MONDAY_ATTEND);
-        assertThat(record.get(2).time()).isEqualTo(EXCEPT_MONDAY_ATTEND);
+        assertThat(responses.get(1).date()).isEqualTo(TUESDAY_DATE);
+        assertThat(responses.get(1).time()).isEqualTo(LATE_EXCEPT_MONDAY);
+        assertThat(responses.get(1).attendanceStatus()).isEqualTo(LATE_STATUS.getStatus());
 
-        assertThat(record.getFirst().attendanceStatus()).isEqualTo(AttendanceStatus.ATTEND);
-        assertThat(record.get(1).attendanceStatus()).isEqualTo(AttendanceStatus.ATTEND);
-        assertThat(record.get(2).attendanceStatus()).isEqualTo(AttendanceStatus.ATTEND);
+        assertThat(responses.get(2).date()).isEqualTo(WEDNESDAY_DATE);
+        assertThat(responses.get(2).time()).isNull(); // 수요일 기록 존재 X
+        assertThat(responses.get(2).attendanceStatus()).isEqualTo(ABSENT_STATUS.getStatus());
+
+        assertThat(responses.get(3).date()).isEqualTo(THURSDAY_DATE);
+        assertThat(responses.get(3).time()).isEqualTo(ABSENT_EXCEPT_MONDAY);
+        assertThat(responses.get(3).attendanceStatus()).isEqualTo(ABSENT_STATUS.getStatus());
     }
 
     @Test
-    @DisplayName("닉네임을_입력하면_전날까지의_크루_출석_기록_상태별_총_횟수를_출력해야_한다")
-    void 닉네임을_입력하면_전날까지의_크루_출석_기록_상태별_총_횟수를_출력해야_한다() {
-        List<AttendanceRecordResponse> record = attendanceBook.checkAttendanceHistoryByCrew("쿠키");
-        TotalRecordsResponse count = attendanceBook.checkAttendanceCountByCrew(record);
-
-        assertThat(count.attendanceCount()).isEqualTo(3);
-        assertThat(count.lateCount()).isEqualTo(0);
-        assertThat(count.absentCount()).isEqualTo(Calendar.countWorkingDay() - 3);
+    @DisplayName("등록되지 않는 닉네임의 경우 예외 메시지를 출력한다.")
+    void Name_Is_Not_Registered() {
+        assertThatThrownBy(() -> attendanceBook.checkAttendanceRecord("미등록"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorMessage.NOTICE_NICKNAME_IS_NOT_REGISTERED.getFormat());
     }
 
     @Test
-    @DisplayName("출석_기록_확인시_등록되지_않는_닉네임의_경우_예외를_출력한다")
-    void 출석_기록_확인시_등록되지_않는_닉네임의_경우_예외를_출력한다() {
-        assertThatThrownBy(
-                () -> attendanceBook.checkAttendanceHistoryByCrew("없음"))
-                .isInstanceOf(IllegalArgumentException.class) // 토요일
-                .hasMessage(ErrorCode.NICKNAME_NOT_FOUND.getFormat());
+    @DisplayName("크루 출석 기록을 출력한 후, 출결 상태별 횟수와 패널티 대상자 여부를 출력해야한다.")
+    void Calculate_Attendance_Status_Count_And_Judge_Penalty() {
+        List<CheckAttendanceRecordResponse> responses = attendanceBook.checkAttendanceRecord("쿠키");
+
+        PenaltyResponse penaltyResponse = PenaltyDiscriminator.judgeCrewAttendanceRecord(responses);
+
+        assertThat(penaltyResponse.attendCount()).isEqualTo(1);
+        assertThat(penaltyResponse.lateCount()).isEqualTo(1);
+        assertThat(penaltyResponse.absentCount()).isEqualTo(19);
+        assertThat(penaltyResponse.penalty()).isEqualTo(PenaltyPolicy.EXPULSION.getPenalty());
     }
 }

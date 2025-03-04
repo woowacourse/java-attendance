@@ -1,12 +1,11 @@
 package dto;
 
-import domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record AttendanceRecordResponse(
+public record CheckAttendanceRecordResponse(
         LocalDate date,
         LocalTime time,
-        AttendanceStatus attendanceStatus
+        String attendanceStatus
 ) {
 }

@@ -1,22 +1,21 @@
 package domain;
 
-import static constants.NumberConstants.LATE_TO_ABSENCE_CONVERSION_CRITERIA;
-import static constants.TimeConstants.OPERATION_TIME_END;
-import static constants.TimeConstants.OPERATION_TIME_START;
-
-import dto.AttendanceRecordResponse;
-import dto.CrewPenaltyResponse;
+import domain.policy.DatePolicy;
+import domain.policy.PenaltyPolicy;
+import domain.policy.TimePolicy;
+import dto.CheckAttendanceRecordResponse;
+import dto.CheckAttendanceResponse;
 import dto.ModifyAttendanceResponse;
-import dto.TotalRecordsResponse;
+import dto.PenaltyCrewResponse;
+import dto.PenaltyResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import utils.TimeUtils;
-import view.ErrorCode;
+import view.ErrorMessage;
 
 public class AttendanceBook {
     private final List<Crew> crews;
@@ -25,124 +24,97 @@ public class AttendanceBook {
         this.crews = new ArrayList<>();
     }
 
-    public void addNewCrew(Crew newCrew) {
-        crews.add(newCrew);
-    }
-
-    // 데이터 유효성 검사
-    public void validateNameAlreadyExists(String name) {
-        if (!checkCrewAlreadyExists(name)) {
-            throw new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getFormat());
+    public static void validateAlreadyAttendance(Crew foundCrew, LocalDate date) {
+        if (foundCrew.isDateExisted(date)) { // 날짜가 존재한다면
+            throw new IllegalArgumentException(ErrorMessage.NOTICE_ATTENDANCE_ALREADY_EXISTED.getFormat());
         }
     }
 
-    public void validateRecordNotExistsByCrewName(String name, LocalDate date) {
-        Crew foundCrew = findCrewByName(name);
-        foundCrew.validateRecordNotExists(date);
-    }
-
-    public void validateIsInOperationHour(LocalTime time) {
-        if (!time.isAfter(OPERATION_TIME_START) || !time.isBefore(OPERATION_TIME_END)) {
-            throw new IllegalArgumentException(ErrorCode.TIME_NOT_IN_OPERATION_HOUR.getFormat());
+    // 초기 등록
+    public void registerCrew(String name, LocalDate date, LocalTime time) {
+        if (!checkCrewExisted(name)) {
+            crews.add(new Crew(name));
         }
+        findCrewByName(name).addNewTimeLog(date, time);
     }
 
-    // 출석부 초기화: csv 파일 데이터를 적용
-    public void initialize(String name, Map<LocalDate, LocalTime> dateAndTime) {
-        if (!checkCrewAlreadyExists(name)) {
-            addNewCrew(Crew.createByName(name));
-        }
-        Crew crew = findCrewByName(name);
-        crew.addDailyAttendance(dateAndTime);
-    }
-
-    public boolean checkCrewAlreadyExists(String name) {
-        return crews.stream()
-                .anyMatch(crew -> crew.matchesName(name));
-    }
-
-    // 기능 1. 출석 확인
-    public AttendanceRecordResponse checkAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
-        LocalDate date = TimeUtils.getDateFromDateAndTime(dateAndTime);
-        Calendar.validateIsWorkingDay(date.getDayOfMonth());
-
-        LocalTime time = TimeUtils.getTimeFromDateAndTime(dateAndTime);
-        validateIsInOperationHour(time);
-
-        findCrewByName(name).addDailyAttendance(dateAndTime);
-        return new AttendanceRecordResponse(date, time, AttendanceStatus.judgeStatus(date, time));
-    }
-
-    // 기능 2. 출석 수정
-    public ModifyAttendanceResponse modifyAttendance(String name, Map<LocalDate, LocalTime> dateAndTimeToModify) {
-        validateNameAlreadyExists(name);
-
-        LocalDate date = TimeUtils.getDateFromDateAndTime(dateAndTimeToModify);
-        validateRecordNotExistsByCrewName(name, date);
-
-        LocalTime modifiedTime = TimeUtils.getTimeFromDateAndTime(dateAndTimeToModify);
-        validateIsInOperationHour(modifiedTime);
+    // 기능 1
+    public CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
+        TimePolicy.validateTimeIsInTheRangeOfOperation(time);
+        DatePolicy.validateIsDateHoliday(date);
+        DatePolicy.validateIsDateWeekend(date);
+        String attendanceStatus = AttendanceDiscriminator.judgeTimeLogForStatus(date, time);
 
         Crew foundCrew = findCrewByName(name);
-        LocalTime originalTime = foundCrew.getTimeByDate(date);
-        foundCrew.modifyDailyAttendance(dateAndTimeToModify);
+        validateAlreadyAttendance(foundCrew, date);
 
-        return new ModifyAttendanceResponse(
-                date, originalTime, modifiedTime,
-                AttendanceStatus.judgeStatus(date, originalTime),
-                AttendanceStatus.judgeStatus(date, modifiedTime)
-        );
+        foundCrew.addNewTimeLog(date, time);
+        return new CheckAttendanceResponse(time, attendanceStatus);
     }
 
-    // 기능 3. 크루별 출석 기록 확인
-    public List<AttendanceRecordResponse> checkAttendanceHistoryByCrew(String name) {
-        return findCrewByName(name).getAttendanceRecords();
+    // 기능 2
+    public ModifyAttendanceResponse modifyAttendance(String name, LocalDate date, LocalTime modifiedTime) {
+        TimePolicy.validateTimeIsInTheRangeOfOperation(modifiedTime);
+        DatePolicy.validateIsDateFuture(date);
+        DatePolicy.validateIsDateHoliday(date);
+        DatePolicy.validateIsDateWeekend(date);
+
+        Crew foundCrew = findCrewByName(name);
+        foundCrew.gratifyTimeLogs(); // 수정하려는 날짜가 기록이 없는 경우를 대비하여 빈 타임 로그 구현
+
+        LocalTime previousTime = foundCrew.getTimeByDate(date);// 이전 시간 가져오기
+        String previousStatus = AttendanceDiscriminator.judgeTimeLogForStatus(date, previousTime); // 변경 전 출결 현황
+
+        foundCrew.addNewTimeLog(date, modifiedTime); // 시간 변경하기
+        String modifiedStatus = AttendanceDiscriminator.judgeTimeLogForStatus(date, modifiedTime); // 변경 후 출결 현황
+        return new ModifyAttendanceResponse(date, previousTime, modifiedTime, previousStatus, modifiedStatus);
     }
 
-    public TotalRecordsResponse checkAttendanceCountByCrew(List<AttendanceRecordResponse> records) {
-        Map<AttendanceStatus, Long> statusCount = records.stream()
-                .map(AttendanceRecordResponse::attendanceStatus)
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    // 기능 3
+    public List<CheckAttendanceRecordResponse> checkAttendanceRecord(String name) {
+        Crew foundCrew = findCrewByName(name);
 
-        int attendanceCount = statusCount.getOrDefault(AttendanceStatus.ATTEND, 0L).intValue();
-        int lateCount = statusCount.getOrDefault(AttendanceStatus.LATE, 0L).intValue();
-        int absentCount = Calendar.countWorkingDay() - attendanceCount - lateCount;
-
-        return new TotalRecordsResponse(attendanceCount, lateCount, absentCount);
+        foundCrew.gratifyTimeLogs();
+        return foundCrew.getTimeLogs().entrySet().stream()
+                .sorted(Map.Entry.comparingByKey()) // 날짜 기준으로 정렬
+                .map(entry -> new CheckAttendanceRecordResponse(
+                        entry.getKey(), entry.getValue(),
+                        AttendanceDiscriminator.judgeTimeLogForStatus(entry.getKey(), entry.getValue())))
+                .collect(Collectors.toList());
     }
 
-    // 기능 4. 제적 위험자 확인
-    public List<CrewPenaltyResponse> checkPenaltyCrew() {
-        List<CrewPenaltyResponse> crewPenaltyResponses = new ArrayList<>();
-
+    // 기능 4
+    public List<PenaltyCrewResponse> checkPenaltyCrew() {
+        List<PenaltyCrewResponse> responses = new ArrayList<>();
         for (Crew crew : crews) {
-            List<AttendanceRecordResponse> attendanceRecords = crew.getAttendanceRecords();
-            TotalRecordsResponse totalRecords = checkAttendanceCountByCrew(attendanceRecords);
-
-            int penaltyCount = calculatePenaltyCount(totalRecords);
-
-            crewPenaltyResponses.add(
-                    new CrewPenaltyResponse(
-                            crew.getName(),
-                            totalRecords.absentCount(),
-                            totalRecords.lateCount(),
-                            PenaltyStatus.getByPenaltyCount(penaltyCount)
-                    )
-            );
+            PenaltyResponse response = PenaltyDiscriminator.judgeCrewAttendanceRecord(
+                    checkAttendanceRecord(crew.getName()));
+            if (!response.penalty().isEmpty()) { // 패널티가 존재하는 경우
+                responses.add(new PenaltyCrewResponse(crew.getName(), response.lateCount(), response.absentCount(),
+                        response.penalty()));
+            }
         }
 
-        return crewPenaltyResponses;
+        // 정렬 기준 적용
+        responses.sort(Comparator
+                .comparing(PenaltyCrewResponse::penalty).reversed() // 1. penalty 한글 내림차순 (제적 -> 면담 -> 경고 순)
+                .thenComparing(p -> -(PenaltyPolicy.calculatePenaltyCount(p.absentCount(),
+                        p.lateCount()))) // 2. 패널티 적용 숫자에 따라 내림차순
+                .thenComparing(PenaltyCrewResponse::name)); // 3. name 기준 오름차순
+
+        return responses;
     }
 
-    public int calculatePenaltyCount(TotalRecordsResponse totalRecords) {
-        return totalRecords.absentCount() + (totalRecords.lateCount() / LATE_TO_ABSENCE_CONVERSION_CRITERIA);
-    }
-
-    // 보조 메서드
-    private Crew findCrewByName(String name) {
+    public boolean checkCrewExisted(String name) {
         return crews.stream()
-                .filter(crew -> crew.matchesName(name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getFormat()));
+                .anyMatch(crew -> crew.isSameName(name));
+    }
+
+    public Crew findCrewByName(String name) {
+        return crews.stream()
+                .filter(crew -> crew.isSameName(name))
+                .findAny()
+                .orElseThrow(
+                        () -> new IllegalArgumentException(ErrorMessage.NOTICE_NICKNAME_IS_NOT_REGISTERED.getFormat()));
     }
 }

@@ -13,6 +13,10 @@ dependencies {
     testImplementation platform('org.assertj:assertj-bom:3.27.3')
     testImplementation('org.junit.jupiter:junit-jupiter')
     testImplementation('org.assertj:assertj-core')
+
+    // ✅ mockito-core 및 mockito-inline 최신 안정 버전 사용
+    testImplementation 'org.mockito:mockito-core:5.2.0'
+    testImplementation 'org.mockito:mockito-inline:5.2.0'  // mockStatic() 사용을 위해 필요
 }
 
 java {
