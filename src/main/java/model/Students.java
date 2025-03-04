@@ -11,11 +11,12 @@ public class Students {
         this.students = new ArrayList<>(students);
     }
 
-    public void findAttendanceTimeByAttendanceDate(String studentName, AttendanceDate attendanceDate) {
-        students.stream()
+    public AttendanceTime findAttendanceTimeByAttendanceDate(String studentName, AttendanceDate attendanceDate) {
+        return students.stream()
                 .filter(student -> student.isSameName(studentName))
                 .findFirst()
-                .ifPresent(student -> student.findAttendanceTimeByAttendanceDate(attendanceDate));
+                .orElseThrow().
+                findAttendanceTimeByAttendanceDate(attendanceDate);
     }
 
     public void modifyAttendanceDateTime(String studentName, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
