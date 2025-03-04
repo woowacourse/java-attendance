@@ -100,8 +100,7 @@ public class Attendances {
             return startDate;
         }
         attendances.add(new Attendance(startDate));
-        startDate = startDate.plusDays(1);
-        return startDate;
+        return startDate.plusDays(1);
     }
 
     private void deleteAttendanceDate(LocalDate date) {
