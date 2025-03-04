@@ -92,4 +92,17 @@ public class StudentsTest {
         Assertions.assertEquals(students.findStudentByName(name).getStudentAttendanceHistory().getAttendanceHistory()
                 .get(attendanceDate), attendanceTime);
     }
+
+    @Test
+    @DisplayName("학생 이름, 일자, 시각을 받아 수정하는 메서드 테스트")
+    void test6() {
+        String name = "이든";
+
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 12));
+        AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(10, 0));
+
+        students.modifyAttendanceDateTime(name, attendanceDate, attendanceTime);
+
+        Assertions.assertEquals(students.findStudentByName(name).getStudentAttendanceHistory().getAttendanceHistory()
+                .get(attendanceDate), attendanceTime);    }
 }
