@@ -14,8 +14,7 @@ public class Crews {
         return crews.stream()
                 .filter(crew -> crew.isSameAs(nickname))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
-
+                .orElseThrow(() -> new IllegalArgumentException(nickname.getValue() + "는 존재하지 않는 크루입니다."));
     }
 
     public List<Crew> findSortedDisciplinaryCrews() {
