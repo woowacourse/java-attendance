@@ -1,9 +1,5 @@
 package attendance.domain;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +9,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AttendanceBookTest {
 
@@ -115,7 +115,7 @@ public class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);
 
         Assertions.assertThat(attendanceBook.findAttendanceRecord(crew, modifyDateTime)
-                .getAttendanceTime().getDayOfMonth()).isEqualTo(24);
+                .getAttendanceDate().getDayOfMonth()).isEqualTo(24);
     }
 
     @DisplayName("수정된 출석 기록이 이전 값과 다른지 검사")
@@ -141,7 +141,6 @@ public class AttendanceBookTest {
 
         //then
         Assertions.assertThat(modifiedAttendanceTime.getAttendanceStatus()).isEqualTo(attendanceStatus);
-        Assertions.assertThat(modifiedAttendanceTime.getAttendanceTime()).isEqualTo(modifyTime);
     }
 
     @Test

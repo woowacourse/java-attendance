@@ -1,18 +1,28 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AttendanceTime {
-    private final LocalDateTime attendanceTime;
+    private final LocalDate attendanceDate;
+    private final LocalTime attendanceTime;
     private final AttendanceStatus attendanceStatus;
 
-    public AttendanceTime(LocalDateTime inputTime) {
-        this.attendanceTime = inputTime;
-        this.attendanceStatus = AttendanceStatus.fetchUserAttendanceStatus(inputTime);
+    public AttendanceTime(LocalDate attendanceDate) {
+        this.attendanceDate = attendanceDate;
+        this.attendanceTime = null;
+        this.attendanceStatus = AttendanceStatus.ABSENCE;
+    }
+
+    public AttendanceTime(LocalDateTime attendanceDateTime) {
+        this.attendanceDate = attendanceDateTime.toLocalDate();
+        this.attendanceTime = attendanceDateTime.toLocalTime();
+        this.attendanceStatus = AttendanceStatus.fetchUserAttendanceStatus(attendanceDateTime);
     }
 
     public boolean isSameDateTime(final LocalDateTime inputTime) {
-        return attendanceTime.getDayOfMonth() == inputTime.getDayOfMonth();
+        return attendanceDate.getDayOfMonth() == inputTime.getDayOfMonth();
     }
 
     public boolean isAttendance() {
@@ -31,7 +41,11 @@ public class AttendanceTime {
         return attendanceStatus;
     }
 
-    public LocalDateTime getAttendanceTime() {
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    public LocalTime getAttendanceTime() {
         return attendanceTime;
     }
 

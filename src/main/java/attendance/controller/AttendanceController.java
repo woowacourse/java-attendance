@@ -29,7 +29,7 @@ public class AttendanceController {
     }
 
     public void start() throws IOException {
-        final LocalDate currentDate = LocalDate.of(2024, 12, 25);
+        final LocalDate currentDate = LocalDate.of(2024, 12, 31);
         final AttendanceBookParser parser = new AttendanceBookParser(FileLoader.fileReadLine("attendances.csv"));
         final Crews crews = parser.getCrews();
         AttendanceBook attendanceBook = new AttendanceBook(crews, currentDate);

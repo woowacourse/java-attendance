@@ -32,9 +32,9 @@ public class AttendanceBook {
     private AttendanceRecord putDefaultValue(LocalDate now) {
         List<AttendanceTime> attendanceTimes = new ArrayList<>();
         for (int i = 1; i < now.getDayOfMonth(); i++) {
-            LocalDateTime dateTime = now.withDayOfMonth(i).atTime(DEFAULT_VALUE, DEFAULT_VALUE);
-            if (!EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(dateTime.getDayOfWeek())) {
-                attendanceTimes.add(new AttendanceTime(dateTime));
+            LocalDate date = now.withDayOfMonth(i);
+            if (!EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(date.getDayOfWeek())) {
+                attendanceTimes.add(new AttendanceTime(date));
             }
         }
         return new AttendanceRecord(attendanceTimes);

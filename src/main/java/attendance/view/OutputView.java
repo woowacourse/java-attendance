@@ -6,7 +6,9 @@ import attendance.domain.AttendanceTime;
 import attendance.domain.Crew;
 import attendance.domain.PenaltyType;
 import attendance.domain.RiskCrew;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -19,7 +21,9 @@ public class OutputView {
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.KOREA);
 
     public void writeAttendanceRegister(AttendanceTime registerdAttendanceTime) {
-        LocalDateTime attendanceTime = registerdAttendanceTime.getAttendanceTime();
+        LocalDate attendanceDates = registerdAttendanceTime.getAttendanceDate();
+        LocalTime attendanceTimes = registerdAttendanceTime.getAttendanceTime();
+        LocalDateTime attendanceTime = LocalDateTime.of(attendanceDates, attendanceTimes);
         AttendanceStatus attendanceStatus = registerdAttendanceTime.getAttendanceStatus();
         String formattedDate = attendanceTime.format(dateTimeFormatter);
 
@@ -33,13 +37,17 @@ public class OutputView {
     public void writeAttendanceModify(AttendanceTime beforeTime, AttendanceTime updateTime) {
         AttendanceStatus beforeAttendanceStatus = beforeTime.getAttendanceStatus();
         AttendanceStatus updateAttendanceStatus = updateTime.getAttendanceStatus();
-        LocalDateTime beforeAttendanceTime = beforeTime.getAttendanceTime();
-        LocalDateTime updateAttendanceTime = updateTime.getAttendanceTime();
-        String beforeFormat = beforeAttendanceTime.format(dateTimeFormatter);
+        LocalDate beforeAttendanceDate = beforeTime.getAttendanceDate();
+        LocalTime beforeAttendanceTime = beforeTime.getAttendanceTime();
+        if (beforeAttendanceTime == null) {
+            System.out.print(
+                    beforeAttendanceDate.format(dateFormatter) + " --:-- " + "(" + beforeAttendanceStatus.getName()
+                            + ")");
+        }
+        LocalDateTime updateAttendanceTime = LocalDateTime.of(updateTime.getAttendanceDate(),
+                updateTime.getAttendanceTime());
         String updateFormat = updateAttendanceTime.format(timeFormatter);
-
-        System.out.println(beforeFormat + " (" + beforeAttendanceStatus.getName() + ") -> " +
-                updateFormat + " (" + updateAttendanceStatus.getName() + ") 수정 완료!");
+        System.out.println(" -> " + updateFormat + " (" + updateAttendanceStatus.getName() + ") 수정 완료!");
     }
 
     public void writeAttendanceCheck(Crew crewName, AttendanceRecord attendanceRecord) {
@@ -48,8 +56,9 @@ public class OutputView {
 
         for (AttendanceTime attendanceTime : attendanceRecord.getAttendanceRecord()) {
             AttendanceStatus status = attendanceTime.getAttendanceStatus();
-            LocalDateTime localDateTime = attendanceTime.getAttendanceTime();
-            writeDefaultHyphen(localDateTime, status);
+            LocalDate localDate = attendanceTime.getAttendanceDate();
+            LocalTime localTime = attendanceTime.getAttendanceTime();
+            writeDefaultHyphen(localDate, localTime, status);
         }
         writeAttendanceRecord(attendanceRecord);
     }
@@ -76,11 +85,12 @@ public class OutputView {
         return "성실";
     }
 
-    private void writeDefaultHyphen(LocalDateTime localDateTime, AttendanceStatus status) {
-        if (localDateTime.getHour() == 0 && localDateTime.getMinute() == 0) {
-            System.out.println(localDateTime.format(dateFormatter) + " --:-- " + "(" + status.getName() + ")");
+    private void writeDefaultHyphen(LocalDate localDate, LocalTime localTime, AttendanceStatus status) {
+        if (localTime == null) {
+            System.out.println(localDate.format(dateFormatter) + " --:-- " + "(" + status.getName() + ")");
             return;
         }
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
         System.out.println(localDateTime.format(dateTimeFormatter) + " (" + status.getName() + ")");
     }
 
