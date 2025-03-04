@@ -5,19 +5,31 @@ import java.time.LocalTime;
 
 public class DailyRecord {
 
-    private final LocalTime time;
+    private final LocalTime attendedTime;
     private final AttendanceStatus status;
 
-    public DailyRecord(LocalTime time, DayOfWeek dayOfWeek) {
-        this.time = time;
-        this.status = AttendanceStatus.of(time, dayOfWeek);
+    public DailyRecord(DayOfWeek dayOfWeek, LocalTime attendedTime) {
+        this.attendedTime = attendedTime;
+        this.status = AttendanceStatus.of(dayOfWeek, attendedTime);
     }
 
-    public LocalTime getTime() {
-        return time;
+    public LocalTime getAttendedTime() {
+        return attendedTime;
     }
 
     public AttendanceStatus getStatus() {
         return status;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        DailyRecord other = (DailyRecord) obj;
+        return attendedTime.equals(other.attendedTime) && status == other.status;
     }
 }

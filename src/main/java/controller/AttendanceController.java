@@ -1,125 +1,126 @@
 package controller;
 
-import static domain.AttendanceStatus.ABSENCE;
-import static domain.AttendanceStatus.ATTENDANCE;
-import static domain.AttendanceStatus.LATENESS;
-
+import domain.AttendanceBook;
 import domain.AttendanceStatus;
-import domain.Crews;
-import domain.Penalty;
+import domain.AttendanceManager;
 import domain.Crew;
-import domain.StatisticsResult;
 import domain.DailyRecord;
+import domain.Feature;
+import domain.Penalty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.Scanner;
+import util.loader.FileLoader;
 import util.parser.DateTimeParser;
-import util.validator.InputValidator;
+import util.parser.FileParser;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
 
-    public static final int NOW_YEAR = 2024;
-    public static final int NOW_MONTH = 12;
-    public static final int NOW_DAY = 13;
+    private static final LocalDate localDate = DateTimeParser.parseStringToDate("2024-12-13");
 
     private final InputView inputView;
     private final OutputView outputView;
-    private final Crews crews;
+    private final AttendanceBook attendanceBook;
+    private final AttendanceManager attendanceManager;
 
-    public AttendanceController(Crews crews) {
-        this.inputView = new InputView();
-        this.outputView = new OutputView();
-        this.crews = crews;
+    public AttendanceController(InputView inputView, OutputView outputView) {
+        this.inputView = inputView;
+        this.outputView = outputView;
+        this.attendanceBook = createAttendanceBook();
+        this.attendanceManager = new AttendanceManager(attendanceBook);
     }
 
-    public void run() {
-        LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
-        Map<String, Runnable> functions = Map.of(
-            "1", this::attendCrew,
-            "2", this::editCrewRecord,
-            "3", this::checkCrewRecords,
-            "4", this::checkExpelledWarningCrews
-        );
+    public void start() {
+        handleException(this::executeFeature);
+    }
 
-        String function = "";
-        while (!function.equalsIgnoreCase("Q")) {
-            function = inputView.readFunction(currentDate);
-            validateFunctions(function, functions.keySet());
-            functions.getOrDefault(function, () -> {
-            }).run();
+    protected void attendanceCheck() {
+        String name = inputView.readAttendedName();
+        LocalTime time = DateTimeParser.parseStringToTime(inputView.readAttendedTime());
+
+        DailyRecord record = attendanceManager.attendCrew(name, LocalDateTime.of(localDate, time));
+        outputView.printDateTimeRecord(localDate, record);
+    }
+
+    protected void attendanceEdit() {
+        String name = inputView.readEditedName();
+        LocalDate date = DateTimeParser.parseIntegerToDate(localDate.getYear(),
+            localDate.getMonthValue(), Integer.parseInt(inputView.readEditedDay()));
+        LocalTime time = DateTimeParser.parseStringToTime(inputView.readEditedTime());
+
+        DailyRecord oldRecord = attendanceBook.findCrewByName(name).findRecordByDate(date);
+        DailyRecord newRecord = attendanceManager.editCrew(name, LocalDateTime.of(date, time));
+        outputView.printEditedResult(date, oldRecord, newRecord);
+    }
+
+    protected void crewRecordsCheck() {
+        String name = inputView.readAttendedName();
+        LocalDate startDate = localDate.withDayOfMonth(1);
+
+        Crew crew = attendanceBook.findCrewByName(name);
+        Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, localDate);
+        Map<AttendanceStatus, Integer> statisticsResult = AttendanceStatus.countStatus(records);
+        Penalty penalty = Penalty.of(statisticsResult.get(AttendanceStatus.LATE),
+            statisticsResult.get(AttendanceStatus.ABSENT));
+
+        outputView.printCrewRecords(name, records);
+        outputView.printStatistics(statisticsResult);
+        outputView.printPenalty(penalty);
+    }
+
+    protected void expelledWarningCheck() {
+        LocalDate startDate = localDate.withDayOfMonth(1);
+        Map<String, Crew> warningCrews = attendanceBook.findWarningCrew(startDate, localDate);
+
+        outputView.printWarningStartMessage();
+        for (String name : warningCrews.keySet()) {
+            Crew crew = warningCrews.get(name);
+            Map<LocalDate, DailyRecord> records = crew.findRecordsOfDate(startDate, localDate);
+            Map<AttendanceStatus, Integer> statistic = AttendanceStatus.countStatus(records);
+            int lateCount = statistic.get(AttendanceStatus.LATE);
+            int absentCount = statistic.get(AttendanceStatus.ABSENT);
+
+            Penalty penalty = Penalty.of(lateCount, absentCount);
+            outputView.printWarningCrew(name, absentCount, lateCount, penalty);
         }
     }
 
-    private void attendCrew() {
-        handleException(() -> {
-            String name = inputView.readName();
-            String time = inputView.readTime();
+    protected Runnable selectFeature(String featureNumber) {
+        Map<Feature, Runnable> features = Map.of(
+            Feature.ATTENDANCE_CHECK, this::attendanceCheck,
+            Feature.ATTENDANCE_EDIT, this::attendanceEdit,
+            Feature.CREW_RECORDS_CHECK, this::crewRecordsCheck,
+            Feature.EXPELLED_WARNING_CHECK, this::expelledWarningCheck
+        );
 
-            LocalDate today = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
-            LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
-            LocalDateTime dateTime = LocalDateTime.of(today, attendedTime);
-
-            crews.attendCrew(name, dateTime);
-            Optional<DailyRecord> dailyRecord = crews.findCrewByName(name).findRecordByDate(today);
-            outputView.printAttendanceRecord(today, dailyRecord.get());
-        });
+        Feature.validateProvided(featureNumber);
+        return features.get(Feature.of(featureNumber));
     }
 
-    private void editCrewRecord() {
-        handleException(() -> {
-            String name = inputView.readEditName();
-            String dayOfMonth = inputView.readEditDayOfMonth();
-            String time = inputView.readEditTime();
-
-            LocalDate editedDate = DateTimeParser
-                .parseIntegerToDate(NOW_YEAR, NOW_MONTH, Integer.parseInt(dayOfMonth));
-            LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
-            LocalDateTime dateTime = LocalDateTime.of(editedDate, attendedTime);
-
-            DailyRecord oldRecord = crews.editCrew(name, dateTime);
-            Optional<DailyRecord> newRecord = crews.findCrewByName(name).findRecordByDate(editedDate);
-            outputView.printEditResult(editedDate, oldRecord, newRecord.get());
-        });
+    private void executeFeature() {
+        String featureNumber = inputView.readFeature(localDate);
+        while (!Feature.isExit(featureNumber)) {
+            Runnable action = selectFeature(featureNumber);
+            action.run();
+            featureNumber = inputView.readFeature(localDate);
+        }
     }
 
-    private void checkCrewRecords() {
-        handleException(() -> {
-            String name = inputView.readName();
-
-            LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
-            Crew crew = crews.findCrewByName(name);
-
-            StatisticsResult statistics = AttendanceStatus.countStatus(currentDate, crew);
-            int attendanceCount = statistics.getCount(ATTENDANCE);
-            int latenessCount = statistics.getCount(LATENESS);
-            int absenceCount = statistics.getCount(ABSENCE);
-            Penalty penaltyResult = statistics.getPenalty();
-
-            outputView.printRecords(name, currentDate, crew);
-            outputView.printStatistics(attendanceCount, latenessCount, absenceCount, penaltyResult);
-        });
-    }
-
-    private void checkExpelledWarningCrews() {
-        handleException(() -> {
-            LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
-
-            Map<String, StatisticsResult> sortedResult = crews.findWarningCrews(currentDate);
-            outputView.printExpelledWarningResult(sortedResult);
-        });
-    }
-
-    private void validateFunctions(String functionNumber, Set<String> functions) {
+    private AttendanceBook createAttendanceBook() {
+        Map<String, List<LocalDateTime>> attendanceData = new HashMap<>();
         try {
-            InputValidator.checkFunctions(functionNumber, functions);
+            Scanner scanner = FileLoader.loadCSV("src/main/resources/attendances.csv");
+            attendanceData = FileParser.parseScannerToMap(scanner);
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e);
         }
+        return new AttendanceBook(attendanceData);
     }
 
     private void handleException(Runnable action) {
@@ -127,6 +128,7 @@ public class AttendanceController {
             action.run();
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e);
+            start();
         }
     }
 }

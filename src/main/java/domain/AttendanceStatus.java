@@ -1,66 +1,77 @@
 package domain;
 
-import static controller.AttendanceController.NOW_MONTH;
-import static controller.AttendanceController.NOW_YEAR;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import util.parser.DateTimeParser;
 
 public enum AttendanceStatus {
-    ATTENDANCE("출석"),
-    LATENESS("지각"),
-    ABSENCE("결석");
+    PRESENT("출석", 0),
+    LATE("지각", 6),
+    ABSENT("결석", 31);
 
-    private static final int MONDAY_START_HOUR = 13;
-    private static final int DEFAULT_START_HOUR = 10;
-    private static final int LATENESS_MINUTE = 5;
-    private static final int ABSENCE_MINUTE = 30;
+    private final String name;
+    private final int boundaryMinute;
 
-    public final String name;
-
-    AttendanceStatus(String name) {
+    AttendanceStatus(String name, int boundaryMinute) {
         this.name = name;
+        this.boundaryMinute = boundaryMinute;
     }
 
-    public static StatisticsResult countStatus(LocalDate nowDate, Crew crew) {
-        LocalDate startDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, 1);
+    public static Map<AttendanceStatus, Integer> countStatus(Map<LocalDate, DailyRecord> records) {
+        Map<AttendanceStatus, Integer> statisticsResult = new LinkedHashMap<>();
+        statisticsResult.put(PRESENT, 0);
+        statisticsResult.put(LATE, 0);
+        statisticsResult.put(ABSENT, 0);
 
-        Map<AttendanceStatus, Long> statusCounts = startDate.datesUntil(nowDate)
-            .filter(date -> Holiday.isWeekDay(date))
-            .map(date -> crew.findStatusByDate(date))
-            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-        Map<AttendanceStatus, Integer> result = new HashMap<>();
-            result.put(ATTENDANCE, statusCounts.getOrDefault(ATTENDANCE, 0L).intValue());
-            result.put(LATENESS, statusCounts.getOrDefault(LATENESS, 0L).intValue());
-            result.put(ABSENCE, statusCounts.getOrDefault(ABSENCE, 0L).intValue());
-
-        return new StatisticsResult(result);
+        for (DailyRecord record : records.values()) {
+            AttendanceStatus status = record.getStatus();
+            statisticsResult.put(status, (statisticsResult.get(status) + 1));
+        }
+        return statisticsResult;
     }
 
-    public static AttendanceStatus of(LocalTime time, DayOfWeek dayOfWeek) {
-        Map<DayOfWeek, LocalTime> lateTimes = Map.of(DayOfWeek.MONDAY,
-            DateTimeParser.parseIntegerToTime(MONDAY_START_HOUR, LATENESS_MINUTE));
-        Map<DayOfWeek, LocalTime> absentTimes = Map.of(DayOfWeek.MONDAY,
-            DateTimeParser.parseIntegerToTime(MONDAY_START_HOUR, ABSENCE_MINUTE));
+    public static AttendanceStatus of(DayOfWeek dayOfWeek, LocalTime time) {
+        return Optional.ofNullable(time)
+            .map(t -> {
+                if (dayOfWeek == DayOfWeek.MONDAY) {
+                    return findStatusOfMonday(t);
+                }
+                return findStatusOfDefault(t);
+            })
+            .orElse(ABSENT);
+    }
 
-        LocalTime lateTime = lateTimes.getOrDefault(dayOfWeek,
-            DateTimeParser.parseIntegerToTime(DEFAULT_START_HOUR, LATENESS_MINUTE));
-        LocalTime absentTime = absentTimes.getOrDefault(dayOfWeek,
-            DateTimeParser.parseIntegerToTime(DEFAULT_START_HOUR, ABSENCE_MINUTE));
+    private static AttendanceStatus findStatusOfMonday(LocalTime time) {
+        if (time.equals(LocalTime.MIN)) {
+            return ABSENT;
+        }
+        if (time.isBefore(DateTimeParser.parseIntegerToTime(13, LATE.boundaryMinute))) {
+            return PRESENT;
+        }
+        if (time.isBefore(DateTimeParser.parseIntegerToTime(13, ABSENT.boundaryMinute))) {
+            return LATE;
+        }
+        return ABSENT;
+    }
 
-        if (time.isAfter(absentTime)) {
-            return ABSENCE;
+    private static AttendanceStatus findStatusOfDefault(LocalTime time) {
+        if (time.equals(LocalTime.MIN)) {
+            return ABSENT;
         }
-        if (time.isAfter(lateTime)) {
-            return LATENESS;
+        if (time.isBefore(DateTimeParser.parseIntegerToTime(10, LATE.boundaryMinute))) {
+            return PRESENT;
         }
-        return ATTENDANCE;
+        if (time.isBefore(DateTimeParser.parseIntegerToTime(10, ABSENT.boundaryMinute))) {
+            return LATE;
+        }
+        return ABSENT;
+    }
+
+    public String getName() {
+        return name;
     }
 }

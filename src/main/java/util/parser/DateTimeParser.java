@@ -8,26 +8,35 @@ import java.time.format.DateTimeFormatter;
 
 public class DateTimeParser {
 
-    private static final String DATE_TIME_FORMAT_ERROR_MESSAGE = "날짜 및 시간 형식이 맞지 않습니다.";
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private static final String PARSE_DATE_TIME_ERROR_MESSAGE = "잘못된 날짜 및 시간 입력입니다.";
 
     private DateTimeParser() {
     }
 
     public static LocalDateTime parseStringToDateTime(String dateTime) {
         try {
-            return LocalDateTime.parse(dateTime, dateTimeFormatter);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            return LocalDateTime.parse(dateTime, formatter);
         } catch (DateTimeException e) {
-            throw new IllegalArgumentException(DATE_TIME_FORMAT_ERROR_MESSAGE);
+            throw new IllegalArgumentException(PARSE_DATE_TIME_ERROR_MESSAGE);
+        }
+    }
+
+    public static LocalDate parseStringToDate(String date) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            return LocalDate.parse(date, formatter);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException(PARSE_DATE_TIME_ERROR_MESSAGE);
         }
     }
 
     public static LocalTime parseStringToTime(String time) {
         try {
-            return LocalTime.parse(time, timeFormatter);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            return LocalTime.parse(time, formatter);
         } catch (DateTimeException e) {
-            throw new IllegalArgumentException(DATE_TIME_FORMAT_ERROR_MESSAGE);
+            throw new IllegalArgumentException(PARSE_DATE_TIME_ERROR_MESSAGE);
         }
     }
 
@@ -35,7 +44,7 @@ public class DateTimeParser {
         try {
             return LocalDate.of(year, month, day);
         } catch (DateTimeException e) {
-            throw new IllegalArgumentException(DATE_TIME_FORMAT_ERROR_MESSAGE);
+            throw new IllegalArgumentException(PARSE_DATE_TIME_ERROR_MESSAGE);
         }
     }
 
@@ -43,7 +52,7 @@ public class DateTimeParser {
         try {
             return LocalTime.of(hour, minute);
         } catch (DateTimeException e) {
-            throw new IllegalArgumentException(DATE_TIME_FORMAT_ERROR_MESSAGE);
+            throw new IllegalArgumentException(PARSE_DATE_TIME_ERROR_MESSAGE);
         }
     }
 }
