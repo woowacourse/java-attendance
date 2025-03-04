@@ -17,14 +17,14 @@ public class AttendanceDate {
         return attendanceDate;
     }
 
+    public static AttendanceDate of(int year, int month, int day) {
+        return new AttendanceDate(LocalDate.of(year, month, day));
+    }
+
     private void validateIsWorkingDay(LocalDate attendanceDate) {
         if (Dates.isHoliday(attendanceDate)) {
             throw new IllegalArgumentException("주말, 공휴일에는 출석할 수 없습니다.");
         }
-    }
-
-    public static AttendanceDate of(int year, int month, int day) {
-        return new AttendanceDate(LocalDate.of(year, month, day));
     }
 
     @Override
