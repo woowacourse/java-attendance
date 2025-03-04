@@ -20,6 +20,7 @@ import util.DateUtil;
 public final class OutputView {
 
     private static final ResourceBundle RESOURCE_STATUS = ResourceBundle.getBundle("attendanceStatus");
+    private static final ResourceBundle RESOURCE_DISCIPLINARY_STATUS = ResourceBundle.getBundle("disciplinaryStatus");
 
     private OutputView() {
     }
@@ -62,7 +63,7 @@ public final class OutputView {
         printAttendanceCounts(attendanceRecords);
 
         if (disciplinaryStatus != DisciplinaryStatus.NONE) {
-            printF("%n%s 대상자입니다.%n", RESOURCE_STATUS.getString(disciplinaryStatus.name()));
+            printF("%n%s 대상자입니다.%n", RESOURCE_DISCIPLINARY_STATUS.getString(disciplinaryStatus.name()));
         }
     }
 
@@ -87,16 +88,16 @@ public final class OutputView {
         final int present = attendanceStatusCounts.getAttendance();
         final int late = attendanceStatusCounts.getLate();
         final int absent = attendanceStatusCounts.getAbsence();
-        printF("%n%s: %d회%n", RESOURCE_STATUS.getString("PRESENT"), present);
-        printF("%s: %d회%n", RESOURCE_STATUS.getString("LATE".toUpperCase()), late);
-        printF("%s: %d회%n", RESOURCE_STATUS.getString("ABSENT"), absent);
+        printF("%n%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.PRESENT.name()), present);
+        printF("%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.LATE.name()), late);
+        printF("%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.ABSENT.name()), absent);
     }
 
     public static void printRiskMembers(final List<Crew> disciplinaryCrews) {
         printF("%n제적 위험자 조회 결과%n");
         disciplinaryCrews.forEach(crew -> {
             final DisciplinaryStatus disciplinaryStatus = crew.getDisciplinaryStatus();
-            final String status = RESOURCE_STATUS.getString(disciplinaryStatus.name());
+            final String status = RESOURCE_DISCIPLINARY_STATUS.getString(disciplinaryStatus.name());
             final Nickname nickname = crew.getNickname();
             final AttendanceRecords attendanceRecords = crew.getAttendanceRecords();
             final AttendanceStatusCounts attendanceStatusCounts = attendanceRecords.getAttendanceStatusCounts();
