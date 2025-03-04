@@ -2,17 +2,15 @@ package controller;
 
 import controller.command.Command;
 import domain.AttendanceBook;
+import domain.AttendanceBookFactory;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import controller.command.AttendCommand;
 import controller.command.CrewInfoCommand;
 import controller.command.EditCommand;
 import controller.command.WarningInfoCommand;
-import java.util.stream.Collectors;
 import view.AttendanceFileReader;
 import view.InputView;
 import view.OutputView;
@@ -21,18 +19,17 @@ public class AttendanceController {
     public static final LocalDate START_DATE = LocalDate.of(2024, 12, 2);
     public static final LocalDate END_DATE = LocalDate.now();
 
-    private final AttendanceFileReader attendanceFileReader;
     private final InputView inputView;
     private final OutputView outputView;
 
-    public AttendanceController(AttendanceFileReader fileReader, InputView inputView, OutputView outputView) {
-        this.attendanceFileReader = fileReader;
+    public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
     }
 
     public void run() {
-        AttendanceBook attendanceBook = initAttendanceBook();
+        AttendanceBookFactory attendanceBookFactory = new AttendanceBookFactory(new AttendanceFileReader());
+        AttendanceBook attendanceBook = attendanceBookFactory.generate();
         Map<String, Consumer<AttendanceBook>> commands = initCommand();
         String inputCommand = "";
 
@@ -40,13 +37,6 @@ public class AttendanceController {
             inputCommand = processCommand(inputCommand, commands, attendanceBook);
         }
         inputView.close();
-    }
-
-    private AttendanceBook initAttendanceBook() {
-        Map<String, List<String>> crewsInfo = attendanceFileReader.getInfo();
-
-        Map<String, List<LocalDateTime>> parsedCrewsInfo = parseCrewsDateTime(crewsInfo);
-        return new AttendanceBook(parsedCrewsInfo, START_DATE, END_DATE);
     }
 
     private Map<String, Consumer<AttendanceBook>> initCommand() {
@@ -83,16 +73,5 @@ public class AttendanceController {
         if (command == null) {
             throw new IllegalArgumentException("잘못된 형식을 입력하였습니다.");
         }
-    }
-
-    private static Map<String, List<LocalDateTime>> parseCrewsDateTime(Map<String, List<String>> crewsInfo) {
-        return crewsInfo.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        crewEntry -> crewEntry.getValue().stream()
-                                .map(DateTimeConverter::convertStringToLocalDateTime)
-                                .toList()
-                ));
     }
 }
