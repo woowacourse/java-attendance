@@ -15,7 +15,7 @@ public class AttendanceCheckController {
             String studentName = InputView.getStudentNameUntilValidateToAttendance(students);
             AttendanceTime attendanceTime = InputView.getUserAttendanceTimeUntilValidateToAttendance();
             students.validateAlreadyExistAttendanceDate(studentName, today);
-            students.findStudentByName(studentName).addAttendanceDateTime(today, attendanceTime);
+            students.addAttendanceDateTime(studentName, today, attendanceTime);
             AttendanceStatus studentAttendanceStatus = AttendanceStatusEvaluator.calculateAttendanceStatus(today, attendanceTime);
             OutputView.printAttendanceResult(today, attendanceTime, studentAttendanceStatus);
         } catch (IllegalArgumentException e) {
