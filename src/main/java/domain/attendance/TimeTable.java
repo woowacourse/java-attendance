@@ -93,8 +93,4 @@ public enum TimeTable {
     public LocalTime getOpeningTime() {
         return openingTime;
     }
-
-    public LocalTime getClosingTime() {
-        return closingTime;
-    }
 }
