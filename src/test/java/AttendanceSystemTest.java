@@ -149,8 +149,11 @@ public class AttendanceSystemTest {
     @Test
     void get_tardy_record_monday() {
         Crew crew = new Crew("두리");
-        attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 7));
-        attendanceSystem.editAttendance(crew, AttendanceDate.of(2024, 12, 2), AttendanceTime.of(10, 7));
+        AttendanceDate monday = AttendanceDate.of(2024, 12, 2);
+        AttendanceDate tuesday = AttendanceDate.of(2024, 12, 2);
+        AttendanceTime nonMondayTardyTime = AttendanceTime.of(10, 7);
+        attendanceSystem.editAttendance(crew, tuesday, nonMondayTardyTime);
+        attendanceSystem.editAttendance(crew, monday, nonMondayTardyTime);
         AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
         assertThat(attendanceBook.getAttendanceStatuses().getTardyCount()).isEqualTo(1);
     }
@@ -159,8 +162,10 @@ public class AttendanceSystemTest {
     @Test
     void get_tardy_record_monday2() {
         Crew crew = new Crew("두리");
-        attendanceSystem.editAttendance(crew, TODAY, AttendanceTime.of(10, 7));
-        attendanceSystem.editAttendance(crew, AttendanceDate.of(2024, 12, 2), AttendanceTime.of(13, 7));
+        AttendanceTime nonMondayTardyTime = AttendanceTime.of(10, 7);
+        attendanceSystem.editAttendance(crew, TODAY, nonMondayTardyTime);
+        AttendanceTime mondayTardyTime = AttendanceTime.of(13, 7);
+        attendanceSystem.editAttendance(crew, AttendanceDate.of(2024, 12, 2), mondayTardyTime);
         AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
         assertThat(attendanceBook.getAttendanceStatuses().getTardyCount()).isEqualTo(2);
     }
