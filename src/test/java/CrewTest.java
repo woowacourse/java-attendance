@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import domain.Attendance;
 import domain.Crew;
-import util.ErrorMessage;
+import error.ErrorMessage;
 import domain.Penalty;
 
 import java.time.LocalDate;

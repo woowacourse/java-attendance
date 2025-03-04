@@ -1,7 +1,7 @@
 package domain;
 
 import static domain.AttendanceStatus.isWeekendOrChristmas;
-import static util.ErrorMessage.*;
+import static error.ErrorMessage.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

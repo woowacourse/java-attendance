@@ -1,7 +1,7 @@
 import static org.assertj.core.api.Assertions.*;
 
 import domain.AttendanceStatus;
-import util.ErrorMessage;
+import error.ErrorMessage;
 
 import java.time.LocalDateTime;
 

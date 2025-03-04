@@ -1,6 +1,6 @@
 package view;
 
-import util.ErrorMessage;
+import error.ErrorMessage;
 
 import java.util.Arrays;
 
