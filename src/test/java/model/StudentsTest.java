@@ -78,4 +78,18 @@ public class StudentsTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 이미 출석한 요일입니다. 다시 출석하고 싶으면 수정 기능을 이용해 주세요.");
     }
+
+    @Test
+    @DisplayName("학생 이름, 일자, 시각을 받아 출석부에 업데이트 하는 메서드 테스트")
+    void test5() {
+        String name = "이든";
+
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 13));
+        AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(12, 0));
+
+        students.addAttendanceDateTime(name, attendanceDate, attendanceTime);
+
+        Assertions.assertEquals(students.findStudentByName(name).getStudentAttendanceHistory().getAttendanceHistory()
+                .get(attendanceDate), attendanceTime);
+    }
 }
