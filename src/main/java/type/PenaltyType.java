@@ -6,9 +6,7 @@ import java.util.function.Predicate;
 public enum PenaltyType {
 
     ONE_ON_ONE((absenceCount) -> absenceCount >= 3 && absenceCount <= 5),
-
     BAN((absenceCount) -> absenceCount > 5),
-
     WARNING((absenceCount) -> absenceCount == 2),
     DEFAULT((absenceCount) -> true);
 
