@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -7,11 +8,9 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class AttendancePolicy {
-
-    public static final int MONDAY_VALUE = 1;
-    private static final int SATURDAY_VALUE = 6;
 
     private static final LocalTime CAMPUS_OPEN_TIME = LocalTime.of(8, 0);
     private static final LocalTime CAMPUS_CLOSE_TIME = LocalTime.of(23, 0);
@@ -22,7 +21,7 @@ public class AttendancePolicy {
     private static final LocalTime ABSENCE_TIME = LocalTime.of(10, 30);
 
     public void validateIsWeekDays(LocalDate today) {
-        if (today.getDayOfWeek().getValue() >= SATURDAY_VALUE) {
+        if (Set.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(today.getDayOfWeek())) {
             throw new IllegalArgumentException(
                     String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
                             today.getMonthValue(), today.getDayOfMonth(),
@@ -57,7 +56,7 @@ public class AttendancePolicy {
     }
 
     private boolean isMonday(LocalDateTime attendanceTime) {
-        return attendanceTime.getDayOfWeek().getValue() == MONDAY_VALUE;
+        return attendanceTime.getDayOfWeek() == DayOfWeek.MONDAY;
     }
 
     private LocalTime getLateTime(LocalDateTime attendanceTime) {
@@ -69,7 +68,7 @@ public class AttendancePolicy {
     }
 
     public boolean ignoreWeekendAndHoliday(LocalDate date) {
-        return date.getDayOfWeek().getValue() < SATURDAY_VALUE && !Holidays.isHoliday(date);
+        return !Set.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(date.getDayOfWeek()) && !Holidays.isHoliday(date);
     }
 
     public List<LocalDate> getOpenDays(LocalDate today) {
