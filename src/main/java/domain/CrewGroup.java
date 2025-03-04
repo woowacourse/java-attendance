@@ -2,7 +2,6 @@ package domain;
 
 import static domain.AlertCode.NORMAL;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,10 +22,6 @@ public class CrewGroup {
     public Attendances getSpecificAttendances(String name) {
         validateCrewName(name);
         return crewInformation.get(name);
-    }
-
-    public boolean isExist(String name, LocalDate today) {
-        return crewInformation.get(name).isExist(today);
     }
 
     public Map<String, Attendances> getAlertCrews() {

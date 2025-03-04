@@ -59,20 +59,11 @@ public class Attendances {
         return NORMAL;
     }
 
-    private void validateNotExistDate(DayOfMonth dayOfMonth, LocalDate today) {
-        LocalDate localDate = DayConverter.combineDayAndDate(dayOfMonth, today);
-        if (dayOfMonth.isHoliday(today) || !isExist(localDate)) {
-            throw new IllegalArgumentException("없는 날짜는 변경할 수 없습니다.");
-        }
-    }
-
     public Attendance getSpecificAttendance(DayOfMonth dayOfMonth, LocalDate today) {
-        validateNotExistDate(dayOfMonth, today);
         LocalDate changedDate = DayConverter.combineDayAndDate(dayOfMonth, today);
         return attendances.stream()
                 .filter(attendance -> attendance.isSameDay(changedDate))
-                .findAny()
-                .get();
+                .findAny().orElseThrow(() -> new IllegalArgumentException("없는 날짜는 수정할 수 없습니다."));
     }
 
     public void addAttendance(Attendance attendance) {
@@ -85,7 +76,6 @@ public class Attendances {
     }
 
     private void deleteSpecificAttendance(DayOfMonth dayOfMonth, LocalDate today) {
-        validateNotExistDate(dayOfMonth, today);
         LocalDate changedDate = DayConverter.combineDayAndDate(dayOfMonth, today);
         attendances = attendances.stream()
                 .filter(attendance -> !attendance.isSameDay(changedDate))
