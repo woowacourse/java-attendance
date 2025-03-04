@@ -44,19 +44,16 @@ public class Attendance {
 
     private String determineAttendanceStatus() {
         if (attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
-            if (!attendanceTime.isAfter(MONDAY_ATTENDANCE_LIMIT)) {
-                return Subject.ATTENDANCE.getStatus();
-            }
-            if (!attendanceTime.isAfter(MONDAY_LATE_LIMIT)) {
-                return Subject.LATE.getStatus();
-            }
-            return Subject.ABSENT.getStatus();
+            return determineAttendance(MONDAY_ATTENDANCE_LIMIT,MONDAY_LATE_LIMIT);
         }
+        return determineAttendance(OTHER_DAYS_ATTENDANCE_LIMIT,OTHER_DAYS_LATE_LIMIT);
+    }
 
-        if (!attendanceTime.isAfter(OTHER_DAYS_ATTENDANCE_LIMIT)) {
+    private String determineAttendance(LocalTime attendanceLimit, LocalTime lateLimit) {
+        if (attendanceTime.isBefore(attendanceLimit) || attendanceTime.equals(attendanceLimit)) {
             return Subject.ATTENDANCE.getStatus();
         }
-        if (!attendanceTime.isAfter(OTHER_DAYS_LATE_LIMIT)) {
+        if (attendanceTime.isBefore(lateLimit) || attendanceTime.equals(lateLimit)) {
             return Subject.LATE.getStatus();
         }
         return Subject.ABSENT.getStatus();
