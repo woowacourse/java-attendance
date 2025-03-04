@@ -30,6 +30,20 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
         return new AttendanceDate(attendanceDate.plusDays(1));
     }
 
+    public LocalDate toLocalDate() {return attendanceDate; }
+
+    private boolean isWeekend() {
+        return (this.toDayOfWeek().equals(DayOfWeek.SATURDAY) || this.toDayOfWeek().equals(DayOfWeek.SUNDAY));
+    }
+
+    private boolean isChristmas() {
+        return (this.toLocalDate().equals(CHRISTMAS));
+    }
+
+    private DayOfWeek toDayOfWeek() {
+        return attendanceDate.getDayOfWeek();
+    }
+
     @Override
     public int compareTo(AttendanceDate other) {
         return this.attendanceDate.compareTo(other.attendanceDate);
@@ -46,22 +60,6 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
     @Override
     public int hashCode() {
         return Objects.hash(attendanceDate);
-    }
-
-    private boolean isWeekend() {
-        return (this.toDayOfWeek().equals(DayOfWeek.SATURDAY) || this.toDayOfWeek().equals(DayOfWeek.SUNDAY));
-    }
-
-    private boolean isChristmas() {
-        return (this.toLocalDate().equals(CHRISTMAS));
-    }
-
-    private DayOfWeek toDayOfWeek() {
-        return attendanceDate.getDayOfWeek();
-    }
-
-    public LocalDate toLocalDate() {
-        return attendanceDate;
     }
 
 }
