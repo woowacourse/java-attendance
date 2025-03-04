@@ -7,14 +7,19 @@ public enum Holiday {
 
     CHRISTMAS(LocalDate.of(2024, 12, 25));
 
-    private final LocalDate date;
+    private final LocalDate holidayDate;
 
-    Holiday(LocalDate date) {
-        this.date = date;
+    Holiday(LocalDate holidayDate) {
+        this.holidayDate = holidayDate;
     }
 
-    public static boolean isHoliday(LocalDate compareDate) {
+    public static boolean isHoliday(LocalDate validateDate) {
         return Arrays.stream(Holiday.values())
-            .anyMatch(holiday -> holiday.date.isEqual(compareDate));
+            .anyMatch(result -> result.isEqualDate(validateDate));
+    }
+
+    private boolean isEqualDate(LocalDate findDate) {
+        return holidayDate.getMonth() == findDate.getMonth() &&
+            holidayDate.getDayOfMonth() == findDate.getDayOfMonth();
     }
 }

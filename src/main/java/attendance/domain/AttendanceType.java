@@ -1,29 +1,44 @@
 package attendance.domain;
 
-
-import java.util.Arrays;
+import static attendance.domain.DayOfWeek.*;
 
 public enum AttendanceType {
-    ATTENDANCE("출석", 5),
-    LATE("지각", 30),
-    ABSENCE("결석", 31);
+    ATTENDANCE("출석", 0),
+    LATE("지각", 5),
+    ABSENCE("결석", 30);
 
-    private final String typeDescription;
+    private final String type;
     private final int typeDecisionValue;
 
-    AttendanceType(String typeDescription, int typeDecisionValue) {
-        this.typeDescription = typeDescription;
+    AttendanceType(String type, int typeDecisionValue) {
+        this.type = type;
         this.typeDecisionValue = typeDecisionValue;
     }
 
-    public static AttendanceType determineAttendanceTypeByLateTime(int lateTime) {
-        return Arrays.stream(AttendanceType.values())
-            .filter(attendanceType -> attendanceType.typeDecisionValue > lateTime)
-            .findFirst()
-            .orElse(ABSENCE);
+    public static AttendanceType decideAttendanceType(AttendanceTime attendanceTime) {
+        DayOfWeek dayOfWeek = findDayOfWeek(attendanceTime.getDate());
+        return determineBy(attendanceTime, dayOfWeek);
     }
 
-    public String getTypeDescription() {
-        return typeDescription;
+    public String getType() {
+        return type;
+    }
+
+    private static AttendanceType determineBy(AttendanceTime attendanceTime,
+        DayOfWeek dayOfWeek) {
+        if (attendanceTime.isAbsenceDate()) {
+            return ABSENCE;
+        }
+        if (dayOfWeek.calculateTypeDecisionValueOnHour(attendanceTime) > 0) {
+            return ABSENCE;
+        }
+        int decisionValue = dayOfWeek.calculateTypeDecisionValueOnMinute(attendanceTime);
+        if (decisionValue >= ABSENCE.typeDecisionValue) {
+            return ABSENCE;
+        }
+        if (decisionValue >= LATE.typeDecisionValue) {
+            return LATE;
+        }
+        return ATTENDANCE;
     }
 }

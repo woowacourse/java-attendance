@@ -8,35 +8,36 @@ import org.junit.jupiter.api.Test;
 
 public class OperatingTimeTest {
 
-    @DisplayName("8시가 주어졌을 경우, 운영시간이기에 true를 반환해야 한다")
+    @DisplayName("주어진 시간이 08:00일 경우, true를 반환한다")
     @Test
-    void check_operating_8_time() {
-        LocalTime compareTime = LocalTime.of(8, 0);
-        boolean isOperating = OperatingTime.isOperate(compareTime);
+    void given_8_then_return_true() {
+        LocalTime validateTime = LocalTime.of(8, 0);
+        boolean isOperating = OperatingTime.isOperating(validateTime);
         assertThat(isOperating).isTrue();
     }
 
-    @DisplayName("23시가 주어졌을 경우, 운영시간이기에 true를 반환해야 한다")
+    @DisplayName("주어진 시간이 23:00일 경우, true를 반환한다")
     @Test
-    void check_operating_23_time() {
-        LocalTime compareTime = LocalTime.of(23, 0);
-        boolean isOperating = OperatingTime.isOperate(compareTime);
+    void given_23_then_return_true() {
+        LocalTime validateTime = LocalTime.of(8, 0);
+        boolean isOperating = OperatingTime.isOperating(validateTime);
         assertThat(isOperating).isTrue();
     }
 
-    @DisplayName("7시 59분이 주어졌을 경우, 운영시간이 아니기에 false를 반환해야 한다")
+    @DisplayName("주어진 시간이 07:59일 경우, false를 반환한다")
     @Test
-    void check_operating_7_59_time() {
-        LocalTime compareTime = LocalTime.of(7, 59);
-        boolean isOperating = OperatingTime.isOperate(compareTime);
+    void given_7_59_then_return_false() {
+        LocalTime validateTime = LocalTime.of(7, 59);
+        boolean isOperating = OperatingTime.isOperating(validateTime);
         assertThat(isOperating).isFalse();
     }
 
-    @DisplayName("23시 01분이 주어졌을 경우, 운영시간이 아니기에 false를 반환해야 한다")
+    @DisplayName("운영시간인 23:01일 경우, false를 반환한다")
     @Test
-    void check_operating_23_01_time() {
-        LocalTime compareTime = LocalTime.of(23, 1);
-        boolean isOperating = OperatingTime.isOperate(compareTime);
+    void given_23_01_then_return_false() {
+        LocalTime validateTime = LocalTime.of(23, 1);
+        boolean isOperating = OperatingTime.isOperating(validateTime);
         assertThat(isOperating).isFalse();
     }
+
 }

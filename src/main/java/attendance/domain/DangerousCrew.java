@@ -2,29 +2,29 @@ package attendance.domain;
 
 public class DangerousCrew {
 
-    private final Crew crew;
+    private final String nickname;
     private final CrewStatus crewStatus;
-    private final AttendanceHistories attendanceHistories;
+    private final AttendanceResult attendanceResult;
 
-    private DangerousCrew(Crew crew, CrewStatus crewStatus, AttendanceHistories attendanceHistories) {
-        this.crew = crew;
+    private DangerousCrew(String nickname, CrewStatus crewStatus, AttendanceResult attendanceResult) {
+        this.nickname = nickname;
         this.crewStatus = crewStatus;
-        this.attendanceHistories = attendanceHistories;
+        this.attendanceResult = attendanceResult;
     }
 
-    public static DangerousCrew of(Crew crew, CrewStatus crewStatus, AttendanceHistories attendanceHistories) {
-        return new DangerousCrew(crew, crewStatus, attendanceHistories);
+    public static DangerousCrew of(String nickname, CrewStatus crewStatus, AttendanceResult attendanceResult) {
+        return new DangerousCrew(nickname, crewStatus, attendanceResult);
     }
 
-    public String getCrewName() {
-        return crew.getName();
+    public String getNickname() {
+        return nickname;
     }
 
-    public String getStatusName() {
-        return crewStatus.getStatusDescription();
+    public CrewStatus getCrewStatus() {
+        return crewStatus;
     }
 
-    public AttendanceHistories getAttendanceHistories() {
-        return attendanceHistories;
+    public AttendanceResult getAttendanceResult() {
+        return attendanceResult;
     }
 }

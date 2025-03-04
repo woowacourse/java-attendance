@@ -1,8 +1,9 @@
 package attendance.domain;
 
-import static attendance.domain.CrewStatus.CLEAR;
-import static attendance.domain.CrewStatus.calculateCrewStatus;
+import static attendance.domain.CrewStatus.NORMAL;
+import static attendance.domain.CrewStatus.calculate;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,28 +22,35 @@ public class DangerousCrews {
         return new DangerousCrews();
     }
 
-    public List<DangerousCrew> findDangerousCrewsAndSort(
-        CrewAttendanceManager crewAttendanceManager, Crews crews) {
-        for (Crew crew : crews.getCrews()) {
-            addDangerousCrew(crewAttendanceManager, crew);
+    public void calculateDangerousCrews(LocalDate currentDate, AttendanceHistory attendanceHistory) {
+        Map<String, AttendanceTimes> attendanceHistories = attendanceHistory.getAttendanceHistory();
+        for (String name : attendanceHistories.keySet()) {
+            AttendanceTimes attendanceTimes = attendanceHistories.get(name);
+            AttendanceResult attendanceResult = AttendanceResult.calculateAttendanceResult(
+                currentDate, attendanceTimes);
+            ifNotNormalAddDangerousCrew(name, attendanceResult);
         }
+    }
+
+    public List<DangerousCrew> getSortedDangerousCrews() {
         sortDangerousCrew();
         return Collections.unmodifiableList(dangerousCrews);
     }
 
     private void sortDangerousCrew() {
-        dangerousCrews.sort(Comparator.comparing(DangerousCrew::getStatusName)
-            .thenComparing(DangerousCrew::getCrewName));
+        dangerousCrews.sort(Comparator.comparing(DangerousCrew::getCrewStatus).reversed()
+            .thenComparing(DangerousCrew::getNickname));
     }
 
-    private void addDangerousCrew(CrewAttendanceManager crewAttendanceManager, Crew crew) {
-        AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
-            crew);
-        Map<AttendanceType, Long> attendanceResult = attendanceHistories.calculateAttendanceResult();
-        CrewStatus crewStatus = calculateCrewStatus(attendanceResult);
-        if (crewStatus != CLEAR) {
-            DangerousCrew dangerousCrew = DangerousCrew.of(crew, crewStatus, attendanceHistories);
-            dangerousCrews.add(dangerousCrew);
+    private void ifNotNormalAddDangerousCrew(String name, AttendanceResult attendanceResult) {
+        CrewStatus crewStatus = calculate(attendanceResult);
+        if (crewStatus != NORMAL) {
+            DangerousCrew dangerousCrew = DangerousCrew.of(name, crewStatus, attendanceResult);
+            addDangerousCrew(dangerousCrew);
         }
+    }
+
+    private void addDangerousCrew(DangerousCrew dangerousCrew) {
+        dangerousCrews.add(dangerousCrew);
     }
 }

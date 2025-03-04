@@ -2,111 +2,104 @@ package attendance.view;
 
 import static attendance.domain.AttendanceType.*;
 
-import attendance.domain.AttendanceHistories;
-import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceResult;
 import attendance.domain.AttendanceTime;
+import attendance.domain.AttendanceTimes;
 import attendance.domain.AttendanceType;
-import attendance.domain.Crew;
+import attendance.domain.CrewStatus;
 import attendance.domain.DangerousCrew;
 import attendance.domain.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 
 public class OutputView {
 
-    private static final String ATTENDANCE_RESULT_MESSAGE = "%d월 %d일 %s %02d:%02d (%s)";
-    private static final String ATTENDANCE_ABSENCE_MESSAGE = "%d월 %d일 %s --:-- (%s)";
-    private static final String ATTENDANCE_INFO_MESSAGE = "이번 달 %s의 출석 기록입니다.";
-    private static final String MODIFY_ATTENDANCE_RESULT_MESSAGE = "%d월 %d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!";
-    private static final String ATTENDANCE_TYPE_RESULT_MESSAGE = "%s: %s회";
-    private static final String INTERVIEW_TARGET_MESSAGE = "면담 대상자입니다.";
-    private static final String DANGEROUS_CREW_INFO_MESSAGE = "제적 위험자 조회 결과";
-    private static final String DANGEROUS_CREW_INFO = "- %s: 결석 %s회 지각 %s회 (%s)";
+    private static final String ATTENDANCE_RESULT = "%s월 %s일 %s %02d:%02d (%s) ";
+    private static final String ABSENCE_RESULT = "%s월 %s일 %s --:-- (%s) ";
+    private static final String MODIFY_ATTENDANCE_RESULT = "%s월 %s일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!";
+    private static final String ATTENDANCE_HISTORY_NAME_MASSAGE = "이번 달 %s의 출석 기록입니다.";
+    private static final String CREW_STATUS_INFO = "%s: %s회";
+    private static final String CREW_STATUS = "%s 대상자입니다.";
+    private static final String DANGEROUS_CREW_MESSAGE = "제적 위험자 조회 결과";
+    private static final String DANGEROUS_CREW_INFO = "- %s: 결석 %s회, 지각 %s회 (%s)";
 
-    public void printModifyAttendanceResult(AttendanceHistory attendanceHistory,
-        AttendanceHistory modifyAttendanceHistory) {
-        LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime().getTime();
-        LocalDateTime modifyAttendanceTime = modifyAttendanceHistory.getAttendanceTime()
-            .getTime();
-        DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(attendanceTime.toLocalDate());
-        AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-        AttendanceType modifyAttendanceType = modifyAttendanceHistory.getAttendanceType();
-        System.out.println(MODIFY_ATTENDANCE_RESULT_MESSAGE.formatted(
-            attendanceTime.getMonthValue(), attendanceTime.getDayOfMonth(), dayOfWeek.getName(),
-            attendanceTime.getHour(), attendanceTime.getMinute(),
-            attendanceType.getTypeDescription(),
-            modifyAttendanceTime.getHour(), modifyAttendanceTime.getMinute(),
-            modifyAttendanceType.getTypeDescription())
-        );
+    private OutputView() {
     }
 
-    public void printAttendanceHistories(Crew crew, AttendanceHistories attendanceHistories) {
-        System.out.println(ATTENDANCE_INFO_MESSAGE.formatted(crew.getName()));
-        for (AttendanceHistory attendanceHistory : attendanceHistories.getAttendanceHistories()) {
-            LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime().getTime();
+    public static OutputView create() {
+        return new OutputView();
+    }
 
-            int month = attendanceTime.getMonthValue();
-            int day = attendanceTime.getDayOfMonth();
-            DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(attendanceTime.toLocalDate());
-            int hour = attendanceTime.getHour();
-            int minute = attendanceTime.getMinute();
+    public void printAttendanceInfo(AttendanceTime attendanceTime, AttendanceType attendanceType) {
+        LocalDate date = attendanceTime.getDate();
+        LocalTime time = attendanceTime.getTime();
+        DayOfWeek dayOfWeek = DayOfWeek.findDayOfWeek(date);
+        System.out.println(ATTENDANCE_RESULT.formatted(
+            date.getMonthValue(), date.getDayOfMonth(), dayOfWeek.getDayOfWeekName(),
+            time.getHour(), time.getMinute(), attendanceType.getType()));
+    }
 
-            AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-            if (printAbsenceCase(attendanceTime, dayOfWeek, attendanceType)) {
+    public void printAttendanceHistory(String nickname, AttendanceTimes attendanceTimes) {
+        System.out.println(ATTENDANCE_HISTORY_NAME_MASSAGE.formatted(nickname));
+        for (AttendanceTime attendanceTime : attendanceTimes.getAttendanceTimes()) {
+            LocalDate date = attendanceTime.getDate();
+            LocalTime time = attendanceTime.getTime();
+            DayOfWeek dayOfWeek = DayOfWeek.findDayOfWeek(date);
+            AttendanceType attendanceType = decideAttendanceType(attendanceTime);
+            if (attendanceTime.isAbsenceTime(time)) {
+                System.out.println(ABSENCE_RESULT.formatted(
+                    date.getMonthValue(), date.getDayOfMonth(), dayOfWeek.getDayOfWeekName(),
+                    attendanceType.getType()));
                 continue;
             }
-            System.out.println(ATTENDANCE_RESULT_MESSAGE.formatted(
-                month, day, dayOfWeek.getName(), hour, minute, attendanceType.getTypeDescription())
-            );
+
+            System.out.println(ATTENDANCE_RESULT.formatted(
+                date.getMonthValue(), date.getDayOfMonth(), dayOfWeek.getDayOfWeekName(),
+                time.getHour(), time.getMinute(), attendanceType.getType()));
         }
     }
 
-    private boolean printAbsenceCase(LocalDateTime attendanceTime, DayOfWeek dayOfWeek,
-        AttendanceType attendanceType) {
-        if (attendanceTime.getHour() == 0 && attendanceTime.getMinute() == 0) {
-            System.out.println(ATTENDANCE_ABSENCE_MESSAGE.formatted(
-                attendanceTime.getMonthValue(), attendanceTime.getDayOfMonth(), dayOfWeek.getName(),
-                attendanceType.getTypeDescription()));
-            return true;
-        }
-        return false;
-    }
-
-    public void printAttendanceResult(AttendanceHistory attendanceHistory) {
-        AttendanceTime attendanceTime = attendanceHistory.getAttendanceTime();
-        AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-        LocalDate localDate = attendanceHistory.getAttendanceDate();
-        LocalTime localTime = attendanceTime.getTime().toLocalTime();
-        DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(localDate);
-        System.out.printf(ATTENDANCE_RESULT_MESSAGE, localDate.getMonth(),
-            localDate.getDayOfMonth(), dayOfWeek.getName(),
-            localTime.getHour(), localTime.getMinute(), attendanceType.getTypeDescription());
-        System.out.println();
-    }
-
-    public void printInterviewTarget() {
-        System.out.println(INTERVIEW_TARGET_MESSAGE);
-    }
-
-    public void printAttendanceTypeResult(Map<AttendanceType, Long> attendanceResult) {
-        for (AttendanceType attendanceType : attendanceResult.keySet()) {
-            System.out.println(ATTENDANCE_TYPE_RESULT_MESSAGE.formatted(
-                attendanceType.getTypeDescription(), attendanceResult.get(attendanceType))
-            );
+    public void printAttendanceResult(AttendanceResult attendanceResult) {
+        Map<AttendanceType, Long> calculateResult = attendanceResult.getAttendanceResult();
+        for (AttendanceType attendanceType : AttendanceType.values()) {
+            System.out.println(CREW_STATUS_INFO.formatted(
+                attendanceType.getType(), calculateResult.get(attendanceType)));
         }
     }
 
-    public void printDangerousMessage() {
-        System.out.println(DANGEROUS_CREW_INFO_MESSAGE);
+    public void printModifyAttendaneTimeResult(AttendanceTime attendanceTime,
+        AttendanceTime modifyAttendanceTime) {
+        LocalDate date = attendanceTime.getDate();
+        LocalTime time = attendanceTime.getTime();
+        LocalTime modifyTime = modifyAttendanceTime.getTime();
+        AttendanceType attendanceType = decideAttendanceType(attendanceTime);
+        AttendanceType modifyAttendanceType = decideAttendanceType(
+            modifyAttendanceTime);
+        DayOfWeek dayOfWeek = DayOfWeek.findDayOfWeek(date);
+        System.out.println(MODIFY_ATTENDANCE_RESULT.formatted(
+            date.getMonthValue(), date.getDayOfMonth(), dayOfWeek.getDayOfWeekName(),
+            time.getHour(), time.getMinute(), attendanceType.getType(),
+        modifyTime.getHour(), modifyTime.getMinute(), modifyAttendanceType.getType()));
     }
 
-    public void printDangerousCrews(DangerousCrew dangerousCrew) {
-        AttendanceHistories attendanceHistories = dangerousCrew.getAttendanceHistories();
-        Map<AttendanceType, Long> attendanceResult = attendanceHistories.calculateAttendanceResult();
-        System.out.println(DANGEROUS_CREW_INFO.formatted(
-            dangerousCrew.getCrewName(), attendanceResult.get(ABSENCE), attendanceResult.get(LATE),
-            dangerousCrew.getStatusName()));
+    public void printCrewStatus(CrewStatus crewStatus) {
+        if (crewStatus == CrewStatus.NORMAL) {
+            return;
+        }
+        System.out.println(CREW_STATUS.formatted(crewStatus.getStatusName()));
+    }
+
+    public void printDangerousCrew(List<DangerousCrew> sortedDangerousCrews) {
+        System.out.println(DANGEROUS_CREW_MESSAGE);
+        for (DangerousCrew dangerousCrew : sortedDangerousCrews) {
+            AttendanceResult attendanceResult = dangerousCrew.getAttendanceResult();
+            Map<AttendanceType, Long> result = attendanceResult.getAttendanceResult();
+
+            System.out.println(DANGEROUS_CREW_INFO.formatted(
+                dangerousCrew.getNickname(), result.get(ABSENCE), result.get(LATE), dangerousCrew.getCrewStatus().getStatusName()
+            ));
+        }
     }
 }

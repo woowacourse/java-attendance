@@ -1,53 +1,50 @@
 package attendance.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.Arrays;
 import java.util.Locale;
 
-public enum DayOfWeek {
+public enum DayOfWeek  {
 
-    MONDAY("월요일", LocalTime.of(13, 0), LocalTime.of(18, 0)),
-    TUESDAY("화요일", LocalTime.of(10, 0), LocalTime.of(18, 0)),
-    WEDNESDAY("수요일", LocalTime.of(10, 0), LocalTime.of(18, 0)),
-    THURSDAY("목요일", LocalTime.of(10, 0), LocalTime.of(18, 0)),
-    FRIDAY("금요일", LocalTime.of(10, 0), LocalTime.of(18, 0)),
-    SATURDAY("토요일", LocalTime.of(0, 0), LocalTime.of(0, 0)),
-    SUNDAY("일요일", LocalTime.of(0, 0), LocalTime.of(0, 0));
+    MONDAY("월요일", LocalTime.of(13, 0)),
+    TUESDAY("화요일", LocalTime.of(10, 0)),
+    WEDNESDAY("수요일", LocalTime.of(10, 0)),
+    THURSDAY("목요일", LocalTime.of(10, 0)),
+    FRIDAY("금요일", LocalTime.of(10, 0)),
+    SATURDAY("토요일", LocalTime.of(0, 0)),
+    SUNDAY("일요일", LocalTime.of(0, 0));
 
-    private static final int ABSENCE_TIME = 31;
+    private final String dayOfWeekName;
+    private final LocalTime attendanceStartingTime;
 
-    private final String name;
-    private final LocalTime startTime;
-    private final LocalTime endTime;
-
-    DayOfWeek(String name, LocalTime startTime, LocalTime endTime) {
-        this.name = name;
-        this.startTime = startTime;
-        this.endTime = endTime;
+    DayOfWeek(String dayOfWeekName, LocalTime attendanceStartingTime) {
+        this.dayOfWeekName = dayOfWeekName;
+        this.attendanceStartingTime = attendanceStartingTime;
     }
 
-    public int calculateLateTime(LocalTime attendanceTime) {
-        if (attendanceTime.getHour() - startTime.getHour() > 0) {
-            return ABSENCE_TIME;
-        }
-        return attendanceTime.getMinute() - startTime.getMinute();
+    public static DayOfWeek findDayOfWeek(LocalDate currentDate) {
+        String findDayOfWeek = currentDate.getDayOfWeek()
+            .getDisplayName(TextStyle.FULL, Locale.KOREA);
+        return Arrays.stream(DayOfWeek.values())
+            .filter(result -> findDayOfWeek.equals(result.dayOfWeekName))
+            .findAny()
+            .get();
     }
 
-    public static DayOfWeek calculateDayOfWeek(LocalDate localDate) {
-        java.time.DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        String displayName = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.US);
-        return DayOfWeek.valueOf(displayName.toUpperCase());
+    public int calculateTypeDecisionValueOnHour(AttendanceTime attendanceTime) {
+        LocalDateTime attendanceDateTime = attendanceTime.getAttendanceDateTime();
+        return attendanceDateTime.getHour() - attendanceStartingTime.getHour();
     }
 
-    public static boolean isWeekday(LocalDate localDate) {
-        if (calculateDayOfWeek(localDate) == SATURDAY || calculateDayOfWeek(localDate) == SUNDAY) {
-            return false;
-        }
-        return true;
+    public int calculateTypeDecisionValueOnMinute(AttendanceTime attendanceTime) {
+        LocalDateTime attendanceDateTime = attendanceTime.getAttendanceDateTime();
+        return attendanceDateTime.getMinute() - attendanceStartingTime.getMinute();
     }
 
-    public String getName() {
-        return name;
+    public String getDayOfWeekName() {
+        return dayOfWeekName;
     }
 }

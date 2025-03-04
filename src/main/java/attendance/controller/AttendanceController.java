@@ -1,108 +1,106 @@
 package attendance.controller;
 
 import attendance.CurrentDate;
-import attendance.domain.AttendanceHistories;
 import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceResult;
+import attendance.domain.AttendanceTime;
+import attendance.domain.AttendanceTimes;
 import attendance.domain.AttendanceType;
-import attendance.domain.Crew;
-import attendance.domain.CrewAttendanceManager;
 import attendance.domain.CrewStatus;
-import attendance.domain.Crews;
 import attendance.domain.DangerousCrew;
 import attendance.domain.DangerousCrews;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceController {
 
     private final InputView inputView;
-    private final Crews crews;
     private final OutputView outputView;
+    private final AttendanceHistory attendanceHistory;
     private final CurrentDate currentDate;
-    private final CrewAttendanceManager crewAttendanceManager;
+    private final Map<String, Runnable> functionMap = new HashMap<>();
 
-    public AttendanceController(InputView inputView, Crews crews, OutputView outputView,
-        CurrentDate currentDate, CrewAttendanceManager crewAttendanceManager) {
+    public AttendanceController(InputView inputView, OutputView outputView,
+        AttendanceHistory attendanceHistory,
+        CurrentDate currentDate) {
         this.inputView = inputView;
-        this.crews = crews;
         this.outputView = outputView;
+        this.attendanceHistory = attendanceHistory;
         this.currentDate = currentDate;
-        this.crewAttendanceManager = crewAttendanceManager;
+        initFunctionMap();
     }
 
     public void start() {
-        LocalDate currentDate = this.currentDate.now();
-        crewAttendanceManager.insertAbsenceIfNotExistsAttendance(currentDate);
         while (true) {
-            String option = inputView.inputOption(currentDate);
-            if (option.equals("1")) {
-                doAttendance(currentDate);
-            }
-            if (option.equals("2")) {
-                modifyAttendance(currentDate);
-            }
-            if (option.equals("3")) {
-                checkAttendanceHistoriesByCrew();
-            }
-            if (option.equals("4")) {
-                checkDangerousCrews();
-            }
-            if (option.equals("Q")) {
+            inputView.todayDateMessage(currentDate.now());
+            String userChooseFunction = inputView.inputFunction();
+            if (userChooseFunction.equals("Q")) {
                 break;
             }
+            startAttendanceProcess(userChooseFunction);
         }
     }
 
-    private void doAttendance(LocalDate currentDate) {
-        String crewName = inputView.inputCrewName();
-        Crew crew = crews.findByCrewName(crewName);
-        LocalTime attendanceTime = inputView.inputAttendanceTime();
-        LocalDateTime currentDateTime = LocalDateTime.of(currentDate, attendanceTime);
-        AttendanceHistory attendanceHistory = AttendanceHistory.from(currentDateTime);
-        crewAttendanceManager.addCrewAttendanceInfo(crew, attendanceHistory);
-        outputView.printAttendanceResult(attendanceHistory);
+    private void attendConfirm() {
+        String inputNickname = inputView.inputNickname();
+        attendanceHistory.isValidCrew(inputNickname);
+        LocalTime nowTime = inputView.inputAttendanceTime();
+        AttendanceTime attendanceTime = AttendanceTime.from(
+            LocalDateTime.of(currentDate.now(), nowTime));
+        attendanceHistory.add(inputNickname, attendanceTime);
+        outputView.printAttendanceInfo(
+            attendanceTime, AttendanceType.decideAttendanceType(attendanceTime)
+        );
     }
 
-    private void modifyAttendance(LocalDate currentDate) {
-        String crewName = inputView.inputCrewName();
-        Crew crew = crews.findByCrewName(crewName);
-        LocalDate modifyDate = inputView.inputModifyDate(currentDate);
-        LocalTime modifyTime = inputView.inputAttendanceTime();
-        AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
-            crew);
-        AttendanceHistory attendanceHistory = attendanceHistories.getAttendanceHistoryByDate(
-            modifyDate);
-        AttendanceHistory modifyAttendanceHistory = attendanceHistories.modifyAttendanceResult(
-            LocalDateTime.of(modifyDate, modifyTime));
-        outputView.printModifyAttendanceResult(attendanceHistory, modifyAttendanceHistory);
+    private void modifyAttendance() {
+        String inputNickname = inputView.inputModifyNickname();
+        attendanceHistory.isValidCrew(inputNickname);
+        int modifyDate = inputView.inputModifyAttendanceDate();
+        AttendanceTime attendanceTime = attendanceHistory.getAttendanceTimeByDate(
+            inputNickname, modifyDate);
+        LocalTime modifyTime = inputView.inputModifyTime();
+        AttendanceTime modifyAttendanceTime = attendanceHistory.modifyAttendance(inputNickname,
+            attendanceTime, LocalDateTime.of(currentDate.now(), modifyTime));
+        outputView.printModifyAttendaneTimeResult(attendanceTime, modifyAttendanceTime);
     }
 
-    private void checkAttendanceHistoriesByCrew() {
-        String crewName = inputView.inputCrewName();
-        Crew crew = crews.findByCrewName(crewName);
-        AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
-            crew);
-        Map<AttendanceType, Long> attendanceResult = attendanceHistories.calculateAttendanceResult();
-        outputView.printAttendanceHistories(crew, attendanceHistories);
-        outputView.printAttendanceTypeResult(attendanceResult);
-        CrewStatus crewStatus = CrewStatus.calculateCrewStatus(attendanceResult);
-        if (crewStatus == CrewStatus.INTERVIEW) {
-            outputView.printInterviewTarget();
-        }
+    private void confirmAttendanceHistory() {
+        String inputNickname = inputView.inputNickname();
+        AttendanceTimes attendanceTimes = attendanceHistory.getAttendanceTimesByName(
+            inputNickname);
+        AttendanceResult attendanceResult = AttendanceResult.calculateAttendanceResult(
+            currentDate.now(), attendanceTimes);
+        CrewStatus crewStatus = CrewStatus.calculate(attendanceResult);
+        outputView.printAttendanceHistory(inputNickname, attendanceTimes);
+        outputView.printAttendanceResult(attendanceResult);
+        outputView.printCrewStatus(crewStatus);
     }
 
-    private void checkDangerousCrews() {
+    private void showDangerousCrew() {
         DangerousCrews dangerousCrews = DangerousCrews.create();
-        List<DangerousCrew> foundDangerousCrewResults = dangerousCrews.findDangerousCrewsAndSort(
-            crewAttendanceManager, crews);
-        outputView.printDangerousMessage();
-        for (DangerousCrew dangerousCrew : foundDangerousCrewResults) {
-            outputView.printDangerousCrews(dangerousCrew);
+        dangerousCrews.calculateDangerousCrews(currentDate.now(), attendanceHistory);
+        List<DangerousCrew> sortedDangerousCrews = dangerousCrews.getSortedDangerousCrews();
+        outputView.printDangerousCrew(sortedDangerousCrews);
+    }
+
+    private void startAttendanceProcess(String userChooseFunction) {
+        Runnable function = functionMap.get(userChooseFunction);
+        if (function == null) {
+            throw new IllegalArgumentException("잘못된 입력입니다.");
         }
+        function.run();
+    }
+
+    private void initFunctionMap() {
+        functionMap.put("1", this::attendConfirm);
+        functionMap.put("2", this::modifyAttendance);
+        functionMap.put("3", this::confirmAttendanceHistory);
+        functionMap.put("4", this::showDangerousCrew);
     }
 }

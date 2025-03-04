@@ -1,94 +1,62 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceType.ABSENCE;
-import static attendance.domain.AttendanceType.ATTENDANCE;
-import static attendance.domain.AttendanceType.LATE;
-import static attendance.error.ErrorMessage.NOT_OPERATING_HOLIDAY;
-import static attendance.error.ErrorMessage.NOT_OPERATING_TIME;
-import static attendance.error.ErrorMessage.NOT_OPERATING_WEEKEND;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceTimeTest {
 
-    @DisplayName("주어진 날짜가 평일일 경우, 테스트를 통과해야 한다.")
-    @Test
-    void given_weekdays_then_pass() {
-        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 21, 10, 0);
-        assertDoesNotThrow(() -> AttendanceTime.from(localDateTime));
-    }
-
-    @DisplayName("주어진 날짜가 주말일 경우, 예외를 발생시켜야 한다.")
-    @Test
-    void given_weekend_then_throw_exception() {
-        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 22, 10, 0);
-        assertThatThrownBy(() -> AttendanceTime.from(localDateTime))
+    @ParameterizedTest
+    @MethodSource("provideAttendanceTime")
+    @DisplayName("주말에 출석할 경우, 예외가 발생해야 한다")
+    void on_weekday_attendance_then_throw_exception(LocalDateTime attendanceDateTime) {
+        assertThatThrownBy(() -> AttendanceTime.from(attendanceDateTime))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(NOT_OPERATING_WEEKEND.getMessage());
+            .hasMessage("주말에는 등교할 수 없습니다.");
     }
 
-    @DisplayName("주어진 날짜가 공휴일인 경우, 예외를 발생시켜야 한다.")
+    @DisplayName("캠퍼스 운영시간이 아닌 07:00에 출석 하려는 경우, 예외가 발생해야 한다.")
     @Test
-    void given_holiday_then_throw_exception() {
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 25, 10, 0);
-        assertThatThrownBy(() -> AttendanceTime.from(localDateTime))
+    void given_attendance_time_07_then_throw_exception() {
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 7, 0);
+        assertThatThrownBy(() -> AttendanceTime.from(attendanceDateTime))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(NOT_OPERATING_HOLIDAY.getMessage());
+            .hasMessage("운영시간이 아닙니다.");
     }
 
-    @DisplayName("운영시간일 경우, 테스트를 통과해야 한다.")
+    @DisplayName("캠퍼스 운영시간이 아닌 23:01에 출석 할 경우, 예외가 발생해야 한다.")
     @Test
-    void operating_time_then_throw_exception() {
-        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 21, 8, 0);
-        assertDoesNotThrow(() -> AttendanceTime.from(localDateTime));
-    }
-
-    @DisplayName("운영시간 아닐경우, 예외를 발생시켜야 한다.")
-    @Test
-    void not_operating_time_then_throw_exception() {
-        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 21, 7, 0);
-        assertThatThrownBy(() -> AttendanceTime.from(localDateTime))
+    void given_attendance_time_23_01_then_throw_exception() {
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 23, 1);
+        assertThatThrownBy(() -> AttendanceTime.from(attendanceDateTime))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(NOT_OPERATING_TIME.getMessage());
+            .hasMessage("운영시간이 아닙니다.");
     }
 
-    @DisplayName("지각 시간이 4분일 경우, Attendance를 반환한다.")
+    @DisplayName("캠퍼스 운영시간인 08:00에 출석할 경우, 예외가 발생해서는 안 된다.")
     @Test
-    void late_time_is_4_then_return_attendance() {
-        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 21, 10, 4);
-        assertAttendanceType(localDateTime, ATTENDANCE);
+    void given_attendance_time_08_then_throw_exception() {
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 8, 0);
+        assertThatCode(() -> AttendanceTime.from(attendanceDateTime)).doesNotThrowAnyException();
     }
 
-    @DisplayName("지각 시간이 5분일 경우, LATE를 반환한다.")
+    @DisplayName("캠퍼스 운영시간인 23:00에 출석할 경우, 예외가 발생해서는 안 된다.")
     @Test
-    void late_time_is_5_then_return_attendance() {
-        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 21, 10, 5);
-        assertAttendanceType(localDateTime, LATE);
+    void given_attendance_time_23_then_throw_exception() {
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 23, 0);
+        assertThatCode(() -> AttendanceTime.from(attendanceDateTime)).doesNotThrowAnyException();
     }
 
-    @DisplayName("지각 시간이 29분일 경우, LATE를 반환한다.")
-    @Test
-    void late_time_is_29_then_return_attendance() {
-        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 21, 10, 29);
-        assertAttendanceType(localDateTime, LATE);
-    }
-
-    @DisplayName("지각 시간이 30분일 경우, ABSENCE 반환한다.")
-    @Test
-    void late_time_is_30_then_return_attendance() {
-        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 21, 10, 30);
-        assertAttendanceType(localDateTime, ABSENCE);
-    }
-
-    private void assertAttendanceType(LocalDateTime localDateTime,
-        AttendanceType expectedAttendanceType) {
-        AttendanceTime attendanceTime = AttendanceTime.from(localDateTime);
-        AttendanceType attendanceType = attendanceTime.calculateAttendanceType();
-        assertThat(attendanceType).isEqualTo(expectedAttendanceType);
+    private static Stream<Arguments> provideAttendanceTime() {
+        LocalDateTime attendanceDateTime1 = LocalDateTime.of(2024, 12, 7, 10, 0);
+        LocalDateTime attendanceDateTime2 = LocalDateTime.of(2024, 12, 8, 10, 0);
+        return Stream.of(Arguments.of(attendanceDateTime1), Arguments.of(attendanceDateTime2));
     }
 }

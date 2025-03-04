@@ -1,39 +1,35 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceType.ABSENCE;
-import static attendance.domain.AttendanceType.LATE;
+import static attendance.domain.AttendanceType.*;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public enum CrewStatus {
-    FIRE("제적", 5),
-    INTERVIEW("면담", 2),
-    WARNING("경고", 1),
-    CLEAR("통과", 0);
+    WARING("경고", value -> value == 2),
+    INTERVIEW("면담", value -> value >= 3 && value < 5),
+    FIRE("제적", value -> value >= 5),
+    NORMAL("통과", value -> value < 2);
 
-    private final String statusDescription;
-    private final int statusDecisionValue;
+    private final String statusName;
+    private final Predicate<Long> condition;
 
-    CrewStatus(String statusDescription, int statusDecisionValue) {
-        this.statusDescription = statusDescription;
-        this.statusDecisionValue = statusDecisionValue;
+    CrewStatus(String statusName, Predicate<Long> condition) {
+        this.statusName = statusName;
+        this.condition = condition;
     }
 
-    public String getStatusDescription() {
-        return statusDescription;
+    public static CrewStatus calculate(AttendanceResult attendanceResult) {
+        Map<AttendanceType, Long> calculateResult = attendanceResult.getAttendanceResult();
+        long statusDecisionValue = (calculateResult.getOrDefault(LATE, 0L)  / 3) + calculateResult.get(ABSENCE);
+        return Arrays.stream(CrewStatus.values())
+            .filter(status -> status.condition.test(statusDecisionValue))
+            .findFirst()
+            .orElse(NORMAL);
     }
 
-    public static CrewStatus calculateCrewStatus(Map<AttendanceType, Long> attendanceResult) {
-        long validateValue = attendanceResult.get(ABSENCE) + attendanceResult.get(LATE) / 3;
-        if (validateValue > FIRE.statusDecisionValue) {
-            return FIRE;
-        }
-        if (validateValue >= INTERVIEW.statusDecisionValue) {
-            return INTERVIEW;
-        }
-        if (validateValue >= WARNING.statusDecisionValue) {
-            return WARNING;
-        }
-        return CLEAR;
+    public String getStatusName() {
+        return statusName;
     }
 }
