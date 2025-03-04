@@ -1,29 +1,39 @@
 package model;
 
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class StudentPunishmentTest {
+public class StudentPunishmentTest {
     @Test
-    @DisplayName("결석이 5회 이상이면 제적 리턴 테스트")
+    @DisplayName("제적 결정 테스트")
     void test1() {
-        Assertions.assertThat(StudentPunishment.determineDisciplinaryAction(5))
-                .isEqualTo(StudentPunishment.DISMISSAL);
+        Assertions.assertEquals(
+                StudentPunishment.DISMISSAl, StudentPunishment.calculatePunishment(5)
+        );
     }
 
     @Test
-    @DisplayName("결석이 3회 이상이면 면담 리턴 테스트")
+    @DisplayName("면담 결정 테스트")
     void test2() {
-        Assertions.assertThat(StudentPunishment.determineDisciplinaryAction(3))
-                .isEqualTo(StudentPunishment.INTERVIEW);
+        Assertions.assertEquals(
+                StudentPunishment.INTERVIEW, StudentPunishment.calculatePunishment(3)
+        );
     }
 
     @Test
-    @DisplayName("결석이 2회 이상이면 경고 리턴 테스트")
+    @DisplayName("경고 결정 테스트")
     void test3() {
-        Assertions.assertThat(StudentPunishment.determineDisciplinaryAction(2))
-                .isEqualTo(StudentPunishment.WARNING);
+        Assertions.assertEquals(
+                StudentPunishment.WARNING, StudentPunishment.calculatePunishment(2)
+        );
     }
 
+    @Test
+    @DisplayName("안전 결정 테스트")
+    void test4() {
+        Assertions.assertEquals(
+                StudentPunishment.SAFE, StudentPunishment.calculatePunishment(1)
+        );
+    }
 }

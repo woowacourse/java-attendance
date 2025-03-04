@@ -1,75 +1,64 @@
 package model;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StudentAttendanceHistory {
+    private final Map<AttendanceDate, AttendanceTime> attendanceHistory;
+    private static final int ZERO_COUNT = 0;
+    private static final int ONE_MORE_COUNT = 1;
 
-    private final List<AttendanceDateTime> attendanceHistory;
-
-    public StudentAttendanceHistory(List<AttendanceDateTime> attendanceHistory) {
-        this.attendanceHistory = new ArrayList<>(attendanceHistory);
+    public StudentAttendanceHistory(Map<AttendanceDate, AttendanceTime> studentAttendanceHistory) {
+        this.attendanceHistory = new HashMap<>(studentAttendanceHistory);
     }
 
-    public void addTime(AttendanceDateTime attendanceDateTime) {
-        attendanceHistory.add(attendanceDateTime);
-    }
-
-    public AttendanceDateTime findSameDay(AttendanceDateTime wantToFindLocalDateTime) {
-        return attendanceHistory.stream()
-                .filter(attendanceDateTime -> isSameDay(attendanceDateTime, wantToFindLocalDateTime))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않는 날짜입니다."));
-    }
-
-    public void modifyRecord(AttendanceDateTime wantToModifyLocalDateTime) {
+    public void modifyStudentAttendanceHistory(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         try {
-            attendanceHistory.remove(findSameDay(wantToModifyLocalDateTime));
-            addTime(wantToModifyLocalDateTime);
+            if (!isExistSameAttendanceDate(attendanceDate)) {
+                throw new IllegalArgumentException("[ERROR] 출석하지 않은 요일입니다. 출석은 진행 후, 수정을 진행해 주세요.");
+            }
+            attendanceHistory.put(attendanceDate, attendanceTime);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
+
     }
 
-    public void fillMissingAttendanceRecords(AttendanceDateTime todayDate) {
-        LocalDateTime startOfDecember = LocalDateTime.of(2024, 12, 1, 0, 0);
-        AttendanceDateTime standard = new AttendanceDateTime(startOfDecember);
-        while (!isSameDay(standard, todayDate)) {
-            addTimeRecordIfValid(standard);
-            standard = standard.addOneDay();
+    public void addStudentAttendanceHistory(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        attendanceHistory.putIfAbsent(attendanceDate, attendanceTime);
+    }
+
+    public boolean isExistSameAttendanceDate(AttendanceDate attendanceDate) {
+        return attendanceHistory.containsKey(attendanceDate);
+    }
+
+    public AttendanceTime findAttendanceTimeByAttendanceDate(AttendanceDate attendanceDate) {
+        return attendanceHistory.get(attendanceDate);
+    }
+
+    public void updateMissingAttendanceRecords(AttendanceDate attendanceStartDate, AttendanceDate today) {
+        while(!attendanceStartDate.equals(today)) {
+            if (!isExistSameAttendanceDate(attendanceStartDate) && !attendanceStartDate.isHoliday()) {
+                this.addStudentAttendanceHistory(attendanceStartDate, new AttendanceTime(LocalTime.of(0, 0)));
+            }
+            attendanceStartDate = attendanceStartDate.plusOneDay();
         }
     }
 
-    public boolean isAlreadyAttendanceDate(TodayDate todayDate) {
-        return this.isExistSameDay(todayDate.toAttendanceDateTime());
-    }
-
-    public void sortHistoryBeforePrint() {
-        Collections.sort(attendanceHistory);
-    }
-
-    private boolean isSameDay(AttendanceDateTime firstDateTime, AttendanceDateTime secondDateTime) {
-        return firstDateTime.isSameAttendanceDateTime(secondDateTime);
-    }
-
-    private boolean isExistSameDay(AttendanceDateTime wantToFindDay) {
-        return attendanceHistory.stream()
-                .anyMatch(attendanceDateTime -> isSameDay(attendanceDateTime,wantToFindDay));
-    }
-
-    private void addTimeRecordIfValid(AttendanceDateTime standard) {
-        if (!isWeekend(standard) && !isExistSameDay(standard)) {
-            attendanceHistory.add(standard);
+    public void calculateStudentAttendanceResult(Map<AttendanceStatus, Integer> attendanceCountMap) {
+        attendanceCountMap.putIfAbsent(AttendanceStatus.ATTENDANCE, ZERO_COUNT);
+        attendanceCountMap.putIfAbsent(AttendanceStatus.LATE, ZERO_COUNT);
+        attendanceCountMap.putIfAbsent(AttendanceStatus.ABSENT, ZERO_COUNT);
+        for (AttendanceDate attendanceDate : attendanceHistory.keySet()) {
+            AttendanceStatus attendanceStatus = AttendanceStatusEvaluator.calculateAttendanceStatus(attendanceDate, attendanceHistory.get(attendanceDate));
+            attendanceCountMap.merge(
+                    attendanceStatus, ONE_MORE_COUNT, Integer::sum
+            );
         }
     }
 
-    private boolean isWeekend(AttendanceDateTime attendanceDateTime) {
-        return (attendanceDateTime.isChristmas() || attendanceDateTime.isWeekend());
-    }
-
-    public List<AttendanceDateTime> getAttendanceHistory() {
-        return Collections.unmodifiableList(attendanceHistory);
+    public Map<AttendanceDate, AttendanceTime> getAttendanceHistory() {
+        return attendanceHistory;
     }
 }

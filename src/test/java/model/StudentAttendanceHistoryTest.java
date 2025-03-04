@@ -1,82 +1,104 @@
 package model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class StudentAttendanceHistoryTest {
-    AttendanceDateTime attendanceDateTime1;
-    AttendanceDateTime attendanceDateTime2;
+public class StudentAttendanceHistoryTest {
     StudentAttendanceHistory studentAttendanceHistory;
 
     @BeforeEach
-    @Test
     void set() {
-        attendanceDateTime1 = new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 0, 0));
-        attendanceDateTime2 = new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 0, 0));
-        studentAttendanceHistory = new StudentAttendanceHistory(List.of(attendanceDateTime1, attendanceDateTime2));
+        studentAttendanceHistory = new StudentAttendanceHistory(
+                Map.of(
+                        new AttendanceDate(LocalDate.of(2024, 12, 12)), new AttendanceTime(LocalTime.of(8, 0))
+                )
+        );
     }
+
     @Test
-    @DisplayName("시간 추가하는 메서드 테스트")
+    @DisplayName("출석 요일, 출석 시간 추가 기능 테스트")
     void test1() {
-        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(LocalDateTime.of(2024, 12, 4, 0, 0));
-        studentAttendanceHistory.addTime(attendanceDateTime);
-        Assertions.assertTrue(studentAttendanceHistory.getAttendanceHistory().contains(attendanceDateTime));
+        studentAttendanceHistory.addStudentAttendanceHistory(
+                new AttendanceDate(LocalDate.of(2024, 12, 13)),
+                new AttendanceTime(LocalTime.of(10, 31))
+        );
+        Assertions.assertTrue(
+                studentAttendanceHistory.getAttendanceHistory().containsKey(new AttendanceDate(LocalDate.of(2024, 12, 13)))
+        );
     }
 
     @Test
-    @DisplayName("같은 날짜 찾는 메서드 테스트")
+    @DisplayName("출석 요일, 출석 시간 수정 기능 테스트")
     void test2() {
-        Assertions.assertEquals(
-                studentAttendanceHistory.findSameDay(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 0, 0))),
-                attendanceDateTime1);
+        studentAttendanceHistory.modifyStudentAttendanceHistory(
+                new AttendanceDate(LocalDate.of(2024, 12, 12)),
+                new AttendanceTime(LocalTime.of(9, 0))
+        );
+
+        Assertions.assertTrue(studentAttendanceHistory.getAttendanceHistory().containsKey(
+                new AttendanceDate(LocalDate.of(2024, 12, 12))
+        ));
+
+        Assertions.assertEquals(studentAttendanceHistory.getAttendanceHistory().get(
+                new AttendanceDate(LocalDate.of(2024, 12, 12))
+        ), new AttendanceTime(LocalTime.of(9, 0)));
     }
 
     @Test
-    @DisplayName("수정할 날짜 저장되는지에 대한 테스트")
+    @DisplayName("키 값 보유 테스트")
     void test3() {
-        studentAttendanceHistory.modifyRecord(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 6)));
-        Assertions.assertEquals(
-                studentAttendanceHistory.findSameDay(new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 15, 6))),
-                new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 13, 6)));
+        Assertions.assertTrue(
+                studentAttendanceHistory.isExistSameAttendanceDate(new AttendanceDate(LocalDate.of(
+                        2024, 12, 12
+                )))
+        );
     }
 
     @Test
-    @DisplayName("오늘 날짜를 기준으로 없는 날짜 업데이트 하는 메서드 테스트")
+    @DisplayName("날짜를 입력 받고, 해당 날짜의 입실 시간 리턴하는 메서드 테스트")
     void test4() {
-        studentAttendanceHistory.fillMissingAttendanceRecords(new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 0, 0)));
         Assertions.assertEquals(
-                studentAttendanceHistory.findSameDay(new AttendanceDateTime(LocalDateTime.of(2024, 12, 11, 15, 6))),
-                new AttendanceDateTime(LocalDateTime.of(2024, 12, 11, 0, 0)));
+                studentAttendanceHistory.findAttendanceTimeByAttendanceDate(new AttendanceDate(LocalDate.of(2024, 12, 12))),
+                new AttendanceTime(LocalTime.of(8, 0))
+        );
     }
 
     @Test
-    @DisplayName("찾는 날짜가 존재하는 판단하는 메서드 테스트")
+    @DisplayName("파일에 있지 않은 정보들을 업데이트 하는 메서드 테스트")
     void test5() {
-        Assertions.assertTrue(studentAttendanceHistory.isAlreadyAttendanceDate(new TodayDate(LocalDate.of(2024, 12, 2))));
+        AttendanceDate start = new AttendanceDate(LocalDate.of(2024, 12, 1));
+
+        studentAttendanceHistory.updateMissingAttendanceRecords(start, new AttendanceDate(LocalDate.of(2024, 12, 12)));
+        Assertions.assertTrue(
+                studentAttendanceHistory.isExistSameAttendanceDate(new AttendanceDate(LocalDate.of(2024, 12, 12)))
+        );
+
+        Assertions.assertEquals(
+                studentAttendanceHistory.findAttendanceTimeByAttendanceDate(new AttendanceDate(LocalDate.of(2024, 12, 11))),
+                new AttendanceTime(LocalTime.of(0, 0))
+        );
     }
 
     @Test
-    @DisplayName("정렬이 됐는지 판단하는 메서드 테스트")
+    @DisplayName("출석, 결석, 지각에 대한 정보를 저장하는 메서드 테스트")
     void test6() {
-        studentAttendanceHistory.addTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 14, 0, 0)));
-        studentAttendanceHistory.addTime(new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 0, 0)));
-        studentAttendanceHistory.sortHistoryBeforePrint();
+        Map<AttendanceStatus, Integer> result = new HashMap<>();
 
-        List<AttendanceDateTime> sortedHistory = studentAttendanceHistory.getAttendanceHistory();
+        studentAttendanceHistory.calculateStudentAttendanceResult(result);
+
+        Assertions.assertTrue(
+                result.containsKey(AttendanceStatus.ATTENDANCE)
+        );
 
         Assertions.assertEquals(
-                new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 0, 0)), sortedHistory.get(0));
-        Assertions.assertEquals(
-                new AttendanceDateTime(LocalDateTime.of(2024, 12, 3, 0, 0)), sortedHistory.get(1));
-        Assertions.assertEquals(
-                new AttendanceDateTime(LocalDateTime.of(2024, 12, 12, 0, 0)), sortedHistory.get(2));
-        Assertions.assertEquals(
-                new AttendanceDateTime(LocalDateTime.of(2024, 12, 14, 0, 0)), sortedHistory.get(3));
+                1, result.get(AttendanceStatus.ATTENDANCE)
+        );
     }
 
 }

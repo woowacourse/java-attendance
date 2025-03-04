@@ -1,18 +1,17 @@
 package model;
 
 public enum AttendanceStatus {
-
-    ABSENT("결석"),
     ATTENDANCE("출석"),
-    LATE("지각");
+    LATE("지각"),
+    ABSENT("결석");
 
-    private final String state;
+    private final String status;
 
-    AttendanceStatus(String state) {
-        this.state = state;
+    AttendanceStatus(String status) {
+        this.status = status;
     }
 
-    public String getState() {
-        return state;
+    public String getStatus() {
+        return status;
     }
 }

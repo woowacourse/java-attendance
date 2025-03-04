@@ -3,56 +3,92 @@ package util;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.io.UncheckedIOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import model.AttendanceDateTime;
+import model.AttendanceDate;
+import model.AttendanceTime;
+import model.Student;
+import model.StudentAttendanceHistory;
+import model.Students;
 
 public class FileInput {
+    private final static String FILE_INFORMATION_REGEX = "[가-힣]+,\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}";
+    private static final String FILE_PATH = "src/main/resources/attendances.csv";
+    private static final int NAME_INDEX = 0;
+    private static final int ATTENDANCE_DATE_TIME_INDEX = 1;
+    private static final int ATTENDANCE_DATE_INDEX = 0;
+    private static final int ATTENDANCE_TIME_INDEX = 1;
+    private static final DateTimeFormatter ATTENDANCE_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter ATTENDANCE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final String ERROR_INVALID_FILE_FORMAT = "[ERROR] 학생 출석 정보 형식과 맞지 않습니다. 파일을 다시 확인해 주세요.";
 
     private FileInput() {}
 
-    private static final String FILE_PATH = "src/main/resources/attendances.csv";
-    private static final String STUDENT_INFORMATION_REGEX = "[가-힣]+,\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}";
+    public static Students readFileAndMakeStudents() {
+        List<Student> students = new ArrayList<>();
+        Map<String, StudentAttendanceHistory> studentInformationInFile = FileInput.readFileAndMakeStudentInformation();
 
-    public static Map<String, List<AttendanceDateTime>> readFileAndCreateStudentRepository(){
-        Map<String, List<AttendanceDateTime>> studentInformation = new HashMap<>();
-        try {
-            for (String information : readAttendanceFile()) {
-                if (!information.matches(STUDENT_INFORMATION_REGEX)) {
-                    throw new IllegalArgumentException("[ERROR] 잘못된 파일 양식입니다.");
-                }
-                String[] nameAndTimeInformation = information.split(",");
-                String name = nameAndTimeInformation[0];
-                String timeInformation = nameAndTimeInformation[1];
-                String localDateTimeFormatter = "yyyy-MM-dd HH:mm";
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(localDateTimeFormatter);
-                LocalDateTime localDateTime = LocalDateTime.parse(timeInformation, dateTimeFormatter);
-                studentInformation.computeIfAbsent(name, k -> new ArrayList<>()).add(new AttendanceDateTime(localDateTime));
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            throw new IllegalArgumentException();
+        for (String studentName : studentInformationInFile.keySet()) {
+            students.add(new Student(studentName, studentInformationInFile.get(studentName)));
         }
-        return studentInformation;
+
+        return new Students(students);
     }
 
-    private static List<String> readAttendanceFile() {
-        List<String> attendanceFile = new ArrayList<>();
-        try (BufferedReader fileBr = new BufferedReader(new FileReader(FILE_PATH))) {
-            fileBr.readLine();
-            String information;
-            while ((information = fileBr.readLine()) != null) {
-                attendanceFile.add(information);
+    private static Map<String, StudentAttendanceHistory> readFileAndMakeStudentInformation() {
+        List<String> fileInformation = readFile();
+        Map<String, StudentAttendanceHistory> studentInformationInFile = new HashMap<>();
+        try{
+            parseAndStoreStudentAttendance(fileInformation, studentInformationInFile);
+            return studentInformationInFile;
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            throw new UncheckedIOException(new IOException());
+        }
+
+}
+
+    private static void parseAndStoreStudentAttendance(List<String> fileInformation,
+                                  Map<String, StudentAttendanceHistory> studentInformationInFile) {
+        for (String studentInformation : fileInformation) {
+            if (!studentInformation.matches(FILE_INFORMATION_REGEX)) {
+                throw new IllegalArgumentException(ERROR_INVALID_FILE_FORMAT);
             }
+
+            String[] studentNameAndAttendanceDateTimeInformation = studentInformation.split(",");
+            String studentName = studentNameAndAttendanceDateTimeInformation[NAME_INDEX];
+            studentInformationInFile.putIfAbsent(studentName, new StudentAttendanceHistory(new HashMap<>()));
+
+            String timeInformation = studentNameAndAttendanceDateTimeInformation[ATTENDANCE_DATE_TIME_INDEX];
+            String[] attendanceDateAndAttendanceTime = timeInformation.split(" ");
+            AttendanceDate attendanceDate = new AttendanceDate(
+                    LocalDate.parse(attendanceDateAndAttendanceTime[ATTENDANCE_DATE_INDEX], ATTENDANCE_DATE_FORMATTER));
+            AttendanceTime attendanceTime = new AttendanceTime(
+                    LocalTime.parse(attendanceDateAndAttendanceTime[ATTENDANCE_TIME_INDEX], ATTENDANCE_TIME_FORMATTER));
+            StudentAttendanceHistory history = studentInformationInFile.get(studentName);
+            history.getAttendanceHistory().put(attendanceDate, attendanceTime);
+        }
+    }
+
+    private static List<String> readFile() {
+        List<String> fileInformation = new ArrayList<>();
+        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_PATH))) {
+            bufferedReader.readLine();
+            String studentInformation;
+            while ((studentInformation = bufferedReader.readLine()) != null) {
+                fileInformation.add(studentInformation);
+            }
+            return fileInformation;
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            System.out.println("[ERROR] 파일 읽는 중 오류가 발생하였습니다.");
-            throw new IllegalArgumentException();
+            throw new UncheckedIOException(e);
         }
-        return attendanceFile;
     }
 }

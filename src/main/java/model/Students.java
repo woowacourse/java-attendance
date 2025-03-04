@@ -1,35 +1,64 @@
 package model;
 
-import java.util.Collections;
+import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Students {
-
     private final List<Student> students;
 
-    public Students(List<Student> studentRepository) {
-        this.students = studentRepository;
+    public Students(List<Student> students) {
+        this.students = new ArrayList<>(students);
     }
 
-    public boolean isExistStudent(String name) {
+    public AttendanceTime findAttendanceTimeByAttendanceDate(String studentName, AttendanceDate attendanceDate) {
         return students.stream()
-                .anyMatch(student -> student.isSameName(name));
-    }
-
-    public Student findStudentByName(String name) {
-        return students.stream()
-                .filter(student -> student.isSameName(name))
+                .filter(student -> student.isSameName(studentName))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 학생입니다."));
+                .orElseThrow().
+                findAttendanceTimeByAttendanceDate(attendanceDate);
     }
 
-    public void updateMissingAttendanceRecords(TodayDate todayDate) {
+    public void modifyAttendanceDateTime(String studentName, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        students.stream()
+                .filter(student -> student.isSameName(studentName))
+                .findFirst()
+                .ifPresent(student -> student.modifyAttendanceDateTime(attendanceDate, attendanceTime));
+    }
+
+    public void addAttendanceDateTime(String studentName, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        students.stream()
+                .filter(student -> student.isSameName(studentName))
+                .findFirst()
+                .ifPresent(student -> student.addAttendanceDateTime(attendanceDate, attendanceTime));
+    }
+
+    public void validateAlreadyExistAttendanceDate(String studentName, AttendanceDate today) {
+        students.stream()
+                .filter(student -> student.isSameName(studentName))
+                .findFirst()
+                .ifPresent(student -> student.validateAlreadyExistAttendanceDate(today));
+    }
+
+    public Student findStudentByName(String studentName) {
+        return students.stream()
+                .filter(student -> student.isSameName(studentName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 학생의 이름입니다."));
+    }
+
+    public boolean isExistStudent(String studentName) {
+        return students.stream()
+                .anyMatch(student -> student.isSameName(studentName));
+    }
+
+    public void updateMissingAttendanceRecords(AttendanceDate attendanceStartDate, AttendanceDate todayDate) {
         for (Student student : students) {
-            student.updateNoInformationInFile(todayDate.toAttendanceDateTime());
+            student.updateMissingAttendanceRecords(attendanceStartDate, todayDate);
         }
     }
 
     public List<Student> getStudents() {
-        return Collections.unmodifiableList(students);
+        return students;
     }
 }

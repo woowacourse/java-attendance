@@ -1,31 +1,31 @@
 package model;
 
 public enum StudentPunishment {
-    WARNING(2),
+    DISMISSAl(5),
     INTERVIEW(3),
-    DISMISSAL(5);
+    WARNING(2),
+    SAFE(1);
 
-    private final int standard;
+    private final int absenceCount;
 
-    StudentPunishment(int standard) {
-        this.standard = standard;
+    StudentPunishment(int absenceCount) {
+        this.absenceCount = absenceCount;
     }
 
-    public static StudentPunishment determineDisciplinaryAction(int riskLevel) {
-        if (riskLevel >= DISMISSAL.standard) {
-            return DISMISSAL;
+    public static StudentPunishment calculatePunishment(int riskLevel) {
+        if (riskLevel >= DISMISSAl.absenceCount) {
+            return StudentPunishment.DISMISSAl;
         }
-        if (riskLevel >= INTERVIEW.standard) {
-            return INTERVIEW;
+        if (riskLevel >= INTERVIEW.absenceCount) {
+            return StudentPunishment.INTERVIEW;
         }
-        if (riskLevel >= WARNING.standard) {
-            return WARNING;
+        if (riskLevel >= WARNING.absenceCount) {
+            return StudentPunishment.WARNING;
         }
-        return null;
+        return StudentPunishment.SAFE;
     }
 
-    public int getStandard() {
-        return standard;
+    public int getAbsenceCount() {
+        return absenceCount;
     }
-
 }
