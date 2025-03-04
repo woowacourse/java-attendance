@@ -1,24 +1,28 @@
 package io;
 
-import controller.dto.AttendanceRequestDto;
+import console.Parser;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
-import view.Parser;
 
 public class CustomFileReader {
     private static List<String> readMarkdownFile(String path) throws FileNotFoundException {
         List<String> result = new ArrayList<>();
 
         Scanner scanner = new Scanner(new File(path));
+
         scanner.nextLine();
         while (scanner.hasNextLine()) {
             result.add(scanner.nextLine());
         }
+        scanner.close();
+
         return result;
     }
 
@@ -38,7 +42,9 @@ public class CustomFileReader {
             String info = data.split(",")[1];
             String[] splitInfo = info.split(" ");
             int date = Integer.parseInt(splitInfo[0].split("-")[2]);
-            result.add(new AttendanceRequestDto(date, Parser.parseAttendanceTime(splitInfo[1]), crewName));
+            LocalDateTime attendAt = LocalDateTime.of(LocalDate.of(2024, 12, date),
+                    Parser.parseTime(splitInfo[1]));
+            result.add(new AttendanceRequestDto(crewName, attendAt));
         }
 
         return result;

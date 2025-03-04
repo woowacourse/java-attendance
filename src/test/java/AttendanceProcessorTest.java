@@ -1,0 +1,357 @@
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import crew.Crew;
+import crew.Crews;
+import history.AttendanceHistories;
+import history.AttendanceHistory;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import type.AttendanceType;
+import type.AttendanceTypeCount;
+import type.PenaltyResultOfCrew;
+import type.PenaltyType;
+
+public class AttendanceProcessorTest {
+    @Nested
+    class TestForRegisterNewAttendance {
+        @Test
+        @DisplayName("이미 존재하는 출석기록을 등록하고자 하면 수정 기능을 사용하도록 안내하는 예외가 발생한다.")
+        void test1() {
+            // given
+            Crew crew = new Crew("히로");
+            Crews crews = new Crews(List.of(crew));
+            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+            AttendanceHistory attendanceHistory = new AttendanceHistory(crew, attendAt);
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
+                    new AttendanceHistories(List.of(attendanceHistory)), crews);
+
+            // when
+            assertThatThrownBy(() -> attendanceProcessor.registerNewHistory(crew, attendAt))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("이미 존재하는 출석 기록입니다. 수정 기능을 이용해주세요.");
+        }
+
+        @Test
+        @DisplayName("주말에 출석을 시도하는 경우 예외가 발생한다.")
+        void test2() {
+            // given
+            Crew crew = new Crew("히로");
+            Crews crews = new Crews(List.of(crew));
+            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 1, 10, 0);
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
+                    new AttendanceHistories(new ArrayList<>()), crews);
+
+            // when
+            assertThatThrownBy(() -> attendanceProcessor.registerNewHistory(crew, attendAt))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("평일이거나 공휴일이 아닌 경우에만 출석할 수 있습니다.");
+        }
+
+        @Test
+        @DisplayName("운영 시간이 아닌 시각에 출석을 시도하면 예외가 발생한다.")
+        void test3() {
+            // given
+            Crew crew = new Crew("히로");
+            Crews crews = new Crews(List.of(crew));
+            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 7, 0);
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
+                    new AttendanceHistories(new ArrayList<>()), crews);
+
+            // when
+            assertThatThrownBy(() -> attendanceProcessor.registerNewHistory(crew, attendAt))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
+        }
+
+        @Test
+        @DisplayName("중복되지 않고 유효한 닉네임과 날짜를 입력하면 정상적으로 출석할 수 있다.")
+        void test5() {
+            // given
+            Crew crew = new Crew("히로");
+            Crews crews = new Crews(List.of(crew));
+            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
+                    new AttendanceHistories(new ArrayList<>()), crews);
+
+            // when
+            assertThatCode(
+                    () -> attendanceProcessor.registerNewHistory(crew, attendAt)).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("정상적으로 출석 기록이 저장된다.")
+        void test6() {
+            // given
+            Crew crew = new Crew("히로");
+            Crews crews = new Crews(List.of(crew));
+            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
+                    new AttendanceHistories(new ArrayList<>()), crews);
+
+            // when
+            AttendanceHistory attendanceHistory = attendanceProcessor.registerNewHistory(crew, attendAt);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(attendanceHistory.getAttendAt()).isEqualTo(attendAt),
+                    () -> assertThat(attendanceHistory.getCrew()).isEqualTo(crew)
+            );
+        }
+    }
+
+    @Nested
+    class TestForUpdate {
+        @Test
+        @DisplayName("운영 시간이 아닌 시각으로 출석 시각을 바꾸려고 하는 경우 예외가 발생한다.")
+        void test3() {
+            // given
+            Crew crew = new Crew("히로");
+            Crews crews = new Crews(List.of(crew));
+            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+            AttendanceHistory oldHistory = new AttendanceHistory(crew, attendAt);
+
+            LocalDateTime newAttendDate = LocalDateTime.of(2024, 12, 2, 7, 0);
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
+                    new AttendanceHistories(List.of(oldHistory)), crews);
+
+            // when
+            assertThatThrownBy(
+                    () -> attendanceProcessor.updateRegisteredHistory(oldHistory, crew, newAttendDate))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
+        }
+    }
+
+    @Nested
+    class TestForFindAllHistoriesOfCrew {
+
+        @Test
+        @DisplayName("크루의 출석 기록을 모두 확인한다.")
+        void test2() {
+            // given
+            String nickname = "히로";
+            Crew crew = new Crew(nickname);
+            Crews crews = new Crews(List.of(crew));
+
+            LocalDateTime firstAttendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+            LocalDateTime secondAttendAt = LocalDateTime.of(2024, 12, 3, 10, 31);
+            LocalDateTime thirdAttendAt = LocalDateTime.of(2024, 12, 4, 10, 6);
+
+            AttendanceHistories attendanceHistories = new AttendanceHistories(List.of(
+                    new AttendanceHistory(crew, firstAttendAt),
+                    new AttendanceHistory(crew, secondAttendAt),
+                    new AttendanceHistory(crew, thirdAttendAt)));
+
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(attendanceHistories, crews);
+
+            // when
+            Map<LocalDateTime, AttendanceType> result = attendanceProcessor.findAllHistoriesOfCrew(crew,
+                    LocalDate.of(2024, 12, 5));
+
+            // then
+            assertThat(result).isEqualTo(
+                    Map.of(firstAttendAt, AttendanceType.PRESENT, secondAttendAt, AttendanceType.ABSENCE, thirdAttendAt,
+                            AttendanceType.LATE)
+            );
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 날짜의 기록에 대해 결석으로 간주한다.")
+        void test3() {
+            // given
+            String nickname = "히로";
+            Crew crew = new Crew(nickname);
+            Crews crews = new Crews(List.of(crew));
+
+            LocalDateTime firstAttendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+            LocalDateTime thirdAttendAt = LocalDateTime.of(2024, 12, 4, 10, 6);
+
+            AttendanceHistories attendanceHistories = new AttendanceHistories(List.of(
+                    new AttendanceHistory(crew, firstAttendAt),
+                    new AttendanceHistory(crew, thirdAttendAt)));
+
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(attendanceHistories, crews);
+
+            // when
+            Map<LocalDateTime, AttendanceType> result = attendanceProcessor.findAllHistoriesOfCrew(crew,
+                    LocalDate.of(2024, 12, 5));
+
+            // then
+            assertThat(result.keySet()).contains(LocalDateTime.of(2024, 12, 3, 0, 0));
+        }
+
+        @Test
+        @DisplayName("조회를 요청한 날짜의 이전 데이터까지만 포함한다.")
+        void test4() {
+            // given
+            String nickname = "히로";
+            Crew crew = new Crew(nickname);
+            Crews crews = new Crews(List.of(crew));
+
+            LocalDateTime firstAttendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+            LocalDateTime thirdAttendAt = LocalDateTime.of(2024, 12, 4, 10, 6);
+
+            AttendanceHistories attendanceHistories = new AttendanceHistories(List.of(
+                    new AttendanceHistory(crew, firstAttendAt),
+                    new AttendanceHistory(crew, thirdAttendAt)));
+
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(attendanceHistories, crews);
+
+            // when
+            Map<LocalDateTime, AttendanceType> result = attendanceProcessor.findAllHistoriesOfCrew(crew,
+                    LocalDate.of(2024, 12, 5));
+
+            // then
+            assertThat(result.keySet())
+                    .allMatch(date -> date.isBefore(thirdAttendAt.plusDays(1)));
+
+        }
+
+    }
+
+    @Nested
+    class TestForGetPenaltyResultOfCrew {
+        @Test
+        @DisplayName("크루의 패널티 결과를 가져온다.")
+        void test() {
+            // given
+            Crew crew = new Crew("히로");
+            Map<LocalDateTime, AttendanceType> attendanceHistory = Map.of(
+                    LocalDateTime.of(2024, 12, 2, 10, 31), AttendanceType.ABSENCE,
+                    LocalDateTime.of(2024, 12, 3, 10, 31), AttendanceType.ABSENCE,
+                    LocalDateTime.of(2024, 12, 4, 10, 1), AttendanceType.ABSENCE,
+                    LocalDateTime.of(2024, 12, 5, 10, 1), AttendanceType.ABSENCE,
+                    LocalDateTime.of(2024, 12, 6, 10, 1), AttendanceType.ABSENCE
+            );
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
+                    new AttendanceHistories(List.of()), new Crews(List.of(crew)));
+
+            // when
+            PenaltyResultOfCrew penaltyResultOfCrew = attendanceProcessor.getPenaltyResultOfCrew(crew,
+                    attendanceHistory);
+
+            // then
+            AttendanceTypeCount attendanceTypeCount = penaltyResultOfCrew.attendanceTypeCount();
+            assertThat(attendanceTypeCount.getAbsenceCount()).isEqualTo(5);
+        }
+    }
+
+    @Nested
+    class TestForGetExpulsionCandidates {
+        @Test
+        @DisplayName("패널티 타입이 면담, 경고, 제적인 경우만 반환한다.")
+        void test1() {
+            // given
+            LocalDate requestedAt = LocalDate.of(2024, 12, 6);
+            Crew hero = new Crew("히로");
+            Crew hippo = new Crew("히포");
+            Crew moru = new Crew("모루");
+
+            AttendanceHistories attendanceHistories = new AttendanceHistories(
+                    List.of(
+                            new AttendanceHistory(hero, LocalDateTime.of(2024, 12, 3, 10, 0)),
+                            new AttendanceHistory(hippo, LocalDateTime.of(2024, 12, 4, 10, 0)),
+                            new AttendanceHistory(moru, LocalDateTime.of(2024, 12, 5, 10, 0))
+                    ));
+
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(attendanceHistories,
+                    new Crews(List.of()));
+
+            // when
+            List<PenaltyResultOfCrew> expulsionCandidates = attendanceProcessor.findExpulsionCandidates(
+                    requestedAt);
+
+            // then
+            assertThat(expulsionCandidates)
+                    .allSatisfy(candidate -> assertThat(candidate.penaltyType())
+                            .isIn(PenaltyType.ONE_ON_ONE, PenaltyType.WARNING, PenaltyType.BAN));
+        }
+    }
+
+    @Nested
+    @DisplayName("제적 위험 대상자를 정렬할 때")
+    class TestForSortExpulsionCandidates {
+        @Test
+        @DisplayName("패널티 타입이 제적, 면담, 경고 순으로 정렬한다")
+        void test1() {
+            // given
+
+            PenaltyResultOfCrew hero = PenaltyResultOfCrew.from(new Crew("히로"), AttendanceTypeCount.from(6, 0));
+            PenaltyResultOfCrew moru = PenaltyResultOfCrew.from(new Crew("모루"), AttendanceTypeCount.from(2, 0));
+            PenaltyResultOfCrew hippo = PenaltyResultOfCrew.from(new Crew("히포"), AttendanceTypeCount.from(4, 0));
+
+            List<PenaltyResultOfCrew> expulsionCandidates = new ArrayList<>(List.of(
+                    hero, moru, hippo
+            ));
+
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
+                    new AttendanceHistories(List.of()), new Crews(List.of())
+            );
+
+            // when
+            List<PenaltyResultOfCrew> actual = attendanceProcessor.sortExpulsionCandidates(
+                    expulsionCandidates);
+
+            // then
+            assertThat(actual).isEqualTo(List.of(hero, hippo, moru));
+        }
+
+        @Test
+        @DisplayName("지각을 결석으로 간주해 결석 횟수의 내림차순으로 출력한다")
+        void test2() {
+            // given
+
+            PenaltyResultOfCrew hero = PenaltyResultOfCrew.from(new Crew("히로"), AttendanceTypeCount.from(3, 6)); // 5
+            PenaltyResultOfCrew moru = PenaltyResultOfCrew.from(new Crew("모루"), AttendanceTypeCount.from(4, 1)); // 4
+            PenaltyResultOfCrew hippo = PenaltyResultOfCrew.from(new Crew("히포"), AttendanceTypeCount.from(2, 3)); // 3
+
+            List<PenaltyResultOfCrew> expulsionCandidates = new ArrayList<>(List.of(hero, hippo, moru));
+
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
+                    new AttendanceHistories(List.of()), new Crews(List.of())
+            );
+
+            // when
+            List<PenaltyResultOfCrew> actual = attendanceProcessor.sortExpulsionCandidates(
+                    expulsionCandidates);
+
+            // then
+            assertThat(actual).isEqualTo(List.of(hero, moru, hippo));
+        }
+
+        @Test
+        @DisplayName("type.PenaltyType 과 결석 횟수가 동일한 경우 닉네임 순으로 정렬한다.")
+        void test3() {
+            // given
+
+            PenaltyResultOfCrew hero = PenaltyResultOfCrew.from(new Crew("히로"), AttendanceTypeCount.from(2, 1));
+            PenaltyResultOfCrew moru = PenaltyResultOfCrew.from(new Crew("모루"), AttendanceTypeCount.from(2, 1));
+            PenaltyResultOfCrew razel = PenaltyResultOfCrew.from(new Crew("라젤"), AttendanceTypeCount.from(2, 1));
+
+            List<PenaltyResultOfCrew> expulsionCandidates = new ArrayList<>(List.of(hero, razel, moru));
+
+            AttendanceProcessor attendanceProcessor = new AttendanceProcessor(
+                    new AttendanceHistories(List.of()), new Crews(List.of())
+            );
+
+            // when
+            List<PenaltyResultOfCrew> actual = attendanceProcessor.sortExpulsionCandidates(
+                    expulsionCandidates);
+
+            // then
+            assertThat(actual).isEqualTo(List.of(razel, moru, hero));
+        }
+    }
+}
+
