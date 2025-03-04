@@ -145,7 +145,7 @@ public class AttendanceSystemTest {
         assertThat(attendanceBook.getAttendanceStatuses().getTardyCount()).isEqualTo(2);
     }
 
-    @DisplayName("월요일 지각 횟수")
+    @DisplayName("월요일은 10시에 5분 늦어도 지각이 아니다")
     @Test
     void get_tardy_record_monday() {
         Crew crew = new Crew("두리");
@@ -155,7 +155,7 @@ public class AttendanceSystemTest {
         assertThat(attendanceBook.getAttendanceStatuses().getTardyCount()).isEqualTo(1);
     }
 
-    @DisplayName("월요일 지각 횟수2")
+    @DisplayName("월요일은 13시에 5분 늦으면 지각이다")
     @Test
     void get_tardy_record_monday2() {
         Crew crew = new Crew("두리");
