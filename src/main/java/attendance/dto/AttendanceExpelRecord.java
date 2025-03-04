@@ -2,13 +2,12 @@ package attendance.dto;
 
 import attendance.domain.CrewStatistic;
 
-public record AttendanceExpelRecord(String crewName, int absentCount, int lateCount, String expectedPenalty) {
-
+public record AttendanceExpelRecord(String crewName, int crewAbsentCount, int crewLateCount, String crewPenalty) {
     public static AttendanceExpelRecord fromCrewStatistic(CrewStatistic crewStatistic) {
         String crewName = crewStatistic.getCrewName();
-        int absentCount = crewStatistic.getAbsentCount();
-        int lateCount = crewStatistic.getLateCount();
-        String expectedPenalty = crewStatistic.getCrewStatus().toString();
-        return new AttendanceExpelRecord(crewName, absentCount, lateCount, expectedPenalty);
+        int crewAbsentCount = crewStatistic.getCrewAbsentCount();
+        int crewLateCount = crewStatistic.getCrewLateCount();
+        String crewPenalty = crewStatistic.getCrewPenalty();
+        return new AttendanceExpelRecord(crewName, crewAbsentCount, crewLateCount, crewPenalty);
     }
 }

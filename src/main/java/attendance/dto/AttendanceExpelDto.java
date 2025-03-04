@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record AttendanceExpelDto(List<AttendanceExpelRecord> attendanceExpelRecords) {
-
-    public static AttendanceExpelDto fromAttendanceExpelRecord(CrewStatistics crewStatistics) {
+    public static AttendanceExpelDto fromCrewStatistics(CrewStatistics crewStatistics) {
         List<AttendanceExpelRecord> attendanceExpelRecords = new ArrayList<>();
         for (CrewStatistic crewStatistic : crewStatistics.getCrewStatistics()) {
             attendanceExpelRecords.add(AttendanceExpelRecord.fromCrewStatistic(crewStatistic));

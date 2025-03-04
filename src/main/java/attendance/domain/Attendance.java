@@ -1,66 +1,54 @@
 package attendance.domain;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 
 public class Attendance {
-    private static final String TIME_FORMAT = "HH:mm";
-
-    private final Crew crew;
-    private LocalDateTime presentTime;
+    private final CrewName crewName;
+    private final AttendanceDate attendanceDate;
+    private AttendanceTime attendanceTime;
     private AttendanceType attendanceType;
 
-    public Attendance(Crew crew, LocalDateTime presentTime, AttendanceType attendanceType) {
-        this.crew = crew;
-        this.presentTime = presentTime;
-        this.attendanceType = attendanceType;
+    public Attendance(CrewName crewName, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        this.crewName = crewName;
+        this.attendanceDate = attendanceDate;
+        this.attendanceTime = attendanceTime;
+        this.attendanceType = AttendanceType.of(attendanceDate, attendanceTime);
     }
 
-    public boolean isSameTime(final LocalDateTime localDateTime) {
-        return this.presentTime.equals(localDateTime);
+    public boolean hasSameCrewName(final String crewName) {
+        return this.crewName.getCrewName().equals(crewName);
     }
 
-    public boolean isSameCrew(final Crew crew) {
-        return this.crew.equals(crew);
+    public boolean hasSameAttendanceDate(final LocalDate attendanceDate) {
+        return this.attendanceDate.getAttendanceDate().equals(attendanceDate);
     }
 
-    public boolean isSameCrewDate(final Crew crew, final LocalDate localDate) {
-        return this.crew.equals(crew) && this.presentTime.toLocalDate().equals(localDate);
+    public void modifyAttendance(final AttendanceTime attendanceTime) {
+        this.attendanceTime = attendanceTime;
+        this.attendanceType = AttendanceType.of(attendanceDate, attendanceTime);
     }
 
-    public void modifyLocalDateTime(final LocalDateTime changedPresentTime) {
-        this.presentTime = changedPresentTime;
-        modifyAttendanceType(changedPresentTime);
+    public Attendance copyAttendanceInstance() {
+        CrewName newCrewName = new CrewName(crewName.getCrewName());
+        AttendanceDate newAttendanceDate = new AttendanceDate(attendanceDate.getAttendanceDate());
+        AttendanceTime newAttendanceTime = new AttendanceTime(attendanceTime.getAttendanceTime());
+        return new Attendance(newCrewName, newAttendanceDate, newAttendanceTime);
     }
 
-    private void modifyAttendanceType(final LocalDateTime localDateTime) {
-        attendanceType = AttendanceType.of(localDateTime);
+    public String getCrewName() {
+        return crewName.getCrewName();
     }
 
-    public LocalDate getDate() {
-        return presentTime.toLocalDate();
+    public LocalDate getAttendanceDate() {
+        return attendanceDate.getAttendanceDate();
     }
 
-    public String getTimeValue() {
-        return presentTime.format(DateTimeFormatter.ofPattern(TIME_FORMAT));
+    public LocalTime getAttendanceTime() {
+        return attendanceTime.getAttendanceTime();
     }
 
-    public AttendanceType getType() {
-        return attendanceType;
-    }
-
-    public void updateCrewAttendanceCount(final AttendanceCount attendanceCount) {
-        if (attendanceType.equals(AttendanceType.SAFE)) {
-            attendanceCount.incrementSafeCount();
-            return;
-        }
-        if (attendanceType.equals(AttendanceType.LATE)) {
-            attendanceCount.incrementLateCount();
-            return;
-        }
-        if (attendanceType.equals(AttendanceType.ABSENT)) {
-            attendanceCount.incrementAbsentCount();
-        }
+    public String getAttendanceType() {
+        return attendanceType.toString();
     }
 }

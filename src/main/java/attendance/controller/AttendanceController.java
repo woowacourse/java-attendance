@@ -1,81 +1,66 @@
 package attendance.controller;
 
+import attendance.controller.option.MenuOption;
+import attendance.controller.option.MenuOptionFactory;
 import attendance.domain.Attendances;
-import attendance.domain.Crews;
+import attendance.domain.CrewNames;
 import attendance.domain.MenuCommand;
-import attendance.util.FileReader;
+import attendance.util.FileHandler;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 public class AttendanceController {
-    private static final String FILE_NAME = "attendances.csv";
-    private static final LocalDate LOCAL_DATE_TODAY = LocalDate.now();
+    private static final LocalDate TODAY = LocalDate.now();
+    private static final int TODAY_MONTH = TODAY.getMonthValue();
+    private static final int TODAY_DAY = TODAY.getDayOfMonth();
+
+    private static final String TODAY_DAY_OF_WEEK = TODAY.getDayOfWeek()
+            .getDisplayName(TextStyle.NARROW, Locale.KOREAN);
 
     private final InputView inputView;
-    private final OutputView outputView;
-    private final Crews crews;
+    private final CrewNames crewNames;
     private final Attendances attendances;
+    private final MenuOptionFactory menuOptionFactory;
 
     public AttendanceController() {
         this.inputView = new InputView();
-        this.outputView = new OutputView();
-        this.crews = new Crews();
+        this.crewNames = new CrewNames();
         this.attendances = new Attendances();
+        OutputView outputView = new OutputView();
+        this.menuOptionFactory = new MenuOptionFactory(inputView, crewNames, attendances, outputView);
     }
 
     public void run() {
-        initDataFromCSV();
+        initializeFromCSV();
 
-        Optional<MenuCommand> command;
+        Optional<MenuCommand> menuCommand;
         do {
-            command = checkMenuCommand();
-            command.ifPresent(this::executeMenuOption);
-        } while (command.isEmpty() || command.get() != MenuCommand.QUIT);
+            String commandInput = inputView.readMenuCommand(TODAY_MONTH, TODAY_DAY, TODAY_DAY_OF_WEEK);
+            menuCommand = checkMenuCommand(commandInput);
+            menuCommand.flatMap(menuOptionFactory::createMenuOption).ifPresent(MenuOption::execute);
+        } while (menuCommand.isEmpty() || menuCommand.get() != MenuCommand.QUIT);
     }
 
-    private void initDataFromCSV() {
-        FileReader reader = new FileReader();
-        List<List<String>> attendanceRecords = reader.readResource(FILE_NAME);
-
-        crews.initCrews(attendanceRecords);
-        attendances.initAttendances(crews, attendanceRecords);
+    private void initializeFromCSV() {
+        FileHandler fileHandler = new FileHandler();
+        Map<String, List<LocalDateTime>> data = fileHandler.provideDataFromFile();
+        crewNames.initializeCrewNames(data.keySet());
+        attendances.initializeAttendances(data);
     }
 
-    private Optional<MenuCommand> checkMenuCommand() {
+    private static Optional<MenuCommand> checkMenuCommand(final String commandInput) {
         try {
-            return Optional.of(MenuCommand.toCommand(getMenuCommand()));
+            return Optional.of(MenuCommand.of(commandInput));
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return Optional.empty();
-        }
-    }
-
-    private String getMenuCommand() {
-        String month = String.valueOf(LOCAL_DATE_TODAY.getMonthValue());
-        String day = String.valueOf(LOCAL_DATE_TODAY.getDayOfMonth());
-        String dayOfWeek = LOCAL_DATE_TODAY.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
-
-        return inputView.readCommand(month, day, dayOfWeek);
-    }
-
-    private void executeMenuOption(final MenuCommand command) {
-        if (command == MenuCommand.QUIT) {
-            return;
-        }
-        Class<?> optionClass = command.getOption();
-        try {
-            MenuOption option = (MenuOption) optionClass
-                    .getConstructor(InputView.class, OutputView.class, Crews.class, Attendances.class)
-                    .newInstance(inputView, outputView, crews, attendances);
-            option.executeMenuOption(command);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                 InvocationTargetException ignored) {
         }
     }
 }

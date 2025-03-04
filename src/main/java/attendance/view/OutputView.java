@@ -8,110 +8,118 @@ import attendance.dto.AttendanceLookupRecord;
 import attendance.dto.AttendanceModifyDto;
 
 public class OutputView {
-    private static final String ATTENDANCE_STRING = "%d월 %02d일 %s요일 %s (%s)";
-    private static final String MODIFIED_ATTENDANCE_STRING = " -> %s (%s) 수정 완료!";
-    private static final String CREW_ATTENDANCE_HISTORY_STRING = "이번 달 %s의 출석 기록입니다.";
-    private static final String CREW_STATISTICS_STRING = """
+
+    private static final String CREW_ATTENDANCE_FORMAT = "%d월 %02d일 %s요일 %s (%s)";
+    private static final String CREW_MODIFIED_ATTENDANCE_FORMAT = "%d월 %02d일 %s요일 %s (%s) -> %s (%s) 수정 완료!";
+    private static final String CREW_ATTENDANCE_TITLE = "이번 달 %s의 출석 기록입니다.";
+    private static final String ABSENT_TIME_VALUE = "00:00";
+    private static final String ABSENT_TIME_FORMAT = "--:--";
+    private static final String CREW_STATISTIC_FORMAT = """
             출석: %d회
             지각: %d회
             결석: %d회
             """;
-    private static final String CREW_STATUS_STRING = "%s 대상자입니다.";
-    private static final String EXPEL_CREWS_HEAD_STRING = "제적 위험자 조회 결과";
-    private static final String EXPEL_CREW_BODY_STRING = "- %s: 결석 %d회, 지각 %d회 (%s)";
+    private static final String CREW_STATISTIC_PENALTY_FORMAT = "%s 대상자입니다.";
+    private static final String CREW_EXPULSION_FORMAT_HEAD = "제적 위험자 조회 결과";
+    private static final String CREW_NO_PENALTY_STATUS = "비";
+    private static final String CREW_EXPULSION_FORMAT_BODY = "- %s: 결석 %d회, 지각 %d회 (%s)";
 
-    private static final String ABSENT_TIME_VALUE = "00:00";
-    private static final String ABSENT_TIME_FORMAT = "--:--";
-
-    public void printTodayAttendance(final AttendanceCheckDto attendanceInfo) {
+    public void printAttendanceCheckResult(final AttendanceCheckDto attendanceCheckDto) {
+        System.out.println();
         System.out.println(
-                ATTENDANCE_STRING.formatted(
-                        attendanceInfo.month(),
-                        attendanceInfo.day(),
-                        attendanceInfo.dayOfWeek(),
-                        attendanceInfo.attendanceTime(),
-                        attendanceInfo.attendanceType()
+                CREW_ATTENDANCE_FORMAT.formatted(
+                        attendanceCheckDto.month(),
+                        attendanceCheckDto.day(),
+                        attendanceCheckDto.dayOfWeek(),
+                        attendanceCheckDto.attendanceTime(),
+                        attendanceCheckDto.attendanceType()
                 )
         );
-        printNewLine();
+        System.out.println();
     }
 
-    public void printModifiedAttendance(final AttendanceModifyDto attendanceModifiedInfo) {
-        System.out.print(
-                ATTENDANCE_STRING.formatted(
-                        attendanceModifiedInfo.month(),
-                        attendanceModifiedInfo.day(),
-                        attendanceModifiedInfo.dayOfWeek(),
-                        attendanceModifiedInfo.originalTime(),
-                        attendanceModifiedInfo.originalType()
+    public void printAttendanceModifyResult(final AttendanceModifyDto attendanceModifyDto) {
+        System.out.println();
+        System.out.println(
+                CREW_MODIFIED_ATTENDANCE_FORMAT.formatted(
+                        attendanceModifyDto.month(),
+                        attendanceModifyDto.day(),
+                        attendanceModifyDto.dayOfWeek(),
+                        attendanceModifyDto.attendanceTime(),
+                        attendanceModifyDto.attendanceType(),
+                        attendanceModifyDto.newAttendanceTime(),
+                        attendanceModifyDto.newAttendanceType()
                 )
         );
-        System.out.println(formatModifiedNotice(attendanceModifiedInfo));
-        printNewLine();
+        System.out.println();
     }
 
-    private String formatModifiedNotice(final AttendanceModifyDto attendanceModifiedInfo) {
-        return MODIFIED_ATTENDANCE_STRING.formatted(
-                attendanceModifiedInfo.newAttendanceTime(),
-                attendanceModifiedInfo.newAttendanceType()
-        );
-    }
-
-    public void printCrewAttendanceHistory(final AttendanceLookupDto attendanceLookupDto) {
-        System.out.println(
-                CREW_ATTENDANCE_HISTORY_STRING.formatted(attendanceLookupDto.crewName())
-        );
+    public void printAttendanceLookupResult(final AttendanceLookupDto attendanceLookupDto) {
+        printCrewAttendanceLookupTitle(attendanceLookupDto);
         for (AttendanceLookupRecord attendanceLookupRecord : attendanceLookupDto.attendanceLookupRecords()) {
             System.out.println(
-                    ATTENDANCE_STRING.formatted(
+                    CREW_ATTENDANCE_FORMAT.formatted(
                             attendanceLookupRecord.month(),
                             attendanceLookupRecord.day(),
                             attendanceLookupRecord.dayOfWeek(),
-                            formatAbsentTimeString(attendanceLookupRecord.attendanceTime()),
+                            formatCrewAttendanceTime(attendanceLookupRecord.attendanceTime()),
                             attendanceLookupRecord.attendanceType()
                     )
             );
         }
-        printNewLine();
+        printCrewAttendanceLookupStatistic(attendanceLookupDto);
     }
 
-    private String formatAbsentTimeString(String absentTime) {
-        if (absentTime.equals(ABSENT_TIME_VALUE)) {
-            absentTime = ABSENT_TIME_FORMAT;
+    private void printCrewAttendanceLookupTitle(final AttendanceLookupDto attendanceLookupDto) {
+        System.out.println();
+        System.out.println(CREW_ATTENDANCE_TITLE.formatted(attendanceLookupDto.crewName()));
+        System.out.println();
+    }
+
+    private void printCrewAttendanceLookupStatistic(final AttendanceLookupDto attendanceLookupDto) {
+        System.out.println();
+        System.out.println(CREW_STATISTIC_FORMAT.formatted(
+                attendanceLookupDto.crewSafeCount(),
+                attendanceLookupDto.crewLateCount(),
+                attendanceLookupDto.crewAbsentCount()
+        ));
+        System.out.println(CREW_STATISTIC_PENALTY_FORMAT.formatted(
+                attendanceLookupDto.crewPenalty()
+        ));
+        System.out.println();
+    }
+    
+    private String formatCrewAttendanceTime(final String attendanceTime) {
+        if (attendanceTime.equals(ABSENT_TIME_VALUE)) {
+            return ABSENT_TIME_FORMAT;
         }
-        return absentTime;
+        return attendanceTime;
     }
 
-    public void printCrewStatisticStatus(final AttendanceLookupDto attendanceLookupDto) {
+    public void printAttendanceExpelResult(final AttendanceExpelDto attendanceExpelDto) {
+        System.out.println();
+        System.out.println(CREW_EXPULSION_FORMAT_HEAD);
+        for (AttendanceExpelRecord attendanceExpelRecord : attendanceExpelDto.attendanceExpelRecords()) {
+            printCrewPenalty(attendanceExpelRecord);
+        }
+        System.out.println();
+    }
+
+    private void printCrewPenalty(final AttendanceExpelRecord attendanceExpelRecord) {
+        if (hasNoPenalty(attendanceExpelRecord.crewPenalty())) {
+            return;
+        }
         System.out.println(
-                CREW_STATISTICS_STRING.formatted(
-                        attendanceLookupDto.safeCount(),
-                        attendanceLookupDto.lateCount(),
-                        attendanceLookupDto.absentCount()
+                CREW_EXPULSION_FORMAT_BODY.formatted(
+                        attendanceExpelRecord.crewName(),
+                        attendanceExpelRecord.crewAbsentCount(),
+                        attendanceExpelRecord.crewLateCount(),
+                        attendanceExpelRecord.crewPenalty()
                 )
         );
-        System.out.println(
-                CREW_STATUS_STRING.formatted(attendanceLookupDto.crewPenaltyStatus())
-        );
-        printNewLine();
     }
 
-    public void printExpelExpectedCrews(final AttendanceExpelDto attendanceExpelDto) {
-        System.out.println(EXPEL_CREWS_HEAD_STRING);
-        for (AttendanceExpelRecord attendanceExpelRecord : attendanceExpelDto.attendanceExpelRecords()) {
-            System.out.println(
-                    EXPEL_CREW_BODY_STRING.formatted(
-                            attendanceExpelRecord.crewName(),
-                            attendanceExpelRecord.absentCount(),
-                            attendanceExpelRecord.lateCount(),
-                            attendanceExpelRecord.expectedPenalty()
-                    )
-            );
-        }
-        printNewLine();
-    }
-
-    public void printNewLine() {
-        System.out.println();
+    private boolean hasNoPenalty(final String crewPenalty) {
+        return crewPenalty.equals(CREW_NO_PENALTY_STATUS);
     }
 }

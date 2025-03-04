@@ -1,44 +1,34 @@
 package attendance.domain;
 
-import attendance.controller.OptionCheckAttendance;
-import attendance.controller.OptionLookupAttendance;
-import attendance.controller.OptionLookupExpulsion;
-import attendance.controller.OptionModifyAttendance;
 import java.util.Arrays;
 
 public enum MenuCommand {
-    ATTEND("1", OptionCheckAttendance.class),
-    MODIFY("2", OptionModifyAttendance.class),
-    LOOKUP("3", OptionLookupAttendance.class),
-    EXPEL("4", OptionLookupExpulsion.class),
-    QUIT("Q", null);
+    CHECK("1"),
+    MODIFY("2"),
+    LOOKUP("3"),
+    EXPEL("4"),
+    QUIT("Q");
 
-    private static final String MENU_COMMAND_ERROR_MESSAGE = "[ERROR] 지원하지 않는 기능 값입니다.";
-    private static final String COMMAND_PATTERN = "^[1-4|Q]$";
+    private static final String INVALID_COMMAND_TYPE = "[ERROR] 올바르지 않은 명령어입니다. 지정된 명령어 중 하나를 입력해주세요.\n";
+    private static final String COMMAND_TYPES = "^[1-4|Q]$";
 
     private final String command;
-    private final Class<?> option;
 
-    MenuCommand(String command, Class<?> option) {
-        this.command = command;
-        this.option = option;
+    MenuCommand(String commandInput) {
+        this.command = commandInput;
     }
 
-    public static MenuCommand toCommand(final String input) {
-        if (input == null || !input.matches(COMMAND_PATTERN)) {
-            throw new IllegalArgumentException(MENU_COMMAND_ERROR_MESSAGE);
+    public static MenuCommand of(final String commandInput) {
+        if (!commandInput.matches(COMMAND_TYPES)) {
+            throw new IllegalArgumentException(INVALID_COMMAND_TYPE);
         }
-        return Arrays.stream(values())
-                .filter(command -> command.getCommand().equals(input))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(MENU_COMMAND_ERROR_MESSAGE));
+        return Arrays.stream(MenuCommand.values())
+                .filter(menuCommand -> menuCommand.getCommand().equals(commandInput))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_COMMAND_TYPE));
     }
 
-    private String getCommand() {
+    public String getCommand() {
         return command;
-    }
-
-    public Class<?> getOption() {
-        return option;
     }
 }

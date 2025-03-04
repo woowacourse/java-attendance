@@ -2,18 +2,14 @@ package attendance.domain;
 
 import java.util.Objects;
 
-public class Crew {
+public class CrewName {
     private final String crewName;
 
-    public Crew(String crewName) {
-        this.crewName = crewName;
+    public CrewName(String nameInput) {
+        this.crewName = nameInput;
     }
 
-    public boolean isSameCrewName(final String crewName) {
-        return this.crewName.equals(crewName);
-    }
-
-    public String getName() {
+    public String getCrewName() {
         return crewName;
     }
 
@@ -22,9 +18,14 @@ public class Crew {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Crew that)) {
+        if (!(o instanceof CrewName that)) {
             return false;
         }
         return Objects.equals(this.crewName, that.crewName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(crewName);
     }
 }

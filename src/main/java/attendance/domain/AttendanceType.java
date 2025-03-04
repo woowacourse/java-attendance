@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public enum AttendanceType {
@@ -10,48 +9,41 @@ public enum AttendanceType {
     ABSENT("결석"),
     FREE("자유");
 
-    private static final int HOUR_MONDAY = 13;
-    private static final int HOUR_OTHER_WEEKDAY = 10;
-    private static final int MINUTE_ALL_WEEKDAY = 0;
+    private static final int MONDAY_START_HOUR = 13;
+    private static final int WEEKDAY_START_HOUR = 10;
+    private static final int LATE_START_MINUTE = 5;
+    private static final int ABSENT_START_MINUTE = 30;
 
-    private static final int MINUTE_LATE = 5;
-    private static final int MINUTE_ABSENT = 30;
+    private static final LocalTime START_TIME = LocalTime.of(8, 0);
+    private static final LocalTime END_TIME = LocalTime.of(23, 0);
 
-    private final String type;
+    private final String attendanceType;
 
-    AttendanceType(String type) {
-        this.type = type;
+    AttendanceType(String attendanceType) {
+        this.attendanceType = attendanceType;
     }
 
-    public static AttendanceType of(final LocalDateTime localDateTime) {
-        DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
-        LocalTime localTime = localDateTime.toLocalTime();
+    public static AttendanceType of(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime) {
+        DayOfWeek dayOfWeek = attendanceDate.getAttendanceDate().getDayOfWeek();
+        LocalTime time = attendanceTime.getAttendanceTime();
 
-        if (isMonday(dayOfWeek)) {
-            return calculateAttendanceType(localTime, HOUR_MONDAY);
+        if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
+            return FREE;
         }
-        if (isOtherWeekday(dayOfWeek)) {
-            return calculateAttendanceType(localTime, HOUR_OTHER_WEEKDAY);
+        if (dayOfWeek.equals(DayOfWeek.MONDAY)) {
+            return checkAttendanceType(time, MONDAY_START_HOUR);
         }
-        return FREE;
+        return checkAttendanceType(time, WEEKDAY_START_HOUR);
     }
 
-    private static boolean isMonday(final DayOfWeek dayOfWeek) {
-        return dayOfWeek.equals(DayOfWeek.MONDAY);
-    }
-
-    private static boolean isOtherWeekday(final DayOfWeek dayOfWeek) {
-        return dayOfWeek.equals(DayOfWeek.TUESDAY) ||
-                dayOfWeek.equals(DayOfWeek.WEDNESDAY) ||
-                dayOfWeek.equals(DayOfWeek.THURSDAY) ||
-                dayOfWeek.equals(DayOfWeek.FRIDAY);
-    }
-
-    private static AttendanceType calculateAttendanceType(final LocalTime localTime, final int hour) {
-        if (localTime.isAfter(LocalTime.of(hour, MINUTE_ALL_WEEKDAY + MINUTE_ABSENT))) {
+    private static AttendanceType checkAttendanceType(final LocalTime time, final int startHour) {
+        if (time.isBefore(START_TIME) || time.isAfter(END_TIME)) {
             return ABSENT;
         }
-        if (localTime.isAfter(LocalTime.of(hour, MINUTE_ALL_WEEKDAY + MINUTE_LATE))) {
+        if (time.isAfter(LocalTime.of(startHour, ABSENT_START_MINUTE))) {
+            return ABSENT;
+        }
+        if (time.isAfter(LocalTime.of(startHour, LATE_START_MINUTE))) {
             return LATE;
         }
         return SAFE;
@@ -59,6 +51,6 @@ public enum AttendanceType {
 
     @Override
     public String toString() {
-        return type;
+        return attendanceType;
     }
 }

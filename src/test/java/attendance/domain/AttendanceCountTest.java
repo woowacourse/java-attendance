@@ -2,69 +2,53 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceCountTest {
-    @DisplayName("기능: 출석 횟수 초기화 테스트")
-    @Test
-    void resetSafeCount() {
-        AttendanceCount attendanceCount = new AttendanceCount();
+    private AttendanceCount attendanceCount;
+    private CrewName crewName;
+    private AttendanceDate attendanceDate;
 
-        attendanceCount.incrementSafeCount();
-        attendanceCount.resetAttendanceCount();
+    @BeforeEach
+    void setUp() {
+        attendanceCount = new AttendanceCount();
 
-        assertThat(attendanceCount.getSafeCount()).isZero();
+        crewName = new CrewName("빙봉");
+        attendanceDate = new AttendanceDate(LocalDate.of(2025, 2, 21));
     }
 
-    @DisplayName("기능: 지각 횟수 초기화 테스트")
+    @DisplayName("정상: 출석 횟수 계산 확인")
     @Test
-    void resetLateCount() {
-        AttendanceCount attendanceCount = new AttendanceCount();
+    void successExecutionCheckSafeCount() {
+        AttendanceTime attendanceTime = new AttendanceTime("10:00");
 
-        attendanceCount.incrementLateCount();
-        attendanceCount.resetAttendanceCount();
-
-        assertThat(attendanceCount.getLateCount()).isZero();
-    }
-
-    @DisplayName("기능: 결석 횟수 초기화 테스트")
-    @Test
-    void resetAbsentCount() {
-        AttendanceCount attendanceCount = new AttendanceCount();
-
-        attendanceCount.incrementAbsentCount();
-        attendanceCount.resetAttendanceCount();
-
-        assertThat(attendanceCount.getAbsentCount()).isZero();
-    }
-
-    @DisplayName("기능: 출석 횟수 증가 테스트")
-    @Test
-    void incrementSafeCount() {
-        AttendanceCount attendanceCount = new AttendanceCount();
-
-        attendanceCount.incrementSafeCount();
+        Attendance attendance = new Attendance(crewName, attendanceDate, attendanceTime);
+        attendanceCount.checkAttendanceCount(attendance.getAttendanceType());
 
         assertThat(attendanceCount.getSafeCount()).isEqualTo(1);
     }
 
-    @DisplayName("기능: 지각 횟수 증가 테스트")
+    @DisplayName("정상: 지각 횟수 계산 확인")
     @Test
-    void incrementLateCount() {
-        AttendanceCount attendanceCount = new AttendanceCount();
+    void successExecutionCheckLateCount() {
+        AttendanceTime attendanceTime = new AttendanceTime("10:07");
 
-        attendanceCount.incrementLateCount();
+        Attendance attendance = new Attendance(crewName, attendanceDate, attendanceTime);
+        attendanceCount.checkAttendanceCount(attendance.getAttendanceType());
 
         assertThat(attendanceCount.getLateCount()).isEqualTo(1);
     }
 
-    @DisplayName("기능: 결석 횟수 증가 테스트")
+    @DisplayName("정상: 결석 횟수 계산 확인")
     @Test
-    void incrementAbsentCount() {
-        AttendanceCount attendanceCount = new AttendanceCount();
+    void successExecutionCheckAbsentCount() {
+        AttendanceTime attendanceTime = new AttendanceTime("10:37");
 
-        attendanceCount.incrementAbsentCount();
+        Attendance attendance = new Attendance(crewName, attendanceDate, attendanceTime);
+        attendanceCount.checkAttendanceCount(attendance.getAttendanceType());
 
         assertThat(attendanceCount.getAbsentCount()).isEqualTo(1);
     }
