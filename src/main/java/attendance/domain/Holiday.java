@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 
 public class Holiday {
     private final String name;
@@ -15,17 +14,6 @@ public class Holiday {
     }
 
     public boolean isMatch(LocalDate date) {
-        if(date.getMonthValue() == month && date.getDayOfMonth() == day){
-            return true;
-        }
-        return false;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public int getDay() {
-        return day;
+        return date.getMonthValue() == month && date.getDayOfMonth() == day;
     }
 }
