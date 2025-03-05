@@ -19,6 +19,14 @@ public class Current {
                 .getDayOfMonth();
     }
 
+    public static int getMonthOfToday() {
+        return TODAY.getMonthValue();
+    }
+
+    public static int getYearOfToday() {
+        return TODAY.getYear();
+    }
+
     public static String getStringOfThisMonth() {
         return TODAY.format(DateTimeFormatter.ofPattern("yyyy-MM"));
     }
