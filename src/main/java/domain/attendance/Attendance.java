@@ -3,120 +3,51 @@ package domain.attendance;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 public class Attendance {
-    private static final int ABSENCE_HOUR = 23;
-    private static final int ABSENCE_MINUTE = 59;
-    private static final int ABSENCE_PER_TARDY = 3;
+    public static final int WEEKDAY = 1;
+    private final AttendanceDate date;
 
-    private final List<AttendanceDate> attendanceDates = new ArrayList<>();
+    public Attendance(LocalDateTime dateTime) {
+        validate(dateTime);
 
-    public Attendance(LocalDate startDate, LocalDate endDate) {
-        for (LocalDate cursorDate = startDate; cursorDate.isBefore(endDate); cursorDate = cursorDate.plusDays(1)) {
-            createAttendanceDate(cursorDate);
+        this.date = new BasicAttendanceDate(dateTime.toLocalDate(),
+                AttendanceStatus.calculateStatus(dateTime),
+                dateTime.toLocalTime());
+    }
+
+    public Attendance(LocalDate date) {
+        validate(date);
+        this.date = new EmptyAttendanceDate(date, AttendanceStatus.ABSENCE);
+    }
+
+    public boolean has(LocalDate day) {
+        return this.date.getDate().isEqual(day);
+    }
+
+    public AttendanceDate getDate() {
+        return date;
+    }
+
+    public LocalDateTime getAttendanceDateTime() {
+        return this.date.getDateTime();
+    }
+
+    public AttendanceStatus getStatus() {
+        return this.date.getStatus();
+    }
+
+    private void validate(LocalDateTime dateTime) {
+        validate(dateTime.toLocalDate());
+        if (!AttendanceTime.isOperatingTime(dateTime.toLocalTime())) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간에만 출석할 수 있습니다");
         }
     }
 
-    private void createAttendanceDate(LocalDate cursorDate) {
-        if (isHolidayOrWeekend(cursorDate)) {
-            return;
+    private void validate(LocalDate date) {
+        if (Holiday.isHoliday(date) ||
+                date.getDayOfWeek().compareTo(DayOfWeek.FRIDAY) > WEEKDAY) {
+            throw new IllegalArgumentException("주말 또는 공휴일에는 출석할 수 없습니다");
         }
-        addAttendanceDate(cursorDate);
-    }
-
-    private boolean isHolidayOrWeekend(LocalDate date) {
-        return date.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue() || Holiday.has(date);
-    }
-
-    private void addAttendanceDate(LocalDate cursorDate) {
-        attendanceDates.add(new AttendanceDate(
-                LocalDateTime.of(
-                        cursorDate.getYear(),
-                        cursorDate.getMonth(),
-                        cursorDate.getDayOfMonth(),
-                        ABSENCE_HOUR,
-                        ABSENCE_MINUTE)));
-    }
-
-    public void editAttendanceDateTime(LocalDateTime attendanceDateTime) {
-        AttendanceDate attendanceDate = findAttendanceDate(attendanceDateTime.toLocalDate());
-        attendanceDate.editDateTime(attendanceDateTime);
-    }
-
-    public AttendanceDate findAttendanceDate(LocalDate findAttendanceDate) {
-        Optional<AttendanceDate> attendanceDate = attendanceDates.stream()
-                .filter(localDate -> localDate.equals(findAttendanceDate)).findFirst();
-        if (attendanceDate.isPresent()) {
-            return attendanceDate.get();
-        }
-        if (findAttendanceDate.isEqual(LocalDate.now())) {
-            throw new IllegalArgumentException("먼저 출석을 완료한 뒤에 수정해주세요.");
-        }
-        throw new IllegalArgumentException("미래의 출석 정보는 아직 수정할 수 없습니다.");
-    }
-
-
-    public AttendanceState attend(LocalDateTime attendDateTime) {
-        if (!attendDateTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("아직 출석할 수 없습니다.");
-        }
-        if (has(attendDateTime.toLocalDate())) {
-            throw new IllegalArgumentException("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
-        }
-        AttendanceDate attendanceDate = new AttendanceDate(attendDateTime);
-        attendanceDates.add(attendanceDate);
-        return attendanceDate.calculateAttendanceState();
-    }
-
-    public void fillAttendanceDate() {
-        for (LocalDate cursorCheckDate = LocalDate.now().minusDays(1); !this.has(cursorCheckDate);
-             cursorCheckDate = cursorCheckDate.minusDays(1)) {
-            fillEmptyDate(cursorCheckDate);
-        }
-        Collections.sort(this.attendanceDates);
-    }
-
-    private void fillEmptyDate(LocalDate cursorCheckDate) {
-        try {
-            attendanceDates.add(new AttendanceDate(
-                    LocalDateTime.of(cursorCheckDate.getYear(), cursorCheckDate.getMonth(),
-                            cursorCheckDate.getDayOfMonth(), ABSENCE_HOUR, ABSENCE_MINUTE)));
-        } catch (IllegalArgumentException ignored) {
-            throw new IllegalArgumentException("주말이나 공휴일에는 출석을 추가할 수 없습니다.");
-        }
-    }
-
-    private boolean has(LocalDate localDate) {
-        return attendanceDates.stream().anyMatch(attendanceDate -> attendanceDate.equals(localDate));
-    }
-
-    public int countAbsence() {
-        return (int) attendanceDates.stream()
-                .filter(attendanceDate -> attendanceDate.calculateAttendanceState().equals(AttendanceState.ABSENCE))
-                .count();
-    }
-
-    public int countAttendance() {
-        return (int) attendanceDates.stream()
-                .filter(attendanceDate -> attendanceDate.calculateAttendanceState().equals(AttendanceState.ATTENDANCE))
-                .count();
-    }
-
-    public int countTardy() {
-        return (int) attendanceDates.stream()
-                .filter(attendanceDate -> attendanceDate.calculateAttendanceState().equals(AttendanceState.TARDY))
-                .count();
-    }
-
-    public int countAbsenceIncludingTardy() {
-        return countAbsence() + (countTardy() / ABSENCE_PER_TARDY);
-    }
-
-    public List<AttendanceDate> getAttendanceDates() {
-        return new ArrayList<>(attendanceDates);
     }
 }

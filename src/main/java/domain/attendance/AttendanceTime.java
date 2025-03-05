@@ -2,49 +2,51 @@ package domain.attendance;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public enum AttendanceTime {
-    MON(13, 5, DayOfWeek.MONDAY),
-    TUE(10, 5, DayOfWeek.TUESDAY),
-    WED(10, 5, DayOfWeek.WEDNESDAY),
-    THU(10, 5, DayOfWeek.THURSDAY),
-    FRI(10, 5, DayOfWeek.FRIDAY),
+    MONDAY(DayOfWeek.MONDAY, 13, 5),
+    TUESDAY(DayOfWeek.TUESDAY, 10, 5),
+    WEDNESDAY(DayOfWeek.WEDNESDAY, 10, 5),
+    THURSDAY(DayOfWeek.THURSDAY, 10, 5),
+    FRIDAY(DayOfWeek.FRIDAY, 10, 5),
     ;
+    private static final LocalTime START_TIME = LocalTime.of(8, 0);
+    private static final LocalTime END_TIME = LocalTime.of(23, 0);
+    private static final int TARDY_MINUTE = 25;
 
+    private final DayOfWeek dayOfWeek;
     private final int hour;
     private final int minute;
-    private final DayOfWeek dayOfWeek;
 
-    AttendanceTime(int hour, int minute, DayOfWeek dayOfWeek) {
-        if (hour < 8 || hour > 22) {
-            throw new IllegalArgumentException("캠퍼스 운영 시간에만 출석이 가능합니다.");
-        }
+    AttendanceTime(DayOfWeek dayOfWeek, int hour, int minute) {
+        this.dayOfWeek = dayOfWeek;
         this.hour = hour;
         this.minute = minute;
-        this.dayOfWeek = dayOfWeek;
     }
 
-    public static boolean isAttendance(DayOfWeek dayOfWeek, LocalDateTime dateTime) {
-        AttendanceTime attendanceTime = attendanceTimeMap.get(dayOfWeek);
-        if (attendanceTime == null) {
-            return false;
-        }
-        return attendanceTime.hour > dateTime.getHour() ||
-                (attendanceTime.hour == dateTime.getHour() && attendanceTime.minute >= dateTime.getMinute());
+    public static boolean isOperatingTime(LocalTime time) {
+        return (START_TIME.equals(time) || START_TIME.isBefore(time)) &&
+                (END_TIME.equals(time) || END_TIME.isAfter(time));
     }
 
-    public static boolean isAbsence(DayOfWeek dayOfWeek, LocalDateTime dateTime) {
-        AttendanceTime attendanceTime = attendanceTimeMap.get(dayOfWeek);
-        if (attendanceTime == null) {
-            return false;
-        }
-        return attendanceTime.hour < dateTime.getHour() || (attendanceTime.hour == dateTime.getHour()
-                && attendanceTime.minute + 25 < dateTime.getMinute());
+    public static boolean isAttendance(LocalDateTime dateTime) {
+        DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+        return Arrays.stream(values())
+                .filter(value -> dayOfWeek.equals(value.dayOfWeek))
+                .findFirst()
+                .filter(value -> value.hour >= dateTime.getHour() && value.minute >= dateTime.getMinute())
+                .isPresent();
     }
 
-    private static final Map<DayOfWeek, AttendanceTime> attendanceTimeMap = Arrays.stream(values())
-            .collect(Collectors.toMap(attendance -> attendance.dayOfWeek, attendance -> attendance));
+    public static boolean isTardy(LocalDateTime dateTime) {
+        DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+        return Arrays.stream(values())
+                .filter(value -> dayOfWeek.equals(value.dayOfWeek))
+                .findFirst()
+                .filter(value -> value.hour >= dateTime.getHour()
+                        && value.minute + TARDY_MINUTE >= dateTime.getMinute())
+                .isPresent();
+    }
 }

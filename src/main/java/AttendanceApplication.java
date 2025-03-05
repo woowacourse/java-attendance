@@ -1,12 +1,12 @@
-import presentation.AttendanceController;
-import presentation.view.AttendanceFileInputView;
-import domain.CrewFactory;
+import controller.AttendanceController;
+import view.InputView;
+import view.OutputView;
 
 public class AttendanceApplication {
     public static void main(String[] args) {
-        AttendanceFileInputView fileInputView = new AttendanceFileInputView();
-        CrewFactory crewFactory = new CrewFactory();
-        AttendanceController attendanceController = new AttendanceController(fileInputView, crewFactory);
+        AttendanceController attendanceController = new AttendanceController(
+                new InputView(),
+                new OutputView());
         attendanceController.run();
     }
 }

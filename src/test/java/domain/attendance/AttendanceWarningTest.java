@@ -1,28 +1,60 @@
 package domain.attendance;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class AttendanceWarningTest {
-    @DisplayName("(지각 3회 당 결석 1회를 포함하여) 결석이 2번이면 경고 상태이다")
+    @DisplayName("결석 누적이 2회 이상이 되면 경고 상태이다.")
     @Test
     void test() {
-        AttendanceWarning attendanceWarning = AttendanceWarning.determineAttendanceWarning(2);
-        Assertions.assertThat(attendanceWarning.getStatus()).isEqualTo("경고");
+        // given
+        LocalDateTime attendanceDate = LocalDateTime.of(2025, 3, 3, 13, 0);
+        Attendances attendances = new Attendances(List.of(attendanceDate),
+                attendanceDate.toLocalDate(),
+                attendanceDate.toLocalDate().plusDays(3));
+        int countAbsence = attendances.countAllAbsence();
+
+        // when
+        AttendanceWarning attendanceWarning = AttendanceWarning.calculateWarning(countAbsence);
+
+        // then
+        Assertions.assertThat(attendanceWarning).isEqualTo(AttendanceWarning.WARNING);
     }
 
-    @DisplayName("(지각 3회 당 결석 1회를 포함하여) 결석이 3번 이상 5번 이하면 면담 상태이다")
+    @DisplayName("결석 누적이 3회 이상이 되면 면담 상태이다.")
     @Test
     void test2() {
-        AttendanceWarning attendanceWarning = AttendanceWarning.determineAttendanceWarning(5);
-        Assertions.assertThat(attendanceWarning.getStatus()).isEqualTo("면담");
+        // given
+        LocalDateTime attendanceDate = LocalDateTime.of(2025, 3, 3, 13, 0);
+        Attendances attendances = new Attendances(List.of(attendanceDate),
+                attendanceDate.toLocalDate(),
+                attendanceDate.toLocalDate().plusDays(4));
+        int countAbsence = attendances.countAllAbsence();
+
+        // when
+        AttendanceWarning attendanceWarning = AttendanceWarning.calculateWarning(countAbsence);
+
+        // then
+        Assertions.assertThat(attendanceWarning).isEqualTo(AttendanceWarning.INTERVIEW);
     }
 
-    @DisplayName("(지각 3회 당 결석 1회를 포함하여) 결석이 6번 이상이면 제적 상태이다")
+    @DisplayName("결석 누적이 6회 이상이 되면 제적이다.")
     @Test
     void test3() {
-        AttendanceWarning attendanceWarning = AttendanceWarning.determineAttendanceWarning(6);
-        Assertions.assertThat(attendanceWarning.getStatus()).isEqualTo("제적");
+        // given
+        LocalDateTime attendanceDate = LocalDateTime.of(2025, 3, 3, 13, 0);
+        Attendances attendances = new Attendances(List.of(attendanceDate),
+                attendanceDate.toLocalDate(),
+                attendanceDate.toLocalDate().plusDays(9));
+        int countAbsence = attendances.countAllAbsence();
+
+        // when
+        AttendanceWarning attendanceWarning = AttendanceWarning.calculateWarning(countAbsence);
+
+        // then
+        Assertions.assertThat(attendanceWarning).isEqualTo(AttendanceWarning.EXPELLED);
     }
 }
