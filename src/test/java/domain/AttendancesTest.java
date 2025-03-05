@@ -44,7 +44,7 @@ class AttendancesTest {
         String name = "도기";
 
         //when
-        Attendance attendance = attendances.findAttendanceBy(name);
+        Attendance attendance = attendances.findCrewAttendanceBy(name);
 
         //then
         assertThat(attendance).isEqualTo(attendances1);

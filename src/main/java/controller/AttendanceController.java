@@ -72,7 +72,6 @@ public class AttendanceController {
 
     void attendanceUpdate() {
         String name = inputUpdateName();
-        attendances.findAttendanceBy(name);
         LocalDateTime updateDateTime = inputUpdateDateTime();
 
         LocalDateTime beforeAttendance = attendances.getAttendanceRecordBy(name, updateDateTime.toLocalDate());

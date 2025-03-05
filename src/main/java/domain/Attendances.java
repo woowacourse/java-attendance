@@ -23,22 +23,22 @@ public class Attendances {
 
     public void checkAttendance(final String name, final LocalDateTime time) {
         CampusTime.validateInTime(time.toLocalTime());
-        Attendance attendance = findAttendanceBy(name);
+        Attendance attendance = findCrewAttendanceBy(name);
         attendance.add(time);
     }
 
     public void updateAttendance(final String name, final LocalDateTime updateDateTime) {
-        Attendance attendance = findAttendanceBy(name);
+        Attendance attendance = findCrewAttendanceBy(name);
         attendance.update(updateDateTime);
     }
 
     public LocalDateTime getAttendanceRecordBy(final String name, final LocalDate date) {
-        Attendance attendance = findAttendanceBy(name);
+        Attendance attendance = findCrewAttendanceBy(name);
         return attendance.getAttendanceBy(date);
     }
 
     public Map<LocalDateTime, AttendanceState> getHistory(final String name, final LocalDate dateTime) {
-        Attendance crewAttendance = findAttendanceBy(name);
+        Attendance crewAttendance = findCrewAttendanceBy(name);
 
         Map<LocalDateTime, AttendanceState> attendanceHistory = new TreeMap<>();
         LocalDate date = LocalDate.of(2024, 12, 1);
@@ -92,11 +92,11 @@ public class Attendances {
         }
     }
 
-    public Attendance findAttendanceBy(final String name) {
+    public Attendance findCrewAttendanceBy(final String name) {
         return attendances.stream()
                 .filter(attendance -> attendance.isSame(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 크루의 출석 기록이 존재하지 않습니다."));
     }
 
     public Map<Crew, Map<AttendanceState, Integer>> calculateAbsence(final LocalDate dateTime) {
