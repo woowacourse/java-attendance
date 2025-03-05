@@ -7,12 +7,10 @@ import java.util.Objects;
 public class Attendance {
     private final LocalDate localDate;
     private final LocalTime localTime;
-    private final AttendanceState state;
 
     public Attendance(LocalDate localDate, LocalTime localTime) {
         this.localDate = localDate;
         this.localTime = localTime;
-        this.state = AttendanceState.findStateBy(localDate, localTime);
     }
 
     public Attendance updateTime(LocalTime newTime) {
@@ -28,6 +26,7 @@ public class Attendance {
     }
 
     public String getState() {
+        AttendanceState state = AttendanceState.findStateBy(localDate, localTime);
         return state.getState();
     }
 
