@@ -1,6 +1,7 @@
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import domain.AbsenceLevel;
 import domain.AttendanceHistory;
 import domain.AttendanceResult;
 import domain.Attendances;
@@ -250,6 +251,58 @@ public class AttendanceHistoryTest {
         LocalDate standardDate = LocalDate.of(2024, 12, 10);
         int presentCount = attendanceHistory.getAbsentCount(crew, standardDate);
         assertThat(presentCount).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("이름으로 경고 대상자인지 판별")
+    void WarningTest() {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+        LocalDateTime attendanceTime2 = LocalDateTime.of(2024, 12, 4, 10, 0);
+        LocalDateTime attendanceTime3 = LocalDateTime.of(2024, 12, 5, 10, 15);
+        LocalDateTime attendanceTime4 = LocalDateTime.of(2024, 12, 6, 11, 0);
+        LocalDateTime attendanceTime5 = LocalDateTime.of(2024, 12, 9, 13, 6);
+        LocalDateTime attendanceTime6 = LocalDateTime.of(2024, 12, 10, 10, 0);
+        attendanceHistory.checkAttendance(crew, attendanceTime);
+        attendanceHistory.checkAttendance(crew, attendanceTime2);
+        attendanceHistory.checkAttendance(crew, attendanceTime3);
+        attendanceHistory.checkAttendance(crew, attendanceTime4);
+        attendanceHistory.checkAttendance(crew, attendanceTime5);
+        attendanceHistory.checkAttendance(crew, attendanceTime6);
+        LocalDate standardDate = LocalDate.of(2024, 12, 10);
+        AbsenceLevel absenceLevel = attendanceHistory.getAbsenceLevel(crew, standardDate);
+        assertThat(absenceLevel).isEqualTo(AbsenceLevel.WARNING);
+    }
+
+    @Test
+    @DisplayName("이름으로 면담 대상자인지 판별")
+    void MeetingTest() {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+        LocalDateTime attendanceTime3 = LocalDateTime.of(2024, 12, 5, 10, 15);
+        LocalDateTime attendanceTime4 = LocalDateTime.of(2024, 12, 6, 11, 0);
+        LocalDateTime attendanceTime5 = LocalDateTime.of(2024, 12, 9, 13, 6);
+        LocalDateTime attendanceTime6 = LocalDateTime.of(2024, 12, 10, 10, 0);
+        attendanceHistory.checkAttendance(crew, attendanceTime);
+        attendanceHistory.checkAttendance(crew, attendanceTime3);
+        attendanceHistory.checkAttendance(crew, attendanceTime4);
+        attendanceHistory.checkAttendance(crew, attendanceTime5);
+        attendanceHistory.checkAttendance(crew, attendanceTime6);
+        LocalDate standardDate = LocalDate.of(2024, 12, 10);
+        AbsenceLevel absenceLevel = attendanceHistory.getAbsenceLevel(crew, standardDate);
+        assertThat(absenceLevel).isEqualTo(AbsenceLevel.MEETING);
+    }
+
+    @Test
+    @DisplayName("이름으로 제적 대상자인지 판별")
+    void GetOutTest() {
+        LocalDateTime attendanceTime4 = LocalDateTime.of(2024, 12, 6, 11, 0);
+        LocalDateTime attendanceTime5 = LocalDateTime.of(2024, 12, 9, 13, 6);
+        LocalDateTime attendanceTime6 = LocalDateTime.of(2024, 12, 10, 10, 0);
+        attendanceHistory.checkAttendance(crew, attendanceTime4);
+        attendanceHistory.checkAttendance(crew, attendanceTime5);
+        attendanceHistory.checkAttendance(crew, attendanceTime6);
+        LocalDate standardDate = LocalDate.of(2024, 12, 10);
+        AbsenceLevel absenceLevel = attendanceHistory.getAbsenceLevel(crew, standardDate);
+        assertThat(absenceLevel).isEqualTo(AbsenceLevel.GET_OUT);
     }
 
 }

@@ -85,4 +85,10 @@ public class AttendanceHistory {
         Attendances attendances = attendanceHistory.get(crew);
         return attendances.getAbsentCount(standardDate);
     }
+
+    public AbsenceLevel getAbsenceLevel(Crew crew, LocalDate standardDate) {
+        int lateCount = getLateCount(crew, standardDate);
+        int absentCount = getAbsentCount(crew, standardDate);
+        return AbsenceLevel.getAbsenceLevel(lateCount, absentCount);
+    }
 }
