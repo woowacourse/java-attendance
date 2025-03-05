@@ -22,14 +22,14 @@ public class AttendancesFile {
             List<String> rows = readAttendanceData(path);
             return convertToAttendanceLogs(rows);
         } catch (IOException e) {
-            throw new IllegalStateException("파일 입출력 중 문제가 발생했습니다. 경로: %s".formatted(path));
+            throw new IllegalStateException("출석 로그 파일 입출력 중 문제가 발생했습니다. (경로: %s)".formatted(path));
         }
     }
 
     private List<String> readAttendanceData(String path) throws IOException {
         List<String> lines = Files.readAllLines(Path.of(path));
         if (lines.isEmpty()) {
-            throw new IllegalStateException("CSV 파일이 비어 있습니다. 경로: %s".formatted(path));
+            throw new IllegalStateException("출석 로그 파일이 파일이 비어 있습니다. (경로: %s)".formatted(path));
         }
         return removeHeader(lines);
     }
@@ -37,7 +37,7 @@ public class AttendancesFile {
     private List<String> removeHeader(List<String> lines) {
         String header = lines.getFirst();
         if (!CSV_HEADER_FORMAT.equals(header)) {
-            throw new IllegalStateException("파일의 헤더 형태가 올바르지 않습니다. 헤더: %s".formatted(header));
+            throw new IllegalStateException("출석 로그 파일의 헤더 형식이 올바르지 않습니다. (헤더: %s)".formatted(header));
         }
         return lines.subList(1, lines.size());
     }
@@ -53,7 +53,7 @@ public class AttendancesFile {
     private AttendanceLog parseAttendanceLog(String row) {
         String[] columns = row.split(COLUMN_DELIMITER);
         if (columns.length != EXPECTED_COLUMN_COUNT) {
-            throw new IllegalStateException("출석 데이터 형태가 올바르지 않습니다. 입력: %s".formatted(row));
+            throw new IllegalStateException("출석 로그 파일의 데이터 형식이 올바르지 않습니다. (입력된 값: %s)".formatted(row));
         }
         return createAttendanceLog(columns);
     }
@@ -68,7 +68,7 @@ public class AttendancesFile {
         try {
             return LocalDateTime.parse(rawDateTime, DATETIME_FORMAT);
         } catch (DateTimeParseException e) {
-            throw new IllegalStateException("입력된 시간 형식이 올바르지 않습니다. 입력: %s".formatted(rawDateTime));
+            throw new IllegalStateException("출석 로그 파일의 시간 데이터 형식이 올바르지 않습니다. (입력된 값: %s)".formatted(rawDateTime));
         }
     }
 }

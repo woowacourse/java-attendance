@@ -23,7 +23,7 @@ class AttendancesFileTest {
         try (BufferedWriter writer = Files.newBufferedWriter(Path.of(TEST_FILE_PATH))) {
             writer.write("");
         } catch (IOException e) {
-            throw new IllegalStateException("테스트 파일을 생성 중 문제가 발생했습니다. 경로: %s".formatted(TEST_FILE_PATH), e);
+            throw new IllegalStateException("테스트 파일을 생성 중 문제가 발생했습니다. (경로: %s)".formatted(TEST_FILE_PATH), e);
         }
     }
 
@@ -32,7 +32,7 @@ class AttendancesFileTest {
         try {
             Files.deleteIfExists(Path.of(TEST_FILE_PATH));
         } catch (IOException e) {
-            throw new IllegalStateException("테스트 파일 삭제 중 문제가 발생했습니다. 경로: %s".formatted(TEST_FILE_PATH), e);
+            throw new IllegalStateException("테스트 파일 삭제 중 문제가 발생했습니다. (경로: %s)".formatted(TEST_FILE_PATH), e);
         }
     }
 
@@ -84,7 +84,7 @@ class AttendancesFileTest {
         // when & then
         assertThatCode(() -> attendancesFile.load(invalidFilePath))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("파일 입출력 중 문제가 발생했습니다. 경로: %s".formatted(invalidFilePath));
+                .hasMessage("출석 로그 파일 입출력 중 문제가 발생했습니다. (경로: %s)".formatted(invalidFilePath));
     }
 
     @DisplayName("정상적인 파일인 경우 출석 로그 목록이 잘 만들어지고, 새로운 출석을 추가할 경우 예외가 발생하지 않는다.")
@@ -122,7 +122,7 @@ class AttendancesFileTest {
         // when & then
         assertThatCode(() -> attendancesFile.load(TEST_FILE_PATH))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("파일의 헤더 형태가 올바르지 않습니다.");
+                .hasMessageContaining("출석 로그 파일의 헤더 형식이 올바르지 않습니다. (헤더: name,timestamp)");
     }
 
     @DisplayName("파일이 비어있는 경우 예외가 발생한다.")
@@ -135,7 +135,7 @@ class AttendancesFileTest {
         // when & then
         assertThatCode(() -> attendancesFile.load(TEST_FILE_PATH))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("파일이 비어 있습니다. 경로: %s".formatted(TEST_FILE_PATH));
+                .hasMessageContaining("출석 로그 파일이 파일이 비어 있습니다. (경로: %s)".formatted(TEST_FILE_PATH));
     }
 
     @DisplayName("파일 데이터가 잘못된 형식인 경우 예외가 발생한다.")
@@ -151,7 +151,7 @@ class AttendancesFileTest {
         // when & then
         assertThatCode(() -> attendancesFile.load(TEST_FILE_PATH))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("출석 데이터 형태가 올바르지 않습니다. 입력: %s".formatted("쿠키 | 2024-12-13 10:08"));
+                .hasMessageContaining("출석 로그 파일의 데이터 형식이 올바르지 않습니다. (입력된 값: %s)".formatted("쿠키 | 2024-12-13 10:08"));
     }
 
     @DisplayName("파일 데이터가 잘못된 형식인 경우 예외가 발생한다.")
@@ -167,7 +167,7 @@ class AttendancesFileTest {
         // when & then
         assertThatCode(() -> attendancesFile.load(TEST_FILE_PATH))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("입력된 시간 형식이 올바르지 않습니다. 입력: %s".formatted("2024년12월13 10시08분"));
+                .hasMessageContaining("출석 로그 파일의 시간 데이터 형식이 올바르지 않습니다. (입력된 값: %s)".formatted("2024년12월13 10시08분"));
     }
 
     private void overwriteTestFile(String content) {
