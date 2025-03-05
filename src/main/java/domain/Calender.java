@@ -2,20 +2,18 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 public enum Calender {
 
     MON("월요일", DayOfWeek.MONDAY),
     TUE("화요일", DayOfWeek.TUESDAY),
-    WED("수요일", DayOfWeek.WEDNESDAY),
+    WEN("수요일", DayOfWeek.WEDNESDAY),
     THU("목요일", DayOfWeek.THURSDAY),
-    FRI("금요일", DayOfWeek.FRIDAY),
+    PRI("금요일", DayOfWeek.FRIDAY),
     SAT("토요일", DayOfWeek.SATURDAY),
     SUN("일요일", DayOfWeek.SUNDAY);
-
-    private static final List<Integer> HOLY_DAYS = List.of(25);
 
     private final String description;
     private final DayOfWeek dayOfWeek;
@@ -25,25 +23,39 @@ public enum Calender {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public static Calender findBy(final DayOfWeek dayOfWeek) {
-        return Arrays.stream(Calender.values())
+    public static Calender findBy(final LocalDate localDate) {
+        return findBy(localDate.getDayOfWeek());
+    }
+
+    public static Calender findBy(final LocalDateTime localDateTime) {
+        return findBy(localDateTime.getDayOfWeek());
+    }
+
+    private static Calender findBy(final DayOfWeek dayOfWeek) {
+        return Arrays.stream(values())
                 .filter(calender -> calender.dayOfWeek.equals(dayOfWeek))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하는 요일이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 요일 입니다."));
     }
 
-    public static boolean isHolyDay(final LocalDate dayOfWeek) {
-        return Calender.SAT.dayOfWeek.equals(dayOfWeek.getDayOfWeek()) ||
-                Calender.SUN.dayOfWeek.equals(dayOfWeek.getDayOfWeek()) ||
-                HOLY_DAYS.contains(dayOfWeek.getDayOfMonth());
-    }
+    public static void validateHolyDay(final LocalDate localDate) {
+        if (isWeekend(localDate)) {
+            Calender dayOfWeek = findBy(localDate);
 
-    public static void validateHolyDay(final LocalDate dayOfWeek) {
-        if (Calender.SAT.dayOfWeek.equals(dayOfWeek.getDayOfWeek()) ||
-                Calender.SUN.dayOfWeek.equals(dayOfWeek.getDayOfWeek()) ||
-                HOLY_DAYS.contains(dayOfWeek.getDayOfMonth())) {
-            throw new IllegalArgumentException("공휴일에는 출석을 할 수 없습니다.");
+            throw new IllegalArgumentException(String.format("%02d월 %02d일 %s은 등교일이 아닙니다.",
+                    localDate.getMonth().getValue(),
+                    localDate.getDayOfMonth(),
+                    dayOfWeek.description));
         }
+    }
+
+    public static boolean isWeekend(final LocalDate localDate) {
+        return localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)
+                || HolyDay.isHolyDay(localDate);
+    }
+
+    public static boolean isMonday(final LocalDateTime time) {
+        return MON.dayOfWeek.equals(time.getDayOfWeek());
     }
 
     public String getDescription() {

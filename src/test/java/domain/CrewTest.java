@@ -1,37 +1,35 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CrewTest {
 
-    @DisplayName("크루와 동일한 이름이라면 true를 반환한다.")
+    @DisplayName("Crew는 닉네임을 가진다.")
     @Test
-    void isSame() {
+    void create() {
         //given
-        Crew crew = Crew.from("도기");
         String name = "도기";
 
         //when
-        boolean actual = crew.isSame(name);
+        Crew crew = Crew.of(name);
 
         //then
-        assertThat(actual).isTrue();
+        assertThat(crew.getName()).isEqualTo("도기");
     }
 
-    @DisplayName("크루와 동일한 이름이라면 false를 반환한다.")
+    @DisplayName("닉네임이 없다면 예외가 발생한다.")
     @Test
-    void isNotSame() {
+    void notNickName() {
         //given
-        Crew crew = Crew.from("도기");
-        String name = "포비";
+        String name = "";
 
         //when
-        boolean actual = crew.isSame(name);
 
         //then
-        assertThat(actual).isFalse();
+        assertThatThrownBy(() -> Crew.of(name)).isInstanceOf(IllegalArgumentException.class).hasMessage("닉네임은 필수 입니다.");
     }
 }

@@ -1,178 +1,82 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import dto.AttendanceResultDto;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import util.FileManager;
 
 class AttendanceTest {
 
-    @DisplayName("입력받은 크루가 존재하지 않는 크루라면 예외를 발생한다.")
+    @DisplayName("크루의 출석 정보를 저장할 수 있다.")
     @Test
-    void nonExistenceCrew() {
+    void add() {
         //given
-        Attendance attendance = creatAttendance();
-        String name = "포라";
-
-        //when & then
-        assertThatThrownBy(() -> attendance.getCrewByName(name))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 크루 입니다.");
-    }
-
-    @DisplayName("입력받은 크루가 존재한다면 크루를 반환한다.")
-    @Test
-    void existenceCrew() {
-        //given
-        Attendance attendance = creatAttendance();
-        String name = "도기";
+        Attendance attendance = createAttendance();
+        LocalDateTime addTime = LocalDateTime.of(2024, 12, 12, 10, 0);
 
         //when
-        Crew actual = attendance.getCrewByName(name);
+        attendance.add(addTime);
 
         //then
-        assertThat(actual.getName()).isEqualTo("도기");
+        assertThat(attendance.getAttendanceTime()).hasSize(3);
     }
 
-    @DisplayName("특정 크루의 오늘 출석 시간을 저장한다.")
+    @DisplayName("특정 날짜의 출석 정보가 없다면 예외가 발생한다.")
     @Test
-    void save() {
+    void notFoundAttendance() {
         //given
-        Attendance attendance = creatAttendance();
-        Crew crew = Crew.from("도기");
-        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 6, 10, 20);
+        Attendance attendance = createAttendance();
+        LocalDate date = LocalDate.of(2024, 12, 4);
+
+        //when //then
+        assertThatThrownBy(() -> attendance.getAttendanceBy(date))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 날자(일)에 해당하는 출석 기록이 없습니다.");
+    }
+
+    @DisplayName("특정 날짜의 출석 정보를 반환한다.")
+    @Test
+    void getAttendanceBy() {
+        //given
+        Attendance attendance = createAttendance();
+        LocalDate time = LocalDate.of(2024, 12, 2);
 
         //when
-        attendance.save(crew, attendanceTime);
+        LocalDateTime actual = attendance.getAttendanceBy(time);
 
         //then
-        assertThat(attendance.getAttendances().get(crew)).hasSize(5);
+        assertThat(actual).isEqualTo(LocalDateTime.of(2024, 12, 2, 11, 11));
     }
 
-    @DisplayName("이미 출석한 크루가 다시 출석하면 예외가 발생한다.")
-    @Test
-    void duplicateSave() {
-        //given
-        Attendance attendance = creatAttendance();
-        Crew crew = Crew.from("도기");
-        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 9, 55);
-
-        //when & then
-        assertThatThrownBy(() -> attendance.save(crew, attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 출석한 크루입니다.");
-    }
-
-    @DisplayName("출석하지 않은 크루가 출석하면 예외가 발생하지 않는다.")
-    @Test
-    void nonDuplicateSave() {
-        //given
-        Attendance attendance = creatAttendance();
-        Crew crew = Crew.from("도기");
-        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 6, 9, 55);
-
-        //when & then
-        assertThatCode(() -> attendance.save(crew, attendanceTime))
-                .doesNotThrowAnyException();
-    }
-
-    @DisplayName("특정 크루의 출석 수정 시간을 저장한다.")
+    @DisplayName("특정 날짜의 출석 시간을 수정한다.")
     @Test
     void update() {
-        // given
-        Attendance attendance = creatAttendance();
-        Crew crew = Crew.from("도기");
-        LocalDateTime updateTime = LocalDateTime.of(2024, 12, 4, 10, 2);
-
-        //when
-        attendance.update(crew, updateTime);
-        List<LocalDateTime> actual = attendance.getAttendances().get(crew);
-
-        //then
-        assertThat(actual).containsExactly(
-                LocalDateTime.of(2024, 12, 2, 10, 00),
-                LocalDateTime.of(2024, 12, 3, 10, 06),
-                LocalDateTime.of(2024, 12, 4, 10, 02),
-                LocalDateTime.of(2024, 12, 5, 10, 14)
-        );
-    }
-
-    @DisplayName("특정 크루의 출석부를 조회한다.")
-    @Test
-    void readRecord() {
         //given
-        Attendance attendance = creatAttendance();
-        Crew crew = Crew.from("도기");
-        int todayDay = 10;
+        Attendance attendance = createAttendance();
+        LocalDateTime time = LocalDateTime.of(2024, 12, 2, 10, 0);
 
         //when
-        List<AttendanceResultDto> actual = attendance.readRecord(crew, todayDay);
+        attendance.update(time);
 
         //then
-        assertThat(actual).hasSize(6);
+        LocalDateTime attendanceBy = attendance.getAttendanceBy(time.toLocalDate());
+        assertThat(attendanceBy).isEqualTo(LocalDateTime.of(2024, 12, 2, 10, 0));
     }
 
-    @DisplayName("출결 기록을 바탕으로 제적 위험자를 확인한다.")
-    @Test
-    void getAbsence() {
-        //given
-        String filePath = "src/main/resources/attendances.csv";
-        Attendance attendance = FileManager.readFile(filePath);
+    private Attendance createAttendance() {
+        Crew crew = Crew.of("도기");
 
-        //when
-        Map<Crew, AbsenceHistory> actual = attendance.getAbsence(14);
+        Attendance attendance = Attendance.of(crew);
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 1, 10, 10);
+        LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 2, 11, 11);
 
-        //then
-        assertThat(actual).hasSize(5);
-    }
+        attendance.add(localDateTime);
+        attendance.add(localDateTime1);
 
-    @DisplayName("출석 수정일이 공휴일일 경우 예외를 던진다.")
-    @ParameterizedTest
-    @MethodSource("provideLocalDateTimes")
-    void updateHoliday(LocalDateTime localDateTime) {
-        // given
-        Attendance attendance = creatAttendance();
-        Crew crew = Crew.from("도기");
-
-        // when & then
-        Assertions.assertThatThrownBy(() -> attendance.update(crew, localDateTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("공휴일에는 출석을 할 수 없습니다.");
-    }
-
-    private Attendance creatAttendance() {
-        Crew crew = Crew.from("도기");
-        List<LocalDateTime> localDateTimes = new ArrayList<>();
-        localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 3, 10, 06));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 4, 10, 11));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 5, 10, 14));
-
-        Attendance attendance = new Attendance();
-        for (LocalDateTime localDateTime : localDateTimes) {
-            attendance.addAttendance(crew, localDateTime);
-        }
         return attendance;
     }
 
-    static Stream<LocalDateTime> provideLocalDateTimes() {
-        return Stream.of(
-                LocalDateTime.of(2024, 12, 1, 10, 0),
-                LocalDateTime.of(2024, 12, 7, 10, 0),
-                LocalDateTime.of(2024, 12, 8, 10, 0),
-                LocalDateTime.of(2024, 12, 14, 10, 0)
-        );
-    }
 }

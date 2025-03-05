@@ -3,33 +3,93 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 class AttendanceStateTest {
 
-    @DisplayName("출석 시간과 요일로 출석 상태를 계산하여 반환한다.")
-    @ParameterizedTest
-    @MethodSource("provideLocalDateTime")
-    void statusReturn(LocalDateTime localDateTime, String expected) {
-        // given
-        AttendanceState actual = AttendanceState.findStateBy(localDateTime);
+    @DisplayName("출석 정보를 받아서 출석 상태를 계산하여 반환한다.")
+    @Test
+    void findStateBy() {
+        //given
+        LocalDateTime time = LocalDateTime.of(2024, 12, 12, 10, 10);
 
-        // when & then
-        assertThat(actual.getDescription()).isEqualTo(expected);
+        //when
+        AttendanceState actual = AttendanceState.findStateBy(time);
+
+        //then
+        assertThat(actual).isEqualTo(AttendanceState.LATE);
     }
 
-    static Stream<Arguments> provideLocalDateTime() {
-        return Stream.of(
-                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 5), "출석"),
-                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 6), "지각"),
-                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 31), "결석"),
-                Arguments.of(LocalDateTime.of(2024, 12, 4, 10, 5), "출석"),
-                Arguments.of(LocalDateTime.of(2024, 12, 4, 10, 6), "지각"),
-                Arguments.of(LocalDateTime.of(2024, 12, 4, 10, 31), "결석"));
-    }
+    @Nested
+    @DisplayName("출석 정보 계산 테스트")
+    class AttendanceStateFindTest {
 
+        @DisplayName("날짜가 월요일인 경우 등교시간이 13:00라면 출석이다.")
+        @Test
+        void attendanceState() {
+            //given
+            LocalDateTime time = LocalDateTime.of(2024, 12, 2, 13, 0);
+
+            //when
+            AttendanceState attendanceState = AttendanceState.findStateBy(time);
+
+            //then
+            assertThat(attendanceState).isEqualTo(AttendanceState.ATTENDANCE);
+        }
+
+        @DisplayName("날짜가 월요일인 경우 등교시간이 13:05분을 초과하면 지각이다.")
+        @Test
+        void attendanceState2() {
+            //given
+            LocalDateTime time = LocalDateTime.of(2024, 12, 2, 13, 6);
+
+            //when
+            AttendanceState attendanceState = AttendanceState.findStateBy(time);
+
+            //then
+            assertThat(attendanceState).isEqualTo(AttendanceState.LATE);
+        }
+
+        @DisplayName("날짜가 월요일인 경우 등교시간이 13:30분을 초과하면 지각이다.")
+        @Test
+        void attendanceState3() {
+            //given
+            LocalDateTime time = LocalDateTime.of(2024, 12, 2, 13, 31);
+
+            //when
+            AttendanceState attendanceState = AttendanceState.findStateBy(time);
+
+            //then
+            assertThat(attendanceState).isEqualTo(AttendanceState.ABSENCE);
+        }
+
+        @DisplayName("날짜가 월요일이 아닐때 등교시간이 10:30을 초과하면 결석이다.")
+        @Test
+        void attendanceState4() {
+            //given
+            LocalDateTime time = LocalDateTime.of(2024, 12, 3, 10, 31);
+
+            //when
+            AttendanceState state = AttendanceState.findStateBy(time);
+
+            //then
+            assertThat(state).isEqualTo(AttendanceState.ABSENCE);
+        }
+
+        @DisplayName("날짜가 월요일이 아닐때 등교시간이 10:05를 초과하면 지각이다.")
+        @Test
+        void attendanceState5() {
+            //given
+            LocalDateTime time = LocalDateTime.of(2024, 12, 3, 10, 6);
+
+            //when
+            AttendanceState state = AttendanceState.findStateBy(time);
+
+            //then
+            assertThat(state).isEqualTo(AttendanceState.LATE);
+        }
+
+    }
 }

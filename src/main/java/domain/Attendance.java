@@ -1,137 +1,63 @@
 package domain;
 
-import dto.AttendanceResultDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Attendance {
 
-    private final Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
+    private final Crew crew;
+    private final List<LocalDateTime> attendanceTime;
 
-    public Attendance() {
+    private Attendance(final Crew crew) {
+        this.crew = crew;
+        this.attendanceTime = new ArrayList<>();
     }
 
-    public void addAttendance(final Crew crew, final LocalDateTime localDateTime) {
-        List<LocalDateTime> localDateTimes = attendances.getOrDefault(crew, new ArrayList<>());
-        localDateTimes.add(localDateTime);
-        attendances.put(crew, localDateTimes);
+    public static Attendance of(final Crew crew) {
+        return new Attendance(crew);
     }
 
-    public Crew getCrewByName(String name) {
-        return attendances.keySet().stream().filter(crew -> crew.isSame(name)).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루 입니다."));
+    public void add(final LocalDateTime time) {
+        attendanceTime.add(time);
     }
 
-    public void save(final Crew crew, final LocalDateTime attendanceTime) {
-        List<LocalDateTime> localDateTimes = attendances.get(crew);
-
-        validateDuplicateSave(attendanceTime.getDayOfMonth(), localDateTimes);
-        localDateTimes.add(attendanceTime);
-        attendances.put(crew, localDateTimes);
-    }
-
-    public LocalDateTime update(final Crew crew, final LocalDateTime updateTime) {
-        Calender.validateHolyDay(updateTime.toLocalDate());
-
-        List<LocalDateTime> localDateTimes = attendances.get(crew);
-        LocalDateTime beforeRecord = findBeforeRecord(updateTime, localDateTimes);
-
-        updateRecord(localDateTimes, updateTime);
-
-        return beforeRecord;
-    }
-
-    private LocalDateTime findBeforeRecord(final LocalDateTime updateTime, final List<LocalDateTime> localDateTimes) {
-        return localDateTimes.stream()
-                .filter(attendanceTime -> attendanceTime.toLocalDate().equals(updateTime.toLocalDate())).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("수정 가능한 출석 기록이 존재하지 않습니다."));
-    }
-
-    private void updateRecord(final List<LocalDateTime> localDateTimes, final LocalDateTime updateTime) {
-        for (int attendanceRecordIndex = 0; attendanceRecordIndex < localDateTimes.size(); attendanceRecordIndex++) {
-            LocalDateTime localDateTime = localDateTimes.get(attendanceRecordIndex);
-
-            if (localDateTime.toLocalDate().equals(updateTime.toLocalDate())) {
-                localDateTimes.set(attendanceRecordIndex, updateTime);
-                break;
+    public void update(final LocalDateTime updateDateTime) {
+        for (int dateIndex = 0; dateIndex < attendanceTime.size(); dateIndex++) {
+            LocalDateTime localDateTime = attendanceTime.get(dateIndex);
+            if (isEqualAttendance(updateDateTime, localDateTime)) {
+                attendanceTime.set(dateIndex, updateDateTime);
             }
         }
     }
 
-    public List<AttendanceResultDto> readRecord(final Crew crew, int todayDay) {
-        List<LocalDateTime> localDateTimes = attendances.get(crew);
-        sortRecord(localDateTimes);
-
-        List<AttendanceResultDto> attendanceResultDtos = new ArrayList<>();
-        checkRecord(todayDay, localDateTimes, attendanceResultDtos);
-        return attendanceResultDtos;
+    private boolean isEqualAttendance(final LocalDateTime updateDateTime, final LocalDateTime localDateTime) {
+        return localDateTime.getDayOfMonth() == updateDateTime.getDayOfMonth();
     }
 
-    public Map<Crew, AbsenceHistory> getAbsence(final int todayDay) {
-        Map<Crew, AbsenceHistory> absenceMap = new HashMap<>();
-        for (Crew crew : attendances.keySet()) {
-            List<AttendanceResultDto> attendanceResultDtos = readRecord(crew, todayDay);
-
-            AbsenceHistory absenceHistory = AbsenceHistory.calculate(attendanceResultDtos);
-            absenceMap.put(crew, absenceHistory);
-        }
-        return absenceMap;
+    public LocalDateTime getAttendanceBy(final LocalDate date) {
+        return attendanceTime.stream()
+                .filter(attendance -> attendance.getDayOfMonth() == date.getDayOfMonth())
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(("해당 날자(일)에 해당하는 출석 기록이 없습니다.")));
     }
 
-    private void validateDuplicateSave(final int todayDay, final List<LocalDateTime> localDateTimes) {
-        for (LocalDateTime localDateTime : localDateTimes) {
-            int dayOfMonth = localDateTime.getDayOfMonth();
-
-            if (dayOfMonth == todayDay) {
-                throw new IllegalArgumentException("이미 출석한 크루입니다.");
-            }
-        }
+    public boolean isSame(final String name) {
+        return this.crew.isSame(name);
     }
 
-    private void sortRecord(final List<LocalDateTime> localDateTimes) {
-        localDateTimes.sort(Comparator.comparing((LocalDateTime::getDayOfMonth)));
+    public boolean isContains(final LocalDate date) {
+        return attendanceTime.stream()
+                .anyMatch(attendance -> attendance.toLocalDate().equals(date));
     }
 
-    private void checkRecord(final int todayDay, final List<LocalDateTime> localDateTimes,
-                             final List<AttendanceResultDto> attendanceResultDtos) {
-        int idx = 0;
-        for (int dayIndex = 1; dayIndex < todayDay; dayIndex++) {
-            if (Calender.isHolyDay(LocalDate.of(2024, 12, dayIndex))) {
-                continue;
-            }
-            if (hasRecord(idx, localDateTimes, dayIndex)) {
-                LocalDateTime localDateTime = localDateTimes.get(idx++);
-                insertRecord(localDateTime, dayIndex, attendanceResultDtos);
-                continue;
-            }
-            checkAbsence(dayIndex, attendanceResultDtos);
-        }
+    public List<LocalDateTime> getAttendanceTime() {
+        return new ArrayList<>(attendanceTime);
     }
 
-    private boolean hasRecord(final int idx, final List<LocalDateTime> localDateTimes, final int dayIndex) {
-        return idx < localDateTimes.size() && localDateTimes.get(idx).getDayOfMonth() == dayIndex;
-    }
-
-    private void insertRecord(final LocalDateTime localDateTime, final int dayIndex,
-                              final List<AttendanceResultDto> attendanceResultDtos) {
-        AttendanceState state = AttendanceState.findStateBy(localDateTime);
-        attendanceResultDtos.add(new AttendanceResultDto(localDateTime, state));
-    }
-
-    private void checkAbsence(final int dayIndex, final List<AttendanceResultDto> attendanceResultDtos) {
-        AttendanceState state = AttendanceState.ABSENCE;
-        LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, dayIndex, 0, 0);
-        AttendanceResultDto attendanceResultDto = new AttendanceResultDto(newLocalDateTime, state);
-        attendanceResultDtos.add(attendanceResultDto);
-    }
-
-    public Map<Crew, List<LocalDateTime>> getAttendances() {
-        return attendances;
+    public Crew getCrew() {
+        return crew;
     }
 }
+
