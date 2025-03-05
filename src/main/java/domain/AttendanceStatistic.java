@@ -1,33 +1,32 @@
 package domain;
 
-import java.util.Collections;
 import java.util.Map;
 
 public class AttendanceStatistic {
-    private final Map<AttendanceStatus, Integer> value;
+    private final Map<AttendanceStatus, Integer> statistic;
 
-    public AttendanceStatistic(Map<AttendanceStatus, Integer> value) {
-        this.value = value;
+    public AttendanceStatistic(Map<AttendanceStatus, Integer> statistic) {
+        this.statistic = statistic;
     }
 
-    public Map<AttendanceStatus, Integer> getValue() {
-        return Collections.unmodifiableMap(value);
-    }
-
-    public int getTotalAbsenceCount() {
-        final int absenceCount = getAbsenceCount();
-        return absenceCount + getLateCount() / 3;
-    }
-
-    public int getAbsenceCount() {
-        return value.getOrDefault(AttendanceStatus.ABSENCE, 0);
+    public int getAttendanceCount() {
+        return statistic.getOrDefault(AttendanceStatus.ATTENDANCE, 0);
     }
 
     public int getLateCount() {
-        return value.getOrDefault(AttendanceStatus.LATE, 0);
+        return statistic.getOrDefault(AttendanceStatus.LATE, 0);
     }
 
-    public CrewStatus getCrewStatus() {
-        return CrewStatus.from(getTotalAbsenceCount());
+    public int getAbsenceCount() {
+        return statistic.getOrDefault(AttendanceStatus.ABSENCE, 0);
+    }
+
+    public int getTotalAbsenceCount() {
+        return getAbsenceCount() + getLateCount() / 3;
+    }
+
+    public ExpulsionRiskStatus getExpulsionRiskStatus() {
+        final int totalAbsence = getTotalAbsenceCount();
+        return ExpulsionRiskStatus.of(totalAbsence);
     }
 }

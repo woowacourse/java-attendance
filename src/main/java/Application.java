@@ -1,10 +1,10 @@
-import config.AppConfig;
 import controller.MainController;
+import view.InputView;
+import view.OutputView;
 
 public class Application {
     public static void main(String[] args) {
-        AppConfig config = new AppConfig();
-        MainController controller = config.getMainController();
+        MainController controller = new MainController(new InputView(), new OutputView());
         controller.run();
     }
 }

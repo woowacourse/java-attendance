@@ -1,41 +1,31 @@
 package domain;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public enum AttendanceStatus {
-    ATTENDANCE("출석"),
-    LATE("지각"),
-    ABSENCE("결석"),
+    ATTENDANCE(0),
+    LATE(5),
+    ABSENCE(30),
     ;
 
-    private final String expression;
+    private final int upperBoundMinute;
 
-    AttendanceStatus(String expression) {
-        this.expression = expression;
+    AttendanceStatus(int upperBoundMinute) {
+        this.upperBoundMinute = upperBoundMinute;
     }
 
-    public String getExpression() {
-        return expression;
+    public static AttendanceStatus from(LocalTime startTime, LocalTime enterTime) {
+        List<AttendanceStatus> descendingValues = Arrays.stream(values()).sorted(Comparator.reverseOrder()).toList();
+        return descendingValues.stream()
+                .filter(status -> enterTime.isAfter(status.getLimitTimeWith(startTime)))
+                .findFirst()
+                .orElse(ATTENDANCE);
     }
 
-    public static AttendanceStatus of(LocalDateTime inputTime) {
-        DayOfWeek dayOfWeek = inputTime.getDayOfWeek();
-        final int startHour = getStartHour(dayOfWeek);
-        if (inputTime.toLocalTime().toNanoOfDay() <= LocalTime.of(startHour, 5, 0).toNanoOfDay()) {
-            return ATTENDANCE;
-        }
-        if (inputTime.toLocalTime().toNanoOfDay() <= LocalTime.of(startHour, 30, 0).toNanoOfDay()) {
-            return LATE;
-        }
-        return ABSENCE;
-    }
-
-    private static int getStartHour(DayOfWeek dayOfWeek) {
-        if (dayOfWeek == DayOfWeek.MONDAY) {
-            return 13;
-        }
-        return 10;
+    private LocalTime getLimitTimeWith(LocalTime time) {
+        return time.plusMinutes(upperBoundMinute);
     }
 }

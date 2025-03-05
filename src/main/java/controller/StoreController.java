@@ -1,16 +1,24 @@
 package controller;
 
-import domain.AttendanceStoreManager;
+import domain.CrewAttendanceStorage;
+import domain.FileStoreManager;
 
 public class StoreController implements Controller {
-    private final AttendanceStoreManager attendanceStoreManager;
+    private static final String FILE = "src/main/resources/attendances.csv";
 
-    public StoreController(AttendanceStoreManager attendanceStoreManager) {
-        this.attendanceStoreManager = attendanceStoreManager;
+    private final CrewAttendanceStorage crewAttendanceStorage;
+
+    public StoreController(CrewAttendanceStorage crewAttendanceStorage) {
+        this.crewAttendanceStorage = crewAttendanceStorage;
     }
 
     @Override
     public void run() {
-        attendanceStoreManager.save("src/main/resources/attendances.csv");
+        save();
+    }
+
+    private void save() {
+        FileStoreManager fileStoreManager = new FileStoreManager(crewAttendanceStorage);
+        fileStoreManager.save(FILE);
     }
 }

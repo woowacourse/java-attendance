@@ -1,8 +1,8 @@
 package controller;
 
 import domain.Attendance;
-import domain.AttendanceBook;
-import domain.CrewAttendances;
+import domain.AttendanceStatus;
+import domain.CrewAttendanceStorage;
 import view.InputView;
 import view.OutputView;
 
@@ -12,16 +12,16 @@ import java.time.LocalTime;
 public class AttendanceModifyController implements Controller{
     private final InputView inputView;
     private final OutputView outputView;
-    private final CrewAttendances crewAttendances;
+    private final CrewAttendanceStorage crewAttendanceStorage;
 
     public AttendanceModifyController(
             InputView inputView,
             OutputView outputView,
-            CrewAttendances crewAttendances
+            CrewAttendanceStorage crewAttendanceStorage
     ) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.crewAttendances = crewAttendances;
+        this.crewAttendanceStorage = crewAttendanceStorage;
     }
 
     @Override
@@ -30,14 +30,15 @@ public class AttendanceModifyController implements Controller{
         LocalDate modifyDate = inputView.readModifyDate();
         LocalTime modifyTime = inputView.readModifyTime();
 
-        AttendanceBook attendanceBook = crewAttendances.findAttendanceBookByCrewName(crewName);
-        Attendance beforeAttendance = attendanceBook.findAttendanceByDate(modifyDate);
-        Attendance modifiedAttendance = attendanceBook.replace(modifyDate, modifyTime);
+        Attendance beforeAttendance = crewAttendanceStorage.findAttendance(crewName, modifyDate);
+        crewAttendanceStorage.modify(crewName, modifyDate, modifyTime);
+        Attendance afterAttendance = crewAttendanceStorage.findAttendance(crewName, modifyDate);
 
-        LocalTime beforeTime = beforeAttendance.getTime().orElse(null);
-        String beforeStatus = beforeAttendance.getStatus().getExpression();
-        String modifiedStatus = modifiedAttendance.getStatus().getExpression();
-        LocalTime modifiedTime = modifiedAttendance.getTime().orElse(null);
-        outputView.printModifyResult(modifyDate, beforeTime, beforeStatus, modifiedTime, modifiedStatus);
+        LocalTime beforeTime = beforeAttendance.getTime();
+        AttendanceStatus beforeStatus = beforeAttendance.getStatus();
+        AttendanceStatus afterStatus = afterAttendance.getStatus();
+        LocalTime modifiedTime = afterAttendance.getTime();
+
+        outputView.printModifyResult(modifyDate, beforeTime, beforeStatus, modifiedTime, afterStatus);
     }
 }

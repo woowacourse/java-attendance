@@ -1,174 +1,86 @@
 package domain;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AttendanceStatisticTest {
-    @DisplayName("지각 세 번을 결석 한 번으로 변환하여 총 결석 횟수를 계산할 수 있다.")
-    @Test
-    void test1() {
+    @DisplayName("경고 대상자 상태 값을 올바르게 반환할 수 있다.")
+    @ParameterizedTest
+    @CsvSource(value = {"0, 2", "3, 1", "4, 1", "5, 1", "6, 0", "7, 0", "8, 0"})
+    void test1(int late, int absence) {
         // given
-        Map<AttendanceStatus, Integer> testValue = new HashMap<>() {{
-            put(AttendanceStatus.LATE, 7);
-        }};
-        AttendanceStatistic statistic = new AttendanceStatistic(testValue);
+        AttendanceStatistic statistic = new AttendanceStatistic(Map.of(
+                AttendanceStatus.LATE, late,
+                AttendanceStatus.ABSENCE, absence
+        ));
 
         // when
-        final int totalAbsenceCount = statistic.getTotalAbsenceCount();
+        ExpulsionRiskStatus status = statistic.getExpulsionRiskStatus();
 
         // then
-        assertThat(totalAbsenceCount).isEqualTo(2);
+        assertThat(status).isSameAs(ExpulsionRiskStatus.WARNING);
     }
 
-    @DisplayName("지각만으로 경고 대상자인 경우, 경고 대상자 상태를 올바르게 반환할 수 있다.")
-    @Test
-    void test2() {
+    @DisplayName("면담 대상자 상태 값을 올바르게 반환할 수 있다.")
+    @ParameterizedTest
+    @CsvSource(value = {
+            "0, 3", "1, 3", "2, 3", "3, 2", "4, 2", "5, 2", "6, 1", "7, 1", "8, 1", "9, 0", // 결석 3회
+            "0, 4", "3, 3", "4, 3", "5, 3", "6, 2", "7, 2", "8, 2", "9, 1", "10, 1", "11, 1", "12, 0", // 결석 4회
+            "0, 5", "3, 4", "6, 3", "9, 2", "12, 1", "15, 0" // 결석 5회
+    })
+    void test2(int late, int absence) {
         // given
-        Map<AttendanceStatus, Integer> testValue = new HashMap<>() {{
-            put(AttendanceStatus.LATE, 7);
-        }};
-        AttendanceStatistic statistic = new AttendanceStatistic(testValue);
+        AttendanceStatistic statistic = new AttendanceStatistic(Map.of(
+                AttendanceStatus.LATE, late,
+                AttendanceStatus.ABSENCE, absence
+        ));
 
         // when
-        CrewStatus crewStatus = statistic.getCrewStatus();
+        ExpulsionRiskStatus status = statistic.getExpulsionRiskStatus();
 
         // then
-        assertThat(crewStatus).isSameAs(CrewStatus.WARNING);
+        assertThat(status).isSameAs(ExpulsionRiskStatus.INTERVIEW);
     }
 
-    @DisplayName("결석만으로 경고 대상자인 경우, 경고 대상자 상태를 올바르게 반환할 수 있다.")
-    @Test
-    void test3() {
+    @DisplayName("제적 대상자 상태 값을 올바르게 반환할 수 있다.")
+    @ParameterizedTest
+    @CsvSource(value = {"0, 6", "1, 6", "2, 6", "3, 6"})
+    void test3(int late, int absence) {
         // given
-        Map<AttendanceStatus, Integer> testValue = new HashMap<>() {{
-            put(AttendanceStatus.ABSENCE, 2);
-        }};
-        AttendanceStatistic statistic = new AttendanceStatistic(testValue);
+        AttendanceStatistic statistic = new AttendanceStatistic(Map.of(
+                AttendanceStatus.LATE, late,
+                AttendanceStatus.ABSENCE, absence
+        ));
 
         // when
-        CrewStatus crewStatus = statistic.getCrewStatus();
+        ExpulsionRiskStatus status = statistic.getExpulsionRiskStatus();
 
         // then
-        assertThat(crewStatus).isSameAs(CrewStatus.WARNING);
+        assertThat(status).isSameAs(ExpulsionRiskStatus.EXPELLED);
     }
 
-    @DisplayName("결석과 경고를 합해서 경고 대상자인 경우, 경고 대상자 상태를 올바르게 반환할 수 있다.")
-    @Test
-    void test4() {
+    @DisplayName("정상 상태 값을 올바르게 반환할 수 있다.")
+    @ParameterizedTest
+    @CsvSource(value = {
+            "0, 0", "1, 0", "2, 0", // 결석 0회
+            "0, 1", "1, 1", "2, 1", "3, 0", "4, 0", "5, 0", // 결석 1회
+    })
+    void test4(int late, int absence) {
         // given
-        Map<AttendanceStatus, Integer> testValue = new HashMap<>() {{
-            put(AttendanceStatus.ABSENCE, 1);
-            put(AttendanceStatus.LATE, 4);
-        }};
-        AttendanceStatistic statistic = new AttendanceStatistic(testValue);
+        AttendanceStatistic statistic = new AttendanceStatistic(Map.of(
+                AttendanceStatus.LATE, late,
+                AttendanceStatus.ABSENCE, absence
+        ));
 
         // when
-        CrewStatus crewStatus = statistic.getCrewStatus();
+        ExpulsionRiskStatus status = statistic.getExpulsionRiskStatus();
 
         // then
-        assertThat(crewStatus).isSameAs(CrewStatus.WARNING);
-    }
-
-    @DisplayName("지각만으로 면담 대상자인 경우, 면담 대상자 상태를 올바르게 반환할 수 있다.")
-    @Test
-    void test5() {
-        // given
-        Map<AttendanceStatus, Integer> testValue = new HashMap<>() {{
-            put(AttendanceStatus.LATE, 10);
-        }};
-        AttendanceStatistic statistic = new AttendanceStatistic(testValue);
-
-        // when
-        CrewStatus crewStatus = statistic.getCrewStatus();
-
-        // then
-        assertThat(crewStatus).isSameAs(CrewStatus.CONSULTANT);
-    }
-
-    @DisplayName("결석과 지각을 합해서 면담 대상자인 경우, 면담 대상자 상태를 올바르게 반환할 수 있다.")
-    @Test
-    void test6() {
-        // given
-        Map<AttendanceStatus, Integer> testValue = new HashMap<>() {{
-            put(AttendanceStatus.ABSENCE, 2);
-            put(AttendanceStatus.LATE, 4);
-        }};
-        AttendanceStatistic statistic = new AttendanceStatistic(testValue);
-
-        // when
-        CrewStatus crewStatus = statistic.getCrewStatus();
-
-        // then
-        assertThat(crewStatus).isSameAs(CrewStatus.CONSULTANT);
-    }
-
-    @DisplayName("결석만으로 면담 대상자인 경우, 면담 대상자 상태를 올바르게 반환할 수 있다.")
-    @Test
-    void test7() {
-        // given
-        Map<AttendanceStatus, Integer> testValue = new HashMap<>() {{
-            put(AttendanceStatus.ABSENCE, 3);
-        }};
-        AttendanceStatistic statistic = new AttendanceStatistic(testValue);
-
-        // when
-        CrewStatus crewStatus = statistic.getCrewStatus();
-
-        // then
-        assertThat(crewStatus).isSameAs(CrewStatus.CONSULTANT);
-    }
-
-    @DisplayName("지각만으로 제적 대상자인 경우, 제적 대상자 상태를 올바르게 반환할 수 있다.")
-    @Test
-    void test8() {
-        // given
-        Map<AttendanceStatus, Integer> testValue = new HashMap<>() {{
-            put(AttendanceStatus.LATE, 18);
-        }};
-        AttendanceStatistic statistic = new AttendanceStatistic(testValue);
-
-        // when
-        CrewStatus crewStatus = statistic.getCrewStatus();
-
-        // then
-        assertThat(crewStatus).isSameAs(CrewStatus.DISENROLLMENT);
-    }
-
-    @DisplayName("결석과 지각을 합해서 제적 대상자인 경우, 제적 대상자 상태를 올바르게 반환할 수 있다.")
-    @Test
-    void test9() {
-        // given
-        Map<AttendanceStatus, Integer> testValue = new HashMap<>() {{
-            put(AttendanceStatus.ABSENCE, 5);
-            put(AttendanceStatus.LATE, 4);
-        }};
-        AttendanceStatistic statistic = new AttendanceStatistic(testValue);
-
-        // when
-        CrewStatus crewStatus = statistic.getCrewStatus();
-
-        // then
-        assertThat(crewStatus).isSameAs(CrewStatus.DISENROLLMENT);
-    }
-
-    @DisplayName("결석만으로 제적 대상자인 경우, 제적 대상자 상태를 올바르게 반환할 수 있다.")
-    @Test
-    void test10() {
-        // given
-        Map<AttendanceStatus, Integer> testValue = new HashMap<>() {{
-            put(AttendanceStatus.ABSENCE, 6);
-        }};
-        AttendanceStatistic statistic = new AttendanceStatistic(testValue);
-
-        // when
-        CrewStatus crewStatus = statistic.getCrewStatus();
-
-        // then
-        assertThat(crewStatus).isSameAs(CrewStatus.DISENROLLMENT);
+        assertThat(status).isSameAs(ExpulsionRiskStatus.NORMAL);
     }
 }
