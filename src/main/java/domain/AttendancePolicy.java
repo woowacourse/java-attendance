@@ -20,7 +20,7 @@ public class AttendancePolicy {
     private static final LocalTime LATE_TIME = LocalTime.of(10, 5);
     private static final LocalTime ABSENCE_TIME = LocalTime.of(10, 30);
 
-    public void validateIsWeekDays(LocalDate today) {
+    protected void validateIsWeekDays(LocalDate today) {
         if (Set.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(today.getDayOfWeek())) {
             throw new IllegalArgumentException(
                     String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
@@ -29,19 +29,19 @@ public class AttendancePolicy {
         }
     }
 
-    public void validateCampusOpen(LocalTime todayTime) {
+    protected void validateCampusOpen(LocalTime todayTime) {
         if (todayTime.isBefore(CAMPUS_OPEN_TIME) || todayTime.isAfter(CAMPUS_CLOSE_TIME)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }
 
-    public void validateIsHolidays(LocalDate today) {
+    protected void validateIsHolidays(LocalDate today) {
         if (Holidays.isHoliday(today)) {
             throw new IllegalArgumentException("[ERROR] 공휴일에는 등교할 수 없습니다.");
         }
     }
 
-    public AttendanceStatus getAttendanceStatus(LocalDateTime attendanceTime) {
+    protected AttendanceStatus getAttendanceStatus(LocalDateTime attendanceTime) {
         LocalTime lateTime = getLateTime(attendanceTime);
         LocalTime absenceTime = getAbsenceTime(attendanceTime);
         LocalTime currentTime = attendanceTime.toLocalTime();
@@ -67,11 +67,11 @@ public class AttendancePolicy {
         return isMonday(attendanceTime) ? MONDAY_ABSENCE_TIME : ABSENCE_TIME;
     }
 
-    public boolean ignoreWeekendAndHoliday(LocalDate date) {
+    protected boolean ignoreWeekendAndHoliday(LocalDate date) {
         return !Set.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(date.getDayOfWeek()) && !Holidays.isHoliday(date);
     }
 
-    public List<LocalDate> getOpenDays(LocalDate today) {
+    protected List<LocalDate> getOpenDays(LocalDate today) {
         LocalDate startDate = today.withDayOfMonth(1);
         LocalDate endDate = today.plusDays(1);
 

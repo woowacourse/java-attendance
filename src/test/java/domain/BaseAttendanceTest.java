@@ -1,4 +1,5 @@
-import domain.DateProvider;
+package domain;
+
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 

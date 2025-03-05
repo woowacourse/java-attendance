@@ -1,10 +1,7 @@
+package domain;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-import domain.AttendanceManager;
-import domain.AttendanceRecord;
-import domain.AttendanceStatus;
-import domain.Crew;
-import domain.DangerousStatus;
 import infrastructure.file.AttendanceFileReader;
 import java.time.LocalDate;
 import java.util.Comparator;
