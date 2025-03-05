@@ -177,10 +177,10 @@ class CrewRecordsTest {
         crewRecords.addRecord(justin, new AttendanceRecord(LocalDate.of(2024, 12, 4)));
         crewRecords.addRecord(neo, new AttendanceRecord(LocalDate.of(2024, 12, 2)));
         crewRecords.addRecord(neo, new AttendanceRecord(LocalDate.of(2024, 12, 3)));
-        List<Crew> actualValue = crewRecords.getWarnedCrews();
+        List<WarnedCrew> actualValue = crewRecords.getWarnedCrews();
 
         // then
-        assertThat(actualValue).containsExactly(justin, neo);
+        assertThat(actualValue.stream().map(WarnedCrew::name)).containsExactly("저스틴", "네오");
     }
 
     @DisplayName("입력 받은 크루의 지각 횟수를 반환한다.")

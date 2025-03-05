@@ -43,11 +43,10 @@ public class CrewRecords {
         return attendanceRecords.getWarningStatus();
     }
 
-    public List<Crew> getWarnedCrews() {
-        Stream<Crew> warnedCrews = records.keySet()
-                .stream()
-                .filter(crew -> getWarningStatus(crew) != WarningStatus.NONE);
-        return sortWarnedCrews(warnedCrews);
+    public List<WarnedCrew> getWarnedCrews() {
+        Stream<Crew> warnedCrews = filterWarnedCrews();
+        Stream<Crew> sortedWarnedCrews = sortWarnedCrews(warnedCrews);
+        return convertWarnedCrews(sortedWarnedCrews);
     }
 
     public int getTardyCount(Crew crew) {
@@ -60,10 +59,20 @@ public class CrewRecords {
         return attendanceRecords.getAttendanceCount(AttendanceStatus.ABSENT);
     }
 
-    private List<Crew> sortWarnedCrews(Stream<Crew> warnedCrews) {
+    private Stream<Crew> filterWarnedCrews() {
+        return records.keySet()
+                .stream()
+                .filter(crew -> getWarningStatus(crew) != WarningStatus.NONE);
+    }
+
+    private Stream<Crew> sortWarnedCrews(Stream<Crew> warnedCrews) {
         return warnedCrews.sorted(Comparator.comparing((Crew crew) -> getConvertedAbsences(crew) * -1)
-                        .thenComparing(crew -> getTardiesAfterConversion(crew) * -1)
-                        .thenComparing(Crew::name))
+                .thenComparing(crew -> getTardiesAfterConversion(crew) * -1)
+                .thenComparing(Crew::name));
+    }
+
+    private List<WarnedCrew> convertWarnedCrews(Stream<Crew> warnedCrews) {
+        return warnedCrews.map(crew -> new WarnedCrew(crew.name(), getTardyCount(crew), getAbsentCount(crew), getWarningStatus(crew)))
                 .toList();
     }
 

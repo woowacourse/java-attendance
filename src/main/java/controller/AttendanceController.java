@@ -81,7 +81,8 @@ public class AttendanceController {
     }
 
     private void viewWarnedCrews() {
-        outputView.printWarnedCrews(crewRecords);
+        List<WarnedCrew> warnedCrews = crewRecords.getWarnedCrews();
+        outputView.printWarnedCrews(warnedCrews);
     }
 
     private void validateMenu(String input) {

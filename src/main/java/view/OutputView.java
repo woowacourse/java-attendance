@@ -45,14 +45,11 @@ public class OutputView {
         System.out.printf("%s 대상자입니다.", warningStatus.getName());
     }
 
-    public void printWarnedCrews(CrewRecords crewRecords) {
+    public void printWarnedCrews(List<WarnedCrew> warnedCrews) {
         System.out.println("제적 위험자 조회 결과");
-        List<Crew> warnedCrews = crewRecords.getWarnedCrews();
-        for (Crew warnedCrew : warnedCrews) {
-            int tardyCount = crewRecords.getTardyCount(warnedCrew);
-            int absentCount = crewRecords.getAbsentCount(warnedCrew);
-            String warningStatus = crewRecords.getWarningStatus(warnedCrew).getName();
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", warnedCrew.name(), absentCount, tardyCount, warningStatus);
+        for (WarnedCrew warnedCrew : warnedCrews) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", warnedCrew.name(), warnedCrew.tardyCount(),
+                    warnedCrew.absentCount(), warnedCrew.warningStatus());
         }
     }
 
