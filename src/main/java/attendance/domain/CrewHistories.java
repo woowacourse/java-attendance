@@ -2,9 +2,9 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -57,6 +57,17 @@ public class CrewHistories {
         return histories.get(nickname);
     }
 
+    public Map<String, AttendanceCounter> makeAttendanceCounterByNickname(final LocalDate nowDate,
+                                                                          final CampusScheduler campusScheduler) {
+        Map<String, AttendanceCounter> result = new HashMap<>();
+        for (Entry<String, CrewHistory> entry : histories.entrySet()) {
+            CrewHistory history = entry.getValue();
+            AttendanceCounter counter = campusScheduler.countByAttendanceState(history, nowDate);
+            result.put(entry.getKey(), counter);
+        }
+        return result;
+    }
+
     private void validatePreviousDate(final LocalDate date, final LocalDate nowDate) {
         if (date.equals(nowDate) || date.isAfter(nowDate)) {
             throw new IllegalArgumentException("[ERROR] 과거의 날짜만 가능합니다.");
@@ -80,9 +91,5 @@ public class CrewHistories {
     @Override
     public int hashCode() {
         return Objects.hashCode(histories);
-    }
-
-    public Map<String, CrewHistory> getHistories() {
-        return Collections.unmodifiableMap(histories);
     }
 }

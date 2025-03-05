@@ -3,6 +3,7 @@ package attendance.domain;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 public class AttendanceCounter {
 
@@ -25,6 +26,19 @@ public class AttendanceCounter {
             counter.put(attendanceState, 0);
         }
         return counter;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof final AttendanceCounter counter1)) {
+            return false;
+        }
+        return Objects.equals(counter, counter1.counter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(counter);
     }
 
     public int getCount(final AttendanceState attendanceState) {

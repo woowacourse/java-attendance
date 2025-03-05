@@ -1,21 +1,23 @@
 package attendance.domain;
 
+import static attendance.fixture.TestFixture.makeAbsenceMonday;
 import static attendance.fixture.TestFixture.makeAttendanceExceptMonday;
 import static attendance.fixture.TestFixture.makeAttendanceMonday;
 import static attendance.fixture.TestFixture.makeCrewHistory;
 import static attendance.fixture.TestFixture.makeDateTime;
 import static attendance.fixture.TestFixture.makeDecemberDate;
 import static attendance.fixture.TestFixture.makeDefaultAttendanceTime;
+import static attendance.fixture.TestFixture.makeTardinessExceptMonday;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -136,7 +138,7 @@ class CrewHistoriesTest {
         LocalDateTime previousHistory = crewHistories.modify(nickname, modifyingTime, nowDate);
 
         // Then
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThat(previousHistory).isEqualTo(attendanceTime),
                 () -> assertThat(crewHistories).isEqualTo(
                         new CrewHistories(Map.of(nickname, makeCrewHistory(modifyingTime))))
@@ -187,5 +189,29 @@ class CrewHistoriesTest {
 
         // Then
         assertThat(history).isEqualTo(expected);
+    }
+
+    @Test
+    void 닉네임별_크루_출석_상태별_횟수를_조회한다() {
+        // Given
+        LocalDate nowDate = makeDecemberDate(5);
+        CrewHistory crewHistory = makeCrewHistory(makeAbsenceMonday(2), makeAttendanceExceptMonday(3),
+                makeTardinessExceptMonday(4));
+        String nickname = "밍트";
+        crewHistories = new CrewHistories(Map.of(nickname, crewHistory));
+        CampusScheduler campusScheduler = new CampusScheduler();
+        AttendanceCounter counter = new AttendanceCounter(
+                Map.of(AttendanceState.ABSENCE, 1, AttendanceState.ATTENDANCE, 1, AttendanceState.TARDINESS, 1)
+        );
+
+        // When
+        Map<String, AttendanceCounter> history = crewHistories.makeAttendanceCounterByNickname(
+                nowDate, campusScheduler);
+
+        // Then
+        assertAll(
+                () -> assertThat(history).containsKey(nickname),
+                () -> assertThat(history).containsValue(counter)
+        );
     }
 }
