@@ -1,4 +1,4 @@
-package attendance.util;
+package attendance.utils;
 
 import attendance.domain.Crew;
 import attendance.domain.Crews;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AttendanceParser {
+public class AttendanceBookParser {
     private static final String COMMA = ",";
     private static final String SPACE = " ";
     private static final String HYPHEN = "-";
@@ -19,16 +19,16 @@ public class AttendanceParser {
     private static final int POSITION_ONE = 1;
     private static final int POSITION_TWO = 2;
     private final Crews crews;
-    private final Map<Crew, List<LocalDateTime>> attendanceRecords = new HashMap<>();
+    private final Map<Crew, List<LocalDateTime>> originalAttendanceBook = new HashMap<>();
 
-    public AttendanceParser(List<String> lines) {
+    public AttendanceBookParser(List<String> lines) {
         Set<Crew> crewSet = new HashSet<>();
         for (String line : lines) {
-            List<String> splittedLines = List.of(line.split(COMMA));
-            Crew crew = Crew.from(splittedLines.getFirst());
+            List<String> dividedLines = List.of(line.split(COMMA));
+            Crew crew = new Crew(dividedLines.getFirst());
             crewSet.add(crew);
-            LocalDateTime attendanceTime = parseDateTime(splittedLines.getLast());
-            attendanceRecords.computeIfAbsent(crew, k -> new ArrayList<>()).add(attendanceTime);
+            LocalDateTime attendanceTime = parseDateTime(dividedLines.getLast());
+            originalAttendanceBook.computeIfAbsent(crew, k -> new ArrayList<>()).add(attendanceTime);
         }
         this.crews = new Crews(crewSet);
     }
@@ -52,8 +52,8 @@ public class AttendanceParser {
         return crews;
     }
 
-    public Map<Crew, List<LocalDateTime>> getAttendanceRecords() {
-        return attendanceRecords;
+    public Map<Crew, List<LocalDateTime>> getOriginalAttendanceBook() {
+        return originalAttendanceBook;
     }
 
 }

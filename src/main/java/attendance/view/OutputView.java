@@ -1,105 +1,117 @@
 package attendance.view;
 
-import attendance.domain.AbsenceInfo;
+import attendance.domain.AttendanceRecord;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.AttendanceTime;
 import attendance.domain.Crew;
-import attendance.domain.AttendanceChecker;
-import attendance.domain.AttendanceRegistry;
-import attendance.domain.CrewRisk;
-import attendance.domain.constant.CrewStatus;
-import attendance.domain.constant.Weekday;
+import attendance.domain.PenaltyType;
+import attendance.domain.RiskCrew;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.Locale;
+import java.util.Optional;
 
 public class OutputView {
-    public void writeAttendanceCheck(AttendanceChecker attendanceChecker) {
-        String month = addZero(attendanceChecker.getLocalDateTime().getMonthValue());
-        String day = addZero(attendanceChecker.getLocalDateTime().getDayOfMonth());
-        String dayOfWeek = Weekday.from(attendanceChecker.getLocalDateTime().getDayOfWeek()).getDayOfWeek();
-        String time = convertZeroToHyphen(
-                attendanceChecker.getLocalDateTime().getHour(), attendanceChecker.getLocalDateTime().getMinute());
-        String status = attendanceChecker.getAttendanceStatus();
-        System.out.println(String.format("%s월 %s일 %s %s (%s)", month, day, dayOfWeek, time, status));
+
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm",
+            Locale.KOREA);
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE", Locale.KOREA);
+    private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.KOREA);
+
+    public void writeAttendanceRegister(AttendanceTime registerdAttendanceTime) {
+        LocalDate attendanceDates = registerdAttendanceTime.getAttendanceDate();
+        Optional<LocalTime> attendanceTimes = registerdAttendanceTime.getAttendanceTime();
+        attendanceTimes.ifPresent((time) -> {
+            LocalDateTime attendanceTime = LocalDateTime.of(attendanceDates, time);
+            AttendanceStatus attendanceStatus = registerdAttendanceTime.getAttendanceStatus();
+            String formattedDate = attendanceTime.format(dateTimeFormatter);
+
+            System.out.println(formattedDate + " (" + attendanceStatus.getName() + ")");
+        });
     }
 
-    public void writeAttendanceModifyCheck(LocalTime beforeTime, String beforeStatus, AttendanceChecker modifiedInfo) {
-        String month = addZero(modifiedInfo.getLocalDateTime().getMonthValue());
-        String day = addZero(modifiedInfo.getLocalDateTime().getDayOfMonth());
-        String dayOfWeek = Weekday.from(modifiedInfo.getLocalDateTime().getDayOfWeek()).getDayOfWeek();
-        String hour = addZero(modifiedInfo.getLocalDateTime().getHour());
-        String minute = addZero(modifiedInfo.getLocalDateTime().getMinute());
-        String status = modifiedInfo.getAttendanceStatus();
-        System.out.println(String.format("%s월 %s일 %s %s (%s) -> %s:%s (%s) 수정 완료!", month, day, dayOfWeek, convertZeroToHyphen(
-                beforeTime.getHour(), beforeTime.getMinute()), beforeStatus, hour, minute, status));
-    }
-
-    public void writeAttendanceHistory(Crew crew, AttendanceRegistry attendanceRegistry) {
-        System.out.println(String.format("이번 달 %s의 출석 기록입니다.", crew.getCrewName()));
-        for (AttendanceChecker attendanceChecker : attendanceRegistry.getDateInfos()) {
-            writeAttendanceCheck(attendanceChecker);
-        }
-        List<Integer> attendanceTraces = attendanceRegistry.getAttendanceTraces();
-        System.out.println();
-        System.out.println(String.format("출석: %d회", attendanceTraces.getLast()));
-        System.out.println(String.format("지각: %d회", attendanceTraces.get(1)));
-        System.out.println(String.format("결석: %d회", attendanceTraces.getFirst()));
-        writeWarningMessage(attendanceRegistry);
-    }
-
-    private void writeWarningMessage(AttendanceRegistry attendanceRegistry) {
-        CrewStatus crewStatus = attendanceRegistry.getCrewStatus();
-        if (crewStatus.equals(CrewStatus.DISMISS)) {
-            System.out.println("제적 대상자입니다.");
-            return;
-        }
-        if (crewStatus.equals(CrewStatus.COUNSELING)) {
-            System.out.println("면담 대상자입니다.");
-            return;
-        }
-        if (crewStatus.equals(CrewStatus.WARNING)) {
-            System.out.println("경고 대상자입니다.");
-        }
-    }
-
-    public void writeDismissCrewCheck(List<CrewRisk> allExpertRiskCrews) {
-        System.out.println("제적 위험자 조회 결과");
-        for (CrewRisk crewRisk : allExpertRiskCrews) {
-            AbsenceInfo absenceInfo = crewRisk.getAbsenceInfo();
-            int absenceCounts = absenceInfo.getAbsenceCount();
-            int lateCounts = absenceInfo.getLateCount();
-            String crewName = crewRisk.getCrew().getCrewName();
-            String crewStatus = CrewStatus.from(lateCounts, absenceCounts).getName();
-            writeAbsenceOver(absenceCounts, crewName, lateCounts, crewStatus);
-        }
-    }
-
-    private void writeAbsenceOver(int absenceCounts, String crewName, int lateCounts, String crewStatus) {
-        System.out.println(String.format("- %s: 결석 %d회, 지각 %d회 (%s)", crewName, absenceCounts, lateCounts,
-                crewStatus));
-    }
-
-    private String convertZeroToHyphen(int hour, int minute) {
-        if (hour == 0 && minute == 0) {
-            return "--:--";
-        }
-        return addZero(hour)+":"+addZero(minute);
-    }
-
-    private String addZero(int number) {
-        if (number < 10) {
-            return "0" + number;
-        }
-        return String.valueOf(number);
-    }
-
-    public void errorMessagePrint(String message) {
+    public void writeErrorMessage(String message) {
         System.out.println(message);
+    }
+
+    public void writeAttendanceModify(AttendanceTime beforeTime, AttendanceTime updateTime) {
+        AttendanceStatus beforeAttendanceStatus = beforeTime.getAttendanceStatus();
+        AttendanceStatus updateAttendanceStatus = updateTime.getAttendanceStatus();
+        LocalDate beforeAttendanceDate = beforeTime.getAttendanceDate();
+        Optional<LocalTime> beforeAttendanceTime = beforeTime.getAttendanceTime();
+        if (beforeAttendanceTime.isEmpty()) {
+            System.out.print(
+                    beforeAttendanceDate.format(dateFormatter) + " --:-- " + "(" + beforeAttendanceStatus.getName()
+                            + ")");
+        }
+        updateTime.getAttendanceTime().ifPresent((time) -> {
+            LocalDateTime updateAttendanceTime = LocalDateTime.of(updateTime.getAttendanceDate(), time);
+            String updateFormat = updateAttendanceTime.format(timeFormatter);
+            System.out.println(" -> " + updateFormat + " (" + updateAttendanceStatus.getName() + ") 수정 완료!");
+        });
+    }
+
+    public void writeAttendanceCheck(Crew crewName, AttendanceRecord attendanceRecord) {
+        System.out.println("이번 달 " + crewName.getName() + "의 출석 기록입니다.");
+        System.out.println();
+
+        for (AttendanceTime attendanceTime : attendanceRecord.getAttendanceRecord()) {
+            AttendanceStatus status = attendanceTime.getAttendanceStatus();
+            LocalDate localDate = attendanceTime.getAttendanceDate();
+            Optional<LocalTime> localTime = attendanceTime.getAttendanceTime();
+            localTime.ifPresentOrElse((time) -> {
+                writeNonNull(localDate, time, status);
+            }, () -> {
+                writeNull(localDate, status);
+            });
+        }
+        writeAttendanceRecord(attendanceRecord);
+    }
+
+    private void writeAttendanceRecord(AttendanceRecord attendanceRecord) {
+        System.out.println();
+        System.out.println("출석: " + attendanceRecord.checkAttendanceCounts() + "회");
+        System.out.println("지각: " + attendanceRecord.checkLateCounts() + "회");
+        System.out.println("결석: " + attendanceRecord.checkAbsenceCounts() + "회");
+        System.out.println();
+        System.out.println(writePenaltyStatus(attendanceRecord.checkPenaltyStatus()) + " 대상자입니다.");
+    }
+
+    private String writePenaltyStatus(PenaltyType penaltyType) {
+        if (penaltyType.equals(PenaltyType.EXPULSION)) {
+            return "제적";
+        }
+        if (penaltyType.equals(PenaltyType.COUNSELING)) {
+            return "면담";
+        }
+        if (penaltyType.equals(PenaltyType.WARNING)) {
+            return "경고";
+        }
+        return "성실";
+    }
+
+    private void writeNull(LocalDate localDate, AttendanceStatus status) {
+        System.out.println(localDate.format(dateFormatter) + " --:-- " + "(" + status.getName() + ")");
+    }
+
+    private void writeNonNull(LocalDate localDate, LocalTime localTime, AttendanceStatus status) {
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+        System.out.println(localDateTime.format(dateTimeFormatter) + " (" + status.getName() + ")");
+    }
+
+    public void writeRiskCrews(List<RiskCrew> riskCrews) {
+        System.out.println("제적 위험자 조회 결과");
+        for (RiskCrew riskCrew : riskCrews) {
+            String riskCrewName = riskCrew.getName();
+            int absenceCounts = riskCrew.getAbsenceCount();
+            int lateCounts = riskCrew.getLateCount();
+            PenaltyType penaltyType = riskCrew.getPenaltyType();
+            System.out.println("- " + riskCrewName + ": " + "결석 " + absenceCounts + "회, 지각 "
+                    + lateCounts + "회 (" + writePenaltyStatus(penaltyType) + ")");
+        }
     }
 
 }

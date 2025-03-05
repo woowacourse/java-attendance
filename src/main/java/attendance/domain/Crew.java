@@ -3,37 +3,31 @@ package attendance.domain;
 import java.util.Objects;
 
 public class Crew {
+    private final String name;
 
-    private final String crewName;
-
-    private Crew(String crewName) {
-        this.crewName = crewName;
+    public Crew(final String name) {
+        this.name = name;
     }
 
-    public static Crew from(String crewName) {
-        return new Crew(crewName);
-    }
-
-    public String getCrewName() {
-        return crewName;
-    }
-
-    public boolean checkSameName(String crewName) {
-        return this.crewName.equals(crewName);
+    public String getName() {
+        return name;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Crew crew = (Crew) o;
-        return Objects.equals(crewName, crew.crewName);
+        return Objects.equals(name, crew.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(crewName);
+        return Objects.hash(name);
     }
 
 }
-

@@ -1,17 +1,16 @@
 package attendance.exception;
 
 public enum ErrorMessage {
-
-    DAY_OUT_OF_RANGE("유효한 날짜 범위가 아닙니다."),
-    COLON_ERROR("시간:분 형식으로 입력하셔야 합니다."),
-    FILE_NOT_PRESENCE("파일이 존재하지 않습니다."),
-    FUNCTION_NOT_PRESENCE("선택하신 기능은 없는 기능입니다."),
-    NUMBER_FORMAT_HOUR_ERROR("시간은 숫자로 입력하셔야 합니다."),
-    NICKNAME_NOT_PRESENCE("없는 닉네임 입니다."),
-    NUMBER_FORMAT_MINUTE_ERROR("분은 숫자로 입력하셔야 합니다."),
-    NOT_RISK_CREW("제적사항이 없는 학생입니다."),
-    NUMBER_FORMAT_ERROR("숫자로 입력하셔야 합니다."),
-    CAMPUS_NOT_OPERATION("캠퍼스 운영 시간은 08시부터 23시까지 입니다.");
+    TIME_FORMAT_ERROR("시간 형식을 잘못 입력하셨습니다."),
+    INVALID_DATE_RANGE("일 범위를 잘못 입력하셨습니다."),
+    DATE_NUMBER_FORMAT("날짜는 숫자로 입력하셔야 합니다."),
+    NOT_OPEN_CAMPUS("캠퍼스 운영 시간이 아닙니다"),
+    NOT_ATTENDANCE_WEEKEND("주말에는 출석을 할 수 없습니다."),
+    NOT_PRESENCE_COMMAND_OPTION("제공하지 않는 기능입니다."),
+    ALREADY_PRESENCE_ATTENDANCE_RECORD("이미 출석 기록이 있습니다."),
+    NOT_ATTENDANCE_RECORD("출석 기록이 없습니다."),
+    NOT_FIND_CREW("해당 크루를 찾을 수 없습니다."),
+    FILE_NOT_PRESENCE("파일이 존재하지 않습니다.");
 
     private final String PREFIX = "[ERROR] ";
     private final String message;

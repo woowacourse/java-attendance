@@ -1,82 +1,86 @@
 package attendance.domain;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class CrewsTest {
+public class CrewsTest {
 
+    @DisplayName("크루 추가")
     @Test
-    void 크루이름들로_크루들객체_생성() {
+    void 크루_추가() {
         //given
-        String crewName1 = "빙봉";
-        String crewName2 = "우가";
-        String crewName3 = "밍티";
-        Set<Crew> crewNames = Set.of(Crew.from(crewName1), Crew.from(crewName2), Crew.from(crewName3));
-        //when
-        Crews crews = new Crews(crewNames);
+        Set<Crew> originalCrews = new HashSet<>();
+        originalCrews.add(new Crew("우가"));
+        originalCrews.add(new Crew("범블비"));
 
-        //then
-        Assertions.assertThat(crews.getCrews()).hasSize(3);
+        assertDoesNotThrow(() -> new Crews(originalCrews));
     }
 
     @Test
-    void 크루들에서_크루이름_찾기() {
+    void 원본_리스트_수정시_내부_리스트_영향_없음() {
         //given
-        String crewName1 = "빙봉";
-        String crewName2 = "우가";
-        String crewName3 = "밍티";
-        Set<Crew> crewNames = Set.of(Crew.from(crewName1), Crew.from(crewName2), Crew.from(crewName3));
-        Crews crews = new Crews(crewNames);
+        Set<Crew> originalCrews = new HashSet<>();
+        originalCrews.add(new Crew("우가"));
+        originalCrews.add(new Crew("범블비"));
+
+        Crews crews = new Crews(originalCrews);
 
         //when
-        Crew crew = crews.findCrew("우가");
+        originalCrews.add(new Crew("제프리"));
 
         //then
-        Assertions.assertThat(crew.getCrewName()).isEqualTo("우가");
+        assertEquals(2, crews.getCrews().size());
     }
 
     @Test
-    void 크루들에서_크루이름_찾기_실패() {
+    void 내부_리스트_수정_불가능_확인() {
         //given
-        String crewName1 = "빙봉";
-        String crewName2 = "우가";
-        String crewName3 = "밍티";
-        Set<Crew> crewNames = Set.of(Crew.from(crewName1), Crew.from(crewName2), Crew.from(crewName3));
-        Crews crews = new Crews(crewNames);
+        Set<Crew> originalCrews = new HashSet<>();
+        originalCrews.add(new Crew("우가"));
+
+        Crews crews = new Crews(originalCrews);
 
         //when & then
-        Assertions.assertThatThrownBy(() -> crews.findCrew("제프리"))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorMessage.NICKNAME_NOT_PRESENCE.getMessage());
+        assertThrows(UnsupportedOperationException.class, () -> {
+            crews.getCrews().add(new Crew("범블비"));
+        });
     }
 
     @Test
-    void 크루_출결_등록() {
-        // given
-        String crewName1 = "빙봉";
-        String crewName2 = "우가";
-        String crewName3 = "밍티";
-        Crew crew1 = Crew.from(crewName1);
-        Crew crew2 = Crew.from(crewName2);
-        Crew crew3 = Crew.from(crewName3);
-        Set<Crew> crewNames = Set.of(crew1, crew2, crew3);
-        Crews crews = new Crews(crewNames);
+    void 닉네임_일치_크루_반환() {
+        //given
+        Set<Crew> originalCrews = new HashSet<>();
+        Crew crew = new Crew("우가");
+        originalCrews.add(crew);
 
-        LocalDate now = LocalDate.of(2025, 2, 19);
+        Crews crews = new Crews(originalCrews);
 
-        LocalDateTime localDateTime = LocalDateTime.of(2025,2,19,10,31);
-        // when
-        Register register = new Register(crews, now);
-        register.findInfo(crew1, localDateTime).isAbsence();
-        // then
-        Assertions.assertThat(register.findInfo(crew1, localDateTime).isAbsence()).isTrue();
+        //when & then
+        Assertions.assertThat(crews.findCrew("우가")).isEqualTo(crew);
+    }
+
+    @Test
+    void 존재하지_않는_크루_입력시_예외_발생() {
+        //given
+        Set<Crew> originalCrews = new HashSet<>();
+        Crew crew = new Crew("우가");
+        originalCrews.add(crew);
+
+        Crews crews = new Crews(originalCrews);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> crews.findCrew("부기"))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorMessage.NOT_FIND_CREW.getMessage());
     }
 
 }
