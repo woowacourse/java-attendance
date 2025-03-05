@@ -125,11 +125,11 @@ public class AttendanceHistoryTest {
     @DisplayName("출석 기록 수정 ")
     void editAttendanceTest() {
         Crew crew = new Crew("벡터");
-        LocalDateTime initialAttendanceDateTime = LocalDateTime.of(2024, 2, 21, 9, 0);
-        attendanceHistory.checkAttendance(crew, initialAttendanceDateTime);
-        LocalDateTime newAttendanceDateTime = LocalDateTime.of(2024, 2, 21, 10, 0);
-        LocalDateTime oldAttendanceDateTime = attendanceHistory.editAttendance(crew, newAttendanceDateTime);
-        assertThat(oldAttendanceDateTime).isEqualTo(initialAttendanceDateTime);
+        LocalDateTime firstAttendanceTime = LocalDateTime.of(2024, 2, 21, 9, 0);
+        attendanceHistory.checkAttendance(crew, firstAttendanceTime);
+        LocalDateTime newAttendanceTime = LocalDateTime.of(2024, 2, 21, 10, 0);
+        LocalDateTime oldAttendanceTime = attendanceHistory.editAttendance(crew, newAttendanceTime);
+        assertThat(oldAttendanceTime).isEqualTo(firstAttendanceTime);
     }
 
 
@@ -183,11 +183,56 @@ public class AttendanceHistoryTest {
         attendanceHistory.checkAttendance(crew, attendanceTime5);
         attendanceHistory.checkAttendance(crew, attendanceTime6);
 
-        LocalDate standardDate = LocalDate.of(2024, 12, 11);
+        LocalDate standardDate = LocalDate.of(2024, 12, 10);
         int presentCount = attendanceHistory.getAttendanceCount(crew, standardDate);
         assertThat(presentCount).isEqualTo(4);
     }
 
+    @Test
+    @DisplayName("지각 횟수를 확인")
+    void getLateCountTest() {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+        LocalDateTime attendanceTime1 = LocalDateTime.of(2024, 12, 3, 10, 0);
+        LocalDateTime attendanceTime2 = LocalDateTime.of(2024, 12, 4, 10, 0);
+        LocalDateTime attendanceTime3 = LocalDateTime.of(2024, 12, 5, 10, 15);
+        LocalDateTime attendanceTime4 = LocalDateTime.of(2024, 12, 6, 11, 0);
+        LocalDateTime attendanceTime5 = LocalDateTime.of(2024, 12, 9, 13, 6);
+        LocalDateTime attendanceTime6 = LocalDateTime.of(2024, 12, 10, 10, 0);
+        attendanceHistory.checkAttendance(crew, attendanceTime);
+        attendanceHistory.checkAttendance(crew, attendanceTime1);
+        attendanceHistory.checkAttendance(crew, attendanceTime2);
+        attendanceHistory.checkAttendance(crew, attendanceTime3);
+        attendanceHistory.checkAttendance(crew, attendanceTime4);
+        attendanceHistory.checkAttendance(crew, attendanceTime5);
+        attendanceHistory.checkAttendance(crew, attendanceTime6);
+
+        LocalDate standardDate = LocalDate.of(2024, 12, 10);
+        int presentCount = attendanceHistory.getLateCount(crew, standardDate);
+        assertThat(presentCount).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("결석 횟수를 확인")
+    void getAbsentCountTest() {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+        LocalDateTime attendanceTime1 = LocalDateTime.of(2024, 12, 3, 10, 0);
+        LocalDateTime attendanceTime2 = LocalDateTime.of(2024, 12, 4, 10, 0);
+        LocalDateTime attendanceTime3 = LocalDateTime.of(2024, 12, 5, 10, 15);
+        LocalDateTime attendanceTime4 = LocalDateTime.of(2024, 12, 6, 11, 0);
+        LocalDateTime attendanceTime5 = LocalDateTime.of(2024, 12, 9, 13, 6);
+        LocalDateTime attendanceTime6 = LocalDateTime.of(2024, 12, 10, 10, 0);
+        attendanceHistory.checkAttendance(crew, attendanceTime);
+        attendanceHistory.checkAttendance(crew, attendanceTime1);
+        attendanceHistory.checkAttendance(crew, attendanceTime2);
+        attendanceHistory.checkAttendance(crew, attendanceTime3);
+        attendanceHistory.checkAttendance(crew, attendanceTime4);
+        attendanceHistory.checkAttendance(crew, attendanceTime5);
+        attendanceHistory.checkAttendance(crew, attendanceTime6);
+
+        LocalDate standardDate = LocalDate.of(2024, 12, 10);
+        int presentCount = attendanceHistory.getAbsentCount(crew, standardDate);
+        assertThat(presentCount).isEqualTo(1);
+    }
 
 }
 

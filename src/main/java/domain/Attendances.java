@@ -30,12 +30,27 @@ public class Attendances {
     }
 
 
-    public int getPresentCount(LocalDate lastDate) {
+    public int getAttendanceCount(LocalDate standardDate) {
         return (int) attendances.stream()
-                .filter(attendanceDateTime -> attendanceDateTime.toLocalDate().isBefore(lastDate))
+                .filter(attendanceDateTime -> attendanceDateTime.toLocalDate().isBefore(standardDate))
                 .filter(attendanceDateTime -> AttendanceResult.getAttendanceResult(attendanceDateTime)
                         == AttendanceResult.ATTENDANCE)
                 .count();
     }
 
+    public int getLateCount(LocalDate standardDate) {
+        return (int) attendances.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.toLocalDate().isBefore(standardDate))
+                .filter(attendanceDateTime -> AttendanceResult.getAttendanceResult(attendanceDateTime)
+                        == AttendanceResult.LATE)
+                .count();
+    }
+
+    public int getAbsentCount(LocalDate standardDate) {
+        return (int) attendances.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.toLocalDate().isBefore(standardDate))
+                .filter(attendanceDateTime -> AttendanceResult.getAttendanceResult(attendanceDateTime)
+                        == AttendanceResult.ABSENT)
+                .count();
+    }
 }

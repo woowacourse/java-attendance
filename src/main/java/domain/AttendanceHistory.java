@@ -54,9 +54,9 @@ public class AttendanceHistory {
 
     public LocalDateTime editAttendance(Crew crew, LocalDateTime newAttendanceTime) {
         isExistName(crew);
-        Attendances attendanceDateTimes = attendanceHistory.get(crew);
-        LocalDateTime oldAttendanceDateTime = attendanceDateTimes.edit(newAttendanceTime.toLocalDate());
-        attendanceDateTimes.add(newAttendanceTime);
+        Attendances attendances = attendanceHistory.get(crew);
+        LocalDateTime oldAttendanceDateTime = attendances.edit(newAttendanceTime.toLocalDate());
+        attendances.add(newAttendanceTime);
         return oldAttendanceDateTime;
     }
 
@@ -71,8 +71,18 @@ public class AttendanceHistory {
         return attendanceHistory.get(crew);
     }
 
-    public int getAttendanceCount(Crew crew, LocalDate lastDate) {
-        Attendances attendanceDateTimes = attendanceHistory.get(crew);
-        return attendanceDateTimes.getPresentCount(lastDate);
+    public int getAttendanceCount(Crew crew, LocalDate standardDate) {
+        Attendances attendances = attendanceHistory.get(crew);
+        return attendances.getAttendanceCount(standardDate);
+    }
+
+    public int getLateCount(Crew crew, LocalDate standardDate) {
+        Attendances attendances = attendanceHistory.get(crew);
+        return attendances.getLateCount(standardDate);
+    }
+
+    public int getAbsentCount(Crew crew, LocalDate standardDate) {
+        Attendances attendances = attendanceHistory.get(crew);
+        return attendances.getAbsentCount(standardDate);
     }
 }

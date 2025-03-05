@@ -20,10 +20,10 @@ public enum AttendanceResult {
         this.standard = standard;
     }
 
-    public static AttendanceResult getAttendanceResult(LocalDateTime attendanceDateTime) {
+    public static AttendanceResult getAttendanceResult(LocalDateTime attendanceTime) {
         LocalTime startTime =
-                (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) ? MONDAY_START_TIME : DEFAULT_START_TIME;
-        return checkAttendance(attendanceDateTime.toLocalTime(), startTime);
+                (attendanceTime.getDayOfWeek() == DayOfWeek.MONDAY) ? MONDAY_START_TIME : DEFAULT_START_TIME;
+        return checkAttendance(attendanceTime.toLocalTime(), startTime);
     }
 
     private static AttendanceResult checkAttendance(LocalTime attendanceTime, LocalTime openTime) {
