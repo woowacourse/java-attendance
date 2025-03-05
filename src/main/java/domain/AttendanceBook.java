@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class AttendanceBook {
-    Map<Crew, CheckInHistory> book;
+    private final Map<Crew, CheckInHistory> book;
 
     private AttendanceBook(Map<Crew, CheckInHistory> book) {
         this.book = book;
