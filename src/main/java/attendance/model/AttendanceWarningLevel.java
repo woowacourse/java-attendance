@@ -1,39 +1,39 @@
 package attendance.model;
 
 import java.util.Arrays;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 public enum AttendanceWarningLevel {
 
-    CLEAN("정상", totalAbsentCount -> totalAbsentCount < 2),
-    WARNING("경고", totalAbsentCount -> totalAbsentCount == 2),
-    MEETING("면담", totalAbsentCount -> totalAbsentCount >= 3 && totalAbsentCount <= 5),
-    EXPULSION("제적", totalAbsentCount -> totalAbsentCount > 5),
+    CLEAN("정상", absentTotal -> absentTotal < 2),
+    WARNING("경고", absentTotal -> absentTotal == 2),
+    MEETING("면담", absentTotal -> 3 <= absentTotal && absentTotal <= 5),
+    EXPULSION("제적", absentTotal -> 5 < absentTotal),
     ;
 
     private static final int LATE_TO_ABSENT_THRESHOLD = 3;
 
-    private final String label;
-    private final Function<Integer, Boolean> isMatch;
+    private final String koreanLabel;
+    private final Predicate<Integer> condition;
 
-    AttendanceWarningLevel(String label, Function<Integer, Boolean> isMatch) {
-        this.label = label;
-        this.isMatch = isMatch;
+    AttendanceWarningLevel(String koreanLabel, Predicate<Integer> condition) {
+        this.koreanLabel = koreanLabel;
+        this.condition = condition;
     }
 
-    public static AttendanceWarningLevel judge(int lateCount, int absenceCount) {
+    public static AttendanceWarningLevel determine(int lateCount, int absenceCount) {
         int totalAbsentCount = calculateLateToAbsent(lateCount) + absenceCount;
         return Arrays.stream(values())
-                .filter(level -> level.isMatch.apply(totalAbsentCount))
+                .filter(level -> level.condition.test(totalAbsentCount))
                 .findFirst()
                 .orElse(CLEAN);
     }
 
-    public static int calculateLateToAbsent(int lateCount) {
+    private static int calculateLateToAbsent(int lateCount) {
         return lateCount / LATE_TO_ABSENT_THRESHOLD;
     }
 
-    public String getLabel() {
-        return label;
+    public String getKoreanLabel() {
+        return koreanLabel;
     }
 }

@@ -1,102 +1,119 @@
 package attendance.view;
 
-import static attendance.util.DateTimeUtil.TIME_NOT_RECORDED;
-import static attendance.util.DateTimeUtil.formatDate;
-import static attendance.util.DateTimeUtil.formatDateTime;
-import static attendance.util.DateTimeUtil.formatTime;
-
-import attendance.dto.CrewAttendanceSummary;
-import attendance.model.Attendance;
-import attendance.model.AttendanceTimeline;
-import attendance.model.AttendanceTimeline.AttendanceLog;
+import attendance.dto.AttendanceLogDto;
+import attendance.dto.AttendanceWarningDto;
 import attendance.model.AttendanceType;
 import attendance.model.AttendanceWarningLevel;
+import attendance.model.Nickname;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OutputView {
 
-    private static final String ERROR_PREFIX = "[ERROR] ";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public void printDate(LocalDate date) {
-        System.out.printf("오늘은 %s입니다. ", formatDate(date));
+        System.out.printf("%n오늘은 %s입니다. ", date.format(DATE_FORMATTER));
     }
 
-    public void printCheckAttendance(LocalDateTime dateTime, AttendanceType type) {
-        System.out.printf("%s (%s)%n", formatDateTime(dateTime), getAttendanceTypeLabel(type));
+    public void printAttendanceLog(LocalDateTime attendanceDateTime, AttendanceType attendanceType) {
+        System.out.printf("%n%s (%s)%n",
+                attendanceDateTime.format(DATE_TIME_FORMATTER),
+                attendanceType.getKoreanLabel());
     }
 
-    public void printModifiedAttendance(Attendance beforeAttendance, Attendance afterAttendance,
-                                        AttendanceType beforeType, AttendanceType afterType) {
-        if (beforeAttendance.isNotRecordedTime()) {
-            System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n",
-                    formatDate(afterAttendance.getDate()),
-                    TIME_NOT_RECORDED,
-                    getAttendanceTypeLabel(null),
-                    formatTime(afterAttendance.getTime()),
-                    getAttendanceTypeLabel(afterType)
-            );
+    public void printAttendanceLog(LocalDate attendanceDate,
+                                   LocalTime attendanceTime,
+                                   AttendanceType attendanceType) {
+        if (attendanceTime == null) {
+            System.out.printf("%n%s --:-- (%s)",
+                    attendanceDate.format(DATE_FORMATTER),
+                    AttendanceType.ABSENT.getKoreanLabel());
             return;
         }
-        System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
-                formatDateTime(beforeAttendance.getDateTime()),
-                getAttendanceTypeLabel(beforeType),
-                formatDateTime(afterAttendance.getDateTime()),
-                getAttendanceTypeLabel(afterType)
-        );
+        System.out.printf("%n%s (%s)",
+                LocalDateTime.of(attendanceDate, attendanceTime).format(DATE_TIME_FORMATTER),
+                attendanceType.getKoreanLabel());
     }
 
-    public void printAttendanceTimelineInMonth(String nickname, AttendanceTimeline attendanceTimeline) {
-        System.out.printf("이번달 %s의 출석 기록입니다.%n%n", nickname);
-        for (AttendanceLog attendanceLog : attendanceTimeline.attendanceLogs()) {
-            if (attendanceLog.time() == null) {
-                System.out.printf("%s %s (%s)%n",
-                        formatDate(attendanceLog.date()),
-                        TIME_NOT_RECORDED,
-                        getAttendanceTypeLabel(attendanceLog.attendanceType()));
-                continue;
-            }
-            System.out.printf("%s %s (%s)%n",
-                    formatDate(attendanceLog.date()),
-                    formatTime(attendanceLog.time()),
-                    getAttendanceTypeLabel(attendanceLog.attendanceType()));
+    public void printEditAttendanceLog(LocalTime attendanceTime, AttendanceType attendanceType) {
+        System.out.printf(" -> %s (%s) 수정 완료!%n", attendanceTime.format(TIME_FORMATTER),
+                attendanceType.getKoreanLabel());
+    }
+
+    public void printAttendanceLogs(Nickname nickname, List<AttendanceLogDto> attendanceLogDtos) {
+        StringBuilder message = new StringBuilder();
+        message.append("%n이번 달 %s의 출석 기록입니다.%n%n".formatted(nickname));
+        attendanceLogDtos.forEach(attendanceLogDto -> message.append(formatAttendanceLog(attendanceLogDto)));
+        System.out.println(message);
+    }
+
+    private String formatAttendanceLog(AttendanceLogDto attendanceLogDto) {
+        if (attendanceLogDto.attendanceTime() == null) {
+            return "%s --:-- (%s)%n".formatted(
+                    attendanceLogDto.attendanceDate().format(DATE_FORMATTER),
+                    AttendanceType.ABSENT.getKoreanLabel());
         }
+        return "%s %s (%s)%n".formatted(
+                attendanceLogDto.attendanceDate().format(DATE_FORMATTER),
+                attendanceLogDto.attendanceTime().format(TIME_FORMATTER),
+                attendanceLogDto.attendanceType().getKoreanLabel());
     }
 
-    public void printCountOfAttendanceType(int okCount, int lateCount, int absenceCount) {
-        System.out.printf("%n출석: %d%n지각: %d%n결석: %d%n", okCount, lateCount, absenceCount);
+    public void printAttendanceTypeCounts(EnumMap<AttendanceType, Integer> typeCounts) {
+        System.out.println(formatAttendanceTypeCount(typeCounts));
     }
 
-    public void printWarningLevel(AttendanceWarningLevel level) {
-        if (level != AttendanceWarningLevel.CLEAN) {
-            System.out.printf("%n%s 대상자입니다.%n", level.getLabel());
+    private String formatAttendanceTypeCount(EnumMap<AttendanceType, Integer> count) {
+        return Arrays.stream(AttendanceType.values())
+                .map(attendanceType ->
+                        "%s: %d회".formatted(
+                                attendanceType.getKoreanLabel(),
+                                count.get(attendanceType)))
+                .collect(Collectors.joining("\n"));
+    }
+
+    public void printWarningLevel(AttendanceWarningLevel attendanceWarningLevel) {
+        if (attendanceWarningLevel == AttendanceWarningLevel.CLEAN) {
+            System.out.println();
+            return;
         }
+        System.out.printf("%n%s 대상자입니다.%n", attendanceWarningLevel.getKoreanLabel());
     }
 
-    public void printEmergencyCrews(List<CrewAttendanceSummary> sortedList) {
-        System.out.println("제적 위험자 조회 결과");
-        sortedList.stream()
-                .filter(summary -> summary.level() != AttendanceWarningLevel.CLEAN)
-                .forEach(summary -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
-                        summary.crew().getNickname().getValue(),
-                        summary.absenceCount(),
-                        summary.lateCount(),
-                        summary.level().getLabel()));
-    }
-
-    public void printErrorMessage(String message) {
-        System.out.println(ERROR_PREFIX + message);
-    }
-
-    private String getAttendanceTypeLabel(AttendanceType type) {
-        if (type == null) {
-            return AttendanceType.ABSENCE.getLabel();
+    public void printWarningList(List<AttendanceWarningDto> warnings) {
+        if (warnings.isEmpty()) {
+            System.out.println("\n제적 위험자가 없습니다.");
+            return;
         }
-        return type.getLabel();
+        System.out.println("\n제적 위험자 조회 결과");
+        System.out.println(formatWarningList(warnings));
     }
 
-    public void printDateTimeErrorMessage() {
-        System.out.println(ERROR_PREFIX + "HH:mm (24시간) 형식만 사용할 수 있습니다.");
+    private String formatWarningList(List<AttendanceWarningDto> warnings) {
+        return warnings.stream()
+                .map(warning ->
+                        "- %s: 결석 %d회, 지각 %d회 (%s)".formatted(
+                                warning.nickname(),
+                                warning.absentCount(),
+                                warning.lateCount(),
+                                warning.koreanLabel()))
+                .collect(Collectors.joining("\n"));
+    }
+
+    public void printError(String errorMessage) {
+        System.out.printf("%n[ERROR] %s%n", errorMessage);
+    }
+
+    public void printTimeFormatError() {
+        System.out.println("\n[ERROR] 시간은 24시 형식을 사용해야 합니다. (HH:mm)");
     }
 }

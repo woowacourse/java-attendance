@@ -1,39 +1,45 @@
 package attendance.model;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 public enum AttendanceType {
 
-    OK("출석", difMinutes -> difMinutes <= 5),
-    LATE("지각", difMinutes -> difMinutes > 5 && difMinutes <= 30),
-    ABSENCE("결석", difMinutes -> difMinutes > 30),
+    PRESENT("출석", minuteGap -> minuteGap <= 5),
+    LATE("지각", minuteGap -> 5 < minuteGap && minuteGap <= 30),
+    ABSENT("결석", minuteGap -> 30 < minuteGap),
     ;
 
-    private static final int MINUTE_SCALE = 60;
+    private final String koreanLabel;
+    private final Predicate<Integer> condition;
 
-    private final String label;
-    private final Function<Integer, Boolean> isMatch;
-
-    AttendanceType(String label, Function<Integer, Boolean> isMatch) {
-        this.label = label;
-        this.isMatch = isMatch;
+    AttendanceType(String koreanLabel, Predicate<Integer> condition) {
+        this.koreanLabel = koreanLabel;
+        this.condition = condition;
     }
 
-    public static AttendanceType judge(LocalTime startTime, LocalTime attendanceTime) {
+    public boolean isMatch(int minuteGap) {
+        return condition.test(minuteGap);
+    }
+
+    public String getKoreanLabel() {
+        return koreanLabel;
+    }
+
+    public static AttendanceType determine(LocalTime baseTime, LocalTime attendanceTime) {
+        if (attendanceTime == null) {
+            return ABSENT;
+        }
+        return classifyAttendanceType(baseTime, attendanceTime);
+    }
+
+    private static AttendanceType classifyAttendanceType(LocalTime baseTime, LocalTime attendanceTime) {
+        int minuteGap = (int) Duration.between(baseTime, attendanceTime).toMinutes();
         return Arrays.stream(values())
-                .filter(attendanceType -> attendanceType.isMatch.apply(calculateDifMinutes(startTime, attendanceTime)))
+                .filter(attendanceType -> attendanceType.isMatch(minuteGap))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("판단할 수 없습니다."));
-    }
-
-    private static int calculateDifMinutes(LocalTime startTime, LocalTime attendanceTime) {
-        int difSecond = attendanceTime.toSecondOfDay() - startTime.toSecondOfDay();
-        return difSecond / MINUTE_SCALE;
-    }
-
-    public String getLabel() {
-        return label;
+                .orElseThrow(() -> new IllegalStateException("출석 유형이 결정되지 않았습니다. 기준 시간을 다시 점검하세요."));
     }
 }

@@ -1,59 +1,61 @@
 package attendance.view;
 
+import attendance.model.Command;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class InputView {
 
-    private final Scanner scanner = new Scanner(System.in);
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    public String inputCommand() {
-        System.out.printf("기능을 선택해 주세요.%n");
-        System.out.println("1. 출석 확인\n2. 출석 수정\n3. 크루별 출석 기록 확인\n4. 제적 위험자 확인\nQ. 종료");
-        return trim(readLine());
+    private final Scanner scanner;
+
+    public InputView() {
+        scanner = new Scanner(System.in);
     }
 
-    public String inputNickname() {
-        System.out.println("닉네임을 입력해 주세요.");
-        return trim(readLine());
+    public String readCommand(List<Command> commands) {
+        System.out.println("기능을 선택해 주세요.");
+        commands.forEach(command -> System.out.printf("%s. %s%n", command.getCode(), command.getDescription()));
+        return scanner.nextLine();
     }
 
-    public String inputAttendanceTime() {
+    public String readNickname() {
+        System.out.println("\n닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
+
+    public LocalTime readAttendanceTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return trim(readLine());
+        return parseTime(scanner.nextLine());
     }
 
-    public String inputNicknameForUpdateAttendance() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        return trim(readLine());
+    public String readNicknameForEditAttendance() {
+        System.out.println("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return scanner.nextLine();
     }
 
-    public int inputDateForUpdateAttendance() {
+    public int readDateForEditAttendance() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return parseInt(trim(readLine()));
-    }
-
-    public String inputTimeForUpdateAttendance() {
-        System.out.println("언제로 변경하시겠습니끼?");
-        return trim(readLine());
-    }
-
-    private String trim(String input) {
-        return input.replaceAll(" ", "");
+        return parseInt(scanner.nextLine());
     }
 
     private int parseInt(String input) {
         try {
             return Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("숫자만 입력할 수 있습니다.");
+            throw new IllegalArgumentException("숫자만 입력할 수 있습니다. 입력: %s".formatted(input));
         }
     }
 
-    private String readLine() {
-        try {
-            return scanner.nextLine();
-        } catch (RuntimeException e) {
-            throw new IllegalStateException("입력을 받는 중 문제가 발생했습니다.");
-        }
+    private LocalTime parseTime(String rawTime) {
+        return LocalTime.parse(rawTime, TIME_FORMATTER);
+    }
+
+    public LocalTime readAttendanceTimeForEditAttendance() {
+        System.out.println("언제로 변경하겠습니까?");
+        return parseTime(scanner.nextLine());
     }
 }
