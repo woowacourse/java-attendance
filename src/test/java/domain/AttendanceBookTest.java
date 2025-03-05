@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
 import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.*;
@@ -19,12 +20,12 @@ class AttendanceBookTest {
         CheckInDate checkInDate = CheckInDate.of(2024, 12, 3);
         CheckInTime checkInTime = CheckInTime.of(10, 6);
 
-        TreeMap<CheckInDate, CheckInTime> checkInMap = new TreeMap<>();
+        Map<CheckInDate, CheckInTime> checkInMap = new TreeMap<>();
         checkInMap.put(checkInDate, checkInTime);
 
         CheckInHistory checkInHistory = CheckInHistory.of(checkInMap);
 
-        TreeMap<Crew, CheckInHistory> attendance = new TreeMap<>();
+        Map<Crew, CheckInHistory> attendance = new TreeMap<>();
         attendance.put(crew, checkInHistory);
 
         attendanceBook = AttendanceBook.of(attendance);

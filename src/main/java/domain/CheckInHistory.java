@@ -3,17 +3,17 @@ package domain;
 import exception.AppException;
 
 import java.time.LocalDate;
-import java.util.TreeMap;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 public class CheckInHistory {
-    private final TreeMap<CheckInDate, CheckInTime> history;
+    private final Map<CheckInDate, CheckInTime> history;
 
-    private CheckInHistory(TreeMap<CheckInDate, CheckInTime> history) {
+    private CheckInHistory(Map<CheckInDate, CheckInTime> history) {
         this.history = history;
     }
 
-    public static CheckInHistory of(TreeMap<CheckInDate, CheckInTime> history) {
+    public static CheckInHistory of(Map<CheckInDate, CheckInTime> history) {
         return new CheckInHistory(history);
     }
 

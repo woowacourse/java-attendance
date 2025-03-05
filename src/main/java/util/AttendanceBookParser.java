@@ -25,7 +25,7 @@ public class AttendanceBookParser {
                 CheckInHistory historyByCrew = attendanceBook.findHistoryByCrew(crew);
                 historyByCrew.checkIn(date, time);
             } catch (IllegalArgumentException e) {
-                TreeMap<CheckInDate, CheckInTime> checkInHistoryMap = new TreeMap<>();
+                Map<CheckInDate, CheckInTime> checkInHistoryMap = new TreeMap<>();
                 checkInHistoryMap.put(date, time);
                 CheckInHistory history = CheckInHistory.of(checkInHistoryMap);
                 crewCheckInHistoryMap.put(crew, history);

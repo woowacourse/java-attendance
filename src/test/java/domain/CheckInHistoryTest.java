@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.*;
@@ -20,7 +21,7 @@ class CheckInHistoryTest {
     void setUp() {
         CheckInDate checkInDate = CheckInDate.of(2024, 12, 3);
         CheckInTime checkInTime = CheckInTime.of(10, 0);
-        TreeMap<CheckInDate, CheckInTime> dateAndTimes = new TreeMap<>();
+        Map<CheckInDate, CheckInTime> dateAndTimes = new TreeMap<>();
         dateAndTimes.put(checkInDate, checkInTime);
         history = CheckInHistory.of(dateAndTimes);
     }
