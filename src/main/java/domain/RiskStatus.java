@@ -1,30 +1,37 @@
 package domain;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 public enum RiskStatus {
-    WARNING,
-    COUNSELING,
-    EXPULSION,
-    NONE;
+    EXPULSION(6),
+    COUNSELING(3),
+    WARNING(2),
+    NONE(0);
 
-    public static RiskStatus getRiskStatus(int absenceCount, int tardyCount) {
-        int totalAbsenceCount = absenceCount + tardyCount / 3;
+    private static final int TARDY_TO_ABSENCE_RATIO = 3;
+    private final int riskValue;
 
-        if (totalAbsenceCount > 5) {
-            return RiskStatus.EXPULSION;
-        }
-
-        if (totalAbsenceCount >= 3) {
-            return RiskStatus.COUNSELING;
-        }
-
-        if (totalAbsenceCount == 2) {
-            return RiskStatus.WARNING;
-        }
-
-        return RiskStatus.NONE;
+    RiskStatus(int riskValue) {
+        this.riskValue = riskValue;
     }
 
-    public boolean hasRisk() {
-        return this != RiskStatus.NONE;
+    public static RiskStatus getRiskStatus(int absenceCount, int tardyCount) {
+        int riskValue = calculateRiskValue(absenceCount, tardyCount);
+        return Arrays.stream(RiskStatus.values())
+                .sorted(Comparator
+                        .comparingInt(RiskStatus::getRiskValue)
+                        .reversed())
+                .filter(riskStatus -> riskValue >= riskStatus.riskValue)
+                .findFirst()
+                .orElse(NONE);
+    }
+
+    public static int calculateRiskValue(int absenceCount, int tardyCount) {
+        return absenceCount + tardyCount / TARDY_TO_ABSENCE_RATIO;
+    }
+
+    public int getRiskValue() {
+        return riskValue;
     }
 }

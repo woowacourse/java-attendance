@@ -1,47 +1,43 @@
 package domain;
 
-import global.util.Date;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
-    ATTENDANCE,
+    ATTEND,
     TARDY,
     ABSENCE;
 
-    public static AttendanceStatus attend(LocalDateTime target) {
-        LocalDate targetDate = target.toLocalDate();
+    private static final AttendanceTime MONDAY_START_TIME = new AttendanceTime(LocalTime.of(13, 0));
+    private static final AttendanceTime START_TIME = new AttendanceTime(LocalTime.of(10, 0));
+    private final static int TARDY_TIME_LOWER_BOUND = 5;
+    private final static int TARDY_TIME_UPPER_BOUND = 30;
+    private final static int ABSENCE_LOWER_BOUND = 30;
 
-        LocalTime attendanceTime = LocalTime.of(10, 0);
-        LocalTime targetTime = target.toLocalTime();
-        if (Date.isNotWorkingDay(targetDate)) {
-            throw new IllegalArgumentException();
+
+    private static AttendanceTime startTime(AttendanceDate date) {
+        if (date.getDate().getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+            return MONDAY_START_TIME;
         }
-
-        if (Date.isMonday(targetDate)) {
-            attendanceTime = LocalTime.of(13, 0);
-        }
-        return getAttendanceStatusByTime(attendanceTime, targetTime);
-
+        return START_TIME;
     }
 
-    private static AttendanceStatus getAttendanceStatusByTime(LocalTime attendanceTime, LocalTime targetTime) {
-        if (isAbsenceTime(attendanceTime, targetTime)) {
+    public static AttendanceStatus getAttendanceStatus(AttendanceDate date, AttendanceTime attendanceTime) {
+        if (isAbsence(date, attendanceTime)) {
             return ABSENCE;
         }
-        if (isTardyTime(attendanceTime, targetTime)) {
+        if (isTardy(date, attendanceTime)) {
             return TARDY;
         }
-        return ATTENDANCE;
+        return ATTEND;
     }
 
-    private static boolean isAbsenceTime(LocalTime attendanceTime, LocalTime targetTime) {
-        return attendanceTime.plusMinutes(30).isBefore(targetTime) && targetTime.isAfter(attendanceTime);
+    private static boolean isAbsence(AttendanceDate date, AttendanceTime attendanceTime) {
+        return attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(ABSENCE_LOWER_BOUND));
     }
 
-    private static boolean isTardyTime(LocalTime attendanceTime, LocalTime targetTime) {
-        return attendanceTime.plusMinutes(5).isBefore(targetTime) && targetTime.isAfter(attendanceTime);
+    private static boolean isTardy(AttendanceDate date, AttendanceTime attendanceTime) {
+        return attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(TARDY_TIME_LOWER_BOUND)) &&
+                !attendanceTime.getTime().isAfter(startTime(date).getTime().plusMinutes(TARDY_TIME_UPPER_BOUND));
     }
 }

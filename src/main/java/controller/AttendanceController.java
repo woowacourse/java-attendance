@@ -1,115 +1,175 @@
 package controller;
 
-import domain.AttendanceStatus;
+import domain.AttendanceBook;
+import domain.AttendanceDate;
+import domain.AttendanceStatuses;
+import domain.AttendanceSystem;
+import domain.AttendanceTime;
 import domain.Crew;
-import domain.Crews;
-import global.util.Date;
-import view.InputView;
-import view.OutputView;
+import dto.AttendanceRecordDto;
+import dto.AttendanceResultDto;
+import dto.AttendanceStatusesDto;
+import dto.RiskCrewDto;
+import util.Dates;
+import view.FileInput;
+import view.Input;
+import view.Output;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Map;
 
-import static global.util.Date.TODAY;
-import static global.util.Date.assembleDateAndTime;
-import static global.util.Validator.validateIsFutureDate;
-import static global.util.Validator.validateIsNotWorkingDay;
+import static util.Dates.TODAY;
 
 public class AttendanceController {
-    private final InputView inputView;
-    private final OutputView outputView;
-    private Crews crews;
+    private final FileInput fileInput;
+    private final AttendanceSystem attendanceSystem;
+    private final Input input;
+    private final Output output;
+    private final Map<String, Runnable> menuOperations = Map.of(
+            "1", this::attend,
+            "2", this::editAttendance,
+            "3", this::checkAttendanceRecord,
+            "4", this::checkRiskCrews
+    );
 
-    public AttendanceController(final InputView inputView, final OutputView outputView) {
-        this.inputView = inputView;
-        this.outputView = outputView;
+    public AttendanceController(FileInput fileInput, Input input, Output output) {
+        this.fileInput = fileInput;
+        this.input = input;
+        this.output = output;
+        attendanceSystem = new AttendanceSystem();
     }
 
     public void start() {
-        crews = initCrews();
+        initCrew();
         startMenuLoop();
-    }
-
-    private Crews initCrews() {
-        return inputView.getFile();
     }
 
     private void startMenuLoop() {
         boolean continueLoop = true;
-        while(continueLoop) {
-            continueLoop = processMenu();
-        }
-    }
-
-    private boolean processMenu() {
-        try {
-            return handleMenuSelection();
-        } catch (DateTimeParseException | IllegalArgumentException e) {
-            outputView.printErrorMessage(e);
-            return true;
+        while (continueLoop) {
+            continueLoop = handleMenuSelection();
         }
     }
 
     private boolean handleMenuSelection() {
-        String menu = inputView.inputMenu();
-        if (menu.equals("Q")) {
-            return false;
+        try {
+            return operateMenu();
+        } catch (IllegalArgumentException e) {
+            output.printError(e.getMessage());
+            return true;
         }
-        selectMenu(menu);
-        return true;
     }
 
-    private void selectMenu(final String menu) {
-        if (menu.equals("1")) {
-            validateIsNotWorkingDay(TODAY.toLocalDate());
-            attendCrew();
-            return;
+    private boolean operateMenu() {
+        String menuSelection = input.getMenuInput(TODAY);
+        if (menuSelection.equals("Q")) {
+            return false;
         }
-        if (menu.equals("2")) {
-            editAttend();
-            return;
+        if (menuOperations.containsKey(menuSelection)) {
+            menuOperations.get(menuSelection).run();
+            return true;
         }
-        if (menu.equals("3")) {
-            checkCrewsRecord();
-            return;
-        }
-        if (menu.equals("4")) {
-            checkRiskCrews();
-            return;
-        }
-        throw new IllegalArgumentException("메뉴는 1, 2, 3, 4, Q만 입력할 수 있습니다.");
+        throw new IllegalArgumentException("1, 2, 3, 4, Q만 입력 가능합니다.");
     }
 
     private void checkRiskCrews() {
-        outputView.printRiskCrews(crews.getCrewResponseWithRisk());
+        List<RiskCrewDto> riskCrews = attendanceSystem.getRiskCrews()
+                .entrySet()
+                .stream()
+                .map(entry -> new RiskCrewDto(
+                        entry.getKey().name(),
+                        entry.getValue().getAttendanceStatuses().getAbsenceCount(),
+                        entry.getValue().getAttendanceStatuses().getTardyCount(),
+                        entry.getValue().getAttendanceStatuses().getRiskStatus()
+                )).toList();
+        output.printRiskCrews(riskCrews);
     }
 
-    private void checkCrewsRecord() {
-        String name = inputView.inputName();
-        Crew crew = crews.findCrewByName(name);
-        outputView.printCrewAttendanceRecord(crews.createCrewResponse(crew));
+    private void checkAttendanceRecord() {
+        Crew crew = new Crew(input.getNameInput());
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        attendanceBook.getAttendanceBook();
+        AttendanceStatuses attendanceStatuses = attendanceBook.getAttendanceStatuses();
+        output.printAttendanceRecord(
+                crew.name(),
+                TODAY,
+                Parser.getAttendanceBook(attendanceBook),
+                new AttendanceStatusesDto(
+                        Parser.getAttendanceStatuses(attendanceStatuses),
+                        attendanceStatuses.getAttendCount(),
+                        attendanceStatuses.getTardyCount(),
+                        attendanceStatuses.getAbsenceCount(),
+                        attendanceStatuses.getRiskStatus()
+                ));
     }
 
-    private void attendCrew() {
-        String name = inputView.inputName();
-        Crew crew = crews.findCrewByName(name);
-        crew.validateAvailableAttendanceDate(TODAY.toLocalDate());
-        LocalTime time = LocalTime.parse(inputView.inputAttendTime());
-        crew.addAttendStatus(assembleDateAndTime(TODAY.toLocalDate(), time));
-        outputView.printAttendDateAttendanceMessage(TODAY.toLocalDate(), crews.createCrewResponse(crew).attendanceBook());
+    private void editAttendance() {
+        Crew crew = new Crew(input.getNameInput());
+        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+        AttendanceDate date = new AttendanceDate(getEditDate());
+        AttendanceResultDto beforeAttendanceResult = getAttendanceResult(date, attendanceBook);
+        LocalTime time = Parser.stringToLocalTime(input.getEditTimeInput());
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        attendanceBook.attendance(date, attendanceTime);
+        AttendanceResultDto afterAttendanceResult = getAttendanceResult(date, attendanceBook);
+        output.printEditAttendanceResult(beforeAttendanceResult, afterAttendanceResult);
     }
 
-    private void editAttend() {
-        String name = inputView.inputEditCrewName();
-        Crew crew = crews.findCrewByName(name);
-        LocalDate date = Date.getDateByInputDay(Integer.parseInt(inputView.inputEditDay()));
-        validateIsFutureDate(date);
-        LocalTime beforeTime = crew.getAttendanceTime(date);
-        AttendanceStatus beforAttendanceStatus = crew.getAttendanceStatusByDate(Date.assembleDateAndTime(date, beforeTime));
-        LocalTime time = LocalTime.parse(inputView.inputEditTime());
-        AttendanceStatus afterAttendanceStatus = crew.editAttendStatus(assembleDateAndTime(date, time));
-        LocalTime afterTime = crew.getAttendanceTime(date);
-        outputView.printAttendEditMessage(date, beforAttendanceStatus, beforeTime, afterAttendanceStatus, afterTime);
+    private LocalDate getEditDate() {
+        return LocalDate.of(TODAY.getYear(),
+                TODAY.getMonth(),
+                Integer.parseInt(input.getEditDateInput()));
+    }
+
+    private AttendanceResultDto getAttendanceResult(AttendanceDate date, AttendanceBook attendanceBook) {
+        LocalTime time = attendanceBook.getAttendanceTimeByDate(date)
+                .map(AttendanceTime::getTime)
+                .orElse(Dates.DEFAULT_TIME);
+        return new AttendanceResultDto(
+                date.getDate(),
+                time,
+                attendanceBook.getAttendanceStatus(date)
+        );
+    }
+
+
+    private void attend() {
+        AttendanceDate attendanceDate = new AttendanceDate(TODAY);
+
+        AttendanceBook attendanceBook = getAttendanceBookByInputName();
+        validateHasNoAttendRecordToday(attendanceBook, attendanceDate);
+
+        AttendanceTime attendanceTime = getAttendTimeInput();
+        attendanceBook.attendance(attendanceDate, attendanceTime);
+
+        AttendanceResultDto attendanceResultDto = getAttendanceResult(attendanceDate, attendanceBook);
+        output.printAttendResult(attendanceResultDto);
+    }
+
+    private AttendanceBook getAttendanceBookByInputName() {
+        Crew crew = new Crew(input.getNameInput());
+        return attendanceSystem.findByCrew(crew);
+    }
+
+    private AttendanceTime getAttendTimeInput() {
+        LocalTime time = Parser.stringToLocalTime(input.getTimeInput());
+        return new AttendanceTime(time);
+    }
+
+    private void initCrew() {
+        List<AttendanceRecordDto> attendanceRecords = fileInput.getFileInit();
+        attendanceRecords.forEach(attendanceRecordDto ->
+                attendanceSystem.editAttendance(
+                        new Crew(attendanceRecordDto.nickname()),
+                        new AttendanceDate(attendanceRecordDto.attendanceDateTime().toLocalDate()),
+                        new AttendanceTime(attendanceRecordDto.attendanceDateTime().toLocalTime())));
+    }
+
+    private void validateHasNoAttendRecordToday(AttendanceBook attendanceBook, AttendanceDate attendanceDate) {
+        if (attendanceBook.hasAttendanceRecord(attendanceDate)) {
+            throw new IllegalArgumentException("수정 기능을 사용해주세요.");
+        }
     }
 }
