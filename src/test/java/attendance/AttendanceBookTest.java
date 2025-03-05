@@ -20,13 +20,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class AttendanceBookTest {
 
   private final AttendanceBook attendanceBook = new AttendanceBook(
-      new HashMap<>(
-          Map.of(
-              new Crew("히포"), new AttendanceRecords(),
-              new Crew("이든"), new AttendanceRecords(),
-              new Crew("짱수"), new AttendanceRecords(),
-              new Crew("짱구"), new AttendanceRecords()
-          )
+      Map.of(
+          new Crew("히포"), new AttendanceRecords(),
+          new Crew("이든"), new AttendanceRecords(),
+          new Crew("짱수"), new AttendanceRecords(),
+          new Crew("짱구"), new AttendanceRecords()
       )
   );
 
