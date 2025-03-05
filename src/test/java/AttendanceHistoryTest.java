@@ -5,6 +5,7 @@ import domain.AttendanceHistory;
 import domain.AttendanceResult;
 import domain.Attendances;
 import domain.Crew;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class AttendanceHistoryTest {
     void setUp() {
         Map<Crew, Attendances> attendanceMap = new HashMap<>();
         crew = new Crew("벡터");
-        attendanceMap.put(crew, new Attendances(new ArrayList<>())); // ArrayList 사용하여 변경 가능하게 설정
+        attendanceMap.put(crew, new Attendances(new ArrayList<>()));
         attendanceHistory = new AttendanceHistory(attendanceMap);
     }
 
@@ -124,7 +125,7 @@ public class AttendanceHistoryTest {
     @DisplayName("출석 기록 수정 ")
     void editAttendanceTest() {
         Crew crew = new Crew("벡터");
-        LocalDateTime initialAttendanceDateTime = LocalDateTime.of(2024, 2, 21, 9, 0); // 기존 출석 기록 추가
+        LocalDateTime initialAttendanceDateTime = LocalDateTime.of(2024, 2, 21, 9, 0);
         attendanceHistory.checkAttendance(crew, initialAttendanceDateTime);
         LocalDateTime newAttendanceDateTime = LocalDateTime.of(2024, 2, 21, 10, 0);
         LocalDateTime oldAttendanceDateTime = attendanceHistory.editAttendance(crew, newAttendanceDateTime);
@@ -148,11 +149,46 @@ public class AttendanceHistoryTest {
         Map<Crew, Attendances> attendanceMap = new HashMap<>();
         attendanceMap.put(crew, new Attendances(new ArrayList<>()));
         attendanceHistory = new AttendanceHistory(attendanceMap);
-        attendanceHistory.checkAttendance(crew, LocalDateTime.of(2024, 2, 19, 10, 0)); // 출석을 2월 19일에 기록
+        attendanceHistory.checkAttendance(crew, LocalDateTime.of(2024, 112, 19, 10, 0));
         LocalDateTime dateTime = LocalDateTime.of(2024, 2, 20, 10, 0);
         assertThatThrownBy(() -> attendanceHistory.editAttendance(crew, dateTime))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    @DisplayName("이름을 통해 출석 기록  자체를 확인")
+    void getCrewAttendanceHistory() {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 20, 10, 0);
+        attendanceHistory.checkAttendance(crew, attendanceTime);
+        Attendances actualAttendanceDateTimes = attendanceHistory.getAttendances(crew);
+        assertThat(actualAttendanceDateTimes).isNotNull();
+        assertThat(actualAttendanceDateTimes.haveAttendanceDate(LocalDate.from(attendanceTime))).isTrue();
+    }
+
+    @Test
+    @DisplayName("출석 횟수를 확인")
+    void getAttendanceCountTest() {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+        LocalDateTime attendanceTime1 = LocalDateTime.of(2024, 12, 3, 10, 0);
+        LocalDateTime attendanceTime2 = LocalDateTime.of(2024, 12, 4, 10, 0);
+        LocalDateTime attendanceTime3 = LocalDateTime.of(2024, 12, 5, 10, 15);
+        LocalDateTime attendanceTime4 = LocalDateTime.of(2024, 12, 6, 11, 0);
+        LocalDateTime attendanceTime5 = LocalDateTime.of(2024, 12, 9, 13, 0);
+        LocalDateTime attendanceTime6 = LocalDateTime.of(2024, 12, 10, 10, 0);
+        attendanceHistory.checkAttendance(crew, attendanceTime);
+        attendanceHistory.checkAttendance(crew, attendanceTime1);
+        attendanceHistory.checkAttendance(crew, attendanceTime2);
+        attendanceHistory.checkAttendance(crew, attendanceTime3);
+        attendanceHistory.checkAttendance(crew, attendanceTime4);
+        attendanceHistory.checkAttendance(crew, attendanceTime5);
+        attendanceHistory.checkAttendance(crew, attendanceTime6);
+
+        LocalDate standardDate = LocalDate.of(2024, 12, 11);
+        int presentCount = attendanceHistory.getAttendanceCount(crew, standardDate);
+        assertThat(presentCount).isEqualTo(4);
+    }
+
 
 }
+
+

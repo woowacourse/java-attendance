@@ -65,4 +65,14 @@ public class AttendanceHistory {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 이름입니다.");
         }
     }
+
+    public Attendances getAttendances(Crew crew) {
+        isExistName(crew);
+        return attendanceHistory.get(crew);
+    }
+
+    public int getAttendanceCount(Crew crew, LocalDate lastDate) {
+        Attendances attendanceDateTimes = attendanceHistory.get(crew);
+        return attendanceDateTimes.getPresentCount(lastDate);
+    }
 }

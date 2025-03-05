@@ -28,4 +28,14 @@ public class Attendances {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없습니다."));
     }
+
+
+    public int getPresentCount(LocalDate lastDate) {
+        return (int) attendances.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.toLocalDate().isBefore(lastDate))
+                .filter(attendanceDateTime -> AttendanceResult.getAttendanceResult(attendanceDateTime)
+                        == AttendanceResult.ATTENDANCE)
+                .count();
+    }
+
 }
