@@ -1,122 +1,84 @@
 package attendance.domain;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class Attendances {
 
-    private final List<Attendance> attendances = new ArrayList<>();
+    private final List<Attendance> attendances;
 
-    public Attendances(List<LocalDateTime> attendanceDateTimes, LocalDateTime today) {
-        for (int day = 1; day < today.getDayOfMonth(); day++) {
-            LocalDate localDate = LocalDate.of(today.getYear(), today.getMonth(), day);
-            DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-            if (dayOfWeek.equals(DayOfWeek.SUNDAY) || dayOfWeek.equals(DayOfWeek.SATURDAY) || Holiday.isExists(
-                    localDate)) {
-                continue;
-            }
-            this.attendances.add(initializeAttendance(attendanceDateTimes, today, day));
-        }
+    public Attendances(final List<Attendance> attendances) {
+        this.attendances = attendances;
     }
 
-    private Attendance initializeAttendance(List<LocalDateTime> attendanceDateTimes, LocalDateTime today, int day) {
-        return attendanceDateTimes.stream()
-                .filter(dateTime -> dateTime.toLocalDate()
-                        .isEqual(LocalDate.of(today.getYear(), today.getMonth(), day)))
-                .findAny()
-                .map(dateTime -> new Attendance(
-                        new AttendanceDate(dateTime.toLocalDate()), new AttendanceTime(dateTime.toLocalTime())))
-                .orElse(Attendance.absence(LocalDate.of(today.getYear(), today.getMonth(), day)));
+    public boolean hasAttendanceByLocalDate(final LocalDate findDate) {
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.isSameDate(findDate));
     }
 
-    public void addAttendance(final Attendance attendance) {
+    public Attendance findSameDateAttendance(final LocalDate findDate) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isSameDate(findDate))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석 기록이 존재하지 않습니다."));
+    }
+
+    public void modifyByModificationDateTime(final LocalDateTime modificationDateTime) {
+        Attendance originAttendance = findSameDateAttendance(modificationDateTime.toLocalDate());
+        Attendance modificationAttendance = originAttendance.changeTime(modificationDateTime);
+        attendances.remove(originAttendance);
+        add(modificationAttendance);
+    }
+
+    public void add(final Attendance attendance) {
+        validateIsExists(attendance);
         attendances.add(attendance);
     }
 
-    public Attendance findAttendanceByLocalDate(final LocalDate findDate) {
-        return attendances.stream()
-                .filter(attendance -> attendance.isSameDate(findDate))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
-    }
-
-    public List<Attendance> findAllBeforeToday(LocalDateTime today) {
-        boolean hasTodayAttendance = attendances.stream()
-                .anyMatch(attendance -> attendance.isSameDate(today.toLocalDate()));
-        if (hasTodayAttendance) {
-            return attendances.subList(0, attendances.size());
+    private void validateIsExists(final Attendance addedAttendance) {
+        if (attendances.stream()
+                .anyMatch(attendance -> attendance.isSameDate(addedAttendance))
+        ) {
+            throw new IllegalArgumentException("해당 날짜의 출석 기록이 이미 존재합니다.");
         }
+    }
+
+    public List<Attendance> findAllUntilStandardDate(final LocalDate standardDate) {
         return attendances.stream()
+                .filter(attendance -> attendance.isBeforeOrEqualDate(standardDate))
                 .toList();
     }
 
-    public boolean existsByLocalDate(final LocalDate localDate) {
-        return attendances.stream()
-                .anyMatch(attendance -> attendance.isSameDate(localDate));
-    }
-
-    public void modifyAttendance(final Attendance removedAttendance, final Attendance modifiedAttendance) {
-        this.attendances.remove(removedAttendance);
-        this.attendances.add(modifiedAttendance);
-    }
-
-    public Map<String, Integer> calculateStatusCount() {
-        List<AttendanceStatus> statuses = attendances.stream()
-                .map(Attendance::calculateStatus)
-                .toList();
-        return statuses.stream()
-                .collect(Collectors.groupingBy(AttendanceStatus::getText,
-                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue))
-                );
-    }
-
-    public ExpulsionStatus calculateExpulsionStatus() {
-        List<AttendanceStatus> statuses = attendances.stream()
-                .map(Attendance::calculateStatus)
-                .toList();
-        int totalAbsentCount = AttendanceStatus.calculateTotalAbsentCount(statuses);
-        return ExpulsionStatus.findByAbsentCount(totalAbsentCount);
-    }
-
-    public List<Attendance> getAttendances() {
-        return attendances.stream()
-                .toList();
-    }
-
-    public int calculateTotalLateCount() {
-        return (int) this.attendances.stream()
-                .map(Attendance::calculateStatus)
-                .filter(AttendanceStatus::isLate)
+    public int calculateAttendanceCount(final LocalDate standardDate) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.isBeforeOrEqualDate(standardDate) && attendance.isAttendanceComplete())
                 .count();
     }
 
-    public int calculateTotalAbsentCount() {
-        return (int) this.attendances.stream()
-                .map(Attendance::calculateStatus)
-                .filter(AttendanceStatus::isAbsent)
+    public int calculateLateCount(final LocalDate standardDate) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.isBeforeOrEqualDate(standardDate) && attendance.isLate())
                 .count();
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Attendances that)) {
-            return false;
-        }
-        return Objects.equals(getAttendances(), that.getAttendances());
+    public int calculateAbsentCount(final LocalDate standardDate) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.isBeforeOrEqualDate(standardDate) && attendance.isAbsence())
+                .count();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getAttendances());
+    public ExpulsionStatus findExpulsionStatusUntilStandardDate(final LocalDate standardDate) {
+        int absentCount = calculateAbsentCount(standardDate);
+        int lateCount = calculateLateCount(standardDate);
+        int totalAbsentCount = AttendanceStatus.calculateTotalAbsentCount(absentCount, lateCount);
+        return ExpulsionStatus.findStatusByAbsentCount(totalAbsentCount);
+    }
+
+    public List<Attendance> getAscendingAttendances() {
+        return attendances.stream()
+                .sorted()
+                .toList();
     }
 
 }

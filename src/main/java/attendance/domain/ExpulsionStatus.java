@@ -1,31 +1,37 @@
 package attendance.domain;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
 
 public enum ExpulsionStatus {
 
-    EXPULSION("제적", 6),
-    INTERVIEW("면담", 3),
-    WARNING("경고", 2),
-    NONE("없음", 0);
+    EXPULSION("제적", (absentCount) -> (absentCount < Integer.MAX_VALUE) && (absentCount >= 6)),
+    INTERVIEW("면담", (absentCount) -> (absentCount < 6) && (absentCount >= 3)),
+    WARNING("경고", (absentCount) -> absentCount == 2),
+    NONE("없음", (absentCount) -> (absentCount < 2) && (absentCount >= 0));
 
+    private static final List<ExpulsionStatus> PENALTY_GROUP = List.of(EXPULSION, INTERVIEW, WARNING);
     private final String text;
-    private final int standard;
+    private final Predicate<Integer> condition;
 
-    ExpulsionStatus(final String text, final int standard) {
+    ExpulsionStatus(final String text, final Predicate<Integer> condition) {
         this.text = text;
-        this.standard = standard;
+        this.condition = condition;
     }
 
-    public static ExpulsionStatus findByAbsentCount(int absentCount) {
+    public static ExpulsionStatus findStatusByAbsentCount(final int totalAbsentCount) {
         return Arrays.stream(values())
-                .filter(status -> status.standard <= absentCount)
-                .findAny()
-                .orElse(NONE);
+                .filter(expulsionStatus -> expulsionStatus.condition.test(totalAbsentCount))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 결석 횟수입니다."));
+    }
+
+    public boolean isPenaltyGroup() {
+        return PENALTY_GROUP.contains(this);
     }
 
     public String getText() {
         return text;
     }
-
 }

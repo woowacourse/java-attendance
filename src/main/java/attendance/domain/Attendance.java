@@ -5,44 +5,86 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class Attendance {
+public class Attendance implements Comparable<Attendance> {
 
-    private static final LocalTime ABSENT_TIME = LocalTime.of(23, 0);
-
+    private static final LocalTime NO_RECORD_ABSENT_TIME = LocalTime.of(18, 1);
     private final AttendanceDate attendanceDate;
     private final AttendanceTime attendanceTime;
+    private final boolean hasRecord;
 
-    public Attendance(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime) {
-        this.attendanceDate = attendanceDate;
-        this.attendanceTime = attendanceTime;
+    public Attendance(final LocalDateTime attendanceDateTime) {
+        this.attendanceDate = new AttendanceDate(attendanceDateTime.toLocalDate());
+        this.attendanceTime = new AttendanceTime(attendanceDateTime.toLocalTime());
+        this.hasRecord = true;
     }
 
-    public static Attendance absence(final LocalDate absentDate) {
-        return new Attendance(new AttendanceDate(absentDate), new AttendanceTime(ABSENT_TIME));
+    public Attendance(final LocalDateTime attendanceDateTime, final boolean hasRecord) {
+        this.attendanceDate = new AttendanceDate(attendanceDateTime.toLocalDate());
+        this.attendanceTime = new AttendanceTime(attendanceDateTime.toLocalTime());
+        this.hasRecord = hasRecord;
     }
 
-    public Attendance changeAttendanceTime(final LocalTime changeTime) {
-        return new Attendance(this.attendanceDate, new AttendanceTime(changeTime));
+    public static Attendance absent(final LocalDate absentDate) {
+        return new Attendance(LocalDateTime.of(absentDate, NO_RECORD_ABSENT_TIME), false);
     }
 
-    public boolean isSameDate(final LocalDate findDate) {
-        return attendanceDate.isSameDate(findDate);
+    public boolean isSameDate(final LocalDate localDate) {
+        return attendanceDate.isSameDate(localDate);
+    }
+
+    public boolean isSameDate(final Attendance otherAttendance) {
+        return this.attendanceDate.equals(otherAttendance.attendanceDate);
+    }
+
+    public Attendance changeTime(final LocalDateTime modificationDateTime) {
+        return new Attendance(modificationDateTime);
+    }
+
+    public boolean isBeforeOrEqualDate(final LocalDate localDate) {
+        return attendanceDate.isBeforeOrEqualDate(localDate);
+    }
+
+    public boolean isMonday() {
+        return attendanceDate.isMonday();
+    }
+
+    public boolean isAttendanceComplete() {
+        return AttendanceStatus.isAttendanceComplete(this, attendanceTime);
+    }
+
+    public boolean isLate() {
+        return AttendanceStatus.isLate(this, attendanceTime);
+    }
+
+    public boolean isAbsence() {
+        return AttendanceStatus.isAbsence(this, attendanceTime);
     }
 
     public AttendanceStatus calculateStatus() {
-        return AttendanceStatus.findByAttendanceDateTime(attendanceDate, attendanceTime);
+        if (isAbsence()) {
+            return AttendanceStatus.ABSENCE;
+        }
+        if (isLate()) {
+            return AttendanceStatus.LATE;
+        }
+        return AttendanceStatus.ATTENDANCE_COMPLETE;
     }
 
-    public LocalDateTime getAttendanceDateTime() {
-        return LocalDateTime.of(attendanceDate.getAttendanceDate(), attendanceTime.getAttendanceTime());
+    public LocalDate getAttendanceLocalDate() {
+        return attendanceDate.attendanceDate();
     }
 
-    public AttendanceDate getAttendanceDate() {
-        return attendanceDate;
+    public LocalTime getAttendanceLocalTime() {
+        return attendanceTime.attendanceTime();
     }
 
-    public AttendanceTime getAttendanceTime() {
-        return attendanceTime;
+    public boolean hasRecord() {
+        return hasRecord;
+    }
+
+    @Override
+    public int compareTo(final Attendance o) {
+        return this.attendanceDate.compareTo(o.attendanceDate);
     }
 
     @Override
@@ -53,13 +95,13 @@ public class Attendance {
         if (!(o instanceof Attendance that)) {
             return false;
         }
-        return Objects.equals(getAttendanceDate(), that.getAttendanceDate()) && Objects.equals(
-                getAttendanceTime(), that.getAttendanceTime());
+        return Objects.equals(attendanceDate, that.attendanceDate) && Objects.equals(attendanceTime,
+                that.attendanceTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAttendanceDate(), getAttendanceTime());
+        return Objects.hash(attendanceDate, attendanceTime);
     }
 
 }

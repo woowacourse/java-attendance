@@ -1,13 +1,10 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceStatus.calculateTotalAbsentCount;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,45 +13,60 @@ import org.junit.jupiter.params.provider.CsvSource;
 class AttendanceStatusTest {
 
     @CsvSource(value = {
-            "17,12,59,OK", "17,13,05,OK", "17,13,06,LATE", "17,13,30,LATE", "17,13,31,ABSENT",
-            "18,9,59,OK", "18,10,05,OK", "18,10,06,LATE", "18,10,30,LATE", "18,10,31,ABSENT"
+            "24,13,5,true", "27,10,5,true",
+            "24,13,6,false", "27,10,6,false"
     })
     @ParameterizedTest
-    void 출석_날짜와_시간을_알려주면_출석_상태를_알려준다(int day, int hour, int minute, AttendanceStatus expected) {
-        AttendanceStatus status = AttendanceStatus.findByAttendanceDateTime(
-                new AttendanceDate(LocalDate.of(2025, 2, day)),
-                new AttendanceTime(LocalTime.of(hour, minute)));
+    void 출석_기록을_알려주면_출석_완료인지_알려준다(int day, int hour, int minute, boolean expected) {
+        LocalDate localDate = LocalDate.of(2025, 2, day);
+        LocalTime localTime = LocalTime.of(hour, minute);
+        Attendance attendance = new Attendance(LocalDateTime.of(localDate, localTime));
+        AttendanceTime attendanceTime = new AttendanceTime(localTime);
 
-        assertThat(status).isEqualTo(expected);
+        assertThat(AttendanceStatus.isAttendanceComplete(attendance, attendanceTime)).isEqualTo(expected);
     }
 
-    @Test
-    void 출석_기록을_알려주면_출석_상태_횟수를_알려준다() {
-        Attendances attendances = new Attendances(List.of(
-                LocalDateTime.of(2025, 2, 3, 10, 0),
-                LocalDateTime.of(2025, 2, 4, 10, 6),
-                LocalDateTime.of(2025, 2, 5, 10, 31)
-        ), LocalDateTime.of(2025, 2, 6, 10, 0));
-
-        Map<String, Integer> statusCount = attendances.calculateStatusCount();
-
-        assertThat(statusCount).containsKeys("출석", "지각", "결석")
-                .containsValues(1, 1, 1);
-    }
-
-    @Test
-    void 출석_상태를_알려주면_총_결석_횟수를_알려준다() {
-        List<AttendanceStatus> statuses = List.of(AttendanceStatus.OK
-                , AttendanceStatus.LATE, AttendanceStatus.LATE, AttendanceStatus.LATE,
-                AttendanceStatus.ABSENT);
-
-        assertThat(calculateTotalAbsentCount(statuses)).isEqualTo(2);
-    }
-
-    @CsvSource(value = {"OK,false", "LATE,true", "ABSENT,false"})
+    @CsvSource(value = {
+            "24,13,6,true", "27,10,6,true", "24,13,30,true", "27,10,30,true",
+            "24,13,5,false", "27,10,5,false", "24,13,31,false", "27,10,31,false"
+    })
     @ParameterizedTest
-    void 출석_상태가_지각인지_알려준다(AttendanceStatus attendanceStatus, boolean expected) {
-        assertThat(attendanceStatus.isLate()).isEqualTo(expected);
+    void 출석_기록을_알려주면_지각인지_알려준다(int day, int hour, int minute, boolean expected) {
+        LocalDate localDate = LocalDate.of(2025, 2, day);
+        LocalTime localTime = LocalTime.of(hour, minute);
+        Attendance attendance = new Attendance(LocalDateTime.of(localDate, localTime));
+        AttendanceTime attendanceTime = new AttendanceTime(localTime);
+
+        assertThat(AttendanceStatus.isLate(attendance, attendanceTime)).isEqualTo(expected);
+    }
+
+    @CsvSource(value = {
+            "24,13,31,true", "27,10,31,true", "24,23,0,true", "27,23,0,true",
+            "24,13,30,false", "27,10,30,false"
+    })
+    @ParameterizedTest
+    void 출석_기록을_알려주면_결석인지_알려준다(int day, int hour, int minute, boolean expected) {
+        LocalDate localDate = LocalDate.of(2025, 2, day);
+        LocalTime localTime = LocalTime.of(hour, minute);
+        Attendance attendance = new Attendance(LocalDateTime.of(localDate, localTime));
+        AttendanceTime attendanceTime = new AttendanceTime(localTime);
+
+        assertThat(AttendanceStatus.isAbsence(attendance, attendanceTime)).isEqualTo(expected);
+    }
+
+    @Test
+    void 결석_횟수와_지각_횟수를_알려주면_총_결석_횟수를_알려준다() {
+        int absentCount = 1;
+        int lateCount = 5;
+
+        assertThat(AttendanceStatus.calculateTotalAbsentCount(absentCount, lateCount)).isEqualTo(2);
+    }
+
+    @Test
+    void 결석_횟수를_지각_횟수로_치환해_알려준다() {
+        int absentCount = 1;
+
+        assertThat(AttendanceStatus.convertToLateCount(absentCount)).isEqualTo(3);
     }
 
 }

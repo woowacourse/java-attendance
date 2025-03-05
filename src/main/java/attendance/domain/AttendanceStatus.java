@@ -1,61 +1,74 @@
 package attendance.domain;
 
 import java.time.LocalTime;
-import java.util.List;
+import java.util.function.BiPredicate;
 
 public enum AttendanceStatus {
 
-    OK("출석", 5, 0),
-    LATE("지각", 5, 1),
-    ABSENT("결석", 30, 3);
+    ATTENDANCE_COMPLETE("출석", (attendance, attendanceTime) -> {
+        LocalTime startInclusive = CampusTime.CAMPUS_OPEN_TIME.getLocalTime();
+        if (attendance.isMonday()) {
+            return attendanceTime.isBetweenInclusive(startInclusive,
+                    CampusTime.MONDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(5L));
+        }
+        return attendanceTime.isBetweenInclusive(startInclusive,
+                CampusTime.TUESDAY_TO_FRIDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(5L));
+    }),
+    LATE("지각", (attendance, attendanceTime) -> {
+        if (attendance.isMonday()) {
+            return attendanceTime.isBetweenInclusive(
+                    CampusTime.MONDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(6L),
+                    CampusTime.MONDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(30L));
+        }
+        return attendanceTime.isBetweenInclusive(
+                CampusTime.TUESDAY_TO_FRIDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(6L),
+                CampusTime.TUESDAY_TO_FRIDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(30L)
+        );
+    }),
+    ABSENCE("결석", (attendance, attendanceTime) -> {
+        if (attendance.isMonday()) {
+            return attendanceTime.isBetweenInclusive(
+                    CampusTime.MONDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(31L),
+                    CampusTime.CAMPUS_CLOSE_TIME.getLocalTime());
+        }
+        return attendanceTime.isBetweenInclusive(
+                CampusTime.TUESDAY_TO_FRIDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(31L),
+                CampusTime.CAMPUS_CLOSE_TIME.getLocalTime()
+        );
+    });
 
-    private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
-    private static final LocalTime TUESDAY_TO_FRIDAY_START_TIME = LocalTime.of(10, 0);
+    private static final int LATE_PER_ABSENT = 3;
 
     private final String text;
-    private final int deadLineMinute;
-    private final int lateCount;
+    private final BiPredicate<Attendance, AttendanceTime> condition;
 
-    AttendanceStatus(final String text, final int deadLineMinute, final int lateCount) {
+    AttendanceStatus(final String text, final BiPredicate<Attendance, AttendanceTime> condition) {
         this.text = text;
-        this.deadLineMinute = deadLineMinute;
-        this.lateCount = lateCount;
+        this.condition = condition;
     }
 
-    public static AttendanceStatus findByAttendanceDateTime(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime) {
-        if (attendanceDate.isMonday()) {
-            return findStatusByStartTime(MONDAY_START_TIME, attendanceTime);
-        }
-        return findStatusByStartTime(TUESDAY_TO_FRIDAY_START_TIME, attendanceTime);
+    public static boolean isAttendanceComplete(final Attendance attendance, final AttendanceTime attendanceTime) {
+        return ATTENDANCE_COMPLETE.condition.test(attendance, attendanceTime);
     }
 
-    private static AttendanceStatus findStatusByStartTime(final LocalTime startTime, final AttendanceTime attendanceTime) {
-        int result = attendanceTime.calculateMinuteDifferences(startTime);
-        if (result > ABSENT.deadLineMinute) {
-            return ABSENT;
-        }
-        if (result > LATE.deadLineMinute) {
-            return LATE;
-        }
-        return OK;
+    public static boolean isLate(final Attendance attendance, final AttendanceTime attendanceTime) {
+        return LATE.condition.test(attendance, attendanceTime);
     }
 
-    public static int calculateTotalAbsentCount(final List<AttendanceStatus> statuses) {
-        int totalLateCount = statuses.stream()
-                .mapToInt(status -> status.lateCount)
-                .sum();
-        return totalLateCount / ABSENT.lateCount;
+    public static boolean isAbsence(final Attendance attendance, final AttendanceTime attendanceTime) {
+        return ABSENCE.condition.test(attendance, attendanceTime);
     }
 
-    public boolean isLate() {
-        return this.equals(LATE);
+    public static int calculateTotalAbsentCount(final int absentCount, final int lateCount) {
+        return absentCount + lateCount / LATE_PER_ABSENT;
     }
 
-    public boolean isAbsent() {
-        return this.equals(ABSENT);
+    public static int convertToLateCount(final int absentCount) {
+        return absentCount * LATE_PER_ABSENT;
     }
 
     public String getText() {
-        return text;
+        return this.text;
     }
+
 }

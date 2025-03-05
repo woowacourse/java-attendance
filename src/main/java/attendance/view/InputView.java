@@ -1,67 +1,86 @@
 package attendance.view;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class InputView {
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-    private Scanner scanner = new Scanner(System.in);
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("M월 d일 E요일", Locale.KOREA);
+    private final Scanner scanner = new Scanner(System.in);
+    private final LocalDate today;
 
-    public OperationCommand readOperationCommand() {
-        String commandText = scanner.nextLine();
-        return OperationCommand.from(commandText);
+    public InputView(final LocalDate today) {
+        this.today = today;
     }
 
-    public String readCrewNickname() {
+    public OperationCommand readOperationCommand(final LocalDateTime today) {
+        System.out.println();
+        System.out.println(String.join("", "오늘은 ", DATE_FORMATTER.format(today), "입니다. 기능을 선택해 주세요."));
+        System.out.print("""
+                1. 출석 확인
+                2. 출석 수정
+                3. 크루별 출석 기록 확인
+                4. 제적 위험자 확인
+                Q. 종료
+                """);
+        String operationCommand = scanner.nextLine();
+        validateBlank(operationCommand);
+        return OperationCommand.from(operationCommand);
+    }
+
+    public String readAttendanceConfirmNickname() {
         System.out.println("닉네임을 입력해 주세요.");
-        return scanner.nextLine();
+        return readLine();
     }
 
-    public LocalTime readAttendanceTime() {
+    public LocalTime readAttendanceConfirmTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return parseLocalTime();
+        return readTime();
     }
 
-    private LocalTime parseLocalTime() {
-        try {
-            String input = scanner.nextLine();
-            return LocalTime.parse(input, DATE_TIME_FORMATTER);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("올바른 시간 입력 형식이 아닙니다.");
-        }
-    }
-
-    public String readModificationCrewNickname() {
+    public String readAttendanceModificationCrewNickname() {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        return scanner.nextLine();
+        return readLine();
     }
 
-    public LocalDate readModificationDay(LocalDate today) {
+    public LocalDate readAttendanceModificationDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        String dayText = scanner.nextLine();
-        int day = Integer.parseInt(dayText);
         try {
-            LocalDate modificationDate = LocalDate.of(today.getYear(), today.getMonth(), day);
-            validateFutureDate(today, modificationDate);
-            return modificationDate;
-        } catch (DateTimeException exception) {
-            throw new IllegalArgumentException("잘못된 날짜입니다.");
+            return today.withDayOfMonth(Integer.parseInt(readLine()));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("알맞은 날짜를 입력해 주세요.");
         }
     }
 
-    private static void validateFutureDate(LocalDate today, LocalDate modificationDate) {
-        if (modificationDate.isAfter(today)) {
-            throw new IllegalArgumentException("미래의 날짜는 입력할 수 없습니다.");
-        }
-    }
-
-    public LocalTime readModificationTime() {
+    public LocalTime readAttendanceModificationTime() {
         System.out.println("언제로 변경하겠습니까?");
-        return parseLocalTime();
+        return readTime();
     }
+
+    private String readLine() {
+        String input = scanner.nextLine();
+        validateBlank(input);
+        return input;
+    }
+
+    private LocalTime readTime() {
+        try {
+            String attendanceTime = readLine();
+            return LocalTime.parse(attendanceTime);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("시간은 다음과 같이 입력해주세요. ex) 09:00, 09:03, 10:00");
+        }
+    }
+
+    private void validateBlank(final String input) {
+        if (input.isBlank()) {
+            throw new IllegalArgumentException("값을 입력해 주세요.");
+        }
+    }
+
 }
