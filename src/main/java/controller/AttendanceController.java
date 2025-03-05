@@ -6,6 +6,7 @@ import domain.AttendanceStatus;
 import domain.Crew;
 import domain.DateProvider;
 import infrastructure.file.AttendanceFileReader;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import view.InputView;
@@ -48,13 +49,12 @@ public class AttendanceController {
         }
     }
 
-
     private void attend(AttendanceManager attendanceManager) {
         String nickname = inputView.readNickname();
         Crew crew = attendanceManager.findCrewExactlyByNickname(nickname);
 
-        LocalTime time = inputView.readTime();
-        LocalDateTime attendanceTime = crew.attend(time);
+        LocalDateTime now = LocalDateTime.of(dateProvider.getDate(), LocalTime.now());
+        LocalDateTime attendanceTime = crew.attend(now);
         AttendanceStatus attendanceStatus = crew.getAttendanceStatus(attendanceTime.getDayOfMonth());
 
         outputView.printAttendanceResult(attendanceTime, attendanceStatus);
@@ -71,7 +71,8 @@ public class AttendanceController {
                 attendanceRecord.findAttendanceTimeByDay(modifyDay),
                 attendanceRecord.getAttendanceStatus(modifyDay));
 
-        attendanceRecord.modifyAttendanceTime(modifyDay, modifyTime);
+        LocalDate now = dateProvider.getDate();
+        attendanceRecord.modifyAttendanceTime(now, modifyDay, modifyTime);
 
         outputView.printModifiedAttendance(
                 attendanceRecord.findAttendanceTimeByDay(modifyDay),

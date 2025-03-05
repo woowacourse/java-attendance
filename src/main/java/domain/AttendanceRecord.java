@@ -20,16 +20,16 @@ public class AttendanceRecord {
         this.attendancePolicy = new AttendancePolicy();
     }
 
-    public LocalDateTime attend(LocalTime todayTime) {
-        LocalDate today = dateProvider.getDate();
+    public LocalDateTime attend(LocalDateTime now) {
+        LocalDate nowDate = now.toLocalDate();
+        LocalTime nowTime = now.toLocalTime();
 
-        validateAlreadyAttend(today);
-        attendancePolicy.validateIsWeekDays(today);
-        attendancePolicy.validateCampusOpen(todayTime);
+        validateAlreadyAttend(nowDate);
+        attendancePolicy.validateIsWeekDays(nowDate);
+        attendancePolicy.validateCampusOpen(nowTime);
 
-        LocalDateTime attendanceTime = LocalDateTime.of(today, todayTime);
-        attendanceTimes.add(attendanceTime);
-        return attendanceTime;
+        attendanceTimes.add(now);
+        return LocalDateTime.of(nowDate, nowTime);
     }
 
     public void add(LocalDateTime attendanceTime) {
@@ -55,8 +55,9 @@ public class AttendanceRecord {
         return attendancePolicy.getAttendanceStatus(attendanceTime);
     }
 
-    public void modifyAttendanceTime(int modifyDay, LocalTime modifyTime) {
-        LocalDateTime modifyDateTime = LocalDateTime.of(dateProvider.getDate(), modifyTime);
+    public void modifyAttendanceTime(LocalDate now, int modifyDay, LocalTime modifyTime) {
+        LocalDateTime modifyDateTime = LocalDateTime.of(
+                LocalDate.of(now.getYear(), now.getMonth(), modifyDay), modifyTime);
         attendanceTimes.removeIf(time -> time.getDayOfMonth() == modifyDay);
         attendanceTimes.add(modifyDateTime);
     }

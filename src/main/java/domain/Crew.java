@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class Crew {
 
@@ -18,8 +17,8 @@ public class Crew {
         return nickname;
     }
 
-    public LocalDateTime attend(LocalTime todayTime) {
-        return attendanceRecord.attend(todayTime);
+    public LocalDateTime attend(LocalDateTime now) {
+        return attendanceRecord.attend(now);
     }
 
     public void addAttendanceTime(LocalDateTime attendanceTime) {

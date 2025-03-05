@@ -14,7 +14,7 @@ public class AttendanceRecordTest extends BaseAttendanceTest {
     void 출석하면_출석_시간을_추가한다() {
         LocalTime todayTime = LocalTime.of(9, 59);
         AttendanceRecord attendanceRecord = new AttendanceRecord(dateProviderDec13);
-        LocalDateTime attendanceTime = attendanceRecord.attend(todayTime);
+        LocalDateTime attendanceTime = attendanceRecord.attend(LocalDateTime.of(DEC_13, todayTime));
 
         assertThat(attendanceTime).isEqualTo(LocalDateTime.of(DEC_13, todayTime));
     }
@@ -23,7 +23,7 @@ public class AttendanceRecordTest extends BaseAttendanceTest {
     void 해당_날짜의_출석_시간을_확인한다() {
         LocalTime todayTime = LocalTime.of(9, 59);
         AttendanceRecord attendanceRecord = new AttendanceRecord(dateProviderDec13);
-        LocalDateTime attendanceTime = attendanceRecord.attend(todayTime);
+        LocalDateTime attendanceTime = attendanceRecord.attend(LocalDateTime.of(DEC_13, todayTime));
 
         LocalDateTime targetAttendanceTime = attendanceRecord.findAttendanceTimeByDay(attendanceTime.getDayOfMonth());
         assertThat(targetAttendanceTime).isEqualTo(attendanceTime);
@@ -33,7 +33,7 @@ public class AttendanceRecordTest extends BaseAttendanceTest {
     void 해당_날짜의_출석_시간이_없으면_예외가_발생한다() {
         LocalTime todayTime = LocalTime.of(9, 59);
         AttendanceRecord attendanceRecord = new AttendanceRecord(dateProviderDec13);
-        attendanceRecord.attend(todayTime);
+        attendanceRecord.attend(LocalDateTime.of(DEC_13, todayTime));
 
         assertThatThrownBy(() -> attendanceRecord.findAttendanceTimeByDay(1))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -44,9 +44,9 @@ public class AttendanceRecordTest extends BaseAttendanceTest {
     void 이미_출석한_날짜이면_예외가_발생한다() {
         LocalTime todayTime = LocalTime.of(9, 59);
         AttendanceRecord attendanceRecord = new AttendanceRecord(dateProviderDec13);
-        attendanceRecord.attend(todayTime);
+        attendanceRecord.attend(LocalDateTime.of(DEC_13, todayTime));
 
-        assertThatThrownBy(() -> attendanceRecord.attend(todayTime))
+        assertThatThrownBy(() -> attendanceRecord.attend(LocalDateTime.of(DEC_13, todayTime)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 해당 날짜에는 이미 출석했습니다. 수정 기능을 이용해주세요.");
     }
@@ -55,11 +55,11 @@ public class AttendanceRecordTest extends BaseAttendanceTest {
     void 수정하려는_날짜의_출석_시간을_수정한다() {
         LocalTime time = LocalTime.of(9, 58);
         AttendanceRecord attendanceRecord = new AttendanceRecord(dateProviderDec13);
-        attendanceRecord.attend(time);
+        attendanceRecord.attend(LocalDateTime.of(DEC_13, time));
         int modifyDay = 13;
         LocalTime modifyTime = LocalTime.of(10, 31);
 
-        attendanceRecord.modifyAttendanceTime(modifyDay, modifyTime);
+        attendanceRecord.modifyAttendanceTime(DEC_13, modifyDay, modifyTime);
 
         assertThat(attendanceRecord.findAttendanceTimeByDay(modifyDay).toLocalTime()).isEqualTo(modifyTime);
     }
