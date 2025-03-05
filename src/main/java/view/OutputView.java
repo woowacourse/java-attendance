@@ -17,7 +17,7 @@ public class OutputView {
         AttendanceStatus status = AttendanceStatus.determineAttendanceStatus(checkInDate.getClassStartTime(), checkInTime.toLocalTime());
         System.out.println(formatDate(checkInDate.toLocalDate())
                 + " " + formatTime(checkInTime.toLocalTime())
-                + " (" + status + ")");
+                + " (" + formatAttendanceStatus(status) + ")");
     }
 
     public void printModifiedChSeckInTime(CheckInDate checkInDate, CheckInTime beforeTime, CheckInTime afterTime) {
@@ -26,9 +26,9 @@ public class OutputView {
         System.out.printf("%s %s (%s) -> %s (%s) 수정 완료! \n"
                 , formatDate(checkInDate.toLocalDate())
                 , formatTime(beforeTime.toLocalTime())
-                , beforeStatus
+                , formatAttendanceStatus(beforeStatus)
                 , formatTime(afterTime.toLocalTime())
-                , afterStatus
+                , formatAttendanceStatus(afterStatus)
         );
     }
 
@@ -48,7 +48,7 @@ public class OutputView {
             int lateCount = crew.getLateCount();
             int absenceCount = crew.getAbsenceCount();
             PenaltyStatus status = PenaltyStatus.determinePenalty(lateCount, absenceCount);
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", crew, absenceCount, lateCount, status);
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", crew, absenceCount, lateCount, formatPenaltyStatus(status));
         }
     }
 
@@ -67,7 +67,7 @@ public class OutputView {
         } catch (AppException e) {
             return;
         }
-        System.out.printf("%s %s (%s)\n", datePart, timePart, status);
+        System.out.printf("%s %s (%s)\n", datePart, timePart, formatAttendanceStatus(status));
     }
 
 
@@ -89,8 +89,34 @@ public class OutputView {
     private void printIsCrewDanger(CheckInHistory checkInHistory, LocalDate today) {
         PenaltyStatus status = checkInHistory.getPenaltyStatus(today);
         if (status != PenaltyStatus.NONE) {
-            System.out.println(status + " 대상자입니다.");
+            System.out.println(formatPenaltyStatus(status) + " 대상자입니다.");
         }
+    }
+
+    private String formatAttendanceStatus(AttendanceStatus status) {
+        if (status == AttendanceStatus.PRESENCE) {
+            return "출석";
+        }
+        if (status == AttendanceStatus.LATE) {
+            return "지각";
+        }
+        if (status == AttendanceStatus.ABSENCE) {
+            return "결석";
+        }
+        return "NONE";
+    }
+
+    private String formatPenaltyStatus(PenaltyStatus status) {
+        if (status == PenaltyStatus.WARNING) {
+            return "경고";
+        }
+        if (status == PenaltyStatus.INTERVIEW) {
+            return "면담";
+        }
+        if (status == PenaltyStatus.EXPULSION) {
+            return "제적";
+        }
+        return "NONE";
     }
 
     private String formatDate(LocalDate date) {
