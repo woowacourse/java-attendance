@@ -64,13 +64,6 @@ public class AttendanceBook {
         }
     }
 
-    public Attendance getAttendance(LocalDate localDate) {
-        return attendanceBook.stream()
-                .filter(a -> a.getLocalDate().equals(localDate))
-                .findFirst()
-                .orElse(null);
-    }
-
     public List<Attendance> getAttendanceBook() {
         return attendanceBook;
     }

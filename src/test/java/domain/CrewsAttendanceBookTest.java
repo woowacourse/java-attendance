@@ -73,11 +73,9 @@ public class CrewsAttendanceBookTest {
         LocalTime localTime = LocalTime.of(9, 55);
 
         // when
-        repository.checkIn(crew, localDate, localTime);
-        Attendance attendance = repository.getAttendances().get(crew).getAttendance(localDate);
+        Attendance attendance = repository.checkIn(crew, localDate, localTime);
 
         // then
-//        Assertions.assertThat(attendance.getName()).isEqualTo(name);
         Assertions.assertThat(attendance.getLocalTime()).isEqualTo(localTime);
     }
 
@@ -147,11 +145,9 @@ public class CrewsAttendanceBookTest {
         LocalTime localTime = LocalTime.of(10, 10);
 
         // when
-        repository.update(crew, localDate, localTime);
-        Attendance attendance = repository.getAttendances().get(crew).getAttendance(localDate);
+        Attendance attendance = repository.update(crew, localDate, localTime);
 
         // then
-//        Assertions.assertThat(attendance.getName()).isEqualTo(name);
         Assertions.assertThat(attendance.getLocalTime()).isEqualTo(localTime);
     }
 
@@ -200,11 +196,7 @@ public class CrewsAttendanceBookTest {
             repository.checkIn(crew, localDate, attendanceLocalTime);
 
             // when
-            repository.update(crew, localDate, lateLocalTime);
-//            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
-//                    beforeAttendance.getLocalTime());
-
-            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
+            Attendance afterAttendance = repository.update(crew, localDate, lateLocalTime);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -219,11 +211,7 @@ public class CrewsAttendanceBookTest {
             repository.checkIn(crew, localDate, attendanceLocalTime);
 
             // when
-            repository.update(crew, localDate, absenceLocalTime);
-//            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
-//                    beforeAttendance.getLocalTime());
-
-            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
+            Attendance afterAttendance = repository.update(crew, localDate, absenceLocalTime);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -238,11 +226,7 @@ public class CrewsAttendanceBookTest {
             repository.checkIn(crew, localDate, lateLocalTime);
 
             // when
-            repository.update(crew, localDate, attendanceLocalTime);
-//            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
-//                    beforeAttendance.getLocalTime());
-
-            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
+            Attendance afterAttendance = repository.update(crew, localDate, attendanceLocalTime);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -257,11 +241,7 @@ public class CrewsAttendanceBookTest {
             repository.checkIn(crew, localDate, lateLocalTime);
 
             // when
-            repository.update(crew, localDate, absenceLocalTime);
-//            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
-//                    beforeAttendance.getLocalTime());
-
-            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
+            Attendance afterAttendance = repository.update(crew, localDate, absenceLocalTime);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -276,11 +256,7 @@ public class CrewsAttendanceBookTest {
             repository.checkIn(crew, localDate, absenceLocalTime);
 
             // when
-            repository.update(crew, localDate, attendanceLocalTime);
-//            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
-//                    beforeAttendance.getLocalTime());
-
-            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
+            Attendance afterAttendance = repository.update(crew, localDate, attendanceLocalTime);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -295,11 +271,7 @@ public class CrewsAttendanceBookTest {
             repository.checkIn(crew, localDate, absenceLocalTime);
 
             // when
-            repository.update(crew, localDate, lateLocalTime);
-//            AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
-//                    beforeAttendance.getLocalTime());
-
-            Attendance afterAttendance = repository.getAttendances().get(crew).getAttendance(localDate);
+            Attendance afterAttendance = repository.update(crew, localDate, lateLocalTime);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
