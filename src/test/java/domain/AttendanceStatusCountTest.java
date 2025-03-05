@@ -1,6 +1,7 @@
 package domain;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +13,9 @@ class AttendanceStatusCountTest {
     void should_return_correct_attendance_status_count() {
         // given
         AttendanceStatusCount attendanceStatusCount = new AttendanceStatusCount(
-                Map.of(AttendanceStatus.ATTENDANT, 1L, AttendanceStatus.LATE, 2L, AttendanceStatus.ABSENT, 3L));
+                Map.of(AttendanceStatus.ATTENDANT, 1L,
+                        AttendanceStatus.LATE, 2L,
+                        AttendanceStatus.ABSENT, 3L));
 
         // when
         long attendantCount = attendanceStatusCount.getCount(AttendanceStatus.ATTENDANT);
@@ -20,8 +23,10 @@ class AttendanceStatusCountTest {
         long absentCount = attendanceStatusCount.getCount(AttendanceStatus.ABSENT);
 
         // then
-        assertEquals(1L, attendantCount);
-        assertEquals(2L, lateCount);
-        assertEquals(3L, absentCount);
+        assertAll(
+                () -> assertThat(attendantCount).isEqualTo(1L),
+                () -> assertThat(lateCount).isEqualTo(2L),
+                () -> assertThat(absentCount).isEqualTo(3L)
+        );
     }
 }
