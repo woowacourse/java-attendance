@@ -152,7 +152,7 @@ public class AttendanceBookTest {
     attendanceBook.check("히포", LocalDateTime.of(2025, 2, 10, 13, 5));
   }
 
-  private LinkedHashMap<LocalDateTime, AttendanceStatus> createExpectedAttendanceRecord() {
+  private Map<LocalDateTime, AttendanceStatus> createExpectedAttendanceRecord() {
     LinkedHashMap<LocalDateTime, AttendanceStatus> expected = new LinkedHashMap<>();
     expected.put(LocalDateTime.of(2025, 2, 3, 13, 6), AttendanceStatus.LATE);
     expected.put(LocalDateTime.of(2025, 2, 4, 10, 5), AttendanceStatus.ATTENDANCE);

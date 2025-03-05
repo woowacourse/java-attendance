@@ -80,7 +80,7 @@ public class AttendanceController {
   public void searchAttendanceRecords() {
     try {
       String nickName = inputView.printInputCrewNickName();
-      LinkedHashMap<LocalDateTime, AttendanceStatus> searched = attendanceBook.search(nickName,
+      Map<LocalDateTime, AttendanceStatus> searched = attendanceBook.search(nickName,
           GLOBAL_DATE);
       Map<AttendanceStatus, Integer> attendanceResult = attendanceBook.calculateAttendanceResult(
           nickName, GLOBAL_DATE);

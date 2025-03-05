@@ -9,7 +9,6 @@ public class Application {
         new InputView(),
         new OutputView()
     );
-
     controller.run();
   }
 }

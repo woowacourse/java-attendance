@@ -37,7 +37,7 @@ public class AttendanceBook {
     return Map.entry(attendanceRecord, updateAttendanceRecord);
   }
 
-  public LinkedHashMap<LocalDateTime, AttendanceStatus> search(String nickname,
+  public Map<LocalDateTime, AttendanceStatus> search(String nickname,
       LocalDate searchDate) {
     Crew crew = new Crew(nickname);
     validateExistentCrew(crew);

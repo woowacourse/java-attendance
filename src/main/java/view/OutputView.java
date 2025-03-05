@@ -5,7 +5,6 @@ import attendance.Crew;
 import attendance.ManagementStatus;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,7 +41,7 @@ public class OutputView {
   }
 
   public void printCrewAttendanceRecords(String nickname,
-      LinkedHashMap<LocalDateTime, AttendanceStatus> searched) {
+      Map<LocalDateTime, AttendanceStatus> searched) {
     System.out.printf("%n이번 달 %s의 출석 기록입니다.", nickname);
     for (Entry<LocalDateTime, AttendanceStatus> record : searched.entrySet()) {
       printCheckedAttendanceResult(record.getKey(), record.getValue());
