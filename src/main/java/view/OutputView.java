@@ -8,6 +8,7 @@ import static view.utils.ViewUtil.getRiskStatusMessage;
 
 import domain.AttendanceDate;
 import domain.AttendanceStatus;
+import domain.Crew;
 import domain.RiskStatus;
 import domain.RiskStatusResult;
 import global.utils.DateTimeUtil;
@@ -35,8 +36,8 @@ public class OutputView {
         System.out.printf("%s %s (%s)\n", convertDateWithDayOfWeekFormat(attendanceDate.getDate()), convertTimeFormat(attendanceDate.getTime()), getAttendanceStatusMessage(attendanceDate.getStatus()));
     }
 
-    public void printAttendanceResult(String name) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", name);
+    public void printAttendanceResult(Crew crew) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", crew.getName());
     }
 
     public void printAttendanceCountResult(RiskStatusResult riskStatusResult) {
@@ -52,7 +53,7 @@ public class OutputView {
     public void printRiskStatusResult(List<RiskStatusResult> riskStatusResults) {
         System.out.println("제적 위험자 조회 결과");
         sortRiskStatusResult(riskStatusResults).forEach(riskStatusResult -> {
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", riskStatusResult.name(), riskStatusResult.absenceCount(), riskStatusResult.tardyCount(), getRiskStatusMessage(riskStatusResult.riskStatus()));
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", riskStatusResult.crew().getName(), riskStatusResult.absenceCount(), riskStatusResult.tardyCount(), getRiskStatusMessage(riskStatusResult.riskStatus()));
         });
         System.out.println();
 
@@ -65,7 +66,7 @@ public class OutputView {
                     int totalCount2 = o2.absenceCount() + o2.tardyCount() / 3;
 
                     if (totalCount1 == totalCount2) {
-                        return o1.name().compareTo(o2.name());
+                        return o1.crew().getName().compareTo(o2.crew().getName());
                     }
 
                     return totalCount1 - totalCount2;

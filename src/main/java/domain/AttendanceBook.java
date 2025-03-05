@@ -16,61 +16,61 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AttendanceBook {
-    private final Map<String, AttendanceRecord> attendance;
+    private final Map<Crew, AttendanceRecord> attendance;
 
     public AttendanceBook() {
         attendance = new HashMap<>();
     }
 
-    public void initAttendance(String name, LocalDateTime dateTime) {
+    public void initAttendance(Crew crew, LocalDateTime dateTime) {
         AttendanceRecord attendanceRecord = new AttendanceRecord();
-        if (attendance.containsKey(name)) {
-            attendanceRecord = attendance.get(name);
+        if (attendance.containsKey(crew)) {
+            attendanceRecord = attendance.get(crew);
         }
         attendanceRecord.applyAttendanceDate(dateTime);
-        attendance.put(name, attendanceRecord);
+        attendance.put(crew, attendanceRecord);
     }
 
-    public boolean hasCrew(String name) {
-        return attendance.containsKey(name);
+    public boolean containsCrew(Crew crew) {
+        return attendance.containsKey(crew);
     }
 
-    public AttendanceRecord findAttendanceRecordByName(String name) {
-        return attendance.get(name);
+    public AttendanceRecord findAttendanceRecord(Crew crew) {
+        return attendance.get(crew);
     }
 
-    public AttendanceDate findAttendanceDateByNameAndDate(String name, LocalDate date) {
-        return findAttendanceRecordByName(name).getAttendanceDate(date);
+    public AttendanceDate findAttendanceDateByDate(Crew crew, LocalDate date) {
+        return findAttendanceRecord(crew).getAttendanceDate(date);
     }
 
-    public boolean hasAttendanceDate(String name, LocalDate date) {
-        return findAttendanceRecordByName(name).hasAttendanceDate(date);
+    public boolean hasAttendanceDate(Crew crew, LocalDate date) {
+        return findAttendanceRecord(crew).hasAttendanceDate(date);
     }
 
-    public void attend(String name, LocalDate date, LocalTime time) {
+    public void attend(Crew crew, LocalDate date, LocalTime time) {
         validateIsInRunningTime(time);
-        findAttendanceRecordByName(name).applyAttendanceDate(date, time);
+        findAttendanceRecord(crew).applyAttendanceDate(date, time);
     }
 
-    public void edit(String name, LocalDate date, LocalTime time) {
+    public void edit(Crew crew, LocalDate date, LocalTime time) {
         validateIsInRunningTime(time);
-        findAttendanceRecordByName(name).applyAttendanceDate(date, time);
+        findAttendanceRecord(crew).applyAttendanceDate(date, time);
     }
 
-    public int getAttendanceCount(String name) {
-        return findAttendanceRecordByName(name).calculateAttendanceCount();
+    public int getAttendanceCount(Crew crew) {
+        return findAttendanceRecord(crew).calculateAttendanceCount();
     }
 
-    public int getTardyCount(String name) {
-        return findAttendanceRecordByName(name).calculateTardyCount();
+    public int getTardyCount(Crew crew) {
+        return findAttendanceRecord(crew).calculateTardyCount();
     }
 
-    public int getAbsenceCount(String name) {
-        return findAttendanceRecordByName(name).calculateAbsenceCount();
+    public int getAbsenceCount(Crew crew) {
+        return findAttendanceRecord(crew).calculateAbsenceCount();
     }
 
-    public RiskStatusResult getRiskStatusResult(String name) {
-        return new RiskStatusResult(name, getAttendanceCount(name), getTardyCount(name), getAbsenceCount(name));
+    public RiskStatusResult getRiskStatusResult(Crew crew) {
+        return new RiskStatusResult(crew, getAttendanceCount(crew), getTardyCount(crew), getAbsenceCount(crew));
     }
 
     public List<RiskStatusResult> getRiskStatusResults() {
@@ -79,22 +79,16 @@ public class AttendanceBook {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public void validateHasCrew(String name) {
-        if (!hasCrew(name)) {
-            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
-        }
+    public void validateBeforeAdd(Crew crew, LocalDate date) {
+        findAttendanceRecord(crew).validateBeforeAdd(date);
     }
 
-    public void validateBeforeAdd(String name, LocalDate date) {
-        findAttendanceRecordByName(name).validateBeforeAdd(date);
+    public void validateBeforeAdd(Crew crew) {
+        validateBeforeAdd(crew, getFixedRunningDate());
     }
 
-    public void validateBeforeAdd(String name) {
-        validateBeforeAdd(name, getFixedRunningDate());
-    }
-
-    public void validateBeforeEdit(String name, LocalDate date) {
-        findAttendanceRecordByName(name).validateBeforeEdit(date);
+    public void validateBeforeEdit(Crew crew, LocalDate date) {
+        findAttendanceRecord(crew).validateBeforeEdit(date);
     }
 
     public void validateIsWeekday(LocalDate date) {

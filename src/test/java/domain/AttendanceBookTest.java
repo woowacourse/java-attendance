@@ -17,10 +17,11 @@ class AttendanceBookTest {
         final String name = "시소";
         final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
 
+        Crew crew = new Crew(name);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.initAttendance(name, dateTime);
+        attendanceBook.initAttendance(crew, dateTime);
 
-        assertThat(attendanceBook.hasCrew(name)).isTrue();
+        assertThat(attendanceBook.containsCrew(crew)).isTrue();
     }
 
     @Test
@@ -29,11 +30,12 @@ class AttendanceBookTest {
         final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
         final LocalDateTime newDateTime = LocalDateTime.of(2024, 12, 15, 10, 5);
 
+        Crew crew = new Crew(name);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.initAttendance(name, dateTime);
-        attendanceBook.attend(name, newDateTime.toLocalDate(), newDateTime.toLocalTime());
+        attendanceBook.initAttendance(crew, dateTime);
+        attendanceBook.attend(crew, newDateTime.toLocalDate(), newDateTime.toLocalTime());
 
-        assertThat(attendanceBook.hasAttendanceDate(name, newDateTime.toLocalDate())).isTrue();
+        assertThat(attendanceBook.hasAttendanceDate(crew, newDateTime.toLocalDate())).isTrue();
     }
 
     @Test
@@ -43,13 +45,14 @@ class AttendanceBookTest {
         final LocalTime newTime = LocalTime.of(10, 0);
 
         AttendanceBook attendanceBook = new AttendanceBook();
+        Crew crew = new Crew(name);
 
-        attendanceBook.initAttendance(name, dateTime);
-        assertThat(attendanceBook.findAttendanceDateByNameAndDate(name, dateTime.toLocalDate()).getTime())
+        attendanceBook.initAttendance(crew, dateTime);
+        assertThat(attendanceBook.findAttendanceDateByDate(crew, dateTime.toLocalDate()).getTime())
                 .isEqualTo(dateTime.toLocalTime());
 
-        attendanceBook.edit(name, dateTime.toLocalDate(), newTime);
-        assertThat(attendanceBook.findAttendanceDateByNameAndDate(name, dateTime.toLocalDate()).getTime())
+        attendanceBook.edit(crew, dateTime.toLocalDate(), newTime);
+        assertThat(attendanceBook.findAttendanceDateByDate(crew, dateTime.toLocalDate()).getTime())
                 .isEqualTo(newTime);
     }
 
@@ -61,11 +64,12 @@ class AttendanceBookTest {
         final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 10, 0), LocalDateTime.of(2024, 12, 12, 10, 0),
                 LocalDateTime.of(2024, 12, 13, 10, 0), LocalDateTime.of(2024, 12, 14, 10, 0));
 
+        Crew crew = new Crew(name);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.initAttendance(name, initDate);
-        dateTimes.forEach(dateTime -> attendanceBook.attend(name, dateTime.toLocalDate(), dateTime.toLocalTime()));
+        attendanceBook.initAttendance(crew, initDate);
+        dateTimes.forEach(dateTime -> attendanceBook.attend(crew, dateTime.toLocalDate(), dateTime.toLocalTime()));
 
-        assertThat(attendanceBook.getAttendanceCount(name)).isEqualTo(1 + dateTimes.size());
+        assertThat(attendanceBook.getAttendanceCount(crew)).isEqualTo(1 + dateTimes.size());
     }
 
 
@@ -77,11 +81,12 @@ class AttendanceBookTest {
         final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 10, 10), LocalDateTime.of(2024, 12, 12, 10, 10),
                 LocalDateTime.of(2024, 12, 13, 10, 10), LocalDateTime.of(2024, 12, 14, 10, 10));
 
+        Crew crew = new Crew(name);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.initAttendance(name, initDate);
-        dateTimes.forEach(dateTime -> attendanceBook.attend(name, dateTime.toLocalDate(), dateTime.toLocalTime()));
+        attendanceBook.initAttendance(crew, initDate);
+        dateTimes.forEach(dateTime -> attendanceBook.attend(crew, dateTime.toLocalDate(), dateTime.toLocalTime()));
 
-        assertThat(attendanceBook.getTardyCount(name)).isEqualTo(dateTimes.size());
+        assertThat(attendanceBook.getTardyCount(crew)).isEqualTo(dateTimes.size());
     }
 
     @Test
@@ -92,31 +97,12 @@ class AttendanceBookTest {
         final List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 11, 15, 10), LocalDateTime.of(2024, 12, 12, 15, 10),
                 LocalDateTime.of(2024, 12, 13, 15, 10), LocalDateTime.of(2024, 12, 14, 15, 10));
 
+        Crew crew = new Crew(name);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.initAttendance(name, initDate);
-        dateTimes.forEach(dateTime -> attendanceBook.attend(name, dateTime.toLocalDate(), dateTime.toLocalTime()));
+        attendanceBook.initAttendance(crew, initDate);
+        dateTimes.forEach(dateTime -> attendanceBook.attend(crew, dateTime.toLocalDate(), dateTime.toLocalTime()));
 
-        assertThat(attendanceBook.getAbsenceCount(name)).isEqualTo(10);
-    }
-
-    @Test
-    void 등록되지_않은_크루를_조회할_경우_예외가_발생한다() {
-        final String name = "시소";
-
-        AttendanceBook attendanceBook = new AttendanceBook();
-
-        assertThatThrownBy(() -> attendanceBook.validateHasCrew(name)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 등록된_크루를_조회할_경우_예외는_발생하지_않는다() {
-        final String name = "시소";
-        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
-
-        AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.initAttendance(name, dateTime);
-
-        assertThatNoException().isThrownBy(() -> attendanceBook.validateHasCrew(name));
+        assertThat(attendanceBook.getAbsenceCount(crew)).isEqualTo(10);
     }
 
     @Test
@@ -124,10 +110,11 @@ class AttendanceBookTest {
         final String name = "시소";
         final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
 
+        Crew crew = new Crew(name);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.initAttendance(name, dateTime);
+        attendanceBook.initAttendance(crew, dateTime);
 
-        assertThatThrownBy(() -> attendanceBook.validateBeforeAdd(name, dateTime.toLocalDate()))
+        assertThatThrownBy(() -> attendanceBook.validateBeforeAdd(crew, dateTime.toLocalDate()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -137,10 +124,11 @@ class AttendanceBookTest {
         final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
         final LocalDate newDate = LocalDate.of(2024, 12, 13);
 
+        Crew crew = new Crew(name);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.initAttendance(name, dateTime);
+        attendanceBook.initAttendance(crew, dateTime);
 
-        assertThatNoException().isThrownBy(() -> attendanceBook.validateBeforeAdd(name, newDate));
+        assertThatNoException().isThrownBy(() -> attendanceBook.validateBeforeAdd(crew, newDate));
     }
 
     @Test
@@ -149,10 +137,11 @@ class AttendanceBookTest {
         final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
         final LocalDate newDate = LocalDate.of(2024, 12, 13);
 
+        Crew crew = new Crew(name);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.initAttendance(name, dateTime);
+        attendanceBook.initAttendance(crew, dateTime);
 
-        assertThatThrownBy(() -> attendanceBook.validateBeforeEdit(name, newDate))
+        assertThatThrownBy(() -> attendanceBook.validateBeforeEdit(crew, newDate))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -161,10 +150,11 @@ class AttendanceBookTest {
         final String name = "시소";
         final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
 
+        Crew crew = new Crew(name);
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.initAttendance(name, dateTime);
+        attendanceBook.initAttendance(crew, dateTime);
 
-        assertThatNoException().isThrownBy(() -> attendanceBook.validateBeforeEdit(name, dateTime.toLocalDate()));
+        assertThatNoException().isThrownBy(() -> attendanceBook.validateBeforeEdit(crew, dateTime.toLocalDate()));
     }
 
     @Test

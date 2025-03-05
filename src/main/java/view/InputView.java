@@ -1,6 +1,8 @@
 package view;
 
 import domain.AttendanceBook;
+import domain.Crew;
+import domain.Crews;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -50,25 +52,28 @@ public class InputView {
         return readLine("언제로 변경하겠습니까?");
     }
 
-    public void readFile(AttendanceBook attendanceBook) {
+    public void readFile(AttendanceBook attendanceBook, Crews crews) {
         try {
-            Path filePath = Paths.get("src", "main", "resources", "attendances.csv");
-            File file = filePath.toFile();
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            BufferedReader bufferedReader = loadFile();
             String line = bufferedReader.readLine();
             while ((line = bufferedReader.readLine()) != null) {
                 String[] tokens = line.split(",");
-                validateName(tokens[0]);
-                attendanceBook.initAttendance(tokens[0], LocalDateTime.parse(tokens[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+                Crew crew = crews.initCrew(tokens[0]);
+                attendanceBook.initAttendance(crew, LocalDateTime.parse(tokens[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
             }
         } catch (Exception e) {
             throw new IllegalArgumentException("파일을 불러오는 중 예외가 발생하였습니다.");
         }
     }
 
-    private void validateName(String name) {
-        if (name.length() > 4 || name.length() < 2) {
-            throw new IllegalArgumentException("닉네임은 2글자 이상, 4글자 이하여야 합니다.");
+    private BufferedReader loadFile() {
+        try {
+            Path filePath = Paths.get("src", "main", "resources", "attendances.csv");
+            File file = filePath.toFile();
+            return new BufferedReader(new FileReader(file));
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("파일을 불러오는 중 예외가 발생하였습니다.");
         }
     }
 }

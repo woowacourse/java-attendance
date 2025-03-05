@@ -1,13 +1,13 @@
 package domain;
 
 public record RiskStatusResult(
-        String name,
+        Crew crew,
         int attendanceCount,
         int tardyCount,
         int absenceCount,
         RiskStatus riskStatus
 ) {
-    public RiskStatusResult(String name, int attendanceCount, int tardyCount, int absenceCount) {
-        this(name, attendanceCount, tardyCount, absenceCount, RiskStatus.evaluateStatus(tardyCount, absenceCount));
+    public RiskStatusResult(Crew crew, int attendanceCount, int tardyCount, int absenceCount) {
+        this(crew, attendanceCount, tardyCount, absenceCount, RiskStatus.evaluateStatus(tardyCount, absenceCount));
     }
 }
