@@ -108,7 +108,22 @@ public class AttendanceBookTest {
         });
     }
 
+    @Test
+    @DisplayName("닉네임을 입력하면 이전 날까지의 출석을 확인한다")
+    void checkAttendanceRecord() {
+        //given
+        Crew inputCrew = new Crew("Lemon");
+        int lastDate = LocalDate.now().getDayOfMonth()-1;
+        //when
+        List<Attendance> attendances = attendanceBook.checkAttendancesRecord(crew);
+        //then
+        Assertions.assertThat(attendances.getFirst().getAttendanceDate()).isEqualTo(LocalDate.of(2024, 12, 2));
+        Assertions.assertThat(attendances.getFirst().getAttendanceTime()).isEqualTo(LocalTime.of(13, 0));
+        Assertions.assertThat(attendances.getFirst().getAttendanceStatus()).isEqualTo("출석");
 
+        Assertions.assertThat(attendances.getLast().getAttendanceDate()).isEqualTo(LocalDate.of(2024, 12, lastDate));
+
+    }
 
     @Test
     @DisplayName("제적 위험자를 확인한다")

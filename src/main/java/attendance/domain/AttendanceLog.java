@@ -38,7 +38,7 @@ public class AttendanceLog {
     }
 
     public List<Attendance> checkAttendancesRecord() {
-        return attendanceLog.stream().filter(attendance -> attendance.getAttendanceDate().isBefore(LocalDate.now()))
+        return attendanceLog.stream().filter(attendance -> attendance.getAttendanceDate().isBefore(LocalDate.of(2024,12,LocalDate.now().getDayOfMonth())))
             .toList();
     }
 

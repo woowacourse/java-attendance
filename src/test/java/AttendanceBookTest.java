@@ -1,3 +1,7 @@
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import domain.Attendance;
 import domain.AttendanceBook;
 import domain.CrewName;
@@ -6,19 +10,15 @@ import dto.result.AttendResult;
 import dto.result.ExpelMeasurementResult;
 import dto.result.MemberAttendResult;
 import dto.result.MemberAttendanceModifyResult;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import util.exception.IllegalAttendDateException;
-import util.exception.IllegalAttendTimeException;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import util.status.AttendanceStatus;
-
-import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import util.exception.IllegalAttendDateException;
+import util.exception.IllegalAttendTimeException;
 
 public class AttendanceBookTest {
     
