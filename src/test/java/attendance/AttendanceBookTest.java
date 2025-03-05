@@ -138,7 +138,7 @@ public class AttendanceBookTest {
   @Test
   void searchedRecordTest() {
     setRecords();
-    LinkedHashMap<LocalDateTime, AttendanceStatus> searched =
+    Map<LocalDateTime, AttendanceStatus> searched =
         attendanceBook.search("히포", LocalDate.of(2025, 2, 11));
     assertThat(searched).containsAllEntriesOf(createExpectedAttendanceRecord());
   }
