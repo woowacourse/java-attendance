@@ -13,6 +13,7 @@ import dto.AttendanceUpdateResponse;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Supplier;
+import model.Attendance;
 import model.Attendances;
 import model.Option;
 import util.FileParser;
@@ -56,16 +57,29 @@ public class AttendanceController {
     }
 
     private void checkInAttendance(Attendances attendances) {
+        LocalDate now = LocalDate.now();
+
         AttendanceCheckInRequest request = InputView.readAttendanceCheckInRequest();
-        AttendanceCheckInResponse response = attendances.add(
-                request.nickname(), request.checkInTime(), LocalDate.now());
+        Attendance attendance = attendances.add(request.nickname(), request.checkInTime(), now);
+        AttendanceCheckInResponse response = AttendanceCheckInResponse.convertToAttendanceCheckInResponse(
+                attendance.getCheckInDate(),
+                attendance.getCheckInTime(),
+                attendance.getAttendanceType());
         OutputView.printCheckInAttendance(response);
     }
 
     private void updateAttendance(Attendances attendances) {
-        AttendanceUpdateRequest request = InputView.readAttendanceUpdateRequest(LocalDate.now());
-        AttendanceUpdateResponse response = attendances.update(
-                request.nickname(), request.day(), request.updateTime(), LocalDate.now());
+        LocalDate now = LocalDate.now();
+
+        AttendanceUpdateRequest request = InputView.readAttendanceUpdateRequest(now);
+        Attendance previousAttendance = attendances.find(request.nickname(), request.day(), now).copy();
+        Attendance updateAttendance = attendances.update(request.nickname(), request.day(), request.updateTime(), now);
+        AttendanceUpdateResponse response = AttendanceUpdateResponse.convertToAttendanceUpdateResponse(
+                now.withDayOfMonth(Integer.parseInt(request.day())),
+                previousAttendance.getCheckInTime(),
+                previousAttendance.getAttendanceType(),
+                updateAttendance.getCheckInTime(),
+                updateAttendance.getAttendanceType());
         OutputView.printUpdateAttendance(response);
     }
 

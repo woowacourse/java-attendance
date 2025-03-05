@@ -9,4 +9,11 @@ public record AttendanceCheckInResponse(
         LocalTime checkInTime,
         AttendanceType attendanceType
 ) {
+
+    public static AttendanceCheckInResponse convertToAttendanceCheckInResponse(LocalDate checkInDate,
+                                                                               LocalTime checkInTime,
+                                                                               AttendanceType attendanceType
+    ) {
+        return new AttendanceCheckInResponse(checkInDate, checkInTime, attendanceType);
+    }
 }

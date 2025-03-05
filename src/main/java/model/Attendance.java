@@ -39,9 +39,15 @@ public class Attendance {
         return new Attendance(checkInDate, null, AttendanceType.ABSENCE);
     }
 
-    public void update(LocalTime updateTime) {
+    public Attendance update(LocalTime updateTime) {
         this.checkInTime = updateTime;
         this.attendanceType = AttendanceType.find(checkInDate, updateTime);
+
+        return this;
+    }
+
+    public Attendance copy() {
+        return new Attendance(this.checkInDate, this.checkInTime, this.attendanceType);
     }
 
     public LocalDate getCheckInDate() {

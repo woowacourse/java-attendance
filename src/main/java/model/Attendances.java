@@ -7,10 +7,8 @@ import static constant.ErrorMessage.NOT_FOUND_ATTENDANCE;
 import static constant.ErrorMessage.NOT_FOUND_CREW;
 import static constant.ErrorMessage.OUT_OF_OPERATION_HOURS;
 
-import dto.AttendanceCheckInResponse;
 import dto.AttendanceHistoryResponse;
 import dto.AttendanceRiskCrewsResponse;
-import dto.AttendanceUpdateResponse;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -42,7 +40,7 @@ public class Attendances {
         return new Attendances(attendances);
     }
 
-    public AttendanceCheckInResponse add(String nickname, String checkInTime, LocalDate now) {
+    public Attendance add(String nickname, String checkInTime, LocalDate now) {
         Crew crew = Crew.of(nickname);
         validateCrewExists(crew);
         validateHoliday(now);
@@ -52,30 +50,16 @@ public class Attendances {
         Attendance attendance = Attendance.of(now, checkInTime);
         attendances.get(crew).add(attendance);
 
-        return new AttendanceCheckInResponse(
-                now,
-                LocalTime.parse(checkInTime),
-                attendance.getAttendanceType()
-        );
+        return attendance;
     }
 
-    public AttendanceUpdateResponse update(String nickname, String day, String updateTime, LocalDate now) {
+    public Attendance update(String nickname, String day, String updateTime, LocalDate now) {
         Crew crew = Crew.of(nickname);
         LocalDate date = now.withDayOfMonth(Integer.parseInt(day));
 
         Attendance attendance = find(crew, date);
-        LocalTime previousTime = attendance.getCheckInTime();
-        AttendanceType previousAttendanceType = attendance.getAttendanceType();
 
-        attendance.update(LocalTime.parse(updateTime));
-
-        return new AttendanceUpdateResponse(
-                date,
-                previousTime,
-                previousAttendanceType,
-                attendance.getCheckInTime(),
-                attendance.getAttendanceType()
-        );
+        return attendance.update(LocalTime.parse(updateTime));
     }
 
     public AttendanceHistoryResponse findHistoryByCrew(String nickname, LocalDate now) {
@@ -178,7 +162,14 @@ public class Attendances {
         }
     }
 
-    private Attendance find(Crew crew, LocalDate localDate) {
+    public Attendance find(String nickname, String day, LocalDate now) {
+        Crew crew = Crew.of(nickname);
+        LocalDate date = now.withDayOfMonth(Integer.parseInt(day));
+
+        return find(crew, date);
+    }
+
+    public Attendance find(Crew crew, LocalDate localDate) {
         return attendances.getOrDefault(crew, Collections.emptyList()).stream()
                 .filter(attendance -> attendance.getCheckInDate().equals(localDate))
                 .findFirst()
