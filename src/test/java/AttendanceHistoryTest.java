@@ -5,7 +5,7 @@ import domain.AbsenceLevel;
 import domain.AttendanceHistory;
 import domain.AttendanceResult;
 import domain.Attendances;
-import domain.Crew;
+import domain.String;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,12 +18,12 @@ import org.junit.jupiter.api.Test;
 public class AttendanceHistoryTest {
 
     private AttendanceHistory attendanceHistory;
-    private Crew crew;
+    private String crew;
 
     @BeforeEach
     void setUp() {
-        Map<Crew, Attendances> attendanceMap = new HashMap<>();
-        crew = new Crew("벡터");
+        Map<String, Attendances> attendanceMap = new HashMap<>();
+        crew = new String("벡터");
         attendanceMap.put(crew, new Attendances(new ArrayList<>()));
         attendanceHistory = new AttendanceHistory(attendanceMap);
     }
@@ -125,7 +125,7 @@ public class AttendanceHistoryTest {
     @Test
     @DisplayName("출석 기록 수정 ")
     void editAttendanceTest() {
-        Crew crew = new Crew("벡터");
+        String crew = new String("벡터");
         LocalDateTime firstAttendanceTime = LocalDateTime.of(2024, 2, 21, 9, 0);
         attendanceHistory.checkAttendance(crew, firstAttendanceTime);
         LocalDateTime newAttendanceTime = LocalDateTime.of(2024, 2, 21, 10, 0);
@@ -137,7 +137,7 @@ public class AttendanceHistoryTest {
     @Test
     @DisplayName("출석 기록에 이름이 없을 경우")
     void noEditNameTest() {
-        Crew invalidName = new Crew("제프");
+        String invalidName = new String("제프");
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 2, 20, 10, 0);
         assertThatThrownBy(() -> attendanceHistory.editAttendance(invalidName, attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -146,8 +146,8 @@ public class AttendanceHistoryTest {
     @Test
     @DisplayName("존재 x인 날짜 수정 시도")
     void noAttendanceDayTest() {
-        Crew crew = new Crew("벡터");
-        Map<Crew, Attendances> attendanceMap = new HashMap<>();
+        String crew = new String("벡터");
+        Map<String, Attendances> attendanceMap = new HashMap<>();
         attendanceMap.put(crew, new Attendances(new ArrayList<>()));
         attendanceHistory = new AttendanceHistory(attendanceMap);
         attendanceHistory.checkAttendance(crew, LocalDateTime.of(2024, 12, 19, 10, 0));

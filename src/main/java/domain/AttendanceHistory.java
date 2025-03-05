@@ -13,13 +13,13 @@ public class AttendanceHistory {
     private static final int LATE_STANDARD = 5;
     private static final int ABSENT_STANDARD = 30;
 
-    private final Map<Crew, Attendances> attendanceHistory;
+    private final Map<String, Attendances> attendanceHistory;
 
-    public AttendanceHistory(Map<Crew, Attendances> attendanceHistory) {
+    public AttendanceHistory(Map<String, Attendances> attendanceHistory) {
         this.attendanceHistory = attendanceHistory;
     }
 
-    public AttendanceResult checkAttendance(Crew crew, LocalDateTime attendanceDateTime) {
+    public AttendanceResult checkAttendance(String crew, LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
         LocalDate attendanceDate = attendanceDateTime.toLocalDate();
         LocalTime openTime;
@@ -52,7 +52,7 @@ public class AttendanceHistory {
         }
     }
 
-    public LocalDateTime editAttendance(Crew crew, LocalDateTime newAttendanceTime) {
+    public LocalDateTime editAttendance(String crew, LocalDateTime newAttendanceTime) {
         isExistName(crew);
         Attendances attendances = attendanceHistory.get(crew);
         LocalDateTime oldAttendanceDateTime = attendances.edit(newAttendanceTime.toLocalDate());
@@ -60,33 +60,33 @@ public class AttendanceHistory {
         return oldAttendanceDateTime;
     }
 
-    private void isExistName(Crew crew) {
+    private void isExistName(String crew) {
         if (!attendanceHistory.containsKey(crew)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 이름입니다.");
         }
     }
 
-    public Attendances getAttendances(Crew crew) {
+    public Attendances getAttendances(String crew) {
         isExistName(crew);
         return attendanceHistory.get(crew);
     }
 
-    public int getAttendanceCount(Crew crew, LocalDate standardDate) {
+    public int getAttendanceCount(String crew, LocalDate standardDate) {
         Attendances attendances = attendanceHistory.get(crew);
         return attendances.getAttendanceCount(standardDate);
     }
 
-    public int getLateCount(Crew crew, LocalDate standardDate) {
+    public int getLateCount(String crew, LocalDate standardDate) {
         Attendances attendances = attendanceHistory.get(crew);
         return attendances.getLateCount(standardDate);
     }
 
-    public int getAbsentCount(Crew crew, LocalDate standardDate) {
+    public int getAbsentCount(String crew, LocalDate standardDate) {
         Attendances attendances = attendanceHistory.get(crew);
         return attendances.getAbsentCount(standardDate);
     }
 
-    public AbsenceLevel getAbsenceLevel(Crew crew, LocalDate standardDate) {
+    public AbsenceLevel getAbsenceLevel(String crew, LocalDate standardDate) {
         int lateCount = getLateCount(crew, standardDate);
         int absentCount = getAbsentCount(crew, standardDate);
         return AbsenceLevel.getAbsenceLevel(lateCount, absentCount);
