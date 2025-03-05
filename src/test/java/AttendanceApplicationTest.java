@@ -18,7 +18,7 @@ class AttendanceApplicationTest {
     FixedDateProvider weekendProvider = FixedDateProvider.of(LocalDate.of(2024, 12, 14));
 
     @Test
-    @DisplayName("등교일이 아닌 경우 예외 발샹")
+    @DisplayName("등교일이 아닌 경우 예외 발생")
     void weekendCheckInDateException() {
         //given
         InputStream in = new ByteArrayInputStream("1\n".getBytes());
