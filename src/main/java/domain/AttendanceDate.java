@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AttendanceDate implements Comparable<AttendanceDate> {
-    private LocalDate date;
+    private final LocalDate date;
     private LocalTime time;
     private AttendanceStatus status;
 
