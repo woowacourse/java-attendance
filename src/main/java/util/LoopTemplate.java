@@ -1,29 +1,27 @@
 package util;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
-import view.OutputView;
 
 public class LoopTemplate {
 
     private LoopTemplate() {
     }
 
-    public static <T> T tryCatchLoop(final Supplier<T> callback, final OutputView outputView) {
+    public static <T> T tryCatchLoop(Supplier<T> callback) {
         try {
             return callback.get();
-        } catch (final IllegalArgumentException | IllegalStateException e) {
-            outputView.printExceptionMessage(e.getMessage());
-            return tryCatchLoop(callback, outputView);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println(e.getMessage());
+            return tryCatchLoop(callback);
         }
     }
 
-    public static <T, R> R tryCatchLoop(final Function<T, R> callback, final T data, final OutputView outputView) {
+    public static void tryCatchLoop(Runnable callback) {
         try {
-            return callback.apply(data);
-        } catch (final IllegalArgumentException | IllegalStateException e) {
-            outputView.printExceptionMessage(e.getMessage());
-            return tryCatchLoop(callback, data, outputView);
+            callback.run();
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println(e.getMessage());
         }
+        tryCatchLoop(callback);
     }
 }

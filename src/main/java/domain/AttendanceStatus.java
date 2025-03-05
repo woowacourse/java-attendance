@@ -1,37 +1,37 @@
 package domain;
 
-import java.time.LocalDateTime;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.List;
 
 public enum AttendanceStatus {
-    ATTENDANCE("출석", 0),
-    LATE("지각", 5),
-    ABSENCE("결석", 30);
 
-    String name;
-    int boundary;
+    ATTENDANCE(1, 0),
+    LATE(2, 5),
+    ABSENCE(3, 30);
 
-    AttendanceStatus(final String name, final int boundary) {
-        this.name = name;
-        this.boundary = boundary;
+
+    private final int code;
+    private final int limit;
+
+    AttendanceStatus(final int code, final int limit) {
+        this.code = code;
+        this.limit = limit;
     }
 
-    public static AttendanceStatus of(final LocalDateTime dateTime) {
-        return Arrays.stream(values())
-                .sorted((o1, o2) -> o2.boundary - o1.boundary)
-                .filter(status -> dateTime.isAfter(ClassTime.calculateBoundaryTime(dateTime.toLocalDate()).plusMinutes(status.boundary)))
-                .findFirst()
+    public static AttendanceStatus findByTime(final DayOfWeek dayOfWeek, final LocalTime localTime) {
+        return Arrays.stream(AttendanceStatus.values())
+                .sorted((a1, a2) -> a2.limit - a1.limit)
+                .filter(status -> localTime.isAfter(calculateBoundaryTest(dayOfWeek, status)))
+                .findAny()
                 .orElse(ATTENDANCE);
     }
 
-    public static List<AttendanceStatus> sortedStatus() {
-        return Arrays.stream(values())
-                .sorted((o1, o2) -> o1.boundary - o2.boundary)
-                .toList();
+    private static LocalTime calculateBoundaryTest(final DayOfWeek dayOfWeek, final AttendanceStatus attendanceStatus) {
+        return ClassTime.findByDayOfWeek(dayOfWeek).plusMinutes(attendanceStatus.limit);
     }
 
-    public String getName() {
-        return name;
+    public int getCode() {
+        return code;
     }
 }

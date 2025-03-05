@@ -1,11 +1,10 @@
 package domain;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Objects;
+import util.DateTimeFormatProvider;
 
 public enum ClassTime {
     MONDAY(DayOfWeek.MONDAY, LocalTime.of(13, 0)),
@@ -22,12 +21,12 @@ public enum ClassTime {
         this.startTime = startTime;
     }
 
-    public static LocalDateTime calculateBoundaryTime(final LocalDate date) {
+    public static LocalTime findByDayOfWeek(DayOfWeek dayOfWeek) {
         return Arrays.stream(ClassTime.values())
-                .filter(classTime -> Objects.equals(classTime.dayOfWeek, date.getDayOfWeek()) && !Holiday.isHoliday(date))
+                .filter(classTime -> Objects.equals(classTime.dayOfWeek, dayOfWeek))
+                .map(classTime -> classTime.startTime)
                 .findAny()
-                .map(classTime -> LocalDateTime.of(date, classTime.startTime))
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 주말 또는 공휴일은 등교일이 아닙니다."));
+                .orElseThrow(() -> new IllegalArgumentException(String.format("[ERROR] %s 강의 시간을 찾을 수 없습니다.",
+                        DateTimeFormatProvider.toDayOfWeekKoreanFormat(dayOfWeek))));
     }
-
 }

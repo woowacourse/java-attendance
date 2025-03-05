@@ -1,6 +1,8 @@
 package util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -10,20 +12,21 @@ public class FileManagerTest {
 
 
     @Test
-    @DisplayName("csv 파일 전체를 읽어온다")
-    void readTest1() {
+    @DisplayName("resources에 위치한 파일의 정보를 읽어 온다.")
+    void test1() {
         //given
-        final String fileName = "attendances.csv";
-        final int expectedSize = 42;
-        final String expectedHeader = "nickname,datetime";
+        final String fileName1 = "attendances.csv";
+        final String fileName2 = "empty";
 
         //when
-        final List<String> data = FileManager.readFileLines(fileName);
+        final List<String> lines = FileManager.readFileLines(fileName1);
 
         //then
-        assertThat(data)
-                .isNotEmpty()
-                .hasSize(expectedSize)
-                .startsWith(expectedHeader);
+        assertAll(
+                () -> assertThat(lines).isNotEmpty(),
+                () -> assertThat(lines.getFirst()).isEqualTo("nickname,datetime"),
+                () -> assertThatIllegalStateException().isThrownBy(() -> FileManager.readFileLines(fileName2))
+        );
     }
+
 }

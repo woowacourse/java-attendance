@@ -1,0 +1,28 @@
+package domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Map;
+import java.util.Set;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+public class AttendancePaperGeneratorTest {
+
+    //쿠키,2024-12-13 10:08
+    @Test
+    @DisplayName("csv파일을 읽어 크루 출석 기록 초기화 한다")
+    void test1() {
+        //given
+        //when
+        final Map<String, AttendancePaper> crews = AttendancePaperGenerator.generate();
+        final Set<String> crewsName = crews.keySet();
+
+        //then
+         assertThat(crewsName).contains("쿠키")
+                        .contains("빙티")
+                        .contains("빙봉")
+                        .contains("이든")
+                        .contains("짱수");
+    }
+}

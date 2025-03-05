@@ -1,21 +1,22 @@
 package util;
 
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileManager {
+
+    private static final String ROOT_PATH = "src/main/resources/";
 
     private FileManager() {
     }
 
     public static List<String> readFileLines(final String fileName) {
-        final String path = "src/main/resources/";
         try {
-            return Files.readAllLines(Path.of(path + fileName));
-        } catch (final IOException e) {
-            throw new IllegalStateException(e);
+            return new ArrayList<>(Files.readAllLines(Paths.get(ROOT_PATH + fileName)));
+        } catch (Exception e) {
+            throw new IllegalStateException("[ERROR] " + e.getMessage());
         }
     }
 }
