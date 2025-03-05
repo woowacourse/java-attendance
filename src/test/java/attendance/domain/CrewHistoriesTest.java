@@ -18,8 +18,11 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class CrewHistoriesTest {
 
@@ -143,6 +146,21 @@ class CrewHistoriesTest {
                 () -> assertThat(crewHistories).isEqualTo(
                         new CrewHistories(Map.of(nickname, makeCrewHistory(modifyingTime))))
         );
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {2, 3})
+    void 과거_날짜가_아니면_출석_기록을_수정할_수_없다(final int day) {
+        String nickname = "밍트";
+        LocalDateTime attendanceTime = makeDateTime(3, 10, 0);
+        crewHistories.addHistory(nickname, attendanceTime);
+        LocalDateTime modifyingTime = makeDateTime(3, 11, 0);
+        LocalDate nowDate = makeDecemberDate(day);
+
+        // When & Then
+        assertThatThrownBy(() -> crewHistories.modify(nickname, modifyingTime, nowDate))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("[ERROR] 과거의 날짜만 가능합니다.");
     }
 
     @Test

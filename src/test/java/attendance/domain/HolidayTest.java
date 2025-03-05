@@ -9,10 +9,11 @@ class HolidayTest {
 
     @ParameterizedTest
     @CsvSource({
+            "1, 3, false",
             "12, 3, false",
             "12, 25, true"
     })
-    void 공휴일인지_확인한다(final int month, final int day, final boolean expected) {
+    void 법정_공휴일인지_확인한다(final int month, final int day, final boolean expected) {
         assertThat(Holiday.isHoliday(month, day)).isEqualTo(expected);
     }
 }

@@ -92,6 +92,16 @@ class CampusSchedulerTest {
         );
     }
 
+    @Test
+    void 캠퍼스_운영시간인지_검증한다() {
+        // Given
+
+        // When & Then
+        assertThatCode(() -> campusScheduler.validateOperationTime(
+                LocalDateTime.of(2024, 12, 10, 10, 0)))
+                .doesNotThrowAnyException();
+    }
+
     @ParameterizedTest
     @MethodSource
     void 캠퍼스_운영_시간이_아니면_예외가_발생한다(final LocalDateTime attendanceTime) {
