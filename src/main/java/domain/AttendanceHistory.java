@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceHistory {
@@ -90,5 +91,11 @@ public class AttendanceHistory {
         int lateCount = getLateCount(crew, standardDate);
         int absentCount = getAbsentCount(crew, standardDate);
         return AbsenceLevel.getAbsenceLevel(lateCount, absentCount);
+    }
+
+    public List<String> getAbsenceLevelCrews(LocalDate standardDate) {
+        return attendanceHistory.keySet().stream()
+                .filter(crew -> getAbsenceLevel(crew, standardDate) != AbsenceLevel.NORMAL)
+                .toList();
     }
 }

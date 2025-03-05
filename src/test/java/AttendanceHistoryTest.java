@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -302,6 +303,29 @@ public class AttendanceHistoryTest {
         LocalDate standardDate = LocalDate.of(2024, 12, 10);
         AbsenceLevel absenceLevel = attendanceHistory.getAbsenceLevel(crew, standardDate);
         assertThat(absenceLevel).isEqualTo(AbsenceLevel.GET_OUT);
+    }
+
+    @Test
+    @DisplayName("제적 위험자들 확인")
+    void checkAbsenceLevelCrewsTest() {
+        Map<String, Attendances> attendanceMap = new HashMap<>();
+        attendanceMap.put("벡터", new Attendances(new ArrayList<>()));
+        attendanceMap.put("제프", new Attendances(new ArrayList<>()));
+        attendanceMap.put("에드", new Attendances(new ArrayList<>()));
+        attendanceHistory = new AttendanceHistory(attendanceMap);
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+        LocalDateTime attendanceTime1 = LocalDateTime.of(2024, 12, 3, 10, 0);
+        LocalDateTime attendanceTime2 = LocalDateTime.of(2024, 12, 4, 10, 0);
+        LocalDateTime attendanceTime3 = LocalDateTime.of(2024, 12, 5, 10, 0);
+        LocalDateTime attendanceTime4 = LocalDateTime.of(2024, 12, 6, 10, 0);
+        attendanceHistory.checkAttendance("벡터", attendanceTime);
+        attendanceHistory.checkAttendance("벡터", attendanceTime1);
+        attendanceHistory.checkAttendance("벡터", attendanceTime2);
+        attendanceHistory.checkAttendance("제프", attendanceTime);
+        attendanceHistory.checkAttendance("제프", attendanceTime1);
+        LocalDate standardDate = LocalDate.of(2024, 12, 7);
+        List<String> absenceLevelCrews = attendanceHistory.getAbsenceLevelCrews(standardDate);
+        assertThat(absenceLevelCrews).contains("벡터", "제프", "에드");
     }
 
 }
