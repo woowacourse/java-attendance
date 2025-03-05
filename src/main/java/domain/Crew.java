@@ -2,9 +2,6 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.IntStream;
 
 public class Crew {
     public static final int SYSTEM_YEAR = 2024;
@@ -13,58 +10,31 @@ public class Crew {
     public static final int DECEMBER_DAYS_START = 1;
 
     private final String name;
-    private final Map<LocalDate, LocalTime> attendanceRecords = new HashMap<>();
+    private final AttendanceRecords attendanceRecords;
 
     public Crew(String name) {
         this.name = name;
+        this.attendanceRecords = new AttendanceRecords();
     }
 
     public void putAttendanceRecord(LocalDate date, LocalTime localTime) {
-        validateNoDuplicateAttendance(date);
-        attendanceRecords.put(date, localTime);
-    }
-
-    private void validateNoDuplicateAttendance(LocalDate input) {
-        if (attendanceRecords.containsKey(input)) {
-            throw new IllegalArgumentException(ErrorCode.ATTENDANCE_DATE_DUPLICATED.getMessage());
-        }
+        attendanceRecords.putAttendanceRecord(date, localTime);
     }
 
     public void modifyAttendanceRecord(LocalDate date, LocalTime localTime) {
-        validateAttendanceExists(date);
-        attendanceRecords.put(date, localTime);
-    }
-
-    private void validateAttendanceExists(LocalDate input) {
-        if (!attendanceRecords.containsKey(input)) {
-            throw new IllegalArgumentException(ErrorCode.ATTENDANCE_DATE_NOT_FOUND.getMessage());
-        }
+        attendanceRecords.modifyAttendanceRecord(date, localTime);
     }
 
     public int countAttendanceStatusInDecember(AttendanceStatus targetStatus) {
-        return (int) IntStream.rangeClosed(DECEMBER_DAYS_START, DECEMBER_DAYS_END)
-                .filter(day -> DayType.checkIsWorkingDay(LocalDate.of(2024, 12, day)))
-                .mapToObj(this::getAttendanceStatusByDay)
-                .filter(status -> status == targetStatus)
-                .count();
-    }
-
-    private AttendanceStatus getAttendanceStatusByDay(int day) {
-        LocalDate date = LocalDate.of(SYSTEM_YEAR, SYSTEM_MONTH, day);
-        if (attendanceRecords.containsKey(date)) {
-            return AttendanceStatus.findByAttendDateAndTime(date, attendanceRecords.get(date));
-        }
-        return AttendanceStatus.ABSENT;
+        return attendanceRecords.countAttendanceStatusInDecember(targetStatus);
     }
 
     public Penalty getPenalty() {
-        int lateCount = countAttendanceStatusInDecember(AttendanceStatus.LATE);
-        int absentCount = countAttendanceStatusInDecember(AttendanceStatus.ABSENT);
-        return Penalty.findPenaltyByAttendanceStatusCount(lateCount, absentCount);
+        return attendanceRecords.getPenalty();
     }
 
     public boolean hasPenalty(Penalty penalty) {
-        return getPenalty() == penalty;
+        return attendanceRecords.getPenalty() == penalty;
     }
 
     public boolean hasName(String input) {
@@ -72,11 +42,11 @@ public class Crew {
     }
 
     public LocalTime findTimeByDate(LocalDate date) {
-        return attendanceRecords.get(date);
+        return attendanceRecords.findTimeByDate(date);
     }
 
     public boolean hasAttendanceRecordWithDate(LocalDate date) {
-        return attendanceRecords.containsKey(date);
+        return attendanceRecords.hasAttendanceRecordWithDate(date);
     }
 
     public String getName() {

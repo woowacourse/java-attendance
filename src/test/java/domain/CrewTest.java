@@ -3,10 +3,8 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,21 +20,15 @@ public class CrewTest {
 
     @Test
     @DisplayName("등교 시간을 입력하면 출석 기록이 저장된다.")
-    void crewTest() throws NoSuchFieldException, IllegalAccessException {
+    void crewTest() {
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
 
         crew.putAttendanceRecord(date, time);
 
-        Field field = Crew.class.getDeclaredField("attendanceRecords");
-        field.setAccessible(true);
-
-        @SuppressWarnings("unchecked")
-        Map<LocalDate, LocalTime> attendanceRecords = (Map<LocalDate, LocalTime>) field.get(crew);
-
-        assertThat(attendanceRecords)
+        assertThat(crew.findTimeByDate(date))
                 .isNotNull()
-                .containsEntry(date, time);
+                .isEqualTo(time);
     }
 
     @Test
