@@ -3,9 +3,9 @@ package attendance.view;
 import java.util.Arrays;
 
 public enum AttendanceStateView {
-    ABSENCE("결석"),
-    LATE("지각"),
-    ATTENDANCE("출석");
+    ATTENDANCE("출석"),
+    TARDY("지각"),
+    ABSENCE("결석");
 
     private final String name;
 
@@ -13,11 +13,11 @@ public enum AttendanceStateView {
         this.name = name;
     }
 
-    public static AttendanceStateView find(final String name) {
+    public static AttendanceStateView findByName(final String name) {
         return Arrays.stream(values())
                 .filter(state -> state.name().equals(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석에 일치하는 동일한 의미가 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 서버 에러가 발생했습니다."));
     }
 
     public String getName() {

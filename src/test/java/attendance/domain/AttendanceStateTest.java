@@ -1,35 +1,53 @@
 package attendance.domain;
 
+import attendance.util.DateGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.stream.Stream;
 
-import static attendance.domain.AttendanceState.ABSENCE;
-import static attendance.domain.AttendanceState.ATTENDANCE;
-import static attendance.domain.AttendanceState.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AttendanceStateTest {
+@DisplayName("출결 상태 테스트")
+class AttendanceStateTest {
 
-    @ParameterizedTest
+    private static final DateGenerator dateGenerator = new TestDateGenerator();
+
+    @ParameterizedTest(name = "등교 시간: {0}, 출결 상황: {1}")
     @MethodSource
-    @DisplayName("임계값에 해당하는 출결 상태를 반환한다.")
-    void 임계값에_해당하는_출결_상태를_반환한다(LocalDateTime dateTime, AttendanceState type) {
-        assertThat(AttendanceState.find(dateTime))
-                .isEqualTo(type);
+    @DisplayName("등교 시간으로 출결 상황을 반환한다")
+    void shouldReturnAttendanceStatusBasedOnArrivalTime(LocalDateTime dateTime, AttendanceState excepted) {
+        // when
+        AttendanceState result = AttendanceState.evaluate(dateTime);
+
+        // then
+        assertThat(result).isEqualTo(excepted);
     }
 
-    static Stream<Arguments> 임계값에_해당하는_출결_상태를_반환한다() {
+    private static Stream<Arguments> shouldReturnAttendanceStatusBasedOnArrivalTime() {
+        LocalDate nowDate = dateGenerator.generate();
+
         return Stream.of(
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 0), ATTENDANCE),
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 5), ATTENDANCE),
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 6), LATE),
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 30), LATE),
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 31), ABSENCE)
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(9, 59)), AttendanceState.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(10, 0)), AttendanceState.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(10, 5)), AttendanceState.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(10, 6)), AttendanceState.TARDY),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(10, 30)), AttendanceState.TARDY),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.of(10, 31)), AttendanceState.ABSENCE),
+                Arguments.of(LocalDateTime.of(nowDate, LocalTime.MAX), AttendanceState.ABSENCE)
         );
+    }
+
+    private static class TestDateGenerator implements DateGenerator {
+
+        @Override
+        public LocalDate generate() {
+            return LocalDate.of(2025, 3, 19);
+        }
     }
 }

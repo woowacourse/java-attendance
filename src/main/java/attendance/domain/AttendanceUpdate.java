@@ -1,15 +1,12 @@
 package attendance.domain;
 
-import java.util.List;
-
 public class AttendanceUpdate {
-
     private final Attendance beforeAttendance;
     private final Attendance afterAttendance;
 
-    public AttendanceUpdate(final List<Attendance> attendances) {
-        this.beforeAttendance = attendances.getFirst();
-        this.afterAttendance = attendances.getLast();
+    public AttendanceUpdate(Attendance beforeAttendance, Attendance afterAttendance) {
+        this.beforeAttendance = beforeAttendance;
+        this.afterAttendance = afterAttendance;
     }
 
     public Attendance getBeforeAttendance() {

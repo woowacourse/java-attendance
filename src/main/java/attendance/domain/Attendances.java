@@ -3,58 +3,54 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Attendances {
 
     private final List<Attendance> attendances;
 
-    public Attendances() {
-        this.attendances = new ArrayList<>();
-    }
-
-    public Attendances(List<Attendance> attendances) {
+    public Attendances(final List<Attendance> attendances) {
         this.attendances = attendances;
     }
 
-    public static Attendances of(List<Attendance> attendances) {
-        return new Attendances(attendances);
+    public Attendances registerAttendance(final LocalDateTime dateTime) {
+        Attendance before = findAttendanceByDate(dateTime.toLocalDate());
+        validateAlreadyAttendance(before);
+        return new Attendances(createUpdateAttendances(dateTime, before));
     }
 
-    public Attendance addAttendance(final LocalDateTime dateTime) {
-        Attendance attendance = new Attendance(dateTime);
-        attendances.add(attendance);
-        return attendance;
+    public Attendances updateAttendance(final LocalDateTime dateTime) {
+        Attendance before = findAttendanceByDate(dateTime.toLocalDate());
+        return new Attendances(createUpdateAttendances(dateTime, before));
     }
 
-    public Attendance deleteAttendance(final LocalDate date) {
-        Attendance attendance = find(date);
-        attendances.remove(attendance);
-        return attendance;
-    }
-
-    public Attendance find(final LocalDate date) {
+    public Attendance findAttendanceByDate(final LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameDate(date))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 수정하려는 날짜는 출석할 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 입력된 날짜(일)에는 출석 기록이 존재하지 않습니다."));
     }
 
-    public void validateAlreadyAttendance(final LocalDate date) {
-        if (find(date).isAlreadyChecked()) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석을 완료하셨습니다. 수정 기능을 이용해주세요.");
-        }
-    }
-
-    public List<Attendance> getAttendancesBefore(final LocalDate date) {
+    public List<Attendance> getAttendancesBefore(LocalDate today) {
         return attendances.stream()
-                .sorted(Attendance::compareTo)
-                .filter(attendance -> attendance.isBefore(date))
+                .filter(attendance -> attendance.isDateBefore(today))
                 .toList();
     }
 
     public List<Attendance> getAttendances() {
-        return Collections.unmodifiableList(attendances);
+        return attendances;
+    }
+
+    private void validateAlreadyAttendance(final Attendance before) {
+        if (before.isNotDefaultTime()) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석이 등록되었습니다. 수정 기능을 이용 해주세요.");
+        }
+    }
+
+    private List<Attendance> createUpdateAttendances(final LocalDateTime dateTime, final Attendance before) {
+        List<Attendance> newAttendances = new ArrayList<>(attendances);
+        newAttendances.remove(before);
+        newAttendances.add(Attendance.createFromDateTime(dateTime));
+        return newAttendances;
     }
 }

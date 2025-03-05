@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -7,37 +8,29 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static attendance.domain.AttendanceRisk.COUNSELING;
-import static attendance.domain.AttendanceRisk.EXPULSION;
-import static attendance.domain.AttendanceRisk.NONE;
-import static attendance.domain.AttendanceRisk.WARNING;
-import static attendance.domain.AttendanceRisk.find;
-import static org.assertj.core.api.Assertions.assertThat;
-
+@DisplayName("출결 위험도 테스트")
 class AttendanceRiskTest {
 
-    @ParameterizedTest
-    @MethodSource()
-    @DisplayName("출결 상황에 따라 알맞은 경고를 반환한다.")
-    void 출결_상황에_따라_알맞은_경고를_반환한다(int absence, int late, AttendanceRisk type) {
+    @ParameterizedTest(name = "결석 횟수: {0}, 지각 횟수: {1}, 위험도 결과: {2}")
+    @MethodSource
+    @DisplayName("결석 횟수로 위험도를 판단해 반환한다")
+    void evaluateRiskBasedOnAbsencesAndTardies(int absence, int tardy, AttendanceRisk excepted) {
         // when
-        AttendanceRisk result = find(absence, late);
+        AttendanceRisk result = AttendanceRisk.evaluate(absence, tardy);
 
         // then
-        assertThat(result)
-                .isEqualTo(type);
+        Assertions.assertThat(result).isEqualTo(excepted);
     }
 
-    static Stream<Arguments> 출결_상황에_따라_알맞은_경고를_반환한다() {
+    private static Stream<Arguments> evaluateRiskBasedOnAbsencesAndTardies() {
         return Stream.of(
-                Arguments.of(0, 0, NONE),
-                Arguments.of(0, 5, NONE),
-                Arguments.of(2, 0, WARNING),
-                Arguments.of(0, 8, WARNING),
-                Arguments.of(3, 0, COUNSELING),
-                Arguments.of(0, 15, COUNSELING),
-                Arguments.of(6, 0, EXPULSION),
-                Arguments.of(0, 18, EXPULSION)
+                Arguments.of(1, 2, AttendanceRisk.NONE),
+                Arguments.of(1, 3, AttendanceRisk.WARNING),
+                Arguments.of(2, 2, AttendanceRisk.WARNING),
+                Arguments.of(2, 3, AttendanceRisk.INTERVIEW),
+                Arguments.of(5, 2, AttendanceRisk.INTERVIEW),
+                Arguments.of(5, 3, AttendanceRisk.WEEDING),
+                Arguments.of(7, 0, AttendanceRisk.WEEDING)
         );
     }
 }

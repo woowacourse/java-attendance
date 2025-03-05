@@ -1,102 +1,93 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
-import attendance.domain.AttendanceRiskCrews;
-import attendance.domain.AttendanceState;
-import attendance.domain.AttendanceStatus;
+import attendance.domain.AttendanceRecord;
+import attendance.domain.AttendanceRecords;
 import attendance.domain.AttendanceUpdate;
-import attendance.domain.Attendances;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.TextStyle;
-import java.util.EnumMap;
 import java.util.Locale;
-import java.util.Map;
 
 public class OutputView {
 
-    private static final String NEW_LINE = System.lineSeparator();
-    private static final String OUTPUT_MENU = NEW_LINE + NEW_LINE + """
-            오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.
-            1. 출석 확인
-            2. 출석 수정
-            3. 크루별 출석 기록 확인
-            4. 제적 위험자 확인
-            Q. 종료
-            """;
-
     public void printMenu(LocalDate today) {
-        System.out.printf(OUTPUT_MENU,
+        System.out.printf("""
+                        
+                        
+                        오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.
+                        1. 출석 확인
+                        2. 출석 수정
+                        3. 크루별 출석 기록 확인
+                        4. 제적 위험자 확인
+                        Q. 종료
+                        """,
                 today.getMonthValue(),
                 today.getDayOfMonth(),
                 today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
         );
     }
 
-    public void printAttendanceRecord(Attendance attendance) {
+    public void printAttendanceResult(Attendance attendance) {
         LocalDateTime dateTime = attendance.getDateTime();
+        AttendanceStateView stateView = AttendanceStateView.findByName(attendance.getState().name());
 
-        String timeContent = dateTime.toLocalTime().toString();
-        if (dateTime.toLocalTime().equals(LocalTime.MAX)) {
-            timeContent = "--:--";
-        }
-
-        String stateName = attendance.getState().name();
-        System.out.printf(NEW_LINE + "%d월 %d일 %s %s (%s)",
+        System.out.printf("%d월 %d일 %s %s (%s)",
                 dateTime.getMonthValue(),
                 dateTime.getDayOfMonth(),
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
-                timeContent,
-                AttendanceStateView.find(stateName).getName()
+                dateTime.toLocalTime(),
+                stateView.getName()
         );
     }
 
-    public void printAttendUpdateResult(AttendanceUpdate update) {
-        printAttendanceRecord(update.getBeforeAttendance());
-
-        String stateName = update.getAfterAttendance().getState().name();
+    public void printAttendanceUpdate(AttendanceUpdate attendanceUpdate) {
+        printAttendanceResult(attendanceUpdate.getBeforeAttendance());
+        Attendance attendance = attendanceUpdate.getAfterAttendance();
         System.out.printf(" -> %s (%s) 수정 완료!",
-                update.getAfterAttendance().getDateTime().toLocalTime(),
-                AttendanceStateView.find(stateName).getName()
+                attendance.getDateTime().toLocalTime(),
+                AttendanceStateView.findByName(attendance.getState().name())
         );
     }
 
-    public void printAttendanceRecords(Attendances attendances, String nickname) {
-        System.out.printf(NEW_LINE + "이번 달 %s의 출석 기록입니다." + NEW_LINE, nickname);
+    public void printAttendanceRecord(AttendanceRecord attendanceRecord) {
+        AttendanceRiskView risk = AttendanceRiskView.findByName(attendanceRecord.getStatus().getRisk().name());
+        System.out.printf("\n이번 달 %s의 출석 기록입니다.\n\n", attendanceRecord.getNickname());
+        attendanceRecord.getRecord().getAttendances()
+                .forEach(attendance -> {
+                    this.printAttendanceResult(attendance);
+                    System.out.println();
+                });
 
-        attendances.getAttendances().forEach(this::printAttendanceRecord);
-        System.out.println();
-    }
-
-    public void printAttendanceStatus(final AttendanceStatus attendanceStatus) {
-        EnumMap<AttendanceState, Integer> status = attendanceStatus.getStatus();
-        String riskName = attendanceStatus.getRisk().name();
-
-        System.out.printf(NEW_LINE + """
-                        출석: %s회
-                        지각: %s회
-                        결석: %s회
+        System.out.printf("""
+                        
+                        출석: %d회
+                        지각: %d회
+                        결석: %d회
+                        
+                        %s 대상자입니다.
                         """,
-                status.get(AttendanceState.ATTENDANCE),
-                status.get(AttendanceState.LATE),
-                status.get(AttendanceState.ABSENCE)
+                attendanceRecord.getStatus().getAttendanceStateCount(),
+                attendanceRecord.getStatus().getTardyStateCount(),
+                attendanceRecord.getStatus().getAbsenceStateCount(),
+                risk.getName()
         );
-        System.out.printf(NEW_LINE + "%s 대상자입니다.", AttendanceRiskView.find(riskName).getName());
     }
 
-    public void printAttendanceRiskCrews(final AttendanceRiskCrews riskCrews) {
-        System.out.print(NEW_LINE + "제적 위험자 조회 결과");
+    public void printRiskCrewsSearch(AttendanceRecords attendanceRecords) {
+        System.out.println("\n제적 위험자 조회 결과");
+        attendanceRecords.getRecords()
+                .forEach(this::printRiskCrewSearch);
+    }
 
-        for (Map.Entry<String, AttendanceStatus> statusEntry : riskCrews.getRiskCrews().entrySet()) {
-            String riskName = statusEntry.getValue().getRisk().name();
-            System.out.printf("\n- %s: 결석 %d회, 지각 %d회 (%s)",
-                    statusEntry.getKey(),
-                    statusEntry.getValue().getStatus().get(AttendanceState.ABSENCE),
-                    statusEntry.getValue().getStatus().get(AttendanceState.LATE),
-                    AttendanceRiskView.find(riskName).getName()
-            );
-        }
+    private void printRiskCrewSearch(AttendanceRecord attendanceRecord) {
+        AttendanceRiskView risk = AttendanceRiskView.findByName(attendanceRecord.getStatus().getRisk().name());
+        System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                attendanceRecord.getNickname(),
+                attendanceRecord.getStatus().getAbsenceStateCount(),
+                attendanceRecord.getStatus().getTardyStateCount(),
+                risk.getName()
+        );
     }
 }

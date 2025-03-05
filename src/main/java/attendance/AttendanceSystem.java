@@ -1,141 +1,109 @@
 package attendance;
 
-import attendance.config.AppConfig;
 import attendance.domain.Attendance;
-import attendance.domain.AttendanceManager;
-import attendance.domain.AttendanceRiskCrews;
-import attendance.domain.AttendanceStatus;
+import attendance.domain.AttendanceRecord;
+import attendance.domain.AttendanceRecords;
 import attendance.domain.AttendanceUpdate;
-import attendance.domain.Attendances;
-import attendance.domain.CampusTime;
-import attendance.domain.Holiday;
-import attendance.utility.DateGenerator;
-import attendance.utility.DateTimeParser;
-import attendance.view.AttendanceMenu;
+import attendance.domain.CrewAttendanceManager;
+import attendance.util.DateGenerator;
+import attendance.util.DateTimeParser;
 import attendance.view.InputView;
+import attendance.view.Menu;
 import attendance.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
-import static attendance.view.AttendanceMenu.CHECK;
-import static attendance.view.AttendanceMenu.QUIT;
-import static attendance.view.AttendanceMenu.RECORD_SEARCH;
-import static attendance.view.AttendanceMenu.RISK_SEARCH;
-import static attendance.view.AttendanceMenu.UPDATE;
+import java.time.format.DateTimeFormatter;
 
 public class AttendanceSystem {
+
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final InputView inputView;
     private final OutputView outputView;
     private final DateGenerator dateGenerator;
-    private final Holiday holiday;
-    private final AttendanceManager attendanceManager;
+    private final CrewAttendanceManager crewAttendanceManager;
 
-    public AttendanceSystem(AppConfig appConfig) {
-        this.inputView = appConfig.getInputView();
-        this.outputView = appConfig.getOutputView();
-        this.dateGenerator = appConfig.getDateGenerator();
-        this.holiday = appConfig.getHoliday();
-        this.attendanceManager = appConfig.getAttendanceManager();
+    public AttendanceSystem(final InputView inputView, final OutputView outputView, final DateGenerator dateGenerator, final CrewAttendanceManager crewAttendanceManager) {
+        this.inputView = inputView;
+        this.outputView = outputView;
+        this.dateGenerator = dateGenerator;
+        this.crewAttendanceManager = crewAttendanceManager;
     }
 
     public void run() {
         while (true) {
-            LocalDate today = dateGenerator.generateNow();
-            AttendanceMenu menu = selectMenu(today);
+            Menu menu = displayMenuAndReadCommand();
 
-            processSystem(menu, today);
-            if (menu == QUIT) {
+            processAttendance(menu);
+            if (menu.equals(Menu.QUIT)) {
                 return;
             }
         }
     }
 
-    private AttendanceMenu selectMenu(final LocalDate today) {
-        outputView.printMenu(today);
-        return AttendanceMenu.find(inputView.readMenuCommand());
+    private void processAttendance(final Menu menu) {
+        processCheck(menu);
+        processUpdate(menu);
+        processRecordSearch(menu);
+        processRiskCrewSearch(menu);
     }
 
-    private void processSystem(final AttendanceMenu menu, final LocalDate today) {
-        checkAttendance(menu, today);
-        updateAttendance(menu, today);
-        attendanceRecordSearch(menu, today);
-        attendanceRiskSearch(menu, today);
+    private Menu displayMenuAndReadCommand() {
+        outputView.printMenu(dateGenerator.generate());
+        return inputView.readMenuCommand();
     }
 
-    private void checkAttendance(final AttendanceMenu menu, final LocalDate today) {
-        if (menu == CHECK) {
-            holiday.validateHoliday(today);
+    private void processCheck(final Menu menu) {
+        if (menu.equals(Menu.CHECK)) {
+            String nickname = inputView.readNickname();
+            crewAttendanceManager.validateNicknameExists(nickname);
 
-            String nickname = validateAndReadNickname();
-            LocalTime time = parseTime();
-            LocalDateTime dateTime = LocalDateTime.of(today, time);
+            LocalTime time = readAndParseAttendanceTime();
 
-            Attendance attendanceCheck = attendanceManager.processAttendanceCheck(dateTime, nickname);
-            outputView.printAttendanceRecord(attendanceCheck);
+            Attendance attendance = crewAttendanceManager.processAttendanceCheck(nickname, time);
+            outputView.printAttendanceResult(attendance);
         }
     }
 
-    private void updateAttendance(final AttendanceMenu menu, final LocalDate today) {
-        if (menu == UPDATE) {
-            String nickname = validateAndReadNicknameForUpdate();
+    private void processUpdate(final Menu menu) {
+        if (menu.equals(Menu.UPDATE)) {
+            String nickname = inputView.readNicknameForUpdate();
+            crewAttendanceManager.validateNicknameExists(nickname);
 
-            int day = inputView.readDateForUpdate();
-            LocalDate date = DateTimeParser.parseDateByDay(today, day);
-            LocalTime time = parseTimeForUpdate();
-            LocalDateTime dateTime = LocalDateTime.of(date, time);
+            int day = inputView.readAttendanceDayForUpdate();
+            LocalDate date = DateTimeParser.parseDay(day, dateGenerator.generate());
 
-            AttendanceUpdate attendanceUpdate = attendanceManager.processAttendanceUpdate(dateTime, nickname);
-            outputView.printAttendUpdateResult(attendanceUpdate);
+            String time = inputView.readAttendanceTimeForUpdate();
+            LocalTime time1 = DateTimeParser.parseTime(time, TIME_FORMATTER);
+
+            LocalDateTime dateTime = LocalDateTime.of(date, time1);
+
+            AttendanceUpdate attendanceUpdate = crewAttendanceManager.processAttendanceUpdate(nickname, dateTime);
+            outputView.printAttendanceUpdate(attendanceUpdate);
         }
     }
 
-    private void attendanceRecordSearch(final AttendanceMenu menu, final LocalDate today) {
-        if (menu == RECORD_SEARCH) {
-            String nickname = validateAndReadNickname();
+    private void processRecordSearch(final Menu menu) {
+        if (menu.equals(Menu.RECORD_SEARCH)) {
+            String nickname = inputView.readNickname();
+            crewAttendanceManager.validateNicknameExists(nickname);
 
-            Attendances attendanceRecords = attendanceManager.getAttendanceRecord(today, nickname);
-            outputView.printAttendanceRecords(attendanceRecords, nickname);
-
-            AttendanceStatus attendanceStatus = attendanceManager.getAttendanceStatus(today, nickname);
-            outputView.printAttendanceStatus(attendanceStatus);
+            AttendanceRecord attendanceRecord = crewAttendanceManager.getAttendanceRecord(nickname);
+            outputView.printAttendanceRecord(attendanceRecord);
         }
     }
 
-    private void attendanceRiskSearch(final AttendanceMenu menu, final LocalDate today) {
-        if (menu == RISK_SEARCH) {
-            AttendanceRiskCrews riskCrews = attendanceManager.getAttendanceRiskCrew(today);
-            outputView.printAttendanceRiskCrews(riskCrews);
+    private void processRiskCrewSearch(final Menu menu) {
+        if (menu.equals(Menu.RISK_CREW_SEARCH)) {
+            AttendanceRecords attendanceRecords = crewAttendanceManager.getAttendanceRecords();
+            outputView.printRiskCrewsSearch(attendanceRecords);
         }
     }
 
-    private String validateAndReadNickname() {
-        String nickname = inputView.readNickname();
-        attendanceManager.validateNicknameExists(nickname);
-        return nickname;
-    }
-
-    private String validateAndReadNicknameForUpdate() {
-        String nickname = inputView.readNicknameForUpdate();
-        attendanceManager.validateNicknameExists(nickname);
-        return nickname;
-    }
-
-    private LocalTime parseTime() {
-        String time = inputView.readAttendanceTime();
-        return parseAndValidateTime(time);
-    }
-
-    private LocalTime parseTimeForUpdate() {
-        String time = inputView.readAttendanceTimeForUpdate();
-        return parseAndValidateTime(time);
-    }
-
-    private static LocalTime parseAndValidateTime(final String time) {
-        LocalTime parsedTime = DateTimeParser.parseTime(time);
-        CampusTime.validateOperationTime(parsedTime);
-        return parsedTime;
+    private LocalTime readAndParseAttendanceTime() {
+        String attendanceTime = inputView.readAttendanceTime();
+        return DateTimeParser.parseTime(attendanceTime, TIME_FORMATTER);
     }
 }

@@ -3,8 +3,8 @@ package attendance.domain;
 import java.time.LocalTime;
 
 public enum CampusTime {
-    START_TIME(LocalTime.of(8, 0)),
-    END_TIME(LocalTime.of(23, 0));
+    START(LocalTime.of(8, 0)),
+    END(LocalTime.of(23, 0));
 
     private final LocalTime time;
 
@@ -12,13 +12,16 @@ public enum CampusTime {
         this.time = time;
     }
 
-    public static void validateOperationTime(final LocalTime time) {
-        if (time.isBefore(START_TIME.time) || time.isAfter(END_TIME.time)) {
-            throw new IllegalArgumentException(String.format("[ERROR] 캠퍼스 운영시간이 아닙니다. 운영시간은 %s ~ %s 입니다.", START_TIME.time, END_TIME.time));
+    public static void validateOperateTime(final LocalTime time) {
+        if (START.time.isAfter(time) || END.time.isBefore(time)) {
+            throw new IllegalArgumentException(formatErrorMessage());
         }
     }
 
-    public LocalTime getTime() {
-        return time;
+    private static String formatErrorMessage() {
+        return String.format("[ERROR] 캠퍼스 운영 시간은 %s ~ %s 입니다.",
+                START.time,
+                END.time
+        );
     }
 }

@@ -1,167 +1,106 @@
 package attendance.domain;
 
-import org.junit.jupiter.api.Test;
+import attendance.util.DateGenerator;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.EnumMap;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static attendance.domain.AttendanceState.ABSENCE;
-import static attendance.domain.AttendanceState.ATTENDANCE;
-import static attendance.domain.AttendanceState.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("출석 상태 테스트")
 class AttendanceStatusTest {
 
-    @Test
-    void 출석_기록으로_객체를_생성한다() {
-        // given
-        List<Attendance> attendances = createAttendances(List.of(
-                LocalDateTime.of(2024, 12, 3, 10, 0),
-                LocalDateTime.of(2024, 12, 4, 10, 6),
-                LocalDateTime.of(2024, 12, 5, 10, 31)
-        ));
+    private static final DateGenerator dateGenerator = new TestDateGenerator();
 
+    @ParameterizedTest(name = "출석 목록: {0}, 출결 상황: {1}, 지각 상황: {2}, 결석 상황: {3}")
+    @MethodSource
+    @DisplayName("출석 목록으로 출결 상황을 종합한다")
+    void summarizeAttendanceStatusFromRecords(
+            List<Attendance> attendances,
+            int attendanceExcepted,
+            int tardyExcepted,
+            int absenceExcepted
+    ) {
         // when
-        AttendanceStatus attendanceStatus = new AttendanceStatus(attendances);
-        EnumMap<AttendanceState, Integer> result = attendanceStatus.getStatus();
+        AttendanceStatus result = AttendanceStatus.fromAttendances(attendances);
 
         // then
         assertAll(
-                () -> assertThat(result.get(ABSENCE)).isEqualTo(1),
-                () -> assertThat(result.get(LATE)).isEqualTo(1),
-                () -> assertThat(result.get(ATTENDANCE)).isEqualTo(1)
+                () -> assertThat(result.getAttendanceStateCount()).isEqualTo(attendanceExcepted),
+                () -> assertThat(result.getTardyStateCount()).isEqualTo(tardyExcepted),
+                () -> assertThat(result.getAbsenceStateCount()).isEqualTo(absenceExcepted)
         );
     }
 
-    @Test
-    void 위험자_상태가_높은_경우_양수를_반환한다() {
-        // given
-        List<Attendance> origin = createAttendances(List.of(
-                LocalDateTime.of(2024, 12, 3, 18, 0),
-                LocalDateTime.of(2024, 12, 4, 18, 0),
-                LocalDateTime.of(2024, 12, 5, 18, 0)
-        ));
-
-        List<Attendance> compared = createAttendances(List.of(
-                LocalDateTime.of(2024, 12, 3, 10, 0),
-                LocalDateTime.of(2024, 12, 4, 10, 0),
-                LocalDateTime.of(2024, 12, 5, 10, 0)
-        ));
-
+    @ParameterizedTest(name = "출석 목록: {0}, 출결 위험도 결과: {1}")
+    @MethodSource
+    @DisplayName("출석 목록으로 출결 위험도를 판단한다")
+    void evaluateRiskBasedOnAttendanceRecords(List<Attendance> attendances, AttendanceRisk excepted) {
         // when
-        AttendanceStatus originStatus = new AttendanceStatus(origin);
-        AttendanceStatus comparedStatus = new AttendanceStatus(compared);
+        AttendanceStatus result = AttendanceStatus.fromAttendances(attendances);
 
         // then
-        assertThat(originStatus.compareTo(comparedStatus))
-                .isPositive();
+        assertThat(result.getRisk()).isEqualTo(excepted);
     }
 
-    @Test
-    void 위험자_상태가_낮은_경우_음수를_반환한다() {
-        // given
-        List<Attendance> origin = createAttendances(List.of(
-                LocalDateTime.of(2024, 12, 3, 10, 0),
-                LocalDateTime.of(2024, 12, 4, 10, 0),
-                LocalDateTime.of(2024, 12, 5, 10, 0)
-        ));
-
-        List<Attendance> compared = createAttendances(List.of(
-                LocalDateTime.of(2024, 12, 3, 18, 0),
-                LocalDateTime.of(2024, 12, 4, 18, 0),
-                LocalDateTime.of(2024, 12, 5, 18, 0)
-        ));
-
-        // when
-        AttendanceStatus originStatus = new AttendanceStatus(origin);
-        AttendanceStatus comparedStatus = new AttendanceStatus(compared);
-
-        // then
-        assertThat(originStatus.compareTo(comparedStatus))
-                .isNegative();
+    private static Stream<Arguments> summarizeAttendanceStatusFromRecords() {
+        LocalDate nowDate = dateGenerator.generate();
+        return Stream.of(
+                Arguments.of(List.of(
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0)))
+                ), 1, 0, 0),
+                Arguments.of(List.of(
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(10, 6)))
+                ), 1, 1, 0),
+                Arguments.of(List.of(
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(10, 6))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(10, 31)))
+                ), 1, 1, 1)
+        );
     }
 
-    @Test
-    void 출결에_결석_및_지각이_더_적은_경우_양수를_반환한다() {
-        // given
-        List<Attendance> origin = createAttendances(List.of(
-                LocalDateTime.of(2024, 12, 3, 18, 0),
-                LocalDateTime.of(2024, 12, 4, 18, 0),
-                LocalDateTime.of(2024, 12, 5, 10, 0)
-        ));
-
-        List<Attendance> compared = createAttendances(List.of(
-                LocalDateTime.of(2024, 12, 3, 18, 0),
-                LocalDateTime.of(2024, 12, 4, 18, 0),
-                LocalDateTime.of(2024, 12, 5, 10, 6)
-        ));
-
-        // when
-        AttendanceStatus originStatus = new AttendanceStatus(origin);
-        AttendanceStatus comparedStatus = new AttendanceStatus(compared);
-
-        // then
-        assertThat(originStatus.compareTo(comparedStatus))
-                .isPositive();
+    private static Stream<Arguments> evaluateRiskBasedOnAttendanceRecords() {
+        LocalDate nowDate = dateGenerator.generate();
+        return Stream.of(
+                Arguments.of(
+                        List.of(Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(10, 0)))),
+                        AttendanceRisk.NONE
+                ),
+                Arguments.of(List.of(
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(18, 0)))
+                ), AttendanceRisk.WARNING),
+                Arguments.of(List.of(
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(18, 0)))
+                ), AttendanceRisk.INTERVIEW),
+                Arguments.of(List.of(
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate, LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(1), LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(2), LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(5), LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(6), LocalTime.of(18, 0))),
+                        Attendance.createFromDateTime(LocalDateTime.of(nowDate.minusDays(7), LocalTime.of(18, 0)))
+                ), AttendanceRisk.WEEDING)
+        );
     }
 
-    @Test
-    void 출결에_결석_및_지각이_더_많은_경우_음수를_반환한다() {
-        // given
-        List<Attendance> origin = createAttendances(List.of(
-                LocalDateTime.of(2024, 12, 3, 18, 0),
-                LocalDateTime.of(2024, 12, 4, 18, 0),
-                LocalDateTime.of(2024, 12, 5, 10, 6)
-        ));
+    private static class TestDateGenerator implements DateGenerator {
 
-        List<Attendance> compared = createAttendances(List.of(
-                LocalDateTime.of(2024, 12, 3, 18, 0),
-                LocalDateTime.of(2024, 12, 4, 18, 0),
-                LocalDateTime.of(2024, 12, 5, 10, 0)
-        ));
-
-        // when
-        AttendanceStatus originStatus = new AttendanceStatus(origin);
-        AttendanceStatus comparedStatus = new AttendanceStatus(compared);
-
-        // then
-        assertThat(originStatus.compareTo(comparedStatus))
-                .isNegative();
-    }
-
-    @Test
-    void 출결_상황이_동일한_경우_0을_반환한다() {
-        // given
-        List<Attendance> origin = createAttendances(List.of(
-                LocalDateTime.of(2024, 12, 3, 10, 0),
-                LocalDateTime.of(2024, 12, 4, 10, 0),
-                LocalDateTime.of(2024, 12, 5, 10, 0)
-        ));
-
-        List<Attendance> compared = createAttendances(List.of(
-                LocalDateTime.of(2024, 12, 3, 10, 0),
-                LocalDateTime.of(2024, 12, 4, 10, 0),
-                LocalDateTime.of(2024, 12, 5, 10, 0)
-        ));
-
-        // when
-        AttendanceStatus originStatus = new AttendanceStatus(origin);
-        AttendanceStatus comparedStatus = new AttendanceStatus(compared);
-
-        // then
-        assertThat(originStatus.compareTo(comparedStatus))
-                .isZero();
-    }
-
-    private List<Attendance> createAttendances(List<LocalDateTime> dateTimes) {
-        List<Attendance> attendances = new ArrayList<>();
-
-        for (LocalDateTime dateTime : dateTimes) {
-            attendances.add(new Attendance(dateTime));
+        @Override
+        public LocalDate generate() {
+            return LocalDate.of(2025, 3, 19);
         }
-        return attendances;
     }
 }

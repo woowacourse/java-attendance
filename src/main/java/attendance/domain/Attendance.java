@@ -3,36 +3,37 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
-public class Attendance implements Comparable<Attendance> {
+public class Attendance {
 
     private final LocalDateTime dateTime;
     private final AttendanceState state;
 
-    public Attendance(final LocalDateTime dateTime) {
+    private Attendance(final LocalDateTime dateTime, final AttendanceState state) {
         this.dateTime = dateTime;
-        this.state = AttendanceState.find(dateTime);
+        this.state = state;
+    }
+
+    public static Attendance createFromDateTime(final LocalDateTime dateTime) {
+        AttendanceState state = AttendanceState.evaluate(dateTime);
+        return new Attendance(dateTime, state);
     }
 
     public boolean isSameDate(final LocalDate date) {
-        return dateTime.toLocalDate().isEqual(date);
+        return this.dateTime.toLocalDate().equals(date);
     }
 
-    public boolean isAlreadyChecked() {
+    public boolean isNotDefaultTime() {
         return !dateTime.toLocalTime().equals(LocalTime.MAX);
     }
 
-    public boolean hasState(final AttendanceState state) {
-        return this.state == state;
-    }
-
-    @Override
-    public int compareTo(final Attendance other) {
-        return dateTime.compareTo(other.dateTime);
-    }
-
-    public boolean isBefore(final LocalDate date) {
+    public boolean isDateBefore(final LocalDate date) {
         return dateTime.toLocalDate().isBefore(date);
+    }
+
+    public boolean isSameState(final AttendanceState state) {
+        return this.state.equals(state);
     }
 
     public LocalDateTime getDateTime() {
@@ -41,5 +42,17 @@ public class Attendance implements Comparable<Attendance> {
 
     public AttendanceState getState() {
         return state;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        Attendance o = (Attendance) object;
+        return dateTime.equals(o.dateTime) && state == o.state;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(dateTime);
     }
 }
