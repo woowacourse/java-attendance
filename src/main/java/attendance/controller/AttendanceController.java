@@ -152,22 +152,8 @@ public class AttendanceController {
     }
 
     private void displayAttendanceLogs(AttendanceBook attendanceBook, Nickname nickname, List<AttendanceLog> logs) {
-        List<AttendanceLogDto> logDtos = mapToAttendanceLogDtos(attendanceBook, nickname, logs);
-        outputView.printAttendanceLogs(nickname, logDtos);
-    }
-
-    private List<AttendanceLogDto> mapToAttendanceLogDtos(AttendanceBook attendanceBook,
-                                                          Nickname nickname,
-                                                          List<AttendanceLog> logs) {
-        return logs.stream()
-                .map(attendanceLog -> new AttendanceLogDto(
-                        nickname,
-                        attendanceLog.getAttendanceDate(),
-                        attendanceLog.getAttendanceTime(),
-                        attendanceBook.determineAttendanceType(
-                                attendanceLog.getAttendanceDate(),
-                                attendanceLog.getAttendanceTime())))
-                .toList();
+        List<AttendanceLogDto> attendanceLogDtos = AttendanceLogDto.mapToDtos(attendanceBook, logs);
+        outputView.printAttendanceLogs(nickname, attendanceLogDtos);
     }
 
     private void displayWarningList(LocalDate baseDate, AttendanceBook attendanceBook) {
@@ -178,20 +164,10 @@ public class AttendanceController {
     private List<AttendanceWarningDto> createAttendanceWarningDtos(LocalDate baseDate, AttendanceBook attendanceBook) {
         return attendanceBook.getNicknames()
                 .stream()
-                .map(nickname -> mapToAttendanceWarningDto(baseDate, attendanceBook, nickname))
+                .map(nickname -> AttendanceWarningDto.from(baseDate, attendanceBook, nickname))
                 .filter(this::isNotCleanLevel)
                 .sorted(getAttendanceWarningComparator())
                 .toList();
-    }
-
-    private AttendanceWarningDto mapToAttendanceWarningDto(LocalDate baseDate,
-                                                           AttendanceBook attendanceBook,
-                                                           Nickname nickname) {
-        EnumMap<AttendanceType, Integer> typeCounts = attendanceBook.countAttendanceTypes(nickname, baseDate);
-        AttendanceWarningLevel warningLevel = attendanceBook.determineWarningLevel(typeCounts);
-        int lateCount = typeCounts.get(AttendanceType.LATE);
-        int absentCount = typeCounts.get(AttendanceType.ABSENT);
-        return new AttendanceWarningDto(nickname, lateCount, absentCount, warningLevel);
     }
 
     private boolean isNotCleanLevel(AttendanceWarningDto attendanceWarningDto) {
