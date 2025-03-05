@@ -26,6 +26,10 @@ public class AttendanceDate {
         }
     }
 
+    public void validateInTime(final LocalTime time) {
+        CampusTime.validateInTime(time);
+    }
+
     public LocalDateTime createLocalDateTime(final LocalTime localTime) {
         return LocalDateTime.of(getYear(), getMonth(), getDayOfMonth(), localTime.getHour(), localTime.getMinute());
     }

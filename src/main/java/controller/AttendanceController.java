@@ -53,6 +53,7 @@ public class AttendanceController {
             return;
         }
         LocalDateTime attendanceDateTime = inputAttendanceDateTime();
+        attendanceDate.validateInTime(attendanceDateTime.toLocalTime());
 
         attendances.checkAttendance(name, attendanceDateTime);
         AttendanceState attendanceState = getAttendanceState(attendanceDateTime);

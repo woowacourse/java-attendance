@@ -22,7 +22,6 @@ public class Attendances {
     }
 
     public void checkAttendance(final String name, final LocalDateTime time) {
-        CampusTime.validateInTime(time.toLocalTime());
         Attendance attendance = findCrewAttendanceBy(name);
         attendance.add(time);
     }
