@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import util.DateTimeUtil;
 
 public class AttendanceBook {
     private final List<Attendance> attendanceBook;
@@ -79,7 +80,7 @@ public class AttendanceBook {
                 .map(Attendance::getLocalDate)
                 .collect(Collectors.toSet());
 
-        for (int day = 1; day < 16; day++) {
+        for (int day = 1; day < DateTimeUtil.getTodayDate(); day++) {
             LocalDate date = LocalDate.of(2024, 12, day);
             if (isWeekDay(date)) {
                 continue;
