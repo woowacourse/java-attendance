@@ -75,20 +75,14 @@ public class CrewAttendance {
     }
 
     private int countAbsent(final LocalDateTime today) {
-        int count = 0;
+        List<LocalDateTime> days = new ArrayList<>();
         for (int day = 1; day < today.getDayOfMonth(); day++) {
-            LocalDateTime targetDay = LocalDateTime.of(2024, 12, day, 0, 0);
-            count = updateAbsentCount(targetDay, count);
+            days.add(LocalDateTime.of(2024, 12, day, 0, 0));
         }
-        return count;
-    }
-
-    private int updateAbsentCount(final LocalDateTime targetDay, final int count) {
-        if (!Campus.isOffDay(targetDay) &&
-            (!isExistDay(targetDay) || getAttendanceOn(targetDay).status().equals(ABSENT))) {
-            return count + 1;
-        }
-        return count;
+        return (int) days.stream()
+                .filter( date -> !Campus.isOffDay(date))
+                .filter(date -> !isExistDay(date) || getAttendanceOn(date).status().equals(ABSENT) )
+                .count();
     }
 
     public Map<LocalDate, AttendanceStatus> getAttendanceStatusesBefore(final LocalDateTime today) {
