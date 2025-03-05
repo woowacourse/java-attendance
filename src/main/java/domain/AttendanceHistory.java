@@ -5,26 +5,36 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 
-public class Attendance {
+public class AttendanceHistory {
     private static final LocalTime MONDAY_START = LocalTime.of(13, 0);
     private static final LocalTime DEFAULT_START = LocalTime.of(10, 0);
     private static final int LATE_STANDARD = 5;
     private static final int ABSENT_STANDARD = 30;
 
-    Map<Crew, LocalDate> attendanceHistory = new HashMap<>();
+    private final Map<Crew, Attendances> attendanceHistory;
+
+    public AttendanceHistory(Map<Crew, Attendances> attendanceHistory) {
+        this.attendanceHistory = attendanceHistory;
+    }
 
     public AttendanceResult checkAttendance(Crew crew, LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
         LocalDate attendanceDate = attendanceDateTime.toLocalDate();
         LocalTime openTime;
         isHoliday(attendanceDate);
+        duplicateAttendance(attendanceHistory.get(crew), attendanceDate);
         validateOperatingTime(attendanceTime);
-        attendanceHistory.put(crew, attendanceDate);
+        attendanceHistory.put(crew, attendanceHistory.get(crew).add(attendanceDateTime));
         return AttendanceResult.getAttendanceResult(attendanceDateTime);
 
+    }
+
+    private void duplicateAttendance(Attendances attendances, LocalDate attendanceDate) {
+        if (attendances.haveAttendanceDate(attendanceDate)) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석했습니다.");
+        }
     }
 
     private void isHoliday(LocalDate attendanceDate) {
