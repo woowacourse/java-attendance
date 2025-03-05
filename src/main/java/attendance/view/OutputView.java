@@ -1,80 +1,99 @@
 package attendance.view;
 
-import attendance.domain.Attendance;
+import attendance.domain.AcademicStatus;
+import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceTime;
-import attendance.domain.CrewAttendanceInformation;
+import attendance.domain.ExpulsionCandidate;
+import attendance.dto.CrewAttendanceDTO;
+import java.time.format.TextStyle;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Locale;
 
 public class OutputView {
 
-    public void printAcademicStatusResult(CrewAttendanceInformation crewAttendanceInformation) {
+    private static final String DEFAULT_ABSENCE = "--:--";
 
-        System.out.println("출석: " + crewAttendanceInformation.attend() + "회");
-        System.out.println("지각: " + crewAttendanceInformation.late() + "회");
-        System.out.println("결석: " + crewAttendanceInformation.absent() + "회");
-
-        if (crewAttendanceInformation.academicStatus().equals("X")) {
-            System.out.println("대상자가 아닙니다.");
-            return;
-        }
-        System.out.println(crewAttendanceInformation.academicStatus() + " 대상자입니다.");
-        printNewLine();
-    }
-
-    public void printModifyAttendanceResult(AttendanceTime originAttendanceTime, String originAttendanceStatus,
-                                            AttendanceTime modifyAttendanceTime, String modifyAttendanceStatus) {
-
-        System.out.printf("%02d월 %02d일 %s %s:%s (%s)", originAttendanceTime.getMonth(), originAttendanceTime.getDay(),
-                originAttendanceTime.getDayOfWeek(), originAttendanceTime.hour(), originAttendanceTime.minute(),
-                originAttendanceStatus);
-
-        System.out.print(" -> ");
-
-        System.out.printf("%s:%s (%s)", modifyAttendanceTime.hour(), modifyAttendanceTime.minute(),
-                modifyAttendanceStatus);
-
-        System.out.println(" 수정 완료!");
-        printNewLine();
-    }
-
-    public void printNameAndAttendances(String name, List<Attendance> attendances) {
-
-        System.out.println("이번 달 " + name + "의 출석 기록입니다.");
-        for (Attendance attendance : attendances) {
-            String attendanceStatus = attendance.getAttendanceStatus();
-            printAttendance(attendance.getAttendanceTime(), attendanceStatus);
-        }
-        printNewLine();
-    }
-
-    public void printAttendance(AttendanceTime attendanceTime, String attendanceStatus) {
-
-        System.out.printf("%02d월 %02d일 %s %s:%s (%s)%n", attendanceTime.getMonth(), attendanceTime.getDay(),
-                attendanceTime.getDayOfWeek(), attendanceTime.hour(), attendanceTime.minute(),
-                attendanceStatus);
-    }
-
-    public void printCrewsAtRiskOfExpulsionStartMessage() {
-
-        System.out.println("제적 위험자 조회 결과");
-    }
-
-    public void printCrewsAtRiskOfExpulsion(List<CrewAttendanceInformation> crewAttendanceHistories) {
-
-        for (CrewAttendanceInformation crewAttendanceInformation : crewAttendanceHistories) {
-            System.out.print("- " + crewAttendanceInformation.crewName() + ": ");
-            System.out.print("결석: " + crewAttendanceInformation.absent() + "회, ");
-            System.out.print("지각: " + crewAttendanceInformation.late() + "회 ");
-            System.out.println("(" + crewAttendanceInformation.academicStatus() + ")");
-        }
-    }
-
-    public void printErrorMessage(String message) {
+    public void printErrorMessage(final String message) {
 
         System.out.println(message);
     }
 
-    public void printNewLine() {
+    public void printAttendance(final AttendanceTime attendanceTime) {
+
+        final int month = attendanceTime.getDate().getMonthValue();
+        final int date = attendanceTime.getDate().getDayOfMonth();
+        final String day = attendanceTime.getDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        final int hour = attendanceTime.getHour();
+        final int minute = attendanceTime.getMinute();
+
+        String time = String.format("%02d:%02d", hour, minute);
+        if (attendanceTime.isDefaultAbsent()) {
+            time = DEFAULT_ABSENCE;
+        }
+        final String status = AttendanceStatus.getAttendanceStatus(attendanceTime).getValue();
+
+        System.out.printf("%02d월 %02d일 %s %s (%s)", month, date, day, time, status);
+    }
+
+    public void printAfterAttendance(final AttendanceTime attendanceTime) {
+
+        final int hour = attendanceTime.getHour();
+        final int minute = attendanceTime.getMinute();
+        final String status = AttendanceStatus.getAttendanceStatus(attendanceTime).getValue();
+        System.out.printf(" -> %02d:%02d (%s) 수정 완료!\n", hour, minute, status);
+    }
+
+    public void printCrewAttendances(final CrewAttendanceDTO crewAttendanceDTO) {
+
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", crewAttendanceDTO.name());
+
+        printAttendances(crewAttendanceDTO);
+        printLine();
+
+        printCrewAttendanceStatus(crewAttendanceDTO);
+        printLine();
+
+        if (crewAttendanceDTO.academicStatus() == AcademicStatus.NOT) {
+            return;
+        }
+        System.out.printf("%s 대상자입니다.\n", crewAttendanceDTO.academicStatus().getValue());
+        printLine();
+    }
+
+    public void printExpulsionCandidates(final List<ExpulsionCandidate> expulsionCandidates) {
+
+        System.out.println("제적 위험자 조회 결과");
+        for (ExpulsionCandidate candidate : expulsionCandidates) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                    candidate.name(), candidate.absent(), candidate.late(), candidate.status().getValue());
+        }
+        printLine();
+    }
+
+    private void printAttendances(final CrewAttendanceDTO crewAttendanceDTO) {
+
+        for (AttendanceTime attendanceTime : crewAttendanceDTO.attendances()) {
+            printAttendance(attendanceTime);
+            printLine();
+        }
+    }
+
+    private void printCrewAttendanceStatus(final CrewAttendanceDTO crewAttendanceDTO) {
+
+        EnumMap<AttendanceStatus, Integer> statusCounts = crewAttendanceDTO.statusCount();
+        for (AttendanceStatus attendanceStatus : statusCounts.keySet()) {
+            printAttendanceStatus(attendanceStatus, statusCounts.get(attendanceStatus));
+        }
+    }
+
+    private void printAttendanceStatus(final AttendanceStatus attendanceStatus, final int count) {
+
+        System.out.printf("%s: %d회", attendanceStatus.getValue(), count);
+        printLine();
+    }
+
+    public void printLine() {
 
         System.out.println();
     }

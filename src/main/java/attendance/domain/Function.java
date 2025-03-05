@@ -3,27 +3,24 @@ package attendance.domain;
 import java.util.Arrays;
 
 public enum Function {
-    
-    ATTEND("1"),
+
+    ADD_ATTENDANCE("1"),
     MODIFY_ATTENDANCE("2"),
-    GET_ATTENDANCES("3"),
-    GET_CREWS_AT_RISK_OF_EXPULSION("4"),
+    GET_CREW_ATTENDANCES("3"),
+    GET_EXPULSION_CANDIDATES("4"),
     QUIT("Q");
 
     private final String value;
 
-    Function(String value) {
+    Function(final String value) {
+
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public static Function getFunction(String input) {
+    public static Function getFunction(final String input) {
 
         return Arrays.stream(Function.values())
-                .filter(function -> function.getValue().equals(input))
+                .filter(function -> function.value.equals(input))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 올바른 기능을 입력해 주세요."));
     }

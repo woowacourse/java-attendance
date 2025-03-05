@@ -1,85 +1,177 @@
 package attendance.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import org.junit.jupiter.api.DisplayName;
+import java.time.LocalTime;
+import java.util.stream.Stream;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
-class AttendanceTimeTest {
+public class AttendanceTimeTest {
 
-    @DisplayName("유효하지 않은 시간을 입력했을 경우 예외를 발생한다.")
-    @ParameterizedTest
-    @CsvSource(value = {
-            "25,00",
-            "-1,00",
-            "12,-1",
-            "12,61"
-    }, delimiter = ',')
-    void 유효하지_않은_시간을_입력했을_경우_예외를_발생한다(String hour, String minute) {
-
-        // given
-        LocalDate date = LocalDate.of(2025, 2, 13);
-
-        // when & then
-        assertThatThrownBy(() -> {
-            new AttendanceTime(date, hour, minute, false);
-        })
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 올바른 시간을 입력해주세요.");
-    }
-
-    @DisplayName("캠퍼스 운영 시간에만 출석한다.")
-    @ParameterizedTest
-    @CsvSource(value = {
-            "07,59",
-            "23,01"
-    }, delimiter = ',')
-    void 캠퍼스_운영_시간에만_출석한다(String hour, String minute) {
-
-        // given
-        LocalDate localDate = LocalDate.of(2025, 2, 19);
-
-        // when & then
-        assertThatThrownBy(() -> new AttendanceTime(localDate, hour, minute, false))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 출석 가능한 시간이 아닙니다.");
-    }
-
-    @DisplayName("주말에는 출석하지 않는다.")
     @Test
-    void 주말에는_출석하지_않는다() {
+    void 입력_받은_날짜가_등교_날짜가_아닐_경우_예외를_발생한다() {
 
         // given
-        LocalDate localDate = LocalDate.of(2025, 2, 15);
+        LocalDate localdate = LocalDate.of(2025, 3, 1);
+        int hour = 10, minute = 10;
 
         // when & then
-        assertThatThrownBy(() -> new AttendanceTime(localDate, "10", "10", false))
+        Assertions.assertThatThrownBy(() -> new AttendanceTime(localdate, hour, minute))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 02월 15일 토요일은 등교일이 아닙니다.");
+                .hasMessage("[ERROR] 등교 날짜가 아닙니다.");
     }
 
-    @DisplayName("현재 출석 일시가 입력 받은 날짜 및 시간보다 이후인지 판단한다.")
     @ParameterizedTest
     @CsvSource(value = {
-            "5, false",
-            "7, true"
-    }, delimiter = ',')
-    void 현재_출석_일시가_입력_받은_날짜_및_시간보다_이후인지_판단한다(int attendedMinute, boolean expectedResult) {
+            "7, 59",
+            "23, 1"
+    })
+    void 입력_받은_시간이_캠퍼스_운영_시간이_아니면_예외를_발생한다(final int hour, final int minute) {
 
         // given
-        LocalDateTime deadlineTime = LocalDateTime.of(2025, 2, 13, 10, 5);
-        LocalDate date = LocalDate.of(2025, 2, 13);
-        AttendanceTime attendanceTime = new AttendanceTime(date, "10", String.valueOf(attendedMinute), false);
+        final LocalDate localdate = LocalDate.of(2025, 2, 27);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> new AttendanceTime(localdate, hour, minute))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "8, 0",
+            "23, 0"
+    })
+    void 입력_받은_시간이_유효한_시간이면_출석_시간이_생성된다(final int hour, final int minute) {
+
+        // given
+        final LocalDate localdate = LocalDate.of(2025, 2, 27);
+
+        // when & then
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> new AttendanceTime(localdate, hour, minute));
+    }
+
+    @ParameterizedTest
+    @MethodSource("dateAndResult")
+    void 출석_날짜가_월요일인지_판단한다(final int date, final boolean expectedResult) {
+
+        // given
+        final LocalDate localdate = LocalDate.of(2025, 2, date);
 
         // when
-        boolean result = attendanceTime.isAfter(deadlineTime);
+        final boolean result = new AttendanceTime(localdate, 10, 10).isMonday();
 
         // then
-        assertThat(result).isEqualTo(expectedResult);
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
+    @ParameterizedTest
+    @MethodSource("hourAndMinuteAndResult")
+    void 현재_출석_시간이_입력받은_시간보다_이전인지_판단한다(final LocalTime time, final boolean expectedResult) {
+
+        // given
+        final LocalDate localdate = LocalDate.of(2025, 2, 10);
+
+        // when
+        final boolean result = new AttendanceTime(localdate, 10, 5).isBefore(time);
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "27, true",
+            "26, false"
+    })
+    void 입력_받은_날짜와_출석_기록_날짜가_같은지_비교한다(final int date, final boolean expectedResult) {
+
+        // given
+        AttendanceTime attendanceTime = new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 10);
+
+        // when
+        final boolean result = attendanceTime.isSameDay(LocalDate.of(2025, 2, date));
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void 입력_받은_이름과_날짜_일시로_출석_기록을_수정한다() {
+
+        // given
+        final AttendanceTime attendanceTime = new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 10);
+        final int targetHour = 10;
+        final int targetMinute = 20;
+
+        // when
+        attendanceTime.modify(targetHour, targetMinute);
+
+        // then
+        Assertions.assertThat(attendanceTime.getHour()).isEqualTo(targetHour);
+        Assertions.assertThat(attendanceTime.getMinute()).isEqualTo(targetMinute);
+    }
+
+    @ParameterizedTest
+    @MethodSource("attendanceTimeAndResult")
+    void 출석_시간이_기본_결석_날짜인지_확인한다(final AttendanceTime attendanceTime, final boolean expectedResult) {
+
+        // given
+
+        // when
+        final boolean result = attendanceTime.isDefaultAbsent();
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
+    @ParameterizedTest
+    @MethodSource("localTimeAndResult")
+    void 입력_받은_시간이_출석_시간보다_이전인지_판단한다(final LocalTime localTime, final boolean expectResult) {
+
+        // given
+        final AttendanceTime attendanceTime = new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 10);
+
+        // when
+        final boolean result = attendanceTime.isBefore(localTime);
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectResult);
+    }
+
+    private static Stream<Arguments> dateAndResult() {
+
+        return Stream.of(
+                Arguments.of(24, true),
+                Arguments.of(27, false)
+        );
+    }
+
+    public static Stream<Arguments> hourAndMinuteAndResult() {
+
+        return Stream.of(
+                Arguments.of(LocalTime.of(10, 6), true),
+                Arguments.of(LocalTime.of(10, 4), false)
+        );
+    }
+
+    public static Stream<Arguments> attendanceTimeAndResult() {
+
+        return Stream.of(
+                Arguments.of(new AttendanceTime(LocalDate.of(2025, 2, 27)), true),
+                Arguments.of(new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 10), false)
+        );
+    }
+
+    public static Stream<Arguments> localTimeAndResult() {
+
+        return Stream.of(
+                Arguments.of(LocalTime.of(10, 9), false),
+                Arguments.of(LocalTime.of(10, 11), true)
+        );
     }
 }

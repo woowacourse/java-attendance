@@ -1,97 +1,94 @@
 package attendance.domain;
 
-import attendance.utils.Parser;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import java.time.LocalTime;
 
-public record AttendanceTime(LocalDate date, String hour, String minute, boolean isAbsent) {
+public class AttendanceTime {
 
-    private static final int HOUR_MAX = 24;
-    private static final int HOUR_MIN = 0;
-    private static final int MINUTE_MAX = 60;
-    private static final int MINUTE_MIN = 0;
+    private final LocalDate date;
+    private Integer hour;
+    private Integer minute;
 
-    private static final int CAMPUS_OPEN_HOUR = 8;
-    private static final int CAMPUS_CLOSE_HOUR = 23;
+    private static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
+    private static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
 
-    private static final String SATURDAY = "SATURDAY";
-    private static final String SUNDAY = "SUNDAY";
+    public AttendanceTime(final LocalDate date, final Integer hour, final Integer minute) {
 
-    public AttendanceTime {
+        validateAttendDate(date);
+        validateOperatingTime(hour, minute);
+        this.date = date;
+        this.hour = hour;
+        this.minute = minute;
+    }
 
-        if (!isAbsent) {
-            validateInRangeTime(hour, minute);
-            validatePossibleTime(date, hour, minute);
+    public AttendanceTime(final LocalDate date) {
+
+        validateAttendDate(date);
+        this.date = date;
+        this.hour = null;
+        this.minute = null;
+    }
+
+    public static boolean isWeekend(final DayOfWeek day) {
+
+        return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
+    }
+
+    public boolean isMonday() {
+
+        return date.getDayOfWeek() == DayOfWeek.MONDAY;
+    }
+
+    public boolean isBefore(final LocalTime localTime) {
+
+        return LocalTime.of(hour, minute).isBefore(localTime);
+    }
+
+    public boolean isSameDay(final LocalDate localDate) {
+
+        return date.isEqual(localDate);
+    }
+
+    public boolean isDefaultAbsent() {
+
+        return hour == null && minute == null;
+    }
+
+    public void modify(final Integer targetHour, final Integer targetMinute) {
+
+        this.hour = targetHour;
+        this.minute = targetMinute;
+    }
+
+    public int getHour() {
+
+        return hour;
+    }
+
+    public int getMinute() {
+
+        return minute;
+    }
+
+    public LocalDate getDate() {
+
+        return LocalDate.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+    }
+
+    private void validateAttendDate(final LocalDate date) {
+
+        if (isWeekend(date.getDayOfWeek())) {
+            throw new IllegalArgumentException("[ERROR] 등교 날짜가 아닙니다.");
         }
     }
 
-    private void validateInRangeTime(String hour, String minute) {
+    private void validateOperatingTime(final Integer hour, final Integer minute) {
 
-        int parsingHour = Parser.parseInt(hour);
-        int parsingMinute = Parser.parseInt(minute);
-        if (parsingHour >= HOUR_MAX || parsingHour < HOUR_MIN
-                || parsingMinute >= MINUTE_MAX || parsingMinute < MINUTE_MIN) {
-            throw new IllegalArgumentException("[ERROR] 올바른 시간을 입력해주세요.");
+        LocalTime inputTime = LocalTime.of(hour, minute);
+
+        if (inputTime.isBefore(CAMPUS_START_TIME) || inputTime.isAfter(CAMPUS_END_TIME)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
-    }
-
-    private void validatePossibleTime(LocalDate date, String hour, String minute) {
-
-        validateAttendanceDate(date);
-        validateAttendanceTime(hour, minute);
-    }
-
-    private static void validateAttendanceTime(String hour, String minute) {
-
-        int parsingHour = Parser.parseInt(hour);
-        int parsingMinute = Parser.parseInt(minute);
-
-        if (parsingHour < CAMPUS_OPEN_HOUR || (parsingHour == CAMPUS_CLOSE_HOUR && parsingMinute > MINUTE_MIN)) {
-            throw new IllegalArgumentException("[ERROR] 출석 가능한 시간이 아닙니다.");
-        }
-    }
-
-    public static void validateAttendanceDate(LocalDate date) {
-
-        String day = date.getDayOfWeek().name();
-
-        if (day.equals(SATURDAY) || day.equals(SUNDAY)) {
-            String message = String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
-                    date.getMonthValue(), date.getDayOfMonth(),
-                    date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    public boolean isAfter(LocalDateTime localDateTime) {
-
-        if (!isAbsent) {
-            return date.atTime(Parser.parseInt(hour), Parser.parseInt(minute)).isAfter(localDateTime);
-        }
-
-        return true;
-    }
-
-    public int getYear() {
-
-        return date.getYear();
-    }
-
-    public int getMonth() {
-
-        return date.getMonthValue();
-    }
-
-    public int getDay() {
-
-        return date.getDayOfMonth();
-    }
-
-    public String getDayOfWeek() {
-
-        return date.getDayOfWeek().getDisplayName(
-                TextStyle.FULL, Locale.KOREAN);
     }
 }

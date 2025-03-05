@@ -5,14 +5,13 @@ import attendance.view.InputView;
 import attendance.view.OutputView;
 
 public class Main {
-
+    
     public static void main(String[] args) {
 
-        InputView inputView = new InputView();
-        OutputView outputView = new OutputView();
+        final InputView inputView = new InputView();
+        final OutputView outputView = new OutputView();
 
-        AttendanceController attendanceController = new AttendanceController(inputView, outputView);
-
-        attendanceController.start();
+        AttendanceController controller = new AttendanceController(inputView, outputView);
+        controller.start();
     }
 }

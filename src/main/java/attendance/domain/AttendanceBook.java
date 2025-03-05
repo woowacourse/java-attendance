@@ -1,25 +1,95 @@
 package attendance.domain;
 
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AttendanceBook {
 
-    private final Set<String> names;
+    private final Map<String, AttendanceHistory> attendances = new HashMap<>();
 
-    public AttendanceBook(final Set<String> names) {
+    public void add(final String name, final AttendanceTime attendanceTime) {
 
-        this.names = names;
+        if (!attendances.containsKey(name)) {
+            attendances.put(name, new AttendanceHistory());
+        }
+        attendances.get(name).add(attendanceTime);
     }
 
-    public void validateCrewName(final String name) {
+    public AttendanceTime getAttendance(final String name, final LocalDate date) {
 
-        if (!names.contains(name)) {
-            throw new IllegalArgumentException("[ERROR] 출석부에 없는 크루원입니다.");
+        return attendances.get(name).getAttendanceTime(date);
+    }
+
+    public boolean isCrewExists(final String name) {
+
+        return attendances.containsKey(name);
+    }
+
+    public boolean isAlreadyExists(final String name, final LocalDate localDate) {
+
+        return attendances.get(name).isAlreadyExists(localDate);
+    }
+
+    public List<AttendanceTime> getAttendancesByName(final String name) {
+
+        return attendances.get(name).getHistory();
+    }
+
+    public void initCrewsAbsence(final LocalDate today) {
+
+        for (String name : attendances.keySet()) {
+            initAbsence(name, today);
         }
     }
 
-    public Set<String> getNames() {
+    public int getAttendanceStatusCount(final String name, final AttendanceStatus attendanceStatus) {
 
-        return Set.copyOf(names);
+        return attendances.get(name).getAttendanceStatusCount(attendanceStatus);
+    }
+
+    public List<ExpulsionCandidate> getExpulsionCandidates() {
+
+        List<ExpulsionCandidate> expulsionCandidates = new ArrayList<>();
+        expulsionCandidates.addAll(getCrewsByAcademicStatus(AcademicStatus.EXPELLED));
+        expulsionCandidates.addAll(getCrewsByAcademicStatus(AcademicStatus.INTERVIEW));
+        expulsionCandidates.addAll(getCrewsByAcademicStatus(AcademicStatus.WARN));
+        return expulsionCandidates;
+    }
+
+    private void initAbsence(final String name, final LocalDate today) {
+
+        LocalDate now = LocalDate.now();
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            LocalDate attendDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
+            judgeAbsence(name, attendDate);
+        }
+    }
+
+    private void judgeAbsence(final String name, final LocalDate attendDate) {
+
+        if (!AttendanceTime.isWeekend(attendDate.getDayOfWeek()) && !isAlreadyExists(name, attendDate)) {
+            attendances.get(name).add(new AttendanceTime(attendDate));
+        }
+    }
+
+    private List<ExpulsionCandidate> getCrewsByAcademicStatus(final AcademicStatus academicStatus) {
+
+        return attendances.keySet()
+                .stream()
+                .map(this::getExpulsionCandidate)
+                .filter(crew -> crew.status() == academicStatus)
+                .sorted(Comparator.comparing(ExpulsionCandidate::absent).thenComparing(ExpulsionCandidate::name))
+                .toList();
+    }
+
+    private ExpulsionCandidate getExpulsionCandidate(final String name) {
+
+        int absent = getAttendanceStatusCount(name, AttendanceStatus.ABSENT);
+        int late = getAttendanceStatusCount(name, AttendanceStatus.LATE);
+        return new ExpulsionCandidate(name, absent, late, AcademicStatus.getAcademicStatus(late, absent));
     }
 }

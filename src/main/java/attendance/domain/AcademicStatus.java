@@ -1,40 +1,40 @@
 package attendance.domain;
 
 public enum AcademicStatus {
-
-    WARNING("경고"),
     INTERVIEW("면담"),
+    WARN("경고"),
     EXPELLED("제적"),
-    NOT("X");
+    NOT("대상 외");
 
     private final String value;
 
-    private static final int EXPELLED_COUNT = 5;
-    private static final int INTERVIEW_COUNT = 3;
-    private static final int WARNING_COUNT = 2;
-    private static final int LATE_AS_ABSENT = 3;
+    private static final int LIMIT_EXPELLED = 5;
+    private static final int LIMIT_INTERVIEW = 3;
+    private static final int LIMIT_WARN = 2;
+    private static final int LATE_PER_ABSENCE = 3;
 
-    AcademicStatus(String value) {
+    AcademicStatus(final String value) {
 
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
+    public static AcademicStatus getAcademicStatus(final int late, final int absent) {
 
-    public static AcademicStatus getAcademicStatus(int late, int absent) {
-
-        int count = late / LATE_AS_ABSENT + absent;
-        if (count > EXPELLED_COUNT) {
+        final int count = late / LATE_PER_ABSENCE + absent;
+        if (count > LIMIT_EXPELLED) {
             return EXPELLED;
         }
-        if (count >= INTERVIEW_COUNT) {
+        if (count >= LIMIT_INTERVIEW) {
+            return WARN;
+        }
+        if (count == LIMIT_WARN) {
             return INTERVIEW;
         }
-        if (count == WARNING_COUNT) {
-            return WARNING;
-        }
         return NOT;
+    }
+
+    public String getValue() {
+
+        return value;
     }
 }

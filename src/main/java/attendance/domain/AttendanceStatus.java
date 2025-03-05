@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public enum AttendanceStatus {
 
@@ -10,30 +10,42 @@ public enum AttendanceStatus {
 
     private final String value;
 
-    AttendanceStatus(String value) {
+    private static final LocalTime MONDAY_LATE = LocalTime.of(13, 6);
+    private static final LocalTime MONDAY_ABSENT = LocalTime.of(13, 31);
+    private static final LocalTime OTHER_DAY_LATE = LocalTime.of(10, 6);
+    private static final LocalTime OTHER_DAY_ABSENT = LocalTime.of(10, 31);
+
+    AttendanceStatus(final String value) {
+
         this.value = value;
     }
 
+    public static AttendanceStatus getAttendanceStatus(final AttendanceTime attendanceTime) {
+
+        if (attendanceTime.isDefaultAbsent()) {
+            return ABSENT;
+        }
+        if (attendanceTime.isMonday()) {
+            return calculateAttendanceStatus(attendanceTime, MONDAY_LATE, MONDAY_ABSENT);
+        }
+        return calculateAttendanceStatus(attendanceTime, OTHER_DAY_LATE, OTHER_DAY_ABSENT);
+    }
+
     public String getValue() {
+
         return value;
     }
 
-    public static AttendanceStatus getAttendanceStatusWithCondition(AttendanceTime attendanceTime, int hour,
-                                                                    int lateMinute,
-                                                                    int absentMinute) {
+    private static AttendanceStatus calculateAttendanceStatus(final AttendanceTime attendanceTime,
+                                                              final LocalTime lateTime,
+                                                              final LocalTime absentTime) {
 
-        LocalDateTime attendDeadlineTime = LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(),
-                attendanceTime.getDay(), hour, lateMinute);
-        if (!attendanceTime.isAfter(attendDeadlineTime)) {
+        if (attendanceTime.isBefore(lateTime)) {
             return ATTEND;
         }
-
-        LocalDateTime lateDeadlineTime = LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(),
-                attendanceTime.getDay(), hour, absentMinute);
-        if (!attendanceTime.isAfter(lateDeadlineTime)) {
+        if (attendanceTime.isBefore(absentTime)) {
             return LATE;
         }
-
         return ABSENT;
     }
 }
