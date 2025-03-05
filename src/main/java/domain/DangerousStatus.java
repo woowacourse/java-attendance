@@ -1,45 +1,41 @@
 package domain;
 
-import static domain.AttendTime.LATE_TO_ABSENT_COUNT;
-import static domain.Dangerous.DISMISSAL;
-import static domain.Dangerous.GOOD;
-import static domain.Dangerous.INTERVIEW;
-import static domain.Dangerous.WARNING;
+public enum DangerousStatus {
 
-public class DangerousStatus {
+    DISMISSAL("제적", 5),
+    INTERVIEW("면담", 3),
+    WARNING("경고", 2),
+    GOOD("모범", 0);
 
-    private int onTime;
-    private int late;
-    private int absent;
-    private String status;
+    public static final int LATE_TO_ABSENCE_RATE = 3;
 
-    public DangerousStatus(int onTime, int late, int absent) {
-        this.onTime = onTime;
-        this.late = late;
-        this.absent = absent;
+    private final String status;
+    private final int count;
+
+    DangerousStatus(String status, int count) {
+        this.status = status;
+        this.count = count;
     }
 
-    public void calculateStatus() {
-        int total = absent;
-        total += late / LATE_TO_ABSENT_COUNT;
+    public static DangerousStatus of(int late, int absence) {
+        int total = absence;
+        if (late >= LATE_TO_ABSENCE_RATE) {
+            total += late / LATE_TO_ABSENCE_RATE;
+        }
 
-        if (total > DISMISSAL.getCount()) {
-            status = DISMISSAL.getStatus();
-            return;
+        if (total > DISMISSAL.count) {
+            return DISMISSAL;
         }
-        if (total >= INTERVIEW.getCount()) {
-            status = INTERVIEW.getStatus();
-            return;
+        if (total >= INTERVIEW.count) {
+            return INTERVIEW;
         }
-        if (total >= WARNING.getCount()) {
-            status = WARNING.getStatus();
-            return;
+        if (total >= WARNING.count) {
+            return WARNING;
         }
-        status = GOOD.getStatus();
+        return GOOD;
     }
 
     public String getStatus() {
-        calculateStatus();
         return status;
     }
 }

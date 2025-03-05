@@ -1,18 +1,14 @@
 package controller;
 
-import static domain.Dangerous.DISMISSAL;
-import static domain.Dangerous.INTERVIEW;
-import static domain.Dangerous.WARNING;
-import static domain.December.DEFAULT_MONTH;
-import static domain.December.DEFAULT_YEAR;
-
-import domain.AttendTime;
+import domain.AttendanceManager;
+import domain.AttendanceRecord;
+import domain.AttendanceStatus;
 import domain.Crew;
-import domain.Crews;
-import domain.December;
-import domain.Today;
-import infrastructure.AttendanceFileReader;
+import domain.DateProvider;
+import infrastructure.file.AttendanceFileReader;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import view.InputView;
 import view.OutputView;
 
@@ -20,29 +16,32 @@ public class AttendanceController {
 
     private final InputView inputView;
     private final OutputView outputView;
+    private final DateProvider dateProvider;
 
-    public AttendanceController(final InputView inputView, final OutputView outputView) {
+    public AttendanceController(InputView inputView, OutputView outputView, DateProvider dateProvider) {
         this.inputView = inputView;
         this.outputView = outputView;
+        this.dateProvider = dateProvider;
     }
 
     public void run(AttendanceFileReader attendanceFileReader) {
-        Crews crews = attendanceFileReader.readFile("src/main/resources/attendances.csv");
+        AttendanceManager attendanceManager = new AttendanceManager(dateProvider);
+        attendanceFileReader.readFiles(attendanceManager);
 
         String command;
         do {
-            command = inputView.readCommand();
-            execute(command, crews);
+            command = inputView.readCommand(dateProvider.getDate());
+            execute(command, attendanceManager);
         } while (!command.equals("Q"));
     }
 
-    private void execute(String command, Crews crews) {
+    private void execute(String command, AttendanceManager attendanceManager) {
         try {
             switch (command) {
-                case "1" -> attendCrew(crews);
-                case "2" -> modifyAttendanceTime(crews);
-                case "3" -> findAttendanceHistory(crews);
-                case "4" -> findDangerousCrews(crews);
+                case "1" -> attend(attendanceManager);
+                case "2" -> modifyAttendanceTime(attendanceManager);
+                case "3" -> findAttendanceRecord(attendanceManager);
+                case "4" -> findDangerousCrews(attendanceManager);
                 default -> throw new IllegalArgumentException("[ERROR] 올바른 명령어를 입력해주세요.");
             }
         } catch (Exception e) {
@@ -50,47 +49,44 @@ public class AttendanceController {
         }
     }
 
-    private void attendCrew(final Crews crews) {
-        December.checkWeekday(Today.TODAY);
-
+    private void attend(AttendanceManager attendanceManager) {
         String nickname = inputView.readNickname();
-        Crew crew = crews.findByNickname(nickname);
+        Crew crew = attendanceManager.findCrewExactlyByNickname(nickname);
 
-        String time = inputView.readTime();
-        crew.addAttendTime(time);
+        LocalDateTime now = LocalDateTime.of(dateProvider.getDate(), LocalTime.now());
+        LocalDateTime attendanceTime = crew.attend(now);
+        AttendanceStatus attendanceStatus = crew.getAttendanceStatus(attendanceTime.getDayOfMonth());
 
-        AttendTime attendTime = crew.findAttendTimeByDate(Today.TODAY.getDayOfMonth());
-        String attendanceStatus = attendTime.checkAttendanceStatus();
-        outputView.printTodayAttendance(attendTime, attendanceStatus);
+        outputView.printAttendanceResult(attendanceTime, attendanceStatus);
     }
 
-    private void modifyAttendanceTime(final Crews crews) {
-        String nickname = inputView.readNickNameForChange();
-        Crew crew = crews.findByNickname(nickname);
-        int date = inputView.readDateForChange();
-        December.checkWeekday(LocalDateTime.of(DEFAULT_YEAR, DEFAULT_MONTH, date, 0, 0));
-        String time = inputView.readTimeForChange();
-
-        AttendTime beforeAttendTime = crew.findAttendTimeByDate(date);
-        String beforeAttendanceStatus = beforeAttendTime.checkAttendanceStatus();
-        outputView.printBeforeAttendTime(beforeAttendTime, beforeAttendanceStatus);
-
-        AttendTime modifiedAttendTime = beforeAttendTime.modifyAttendTime(time);
-        String modifiedAttendanceStatus = modifiedAttendTime.checkAttendanceStatus();
-        outputView.printModifiedAttendTime(modifiedAttendTime, modifiedAttendanceStatus);
-    }
-
-    private void findAttendanceHistory(final Crews crews) {
+    private void modifyAttendanceTime(AttendanceManager attendanceManager) {
         String nickname = inputView.readNickname();
-        outputView.printCrewAttendance(crews.findByNickname(nickname));
+        AttendanceRecord attendanceRecord = attendanceManager.findAttendanceRecordByNickname(nickname);
+
+        int modifyDay = inputView.readModifyDay();
+        LocalTime modifyTime = inputView.readTime();
+
+        outputView.printAttendance(
+                attendanceRecord.findAttendanceTimeByDay(modifyDay),
+                attendanceRecord.getAttendanceStatus(modifyDay));
+
+        LocalDate now = dateProvider.getDate();
+        attendanceRecord.modifyAttendanceTime(now, modifyDay, modifyTime);
+
+        outputView.printModifiedAttendance(
+                attendanceRecord.findAttendanceTimeByDay(modifyDay),
+                attendanceRecord.getAttendanceStatus(modifyDay));
     }
 
-    private void findDangerousCrews(final Crews crews) {
-        outputView.printDismissalCrews(
-                crews.getDangerousCrews(DISMISSAL.getStatus()),
-                crews.getDangerousCrews(INTERVIEW.getStatus()),
-                crews.getDangerousCrews(WARNING.getStatus())
-        );
+    private void findAttendanceRecord(AttendanceManager attendanceManager) {
+        String nickname = inputView.readNickname();
+        AttendanceRecord attendanceRecord = attendanceManager.findAttendanceRecordByNickname(nickname);
+
+        outputView.printAttendanceRecord(nickname, attendanceRecord, dateProvider.getDate());
     }
 
+    private void findDangerousCrews(AttendanceManager attendanceManager) {
+        outputView.printDangerousCrews(attendanceManager.getCrews());
+    }
 }

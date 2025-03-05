@@ -1,55 +1,36 @@
 package domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 public class Crew {
 
-    private final String name;
-    private final AttendanceHistory attendanceHistory;
+    private final String nickname;
+    private final AttendanceRecord attendanceRecord;
 
-    public Crew(String nickname, String attendTime) {
-        this.name = nickname;
-        this.attendanceHistory = new AttendanceHistory(new ArrayList<>());
-        attendanceHistory.addAttendance(new AttendTime(attendTime));
+    public Crew(String nickname, LocalDateTime attendanceTime, DateProvider dateProvider) {
+        this.nickname = nickname;
+        this.attendanceRecord = new AttendanceRecord(dateProvider);
+        addAttendanceTime(attendanceTime);
     }
 
-    public void addAttendTime(String inputTime) {
-        AttendTime attendTime = new AttendTime(inputTime);
-        attendanceHistory.addAttendance(attendTime);
+    public String getNickname() {
+        return nickname;
     }
 
-    public String attend(String inputTime) {
-        AttendTime attendTime = new AttendTime(inputTime);
-        attendanceHistory.getAttendanceStatus();
-        return attendTime.checkAttendanceStatus();
+    public LocalDateTime attend(LocalDateTime now) {
+        return attendanceRecord.attend(now);
     }
 
-    public AttendTime findAttendTimeByDate(int date) {
-        return attendanceHistory.findAttendTimeByDate(date);
+    public void addAttendanceTime(LocalDateTime attendanceTime) {
+        attendanceRecord.add(attendanceTime);
     }
 
-    public List<AttendTime> getAttendTimes() {
-        return attendanceHistory.getAttendTimes();
+    public AttendanceRecord getAttendanceRecord() {
+        return attendanceRecord;
     }
 
-    public AttendanceHistory getAttendanceHistory() {
-        return attendanceHistory;
+    public AttendanceStatus getAttendanceStatus(int dayOfMonth) {
+        return attendanceRecord.getAttendanceStatus(dayOfMonth);
     }
 
-    public boolean isSameType(final String type) {
-        return attendanceHistory.getAttendanceStatus().getStatus().equals(type);
-    }
-
-    public boolean isSameName(final String name) {
-        return this.name.equals(name);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isAlreadyAttend(int date) {
-        return attendanceHistory.isAlreadyAttend(date);
-    }
 }

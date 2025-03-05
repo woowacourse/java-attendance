@@ -1,5 +1,7 @@
 import controller.AttendanceController;
-import infrastructure.AttendanceFileReader;
+import domain.DateProvider;
+import infrastructure.date.CustomDateProvider;
+import infrastructure.file.AttendanceFileReader;
 import java.util.Scanner;
 import view.InputView;
 import view.OutputView;
@@ -7,16 +9,15 @@ import view.OutputView;
 public class Application {
 
     public static void main(String[] args) {
-        final Scanner scanner = new Scanner(System.in);
-        final InputView inputView = new InputView(scanner);
-        final OutputView outputView = new OutputView();
+        Scanner scanner = new Scanner(System.in);
+        InputView inputView = new InputView(scanner);
+        OutputView outputView = new OutputView();
 
-        final AttendanceFileReader attendanceFileReader = new AttendanceFileReader();
+        DateProvider customDateProvider = new CustomDateProvider();
+        AttendanceController attendanceController = new AttendanceController(
+                inputView, outputView, customDateProvider);
 
-        final AttendanceController attendanceController = new AttendanceController(
-                inputView, outputView);
+        AttendanceFileReader attendanceFileReader = new AttendanceFileReader();
         attendanceController.run(attendanceFileReader);
-
-        scanner.close();
     }
 }
