@@ -10,12 +10,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import dto.AttendanceCheckInRequest;
-import dto.AttendanceCheckInResponse;
 import dto.AttendanceHistoryRequest;
 import dto.AttendanceHistoryResponse;
 import dto.AttendanceRiskCrewsResponse;
 import dto.AttendanceUpdateRequest;
-import dto.AttendanceUpdateResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -66,13 +64,13 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
+        Attendance attendance = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
 
         // then
         assertAll(
-                () -> assertThat(response.checkInDate()).isEqualTo(fixedDate),
-                () -> assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 0)),
-                () -> assertThat(response.attendanceType()).isEqualTo(AttendanceType.SUCCESS)
+                () -> assertThat(attendance.getCheckInDate()).isEqualTo(fixedDate),
+                () -> assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 0)),
+                () -> assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.SUCCESS)
         );
     }
 
@@ -85,13 +83,13 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
+        Attendance attendance = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
 
         // then
         assertAll(
-                () -> assertThat(response.checkInDate()).isEqualTo(fixedDate),
-                () -> assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 6)),
-                () -> assertThat(response.attendanceType()).isEqualTo(AttendanceType.BE_LATE)
+                () -> assertThat(attendance.getCheckInDate()).isEqualTo(fixedDate),
+                () -> assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 6)),
+                () -> assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.BE_LATE)
         );
     }
 
@@ -104,13 +102,13 @@ class AttendancesTest {
         AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        AttendanceCheckInResponse response = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
+        Attendance attendance = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
 
         // then
         assertAll(
-                () -> assertThat(response.checkInDate()).isEqualTo(fixedDate),
-                () -> assertThat(response.checkInTime()).isEqualTo(LocalTime.of(10, 31)),
-                () -> assertThat(response.attendanceType()).isEqualTo(AttendanceType.ABSENCE)
+                () -> assertThat(attendance.getCheckInDate()).isEqualTo(fixedDate),
+                () -> assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 31)),
+                () -> assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.ABSENCE)
         );
     }
 
@@ -138,16 +136,13 @@ class AttendancesTest {
         AttendanceUpdateRequest request = new AttendanceUpdateRequest(nickname, day, updateTime);
 
         // when
-        AttendanceUpdateResponse response = attendances.update(
-                request.nickname(), request.day(), request.updateTime(), fixedDate);
+        Attendance attendance = attendances.update(request.nickname(), request.day(), request.updateTime(), fixedDate);
 
         // then
         assertAll(
-                () -> assertThat(response.date()).isEqualTo(LocalDate.of(2024, 12, 6)),
-                () -> assertThat(response.previousTime()).isEqualTo(LocalTime.of(10, 30)),
-                () -> assertThat(response.previousAttendanceType()).isEqualTo(AttendanceType.BE_LATE),
-                () -> assertThat(response.updateTime()).isEqualTo(LocalTime.of(10, 0)),
-                () -> assertThat(response.updateAttendanceType()).isEqualTo(AttendanceType.SUCCESS)
+                () -> assertThat(attendance.getCheckInDate()).isEqualTo(LocalDate.of(2024, 12, 6)),
+                () -> assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 0)),
+                () -> assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.SUCCESS)
         );
     }
 
@@ -161,16 +156,13 @@ class AttendancesTest {
         AttendanceUpdateRequest request = new AttendanceUpdateRequest(nickname, day, updateTime);
 
         // when
-        AttendanceUpdateResponse response = attendances.update(
-                request.nickname(), request.day(), request.updateTime(), fixedDate);
+        Attendance attendance = attendances.update(request.nickname(), request.day(), request.updateTime(), fixedDate);
 
         // then
         assertAll(
-                () -> assertThat(response.date()).isEqualTo(LocalDate.of(2024, 12, 4)),
-                () -> assertThat(response.previousTime()).isNull(),
-                () -> assertThat(response.previousAttendanceType()).isEqualTo(AttendanceType.ABSENCE),
-                () -> assertThat(response.updateTime()).isEqualTo(LocalTime.of(10, 0)),
-                () -> assertThat(response.updateAttendanceType()).isEqualTo(AttendanceType.SUCCESS)
+                () -> assertThat(attendance.getCheckInDate()).isEqualTo(LocalDate.of(2024, 12, 4)),
+                () -> assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 0)),
+                () -> assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.SUCCESS)
         );
     }
 
@@ -201,7 +193,7 @@ class AttendancesTest {
         // given
 
         // when
-        AttendanceRiskCrewsResponse response = attendances.findRiskCrews();
+        AttendanceRiskCrewsResponse response = attendances.findRiskCrews(fixedDate);
 
         // then
         assertThat(response.riskCrewResponses().get(0).crew().getNickname()).isEqualTo("네오");
