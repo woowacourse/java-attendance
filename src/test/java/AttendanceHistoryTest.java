@@ -149,7 +149,7 @@ public class AttendanceHistoryTest {
         Map<Crew, Attendances> attendanceMap = new HashMap<>();
         attendanceMap.put(crew, new Attendances(new ArrayList<>()));
         attendanceHistory = new AttendanceHistory(attendanceMap);
-        attendanceHistory.checkAttendance(crew, LocalDateTime.of(2024, 112, 19, 10, 0));
+        attendanceHistory.checkAttendance(crew, LocalDateTime.of(2024, 12, 19, 10, 0));
         LocalDateTime dateTime = LocalDateTime.of(2024, 2, 20, 10, 0);
         assertThatThrownBy(() -> attendanceHistory.editAttendance(crew, dateTime))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -232,6 +232,24 @@ public class AttendanceHistoryTest {
         LocalDate standardDate = LocalDate.of(2024, 12, 10);
         int presentCount = attendanceHistory.getAbsentCount(crew, standardDate);
         assertThat(presentCount).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("기록 없으면 결석으로 취급해서 결석 횟수를 확인")
+    void getRealAbsentCountTest() {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+        LocalDateTime attendanceTime3 = LocalDateTime.of(2024, 12, 5, 10, 15);
+        LocalDateTime attendanceTime4 = LocalDateTime.of(2024, 12, 6, 11, 0);
+        LocalDateTime attendanceTime5 = LocalDateTime.of(2024, 12, 9, 13, 6);
+        LocalDateTime attendanceTime6 = LocalDateTime.of(2024, 12, 10, 10, 0);
+        attendanceHistory.checkAttendance(crew, attendanceTime);
+        attendanceHistory.checkAttendance(crew, attendanceTime3);
+        attendanceHistory.checkAttendance(crew, attendanceTime4);
+        attendanceHistory.checkAttendance(crew, attendanceTime5);
+        attendanceHistory.checkAttendance(crew, attendanceTime6);
+        LocalDate standardDate = LocalDate.of(2024, 12, 10);
+        int presentCount = attendanceHistory.getAbsentCount(crew, standardDate);
+        assertThat(presentCount).isEqualTo(3);
     }
 
 }

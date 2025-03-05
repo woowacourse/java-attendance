@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +30,6 @@ public class Attendances {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없습니다."));
     }
 
-
     public int getAttendanceCount(LocalDate standardDate) {
         return (int) attendances.stream()
                 .filter(attendanceDateTime -> attendanceDateTime.toLocalDate().isBefore(standardDate))
@@ -47,10 +47,28 @@ public class Attendances {
     }
 
     public int getAbsentCount(LocalDate standardDate) {
-        return (int) attendances.stream()
+        int absentCountFromRecords = (int) attendances.stream()
                 .filter(attendanceDateTime -> attendanceDateTime.toLocalDate().isBefore(standardDate))
                 .filter(attendanceDateTime -> AttendanceResult.getAttendanceResult(attendanceDateTime)
                         == AttendanceResult.ABSENT)
                 .count();
+        LocalDate startDate = LocalDate.of(2024, 12, 1);
+        int absentDaysWithoutRecords = 0;
+        for (LocalDate date = startDate; date.isBefore(standardDate); date = date.plusDays(1)) {
+            absentDaysWithoutRecords = getAbsentDaysWithoutRecords(date, absentDaysWithoutRecords);
+            continue;
+        }
+        return absentCountFromRecords + absentDaysWithoutRecords;
+    }
+
+    private int getAbsentDaysWithoutRecords(LocalDate date, int absentDaysWithoutRecords) {
+        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY
+                || Holiday.isHoliday(date)) {
+            return absentDaysWithoutRecords;
+        }
+        if (attendances.stream().noneMatch(dateTime -> dateTime.toLocalDate().isEqual(date))) {
+            absentDaysWithoutRecords++;
+        }
+        return absentDaysWithoutRecords;
     }
 }
