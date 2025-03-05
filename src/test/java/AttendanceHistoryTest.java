@@ -5,7 +5,6 @@ import domain.AbsenceLevel;
 import domain.AttendanceHistory;
 import domain.AttendanceResult;
 import domain.Attendances;
-import domain.String;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class AttendanceHistoryTest {
     @BeforeEach
     void setUp() {
         Map<String, Attendances> attendanceMap = new HashMap<>();
-        crew = new String("벡터");
+        crew = "벡터";
         attendanceMap.put(crew, new Attendances(new ArrayList<>()));
         attendanceHistory = new AttendanceHistory(attendanceMap);
     }
