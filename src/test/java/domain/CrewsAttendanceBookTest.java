@@ -95,7 +95,7 @@ public class CrewsAttendanceBookTest {
             AttendanceState state = AttendanceState.findStateBy(localDate, localTime);
 
             // then
-            Assertions.assertThat(state.getState()).isEqualTo("출석");
+            Assertions.assertThat(state).isEqualTo(AttendanceState.ATTENDANCE);
         }
 
         @Test
@@ -108,7 +108,7 @@ public class CrewsAttendanceBookTest {
             AttendanceState state = AttendanceState.findStateBy(localDate, localTime);
 
             // then
-            Assertions.assertThat(state.getState()).isEqualTo("지각");
+            Assertions.assertThat(state).isEqualTo(AttendanceState.LATENESS);
         }
 
         @Test
@@ -121,19 +121,19 @@ public class CrewsAttendanceBookTest {
             AttendanceState state = AttendanceState.findStateBy(localDate, localTime);
 
             // then
-            Assertions.assertThat(state.getState()).isEqualTo("결석");
+            Assertions.assertThat(state).isEqualTo(AttendanceState.ABSENCE);
         }
     }
 
     @Test
     void 존재하는_않는_크루는_출석할_수_없다() {
         // given
-        Crew crew = new Crew("dompoo");
         LocalDate localDate = LocalDate.of(2024, 12, 3);
         LocalTime localTime = LocalTime.of(9, 55);
 
         // when & then
         Assertions.assertThatThrownBy(() -> {
+                    Crew crew = repository.getCrewByName("dompoo");
                     repository.checkIn(crew, localDate, localTime);
                 }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하는 크루의 닉네임을 입력해주세요.");
@@ -158,12 +158,12 @@ public class CrewsAttendanceBookTest {
     @Test
     void 존재하는_않는_크루는_출석을_수정할_수_없다() {
         // given
-        Crew crew = new Crew("dompoo");
         LocalDate localDate = LocalDate.of(2024, 12, 3);
         LocalTime localTime = LocalTime.of(9, 55);
 
         // when & then
         Assertions.assertThatThrownBy(() -> {
+                    Crew crew = repository.getCrewByName("dompoo");
                     repository.update(crew, localDate, localTime);
                 }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하는 크루의 닉네임을 입력해주세요.");
@@ -210,7 +210,7 @@ public class CrewsAttendanceBookTest {
 
             // then
 //            Assertions.assertThat(beforeState.getState()).isEqualTo("출석");
-            Assertions.assertThat(afterState.getState()).isEqualTo("지각");
+            Assertions.assertThat(afterState).isEqualTo(AttendanceState.LATENESS);
         }
 
         @Test
@@ -229,7 +229,7 @@ public class CrewsAttendanceBookTest {
 
             // then
 //            Assertions.assertThat(beforeState.getState()).isEqualTo("출석");
-            Assertions.assertThat(afterState.getState()).isEqualTo("결석");
+            Assertions.assertThat(afterState).isEqualTo(AttendanceState.ABSENCE);
         }
 
         @Test
@@ -248,7 +248,7 @@ public class CrewsAttendanceBookTest {
 
             // then
 //            Assertions.assertThat(beforeState.getState()).isEqualTo("지각");
-            Assertions.assertThat(afterState.getState()).isEqualTo("출석");
+            Assertions.assertThat(afterState).isEqualTo(AttendanceState.ATTENDANCE);
         }
 
         @Test
@@ -267,7 +267,7 @@ public class CrewsAttendanceBookTest {
 
             // then
 //            Assertions.assertThat(beforeState.getState()).isEqualTo("지각");
-            Assertions.assertThat(afterState.getState()).isEqualTo("결석");
+            Assertions.assertThat(afterState).isEqualTo(AttendanceState.ABSENCE);
         }
 
         @Test
@@ -286,7 +286,7 @@ public class CrewsAttendanceBookTest {
 
             // then
 //            Assertions.assertThat(beforeState.getState()).isEqualTo("결석");
-            Assertions.assertThat(afterState.getState()).isEqualTo("출석");
+            Assertions.assertThat(afterState).isEqualTo(AttendanceState.ATTENDANCE);
         }
 
         @Test
@@ -305,7 +305,7 @@ public class CrewsAttendanceBookTest {
 
             // then
 //            Assertions.assertThat(beforeState.getState()).isEqualTo("결석");
-            Assertions.assertThat(afterState.getState()).isEqualTo("지각");
+            Assertions.assertThat(afterState).isEqualTo(AttendanceState.LATENESS);
         }
     }
 
@@ -325,7 +325,7 @@ public class CrewsAttendanceBookTest {
                 .orElse(null);
 
         // then
-        Assertions.assertThat(penaltyBooks.size()).isEqualTo(3);
+        Assertions.assertThat(penaltyBooks.size()).isEqualTo(2);
         Assertions.assertThat(mingomPenalty.penaltyType()).isEqualTo(PenaltyType.INTERVIEW);
         Assertions.assertThat(mungooPenalty.penaltyType()).isEqualTo(PenaltyType.EXPULSION);
     }

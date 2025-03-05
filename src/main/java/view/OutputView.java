@@ -16,7 +16,7 @@ public class OutputView {
                 DateTimeUtil.getDateBy(attendance.getLocalDate()),
                 DateTimeUtil.getDayOfWeekBy(attendance.getLocalDate()),
                 formatTime(attendance.getLocalTime()),
-                attendance.getState().getState());
+                attendance.getState());
     }
 
     public static void printAttendanceUpdate(Attendance beforeAttendance, Attendance afterAttendance) {
@@ -24,9 +24,9 @@ public class OutputView {
                 DateTimeUtil.getDateBy(beforeAttendance.getLocalDate()),
                 DateTimeUtil.getDayOfWeekBy(beforeAttendance.getLocalDate()),
                 formatTime(beforeAttendance.getLocalTime()),
-                beforeAttendance.getState().getState(),
+                beforeAttendance.getState(),
                 formatTime(afterAttendance.getLocalTime()),
-                afterAttendance.getState().getState()
+                afterAttendance.getState()
         );
     }
 
@@ -43,7 +43,7 @@ public class OutputView {
                         DateTimeUtil.getDateBy(a.getLocalDate()),
                         DateTimeUtil.getDayOfWeekBy(a.getLocalDate()),
                         formatTime(a.getLocalTime()),
-                        a.getState().getState()
+                        a.getState()
                 ));
         System.out.println();
     }

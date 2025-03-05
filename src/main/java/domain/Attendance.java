@@ -27,8 +27,8 @@ public class Attendance {
         return localTime;
     }
 
-    public AttendanceState getState() {
-        return state;
+    public String getState() {
+        return state.getState();
     }
 
     @Override
