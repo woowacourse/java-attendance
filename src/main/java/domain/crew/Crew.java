@@ -23,15 +23,11 @@ public class Crew implements Comparable<Crew> {
     }
 
     public void attend(final AttendanceDateTime attendanceDateTime) {
-        if (attendanceRecords.hasAttendanceDateTime(attendanceDateTime)) {
-            throw new IllegalArgumentException("이미 출석을 했습니다. 다시 출석을 할 수 없으며 수정은 원할 시 수정기능을 사용해주세요.");
-        }
-        final AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceDateTime);
-        attendanceRecords.updateAttendanceRecord(attendanceRecord);
+        attendanceRecords.updateAttendanceRecord(attendanceDateTime);
         updateDisciplinaryStatus();
     }
 
-    public void updateDisciplinaryStatus() {
+    private void updateDisciplinaryStatus() {
         this.disciplinaryStatus = attendanceRecords.findDisciplinaryStatus();
     }
 

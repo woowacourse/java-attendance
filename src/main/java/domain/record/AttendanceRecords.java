@@ -52,6 +52,10 @@ public class AttendanceRecords {
         updateCountAttendanceStatus();
     }
 
+    public void updateCountAttendanceStatus() {
+        attendanceStatusCounts = this.countAttendanceStatus();
+    }
+
     public boolean hasAttendanceDateTime(final AttendanceDateTime attendanceDateTime) {
         return attendanceRecords.stream()
                 .anyMatch(attendanceRecord -> attendanceRecord.hasAttendanceDateTime(attendanceDateTime));
@@ -63,9 +67,6 @@ public class AttendanceRecords {
         updateCountAttendanceStatus();
     }
 
-    public void updateCountAttendanceStatus() {
-        attendanceStatusCounts = this.countAttendanceStatus();
-    }
 
     public AttendanceStatusCounts getAttendanceStatusCounts() {
         return attendanceStatusCounts;
@@ -77,7 +78,12 @@ public class AttendanceRecords {
         return DisciplinaryStatus.findByAbsenceAndLatenessCount(absence, late);
     }
 
-    public void updateAttendanceRecord(final AttendanceRecord attendanceRecord) {
+    public void updateAttendanceRecord(final AttendanceDateTime attendanceDateTime) {
+        if (hasAttendanceDateTime(attendanceDateTime)) {
+            throw new IllegalArgumentException("이미 출석을 했습니다. 다시 출석을 할 수 없으며 수정은 원할 시 수정기능을 사용해주세요.");
+        }
+        final AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceDateTime);
+
         attendanceRecords.remove(attendanceRecord);
         attendanceRecords.add(attendanceRecord);
         updateCountAttendanceStatus();
