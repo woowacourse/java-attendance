@@ -93,7 +93,7 @@ public class AttendanceController {
 
     private void findRiskCrews(Attendances attendances) {
         LocalDate now = LocalDate.now();
-        
+
         AttendanceRiskCrewsResponse response = attendances.findRiskCrews(now);
         OutputView.printRiskCrews(response);
     }
@@ -114,7 +114,7 @@ public class AttendanceController {
                 runnable.run();
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                OutputView.println(e.getMessage());
             }
         }
     }

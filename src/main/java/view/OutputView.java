@@ -162,7 +162,7 @@ public class OutputView {
         return "";
     }
 
-    private static void println(String message) {
+    public static void println(String message) {
         System.out.println(message);
     }
 
