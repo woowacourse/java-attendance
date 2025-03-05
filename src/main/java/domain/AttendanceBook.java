@@ -1,0 +1,119 @@
+package domain;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import util.DateTimeUtil;
+
+public class AttendanceBook {
+    private final List<Attendance> attendanceBook;
+
+    public AttendanceBook(List<Attendance> attendanceBook) {
+        this.attendanceBook = attendanceBook;
+    }
+
+    public void checkIn(Attendance attendance) {
+        attendanceBook.add(attendance);
+    }
+
+    public AttendanceBook update(LocalDate localDate, LocalTime localTime) {
+        Attendance beforeAttendance = getBeforeAttendance(localDate);
+        List<Attendance> newAttendances = getNewAttendances(localDate);
+
+        newAttendances.add(beforeAttendance.updateTime(localTime));
+        return new AttendanceBook(newAttendances);
+    }
+
+    public Attendance getBeforeAttendance(LocalDate localDate) {
+        return attendanceBook.stream()
+                .filter(a -> a.getLocalDate().equals(localDate))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private List<Attendance> getNewAttendances(LocalDate localDate) {
+        return attendanceBook.stream()
+                .filter(a -> !a.getLocalDate().equals(localDate))
+                .collect(Collectors.toList());
+    }
+
+
+    public void validateDuplicateCheckIn(LocalDate localDate) {
+        if (attendanceBook.stream().anyMatch(attendance -> attendance.getLocalDate().equals(localDate))) {
+            throw new IllegalArgumentException("이미 출석한 크루입니다.");
+        }
+    }
+
+    public void validateWeekDay(LocalDate localDate) {
+        if (isWeekDay(localDate)) {
+            throw new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다.");
+        }
+    }
+
+    public boolean isWeekDay(LocalDate localDate) {
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || Holiday.isHoliday(localDate);
+    }
+
+    public void validateAfterToday(LocalDate localDate) {
+        if (localDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("수정할 수 없는 날짜입니다.");
+        }
+    }
+
+    public List<Attendance> getAttendanceBook() {
+        return attendanceBook;
+    }
+
+    public List<Attendance> getAttendanceBookHistory() {
+        Set<LocalDate> attendanceDates = attendanceBook.stream()
+                .map(Attendance::getLocalDate)
+                .collect(Collectors.toSet());
+
+        for (int day = 1; day < DateTimeUtil.getTodayDate(); day++) {
+            LocalDate date = LocalDate.of(2024, 12, day);
+            if (isWeekDay(date)) {
+                continue;
+            }
+            if (!attendanceDates.contains(date)) {
+                checkIn(new Attendance(date, LocalTime.of(0, 0)));
+            }
+        }
+        return attendanceBook;
+    }
+
+    public AttendanceStateCount calculateState() {
+        int attendance = countState(AttendanceState.ATTENDANCE);
+        int lateness = countState(AttendanceState.LATENESS);
+        int absence = countState(AttendanceState.ABSENCE);
+
+        return new AttendanceStateCount(attendance, lateness, absence);
+    }
+
+    private int countState(AttendanceState attendanceState) {
+        return (int) attendanceBook.stream()
+                .filter(a -> AttendanceState.findStateBy(a.getLocalDate(), a.getLocalTime())
+                        .equals(attendanceState))
+                .count();
+    }
+
+    public PenaltyType calculatePenaltyType(AttendanceStateCount attendanceStateCount) {
+        int lateness = attendanceStateCount.lateness();
+        int absence = attendanceStateCount.absence();
+
+        int count = absence + (lateness / 3);
+        return PenaltyType.getPenaltyType(count);
+    }
+
+    public PenaltyBook createPenaltyBook(Crew crew) {
+        AttendanceStateCount stateCount = this.calculateState();
+        int lateness = stateCount.lateness();
+        int absence = stateCount.absence();
+        PenaltyType penaltyType = this.calculatePenaltyType(stateCount);
+
+        return new PenaltyBook(crew, lateness, absence, penaltyType);
+    }
+}

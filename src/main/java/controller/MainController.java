@@ -1,32 +1,34 @@
 package controller;
 
 import domain.Attendance;
-import domain.AttendanceState;
+import domain.AttendanceBook;
+import domain.AttendanceStateCount;
 import domain.Crew;
-import domain.HistoryCalculator;
-import dto.AbsenceRecordDto;
-import dto.AttendanceHistoryDto;
-import dto.AttendanceRecord;
-import dto.AttendanceStatus;
+import domain.CrewsAttendanceBook;
+import domain.PenaltyBook;
+import domain.PenaltyType;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import util.AttendanceFileReader;
 import util.DateTimeUtil;
-import util.FileManager;
 import view.InputView;
 import view.OutputView;
 
 public class MainController {
+    String ATTENDANCE_FILE_PATH = "src/test/resources/attendances_test.csv";
 
-    private Attendance attendance;
+    Map<Crew, AttendanceBook> initialAttendances = AttendanceFileReader.read(ATTENDANCE_FILE_PATH);
+    CrewsAttendanceBook crewsAttendanceBook = new CrewsAttendanceBook(initialAttendances);
+
 
     public void run() {
-        prepareToday();
         String feature;
         do {
-            feature = InputView.inputFeature();
+            feature = InputView.inputFeatureNumber();
             switch (feature) {
                 case "1":
                     attendanceCheck();
@@ -44,59 +46,54 @@ public class MainController {
         } while (!"Q".equals(feature));
     }
 
-    private void prepareToday() {
-        attendance = FileManager.readFile();
-    }
-
     private void attendanceCheck() {
-        String nickname = InputView.inputNickName();
-        Crew crew = attendance.getCrewByName(nickname);
-        String schoolStartTime = InputView.inputSchoolStartTime();
+        String name = InputView.inputNickname();
+        Crew crew = crewsAttendanceBook.getCrewByName(name);
 
+        String time = InputView.inputTime();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime dateTime = LocalTime.parse(schoolStartTime, formatter);
+        LocalTime localTime = LocalTime.parse(time, formatter);
 
-        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime,
-                LocalDate.of(2024, 12, DateTimeUtil.getTodayDate()));
+        Attendance attendance = crewsAttendanceBook.checkIn(crew, DateTimeUtil.getTodayLocalDate(), localTime);
 
-        attendance.save(crew, schoolStartTime, LocalDate.of(2024, 12, DateTimeUtil.getTodayDate()));
-
-        OutputView.printTodayAttendance(schoolStartTime, attendanceState.getDescription());
+        OutputView.printAttendanceCheck(attendance);
     }
 
     private void attendanceUpdate() {
-        String nickname = InputView.inputUpdateNickName();
-        int date = Integer.parseInt(InputView.inputUpdateDate());
-        String time = InputView.inputUpdateTime();
+        String name = InputView.inputUpdateNickname();
+        Crew crew = crewsAttendanceBook.getCrewByName(name);
 
-        Crew crew = attendance.getCrewByName(nickname);
-
-        LocalTime beforeTime = attendance.update(crew, time, date);
-
+        int date = Integer.parseInt(InputView.inputDate());
+        String time = InputView.inputTime();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime afterTime = LocalTime.parse(time, formatter);
+        LocalTime localTime = LocalTime.parse(time, formatter);
 
-        LocalDateTime afterLocalDateTime = LocalDateTime.of(
-                2024, 12, date, afterTime.getHour(), afterTime.getMinute());
+        AttendanceBook attendanceBook = crewsAttendanceBook.getAttendanceBook(crew);
+        Attendance beforeAttendance = attendanceBook.getBeforeAttendance(LocalDate.of(2024, 12, date));
 
-        OutputView.printUpdateAttendance(beforeTime, afterLocalDateTime);
+        Attendance afterAttendance = crewsAttendanceBook.update(crew, LocalDate.of(2024, 12, date), localTime);
+
+        OutputView.printAttendanceUpdate(beforeAttendance, afterAttendance);
     }
 
     private void attendanceHistory() {
-        String nickname = InputView.inputNickName();
-        Crew crew = attendance.getCrewByName(nickname);
+        String name = InputView.inputNickname();
+        Crew crew = crewsAttendanceBook.getCrewByName(name);
 
-        List<AttendanceRecord> attendanceRecords = attendance.getRecordByCrew(crew);
+        AttendanceBook attendanceBook = crewsAttendanceBook.getAttendanceBook(crew);
+        List<Attendance> attendanceBookHistory = attendanceBook.getAttendanceBookHistory();
 
-        AttendanceStatus attendanceStatus = HistoryCalculator.calculateAttendanceRecordBy(attendanceRecords);
+        OutputView.printAttendanceRecordHistory(attendanceBookHistory);
 
-        AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(crew, attendanceRecords, attendanceStatus);
+        AttendanceStateCount attendanceStateCount = attendanceBook.calculateState();
+        PenaltyType penaltyType = attendanceBook.calculatePenaltyType(attendanceStateCount);
 
-        OutputView.printRecordAttendance(attendanceHistoryDto);
+        OutputView.printAttendancePenaltyHistory(attendanceStateCount, penaltyType);
     }
 
     private void absenceHistory() {
-        List<AbsenceRecordDto> absenceRecordDtos = HistoryCalculator.calculateAbsenceRecordBy(attendance);
-        OutputView.printAbsenceResult(absenceRecordDtos);
+        Set<PenaltyBook> penaltyBooks = crewsAttendanceBook.calculatePenaltyBooks();
+
+        OutputView.printAbsenceHistory(penaltyBooks);
     }
 }

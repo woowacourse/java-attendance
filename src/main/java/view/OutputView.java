@@ -1,83 +1,33 @@
 package view;
 
-import domain.AbsencePolicy;
-import domain.AttendanceState;
-import dto.AbsenceRecordDto;
-import dto.AttendanceHistoryDto;
-import dto.AttendanceRecord;
-import dto.AttendanceStatus;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import domain.Attendance;
+import domain.AttendanceStateCount;
+import domain.PenaltyBook;
+import domain.PenaltyType;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import util.DateTimeUtil;
 
 public class OutputView {
-    public static void printTodayAttendance(
-            final String schoolStartTime, final String attendanceResult) {
+    public static void printAttendanceCheck(Attendance attendance) {
         System.out.printf("12월 %02d일 %s %s (%s)\n",
-                DateTimeUtil.getTodayDate(),
-                DateTimeUtil.getDayOfWeekBy(LocalDate.of(2024, 12, DateTimeUtil.getTodayDate())),
-                schoolStartTime, attendanceResult);
+                DateTimeUtil.getDateBy(attendance.getLocalDate()),
+                DateTimeUtil.getDayOfWeekBy(attendance.getLocalDate()),
+                formatTime(attendance.getLocalTime()),
+                attendance.getState());
     }
 
-    public static void printUpdateAttendance(final LocalTime beforeTime, final LocalDateTime afterDateTime) {
-        LocalDate localDate = afterDateTime.toLocalDate();
-
-        String beforeAttendanceState = AttendanceState.findStateBy(
-                        beforeTime, localDate)
-                .getDescription();
-
-        String afterAttendanceState = AttendanceState.findStateBy(
-                        afterDateTime.toLocalTime(), localDate)
-                .getDescription();
-
-        String beforeTimeFormatted = formatTime(beforeTime);
-
-        System.out.printf("%02d월 %02d일 %s %s (%s) -> %02d:%02d (%s) 수정 완료!\n",
-                DateTimeUtil.getYearBy(localDate),
-                DateTimeUtil.getDateBy(localDate),
-                DateTimeUtil.getDayOfWeekBy(localDate),
-                beforeTimeFormatted,
-                beforeAttendanceState,
-                afterDateTime.getHour(),
-                afterDateTime.getMinute(),
-                afterAttendanceState);
-    }
-
-
-    public static void printRecordAttendance(final AttendanceHistoryDto attendanceHistoryDto) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n", attendanceHistoryDto.crew().getName());
-        System.out.println();
-
-        List<AttendanceRecord> records = attendanceHistoryDto.records();
-        List<AttendanceRecord> sortedRecords = sortByDate(records);
-        for (AttendanceRecord record : sortedRecords) {
-            String timeFormatted = formatTime(record.time().time());
-
-            System.out.printf(
-                    String.format("%02d월 %02d일 %s %s (%s)\n",
-                            DateTimeUtil.getMonthBy(record.date()),
-                            DateTimeUtil.getDateBy(record.date()),
-                            DateTimeUtil.getDayOfWeekBy(record.date()),
-                            timeFormatted,
-                            record.time().state().getDescription()));
-        }
-
-        AttendanceStatus attendanceStatus = attendanceHistoryDto.attendanceStatus();
-        System.out.printf("출석: %d회\n", attendanceStatus.absenceHistory().attendance());
-        System.out.printf("지각: %d회\n", attendanceStatus.absenceHistory().lateness());
-        System.out.printf("결석: %d회\n", attendanceStatus.absenceHistory().absence());
-        System.out.println();
-
-        System.out.printf("%s 대상자입니다.\n", attendanceStatus.absencePolicy().getDescription());
-    }
-
-    private static List<AttendanceRecord> sortByDate(List<AttendanceRecord> attendanceRecords) {
-        return attendanceRecords.stream()
-                .sorted(Comparator.comparing(AttendanceRecord::date))
-                .toList();
+    public static void printAttendanceUpdate(Attendance beforeAttendance, Attendance afterAttendance) {
+        System.out.printf("12월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!\n",
+                DateTimeUtil.getDateBy(beforeAttendance.getLocalDate()),
+                DateTimeUtil.getDayOfWeekBy(beforeAttendance.getLocalDate()),
+                formatTime(beforeAttendance.getLocalTime()),
+                beforeAttendance.getState(),
+                formatTime(afterAttendance.getLocalTime()),
+                afterAttendance.getState()
+        );
     }
 
     private static String formatTime(LocalTime beforeTime) {
@@ -87,33 +37,65 @@ public class OutputView {
         return String.format("%02d:%02d", beforeTime.getHour(), beforeTime.getMinute());
     }
 
-    public static void printAbsenceResult(final List<AbsenceRecordDto> absenceRecordDtos) {
-        System.out.println("제적 위험자 조회 결과");
-        sortAbsenceRecordDtos(absenceRecordDtos).forEach(dto -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
-                dto.crew().getName(),
-                dto.absence(),
-                dto.lateness(),
-                dto.absencePolicy().getDescription()));
+    public static void printAttendanceRecordHistory(List<Attendance> attendanceBookHistory) {
+        sortByDate(attendanceBookHistory)
+                .forEach(a -> System.out.printf("12월 %02d일 %s %s (%s)\n",
+                        DateTimeUtil.getDateBy(a.getLocalDate()),
+                        DateTimeUtil.getDayOfWeekBy(a.getLocalDate()),
+                        formatTime(a.getLocalTime()),
+                        a.getState()
+                ));
+        System.out.println();
     }
 
-    private static List<AbsenceRecordDto> sortAbsenceRecordDtos(List<AbsenceRecordDto> absenceRecordDtos) {
-        return absenceRecordDtos.stream()
+    private static List<Attendance> sortByDate(List<Attendance> attendances) {
+        return attendances.stream()
+                .sorted(Comparator.comparing(Attendance::getLocalDate))
+                .toList();
+    }
+
+
+    public static void printAttendancePenaltyHistory(AttendanceStateCount attendanceStateCount,
+                                                     PenaltyType penaltyType) {
+        System.out.printf("출석: %d회\n"
+                        + "지각: %d회\n"
+                        + "결석: %d회\n"
+                        + "\n"
+                        + "%s 대상자입니다.\n",
+                attendanceStateCount.attendance(),
+                attendanceStateCount.lateness(),
+                attendanceStateCount.absence(),
+                penaltyType.getValue());
+    }
+
+    public static void printAbsenceHistory(Set<PenaltyBook> penaltyBooks) {
+        System.out.println("제적 위험자 조회 결과");
+        sortPenaltyBook(penaltyBooks).forEach(penaltyBook -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                penaltyBook.crew().getName(),
+                penaltyBook.absence(),
+                penaltyBook.lateness(),
+                penaltyBook.penaltyType().getValue()));
+    }
+
+    private static List<PenaltyBook> sortPenaltyBook(Set<PenaltyBook> penaltyBooks) {
+        return penaltyBooks.stream()
                 .sorted(Comparator
-                        .comparing((AbsenceRecordDto dto) -> getAbsencePriority(dto.absencePolicy()))
-                        .thenComparing(dto -> dto.lateness() + dto.absence() * 3, Comparator.reverseOrder())
-                        .thenComparing(dto -> dto.crew().getName()))
+                        .comparing((PenaltyBook penaltyBook) -> getAbsencePriority(penaltyBook.penaltyType()))
+                        .thenComparing(penaltyBook -> penaltyBook.lateness() + penaltyBook.absence() * 3,
+                                Comparator.reverseOrder())
+                        .thenComparing(penaltyBook -> penaltyBook.crew().getName()))
                 .toList();
 
     }
 
-    private static int getAbsencePriority(AbsencePolicy absencePolicy) {
-        if (absencePolicy == AbsencePolicy.DISMISSED) {
+    private static int getAbsencePriority(PenaltyType penaltyType) {
+        if (penaltyType == PenaltyType.EXPULSION) {
             return 0;
         }
-        if (absencePolicy == AbsencePolicy.INTERVIEW) {
+        if (penaltyType == PenaltyType.INTERVIEW) {
             return 1;
         }
-        if (absencePolicy == AbsencePolicy.WARNING) {
+        if (penaltyType == PenaltyType.WARNING) {
             return 2;
         }
         return 3;

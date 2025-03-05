@@ -1,21 +1,16 @@
 package view;
 
-import java.time.LocalDate;
 import java.util.regex.Pattern;
 import util.Console;
-import util.DateTimeUtil;
 
 public class InputView {
-    public static String inputFeature() {
-        System.out.printf(
-                "오늘은 12월 %02d일 %s입니다. 기능을 선택해 주세요.\n" +
-                        "1. 출석 확인\n" +
-                        "2. 출석 수정\n" +
-                        "3. 크루별 출석 기록 확인\n" +
-                        "4. 제적 위험자 확인\n" +
-                        "Q. 종료\n",
-                DateTimeUtil.getTodayDate(),
-                DateTimeUtil.getDayOfWeekBy(LocalDate.of(2024, 12, DateTimeUtil.getTodayDate())));
+    public static String inputFeatureNumber() {
+        System.out.println("오늘은 12월 16일 월요일입니다. 기능을 선택해 주세요.\n"
+                + "1. 출석 확인\n"
+                + "2. 출석 수정\n"
+                + "3. 크루별 출석 기록 확인\n"
+                + "4. 제적 위험자 확인\n"
+                + "Q. 종료");
         String featureNumber = Console.readLine();
         validateFeatureNumber(featureNumber);
         return featureNumber;
@@ -28,28 +23,19 @@ public class InputView {
         }
     }
 
-    public static String inputNickName() {
+    public static String inputNickname() {
         System.out.println("닉네임을 입력해 주세요.");
-        String input = Console.readLine();
-        validateNullOrEmpty(input);
-        return input;
+        return Console.readLine();
     }
 
-    public static String inputSchoolStartTime() {
+    public static String inputTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        String input = Console.readLine();
-        validateNullOrEmpty(input);
-        validateFormat(input);
-        return input;
+        String time = Console.readLine();
+        validateTimeFormat(time);
+        return time;
     }
 
-    private static void validateNullOrEmpty(final String nickName) {
-        if (nickName.isBlank()) {
-            throw new IllegalArgumentException("빈 값은 입력할 수 없습니다.");
-        }
-    }
-
-    private static void validateFormat(final String input) {
+    private static void validateTimeFormat(final String input) {
         if (!isCorrectFormat(input)) {
             throw new IllegalArgumentException("시간은 24시간 형식만 사용합니다.");
         }
@@ -62,26 +48,28 @@ public class InputView {
         return correctPattern.matcher(input).find();
     }
 
-    public static String inputUpdateNickName() {
+    public static String inputUpdateNickname() {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        String input = Console.readLine();
-        validateNullOrEmpty(input);
-        return input;
+        return Console.readLine();
     }
 
-    public static String inputUpdateDate() {
+    public static String inputDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        String input = Console.readLine();
-        validateDateSize(input);
-        validateInteger(input);
-        return input;
+        String date = Console.readLine();
+        validateDateFormat(date);
+        return date;
+    }
+
+    private static void validateDateFormat(String date) {
+        validateInteger(date);
+        validateDateSize(date);
     }
 
     private static void validateInteger(final String input) {
         try {
             Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("0이상의 숫자만 입력해 주세요.");
+            throw new IllegalArgumentException("숫자만 입력해 주세요.");
         }
     }
 
@@ -92,10 +80,10 @@ public class InputView {
         }
     }
 
-    public static String inputUpdateTime() {
+    public static String inputAfterTime() {
         System.out.println("언제로 변경하겠습니까?");
-        String input = Console.readLine();
-        validateNullOrEmpty(input);
-        return input;
+        String time = Console.readLine();
+        validateTimeFormat(time);
+        return time;
     }
 }

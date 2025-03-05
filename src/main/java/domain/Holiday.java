@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public enum Holiday {
     CHRISTMAS(12, 25),
-    NON_HOLIDAY(0, 0);
+    NONE(0, 0);
 
     private int month;
     private int day;
@@ -15,11 +15,8 @@ public enum Holiday {
         this.day = day;
     }
 
-    public static Holiday from(LocalDate localDate) {
+    public static boolean isHoliday(LocalDate localDate) {
         return Arrays.stream(Holiday.values())
-                .filter(holiday -> holiday.month == localDate.getMonthValue()
-                        && holiday.day == localDate.getDayOfMonth())
-                .findFirst()
-                .orElse(NON_HOLIDAY);
+                .anyMatch(date -> date.month == localDate.getMonthValue() && date.day == localDate.getDayOfMonth());
     }
 }
