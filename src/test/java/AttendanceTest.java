@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.Attendance;
+import domain.AttendanceResult;
 import domain.Crew;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +16,8 @@ public class AttendanceTest {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 10, 0);
         Attendance attendance = new Attendance();
         Crew crew = new Crew("벡터");
-        String attendanceStatus = attendance.checkAttendance(crew, attendanceTime);
-        assertThat(attendanceStatus).isEqualTo("출석");
+        AttendanceResult attendanceResult = attendance.checkAttendance(crew, attendanceTime);
+        assertThat(attendanceResult).isEqualTo(AttendanceResult.ATTENDANCE);
     }
 
     @Test
@@ -25,8 +26,8 @@ public class AttendanceTest {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 10, 6);
         Attendance attendance = new Attendance();
         Crew crew = new Crew("벡터");
-        String attendanceStatus = attendance.checkAttendance(crew, attendanceTime);
-        assertThat(attendanceStatus).isEqualTo("지각");
+        AttendanceResult attendanceResult = attendance.checkAttendance(crew, attendanceTime);
+        assertThat(attendanceResult).isEqualTo(AttendanceResult.LATE);
     }
 
     @Test
@@ -35,8 +36,8 @@ public class AttendanceTest {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 10, 35);
         Attendance attendance = new Attendance();
         Crew crew = new Crew("벡터");
-        String attendanceStatus = attendance.checkAttendance(crew, attendanceTime);
-        assertThat(attendanceStatus).isEqualTo("결석");
+        AttendanceResult attendanceResult = attendance.checkAttendance(crew, attendanceTime);
+        assertThat(attendanceResult).isEqualTo(AttendanceResult.ABSENT);
     }
 
     @Test
@@ -45,8 +46,8 @@ public class AttendanceTest {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 13, 0);
         Attendance attendance = new Attendance();
         Crew crew = new Crew("벡터");
-        String attendanceStatus = attendance.checkAttendance(crew, attendanceTime);
-        assertThat(attendanceStatus).isEqualTo("출석");
+        AttendanceResult attendanceResult = attendance.checkAttendance(crew, attendanceTime);
+        assertThat(attendanceResult).isEqualTo(AttendanceResult.ATTENDANCE);
     }
 
     @Test
@@ -55,8 +56,8 @@ public class AttendanceTest {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 13, 10);
         Attendance attendance = new Attendance();
         Crew crew = new Crew("벡터");
-        String attendanceStatus = attendance.checkAttendance(crew, attendanceTime);
-        assertThat(attendanceStatus).isEqualTo("지각");
+        AttendanceResult attendanceResult = attendance.checkAttendance(crew, attendanceTime);
+        assertThat(attendanceResult).isEqualTo(AttendanceResult.LATE);
     }
 
     @Test
@@ -65,8 +66,8 @@ public class AttendanceTest {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 13, 35);
         Attendance attendance = new Attendance();
         Crew crew = new Crew("벡터");
-        String attendanceStatus = attendance.checkAttendance(crew, attendanceTime);
-        assertThat(attendanceStatus).isEqualTo("결석");
+        AttendanceResult attendanceResult = attendance.checkAttendance(crew, attendanceTime);
+        assertThat(attendanceResult).isEqualTo(AttendanceResult.ABSENT);
     }
 
     @Test
@@ -88,4 +89,27 @@ public class AttendanceTest {
         assertThatThrownBy(() -> attendance.checkAttendance(crew, attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("운영시간 외에 출석 - 이른 시간")
+    void testValidateOperatingTime_Early() {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 25, 7, 0);
+        Attendance attendance = new Attendance();
+        Crew crew = new Crew("벡터");
+
+        assertThatThrownBy(() -> attendance.checkAttendance(crew, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("운영시간 외 출석 - 늦음")
+    void testValidateOperatingTime_Late() {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 25, 23, 5);
+        Attendance attendance = new Attendance();
+        Crew crew = new Crew("벡터");
+
+        assertThatThrownBy(() -> attendance.checkAttendance(crew, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 }
