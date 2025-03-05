@@ -137,14 +137,25 @@ public class AttendanceController {
 
     private void attend() {
         AttendanceDate attendanceDate = new AttendanceDate(TODAY);
-        Crew crew = new Crew(input.getNameInput());
-        AttendanceBook attendanceBook = attendanceSystem.findByCrew(crew);
+
+        AttendanceBook attendanceBook = getAttendanceBookByInputName();
         validateHasNoAttendRecordToday(attendanceBook, attendanceDate);
-        LocalTime time = Parser.stringToLocalTime(input.getTimeInput());
-        AttendanceTime attendanceTime = new AttendanceTime(time);
+
+        AttendanceTime attendanceTime = getAttendTimeInput();
         attendanceBook.attendance(attendanceDate, attendanceTime);
+
         AttendanceResultDto attendanceResultDto = getAttendanceResult(attendanceDate, attendanceBook);
         output.printAttendResult(attendanceResultDto);
+    }
+
+    private AttendanceBook getAttendanceBookByInputName() {
+        Crew crew = new Crew(input.getNameInput());
+        return attendanceSystem.findByCrew(crew);
+    }
+
+    private AttendanceTime getAttendTimeInput() {
+        LocalTime time = Parser.stringToLocalTime(input.getTimeInput());
+        return new AttendanceTime(time);
     }
 
     private void initCrew() {
