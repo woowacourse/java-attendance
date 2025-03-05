@@ -25,9 +25,8 @@ public class ExistentAttendanceRecordTest {
     );
 
     for (LocalDateTime dateTime : dateTimes) {
-      assertThatThrownBy(() ->
-          new ExistentAttendanceRecord(dateTime)
-      ).isInstanceOf(IllegalArgumentException.class)
+      assertThatThrownBy(() -> new ExistentAttendanceRecord(dateTime))
+          .isInstanceOf(IllegalArgumentException.class)
           .hasMessage("캠퍼스 운영 시간이 아닙니다");
     }
   }
@@ -41,9 +40,8 @@ public class ExistentAttendanceRecordTest {
     );
 
     for (LocalDateTime dateTime : dateTimes) {
-      assertThatCode(() ->
-          new ExistentAttendanceRecord(dateTime)
-      ).doesNotThrowAnyException();
+      assertThatCode(() -> new ExistentAttendanceRecord(dateTime))
+          .doesNotThrowAnyException();
     }
   }
 
@@ -83,106 +81,134 @@ public class ExistentAttendanceRecordTest {
   @DisplayName("날짜가_같은_날은_동일한_AttendanceRecord")
   @Test
   void equalsAttendanceRecordTest() {
-    assertThat(new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 0)).equals(
-        new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 0)))).isTrue();
-    assertThat(new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 0)).equals(
-        new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 5)))).isTrue();
+    assertThat(new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 0))
+        .equals(new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 0))))
+        .isTrue();
+    assertThat(new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 0))
+        .equals(new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 5))))
+        .isTrue();
   }
 
   @DisplayName("날짜가_다른_날은_동일하지_않은_AttendanceRecord")
   @Test
   void notEqualsAttendanceRecordTest() {
-    assertThat(new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 27, 10, 0)).equals(
-        new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 0)))).isFalse();
+    assertThat(new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 27, 10, 0))
+        .equals(new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 0))))
+        .isFalse();
   }
 
   @DisplayName("AttendanceRecord_내의_기록이_월요일인_경우_true")
   @Test
   void mondayTest() {
-    ExistentAttendanceRecord existentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 10, 0));
+    ExistentAttendanceRecord existentAttendanceRecord =
+        new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 10, 0));
     assertThat(existentAttendanceRecord.isMonday()).isTrue();
   }
 
   @DisplayName("AttendanceRecord_내의_기록이_월요일이_아닌_경우_false")
   @Test
   void weekdayTest() {
-    ExistentAttendanceRecord existentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 4, 10, 0));
+    ExistentAttendanceRecord existentAttendanceRecord =
+        new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 4, 10, 0));
     assertThat(existentAttendanceRecord.isMonday()).isFalse();
   }
 
   @DisplayName("월요일_AttendanceRecord_내의_기록이_출석_데드라인을_넘지_않은_경우_true")
   @Test
   void mondayAttendanceDeadlineTrueTest() {
-    ExistentAttendanceRecord mondayMinExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 5));
-    assertThat(mondayMinExistentAttendanceRecord.isAttendance(MONDAY_ATTENDANCE_START_TIME.plusMinutes(ATTENDANCE_APPROVAL_MINUTE))).isTrue();
-
+    ExistentAttendanceRecord mondayMinExistentAttendanceRecord =
+        new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 5));
+    assertThat(mondayMinExistentAttendanceRecord.isAttendance(
+        MONDAY_ATTENDANCE_START_TIME.plusMinutes(ATTENDANCE_APPROVAL_MINUTE)))
+        .isTrue();
   }
 
   @DisplayName("평일_AttendanceRecord_내의_기록이_출석_데드라인을_넘지_않은_경우_true")
   @Test
   void weekdayAttendanceDeadlineTrueTest() {
-    ExistentAttendanceRecord mondayMinExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 4, 10, 5));
-    assertThat(mondayMinExistentAttendanceRecord.isAttendance(WEEKDAY_ATTENDANCE_START_TIME.plusMinutes(ATTENDANCE_APPROVAL_MINUTE))).isTrue();
+    ExistentAttendanceRecord mondayMinExistentAttendanceRecord =
+        new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 4, 10, 5));
+    assertThat(mondayMinExistentAttendanceRecord.isAttendance(
+        WEEKDAY_ATTENDANCE_START_TIME.plusMinutes(ATTENDANCE_APPROVAL_MINUTE))).isTrue();
 
   }
 
   @DisplayName("월요일_AttendanceRecord_내의_기록이_출석_데드라인을_넘은_경우_false")
   @Test
   void mondayAttendanceDeadlineFalseTest() {
-    ExistentAttendanceRecord mondayExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 6));
-    assertThat(mondayExistentAttendanceRecord.isAttendance(MONDAY_ATTENDANCE_START_TIME.plusMinutes(ATTENDANCE_APPROVAL_MINUTE))).isFalse();
+    ExistentAttendanceRecord mondayExistentAttendanceRecord = new ExistentAttendanceRecord(
+        LocalDateTime.of(2025, 3, 3, 13, 6));
+    assertThat(mondayExistentAttendanceRecord.isAttendance(
+        MONDAY_ATTENDANCE_START_TIME.plusMinutes(ATTENDANCE_APPROVAL_MINUTE))).isFalse();
   }
 
   @DisplayName("평일_AttendanceRecord_내의_기록이_출석_데드라인을_넘은_경우_false")
   @Test
   void weekdayAttendanceDeadlineFalseTest() {
-    ExistentAttendanceRecord weekdayExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 4, 10, 6));
-    assertThat(weekdayExistentAttendanceRecord.isAttendance(WEEKDAY_ATTENDANCE_START_TIME.plusMinutes(ATTENDANCE_APPROVAL_MINUTE))).isFalse();
+    ExistentAttendanceRecord weekdayExistentAttendanceRecord = new ExistentAttendanceRecord(
+        LocalDateTime.of(2025, 3, 4, 10, 6));
+    assertThat(weekdayExistentAttendanceRecord.isAttendance(
+        WEEKDAY_ATTENDANCE_START_TIME.plusMinutes(ATTENDANCE_APPROVAL_MINUTE))).isFalse();
   }
 
   @DisplayName("월요일_AttendanceRecord_내의_기록이_지각_데드라인을_넘지_않은_경우_true")
   @Test
   void mondayLateDeadlineTrueTest() {
-    ExistentAttendanceRecord mondayMinExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 6));
-    ExistentAttendanceRecord mondayMaxExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 30));
+    ExistentAttendanceRecord mondayMinExistentAttendanceRecord = new ExistentAttendanceRecord(
+        LocalDateTime.of(2025, 3, 3, 13, 6));
+    ExistentAttendanceRecord mondayMaxExistentAttendanceRecord = new ExistentAttendanceRecord(
+        LocalDateTime.of(2025, 3, 3, 13, 30));
     assertAll(
-        () -> assertThat(mondayMinExistentAttendanceRecord.isAttendance(MONDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isTrue(),
-        () -> assertThat(mondayMaxExistentAttendanceRecord.isAttendance(MONDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isTrue()
+        () -> assertThat(mondayMinExistentAttendanceRecord.isAttendance(
+            MONDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isTrue(),
+        () -> assertThat(mondayMaxExistentAttendanceRecord.isAttendance(
+            MONDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isTrue()
     );
   }
 
   @DisplayName("평일_AttendanceRecord_내의_기록이_지각을_데드라인을_넘지_않은_경우_true")
   @Test
   void weekdayLateDeadlineTrueTest() {
-    ExistentAttendanceRecord weekdayMinExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 4, 10, 6));
-    ExistentAttendanceRecord weekdayMaxExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 4, 10, 30));
+    ExistentAttendanceRecord weekdayMinExistentAttendanceRecord = new ExistentAttendanceRecord(
+        LocalDateTime.of(2025, 3, 4, 10, 6));
+    ExistentAttendanceRecord weekdayMaxExistentAttendanceRecord = new ExistentAttendanceRecord(
+        LocalDateTime.of(2025, 3, 4, 10, 30));
     assertAll(
-        () -> assertThat(weekdayMinExistentAttendanceRecord.isAttendance(WEEKDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isTrue(),
-        () -> assertThat(weekdayMaxExistentAttendanceRecord.isAttendance(WEEKDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isTrue()
+        () -> assertThat(weekdayMinExistentAttendanceRecord.isAttendance(
+            WEEKDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isTrue(),
+        () -> assertThat(weekdayMaxExistentAttendanceRecord.isAttendance(
+            WEEKDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isTrue()
     );
   }
 
   @DisplayName("월요일_AttendanceRecord_내의_기록이_지각_데드라인을_넘은_경우_false")
   @Test
   void mondayLateDeadlineFalseTest() {
-    ExistentAttendanceRecord mondayExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 31));
-    assertThat(mondayExistentAttendanceRecord.isAttendance(MONDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isFalse();
+    ExistentAttendanceRecord mondayExistentAttendanceRecord = new ExistentAttendanceRecord(
+        LocalDateTime.of(2025, 3, 3, 13, 31));
+    assertThat(mondayExistentAttendanceRecord.isAttendance(
+        MONDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isFalse();
   }
 
   @DisplayName("평일_AttendanceRecord_내의_기록이_지각_데드라인을_넘은_경우_false")
   @Test
   void weekdayLateDeadlineFalseTest() {
-    ExistentAttendanceRecord weekdayExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 4, 10, 31));
-    assertThat(weekdayExistentAttendanceRecord.isAttendance(WEEKDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isFalse();
+    ExistentAttendanceRecord weekdayExistentAttendanceRecord = new ExistentAttendanceRecord(
+        LocalDateTime.of(2025, 3, 4, 10, 31));
+    assertThat(weekdayExistentAttendanceRecord.isAttendance(
+        WEEKDAY_ATTENDANCE_START_TIME.plusMinutes(LATE_APPROVAL_MINUTE))).isFalse();
   }
 
   @DisplayName("저장된_시간을_변경하고_새로운_AttendanceRecord_반환")
   @Test
   void modifyAttendanceRecordTime() {
-    ExistentAttendanceRecord existentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025,2,28,10,0));
-    ExistentAttendanceRecord modifiedExistentAttendanceRecord = existentAttendanceRecord.modifyTime(LocalTime.of(10,5));
+    ExistentAttendanceRecord existentAttendanceRecord =
+        new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 0));
+    ExistentAttendanceRecord modifiedExistentAttendanceRecord =
+        existentAttendanceRecord.modifyTime(LocalTime.of(10, 5));
     assertThat(existentAttendanceRecord).isNotSameAs(modifiedExistentAttendanceRecord);
-    assertThat(modifiedExistentAttendanceRecord.getRecord().toLocalTime()).isEqualTo(LocalTime.of(10,5));
+    assertThat(modifiedExistentAttendanceRecord.getRecord().toLocalTime())
+        .isEqualTo(LocalTime.of(10, 5));
   }
 
 

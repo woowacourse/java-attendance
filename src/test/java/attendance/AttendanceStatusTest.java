@@ -14,22 +14,20 @@ public class AttendanceStatusTest {
   @Test
   void judgeAttendanceStatusByWeekdayTimeLogTest() {
     assertAll(
+        () -> assertThat(AttendanceStatus.from(
+            new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 5))))
+            .isEqualTo(AttendanceStatus.ATTENDANCE),
         () -> assertThat(
             AttendanceStatus.from(
-                new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 5)))).isEqualTo(
-            AttendanceStatus.ATTENDANCE),
+                new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 6))))
+            .isEqualTo(AttendanceStatus.LATE),
         () -> assertThat(
             AttendanceStatus.from(
-                new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 6)))).isEqualTo(
-            AttendanceStatus.LATE),
-        () -> assertThat(
-            AttendanceStatus.from(
-                new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 30)))).isEqualTo(
-            AttendanceStatus.LATE),
-        () -> assertThat(
-            AttendanceStatus.from(
-                new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 31)))).isEqualTo(
-            AttendanceStatus.ABSENCE)
+                new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 30))))
+            .isEqualTo(AttendanceStatus.LATE),
+        () -> assertThat(AttendanceStatus.from(
+            new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 31))))
+            .isEqualTo(AttendanceStatus.ABSENCE)
     );
   }
 
@@ -38,23 +36,24 @@ public class AttendanceStatusTest {
   void judgeAttendanceStatusByMondayTimeLogTest() {
     assertAll(
         () -> assertThat(AttendanceStatus.from(
-            new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 5)))).isEqualTo(
-            AttendanceStatus.ATTENDANCE),
+            new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 5))))
+            .isEqualTo(AttendanceStatus.ATTENDANCE),
         () -> assertThat(AttendanceStatus.from(
-            new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 6)))).isEqualTo(
-            AttendanceStatus.LATE),
+            new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 6))))
+            .isEqualTo(AttendanceStatus.LATE),
         () -> assertThat(AttendanceStatus.from(
-            new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 30)))).isEqualTo(
-            AttendanceStatus.LATE),
+            new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 30))))
+            .isEqualTo(AttendanceStatus.LATE),
         () -> assertThat(AttendanceStatus.from(
-            new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 31)))).isEqualTo(
-            AttendanceStatus.ABSENCE)
+            new ExistentAttendanceRecord(LocalDateTime.of(2025, 3, 3, 13, 31))))
+            .isEqualTo(AttendanceStatus.ABSENCE)
     );
   }
 
   @DisplayName("출석이_없는_출석_기록의_경우_결석으로_처리")
   @Test
   void judgeAbsenceTest() {
-    assertThat(AttendanceStatus.from(new AbsenceRecord(LocalDate.of(2025, 2, 28)))).isEqualTo(AttendanceStatus.ABSENCE);
+    assertThat(AttendanceStatus.from(new AbsenceRecord(LocalDate.of(2025, 2, 28))))
+        .isEqualTo(AttendanceStatus.ABSENCE);
   }
 }

@@ -15,8 +15,8 @@ public class ExistentAttendanceRecordsTest {
   @Test
   void saveAttendanceRecordTest() {
     ExistentAttendanceRecord existentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025, 2, 28, 10, 0));
-    ExistentAttendanceRecord savedExistentAttendanceRecord = attendanceRecords.save(
-        existentAttendanceRecord);
+    ExistentAttendanceRecord savedExistentAttendanceRecord
+        = attendanceRecords.save(existentAttendanceRecord);
     assertThat(savedExistentAttendanceRecord).isEqualTo(existentAttendanceRecord);
   }
 
@@ -36,8 +36,8 @@ public class ExistentAttendanceRecordsTest {
     ExistentAttendanceRecord existentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025,2,28,10,0));
     attendanceRecords.save(existentAttendanceRecord);
     ExistentAttendanceRecord updateExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025,2,28,10,0));
-    AttendanceRecord previousRecord= attendanceRecords.modifyAttendanceRecord(
-        updateExistentAttendanceRecord);
+    AttendanceRecord previousRecord =
+        attendanceRecords.modifyAttendanceRecord(updateExistentAttendanceRecord);
     assertThat(existentAttendanceRecord).isEqualTo(previousRecord);
   }
 
@@ -45,8 +45,8 @@ public class ExistentAttendanceRecordsTest {
   @Test
   void notExistsAttendanceRecordModificationTest() {
     ExistentAttendanceRecord updateExistentAttendanceRecord = new ExistentAttendanceRecord(LocalDateTime.of(2025,2,28,10,0));
-    AttendanceRecord previousRecord= attendanceRecords.modifyAttendanceRecord(
-        updateExistentAttendanceRecord);
+    AttendanceRecord previousRecord =
+        attendanceRecords.modifyAttendanceRecord(updateExistentAttendanceRecord);
     assertThat(previousRecord).isInstanceOf(AbsenceRecord.class);
   }
 

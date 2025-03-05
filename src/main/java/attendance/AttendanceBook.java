@@ -43,11 +43,8 @@ public class AttendanceBook {
     validateExistentCrew(crew);
     List<AttendanceRecord> attendanceRecords = attendanceBook.get(crew).searchRecords(searchDate);
     return sorted(attendanceRecords).stream()
-        .collect(Collectors.toMap(
-            AttendanceRecord::getRecord,
-            AttendanceStatus::from,
-            (existing, replacement) -> existing,
-            LinkedHashMap::new
+        .collect(Collectors.toMap(AttendanceRecord::getRecord, AttendanceStatus::from,
+            (existing, replacement) -> existing, LinkedHashMap::new
         ));
   }
 
@@ -108,8 +105,8 @@ public class AttendanceBook {
   }
 
   private int applyAbsenceCountPolicy(Map<AttendanceStatus, Integer> result) {
-    return result.get(AttendanceStatus.ABSENCE) + (result.get(AttendanceStatus.LATE)
-        / POLICY_CONDITION);
+    return result.get(AttendanceStatus.ABSENCE) +
+        (result.get(AttendanceStatus.LATE) / POLICY_CONDITION);
   }
 
   private List<AttendanceRecord> sorted(List<AttendanceRecord> attendanceRecords) {

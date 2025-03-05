@@ -18,9 +18,8 @@ public class AbsenceRecordTest {
         LocalDate.of(2025, 3, 2)
     );
     for (LocalDate date : dates) {
-      assertThatThrownBy(() ->
-          new AbsenceRecord(date)
-      ).isInstanceOf(IllegalArgumentException.class)
+      assertThatThrownBy(() -> new AbsenceRecord(date))
+          .isInstanceOf(IllegalArgumentException.class)
           .hasMessage("주말 또는 공휴일에는 운영하지 않습니다.");
     }
   }
@@ -28,9 +27,8 @@ public class AbsenceRecordTest {
   @DisplayName("공휴일_결석_기록_생성_시_예외_발생")
   @Test
   void holidayAbsenceRecordTest() {
-    assertThatThrownBy(() ->
-        new AbsenceRecord(LocalDate.of(2025, 12, 25))
-    ).isInstanceOf(IllegalArgumentException.class)
+    assertThatThrownBy(() -> new AbsenceRecord(LocalDate.of(2025, 12, 25)))
+        .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("주말 또는 공휴일에는 운영하지 않습니다.");
   }
 
@@ -46,9 +44,8 @@ public class AbsenceRecordTest {
   @Test
   void outOfCampusOperatingTimeExceptionTest() {
     AbsenceRecord absenceRecord = new AbsenceRecord(LocalDate.of(2025, 2, 28));
-    assertThatThrownBy(() ->
-        absenceRecord.modifyTime(LocalTime.of(7, 59))
-    ).isInstanceOf(IllegalArgumentException.class)
+    assertThatThrownBy(() -> absenceRecord.modifyTime(LocalTime.of(7, 59)))
+        .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("캠퍼스 운영 시간이 아닙니다");
   }
 }

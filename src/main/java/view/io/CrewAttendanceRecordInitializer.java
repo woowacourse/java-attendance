@@ -25,10 +25,8 @@ public class CrewAttendanceRecordInitializer {
     try (Stream<String> lines = Files.lines(FILE_PATH)) {
       Map<Crew, List<AttendanceRecord>> crewWithTimeLogs = groupByCrewWithTimeLogs(lines);
       return crewWithTimeLogs.entrySet().stream()
-          .collect(Collectors.toMap(
-              Entry::getKey,
-              entry -> new AttendanceRecords(entry.getValue())
-          ));
+          .collect(
+              Collectors.toMap(Entry::getKey, entry -> new AttendanceRecords(entry.getValue())));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
