@@ -39,15 +39,16 @@ public class AttendanceManagerTest {
         AttendanceManager attendanceManager = new AttendanceManager();
 
         // when & then
-        assertAll(() -> assertThatThrownBy(() -> {
-            attendanceManager.attend(nickName, attendanceRecord);
-        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
-            attendanceManager.isAttended(nickName, attendanceRecord);
-        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
-            attendanceManager.edit(nickName, attendanceRecord);
-        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
-            attendanceManager.checkAttendance(nickName, List.of(11));
-        }).isInstanceOf(IllegalArgumentException.class));
+        assertAll(
+                () -> assertThatThrownBy(() -> attendanceManager.attend(nickName, attendanceRecord))
+                        .isInstanceOf(IllegalArgumentException.class),
+                () -> assertThatThrownBy(() -> attendanceManager.isAttended(nickName, attendanceRecord))
+                        .isInstanceOf(IllegalArgumentException.class),
+                () -> assertThatThrownBy(() -> attendanceManager.edit(nickName, attendanceRecord))
+                        .isInstanceOf(IllegalArgumentException.class),
+                () -> assertThatThrownBy(() -> attendanceManager.checkAttendance(nickName, List.of(11)))
+                        .isInstanceOf(IllegalArgumentException.class)
+        );
     }
 
     @ParameterizedTest
@@ -61,13 +62,14 @@ public class AttendanceManagerTest {
         attendanceManager.register(nickName);
 
         // when & then
-        assertAll(() -> assertThatThrownBy(() -> {
-            attendanceManager.attend(nickName, attendanceRecord);
-        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
-            attendanceManager.isAttended(nickName, attendanceRecord);
-        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
-            attendanceManager.edit(nickName, attendanceRecord);
-        }).isInstanceOf(IllegalArgumentException.class));
+        assertAll(
+                () -> assertThatThrownBy(() -> attendanceManager.attend(nickName, attendanceRecord))
+                        .isInstanceOf(IllegalArgumentException.class),
+                () -> assertThatThrownBy(() -> attendanceManager.isAttended(nickName, attendanceRecord))
+                        .isInstanceOf(IllegalArgumentException.class),
+                () -> assertThatThrownBy(() -> attendanceManager.edit(nickName, attendanceRecord))
+                        .isInstanceOf(IllegalArgumentException.class)
+        );
     }
 
     @ParameterizedTest
@@ -81,13 +83,14 @@ public class AttendanceManagerTest {
         attendanceManager.register(nickName);
 
         // when & then
-        assertAll(() -> assertThatThrownBy(() -> {
-            attendanceManager.attend(nickName, attendanceRecord);
-        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
-            attendanceManager.isAttended(nickName, attendanceRecord);
-        }).isInstanceOf(IllegalArgumentException.class), () -> assertThatThrownBy(() -> {
-            attendanceManager.edit(nickName, attendanceRecord);
-        }).isInstanceOf(IllegalArgumentException.class));
+        assertAll(
+                () -> assertThatThrownBy(() -> attendanceManager.attend(nickName, attendanceRecord))
+                        .isInstanceOf(IllegalArgumentException.class),
+                () -> assertThatThrownBy(() -> attendanceManager.isAttended(nickName, attendanceRecord))
+                        .isInstanceOf(IllegalArgumentException.class),
+                () -> assertThatThrownBy(() -> attendanceManager.edit(nickName, attendanceRecord))
+                        .isInstanceOf(IllegalArgumentException.class)
+        );
     }
 
     @Nested
@@ -211,9 +214,14 @@ public class AttendanceManagerTest {
             Attendances attendances = attendanceManager.checkAttendance(nickName, checkingDates);
 
             // then
-            assertAll(() -> assertThat(attendances.getAttendances()).hasSize(checkingDates.size()),
-                    () -> assertThat(attendances.getAttendances()).contains(AttendanceRecord.dateOf(2),
-                            attendanceRecord1, attendanceRecord2));
+            assertAll(
+                    () -> assertThat(attendances.getAttendances()).hasSize(checkingDates.size()),
+                    () -> assertThat(attendances.getAttendances()).contains(
+                            AttendanceRecord.dateOf(2),
+                            attendanceRecord1,
+                            attendanceRecord2
+                    )
+            );
         }
     }
 
