@@ -90,12 +90,13 @@ public class AttendanceManager {
         }
     }
 
-    public WarningCrews findWarningCrews() {
-        return attendanceManager.entrySet()
+    public WarningCrews findWarningCrews(List<Integer> checkingDates) {
+        return attendanceManager.keySet()
                 .stream()
-                .filter(entry -> WarningStatus.calculateWarningStatus(entry.getValue()
-                        .countAttendanceStatus()) != WarningStatus.CLEAR)
-                .map(entry -> new WarningCrew(entry.getKey(), entry.getValue()
+                .filter(attendances -> WarningStatus.calculateWarningStatus(
+                        checkAttendance(attendances, checkingDates)
+                                .countAttendanceStatus()) != WarningStatus.CLEAR)
+                .map(attendances -> new WarningCrew(attendances, checkAttendance(attendances, checkingDates)
                         .countAttendanceStatus()))
                 .collect(Collectors.collectingAndThen(Collectors.toList(), WarningCrews::new));
     }

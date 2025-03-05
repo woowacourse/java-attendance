@@ -138,7 +138,8 @@ public class AttendanceController {
     }
 
     private void checkWarningCrewProcess(AttendanceManager attendanceManager) {
-        WarningCrews warningCrews = attendanceManager.findWarningCrews();
+        List<Integer> checkingDates = DateUtil.getAttendAbleDates(Current.getDayOfYesterday());
+        WarningCrews warningCrews = attendanceManager.findWarningCrews(checkingDates);
         outputView.printWarningCrews(warningCrews);
     }
 

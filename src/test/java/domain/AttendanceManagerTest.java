@@ -216,4 +216,51 @@ public class AttendanceManagerTest {
                             attendanceRecord1, attendanceRecord2));
         }
     }
+
+    @Nested
+    @DisplayName("제적 위험자 확인 테스트")
+    class FindWarningCrewTest {
+        @Test
+        @DisplayName("주어진 날짜들로 제적 위험자를 확인한다")
+        void should_return_warningCrews_by_dates() {
+            // given
+            List<AttendanceRecord> attends = List.of(
+                    AttendanceRecord.of("2", "10:00"),
+                    AttendanceRecord.of("3", "10:00"),
+                    AttendanceRecord.of("4", "10:00"),
+                    AttendanceRecord.of("5", "10:00"),
+                    AttendanceRecord.of("6", "10:00"),
+                    AttendanceRecord.of("9", "10:00"),
+                    AttendanceRecord.of("10", "10:00"));
+            AttendanceManager attendanceManager = new AttendanceManager();
+            NickName expelName = new NickName("제적 학생");
+            attendanceManager.register(expelName);
+            for (int i = attends.size() - 1; i >= 6; --i) {
+                attendanceManager.attend(expelName, attends.get(i));
+            }
+            NickName interviewName = new NickName("면담 학생");
+            attendanceManager.register(interviewName);
+            for (int i = attends.size() - 1; i >= 3; --i) {
+                attendanceManager.attend(expelName, attends.get(i));
+            }
+            NickName warningName = new NickName("경고 학생");
+            attendanceManager.register(warningName);
+            for (int i = attends.size() - 1; i >= 2; --i) {
+                attendanceManager.attend(warningName, attends.get(i));
+            }
+            NickName clearName = new NickName("성실 학생");
+            attendanceManager.register(clearName);
+            for (int i = attends.size() - 1; i >= 0; --i) {
+                attendanceManager.attend(clearName, attends.get(i));
+            }
+            // 2,3,4,5,6,9,10
+            List<Integer> checkingDates = DateUtil.getAttendAbleDates(11);
+
+            // when
+            WarningCrews warningCrews = attendanceManager.findWarningCrews(checkingDates);
+
+            // then
+            assertThat(warningCrews.getWarningCrews()).hasSize(3);
+        }
+    }
 }
