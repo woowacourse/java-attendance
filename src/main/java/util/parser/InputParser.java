@@ -30,7 +30,7 @@ public class InputParser {
         }
     }
 
-    public static String parseNameFromDateLine(String line) {
+    public static String parseNameFromDataLine(String line) {
         return line.split(",")[0];
     }
 

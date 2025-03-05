@@ -13,7 +13,6 @@ import domain.ErrorCode;
 import domain.Penalty;
 import domain.UserSelection;
 import domain.timeprovider.TimeProvider;
-import dto.request.AddAttendanceRequest;
 import dto.response.AttendanceRecordResponse;
 import dto.response.AttendanceStatusCountResponse;
 import dto.response.CheckAttendanceResponse;
@@ -28,6 +27,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import util.filereader.FileReader;
+import util.parser.InputParser;
 import util.parser.OutputParser;
 import view.InputView;
 import view.OutputView;
@@ -59,10 +59,13 @@ public class AttendanceController {
 
     private void initializeAttendanceBook() {
         List<String> dataLines = fileReader.readFile();
-        List<AddAttendanceRequest> addAttendanceRequests = dataLines.stream()
-                .map(AddAttendanceRequest::fromDataLine)
-                .toList();
-        attendanceBook.initializeAttendanceBook(addAttendanceRequests);
+        for (String dataLine : dataLines) {
+            String name = InputParser.parseNameFromDataLine(dataLine);
+            LocalDate date = InputParser.parseDateFromDataLine(dataLine);
+            LocalTime time = InputParser.parseTimeFromDataLIne(dataLine);
+            attendanceBook.addCrewByName(name);
+            attendanceBook.putAttendanceRecordByName(name, date, time);
+        }
     }
 
     private void initializeSelection() {

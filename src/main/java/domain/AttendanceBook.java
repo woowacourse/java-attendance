@@ -1,6 +1,5 @@
 package domain;
 
-import dto.request.AddAttendanceRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -14,20 +13,11 @@ public class AttendanceBook {
         this.crews = new ArrayList<>();
     }
 
-    public void initializeAttendanceBook(List<AddAttendanceRequest> requests) {
-        requests.forEach(this::putCrewWithAttendanceRecord);
-    }
-
-    private void putCrewWithAttendanceRecord(AddAttendanceRequest request) {
-        if (!checkNameExists(request.name())) {
-            addCrewByName(request.name());
-        }
-        putAttendanceRecordByName(request.name(), request.date(), request.time());
-    }
-
     public void addCrewByName(String name) {
-        Crew newCrew = new Crew(name);
-        crews.add(newCrew);
+        if (!checkNameExists(name)) {
+            Crew newCrew = new Crew(name);
+            crews.add(newCrew);
+        }
     }
 
     public void validateNameExists(String name) {
