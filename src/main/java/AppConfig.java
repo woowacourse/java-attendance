@@ -14,7 +14,7 @@ import view.OutputView;
 public class AppConfig {
     private static final String CSV_FILE_PATH = "src/main/resources/attendances.csv";
 
-    public AttendanceController controller() {
+    public AttendanceController attendanceController() {
         return new AttendanceController(attendanceBook(), inputView(), outputView(),
                 fileReader(), timeProvider());
     }
