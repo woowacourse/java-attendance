@@ -1,79 +1,67 @@
 package view;
 
+import dto.AttendanceHistoryDto;
 import dto.DismissalCrewDto;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 import model.AttendanceType;
-import model.SubjectType;
-import util.TimeFormatter;
+import model.AttendanceTypeCountResult;
+import model.DismissalType;
 
 public class ResultView {
 
     private static final String LINE = System.lineSeparator();
-    private static final String ATTENDANCE_HISTORY_FORM = "%s (%s)";
-    private static final String MODIFY_HISTORY_FORM = "%s (%s) -> %s (%s) 수정 완료!";
-    private static final String ATTENDANCE_HISTORY_BY_CREW_FORM = "이번 달 %s의 출석 기록입니다.";
-    private static final String ATTENDANCE_TYPE_COUNT_FORM = """
-            출석: %d회
-            지각: %d회
-            결석: %d회
-            """;
-    private static final String SUBJECT_TYPE_FORM = "%s 대상자입니다.";
-    private static final String DISMISSAL_RESULT_TITLE = "제적 위험자 조회 결과";
-    private static final String DISMISSAL_RESULT_FORM = "- %s: 결석 %d회, 지각 %d회 (%s)";
+    private static final String ATTENDANCE_MODIFY_RESULT_FORMAT = "%s -> %s 수정 완료!";
+    private static final String ATTENDANCE_HISTORY_RESULT_FORMAT = "이번 달 %s의 출석 기록입니다.";
+    private static final String ATTENDANCE_TYPE_COUNT_RESULT_FORMAT = "%s: %d회";
+    private static final String DISMISSAL_TYPE_FORMAT = "%s 대상자입니다.";
+    private static final String ALL_DISMISSAL_CREW_RESULT_TITLE = "제적 위험자 조회 결과";
+    private static final String DISMISSAL_CREW_RESULT_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)";
 
-    public void printAttendanceHistory(final LocalDateTime attendanceDateTime, final AttendanceType attendanceType) {
-        System.out.printf(ATTENDANCE_HISTORY_FORM + LINE,
-                TimeFormatter.formatDateTime(attendanceDateTime), attendanceType.getTypeName());
+    public void printAttendanceCheckResult(final AttendanceHistoryDto dto) {
+        System.out.println();
+        printAttendanceHistoryDto(dto);
     }
 
-    public void printModifyHistory(final LocalDateTime previousTime, final AttendanceType previousType,
-                                   final LocalTime modifyTime, final AttendanceType modifyType) {
-        System.out.printf(LINE + MODIFY_HISTORY_FORM + LINE,
-                TimeFormatter.formatDateTime(previousTime), previousType.getTypeName(),
-                TimeFormatter.formatTime(modifyTime), modifyType.getTypeName());
-    }
-
-    public void printAttendanceHistoryResultByCrew(
-            final String nickname,
-            final List<LocalDateTime> attendanceHistory,
-            final Map<AttendanceType, Integer> result,
-            final SubjectType subjectType
+    public void printAttendanceModifyResult(
+            final AttendanceHistoryDto oldDto,
+            final AttendanceHistoryDto newDto
     ) {
-        System.out.printf(LINE + ATTENDANCE_HISTORY_BY_CREW_FORM + LINE + LINE, nickname);
-        printAttendanceHistories(attendanceHistory);
-        printAttendanceTypeCount(result);
-        printSubjectType(subjectType);
+        System.out.printf(LINE + ATTENDANCE_MODIFY_RESULT_FORMAT + LINE,
+                oldDto.toString(), newDto.toStringWithoutDate());
     }
 
-    public void printDismissalResult(final List<DismissalCrewDto> dtos) {
-        System.out.println(DISMISSAL_RESULT_TITLE);
-        dtos.stream()
-                .map(dto -> String.format(DISMISSAL_RESULT_FORM, dto.nickname(),
-                        dto.absentCount(), dto.lateCount(), dto.subjectType()))
-                .forEach(System.out::println);
+    public void printAttendanceHistory(final String nickname, final List<AttendanceHistoryDto> dtos) {
+        System.out.printf(LINE + ATTENDANCE_HISTORY_RESULT_FORMAT + LINE + LINE, nickname);
+        dtos.forEach(this::printAttendanceHistoryDto);
+        System.out.println();
     }
 
-    private void printAttendanceHistories(final List<LocalDateTime> attendanceHistory) {
-        attendanceHistory.forEach(localDateTime -> printAttendanceHistory(
-                localDateTime,
-                AttendanceType.from(localDateTime)));
-    }
-
-    private void printAttendanceTypeCount(final Map<AttendanceType, Integer> result) {
-        System.out.printf(LINE + ATTENDANCE_TYPE_COUNT_FORM + LINE,
-                result.get(AttendanceType.PRESENT),
-                result.get(AttendanceType.LATE),
-                result.get(AttendanceType.ABSENT)
+    public void printAttendanceTypeCountResult(final AttendanceTypeCountResult attendanceTypeCountResult) {
+        attendanceTypeCountResult.typeResult().entrySet().forEach(
+                entry -> System.out.printf(ATTENDANCE_TYPE_COUNT_RESULT_FORMAT + LINE,
+                        entry.getKey().getName(),
+                        entry.getValue())
         );
+        System.out.println();
     }
 
-    private void printSubjectType(final SubjectType subjectType) {
-        if (subjectType.equals(SubjectType.NONE)) {
-            return;
-        }
-        System.out.printf(SUBJECT_TYPE_FORM + LINE, subjectType.getTypeName());
+    public void printDismissalType(final DismissalType dismissalType) {
+        System.out.printf(DISMISSAL_TYPE_FORMAT + LINE, dismissalType.getName());
+    }
+
+    public void printAllDismissalCrew(final List<DismissalCrewDto> allDismissalCrewByOrder) {
+        System.out.println(LINE + ALL_DISMISSAL_CREW_RESULT_TITLE);
+        allDismissalCrewByOrder.stream()
+                .filter(dto -> dto.dismissalType() != DismissalType.NONE)
+                .forEach(dto -> System.out.printf(DISMISSAL_CREW_RESULT_FORMAT + LINE,
+                        dto.nickname(),
+                        dto.typeCountResult().get(AttendanceType.ABSENT),
+                        dto.typeCountResult().get(AttendanceType.LATE),
+                        dto.dismissalType().getName())
+                );
+    }
+
+    private void printAttendanceHistoryDto(final AttendanceHistoryDto dto) {
+        System.out.println(dto.toString());
     }
 }

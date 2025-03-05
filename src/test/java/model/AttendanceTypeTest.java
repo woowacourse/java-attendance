@@ -1,61 +1,33 @@
 package model;
 
-import static java.util.Map.entry;
-import static model.AttendanceType.DEFAULT_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import org.assertj.core.api.Assertions;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceTypeTest {
-    @DisplayName("출석 타입을 결정한다")
+
+    @DisplayName("출석 날짜와 출석 시간으로 출석 타입을 얻는다")
     @ParameterizedTest
     @CsvSource({
-            "2024-12-02T13:00, 출석",
-            "2024-12-03T10:00, 출석",
-            "2024-12-03T10:05, 출석",
-            "2024-12-03T10:06, 지각",
-            "2024-12-03T10:30, 지각",
-            "2024-12-03T13:00, 결석",
-            "2024-12-03T09:54, 출석"
+            "2024-12-02, 10:06, NONE",
+            "2024-12-02, 13:05, NONE",
+            "2024-12-02, 13:06, LATE",
+            "2024-12-02, 13:30, LATE",
+            "2024-12-02, 13:31, ABSENT",
+            "2024-12-04, 09:50, NONE",
+            "2024-12-04, 10:05, NONE",
+            "2024-12-04, 10:06, LATE",
+            "2024-12-04, 10:30, LATE",
+            "2024-12-04, 10:31, ABSENT",
     })
-    void determineAttendanceTypeTest(final LocalDateTime time, final String attendanceTypeName) {
-        // Given
+    void fromTest(final LocalDate date, final LocalTime time, final AttendanceType type) {
+        AttendanceDate attendanceDate = new AttendanceDate(date);
+        AttendanceTime attendanceTime = new AttendanceTime(time);
 
-        // When
-        AttendanceType attendanceType = AttendanceType.from(time);
-
-        // Then
-        assertThat(attendanceType.getTypeName()).isEqualTo(attendanceTypeName);
-    }
-
-    @DisplayName("출석 타입별 횟수를 계산한다")
-    @Test
-    void countAttendanceTypeTest() {
-        // Given
-        List<LocalDateTime> attendanceTimes = List.of(
-                LocalDateTime.of(2024, 12, 2, 9, 0),
-                LocalDateTime.of(2024, 12, 3, 10, 6),
-                LocalDateTime.of(2024, 12, 4, 10, 31),
-                LocalDateTime.of(LocalDate.of(2024, 12, 5), DEFAULT_TIME),
-                LocalDateTime.of(2024, 12, 6, 9, 30)
-        );
-
-        // When
-        Map<AttendanceType, Integer> result = AttendanceType.countAttendanceType(attendanceTimes);
-
-        // Then
-        Assertions.assertThat(result).containsExactly(
-                entry(AttendanceType.PRESENT, 2),
-                entry(AttendanceType.LATE, 1),
-                entry(AttendanceType.ABSENT, 2)
-        );
+        assertThat(AttendanceType.from(attendanceDate, attendanceTime)).isEqualTo(type);
     }
 }

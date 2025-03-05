@@ -1,68 +1,45 @@
 package model;
 
-import java.time.DayOfWeek;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Comparator;
+import model.policy.EducationTimePolicy;
 
 public enum AttendanceType {
-
-    PRESENT("출석", Duration.ofMinutes(0)),
+    NONE("출석", Duration.ofMinutes(0)),
     LATE("지각", Duration.ofMinutes(5)),
     ABSENT("결석", Duration.ofMinutes(30));
 
-    public static final LocalTime DEFAULT_TIME = LocalTime.MIN;
+    private final String name;
+    private final Duration threshold;
 
-    private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
-    private static final LocalTime WEEKDAY_START_TIME = LocalTime.of(10, 0);
-
-    AttendanceType(final String typeName, final Duration threshold) {
-        this.typeName = typeName;
+    AttendanceType(final String name, final Duration threshold) {
+        this.name = name;
         this.threshold = threshold;
     }
 
-    private final String typeName;
-
-    private final Duration threshold;
-
-    public static AttendanceType from(final LocalDateTime attendanceDateTime) {
-        LocalTime attendanceTime = LocalTime.from(attendanceDateTime);
-        LocalTime startTime = getStartTime(attendanceDateTime.getDayOfWeek());
-        return getAttendanceTypeByTime(attendanceTime, startTime);
+    public static AttendanceType from(
+            final AttendanceDate attendanceDate,
+            final AttendanceTime attendanceTime
+    ) {
+        LocalTime educationStartTime = EducationTimePolicy.getStartTime(attendanceDate.getDayOfWeek());
+        Duration duration = attendanceTime.getOverDuration(educationStartTime);
+        return Arrays.stream(values())
+                .filter(value -> !isWithinThreshold(value, duration))
+                .max(Comparator.comparing(value -> value.threshold))
+                .orElse(NONE);
     }
 
-    private static AttendanceType getAttendanceTypeByTime(final LocalTime attendanceTime, final LocalTime startTime) {
-        if (attendanceTime.equals(DEFAULT_TIME) || attendanceTime.isAfter(startTime.plus(ABSENT.threshold))) {
-            return ABSENT;
-        }
-        if (attendanceTime.isAfter(startTime.plus(LATE.threshold))) {
-            return LATE;
-        }
-        return PRESENT;
+    public String getName() {
+        return name;
     }
 
-    public static Map<AttendanceType, Integer> countAttendanceType(final List<LocalDateTime> attendanceTimes) {
-        Map<AttendanceType, Integer> result = new EnumMap<>(AttendanceType.class);
-        result.put(PRESENT, 0);
-        result.put(LATE, 0);
-        result.put(ABSENT, 0);
-        for (LocalDateTime attendanceTime : attendanceTimes) {
-            result.merge(from(attendanceTime), 1, Integer::sum);
-        }
-        return result;
+    public Duration getThreshold() {
+        return threshold;
     }
 
-    private static LocalTime getStartTime(final DayOfWeek dayOfWeek) {
-        if (dayOfWeek == DayOfWeek.MONDAY) {
-            return MONDAY_START_TIME;
-        }
-        return WEEKDAY_START_TIME;
-    }
-
-    public String getTypeName() {
-        return typeName;
+    private static boolean isWithinThreshold(final AttendanceType value, final Duration duration) {
+        return value.threshold.compareTo(duration) >= 0;
     }
 }
