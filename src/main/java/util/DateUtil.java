@@ -27,7 +27,7 @@ public class DateUtil {
         return isAttendAbleDate(targetDate);
     }
 
-    public static boolean isAttendAbleDate(LocalDate targetDate) {
+    private static boolean isAttendAbleDate(LocalDate targetDate) {
         boolean isWeekend = targetDate.getDayOfWeek()
                 .getValue() >= 6;
         boolean isChristmas = targetDate.getDayOfMonth() == CHRISTMAS;
