@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,12 +13,6 @@ public class AttendanceManager {
     public AttendanceManager(DateProvider dateProvider) {
         this.crews = new ArrayList<>();
         this.dateProvider = dateProvider;
-    }
-
-    public LocalDateTime attend(String nickname, LocalTime todayTime) {
-        return findCrewByNickname(nickname)
-                .map(crew -> crew.attend(todayTime))
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
 
     public void addCrew(String nickname, LocalDateTime attendanceTime) {

@@ -4,18 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceManagerTest extends BaseAttendanceTest {
-
-    @Test
-    void 등록되지_않은_닉네임의_출석을_등록하면_예외가_발생한다() {
-        assertThatThrownBy(() -> new AttendanceManager((dateProviderDec14))
-                .attend("이든", LocalTime.of(9, 59)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
-    }
 
     @Test
     void 등록되지_않은_닉네임으로_크루를_조회하면_예외가_발생한다() {
@@ -31,16 +22,6 @@ public class AttendanceManagerTest extends BaseAttendanceTest {
         attendanceManager.addCrew("폰트", LocalDateTime.of(2024, 12, 13, 9, 59));
 
         assertThat(attendanceManager.findCrewExactlyByNickname("폰트").getNickname()).isEqualTo("폰트");
-    }
-
-    @Test
-    void 크루의_출석을_등록한다() {
-        AttendanceManager attendanceManager = new AttendanceManager(dateProviderDec13);
-        attendanceManager.addCrew("이든", LocalDateTime.of(2024, 12, 12, 10, 0));
-
-        LocalDateTime attendanceTime = attendanceManager.attend("이든", LocalTime.of(9, 59));
-
-        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(2024, 12, 13, 9, 59));
     }
 
     @Test
