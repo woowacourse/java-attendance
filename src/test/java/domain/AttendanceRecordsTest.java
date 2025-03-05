@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
@@ -219,6 +220,28 @@ class AttendanceRecordsTest {
 
         // then
         assertThat(actualValue).isEqualTo(expectedValue);
+    }
+
+    @DisplayName("입력 받은 크루의 총 출석, 지각 및 결석 횟수 정보를 반환한다.")
+    @Test
+    void getAttendanceStatusSummaryTest() {
+        // given
+        AttendanceRecords attendanceRecords = AttendanceRecordsFixture.createAttendanceRecords(
+                "2024-12-02T13:00",
+                "2024-12-03T10:20",
+                "2024-12-04T10:00",
+                "2024-12-05T11:00"
+        );
+
+        // when
+        Map<AttendanceStatus, Integer> actualValue = attendanceRecords.getAttendanceStatusSummary();
+
+        // then
+        assertAll(
+                () -> assertThat(actualValue.get(AttendanceStatus.PRESENT)).isEqualTo(2),
+                () -> assertThat(actualValue.get(AttendanceStatus.TARDY)).isEqualTo(1),
+                () -> assertThat(actualValue.get(AttendanceStatus.ABSENT)).isEqualTo(1)
+        );
     }
 
     static Stream<Arguments> warningStatusTestArgs() {

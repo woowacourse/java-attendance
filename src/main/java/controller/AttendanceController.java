@@ -76,7 +76,8 @@ public class AttendanceController {
 
         Crew crew = new Crew(nickname);
         AttendanceRecords attendanceRecords = crewRecords.getAttendanceRecordsOf(crew);
-        outputView.printCrewRecord(currentDate, attendanceRecords, crew);
+        outputView.printCrewRecord(attendanceRecords.getRecordsUntilBefore(currentDate), crew);
+        outputView.printAttendanceStatusSummary(attendanceRecords.getAttendanceStatusSummary());
         outputView.printWarningStatus(crewRecords.getWarningStatus(crew));
     }
 

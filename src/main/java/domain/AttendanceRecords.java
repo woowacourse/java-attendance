@@ -3,7 +3,9 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 public class AttendanceRecords {
@@ -58,6 +60,15 @@ public class AttendanceRecords {
     public int getTardiesAfterConversion() {
         int tardyCount = getAttendanceCount(AttendanceStatus.TARDY);
         return WarningStatus.getTardiesAfterConversion(tardyCount);
+    }
+
+    public Map<AttendanceStatus, Integer> getAttendanceStatusSummary() {
+        Map<AttendanceStatus, Integer> summary = new HashMap<>();
+        for (AttendanceStatus status : AttendanceStatus.values()) {
+            int count = getAttendanceCount(status);
+            summary.put(status, count);
+        }
+        return summary;
     }
 
     private void remove(AttendanceRecord record) {

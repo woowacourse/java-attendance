@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 public class OutputView {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
@@ -31,11 +32,16 @@ public class OutputView {
                 getDisplayTime(newAttendanceStatus, newTime) + " (" + newAttendanceStatus.getName() + ") 수정 완료!");
     }
 
-    public void printCrewRecord(LocalDate currentDate, AttendanceRecords attendanceRecords, Crew crew) {
+    public void printCrewRecord(List<AttendanceRecord> attendanceRecords, Crew crew) {
         System.out.printf("%n이번 달 %s의 출석 기록입니다.%n", crew.name());
-        attendanceRecords.getRecordsUntilBefore(currentDate)
-                .forEach(this::printAttendanceRecord);
-        printAttendanceStatus(attendanceRecords);
+        attendanceRecords.forEach(this::printAttendanceRecord);
+    }
+
+    public void printAttendanceStatusSummary(Map<AttendanceStatus, Integer> summary) {
+        System.out.println(System.lineSeparator());
+        for (AttendanceStatus status : AttendanceStatus.values()) {
+            System.out.printf("%s: %d회%n", status.getName(), summary.get(status));
+        }
     }
 
     public void printWarningStatus(WarningStatus warningStatus) {
@@ -50,14 +56,6 @@ public class OutputView {
         for (WarnedCrew warnedCrew : warnedCrews) {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", warnedCrew.name(), warnedCrew.tardyCount(),
                     warnedCrew.absentCount(), warnedCrew.warningStatus());
-        }
-    }
-
-    private void printAttendanceStatus(AttendanceRecords attendanceRecords) {
-        System.out.println(System.lineSeparator());
-        for (AttendanceStatus status : AttendanceStatus.values()) {
-            int count = attendanceRecords.getAttendanceCount(status);
-            System.out.printf("%s: %d회%n", status.getName(), count);
         }
     }
 
