@@ -21,14 +21,18 @@ public class AttendanceRecord {
     public void initRecord() {
         LocalDate targetDate = getFirstDayOfMonth(getFixedRunningDate());
         while (targetDate.isBefore(getFixedRunningDate())) {
-            if (isWeekday(targetDate)) {
-                applyAttendanceDate(targetDate);
-            }
+            applyAttendanceDateIfIsWeekday(targetDate);
             targetDate = targetDate.plusDays(1);
         }
     }
 
-    public void applyAttendanceDate(LocalDate date) {
+    private void applyAttendanceDateIfIsWeekday(LocalDate date) {
+        if (isWeekday(date)) {
+            applyAttendanceDate(date);
+        }
+    }
+
+    private void applyAttendanceDate(LocalDate date) {
         if (isAlreadyAttend(date)) {
             int index = attendanceDates.indexOf(getAttendanceDate(date));
             attendanceDates.set(index, new AttendanceDate(date));
@@ -60,14 +64,15 @@ public class AttendanceRecord {
     }
 
     public boolean isAlreadyAttend(LocalDate date) {
-        return getAttendanceDate(date) != null;
+        return attendanceDates.stream()
+                .anyMatch(attendanceDate -> attendanceDate.isSameDate(date));
     }
 
     public AttendanceDate getAttendanceDate(LocalDate date) {
         return attendanceDates.stream()
                 .filter(attendanceDate -> attendanceDate.isSameDate(date))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException("출석 기록을 찾을 수 없습니다."));
     }
 
     public List<AttendanceDate> getAttendanceDates() {
