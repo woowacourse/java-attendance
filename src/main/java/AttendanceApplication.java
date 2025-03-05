@@ -1,11 +1,8 @@
-import presentation.AttendanceController;
-import presentation.view.FileInputView;
-import service.AttendanceService;
+import controller.AttendanceController;
 
 public class AttendanceApplication {
     public static void main(String[] args) {
-        AttendanceService attendanceService = new AttendanceService();
-        AttendanceController attendanceController = new AttendanceController(attendanceService);
+        AttendanceController attendanceController = new AttendanceController();
         attendanceController.run();
     }
 }

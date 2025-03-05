@@ -1,60 +1,60 @@
 package domain.attendance;
 
-import java.time.LocalDate;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import util.DateTimeUtil;
+import java.time.LocalTime;
+import java.util.Arrays;
 
-public class AttendanceDate implements Comparable<AttendanceDate> {
-    public static final int SATURDAY = 6;
+import static domain.attendance.AttendanceStatus.*;
 
-    private LocalDateTime dateTime;
+public class AttendanceDate {
+    private LocalDateTime attendanceAt;
+    private AttendanceStatus status;
 
-    public AttendanceDate(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-
-        int dayOfWeek = getDayOfWeek();
-        if (dayOfWeek >= SATURDAY) {
-            throw new IllegalArgumentException(DateTimeUtil.convertLocalDateToString(dateTime.toLocalDate()) + "은 등교일이 아닙니다.");
-        }
-        if (Holiday.has(dateTime)) {
-            throw new IllegalArgumentException(DateTimeUtil.convertLocalDateToString(dateTime.toLocalDate()) + "은 등교일이 아닙니다.");
-        }
+    public AttendanceDate(LocalDateTime attendanceAt) {
+        this.attendanceAt = attendanceAt;
+        this.status = calcAttendanceStatus(getDayOfWeek(), LocalTime.from(this.attendanceAt));
     }
 
-    public AttendanceState calculateAttendanceState() {
-        return AttendanceState.calculateAttendanceState(this.getDayOfWeek(), this.dateTime);
+    public DayOfWeek getDayOfWeek() {
+        return Arrays.stream(DayOfWeek.values())
+                .filter(dayOfWeek -> dayOfWeek.getValue() == attendanceAt.getDayOfWeek().getValue())
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 요일을 찾을 수 없음"));
     }
 
-    public void editDateTime(LocalDateTime editDateTime) {
-        this.dateTime = editDateTime;
+    public void editLocalDate(LocalDateTime editLocalDateTime) {
+        this.attendanceAt = editLocalDateTime;
+        this.status = calcAttendanceStatus(getDayOfWeek(), LocalTime.from(this.attendanceAt));
     }
 
-    public LocalDateTime checkAttendanceTime() {
-        return this.dateTime;
+    public boolean isAttendance() {
+        return this.status == ATTENDANCE;
     }
 
-    public LocalDate convertLocalDate() {
-        return this.dateTime.toLocalDate();
+    public boolean isTardy() {
+        return this.status == TARDY;
     }
 
-    public boolean isEqualsLocalDate(LocalDate compareDate) {
-        return (this.dateTime.getYear() == compareDate.getYear()
-                && this.dateTime.getMonthValue() == compareDate.getMonthValue()
-                && this.dateTime.getDayOfMonth() == compareDate.getDayOfMonth());
+    public boolean isAbsence() {
+        return this.status == ABSENCE;
     }
 
     @Override
-    public int compareTo(AttendanceDate compareAttendanceDate) {
-        if (this.dateTime.isBefore(compareAttendanceDate.dateTime)) {
-            return -1;
-        }
-        if (this.dateTime.isEqual(compareAttendanceDate.dateTime)) {
-            return 0;
-        }
-        return 1;
+    public int hashCode() {
+        return super.hashCode();
     }
 
-    private int getDayOfWeek() {
-        return this.dateTime.getDayOfWeek().getValue();
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    public AttendanceStatus getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getAttendanceAt() {
+        return attendanceAt;
     }
 }

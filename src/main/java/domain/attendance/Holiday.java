@@ -1,35 +1,30 @@
 package domain.attendance;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public enum Holiday {
-    CHRISTMAS(12, 25),
-    NEW_YEAR(1,1),
-    ;
+    CHRISTMAS(12, 25);
 
-    private final int month;
-    private final int day;
+    private int month;
+    private int day;
 
     Holiday(int month, int day) {
         this.month = month;
         this.day = day;
     }
 
-    public static boolean has(LocalDateTime dateTime) {
-        int month = dateTime.getMonthValue();
-        int day = dateTime.getDayOfMonth();
-
+    public static boolean isHoliday(LocalDate attendTime) {
         return Arrays.stream(values())
-                .anyMatch(value -> value.month == month && value.day == day);
+                .anyMatch(holiday -> holiday.getMonth() == attendTime.getMonth().getValue()
+                        && holiday.getDay() == attendTime.getDayOfMonth());
     }
 
-    public static boolean has(LocalDate date) {
-        int month = date.getMonthValue();
-        int day = date.getDayOfMonth();
+    public int getMonth() {
+        return month;
+    }
 
-        return Arrays.stream(values())
-                .anyMatch(value -> value.month == month && value.day == day);
+    public int getDay() {
+        return day;
     }
 }

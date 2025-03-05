@@ -2,119 +2,122 @@ package domain.attendance;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.time.LocalTime;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.IntStream;
+
+import static domain.attendance.StudentStatus.*;
+import static domain.attendance.TimeTable.*;
+import static util.DateTimeUtils.*;
 
 public class Attendance {
-    private static final int ABSENCE_HOUR = 23;
-    private static final int ABSENCE_MINUTE = 59;
-    private static final int ABSENCE_PER_TARDY = 3;
+    private final Map<LocalDate, AttendanceDate> attendanceDates;
 
-    private final List<AttendanceDate> attendanceDates = new ArrayList<>();
+    public Attendance() {
+        this.attendanceDates = new HashMap<>();
+    }
 
-    public Attendance(LocalDate startDate, LocalDate endDate) {
-        for (LocalDate cursorDate = startDate; cursorDate.isBefore(endDate); cursorDate = cursorDate.plusDays(1)) {
-            validateAndUpdateAttendanceDates(cursorDate);
+    public void editAttendance(LocalDateTime editLocalDateTime) {
+        LocalDate editDate = LocalDate.from(editLocalDateTime);
+        if (!has(editDate)) {
+            throw new IllegalArgumentException("수정하려는 날짜가 존재하지 않습니다.");
+        }
+        attendanceDates.put(editDate, new AttendanceDate(editLocalDateTime));
+    }
+
+    public void addAttendance(LocalDateTime attendanceDateTime) {
+        LocalDate attendanceDate = LocalDate.from(attendanceDateTime);
+        validateAttendanceTime(attendanceDateTime);
+        if (isAttendanceDay(attendanceDate)) {
+            attendanceDates.put(attendanceDate, new AttendanceDate(attendanceDateTime));
         }
     }
 
-    public AttendanceState attend(LocalDateTime attendDateTime) {
-        if (!attendDateTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("아직 출석할 수 없습니다.");
+    private void validateAttendanceTime(LocalDateTime attendanceDateTime) {
+        LocalDate attendanceDate = LocalDate.from(attendanceDateTime);
+        if (has(attendanceDate)) {
+            throw new IllegalArgumentException("출석 기록이 이미 존재합니다.");
         }
-        if (has(attendDateTime.toLocalDate())) {
-            throw new IllegalArgumentException("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
+        if (attendanceDateTime.isAfter(TODAY_DATE_TIME_NOW)) {
+            throw new IllegalArgumentException("출석 시간이 옳바르지 않습니다.");
         }
-        AttendanceDate attendanceDate = new AttendanceDate(attendDateTime);
-        attendanceDates.add(attendanceDate);
-        return attendanceDate.calculateAttendanceState();
-    }
-
-    public void editAttendanceDateTime(LocalDateTime attendanceDateTime) {
-        AttendanceDate attendanceDate = findAttendanceDate(attendanceDateTime.toLocalDate());
-        attendanceDate.editDateTime(attendanceDateTime);
-    }
-
-    public AttendanceDate findAttendanceDate(LocalDate findAttendanceDate) {
-        Optional<AttendanceDate> attendanceDate = attendanceDates.stream()
-                .filter(localDate -> localDate.isEqualsLocalDate(findAttendanceDate)).findFirst();
-        if (attendanceDate.isPresent()) {
-            return attendanceDate.get();
+        if (!isOnCampusOperatingTime(LocalTime.from(attendanceDateTime))) {
+            throw new IllegalArgumentException("캠퍼스 운영시간이 아닙니다.");
         }
-        if (findAttendanceDate.isBefore(LocalDate.now())) {
-            fillAttendanceDate();
-            return findAttendanceDate(findAttendanceDate);
-        }
-        throw new IllegalArgumentException("아직 수정할 수 없습니다.");
-    }
-
-    public void fillAttendanceDate() {
-        for (LocalDate cursorCheckDate = LocalDate.now().minusDays(1); !this.has(cursorCheckDate);
-             cursorCheckDate = cursorCheckDate.minusDays(1)) {
-            addAttendanceDate(cursorCheckDate);
-        }
-        Collections.sort(this.attendanceDates);
-    }
-
-    private void addAttendanceDate(LocalDate cursorCheckDate){
-        try {
-            attendanceDates.add(new AttendanceDate(
-                    LocalDateTime.of(cursorCheckDate.getYear(),
-                            cursorCheckDate.getMonth(),
-                            cursorCheckDate.getDayOfMonth(), ABSENCE_HOUR,
-                            ABSENCE_MINUTE)));
-        } catch (IllegalArgumentException ignored) {
+        if (!isAttendanceDay(attendanceDate)) {
+            throw new IllegalArgumentException("캠퍼스 운영일이 아닙니다.");
         }
     }
 
-    private boolean has(LocalDate localDate) {
-        return attendanceDates.stream().anyMatch(attendanceDate -> attendanceDate.isEqualsLocalDate(localDate));
-    }
-
-    private void validateAndUpdateAttendanceDates(LocalDate cursorDate) {
-        if (cursorDate.getDayOfWeek().getValue() >= AttendanceDate.SATURDAY || Holiday.has(cursorDate)) {
-            return;
+    public AttendanceDate findByLocalDate(LocalDate findLocalDate) {
+        if (!has(findLocalDate)) {
+            throw new IllegalArgumentException("존재하지 않는 출석 입니다.");
         }
-
-        AttendanceDate absenceDate = new AttendanceDate(
-                LocalDateTime.of(
-                        cursorDate.getYear(),
-                        cursorDate.getMonth(),
-                        cursorDate.getDayOfMonth(),
-                        ABSENCE_HOUR,
-                        ABSENCE_MINUTE));
-
-        attendanceDates.add(absenceDate);
+        return attendanceDates.get(findLocalDate);
     }
 
-    public int countAbsence() {
-        return (int) attendanceDates.stream()
-                .filter(attendanceDate -> attendanceDate.calculateAttendanceState()
-                        .equals(AttendanceState.ABSENCE))
-                .count();
+    public AttendanceStatus getAttendanceStatus(LocalDate findDate) {
+        return findByLocalDate(findDate).getStatus();
     }
 
-    public int countAttendance() {
-        return (int) attendanceDates.stream()
-                .filter(attendanceDate -> attendanceDate.calculateAttendanceState()
-                        .equals(AttendanceState.ATTENDANCE))
-                .count();
+    public List<AttendanceDate> getSortedAttendanceResult() {
+        return attendanceDates.entrySet().stream()
+                .sorted(Comparator.comparingInt(value -> value.getKey().getDayOfMonth()))
+                .map(Map.Entry::getValue)
+                .toList();
     }
 
-    public int countTardy() {
-        return (int) attendanceDates.stream()
-                .filter(attendanceDate -> attendanceDate.calculateAttendanceState()
-                        .equals(AttendanceState.TARDY))
-                .count();
+    public boolean has(LocalDate findDate) {
+        return attendanceDates.containsKey(findDate);
     }
 
-    public int countAbsenceIncludingTardy() {
-        return countAbsence() + (countTardy() / ABSENCE_PER_TARDY);
+    public int getAttendanceCount() {
+        return Math.toIntExact(attendanceDates.entrySet().stream()
+                .filter(localDateAttendanceDateEntry -> localDateAttendanceDateEntry.getValue().isAttendance())
+                .count());
     }
 
-    public List<AttendanceDate> getAttendanceDates() {
-        return attendanceDates;
+    public int getTardyCount() {
+        return Math.toIntExact(attendanceDates.entrySet().stream()
+                .filter(localDateAttendanceDateEntry -> localDateAttendanceDateEntry.getValue().isTardy())
+                .count());
+    }
+
+    public int getAbsenceCount() {
+        return getExistAbsenceCount() + getMissingAttendanceCount();
+    }
+
+    private int getExistAbsenceCount() {
+        return Math.toIntExact(attendanceDates.entrySet().stream()
+                .filter(localDateAttendanceDateEntry -> localDateAttendanceDateEntry.getValue().isAbsence())
+                .count());
+    }
+
+    private int getMissingAttendanceCount() {
+        return Math.toIntExact(IntStream.range(1, NOW_DAY)
+                .mapToObj(day -> LocalDate.of(NOW_YEAR, NOW_MONTH, day))
+                .filter(date -> !has(date) && isAttendanceDay(date))
+                .count());
+    }
+
+    public StudentStatus getStudentStatus() {
+        return calcStudentStatus(getAbsenceIncludingTardyCount());
+    }
+
+    private int getAbsenceIncludingTardyCount() {
+        return getAbsenceCount() + getTardyCount() / 3;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

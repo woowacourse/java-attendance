@@ -2,52 +2,56 @@ package domain;
 
 import domain.attendance.Attendance;
 import domain.attendance.AttendanceDate;
-import domain.attendance.AttendanceWarning;
+import domain.attendance.AttendanceStatus;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
-public class Crew implements Comparable<Crew> {
-    private static final int DEFAULT_START_TIME = 2024;
-    private static final int DEFAULT_START_MONTH = 12;
-    private static final int DEFAULT_START_DAY = 2;
-
-    public static final LocalDate DEFAULT_START_DATE = java.time.LocalDate.of(DEFAULT_START_TIME, DEFAULT_START_MONTH,
-            DEFAULT_START_DAY);
-
-    private final Attendance attendance;
+public class Crew {
     private final String name;
+    private final Attendance attendanceRecord;
 
     public Crew(String name) {
         this.name = name;
-        this.attendance = new Attendance(DEFAULT_START_DATE, LocalDate.now());
+        this.attendanceRecord = new Attendance();
     }
 
-    public boolean isAttendanceWarning() {
-        return AttendanceWarning.determineAttendanceWarning(this.attendance.countAbsenceIncludingTardy())
-                != AttendanceWarning.NONE;
+    public void fillAttend(LocalDateTime attendTime) {
+        attendanceRecord.addAttendance(attendTime);
+    }
+
+    public AttendanceStatus getStatusByLocalDate(LocalDate findDate) {
+        return attendanceRecord.getAttendanceStatus(findDate);
+    }
+
+    public AttendanceDate getAttendTimeByLocalDate(LocalDate from) {
+        return attendanceRecord.findByLocalDate(from);
+    }
+
+    public void editAttendanceTime(LocalDateTime editTime) {
+        AttendanceDate editDate = attendanceRecord.findByLocalDate(LocalDate.from(editTime));
+        editDate.editLocalDate(editTime);
     }
 
     @Override
-    public int compareTo(Crew compareCrew) {
-        int absenceCount = this.attendance.countAbsence();
-        int compareAbsenceCount = compareCrew.getAttendance().countAbsence();
-        int tardyCount = this.attendance.countTardy();
-        int compareTardyCount = compareCrew.getAttendance().countTardy();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Crew crew = (Crew) o;
+        return Objects.equals(name, crew.name) && Objects.equals(attendanceRecord, crew.attendanceRecord);
+    }
 
-        if(absenceCount < compareAbsenceCount ||
-                (absenceCount == compareAbsenceCount) && tardyCount < compareTardyCount){
-            return 1;
-        }
-        if(absenceCount > compareAbsenceCount || tardyCount > compareTardyCount){
-            return -1;
-        }
-        return this.name.compareTo(compareCrew.name);
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, attendanceRecord);
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    public Attendance getAttendance() {
-        return attendance;
+    public Attendance getAttendanceRecord() {
+        return attendanceRecord;
     }
 }
