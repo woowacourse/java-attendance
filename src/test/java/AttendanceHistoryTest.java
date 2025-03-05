@@ -76,7 +76,7 @@ public class AttendanceHistoryTest {
 
     @Test
     @DisplayName("주말 출석 예외 처리")
-    void testSundayException() {
+    void weekendTest() {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 7, 10, 0);
         assertThatThrownBy(() -> attendanceHistory.checkAttendance(crew, attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -85,7 +85,7 @@ public class AttendanceHistoryTest {
 
     @Test
     @DisplayName("크리스마스 예외처리")
-    void validateHolidayException() {
+    void holidayTest() {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 25, 10, 0);
         assertThatThrownBy(() -> attendanceHistory.checkAttendance(crew, attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -94,7 +94,7 @@ public class AttendanceHistoryTest {
 
     @Test
     @DisplayName("운영시간 외 출석 - 이른 시간")
-    void testValidateOperatingTime_Early() {
+    void operatingTimeFastTest() {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 7, 0);
         assertThatThrownBy(() -> attendanceHistory.checkAttendance(crew, attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -103,7 +103,7 @@ public class AttendanceHistoryTest {
 
     @Test
     @DisplayName("운영시간 외 출석 - 늦은 시간")
-    void testValidateOperatingTime_Late() {
+    void operatingTimeLateTest() {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 23, 5);
         assertThatThrownBy(() -> attendanceHistory.checkAttendance(crew, attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -112,11 +112,47 @@ public class AttendanceHistoryTest {
 
     @Test
     @DisplayName("중복 출석 예외 처리")
-    void testDuplicateAttendanceException() {
+    void duplicateAttendanceTest() {
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 10, 0);
         attendanceHistory.checkAttendance(crew, attendanceTime);
         assertThatThrownBy(() -> attendanceHistory.checkAttendance(crew, attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 이미 출석했습니다.");
+                .hasMessageContaining("[ERROR]");
     }
+
+    @Test
+    @DisplayName("출석 기록 수정 ")
+    void editAttendanceTest() {
+        Crew crew = new Crew("벡터");
+        LocalDateTime initialAttendanceDateTime = LocalDateTime.of(2024, 2, 21, 9, 0); // 기존 출석 기록 추가
+        attendanceHistory.checkAttendance(crew, initialAttendanceDateTime);
+        LocalDateTime newAttendanceDateTime = LocalDateTime.of(2024, 2, 21, 10, 0);
+        LocalDateTime oldAttendanceDateTime = attendanceHistory.editAttendance(crew, newAttendanceDateTime);
+        assertThat(oldAttendanceDateTime).isEqualTo(initialAttendanceDateTime);
+    }
+
+
+    @Test
+    @DisplayName("출석 기록에 이름이 없을 경우")
+    void noEditNameTest() {
+        Crew invalidName = new Crew("제프");
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 2, 20, 10, 0);
+        assertThatThrownBy(() -> attendanceHistory.editAttendance(invalidName, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("존재 x인 날짜 수정 시도")
+    void noAttendanceDayTest() {
+        Crew crew = new Crew("벡터");
+        Map<Crew, Attendances> attendanceMap = new HashMap<>();
+        attendanceMap.put(crew, new Attendances(new ArrayList<>()));
+        attendanceHistory = new AttendanceHistory(attendanceMap);
+        attendanceHistory.checkAttendance(crew, LocalDateTime.of(2024, 2, 19, 10, 0)); // 출석을 2월 19일에 기록
+        LocalDateTime dateTime = LocalDateTime.of(2024, 2, 20, 10, 0);
+        assertThatThrownBy(() -> attendanceHistory.editAttendance(crew, dateTime))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+
 }

@@ -51,4 +51,18 @@ public class AttendanceHistory {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
         }
     }
+
+    public LocalDateTime editAttendance(Crew crew, LocalDateTime newAttendanceTime) {
+        isExistName(crew);
+        Attendances attendanceDateTimes = attendanceHistory.get(crew);
+        LocalDateTime oldAttendanceDateTime = attendanceDateTimes.edit(newAttendanceTime.toLocalDate());
+        attendanceDateTimes.add(newAttendanceTime);
+        return oldAttendanceDateTime;
+    }
+
+    private void isExistName(Crew crew) {
+        if (!attendanceHistory.containsKey(crew)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 이름입니다.");
+        }
+    }
 }

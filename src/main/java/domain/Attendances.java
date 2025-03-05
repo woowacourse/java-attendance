@@ -21,4 +21,11 @@ public class Attendances {
                 .map(LocalDateTime::toLocalDate)
                 .anyMatch(attendanceDate::isEqual);
     }
+
+    public LocalDateTime edit(LocalDate oldAttendanceTime) {
+        return attendances.stream()
+                .filter(dateTime -> dateTime.toLocalDate().isEqual(oldAttendanceTime))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없습니다."));
+    }
 }
