@@ -5,9 +5,11 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 public enum AttendanceTimeInfo {
-    MONDAY(DayOfWeek.MONDAY, LocalTime.of(13, 0)), TUESDAY(DayOfWeek.TUESDAY, LocalTime.of(10, 0)), WEDNESDAY(
-            DayOfWeek.WEDNESDAY, LocalTime.of(10, 0)), THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(10, 0)), FRIDAY(
-            DayOfWeek.FRIDAY, LocalTime.of(10, 0));
+    MONDAY(DayOfWeek.MONDAY, LocalTime.of(13, 0)),
+    TUESDAY(DayOfWeek.TUESDAY, LocalTime.of(10, 0)),
+    WEDNESDAY(DayOfWeek.WEDNESDAY, LocalTime.of(10, 0)),
+    THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(10, 0)),
+    FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(10, 0));
 
     private static final LocalTime LATE_TIME = LocalTime.of(0, 5);
     private static final LocalTime ABSENCE_TIME = LocalTime.of(0, 30);
