@@ -84,13 +84,17 @@ public class AttendanceController {
     }
 
     private void findAttendanceHistoryByCrew(Attendances attendances) {
+        LocalDate now = LocalDate.now();
+
         AttendanceHistoryRequest request = InputView.readAttendanceHistoryRequest();
-        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request.nickname(), LocalDate.now());
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request.nickname(), now);
         OutputView.printAttendanceHistory(response);
     }
 
     private void findRiskCrews(Attendances attendances) {
-        AttendanceRiskCrewsResponse response = attendances.findRiskCrews(LocalDate.now());
+        LocalDate now = LocalDate.now();
+        
+        AttendanceRiskCrewsResponse response = attendances.findRiskCrews(now);
         OutputView.printRiskCrews(response);
     }
 

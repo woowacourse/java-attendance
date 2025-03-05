@@ -9,11 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import dto.AttendanceCheckInRequest;
-import dto.AttendanceHistoryRequest;
 import dto.AttendanceHistoryResponse;
 import dto.AttendanceRiskCrewsResponse;
-import dto.AttendanceUpdateRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -61,10 +58,9 @@ class AttendancesTest {
         // given
         String nickname = "미소";
         String checkInTime = "10:00";
-        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        Attendance attendance = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
+        Attendance attendance = attendances.add(nickname, checkInTime, fixedDate);
 
         // then
         assertAll(
@@ -80,10 +76,9 @@ class AttendancesTest {
         // given
         String nickname = "미소";
         String checkInTime = "10:06";
-        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        Attendance attendance = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
+        Attendance attendance = attendances.add(nickname, checkInTime, fixedDate);
 
         // then
         assertAll(
@@ -99,10 +94,9 @@ class AttendancesTest {
         // given
         String nickname = "미소";
         String checkInTime = "10:31";
-        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when
-        Attendance attendance = attendances.add(request.nickname(), request.checkInTime(), fixedDate);
+        Attendance attendance = attendances.add(nickname, checkInTime, fixedDate);
 
         // then
         assertAll(
@@ -118,10 +112,9 @@ class AttendancesTest {
         // given
         String nickname = "헤일러";
         String checkInTime = "10:00";
-        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), fixedDate))
+        assertThatThrownBy(() -> attendances.add(nickname, checkInTime, fixedDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(NOT_FOUND_CREW.getMessage());
     }
@@ -133,10 +126,9 @@ class AttendancesTest {
         String nickname = "미소";
         String day = "6";
         String updateTime = "10:00";
-        AttendanceUpdateRequest request = new AttendanceUpdateRequest(nickname, day, updateTime);
 
         // when
-        Attendance attendance = attendances.update(request.nickname(), request.day(), request.updateTime(), fixedDate);
+        Attendance attendance = attendances.update(nickname, day, updateTime, fixedDate);
 
         // then
         assertAll(
@@ -153,10 +145,9 @@ class AttendancesTest {
         String nickname = "미소";
         String day = "4";
         String updateTime = "10:00";
-        AttendanceUpdateRequest request = new AttendanceUpdateRequest(nickname, day, updateTime);
 
         // when
-        Attendance attendance = attendances.update(request.nickname(), request.day(), request.updateTime(), fixedDate);
+        Attendance attendance = attendances.update(nickname, day, updateTime, fixedDate);
 
         // then
         assertAll(
@@ -171,10 +162,9 @@ class AttendancesTest {
     void test8() {
         // given
         String nickname = "미소";
-        AttendanceHistoryRequest request = new AttendanceHistoryRequest(nickname);
 
         // when
-        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request.nickname(), fixedDate);
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(nickname, fixedDate);
 
         // then
         assertAll(
@@ -217,10 +207,9 @@ class AttendancesTest {
 
         String nickname = "미소";
         String checkInTime = "10:00";
-        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), fixedDate))
+        assertThatThrownBy(() -> attendances.add(nickname, checkInTime, fixedDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(CANNOT_CHECK_IN_ON_HOLIDAY.getMessage());
     }
@@ -230,10 +219,9 @@ class AttendancesTest {
     void test11() {
         String nickname = "미소";
         String checkInTime = "07:00";
-        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), fixedDate))
+        assertThatThrownBy(() -> attendances.add(nickname, checkInTime, fixedDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OUT_OF_OPERATION_HOURS.getMessage());
     }
@@ -243,11 +231,10 @@ class AttendancesTest {
     void test12() {
         String nickname = "미소";
         String checkInTime = "10:00";
-        AttendanceCheckInRequest request = new AttendanceCheckInRequest(nickname, checkInTime);
-        attendances.add(request.nickname(), request.checkInTime(), fixedDate);
+        attendances.add(nickname, checkInTime, fixedDate);
 
         // when & then
-        assertThatThrownBy(() -> attendances.add(request.nickname(), request.checkInTime(), fixedDate))
+        assertThatThrownBy(() -> attendances.add(nickname, checkInTime, fixedDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ALREADY_CHECK_IN.getMessage());
     }
