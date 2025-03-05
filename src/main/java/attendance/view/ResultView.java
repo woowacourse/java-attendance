@@ -1,11 +1,10 @@
 package attendance.view;
 
 import static attendance.domain.AttendanceState.ABSENCE;
+import static attendance.domain.CrewHistory.DEFAULT_TIME;
 
 import attendance.domain.AttendanceCounter;
 import attendance.domain.AttendanceState;
-import attendance.domain.CampusScheduler;
-import attendance.domain.CrewHistory;
 import attendance.domain.RiskAtExpulsion;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,7 +13,6 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ResultView {
@@ -35,7 +33,6 @@ public class ResultView {
     private static final String TITLE_MODIFYING = "%s (%s) -> %s (%s) 수정 완료!";
     private static final String TITLE_INQUIRY_CREW = "이번 달 %s의 출석 기록입니다.";
     private static final String FORMAT_INQUIRY_CREW = "%s (%s)";
-    private static final LocalTime DEFAULT_TIME = LocalTime.MAX;
     private static final String DEFAULT_FORMAT = "--:--";
     private static final String BLANK = " ";
     private static final String TITLE_ATTENDANCE_STATE_COUNT = """
@@ -66,13 +63,11 @@ public class ResultView {
                 getAttendanceState(afterAttendanceState));
     }
 
-    public void showAttendanceHistory(final String nickname, final CrewHistory crewHistory,
-                                      final LocalDate nowDate, final CampusScheduler campusScheduler) {
+    public void showAttendanceHistory(final String nickname, final Map<LocalDateTime, AttendanceState> history) {
         System.out.printf(LINE + TITLE_INQUIRY_CREW + LINE + LINE, nickname);
-        LocalDate date = nowDate.withDayOfMonth(1);
-        while (date.isBefore(nowDate)) {
-            showEveryDateHistory(crewHistory, campusScheduler, date);
-            date = date.plusDays(1);
+        for (Entry<LocalDateTime, AttendanceState> entry : history.entrySet()) {
+            System.out.printf(FORMAT_INQUIRY_CREW + LINE, makeHistoryMessage(entry.getKey()),
+                    getAttendanceState(entry.getValue()));
         }
     }
 
@@ -102,7 +97,7 @@ public class ResultView {
                         (Entry<String, AttendanceCounter> e) -> e.getValue().getCount(AttendanceState.ABSENCE) * 3
                                 + e.getValue().getCount(AttendanceState.TARDINESS))
                 .reversed()
-                .thenComparing(e -> e.getKey());
+                .thenComparing(Entry::getKey);
     }
 
     private void showExpulsionCrew(final String nickname, final AttendanceCounter counter) {
@@ -114,21 +109,6 @@ public class ResultView {
         }
         System.out.printf(FORMAT_EXPULSION_WITH_COUNT + LINE, nickname, absentCount, lateCount,
                 getRiskAtExpulsion(riskAtExpulsion));
-    }
-
-    private void showEveryDateHistory(final CrewHistory crewHistory,
-                                      final CampusScheduler campusScheduler, LocalDate date) {
-        if (campusScheduler.isNotOperationDate(date)) {
-            return;
-        }
-        LocalDateTime history = getHistory(crewHistory, date);
-        System.out.printf(FORMAT_INQUIRY_CREW + LINE, makeHistoryMessage(history),
-                getAttendanceState(campusScheduler.calculateAttendanceState(history)));
-    }
-
-    private LocalDateTime getHistory(final CrewHistory crewHistory, final LocalDate date) {
-        Optional<LocalDateTime> history = crewHistory.find(date);
-        return history.orElseGet(() -> LocalDateTime.of(date, DEFAULT_TIME));
     }
 
     private String makeHistoryMessage(final LocalDateTime history) {

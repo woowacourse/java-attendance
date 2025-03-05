@@ -10,6 +10,8 @@ import attendance.view.InputView;
 import attendance.view.ResultView;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 public class InquiryCrewCommand implements Command {
 
@@ -32,7 +34,8 @@ public class InquiryCrewCommand implements Command {
         String nickname = inputView.readNickname();
         crewHistories.validateKeyExists(nickname);
         CrewHistory history = crewHistories.findHistory(nickname);
-        resultView.showAttendanceHistory(nickname, history, nowDate, campusScheduler);
+        Map<LocalDateTime, AttendanceState> totalHistory = history.calculateTotalHistory(nowDate, campusScheduler);
+        resultView.showAttendanceHistory(nickname, totalHistory);
         showAttendanceCountResult(history, nowDate);
     }
 

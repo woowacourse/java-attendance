@@ -5,13 +5,17 @@ import static attendance.fixture.TestFixture.makeCrewHistory;
 import static attendance.fixture.TestFixture.makeDateTime;
 import static attendance.fixture.TestFixture.makeDecemberDate;
 import static attendance.fixture.TestFixture.makeDefaultAttendanceTime;
+import static attendance.fixture.TestFixture.makeTardinessExceptMonday;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.entry;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -137,5 +141,25 @@ class CrewHistoryTest {
 
         // Then
         assertThat(history.isEmpty()).isTrue();
+    }
+
+    @Test
+    void 기록이_없는_날을_결석으로_하여_한달의_출석_기록을_조회한다() {
+        // Given
+        crewHistory = makeCrewHistory(makeAttendanceExceptMonday(2),
+                makeTardinessExceptMonday(4), makeTardinessExceptMonday(5));
+        LocalDate nowDate = LocalDate.of(2024, 12, 6);
+        CampusScheduler campusScheduler = new CampusScheduler();
+
+        // When
+        Map<LocalDateTime, AttendanceState> history = crewHistory.calculateTotalHistory(nowDate,
+                campusScheduler);
+
+        // Then
+        assertThat(history).contains(
+                entry(makeAttendanceExceptMonday(2), AttendanceState.ATTENDANCE),
+                entry(LocalDateTime.of(LocalDate.of(2024, 12, 3), LocalTime.MAX), AttendanceState.ABSENCE),
+                entry(makeTardinessExceptMonday(4), AttendanceState.TARDINESS),
+                entry(makeTardinessExceptMonday(5), AttendanceState.TARDINESS));
     }
 }
