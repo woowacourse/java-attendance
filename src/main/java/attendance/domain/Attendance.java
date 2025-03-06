@@ -70,4 +70,8 @@ public class Attendance {
     public String getAttendanceStatus() {
         return attendanceStatus;
     }
+
+    public boolean checkAttendanceDateTimeEqual(LocalDate localDate) {
+        return attendanceDate.equals(localDate);
+    }
 }
