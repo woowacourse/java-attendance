@@ -19,21 +19,10 @@ public class AttendanceRecord {
         this.isAbsence = isAbsence;
     }
 
-    public static AttendanceRecord of(String date, String time) {
-        if (date.length() < 2) {
-            date = "0" + date;
-        }
-        return new AttendanceRecord(LocalDate.parse(Current.getStringOfThisMonth() + "-" + date),
-                LocalTime.parse(time));
-    }
-
     public static AttendanceRecord dateOf(Integer date) {
-        String dateStr = date.toString();
-        if (dateStr.length() < 2) {
-            dateStr = "0" + dateStr;
-        }
-        return new AttendanceRecord(LocalDate.parse(Current.getStringOfThisMonth() + "-" + dateStr), LocalTime.MIN,
-                true);
+        LocalDate localDate = Current.getToday()
+                .withDayOfMonth(date);
+        return from(localDate);
     }
 
     public static AttendanceRecord from(LocalDate date) {

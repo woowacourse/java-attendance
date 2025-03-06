@@ -49,8 +49,7 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendanceRecord -> attendanceRecord.isSameDate(targetAttendanceRecord))
                 .findFirst()
-                .orElse(AttendanceRecord.dateOf(targetAttendanceRecord.getDate()
-                        .getDayOfMonth()));
+                .orElse(AttendanceRecord.from(targetAttendanceRecord.getDate()));
     }
 
     public AttendanceRecord getAttendanceRecordOfSameDate(int date) {
@@ -81,7 +80,8 @@ public class Attendances {
     public AttendanceStatusCount countAttendanceStatus() {
         return attendances.stream()
                 .map(AttendanceStatus::calculateAttendanceStatus)
-                .collect(Collectors.collectingAndThen(Collectors.groupingBy(Function.identity(), Collectors.counting()),
+                .collect(Collectors.collectingAndThen(
+                        Collectors.groupingBy(Function.identity(), Collectors.counting()),
                         AttendanceStatusCount::new));
     }
 

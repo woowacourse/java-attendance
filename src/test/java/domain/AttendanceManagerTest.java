@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,8 +20,8 @@ public class AttendanceManagerTest {
     @CsvSource(value = {"후우, true", "마후우, false"})
     void should_return_true_when_registered_nickname(NickName nickName, boolean expected) {
         // given
-        NickName registedNickName = new NickName("후우");
         AttendanceManager attendanceManager = new AttendanceManager();
+        NickName registedNickName = new NickName("후우");
         attendanceManager.register(registedNickName);
 
         // when
@@ -34,9 +35,9 @@ public class AttendanceManagerTest {
     @DisplayName("등록되지 않은 닉네임을 입력하면 예외가 발생한다")
     void should_throw_exception_when_not_registered_nickname() {
         // given
-        NickName nickName = new NickName("후우");
-        AttendanceRecord attendanceRecord = AttendanceRecord.of("11", "10:00");
         AttendanceManager attendanceManager = new AttendanceManager();
+        NickName nickName = new NickName("후우");
+        AttendanceRecord attendanceRecord = new AttendanceRecord(Current.getToday(), LocalTime.of(10, 0));
 
         // when & then
         assertAll(
@@ -52,12 +53,13 @@ public class AttendanceManagerTest {
     @ParameterizedTest
     @DisplayName("휴일 및 주말에는 출석을 등록하면 예외가 발생한다")
     @CsvSource(value = {"1", "7", "8", "14", "15", "21", "22", "25", "28", "29"})
-    void should_throw_exception_when_attend_on_holiday_or_weekend(String date) {
+    void should_throw_exception_when_attend_on_holiday_or_weekend(int date) {
         // given
-        NickName nickName = new NickName("후우");
-        AttendanceRecord attendanceRecord = AttendanceRecord.of(date, "10:00");
         AttendanceManager attendanceManager = new AttendanceManager();
+        NickName nickName = new NickName("후우");
         attendanceManager.register(nickName);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(Current.getToday()
+                .withDayOfMonth(date), LocalTime.of(10, 0));
 
         // when & then
         assertAll(
@@ -73,10 +75,10 @@ public class AttendanceManagerTest {
     @CsvSource(value = {"07:59", "23:01"})
     void should_throw_exception_when_attend_out_of_campus_operating_time(String time) {
         // given
-        NickName nickName = new NickName("후우");
-        AttendanceRecord attendanceRecord = AttendanceRecord.of("10", time);
         AttendanceManager attendanceManager = new AttendanceManager();
+        NickName nickName = new NickName("후우");
         attendanceManager.register(nickName);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(Current.getToday(), LocalTime.parse(time));
 
         // when & then
         assertAll(
@@ -94,11 +96,10 @@ public class AttendanceManagerTest {
         @DisplayName("닉네임과 등교시간을 토대로 만들어진 출석 객체를 가지고 출석을 기록한다")
         void should_attend_by_nickname_and_attendanceRecord() {
             // given
-            NickName nickName = new NickName("후우");
-            String time = "10:00";
-            AttendanceRecord attendanceRecord = AttendanceRecord.timeOf(time);
             AttendanceManager attendanceManager = new AttendanceManager();
+            NickName nickName = new NickName("후우");
             attendanceManager.register(nickName);
+            AttendanceRecord attendanceRecord = new AttendanceRecord(Current.getToday(), LocalTime.of(10, 0));
 
             // when
             attendanceManager.attend(nickName, attendanceRecord);
@@ -111,10 +112,10 @@ public class AttendanceManagerTest {
         @DisplayName("오늘 출석을 한 경우 예외를 발생시킨다")
         void should_throw_exception_when_attend_twice() {
             // given
-            NickName nickName = new NickName("후우");
             AttendanceManager attendanceManager = new AttendanceManager();
+            NickName nickName = new NickName("후우");
             attendanceManager.register(nickName);
-            AttendanceRecord attendanceRecord = AttendanceRecord.of("11", "10:00");
+            AttendanceRecord attendanceRecord = new AttendanceRecord(Current.getToday(), LocalTime.of(10, 0));
             attendanceManager.attend(nickName, attendanceRecord);
 
             // when & then
@@ -130,12 +131,12 @@ public class AttendanceManagerTest {
         @DisplayName("닉네임, 수정할 날짜, 등교 시간을 가지고 출석을 수정한다")
         void should_edit_by_nickname_and_attendanceRecord_to_edit() {
             // given
-            NickName nickName = new NickName("후우");
             AttendanceManager attendanceManager = new AttendanceManager();
+            NickName nickName = new NickName("후우");
             attendanceManager.register(nickName);
-            AttendanceRecord attendanceRecord = AttendanceRecord.of("11", "10:00");
+            AttendanceRecord attendanceRecord = new AttendanceRecord(Current.getToday(), LocalTime.of(10, 0));
             attendanceManager.attend(nickName, attendanceRecord);
-            AttendanceRecord editAttendanceRecord = AttendanceRecord.of("11", "11:00");
+            AttendanceRecord editAttendanceRecord = new AttendanceRecord(Current.getToday(), LocalTime.of(11, 0));
             int prevHash = attendanceManager.hashCode();
 
             // when
@@ -152,10 +153,9 @@ public class AttendanceManagerTest {
             AttendanceManager attendanceManager = new AttendanceManager();
             NickName nickName = new NickName("후우");
             attendanceManager.register(nickName);
-            AttendanceRecord attendanceRecord = AttendanceRecord.of("2", "10:00");
+            AttendanceRecord attendanceRecord = new AttendanceRecord(Current.getToday(), LocalTime.of(10, 0));
             attendanceManager.attend(nickName, attendanceRecord);
-
-            AttendanceRecord targetAttendanceRecord = AttendanceRecord.of("2", "18:00");
+            AttendanceRecord targetAttendanceRecord = new AttendanceRecord(Current.getToday(), LocalTime.of(18, 0));
 
             // when
             AttendanceRecord result = attendanceManager.getAttendanceRecordOfSameDate(nickName, targetAttendanceRecord);
@@ -171,13 +171,13 @@ public class AttendanceManagerTest {
             AttendanceManager attendanceManager = new AttendanceManager();
             NickName nickName = new NickName("후우");
             attendanceManager.register(nickName);
-            AttendanceRecord targetAttendanceRecord = AttendanceRecord.of("2", "18:00");
+            AttendanceRecord targetAttendanceRecord = new AttendanceRecord(Current.getToday(), LocalTime.of(18, 0));
 
             // when
             AttendanceRecord result = attendanceManager.getAttendanceRecordOfSameDate(nickName, targetAttendanceRecord);
 
             // then
-            AttendanceRecord expected = AttendanceRecord.dateOf(2);
+            AttendanceRecord expected = AttendanceRecord.dateOf(Current.getDayOfToday());
             assertThat(result).isEqualTo(expected);
         }
     }
@@ -189,11 +189,13 @@ public class AttendanceManagerTest {
         @DisplayName("닉네임과 주어진 날짜들로 해당 날짜들의 출석 기록을 확인한다")
         void should_return_attendances_by_nickname_and_dates() {
             // given
-            NickName nickName = new NickName("후우");
             AttendanceManager attendanceManager = new AttendanceManager();
+            NickName nickName = new NickName("후우");
             attendanceManager.register(nickName);
-            AttendanceRecord attendanceRecord1 = AttendanceRecord.of("9", "10:00");
-            AttendanceRecord attendanceRecord2 = AttendanceRecord.of("10", "10:00");
+            AttendanceRecord attendanceRecord1 = new AttendanceRecord(Current.getToday()
+                    .withDayOfMonth(9), LocalTime.of(10, 0));
+            AttendanceRecord attendanceRecord2 = new AttendanceRecord(Current.getToday()
+                    .withDayOfMonth(10), LocalTime.of(10, 0));
             attendanceManager.attend(nickName, attendanceRecord1);
             attendanceManager.attend(nickName, attendanceRecord2);
             // 2,3,4,5,6,9,10
@@ -222,13 +224,21 @@ public class AttendanceManagerTest {
         void should_return_warningCrews_by_dates() {
             // given
             List<AttendanceRecord> attends = List.of(
-                    AttendanceRecord.of("2", "10:00"),
-                    AttendanceRecord.of("3", "10:00"),
-                    AttendanceRecord.of("4", "10:00"),
-                    AttendanceRecord.of("5", "10:00"),
-                    AttendanceRecord.of("6", "10:00"),
-                    AttendanceRecord.of("9", "10:00"),
-                    AttendanceRecord.of("10", "10:00"));
+                    new AttendanceRecord(Current.getToday()
+                            .withDayOfMonth(2), LocalTime.of(10, 0)),
+                    new AttendanceRecord(Current.getToday()
+                            .withDayOfMonth(3), LocalTime.of(10, 0)),
+                    new AttendanceRecord(Current.getToday()
+                            .withDayOfMonth(4), LocalTime.of(10, 0)),
+                    new AttendanceRecord(Current.getToday()
+                            .withDayOfMonth(5), LocalTime.of(10, 0)),
+                    new AttendanceRecord(Current.getToday()
+                            .withDayOfMonth(6), LocalTime.of(10, 0)),
+                    new AttendanceRecord(Current.getToday()
+                            .withDayOfMonth(9), LocalTime.of(10, 0)),
+                    new AttendanceRecord(Current.getToday()
+                            .withDayOfMonth(10), LocalTime.of(10, 0))
+            );
             AttendanceManager attendanceManager = new AttendanceManager();
             NickName expelName = new NickName("제적 학생");
             attendanceManager.register(expelName);
