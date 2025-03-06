@@ -32,4 +32,8 @@ public enum AbsenceLevel {
     private static int sumOfCount(int absentCount, int lateCount) {
         return lateCount + absentCount * lateToAbsent;
     }
+
+    public String getName() {
+        return name;
+    }
 }

@@ -35,4 +35,8 @@ public enum AttendanceResult {
         }
         return ATTENDANCE;
     }
+
+    public String getName() {
+        return name;
+    }
 }

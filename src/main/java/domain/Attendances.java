@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Attendances {
     private final List<LocalDateTime> attendances;
@@ -71,4 +72,12 @@ public class Attendances {
         }
         return absentDaysWithoutRecords;
     }
+
+    public LocalDateTime get(LocalDate date) throws NoSuchElementException {
+        return attendances.stream() // List<LocalDateTime>에서 스트림 생성
+                .filter(attendanceDateTime -> attendanceDateTime.toLocalDate().isEqual(date)) // 날짜 비교
+                .findAny() // 하나 찾기
+                .orElseThrow(() -> new NoSuchElementException("해당 날짜의 출석 기록이 없습니다: " + date));
+    }
+
 }
