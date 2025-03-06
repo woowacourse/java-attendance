@@ -1,48 +1,52 @@
 package view;
 
-import util.Parser;
+import domain.UserSelection;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Scanner;
+import java.util.Arrays;
+import util.inputreader.InputReader;
+import util.parser.InputParser;
 
 public class InputView {
-    private static final String ASK_NAME = "닉네임을 입력해 주세요.";
-    private static final String ASK_TIME = "등교 시간을 입력해 주세요.";
 
-    private static final String ASK_NAME_FOR_MODIFY = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
-    private static final String ASK_DAY_FOR_MODIFY = "수정하려는 날짜(일)를 입력해 주세요.";
-    private static final String ASK_TIME_FOR_MODIFY = "언제로 변경하겠습니까?";
+    private final InputReader inputReader;
 
-    private final Scanner scanner = new Scanner(System.in);
-
-    public String askName() {
-        System.out.println(ASK_NAME);
-        return getUserSelection();
+    public InputView(InputReader inputReader) {
+        this.inputReader = inputReader;
     }
 
-    public String askTime() {
-        System.out.println(ASK_TIME);
-        return getUserSelection();
+    public UserSelection readUserSelection(String date) {
+        System.out.printf("오늘은 %s입니다. 기능을 선택해 주세요." + System.lineSeparator(), date);
+        Arrays.stream(UserSelection.values())
+                .forEach(userSelection ->
+                        System.out.printf("%s. %s" + System.lineSeparator(),
+                                userSelection.getInput(),
+                                userSelection.getMessage()));
+        return UserSelection.findByInput(inputReader.readline());
     }
 
-    public String askNameForModify() {
-        System.out.println(ASK_NAME_FOR_MODIFY);
-        return getUserSelection();
+    public String readName() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return inputReader.readline();
     }
 
-    public LocalDate askDayForModify() {
-        System.out.println(ASK_DAY_FOR_MODIFY);
-        return Parser.parseInputDay(getUserSelection());
+    public LocalTime readTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        return InputParser.parseToLocalTime(inputReader.readline());
     }
 
-    public LocalTime askTimeForModify() {
-        System.out.println(ASK_TIME_FOR_MODIFY);
-        return Parser.parseInputTime(getUserSelection());
+    public String readNameToModify() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return inputReader.readline();
     }
 
-    public String getUserSelection() {
-        String response = scanner.nextLine();
-        OutputView.displaySpacing();
-        return response;
+    public LocalDate readDateToModify() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return InputParser.parseToDecemberLocalDate(inputReader.readline());
+    }
+
+    public LocalTime readTimeToModify() {
+        System.out.println("언제로 변경하겠습니까?");
+        return InputParser.parseToLocalTime(inputReader.readline());
     }
 }
