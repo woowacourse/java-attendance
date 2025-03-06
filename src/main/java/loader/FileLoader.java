@@ -1,7 +1,10 @@
-package domain;
+package loader;
 
+import domain.AttendanceBook;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -9,12 +12,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
-public class FileWithAttendanceData {
+public class FileLoader {
 
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final AttendanceBook attendanceBook;
 
-    public FileWithAttendanceData(AttendanceBook attendanceBook) {
+    public FileLoader(AttendanceBook attendanceBook) {
         this.attendanceBook = attendanceBook;
     }
 
@@ -27,8 +30,10 @@ public class FileWithAttendanceData {
                 List<String> fields = Arrays.stream(line.split(",")).toList();
                 parseInfoFromFields(fields);
             }
-        } catch (Exception e) {
-            System.err.println("파일을 불러오는 데 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+        } catch (FileNotFoundException e) {
+            System.err.println("[ERROR] 파일을 찾을 수 없습니다: " + filePath);
+        } catch (IOException e) {
+            System.err.println("[ERROR] 파일을 읽는 도중 오류가 발생했습니다: " + e.getMessage());
         }
     }
 

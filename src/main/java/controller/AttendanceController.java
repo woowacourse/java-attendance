@@ -3,7 +3,6 @@ package controller;
 import domain.Attendance;
 import domain.AttendanceBook;
 import domain.Crew;
-import domain.FileWithAttendanceData;
 import domain.Holiday;
 import domain.Option;
 import java.time.DateTimeException;
@@ -11,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import loader.FileLoader;
 import view.InputView;
 import view.OutputView;
 
@@ -32,8 +32,8 @@ public class AttendanceController {
     }
 
     public void loadFile() {
-        FileWithAttendanceData fileWithAttendanceData = new FileWithAttendanceData(attendanceBook);
-        fileWithAttendanceData.loadFile(ATTENDANCE_FILE_PATH);
+        FileLoader fileLoader = new FileLoader(attendanceBook);
+        fileLoader.loadFile(ATTENDANCE_FILE_PATH);
     }
 
     public void runSystem() {
@@ -57,10 +57,10 @@ public class AttendanceController {
             if (option == Option.EDIT) {
                 edit(nowDate);
             }
-            if (option == Option.CHECK_RECORDS) {
+            if (option == Option.DISPLAY_ATTENDANCE_SUMMARY) {
                 displayAttendanceSummary(nowDate);
             }
-            if (option == Option.CHECK_EXPULSION_RISK_CREW) {
+            if (option == Option.DISPLAY_EXPULSION_RISK_CREW) {
                 findAndDisplayExpulsionRiskCrews(nowDate);
             }
             if (option == Option.QUIT) {

@@ -7,7 +7,11 @@ import java.util.Scanner;
 
 public class InputView {
 
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
+
+    public InputView(Scanner scanner) {
+        this.scanner = scanner;
+    }
 
     public String readOptionNumber(LocalDate nowDate) {
         String dayOfWeek = nowDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);

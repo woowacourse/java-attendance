@@ -3,11 +3,11 @@ package domain;
 import java.util.Arrays;
 
 public enum Option {
-    
+
     ATTEND("1"),
     EDIT("2"),
-    CHECK_RECORDS("3"),
-    CHECK_EXPULSION_RISK_CREW("4"),
+    DISPLAY_ATTENDANCE_SUMMARY("3"),
+    DISPLAY_EXPULSION_RISK_CREW("4"),
     QUIT("Q");
 
     private final String inputNumber;

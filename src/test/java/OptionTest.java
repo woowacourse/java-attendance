@@ -15,7 +15,7 @@ public class OptionTest {
             "1, ATTEND",
             "2, EDIT",
             "3, CHECK_RECORDS",
-            "4, CHECK_EXPULSION_RISK_CREW",
+            "4, DISPLAY_EXPULSION_RISK_CREW",
             "Q, QUIT",
             "q, QUIT"
     })
