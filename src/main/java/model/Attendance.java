@@ -1,110 +1,64 @@
 package model;
 
+import static constant.AttendanceConstant.BLANK_SEPARATOR;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Objects;
+import java.util.List;
+import util.InputParser;
 
 public class Attendance {
 
-    private final Crew crew;
-    private LocalDateTime checkInTime;
+    private final LocalDate checkInDate;
+    private LocalTime checkInTime;
     private AttendanceType attendanceType;
-    private final boolean isCome;
 
-    private Attendance(Crew crew, LocalDateTime checkInTime, AttendanceType attendanceType) {
-        this.crew = crew;
+    private Attendance(LocalDate checkInDate, LocalTime checkInTime, AttendanceType attendanceType) {
+        this.checkInDate = checkInDate;
         this.checkInTime = checkInTime;
         this.attendanceType = attendanceType;
-        this.isCome = true;
     }
 
-    private Attendance(Crew crew, LocalDate date) {
-        this.crew = crew;
-        this.checkInTime = LocalDateTime.of(date, LocalTime.of(0, 0));
-        this.attendanceType = AttendanceType.ABSENCE;
-        this.isCome = false;
+    public static Attendance of(String rawCheckInDateTime) {
+        List<String> checkInDateTime = InputParser.split(rawCheckInDateTime, BLANK_SEPARATOR);
+        LocalDate checkInDate = LocalDate.parse(checkInDateTime.get(0));
+        LocalTime checkInTime = LocalTime.parse(checkInDateTime.get(1));
+        AttendanceType attendanceType = AttendanceType.find(checkInDate, checkInTime);
+
+        return new Attendance(checkInDate, checkInTime, attendanceType);
     }
 
-    public static Attendance of(Crew crew, LocalDateTime checkInTime) {
-        validateHolidayAndWeekend(checkInTime.toLocalDate());
-        validateOperationTime(checkInTime);
+    public static Attendance of(LocalDate checkInDate, String rawCheckInTime) {
+        LocalTime checkInTime = LocalTime.parse(rawCheckInTime);
+        AttendanceType attendanceType = AttendanceType.find(checkInDate, checkInTime);
 
-        return new Attendance(crew, checkInTime, AttendanceType.calculateType(checkInTime));
+        return new Attendance(checkInDate, checkInTime, attendanceType);
     }
 
-    public static Attendance createTimeNullAbsence(Crew crew, LocalDate date) {
-        validateHolidayAndWeekend(date);
-        return new Attendance(crew, date);
+    public static Attendance ofEmpty(LocalDate checkInDate) {
+        return new Attendance(checkInDate, null, AttendanceType.ABSENCE);
     }
 
-    public Attendance clone(Attendance attendance) {
-        return Attendance.of(attendance.crew, attendance.checkInTime);
+    public Attendance update(LocalTime updateTime) {
+        this.checkInTime = updateTime;
+        this.attendanceType = AttendanceType.find(checkInDate, updateTime);
+
+        return this;
     }
 
-    public boolean isSameDateAndCrew(Attendance attendance) {
-        return checkInTime.toLocalDate().isEqual(attendance.checkInTime.toLocalDate())
-                && crew.isEqualName(attendance.crew.getNickname());
+    public Attendance copy() {
+        return new Attendance(this.checkInDate, this.checkInTime, this.attendanceType);
     }
 
-    public void modify(LocalTime modifiedTime) {
-        LocalDateTime modifiedCheckInTime = LocalDateTime.of(checkInTime.toLocalDate(), modifiedTime);
-        validateOperationTime(modifiedCheckInTime);
-
-        checkInTime = modifiedCheckInTime;
-        attendanceType = AttendanceType.calculateType(checkInTime);
+    public LocalDate getCheckInDate() {
+        return checkInDate;
     }
 
-    public boolean isSame(Crew crew, LocalDate localDate) {
-        return this.crew.equals(crew) && checkInTime.toLocalDate().equals(localDate);
-    }
-
-    public boolean findByCrewAndMonth(Crew crew, int month) {
-        return this.crew.equals(crew) && checkInTime.getMonthValue() == month;
-    }
-
-    private static void validateHolidayAndWeekend(LocalDate date) {
-        if (Holiday.isHolidayOrWeekend(date)) {
-            throw new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다.");
-        }
-    }
-
-    private static void validateOperationTime(LocalDateTime checkInTime) {
-        if (AttendanceTime.isNotInOperation(checkInTime)) {
-            throw new IllegalArgumentException("지금은 운영 시간이 아닙니다.");
-        }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Attendance that = (Attendance) o;
-        return Objects.equals(crew, that.crew) && Objects.equals(checkInTime, that.checkInTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(crew, checkInTime);
-    }
-
-    public Crew getCrew() {
-        return crew;
-    }
-
-    public LocalDateTime getCheckInTime() {
+    public LocalTime getCheckInTime() {
         return checkInTime;
     }
 
     public AttendanceType getAttendanceType() {
         return attendanceType;
-    }
-
-    public boolean isCome() {
-        return isCome;
     }
 }

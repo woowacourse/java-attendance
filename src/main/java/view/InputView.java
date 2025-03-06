@@ -1,44 +1,89 @@
 package view;
 
+import constant.InputViewMessage;
+import dto.AttendanceCheckInRequest;
+import dto.AttendanceHistoryRequest;
+import dto.AttendanceOptionRequest;
+import dto.AttendanceUpdateRequest;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
+import util.InputParser;
+import util.InputValidator;
 
 public class InputView {
 
-    private final String READ_COMMAND_FORMAT = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.\n1. 출석 확인\n2. 출석 수정\n3. 크루별 출석 기록 확인\n4. 제적 위험자 확인\nQ. 종료\n";
+    private static final Scanner scanner = new Scanner(System.in);
 
-    private final Scanner scanner = new Scanner(System.in);
-
-    public String readNickname() {
-        System.out.println("닉네임을 입력해 주세요.");
-        return scanner.nextLine();
+    private InputView() {
     }
 
-    public String readCheckInTime() {
-        System.out.println("등교 시간을 입력해 주세요.");
-        return scanner.nextLine();
-    }
-
-    public String readChangeTime() {
-        System.out.println("언제로 변경하겠습니까?");
-        return scanner.nextLine();
-    }
-
-    public String readDay() {
-        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return scanner.nextLine();
-    }
-
-    public String readCommand() {
-        LocalDate now = LocalDate.now();
-        System.out.printf(
-                READ_COMMAND_FORMAT,
+    public static AttendanceOptionRequest readAttendanceOptionRequest(LocalDate now) {
+        println(String.format(InputViewMessage.ATTENDANCE_OPTION_PROMPT.getMessage(),
                 now.getMonthValue(),
                 now.getDayOfMonth(),
-                now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault())
-        );
-        return scanner.nextLine();
+                now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+
+        String option = readTrimmedInput();
+        InputValidator.validateNullOrBlank(option);
+
+        printNewLine();
+        return new AttendanceOptionRequest(option);
+    }
+
+    public static AttendanceCheckInRequest readAttendanceCheckInRequest() {
+        println(InputViewMessage.ATTENDANCE_CHECK_IN_NICKNAME_PROMPT.getMessage());
+        String nickname = readTrimmedInput();
+        InputValidator.validateNullOrBlank(nickname);
+
+        println(InputViewMessage.ATTENDANCE_CHECK_IN_TIME_PROMPT.getMessage());
+        String time = readTrimmedInput();
+        InputValidator.validateNullOrBlank(time);
+        InputValidator.validateTime(time);
+
+        printNewLine();
+        return new AttendanceCheckInRequest(nickname, time);
+    }
+
+    public static AttendanceUpdateRequest readAttendanceUpdateRequest(LocalDate now) {
+        println(InputViewMessage.ATTENDANCE_UPDATE_NICKNAME_PROMPT.getMessage());
+        String nickname = readTrimmedInput();
+        InputValidator.validateNullOrBlank(nickname);
+
+        println(InputViewMessage.ATTENDANCE_UPDATE_DAY_PROMPT.getMessage());
+        String day = readTrimmedInput();
+        InputValidator.validateNullOrBlank(day);
+        InputValidator.validateInteger(day);
+        InputValidator.validateDay(day, now);
+
+        println(InputViewMessage.ATTENDANCE_UPDATE_TIME_PROMPT.getMessage());
+        String time = readTrimmedInput();
+        InputValidator.validateNullOrBlank(time);
+        InputValidator.validateTime(time);
+
+        printNewLine();
+        return new AttendanceUpdateRequest(nickname, day, time);
+    }
+
+    public static AttendanceHistoryRequest readAttendanceHistoryRequest() {
+        println(InputViewMessage.ATTENDANCE_HISTORY_NICKNAME_PROMPT.getMessage());
+        String nickname = readTrimmedInput();
+        InputValidator.validateNullOrBlank(nickname);
+
+        printNewLine();
+        return new AttendanceHistoryRequest(nickname);
+    }
+
+    private static String readTrimmedInput() {
+        return InputParser.trim(scanner.nextLine());
+    }
+
+    private static void println(String message) {
+        System.out.println(message);
+    }
+
+    private static void printNewLine() {
+        System.out.println();
     }
 }

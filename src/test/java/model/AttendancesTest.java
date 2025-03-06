@@ -1,141 +1,241 @@
 package model;
 
-import converter.StringConverter;
-import java.time.DayOfWeek;
+import static constant.ErrorMessage.ALREADY_CHECK_IN;
+import static constant.ErrorMessage.CANNOT_CHECK_IN_ON_HOLIDAY;
+import static constant.ErrorMessage.NOT_FOUND_CREW;
+import static constant.ErrorMessage.OUT_OF_OPERATION_HOURS;
+import static constant.PathConstant.ATTENDANCE_FILE_PATH;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import dto.AttendanceHistoryResponse;
+import dto.AttendanceRiskCrewsResponse;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.IntStream;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.DataReader;
+import util.FileParser;
 
 class AttendancesTest {
 
-    private final StringConverter stringConverter = new StringConverter();
-    private Attendances attendances;
-    private Crews crews;
+    LocalDate fixedDate;
+    Attendances attendances;
 
     @BeforeEach
     void beforeEach() {
-        List<String> rawAttendances = new DataReader().readAttendances("src/test/resources/attendances.csv");
-        crews = stringConverter.convertToCrews(rawAttendances);
-        attendances = stringConverter.convertToAttendances(rawAttendances, crews);
+        fixedDate = LocalDate.of(2024, 12, 13);
+
+        List<String> lines = FileParser.readLines(ATTENDANCE_FILE_PATH.getPath());
+        attendances = Attendances.from(lines, fixedDate);
     }
 
     @Test
-    @DisplayName("닉네임과 등교 시간을 입력하면 출석할 수 있다.")
+    @DisplayName("Attendances 초기 설정을 진행한다.")
     void test1() {
-        //given
-        Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 35);
-        Attendance attendance = Attendance.of(crew, checkInTime);
+        // given
+        Crew miso = Crew.of("미소");
+        Crew neo = Crew.of("네오");
+        Crew pobi = Crew.of("포비");
 
-        //when
-        attendances.checkIn(attendance);
+        // when
+//        Attendances attendances = Attendances.from(lines, dateTimeGenerator);
 
-        //then
-        Assertions.assertThat(attendances.contains(attendance)).isTrue();
+        // then
+        int expected = 9;
+        assertAll(
+                () -> assertThat(attendances.getAttendancesByCrew(miso)).hasSize(expected),
+                () -> assertThat(attendances.getAttendancesByCrew(neo)).hasSize(expected),
+                () -> assertThat(attendances.getAttendancesByCrew(pobi)).hasSize(expected)
+        );
     }
 
     @Test
-    @DisplayName("이미 출석한 경우에는 다시 출석할 수 없다.")
+    @DisplayName("출석을 진행한다. (출석)")
     void test2() {
-        //given
-        Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 35);
-        Attendance attendance = Attendance.of(crew, checkInTime);
-        attendances.checkIn(attendance);
-
-        //when & then
-        Assertions.assertThatThrownBy(() -> attendances.checkIn(attendance))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 출석한 경우에는 다시 출석할 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("등록되지 않은 크루는 출석할 수 없다,")
-    void test3() {
-        //given
+        // given
         String nickname = "미소";
-        String rawCheckInTime = "10:00";
+        String checkInTime = "10:00";
 
-        //when & then
-        Assertions.assertThatThrownBy(() -> stringConverter.convertToAttendance(crews, nickname, rawCheckInTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("등록되지 않은 크루입니다.");
+        // when
+        Attendance attendance = attendances.add(nickname, checkInTime, fixedDate);
+
+        // then
+        assertAll(
+                () -> assertThat(attendance.getCheckInDate()).isEqualTo(fixedDate),
+                () -> assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 0)),
+                () -> assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.SUCCESS)
+        );
     }
 
     @Test
-    @DisplayName("출석 시간을 수정한다.")
+    @DisplayName("출석을 진행한다. (지각)")
+    void test3() {
+        // given
+        String nickname = "미소";
+        String checkInTime = "10:06";
+
+        // when
+        Attendance attendance = attendances.add(nickname, checkInTime, fixedDate);
+
+        // then
+        assertAll(
+                () -> assertThat(attendance.getCheckInDate()).isEqualTo(fixedDate),
+                () -> assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 6)),
+                () -> assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.BE_LATE)
+        );
+    }
+
+    @Test
+    @DisplayName("출석을 진행한다. (결석)")
     void test4() {
-        //given
-        Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2025, 2, 27, 10, 31);
-        Attendance attendance = Attendance.of(crew, checkInTime);
+        // given
+        String nickname = "미소";
+        String checkInTime = "10:31";
 
-        attendances.checkIn(attendance);
+        // when
+        Attendance attendance = attendances.add(nickname, checkInTime, fixedDate);
 
-        LocalDateTime modifiedCheckInTime = LocalDateTime.of(2025, 2, 27, 10, 0);
-
-        //when
-        Attendance modifiedAttendance = attendances.modify(crew, modifiedCheckInTime);
-
-        //then
-        Assertions.assertThat(modifiedAttendance.getAttendanceType()).isEqualTo(AttendanceType.SUCCESS);
-        Assertions.assertThat(modifiedAttendance.getCheckInTime()).isEqualTo(modifiedCheckInTime);
+        // then
+        assertAll(
+                () -> assertThat(attendance.getCheckInDate()).isEqualTo(fixedDate),
+                () -> assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 31)),
+                () -> assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.ABSENCE)
+        );
     }
 
     @Test
-    @DisplayName("출석 시간을 수정할 때 출석이 없으면 새로 생성한다.")
+    @DisplayName("없는 크루가 출석을 시도하면 예외가 발생한다.")
     void test5() {
-        //given
-        Crew crew = Crew.of("쿠키");
-        LocalDateTime modifiedCheckInTime = LocalDateTime.of(2024, 12, 3, 10, 0);
+        // given
+        String nickname = "헤일러";
+        String checkInTime = "10:00";
 
-        //when
-        attendances.modify(crew, modifiedCheckInTime);
-
-        //then
-        Assertions.assertThat(attendances.getAttendances()).contains(Attendance.of(crew, modifiedCheckInTime));
+        // when & then
+        assertThatThrownBy(() -> attendances.add(nickname, checkInTime, fixedDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(NOT_FOUND_CREW.getMessage());
     }
 
     @Test
-    @DisplayName("크루의 출석 기록을 조회한다.")
+    @DisplayName("출석을 수정한다. (지각)")
     void test6() {
-        //given
-        Crew crew = Crew.of("쿠키");
+        // given
+        String nickname = "미소";
+        String day = "6";
+        String updateTime = "10:00";
 
-        Attendance attendance1 = Attendance.of(crew, LocalDateTime.of(2025, 2, 17, 10, 0, 0));
-        Attendance attendance2 = Attendance.of(crew, LocalDateTime.of(2025, 2, 18, 10, 31, 0));
-        Attendance attendance3 = Attendance.of(crew, LocalDateTime.of(2025, 2, 19, 10, 6, 0));
+        // when
+        Attendance attendance = attendances.update(nickname, day, updateTime, fixedDate);
 
-        //when
-        Attendances filteredAttendances = attendances.findByCrewAndMonth(crew, 2);
-
-        //then
-        Assertions.assertThat(filteredAttendances.getAttendances())
-                .contains(attendance1, attendance2, attendance3);
+        // then
+        assertAll(
+                () -> assertThat(attendance.getCheckInDate()).isEqualTo(LocalDate.of(2024, 12, 6)),
+                () -> assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 0)),
+                () -> assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.SUCCESS)
+        );
     }
 
     @Test
-    @DisplayName("크루의 출석을 모두 조회한다.")
+    @DisplayName("출석을 수정한다. (결석)")
     void test7() {
-        //given
-        LocalDate now = LocalDate.of(2024, 2, 21);
+        // given
+        String nickname = "미소";
+        String day = "4";
+        String updateTime = "10:00";
 
-        long weekdays = IntStream.rangeClosed(1, now.getDayOfMonth())
-                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonth(), day))
-                .filter(date -> date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY)
-                .count();
+        // when
+        Attendance attendance = attendances.update(nickname, day, updateTime, fixedDate);
 
-        //when
-        Map<Crew, Attendances> crewsAttendances = attendances.findAll(crews, LocalDate.now().getMonthValue());
+        // then
+        assertAll(
+                () -> assertThat(attendance.getCheckInDate()).isEqualTo(LocalDate.of(2024, 12, 4)),
+                () -> assertThat(attendance.getCheckInTime()).isEqualTo(LocalTime.of(10, 0)),
+                () -> assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.SUCCESS)
+        );
+    }
 
-        //then
-        Assertions.assertThat(crewsAttendances.get(Crew.of("쿠키")).getAttendances()).hasSize((int) weekdays);
+    @Test
+    @DisplayName("특정 크루의 출석 기록을 가져온다.")
+    void test8() {
+        // given
+        String nickname = "미소";
+
+        // when
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(nickname, fixedDate);
+
+        // then
+        assertAll(
+                () -> assertThat(response.nickname()).isEqualTo(nickname),
+                () -> assertThat(response.attendances()).hasSize(9),
+                () -> assertThat(response.attendanceTotal().get(AttendanceType.SUCCESS)).isEqualTo(3),
+                () -> assertThat(response.attendanceTotal().get(AttendanceType.BE_LATE)).isEqualTo(2),
+                () -> assertThat(response.attendanceTotal().get(AttendanceType.ABSENCE)).isEqualTo(4),
+                () -> assertThat(response.punishmentType()).isEqualTo(PunishmentType.MEETING)
+        );
+    }
+
+    @Test
+    @DisplayName("제적 위험자 리스트를 가져온다.")
+    void test9() {
+        // given
+
+        // when
+        AttendanceRiskCrewsResponse response = attendances.findRiskCrews(fixedDate);
+
+        // then
+        assertThat(response.riskCrewResponses().get(0).crew().getNickname()).isEqualTo("네오");
+        assertThat(response.riskCrewResponses().get(1).crew().getNickname()).isEqualTo("미소");
+        assertThat(response.riskCrewResponses().get(2).crew().getNickname()).isEqualTo("포비");
+        assertThat(response.riskCrewResponses().get(0).attendanceTotal().get(AttendanceType.ABSENCE)).isEqualTo(6);
+        assertThat(response.riskCrewResponses().get(0).attendanceTotal().get(AttendanceType.BE_LATE)).isEqualTo(0);
+        assertThat(response.riskCrewResponses().get(1).attendanceTotal().get(AttendanceType.ABSENCE)).isEqualTo(4);
+        assertThat(response.riskCrewResponses().get(1).attendanceTotal().get(AttendanceType.BE_LATE)).isEqualTo(2);
+        assertThat(response.riskCrewResponses().get(2).attendanceTotal().get(AttendanceType.ABSENCE)).isEqualTo(5);
+        assertThat(response.riskCrewResponses().get(2).attendanceTotal().get(AttendanceType.BE_LATE)).isEqualTo(2);
+        assertThat(response.riskCrewResponses().get(0).punishmentType()).isEqualTo(PunishmentType.EXPULSION);
+        assertThat(response.riskCrewResponses().get(1).punishmentType()).isEqualTo(PunishmentType.MEETING);
+        assertThat(response.riskCrewResponses().get(2).punishmentType()).isEqualTo(PunishmentType.MEETING);
+    }
+
+    @Test
+    @DisplayName("공휴일에 출석을 시도하는 경우 예외가 발생한다.")
+    void test10() {
+        fixedDate = LocalDate.of(2024, 12, 25);
+
+        String nickname = "미소";
+        String checkInTime = "10:00";
+
+        // when & then
+        assertThatThrownBy(() -> attendances.add(nickname, checkInTime, fixedDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(CANNOT_CHECK_IN_ON_HOLIDAY.getMessage());
+    }
+
+    @Test
+    @DisplayName("운영 시간이 아닐 때 출석을 시도하는 경우 예외가 발생한다.")
+    void test11() {
+        String nickname = "미소";
+        String checkInTime = "07:00";
+
+        // when & then
+        assertThatThrownBy(() -> attendances.add(nickname, checkInTime, fixedDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(OUT_OF_OPERATION_HOURS.getMessage());
+    }
+
+    @Test
+    @DisplayName("이미 체크인 한 경우 다시 체크인하면 예외가 발생한다.")
+    void test12() {
+        String nickname = "미소";
+        String checkInTime = "10:00";
+        attendances.add(nickname, checkInTime, fixedDate);
+
+        // when & then
+        assertThatThrownBy(() -> attendances.add(nickname, checkInTime, fixedDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ALREADY_CHECK_IN.getMessage());
     }
 }

@@ -1,7 +1,9 @@
 package model;
 
+import static constant.ErrorMessage.CANNOT_CHECK_IN_ON_WEEKEND;
+
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 
@@ -19,40 +21,38 @@ public enum AttendanceTime {
     private final LocalTime operationEndTime;
     private final LocalTime educationStartTime;
 
-    AttendanceTime(DayOfWeek dayOfWeek, LocalTime operationStartTime, LocalTime operationEndTime,
-                   LocalTime educationStartTime) {
+    AttendanceTime(DayOfWeek dayOfWeek, LocalTime operationStartTime,
+                   LocalTime operationEndTime, LocalTime educationStartTime) {
         this.dayOfWeek = dayOfWeek;
         this.operationStartTime = operationStartTime;
         this.operationEndTime = operationEndTime;
         this.educationStartTime = educationStartTime;
     }
 
-    public static boolean isNotInOperation(LocalDateTime localDateTime) {
-        AttendanceTime attendanceTime = findAttendanceTime(localDateTime);
-        return localDateTime.toLocalTime().isBefore(attendanceTime.operationStartTime) || localDateTime.toLocalTime()
-                .isAfter(attendanceTime.operationEndTime);
+    public static boolean isInOperationTime(LocalDate localDate, LocalTime localTime) {
+        AttendanceTime attendanceTime = find(localDate);
+
+        return !localTime.isBefore(attendanceTime.operationStartTime) &&
+                !localTime.isAfter(attendanceTime.operationEndTime);
     }
 
-    // 5 < 체크인 타임 <= 30
-    public static boolean isLate(LocalDateTime localDateTime, int beLateMinute, int absenceMinute) {
-        AttendanceTime attendanceTime = findAttendanceTime(localDateTime);
-        LocalTime localTime = localDateTime.toLocalTime();
+    public static boolean isLate(LocalDate localDate, LocalTime localTime, int beLateTime, int absenceTime) {
+        AttendanceTime attendanceTime = find(localDate);
 
-        return localTime.isAfter(attendanceTime.educationStartTime.plusMinutes(beLateMinute)) &&
-                localTime.isBefore(attendanceTime.educationStartTime.plusMinutes(absenceMinute + 1));
+        return localTime.isAfter(attendanceTime.educationStartTime.plusMinutes(beLateTime)) &&
+                localTime.isBefore(attendanceTime.educationStartTime.plusMinutes(absenceTime + 1));
     }
 
-    public static boolean isAbsence(LocalDateTime localDateTime, int absenceMinute) {
-        AttendanceTime attendanceTime = findAttendanceTime(localDateTime);
-        LocalTime localTime = localDateTime.toLocalTime();
+    public static boolean isAbsence(LocalDate localDate, LocalTime localTime, int absenceTime) {
+        AttendanceTime attendanceTime = find(localDate);
 
-        return localTime.isAfter(attendanceTime.educationStartTime.plusMinutes(absenceMinute));
+        return localTime.isAfter(attendanceTime.educationStartTime.plusMinutes(absenceTime));
     }
 
-    private static AttendanceTime findAttendanceTime(LocalDateTime localDateTime) {
+    private static AttendanceTime find(LocalDate localDate) {
         return Arrays.stream(AttendanceTime.values())
-                .filter(attendanceTime -> attendanceTime.dayOfWeek.equals(localDateTime.toLocalDate().getDayOfWeek()))
+                .filter(attendanceTime -> attendanceTime.dayOfWeek.equals(localDate.getDayOfWeek()))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(CANNOT_CHECK_IN_ON_WEEKEND.getMessage()));
     }
 }

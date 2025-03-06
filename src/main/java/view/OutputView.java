@@ -1,166 +1,172 @@
 package view;
 
-import dto.AttendanceResult;
-import dto.CrewsAttendanceResult;
-import dto.CrewsAttendanceResult.CrewAttendanceResult;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import static constant.OutputViewMessage.ATTENDANCE_ABSENCE_TYPE_RESPONSE;
+import static constant.OutputViewMessage.ATTENDANCE_BE_LATE_TYPE_RESPONSE;
+import static constant.OutputViewMessage.ATTENDANCE_CHECK_IN_RESPONSE;
+import static constant.OutputViewMessage.ATTENDANCE_HISTORY_NULL_RESPONSE;
+import static constant.OutputViewMessage.ATTENDANCE_HISTORY_RESPONSE;
+import static constant.OutputViewMessage.ATTENDANCE_PUNISHMENT_TYPE_RESPONSE;
+import static constant.OutputViewMessage.ATTENDANCE_RISK_CREWS_HEADER;
+import static constant.OutputViewMessage.ATTENDANCE_RISK_CREWS_RESPONSE;
+import static constant.OutputViewMessage.ATTENDANCE_SUCCESS_TYPE_RESPONSE;
+import static constant.OutputViewMessage.ATTENDANCE_UPDATE_NULL_RESPONSE;
+import static constant.OutputViewMessage.ATTENDANCE_UPDATE_RESPONSE;
+
+import dto.AttendanceCheckInResponse;
+import dto.AttendanceHistoryResponse;
+import dto.AttendanceRiskCrewsResponse;
+import dto.AttendanceUpdateResponse;
 import java.time.format.TextStyle;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
 import model.Attendance;
 import model.AttendanceType;
-import model.Attendances;
-import model.Crew;
 import model.PunishmentType;
 
 public class OutputView {
 
-    private final String CHECK_IN_FORMAT = "%d월 %d일 %s %02d:%02d (%s)%n";
-    private final String MODIFY_FORMAT = "%d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!%n";
-    private final String MODIFY_ABSENCE_FORMAT = "%d월 %02d일 %s --:-- (결석) -> %02d:%02d (%s) 수정 완료!%n";
-    private final String ATTENDANCE_RECORD_HEADER_FORMAT = "이번 달 %s의 출석 기록입니다.%n";
-    private final String ATTENDANCE_RECORD_FORMAT = "%d월 %02d일 %s %02d:%02d (%s)%n";
-    private final String ATTENDANCE_RECORD_ABSENCE_FORMAT = "%d월 %02d일 %s --:-- (결석)%n";
-    private final String ATTENDANCE_COUNT = "%s: %d회%n";
-    private final String ATTENDANCE_PUNISHMENT = "%s 대상자입니다.";
-    private final String EXPULSION_LIST_HEADER = "제적 위험자 조회 결과";
-    private final String PUNISHMENT_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
-    private final String SUCCESS = "출석";
-    private final String BE_LATE = "지각";
-    private final String ABSENCE = "결석";
-    private final String WARNING = "경고";
-    private final String MEETING = "면담";
-    private final String EXPULSION = "제적";
-
-    public void printCheckInResult(Attendance attendance) {
-        LocalDateTime checkInTime = attendance.getCheckInTime();
-        System.out.printf(
-                CHECK_IN_FORMAT,
-                checkInTime.getMonthValue(),
-                checkInTime.getDayOfMonth(),
-                checkInTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault()),
-                checkInTime.getHour(),
-                checkInTime.getMinute(),
-                convertToAttendanceTypeString(attendance.getAttendanceType())
-        );
+    private OutputView() {
     }
 
-    public void printModifiedResult(Optional<Attendance> existAttendance, Attendance modifiedAttendance) {
-        if (existAttendance.isEmpty()) {
-            System.out.printf(
-                    MODIFY_ABSENCE_FORMAT,
-                    modifiedAttendance.getCheckInTime().getMonthValue(),
-                    modifiedAttendance.getCheckInTime().getDayOfMonth(),
-                    modifiedAttendance.getCheckInTime().getDayOfWeek()
-                            .getDisplayName(TextStyle.FULL, Locale.getDefault()),
-                    modifiedAttendance.getCheckInTime().getHour(),
-                    modifiedAttendance.getCheckInTime().getMinute(),
-                    convertToAttendanceTypeString(modifiedAttendance.getAttendanceType())
-            );
+    public static void printCheckInAttendance(AttendanceCheckInResponse response) {
+        println(String.format(ATTENDANCE_CHECK_IN_RESPONSE.getMessage(),
+                response.checkInDate().getMonthValue(),
+                response.checkInDate().getDayOfMonth(),
+                response.checkInDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                response.checkInTime().getHour(),
+                response.checkInTime().getMinute(),
+                parseAttendanceType(response.attendanceType())
+        ));
+        printNewLine();
+    }
+
+    public static void printUpdateAttendance(AttendanceUpdateResponse response) {
+        if (response.previousTime() == null) {
+            printUpdateNullResponse(response);
             return;
         }
-        Attendance beforeAttendance = existAttendance.get();
-        System.out.printf(
-                MODIFY_FORMAT,
-                beforeAttendance.getCheckInTime().getMonthValue(),
-                beforeAttendance.getCheckInTime().getDayOfMonth(),
-                beforeAttendance.getCheckInTime().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault()),
-                beforeAttendance.getCheckInTime().getHour(),
-                beforeAttendance.getCheckInTime().getMinute(),
-                convertToAttendanceTypeString(beforeAttendance.getAttendanceType()),
-                modifiedAttendance.getCheckInTime().getHour(),
-                modifiedAttendance.getCheckInTime().getMinute(),
-                convertToAttendanceTypeString(modifiedAttendance.getAttendanceType())
-        );
+        printUpdateResponse(response);
     }
 
-    public void printAttendanceRecord(Crew crew, AttendanceResult result) {
-        LocalDate today = LocalDate.now();
-        System.out.printf(ATTENDANCE_RECORD_HEADER_FORMAT, crew.getNickname());
-        Attendances attendances = result.getAttendances();
-        for (Attendance attendance : attendances.getAttendances()) {
-            if (!attendance.isCome()) {
-                System.out.printf(
-                        ATTENDANCE_RECORD_ABSENCE_FORMAT,
-                        today.getMonthValue(),
-                        attendance.getCheckInTime().getDayOfMonth(),
-                        attendance.getCheckInTime().toLocalDate().getDayOfWeek()
-                                .getDisplayName(TextStyle.FULL, Locale.getDefault()));
-                continue;
+    private static void printUpdateNullResponse(AttendanceUpdateResponse response) {
+        println(String.format(ATTENDANCE_UPDATE_NULL_RESPONSE.getMessage(),
+                response.date().getMonthValue(),
+                response.date().getDayOfMonth(),
+                response.date().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                parseAttendanceType(response.previousAttendanceType()),
+                response.updateTime().getHour(),
+                response.updateTime().getMinute(),
+                parseAttendanceType(response.updateAttendanceType())
+        ));
+        printNewLine();
+    }
+
+    private static void printUpdateResponse(AttendanceUpdateResponse response) {
+        println(String.format(ATTENDANCE_UPDATE_RESPONSE.getMessage(),
+                response.date().getMonthValue(),
+                response.date().getDayOfMonth(),
+                response.date().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                response.previousTime().getHour(),
+                response.previousTime().getMinute(),
+                parseAttendanceType(response.previousAttendanceType()),
+                response.updateTime().getHour(),
+                response.updateTime().getMinute(),
+                parseAttendanceType(response.updateAttendanceType())
+        ));
+        printNewLine();
+    }
+
+    public static void printAttendanceHistory(AttendanceHistoryResponse response) {
+        response.attendances().forEach(attendance -> {
+            if (attendance.getCheckInTime() == null) {
+                printHistoryNullResponse(attendance);
+                return;
             }
-            System.out.printf(ATTENDANCE_RECORD_FORMAT,
-                    attendance.getCheckInTime().getMonthValue(),
-                    attendance.getCheckInTime().getDayOfMonth(),
-                    attendance.getCheckInTime().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault()),
-                    attendance.getCheckInTime().getHour(),
-                    attendance.getCheckInTime().getMinute(),
-                    convertToAttendanceTypeString(attendance.getAttendanceType())
-            );
-        }
+            printHistoryResponse(attendance);
+        });
+        printNewLine();
 
-        Map<AttendanceType, Integer> counts = result.getCounts();
-        for (Entry<AttendanceType, Integer> countsEntry : counts.entrySet()) {
-            System.out.printf(
-                    ATTENDANCE_COUNT,
-                    convertToAttendanceTypeString(countsEntry.getKey()),
-                    countsEntry.getValue()
-            );
-        }
+        printAttendanceTotalResponse(response);
+        printPunishmentTypeResponse(response);
+    }
 
-        if (!result.getPunishmentType().equals(PunishmentType.NONE)) {
-            System.out.printf(ATTENDANCE_PUNISHMENT, convertToPunishmentTypeString(result.getPunishmentType()));
+    private static void printHistoryNullResponse(Attendance attendance) {
+        println(String.format(ATTENDANCE_HISTORY_NULL_RESPONSE.getMessage(),
+                attendance.getCheckInDate().getMonthValue(),
+                attendance.getCheckInDate().getDayOfMonth(),
+                attendance.getCheckInDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                parseAttendanceType(attendance.getAttendanceType())
+        ));
+    }
+
+    private static void printHistoryResponse(Attendance attendance) {
+        println(String.format(ATTENDANCE_HISTORY_RESPONSE.getMessage(),
+                attendance.getCheckInDate().getMonthValue(),
+                attendance.getCheckInDate().getDayOfMonth(),
+                attendance.getCheckInDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                attendance.getCheckInTime().getHour(),
+                attendance.getCheckInTime().getMinute(),
+                parseAttendanceType(attendance.getAttendanceType())
+        ));
+    }
+
+    private static void printAttendanceTotalResponse(AttendanceHistoryResponse response) {
+        println(String.format(ATTENDANCE_SUCCESS_TYPE_RESPONSE.getMessage(),
+                response.attendanceTotal().get(AttendanceType.SUCCESS)));
+        println(String.format(ATTENDANCE_BE_LATE_TYPE_RESPONSE.getMessage(),
+                response.attendanceTotal().get(AttendanceType.BE_LATE)));
+        println(String.format(ATTENDANCE_ABSENCE_TYPE_RESPONSE.getMessage(),
+                response.attendanceTotal().get(AttendanceType.ABSENCE)));
+        printNewLine();
+    }
+
+    private static void printPunishmentTypeResponse(AttendanceHistoryResponse response) {
+        if (!response.punishmentType().equals(PunishmentType.NONE)) {
+            println(String.format(ATTENDANCE_PUNISHMENT_TYPE_RESPONSE.getMessage(),
+                    parsePunishmentType(response.punishmentType())));
+            printNewLine();
         }
     }
 
-    public void printAllCrewPunishment(CrewsAttendanceResult result) {
-        System.out.println(EXPULSION_LIST_HEADER);
-        List<CrewAttendanceResult> attendanceResults = result.getCrewsAttendanceResult();
-        for (CrewAttendanceResult crewAttendanceResult : attendanceResults) {
-            Crew crew = crewAttendanceResult.getCrew();
-            AttendanceResult attendanceResult = crewAttendanceResult.getAttendanceResult();
-            Map<AttendanceType, Integer> attendanceTypeCount = attendanceResult.getCounts();
-            System.out.printf(
-                    PUNISHMENT_FORMAT,
-                    crew.getNickname(),
-                    attendanceTypeCount.get(AttendanceType.ABSENCE),
-                    attendanceTypeCount.get(AttendanceType.BE_LATE),
-                    convertToPunishmentTypeString(attendanceResult.getPunishmentType())
-            );
-        }
-        printEmptyLine();
+    public static void printRiskCrews(AttendanceRiskCrewsResponse responses) {
+        println(ATTENDANCE_RISK_CREWS_HEADER.getMessage());
+        responses.riskCrewResponses().forEach(response ->
+                println(String.format(ATTENDANCE_RISK_CREWS_RESPONSE.getMessage(),
+                        response.crew().getNickname(),
+                        response.attendanceTotal().get(AttendanceType.ABSENCE),
+                        response.attendanceTotal().get(AttendanceType.BE_LATE),
+                        parsePunishmentType(response.punishmentType()))
+                ));
+        printNewLine();
     }
 
-    private String convertToAttendanceTypeString(AttendanceType attendanceType) {
+    private static String parseAttendanceType(AttendanceType attendanceType) {
         if (attendanceType.equals(AttendanceType.SUCCESS)) {
-            return SUCCESS;
+            return "출석";
         }
         if (attendanceType.equals(AttendanceType.BE_LATE)) {
-            return BE_LATE;
+            return "지각";
         }
-        if (attendanceType.equals(AttendanceType.ABSENCE)) {
-            return ABSENCE;
-        }
-        return "";
+        return "결석";
     }
 
-    private String convertToPunishmentTypeString(PunishmentType punishmentType) {
+    private static String parsePunishmentType(PunishmentType punishmentType) {
         if (punishmentType.equals(PunishmentType.WARNING)) {
-            return WARNING;
+            return "경고";
         }
         if (punishmentType.equals(PunishmentType.MEETING)) {
-            return MEETING;
+            return "면담";
         }
         if (punishmentType.equals(PunishmentType.EXPULSION)) {
-            return EXPULSION;
+            return "제적";
         }
         return "";
     }
 
-    private void printEmptyLine() {
+    public static void println(String message) {
+        System.out.println(message);
+    }
+
+    private static void printNewLine() {
         System.out.println();
     }
 }

@@ -1,88 +1,183 @@
 package model;
 
+import static constant.AttendanceConstant.COMMA_SEPARATOR;
+import static constant.ErrorMessage.ALREADY_CHECK_IN;
+import static constant.ErrorMessage.CANNOT_CHECK_IN_ON_HOLIDAY;
+import static constant.ErrorMessage.NOT_FOUND_ATTENDANCE;
+import static constant.ErrorMessage.NOT_FOUND_CREW;
+import static constant.ErrorMessage.OUT_OF_OPERATION_HOURS;
+
+import dto.AttendanceHistoryResponse;
+import dto.AttendanceRiskCrewsResponse;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import util.InputParser;
 
 public class Attendances {
 
-    private final List<Attendance> attendances;
+    private final Map<Crew, List<Attendance>> attendances;
 
-    private Attendances(List<Attendance> attendances) {
-        this.attendances = new ArrayList<>(attendances);
+    private Attendances(Map<Crew, List<Attendance>> attendances) {
+        this.attendances = attendances;
     }
 
-    public static Attendances of(List<Attendance> attendances) {
-        return new Attendances(new ArrayList<>(attendances));
+    public static Attendances from(List<String> inputs, LocalDate now) {
+        Map<Crew, List<Attendance>> attendances = parseAttendances(inputs);
+        List<LocalDate> allDates = generateDateRange(now);
+        fillMissingAttendances(attendances, allDates);
+
+        return new Attendances(attendances);
     }
 
-    public boolean contains(Attendance attendance) {
-        return attendances.stream().anyMatch(attendance::equals);
-    }
+    public Attendance add(String nickname, String checkInTime, LocalDate now) {
+        Crew crew = Crew.of(nickname);
+        validateCrewExists(crew);
+        validateHoliday(now);
+        validateOperationTime(checkInTime, now);
+        validateAlreadyCheckedIn(crew, now);
 
-    public void checkIn(Attendance attendance) {
-        validateExistAttendance(attendance);
-
-        attendances.add(attendance);
-    }
-
-    public Attendance modify(Crew crew, LocalDateTime modifiedCheckInTime) {
-        Optional<Attendance> existAttendance = find(crew, modifiedCheckInTime.toLocalDate());
-        if (existAttendance.isPresent()) {
-            existAttendance.get().modify(modifiedCheckInTime.toLocalTime());
-            return existAttendance.get();
-        }
-        Attendance attendance = Attendance.of(crew, modifiedCheckInTime);
-        checkIn(attendance);
+        Attendance attendance = Attendance.of(now, checkInTime);
+        attendances.get(crew).add(attendance);
 
         return attendance;
     }
 
-    public Map<Crew, Attendances> findAll(Crews crews, int month) {
-        return crews.getCrews().stream()
+    public Attendance update(String nickname, String day, String updateTime, LocalDate now) {
+        Crew crew = Crew.of(nickname);
+        LocalDate date = now.withDayOfMonth(Integer.parseInt(day));
+
+        Attendance attendance = find(crew, date);
+
+        return attendance.update(LocalTime.parse(updateTime));
+    }
+
+    public AttendanceHistoryResponse findHistoryByCrew(String nickname, LocalDate now) {
+        Crew crew = Crew.of(nickname);
+        List<Attendance> filteredAttendances = getAttendancesByCrew(crew).stream()
+                .filter(attendance -> attendance.getCheckInDate().getYear() == now.getYear())
+                .filter(attendance -> attendance.getCheckInDate().getMonth() == now.getMonth())
+                .filter(attendance -> attendance.getCheckInDate().isBefore(now))
+                .toList();
+        Map<AttendanceType, Integer> attendanceTotal = AttendanceType.calculateTotal(filteredAttendances);
+        PunishmentType punishmentType = PunishmentType.find(attendanceTotal);
+
+        return new AttendanceHistoryResponse(crew.getNickname(), filteredAttendances, attendanceTotal, punishmentType);
+    }
+
+    public AttendanceRiskCrewsResponse findRiskCrews(LocalDate now) {
+        List<AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse> sortedRiskCrews = attendances.keySet().stream()
+                .map(crew -> new AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse(
+                        crew,
+                        AttendanceType.calculateTotal(getAttendancesByCrew(crew).stream()
+                                .filter(attendance -> attendance.getCheckInDate().getYear() == now.getYear())
+                                .filter(attendance -> attendance.getCheckInDate().getMonth() == now.getMonth())
+                                .toList()
+                        ),
+                        PunishmentType.find(AttendanceType.calculateTotal(getAttendancesByCrew(crew)))
+                ))
+                .sorted(Comparator
+                        .comparing(AttendanceRiskCrewsResponse.AttendanceRiskCrewResponse::punishmentType)
+                        .reversed()
+                        .thenComparing(response -> response.attendanceTotal().getOrDefault(AttendanceType.ABSENCE, 0))
+                        .reversed()
+                        .thenComparing(response -> response.attendanceTotal().getOrDefault(AttendanceType.BE_LATE, 0))
+                        .reversed()
+                        .thenComparing(response -> response.crew().getNickname())
+                )
+                .toList();
+
+        return new AttendanceRiskCrewsResponse(sortedRiskCrews);
+    }
+
+    private static Map<Crew, List<Attendance>> parseAttendances(List<String> inputs) {
+        return inputs.stream()
+                .map(line -> InputParser.split(line, COMMA_SEPARATOR))
                 .collect(Collectors.toMap(
-                        crew -> crew,
-                        crew -> findByCrewAndMonth(crew, month),
-                        (existing, replacement) -> existing
+                        line -> Crew.of(line.get(0)),
+                        line -> new ArrayList<>(List.of(Attendance.of(line.get(1)))),
+                        (existing, replacement) -> {
+                            existing.addAll(replacement);
+                            return existing;
+                        },
+                        HashMap::new
                 ));
     }
 
-    public Attendances findByCrewAndMonth(Crew crew, int month) {
-        LocalDate today = LocalDate.now();
-
-        List<Attendance> attendances = IntStream.rangeClosed(1, today.getDayOfMonth() - 1)
-                .mapToObj(day -> LocalDate.of(today.getYear(), month, day))
-                .filter(date -> !Holiday.isHolidayOrWeekend(date))
-                .map(date -> find(crew, date)
-                        .orElseGet(() -> Attendance.createTimeNullAbsence(crew, date)))
+    private static List<LocalDate> generateDateRange(LocalDate now) {
+        return IntStream.rangeClosed(1, now.getDayOfMonth() - 1)
+                .mapToObj(now::withDayOfMonth)
+                .filter(date -> !EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(date.getDayOfWeek()))
+                .filter(date -> !Holiday.isHoliday(date))
                 .toList();
-
-        return Attendances.of(attendances);
     }
 
-    public Optional<Attendance> find(Crew crew, LocalDate localDate) {
-        return attendances.stream()
-                .filter(attendance -> attendance.isSame(crew, localDate))
+    private static void fillMissingAttendances(Map<Crew, List<Attendance>> attendances, List<LocalDate> allDates) {
+        attendances.forEach((crew, attendanceList) -> {
+            Set<LocalDate> recordedDates = attendanceList.stream()
+                    .map(Attendance::getCheckInDate)
+                    .collect(Collectors.toSet());
+
+            allDates.stream()
+                    .filter(date -> !recordedDates.contains(date))
+                    .map(Attendance::ofEmpty)
+                    .forEach(attendanceList::add);
+
+            attendanceList.sort(Comparator.comparing(Attendance::getCheckInDate));
+        });
+    }
+
+    private void validateCrewExists(Crew crew) {
+        if (!attendances.containsKey(crew)) {
+            throw new IllegalArgumentException(NOT_FOUND_CREW.getMessage());
+        }
+    }
+
+    private void validateOperationTime(String checkInTime, LocalDate now) {
+        if (!AttendanceTime.isInOperationTime(now, LocalTime.parse(checkInTime))) {
+            throw new IllegalArgumentException(OUT_OF_OPERATION_HOURS.getMessage());
+        }
+    }
+
+    private void validateHoliday(LocalDate date) {
+        if (Holiday.isHoliday(date)) {
+            throw new IllegalArgumentException(CANNOT_CHECK_IN_ON_HOLIDAY.getMessage());
+        }
+    }
+
+    private void validateAlreadyCheckedIn(Crew crew, LocalDate date) {
+        if (attendances.getOrDefault(crew, Collections.emptyList()).stream()
+                .anyMatch(attendance -> attendance.getCheckInDate().equals(date))) {
+            throw new IllegalArgumentException(ALREADY_CHECK_IN.getMessage());
+        }
+    }
+
+    public Attendance find(String nickname, String day, LocalDate now) {
+        Crew crew = Crew.of(nickname);
+        LocalDate date = now.withDayOfMonth(Integer.parseInt(day));
+
+        return find(crew, date);
+    }
+
+    public Attendance find(Crew crew, LocalDate localDate) {
+        return attendances.getOrDefault(crew, Collections.emptyList()).stream()
+                .filter(attendance -> attendance.getCheckInDate().equals(localDate))
                 .findFirst()
-                .map(attendance -> attendance.clone(attendance));
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_ATTENDANCE.getMessage()));
     }
 
-    private void validateExistAttendance(Attendance newAttendance) {
-        attendances.stream()
-                .filter(attendance -> attendance.isSameDateAndCrew(newAttendance))
-                .findAny()
-                .ifPresent(error -> {
-                    throw new IllegalArgumentException("이미 출석한 경우에는 다시 출석할 수 없습니다.");
-                });
-    }
-
-    public List<Attendance> getAttendances() {
+    public List<Attendance> getAttendancesByCrew(Crew crew) {
+        List<Attendance> attendances = this.attendances.get(crew);
         return Collections.unmodifiableList(attendances);
     }
 }

@@ -1,114 +1,121 @@
 package controller;
 
-import constant.Command;
-import converter.StringConverter;
-import dto.AttendanceResult;
-import dto.CrewsAttendanceResult;
+import static constant.PathConstant.ATTENDANCE_FILE_PATH;
+
+import dto.AttendanceCheckInRequest;
+import dto.AttendanceCheckInResponse;
+import dto.AttendanceHistoryRequest;
+import dto.AttendanceHistoryResponse;
+import dto.AttendanceOptionRequest;
+import dto.AttendanceRiskCrewsResponse;
+import dto.AttendanceUpdateRequest;
+import dto.AttendanceUpdateResponse;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.function.Supplier;
 import model.Attendance;
 import model.Attendances;
-import model.Crew;
-import model.Crews;
-import util.DataReader;
+import model.Option;
+import util.FileParser;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
 
-    private final InputView inputView;
-    private final OutputView outputView;
-    private final StringConverter stringConverter;
-
-    public AttendanceController(InputView inputView, OutputView outputView, StringConverter stringConverter) {
-        this.inputView = inputView;
-        this.outputView = outputView;
-        this.stringConverter = stringConverter;
-    }
-
     public void run() {
-        List<String> rawAttendances = new DataReader().readAttendances("src/main/resources/attendances.csv");
-        Crews crews = stringConverter.convertToCrews(rawAttendances);
-        Attendances attendances = stringConverter.convertToAttendances(rawAttendances, crews);
+        Attendances attendances = initialize();
 
         while (true) {
-            String rawCommand = inputView.readCommand();
-            Command command = stringConverter.convertToCommand(rawCommand);
-            processOptionOne(command, crews, attendances);
-            processOptionTwo(command, attendances);
-            processOptionThree(command, attendances);
-            processOptionFour(command, crews, attendances);
-            if (command.equals(Command.QUIT)) {
+            Option option = processWithRetry(this::selectOption);
+
+            if (option.equals(Option.ONE)) {
+                processWithRetry(() -> checkInAttendance(attendances));
+            }
+            if (option.equals(Option.TWO)) {
+                processWithRetry(() -> updateAttendance(attendances));
+            }
+            if (option.equals(Option.THREE)) {
+                processWithRetry(() -> findAttendanceHistoryByCrew(attendances));
+            }
+            if (option.equals(Option.FOUR)) {
+                processWithRetry(() -> findRiskCrews(attendances));
+            }
+            if (option.equals(Option.QUIT)) {
                 break;
             }
         }
     }
 
-    private void processOptionOne(Command command, Crews crews, Attendances attendances) {
-        if (command.equals(Command.ONE)) {
-            checkInAttendance(crews, attendances);
+    public Attendances initialize() {
+        List<String> lines = FileParser.readLines(ATTENDANCE_FILE_PATH.getPath());
+        return Attendances.from(lines, LocalDate.now());
+    }
+
+    private Option selectOption() {
+        AttendanceOptionRequest request = InputView.readAttendanceOptionRequest(LocalDate.now());
+        return Option.find(request.option());
+    }
+
+    private void checkInAttendance(Attendances attendances) {
+        LocalDate now = LocalDate.now();
+
+        AttendanceCheckInRequest request = InputView.readAttendanceCheckInRequest();
+        Attendance attendance = attendances.add(request.nickname(), request.checkInTime(), now);
+        AttendanceCheckInResponse response = AttendanceCheckInResponse.convertToAttendanceCheckInResponse(
+                attendance.getCheckInDate(),
+                attendance.getCheckInTime(),
+                attendance.getAttendanceType());
+        OutputView.printCheckInAttendance(response);
+    }
+
+    private void updateAttendance(Attendances attendances) {
+        LocalDate now = LocalDate.now();
+
+        AttendanceUpdateRequest request = InputView.readAttendanceUpdateRequest(now);
+        Attendance previousAttendance = attendances.find(request.nickname(), request.day(), now).copy();
+        Attendance updateAttendance = attendances.update(request.nickname(), request.day(), request.updateTime(), now);
+        AttendanceUpdateResponse response = AttendanceUpdateResponse.convertToAttendanceUpdateResponse(
+                now.withDayOfMonth(Integer.parseInt(request.day())),
+                previousAttendance.getCheckInTime(),
+                previousAttendance.getAttendanceType(),
+                updateAttendance.getCheckInTime(),
+                updateAttendance.getAttendanceType());
+        OutputView.printUpdateAttendance(response);
+    }
+
+    private void findAttendanceHistoryByCrew(Attendances attendances) {
+        LocalDate now = LocalDate.now();
+
+        AttendanceHistoryRequest request = InputView.readAttendanceHistoryRequest();
+        AttendanceHistoryResponse response = attendances.findHistoryByCrew(request.nickname(), now);
+        OutputView.printAttendanceHistory(response);
+    }
+
+    private void findRiskCrews(Attendances attendances) {
+        LocalDate now = LocalDate.now();
+
+        AttendanceRiskCrewsResponse response = attendances.findRiskCrews(now);
+        OutputView.printRiskCrews(response);
+    }
+
+    private <T> T processWithRetry(Supplier<T> supplier) {
+        while (true) {
+            try {
+                return supplier.get();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
-    private void processOptionTwo(Command command, Attendances attendances) {
-        if (command.equals(Command.TWO)) {
-            modifyAttendance(attendances);
+    private void processWithRetry(Runnable runnable) {
+        while (true) {
+            try {
+                runnable.run();
+                break;
+            } catch (IllegalArgumentException e) {
+                OutputView.println(e.getMessage());
+            }
         }
-    }
-
-    private void processOptionThree(Command command, Attendances attendances) {
-        if (command.equals(Command.THREE)) {
-            checkAttendance(attendances);
-        }
-    }
-
-    private void processOptionFour(Command command, Crews crews, Attendances attendances) {
-        if (command.equals(Command.FOUR)) {
-            checkPunishment(crews, attendances);
-        }
-    }
-
-    private void checkInAttendance(Crews crews, Attendances attendances) {
-        String rawNickname = inputView.readNickname();
-        String rawCheckInTime = inputView.readCheckInTime();
-        Attendance attendance = stringConverter.convertToAttendance(crews, rawNickname, rawCheckInTime);
-
-        attendances.checkIn(attendance);
-
-        outputView.printCheckInResult(attendance);
-    }
-
-    private void modifyAttendance(Attendances attendances) {
-        String rawNickname = inputView.readNickname();
-        String rawDay = inputView.readDay();
-        String rawChangeTime = inputView.readChangeTime();
-
-        Crew crew = stringConverter.convertToNickname(rawNickname);
-        LocalDateTime changeTime = stringConverter.convertToLocalDateTime(rawDay, rawChangeTime);
-
-        Optional<Attendance> existAttendance = attendances.find(crew, changeTime.toLocalDate());
-        Attendance modifedAttendance = attendances.modify(crew, changeTime);
-
-        outputView.printModifiedResult(existAttendance, modifedAttendance);
-    }
-
-    private void checkAttendance(Attendances attendances) {
-        String rawNickname = inputView.readNickname();
-        Crew crew = stringConverter.convertToNickname(rawNickname);
-
-        Attendances filteredAttendances = attendances.findByCrewAndMonth(crew, LocalDate.now().getMonthValue());
-
-        AttendanceResult attendanceResult = AttendanceResult.of(filteredAttendances);
-        outputView.printAttendanceRecord(crew, attendanceResult);
-    }
-
-    private void checkPunishment(Crews crews, Attendances attendances) {
-        Map<Crew, Attendances> crewsAttendance = attendances.findAll(crews, LocalDate.now().getMonthValue());
-        CrewsAttendanceResult crewsAttendanceResult = CrewsAttendanceResult.of(crewsAttendance);
-
-        outputView.printAllCrewPunishment(crewsAttendanceResult);
     }
 }

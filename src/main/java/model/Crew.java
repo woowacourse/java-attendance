@@ -10,32 +10,25 @@ public class Crew {
         this.nickname = nickname;
     }
 
-    public static Crew of(String nickname) {
-        return new Crew(nickname);
-    }
-
-    public boolean isEqualName(String nickname) {
-        return this.nickname.equals(nickname);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Crew crew = (Crew) o;
-        return Objects.equals(nickname, crew.nickname);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(nickname);
+    public static Crew of(String rawNickname) {
+        return new Crew(rawNickname);
     }
 
     public String getNickname() {
         return nickname;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        Crew crew = (Crew) object;
+        return Objects.equals(getNickname(), crew.getNickname());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getNickname());
     }
 }

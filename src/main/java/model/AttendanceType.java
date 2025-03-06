@@ -1,6 +1,11 @@
 package model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 public enum AttendanceType {
 
@@ -15,13 +20,27 @@ public enum AttendanceType {
         this.standardMinute = standardMinute;
     }
 
-    public static AttendanceType calculateType(LocalDateTime localDateTime) {
-        if (AttendanceTime.isLate(localDateTime, BE_LATE.standardMinute, ABSENCE.standardMinute)) {
+    public static AttendanceType find(LocalDate localDate, LocalTime localTime) {
+        if (AttendanceTime.isLate(localDate, localTime, BE_LATE.standardMinute, ABSENCE.standardMinute)) {
             return BE_LATE;
         }
-        if (AttendanceTime.isAbsence(localDateTime, ABSENCE.standardMinute)) {
+        if (AttendanceTime.isAbsence(localDate, localTime, ABSENCE.standardMinute)) {
             return ABSENCE;
         }
         return SUCCESS;
+    }
+
+    public static Map<AttendanceType, Integer> calculateTotal(List<Attendance> attendances) {
+        Map<AttendanceType, Integer> attendanceTotal = new EnumMap<>(AttendanceType.class);
+
+        Arrays.stream(AttendanceType.values())
+                .forEach(attendanceType -> attendanceTotal.put(attendanceType, 0));
+
+        attendances.forEach(attendance -> {
+            AttendanceType attendanceType = attendance.getAttendanceType();
+            attendanceTotal.put(attendanceType, attendanceTotal.get(attendanceType) + 1);
+        });
+
+        return attendanceTotal;
     }
 }

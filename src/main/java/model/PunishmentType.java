@@ -9,15 +9,15 @@ public enum PunishmentType {
     EXPULSION,
     NONE;
 
-    public static PunishmentType calculateType(Map<AttendanceType, Integer> counts) {
-        int absenceCount = counts.get(AttendanceType.ABSENCE) + counts.get(AttendanceType.BE_LATE) / 3;
-        if (absenceCount > 5) {
+    public static PunishmentType find(Map<AttendanceType, Integer> attendanceTotal) {
+        Integer absenceTotal = attendanceTotal.get(AttendanceType.ABSENCE);
+        if (absenceTotal > 5) {
             return EXPULSION;
         }
-        if (absenceCount >= 3) {
+        if (absenceTotal >= 3) {
             return MEETING;
         }
-        if (absenceCount >= 2) {
+        if (absenceTotal >= 2) {
             return WARNING;
         }
         return NONE;
