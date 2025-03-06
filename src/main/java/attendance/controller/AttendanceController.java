@@ -1,95 +1,110 @@
 package attendance.controller;
 
-import attendance.domain.AttendanceBeforeAfter;
+import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceLoader;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.AttendanceTimeStatus;
+import attendance.domain.Crew;
 import attendance.domain.CrewAttendance;
+import attendance.domain.WarningCrewDto;
 import attendance.domain.WarningLevel;
-import attendance.util.FileLoader;
-import attendance.view.DataFileReader;
+import attendance.view.DataSourceReader;
 import attendance.view.InputView;
-import attendance.view.OutputView;
+import attendance.view.ResultView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceController {
     private static final Map<String, Runnable> operations = new HashMap<>();
+    private static final String REGISTER_OPERATION_KEY = "1";
+    private static final String MODIFY_OPERATION_KEY = "2";
+    private static final String SHOW_ATTENDANCES_OPERATION_KEY = "3";
+    private static final String SHOW_WARNING_CREWS_OPERATION_KEY = "4";
+    private static final String QUIT_OPERATION_KEY = "Q";
+    private final InputView inputView;
+    private final ResultView resultView;
 
-    private static final String REGISTER_KEY = "1";
-    private static final String MODIFY_KEY = "2";
-    private static final String CREW_ATTENDANCE_KEY = "3";
-    private static final String WARNING_CREWS_KEY = "4";
-    private static final String QUIT_KEY = "Q";
+    public AttendanceController(final InputView inputView, final ResultView resultView) {
+        this.inputView = inputView;
+        this.resultView = resultView;
+    }
 
     public void run() {
-        AttendanceBook attendanceBook = initData();
+        AttendanceBook attendanceBook = AttendanceLoader.load(DataSourceReader.readFile());
         initOperations(attendanceBook);
-        String option;
-        while (!(option = getInputOption()).equals(QUIT_KEY)) {
-            operations.get(option).run();
+        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
+        String inputOption;
+        while (!(inputOption = inputView.readOption(today)).equals(QUIT_OPERATION_KEY)) {
+            operations.get(inputOption).run();
         }
     }
 
-    private AttendanceBook initData() {
-        return new AttendanceBook(FileLoader.loadAll(DataFileReader.read()));
-    }
-
     private void initOperations(AttendanceBook attendanceBook) {
-        operations.put(REGISTER_KEY, () -> registerAttendance(attendanceBook));
-        operations.put(MODIFY_KEY, () -> modifyAttendance(attendanceBook));
-        operations.put(CREW_ATTENDANCE_KEY, () -> queryAttendance(attendanceBook));
-        operations.put(WARNING_CREWS_KEY, () -> queryWarningCrews(attendanceBook));
+        operations.put(REGISTER_OPERATION_KEY, () -> registerAttendance(attendanceBook));
+        operations.put(MODIFY_OPERATION_KEY, () -> modifyAttendance(attendanceBook));
+        operations.put(SHOW_ATTENDANCES_OPERATION_KEY, () -> showCrewAttendance(attendanceBook));
+        operations.put(SHOW_WARNING_CREWS_OPERATION_KEY, () -> showWarningCrews(attendanceBook));
     }
 
-    private String getInputOption() {
-        OutputView.printOptions();
-        return InputView.readOption();
+    private void modifyAttendance(final AttendanceBook attendanceBook) {
+        String nickname = inputView.readNicknameForModify();
+        int dayOfMonth = inputView.readDayForModify();
+        LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
+        LocalTime newTime = inputView.readTimeForModify();
+        LocalDateTime newDateTime = LocalDateTime.of(targetDate, newTime);
+
+        CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf(nickname);
+        final Attendance prevAttendance = crewAttendance.getAttendanceOn(targetDate);
+        crewAttendance.modify(newDateTime);
+        Attendance newAttendance = crewAttendance.getAttendanceOn(targetDate);
+        resultView.printModifiedResult(prevAttendance, newAttendance);
     }
 
-    private void registerAttendance(AttendanceBook attendanceBook) {
-        String name = InputView.readNickName();
-        final LocalTime localTime = InputView.readAttendanceTime();
-        LocalDateTime localDateTime = LocalDateTime.of(LocalDate.now(ZoneId.of("Asia/Seoul")), localTime);
+    private void registerAttendance(final AttendanceBook attendanceBook) {
+        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
+        String nickname = inputView.readNickname();
+        LocalTime attendanceTime = inputView.readAttendanceTime();
+        LocalDateTime newAttendance = LocalDateTime.of(LocalDate.from(today), attendanceTime);
 
-        attendanceBook.add(name, localDateTime);
-
-        OutputView.printAttendance(localDateTime);
+        attendanceBook.addAttendance(nickname, newAttendance);
+        Attendance attendance = attendanceBook.getCrewAttendanceOf(nickname).getAttendanceOn(newAttendance);
+        resultView.printAttendance(attendance);
     }
 
-    private void modifyAttendance(AttendanceBook attendanceBook) {
-        String name = InputView.readModifyNickName();
-        final int day = InputView.readModifyDay();
-        LocalDate targetDate = LocalDate.of(2024, 12, day);
-        LocalTime newLocalTime = InputView.readModifyTime();
-        LocalDateTime newLocalDateTime = LocalDateTime.of(targetDate, newLocalTime);
-
-        AttendanceBeforeAfter modifiedResult = attendanceBook.modify(name, newLocalDateTime);
-        OutputView.printModifiedResult(targetDate, modifiedResult);
+    private void showCrewAttendance(AttendanceBook attendanceBook) {
+        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
+        String nickname = inputView.readNickname();
+        CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf(nickname);
+        resultView.printCrewAttendanceHeader(nickname);
+        resultView.printCrewAttendances(crewAttendance, today);
+        resultView.printAttendanceStatusCounts(crewAttendance, today);
+        resultView.printWarningLevel(attendanceBook, nickname, today);
     }
 
-    private void queryAttendance(AttendanceBook attendanceBook) {
-        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        String name = InputView.readNickName();
-        Map<LocalDate, AttendanceTimeStatus> attendances = attendanceBook.getAttendanceHistory(name, today);
-        OutputView.printAttendances(name, attendances);
-
-        Map<AttendanceStatus, Integer> attendanceStatusCounts = attendanceBook.getAttendanceStatusCounts(name, today);
-        OutputView.printAttendanceStatuses(attendanceStatusCounts);
-
-        WarningLevel warningLevel = attendanceBook.getCrewWarningLevel(name, today);
-        OutputView.printCrewWarningLevel(warningLevel);
+    private void showWarningCrews(AttendanceBook attendanceBook) {
+        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
+        List<WarningCrewDto> warningCrewDtos = new ArrayList<>();
+        List<Crew> crews = attendanceBook.findAllCrew();
+        for (Crew crew : crews) {
+            CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf(crew.nickname());
+            Map<AttendanceStatus, Integer> attendanceStatusCounts = crewAttendance.countAttendanceStatusesBefore(today);
+            warningCrewDtos.add(createWarningCrewDto(crew, attendanceStatusCounts));
+        }
+        resultView.printWarningCrews(warningCrewDtos);
     }
 
-    private void queryWarningCrews(AttendanceBook attendanceBook) {
-        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        Map<WarningLevel, List<CrewAttendance>> crewsByWarningLevel = attendanceBook.getCrewsByWarningLevel(today);
-
-        OutputView.printWarningCrews(crewsByWarningLevel, today);
+    private WarningCrewDto createWarningCrewDto(Crew crew, Map<AttendanceStatus, Integer> attendanceStatusCounts) {
+        return new WarningCrewDto(
+                crew.nickname(),
+                attendanceStatusCounts.get(AttendanceStatus.ABSENT),
+                attendanceStatusCounts.get(AttendanceStatus.LATE),
+                WarningLevel.calculateAbsentCount(attendanceStatusCounts),
+                WarningLevel.calculateBy(attendanceStatusCounts)
+        );
     }
 }

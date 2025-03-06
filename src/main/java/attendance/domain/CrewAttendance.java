@@ -1,88 +1,110 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatus.ABSENT;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 public class CrewAttendance {
-    private final String name;
-    private final Map<LocalDate, AttendanceTimeStatus> attendances;
+    private final List<Attendance> attendances;
 
-    public CrewAttendance(String name) {
-        this.name = name;
-        this.attendances = new HashMap<>();
+    public CrewAttendance() {
+        this.attendances = new ArrayList<>();
     }
 
-    public void add(final LocalDateTime localDateTime) {
-        LocalDate date = localDateTime.toLocalDate();
-        AttendanceTimeStatus attendanceTimeStatus = new AttendanceTimeStatus(localDateTime);
+    public void add(final LocalDateTime attendance) {
+        Campus.validateOperationDay(attendance);
+        validateDuplicateDate(attendance);
+        attendances.add(Attendance.of(attendance));
+    }
 
-        if (attendances.containsKey(date)) {
-            throw new IllegalArgumentException("[ERROR] 출석 기록이 존재합니다. 출석 수정 기능을 이용하세요.");
+    private void validateDuplicateDate(final LocalDateTime attendance) {
+        if (isExistDay(attendance)) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석 기록이 존재합니다. 출석 수정 기능을 이용해주세요.");
         }
-        attendances.put(date, attendanceTimeStatus);
     }
 
-    public void modify(final LocalDateTime localDateTime) {
-        AttendanceTimeStatus attendanceTimeStatus = new AttendanceTimeStatus(localDateTime);
-        attendances.put(localDateTime.toLocalDate(), attendanceTimeStatus);
+    public boolean isExistDay(final LocalDateTime targetDateTime) {
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.isSameDay(Attendance.of(targetDateTime)));
     }
 
-    public AttendanceTimeStatus getAttendanceOn(final LocalDate date) {
-        if (isEmptyOn(date)) {
-            throw new IllegalArgumentException("해당 날짜에 출석 기록이 없습니다.");
-        }
-        return attendances.get(date);
+    public void modify(final LocalDateTime newAttendance) {
+        Campus.validateOperationDay(newAttendance);
+        Attendance prevAttendance = getAttendanceOn(LocalDate.from(newAttendance));
+        attendances.remove(prevAttendance);
+        attendances.add(Attendance.of(newAttendance));
     }
 
-    private boolean isEmptyOn(final LocalDate localDate) {
-        return !attendances.containsKey(localDate);
+    public Attendance getAttendanceOn(final LocalDateTime targetDay) {
+        return getAttendanceOn(LocalDate.from(targetDay));
     }
 
-    public boolean hasSameWarningLevel(WarningLevel warningLevel, final LocalDate today) {
-        Map<AttendanceStatus, Integer> attendanceStatusCounts = countAttendanceStatusBefore(today);
-        WarningLevel crewWarningLevel = WarningLevel.calculateLevel(attendanceStatusCounts);
-        return crewWarningLevel == warningLevel;
+    public Attendance getAttendanceOn(final LocalDate targetDay) {
+        return attendances.stream()
+                .filter(attendance -> attendance.record().date().equals(targetDay))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜의 출석 기록이 존재하지 않습니다."));
     }
 
-    public Map<AttendanceStatus, Integer> countAttendanceStatusBefore(LocalDate localDate) {
-        Map<LocalDate, AttendanceTimeStatus> attendances = getAttendancesBefore(localDate);
+    public Map<AttendanceStatus, Integer> countAttendanceStatusesBefore(final LocalDateTime today) {
         Map<AttendanceStatus, Integer> attendanceStatusCounts = new EnumMap<>(AttendanceStatus.class);
 
         for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
-            long count = attendances.values().stream()
-                    .filter(timeStatus -> timeStatus.status().equals(attendanceStatus))
-                    .count();
-            attendanceStatusCounts.put(attendanceStatus, (int) count);
+            int count = countAttendanceStatusBefore(today, attendanceStatus);
+            attendanceStatusCounts.put(attendanceStatus, count);
         }
+
         return attendanceStatusCounts;
     }
 
-    public Map<LocalDate, AttendanceTimeStatus> getAttendancesBefore(LocalDate localDate) {
-        updateAttendanceBefore(localDate);
-        return attendances.entrySet().stream()
-                .filter(entry -> entry.getKey().isBefore(localDate))
-                .collect(Collectors.toUnmodifiableMap(Entry::getKey, Entry::getValue));
+    private int countAttendanceStatusBefore(final LocalDateTime today, final AttendanceStatus attendanceStatus) {
+        if (attendanceStatus.equals(ABSENT)) {
+            return countAbsent(today);
+        }
+        return (int) attendances.stream()
+                .filter(attendance -> !attendance.isSameDay(Attendance.of(today)))
+                .filter(attendance -> attendance.status().equals(attendanceStatus))
+                .count();
     }
 
-    private void updateAttendanceBefore(LocalDate endDay) {
-        for (int day = 1; day < endDay.getDayOfMonth(); day++) {
-            LocalDate date = LocalDate.of(2024, 12, day);
-            addAbsenceIfEmptyOn(date);
+    private int countAbsent(final LocalDateTime today) {
+        List<LocalDateTime> days = new ArrayList<>();
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            days.add(LocalDateTime.of(2024, 12, day, 0, 0));
+        }
+        return (int) days.stream()
+                .filter( date -> !Campus.isOffDay(date))
+                .filter(date -> !isExistDay(date) || getAttendanceOn(date).status().equals(ABSENT) )
+                .count();
+    }
+
+    public Map<LocalDate, AttendanceStatus> getAttendanceStatusesBefore(final LocalDateTime today) {
+        Map<LocalDate, AttendanceStatus> attendanceStatuses = new HashMap<>();
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            LocalDateTime targetDay = today.minusDays(day);
+            update(attendanceStatuses, targetDay);
+        }
+        return Collections.unmodifiableMap(attendanceStatuses);
+    }
+
+    private void update(final Map<LocalDate, AttendanceStatus> attendanceStatuses, final LocalDateTime targetDay) {
+        if (!Campus.isOffDay(targetDay)) {
+            attendanceStatuses.put(LocalDate.from(targetDay), getAttendanceStatusOn(targetDay));
         }
     }
 
-    private void addAbsenceIfEmptyOn(final LocalDate date) {
-        if (AttendanceChecker.isCampusDay(date) && isEmptyOn(date)) {
-            attendances.put(date, new AttendanceTimeStatus());
+    private AttendanceStatus getAttendanceStatusOn(final LocalDateTime targetDay) {
+        Campus.validateOperationDay(targetDay);
+        if (isExistDay(targetDay)) {
+            return getAttendanceOn(targetDay).status();
         }
-    }
-
-    public String getName() {
-        return name;
+        return ABSENT;
     }
 }

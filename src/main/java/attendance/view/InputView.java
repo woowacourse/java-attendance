@@ -1,65 +1,66 @@
 package attendance.view;
 
+import attendance.util.DateFormatter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 
 public class InputView {
-    private static final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-    public static final String ENTER_NAME = "\n닉네임을 입력해 주세요.\n";
-    public static final String ENTER_NAME_FOR_MODIFY = "\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.\n";
-    public static final String ENTER_DAY_FOR_MODIFY = "수정하려는 날짜(일)를 입력해 주세요.\n";
-    public static final String ENTER_NEW_TIME = "언제로 변경하겠습니까?\n";
+    private static final String TODAY_IS = "\n오늘은 %s입니다. ";
+    private static final String ENTER_OPTION = """
+            기능을 선택해 주세요.
+            1. 출석 확인
+            2. 출석 수정
+            3. 크루별 출석 기록 확인
+            4. 제적 위험자 확인
+            Q. 종료
+            """;
+    private static final String ENTER_NICKNAME = "\n닉네임을 입력해 주세요.\n";
     private static final String ENTER_ATTENDANCE_TIME = "등교 시간을 입력해 주세요.\n";
+    private static final String ENTER_NICKNAME_FOR_MODIFY = "\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.\n";
+    private static final String ENTER_DAY_FOR_MODIFY = "수정하려는 날짜(일)를 입력해 주세요.\n";
+    private static final String ENTER_TIME_FOR_MODIFY = "언제로 변경하겠습니까?\n";
 
-    public static String readOption() {
+    private final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+    public String readOption(final LocalDateTime today) {
+        System.out.printf(TODAY_IS, DateFormatter.formatDate(today));
+        System.out.print(ENTER_OPTION);
         return readLine();
     }
 
-    public static String readNickName() {
-        System.out.print(ENTER_NAME);
+    public String readNickname() {
+        System.out.print(ENTER_NICKNAME);
         return readLine();
     }
 
-    public static LocalTime readAttendanceTime() {
+    public LocalTime readAttendanceTime() {
         System.out.print(ENTER_ATTENDANCE_TIME);
-        try {
-            return LocalTime.parse(readLine());
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 잘못된 시간 형식입니다. HH:mm 형식으로 입력해주세요.");
-        }
+        return LocalTime.parse(readLine());
     }
 
-    public static String readModifyNickName() {
-        System.out.print(ENTER_NAME_FOR_MODIFY);
+    public String readNicknameForModify() {
+        System.out.print(ENTER_NICKNAME_FOR_MODIFY);
         return readLine();
     }
 
-    public static int readModifyDay() {
+    public int readDayForModify() {
         System.out.print(ENTER_DAY_FOR_MODIFY);
-        try{
-            return Integer.parseInt(readLine());
-        } catch (NumberFormatException e){
-            throw new IllegalArgumentException("[ERROR] 날짜를 숫자로 입력해주세요.");
-        }
+        return Integer.parseInt(readLine());
     }
 
-    public static LocalTime readModifyTime() {
-        System.out.print(ENTER_NEW_TIME);
-        try{
-            return LocalTime.parse(readLine());
-        } catch (DateTimeParseException e){
-            throw new IllegalArgumentException("[ERROR] 시간을 HH:mm 형식으로 입력해주세요.");
-        }
+    public LocalTime readTimeForModify() {
+        System.out.print(ENTER_TIME_FOR_MODIFY);
+        return LocalTime.parse(readLine());
     }
 
-    private static String readLine(){
+    private String readLine() {
         try {
-            return bufferedReader.readLine();
+            return reader.readLine();
         } catch (IOException e) {
-            throw new RuntimeException("입출력 오류 발생");
+            throw new RuntimeException(e);
         }
     }
 }

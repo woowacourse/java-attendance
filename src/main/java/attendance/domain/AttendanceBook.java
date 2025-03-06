@@ -1,72 +1,60 @@
 package attendance.domain;
 
-import static attendance.domain.WarningLevel.NONE;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
-    private final Map<String, CrewAttendance> crewAttendances;
+    private final Map<Crew, CrewAttendance> crews;
 
-    public AttendanceBook(final Map<String, CrewAttendance> crewAttendances) {
-        this.crewAttendances = crewAttendances;
+    public AttendanceBook() {
+        this.crews = new HashMap<>();
     }
 
-    public void add(final String name, final LocalDateTime localDateTime) {
-        validateName(name);
-        CrewAttendance crewAttendance = crewAttendances.get(name);
-        crewAttendance.add(localDateTime);
+    public CrewAttendance addCrew(final String nickname) {
+        Crew crew = new Crew(nickname);
+        if (!crews.containsKey(crew)) {
+            crews.put(crew, new CrewAttendance());
+        }
+        return crews.get(crew);
     }
 
-    public AttendanceBeforeAfter modify(final String name, final LocalDateTime newLocalDateTime) {
-        validateName(name);
-        CrewAttendance crewAttendance = crewAttendances.get(name);
-        LocalDate targetDate = newLocalDateTime.toLocalDate();
-
-        AttendanceTimeStatus prevAttendanceTimeStatus = crewAttendance.getAttendanceOn(targetDate);
-        crewAttendance.modify(newLocalDateTime);
-        AttendanceTimeStatus newAttendanceTimeStatus = crewAttendance.getAttendanceOn(targetDate);
-
-        return new AttendanceBeforeAfter(prevAttendanceTimeStatus, newAttendanceTimeStatus);
+    public void addAttendance(final String nickname, final LocalDateTime attendance) {
+        throwIfNotRegisteredCrew(nickname);
+        CrewAttendance crewAttendance = addCrew(nickname);
+        crewAttendance.add(attendance);
     }
 
-    private void validateName(final String name) {
-        if (!crewAttendances.containsKey(name)) {
-            throw new IllegalArgumentException("[ERROR] 유효하지 않은 닉네임입니다.");
+    public int countCrews() {
+        return crews.size();
+    }
+
+    public void throwIfNotRegisteredCrew(final String nickname) {
+        if (!isCrew(nickname)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
     }
 
-    public Map<LocalDate, AttendanceTimeStatus> getAttendanceHistory(final String name, LocalDate date) {
-        CrewAttendance crewAttendance = crewAttendances.get(name);
-        return crewAttendance.getAttendancesBefore(date);
+    public boolean isCrew(final String nickname) {
+        return crews.containsKey(new Crew(nickname));
     }
 
-    public Map<AttendanceStatus, Integer> getAttendanceStatusCounts(final String name, LocalDate date) {
-        CrewAttendance crewAttendance = crewAttendances.get(name);
-        return crewAttendance.countAttendanceStatusBefore(date);
+    public WarningLevel getWarningLevelOf(final String nickname, final LocalDateTime today) {
+        return WarningLevel.calculateBy(getAttendanceStatusCounts(nickname, today));
     }
 
-    public WarningLevel getCrewWarningLevel(final String name, LocalDate date) {
-        final Map<AttendanceStatus, Integer> attendanceStatusCounts = getAttendanceStatusCounts(name, date);
-        return WarningLevel.calculateLevel(attendanceStatusCounts);
+    public Map<AttendanceStatus, Integer> getAttendanceStatusCounts(final String nickname, final LocalDateTime today) {
+        CrewAttendance crewAttendance = crews.get(new Crew(nickname));
+        return crewAttendance.countAttendanceStatusesBefore(today);
     }
 
-    public Map<WarningLevel, List<CrewAttendance>> getCrewsByWarningLevel(final LocalDate today) {
-        Map<WarningLevel, List<CrewAttendance>> warningCrews = new EnumMap<>(WarningLevel.class);
-        for (WarningLevel warningLevel : WarningLevel.values()) {
-            List<CrewAttendance> crewAttendances = findByWarningLevel(warningLevel, today);
-            warningCrews.put(warningLevel, crewAttendances);
-        }
-        warningCrews.remove(NONE);
-        return warningCrews;
+    public CrewAttendance getCrewAttendanceOf(final String nickname) {
+        throwIfNotRegisteredCrew(nickname);
+        return crews.get(new Crew(nickname));
     }
 
-    private List<CrewAttendance> findByWarningLevel(final WarningLevel warningLevel, final LocalDate today) {
-        return crewAttendances.values().stream()
-                .filter(crewAttendance -> crewAttendance.hasSameWarningLevel(warningLevel, today))
-                .toList();
+    public List<Crew> findAllCrew() {
+        return crews.keySet().stream().toList();
     }
 }

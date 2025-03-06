@@ -1,187 +1,119 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceStatus.ABSENCE;
-import static attendance.domain.AttendanceStatus.LATENESS;
-import static attendance.domain.AttendanceStatus.PRESENT;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
-class AttendanceBookTest {
-    @DisplayName("크루 출석 정보 저장 성공")
+public class AttendanceBookTest {
+    @DisplayName("출석부에 신규 크루 추가")
     @Test
     void test1() {
-        Map<String, CrewAttendance> crewAttendances = CrewAttendanceTestFixture.createCrewAttendances();
-        AttendanceBook attendanceBook = new AttendanceBook(crewAttendances);
+        AttendanceBook attendanceBook = new AttendanceBook();
 
-        String name = "빙봉";
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 1);
+        attendanceBook.addCrew("빙봉");
 
-        assertThatCode(() -> attendanceBook.add(name, localDateTime)).doesNotThrowAnyException();
+        assertThat(attendanceBook.countCrews()).isEqualTo(1);
+        assertThat(attendanceBook.isCrew("빙봉")).isTrue();
     }
 
-    @DisplayName("크루 출석 정보 저장 실패")
+    @DisplayName("출석부에 추가하려는 크루가 존재하면 해당 크루의 CrewAttendance 반환")
     @Test
     void test2() {
-        Map<String, CrewAttendance> crewAttendances = CrewAttendanceTestFixture.createCrewAttendances();
-        AttendanceBook attendanceBook = new AttendanceBook(crewAttendances);
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.addCrew("빙봉");
+        int expectedSize = attendanceBook.countCrews();
 
-        String name = "빙봉";
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 1);
-        attendanceBook.add(name, localDateTime);
+        CrewAttendance crewAttendance = attendanceBook.addCrew("빙봉");
 
-        String otherName = "루키";
-
-        assertThatThrownBy(() -> attendanceBook.add(otherName, localDateTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 유효하지 않은 닉네임입니다.");
+        assertThat(attendanceBook.countCrews()).isEqualTo(expectedSize);
+        assertThat(crewAttendance).isInstanceOf(CrewAttendance.class);
     }
 
-    @DisplayName("크루 출석 정보 수정 성공")
+    @DisplayName("주어진 닉네임을 가진 크루의 CrewAttendance 반환 성공")
     @Test
     void test3() {
-        Map<String, CrewAttendance> crewAttendances = new HashMap<>();
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
-        CrewAttendance crewAttendance = new CrewAttendance("빙봉");
-        crewAttendance.add(localDateTime);
-        crewAttendances.put("빙봉", crewAttendance);
+        String nickname = "빙티";
+        final LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 2, 13, 0);
+        final LocalDateTime localDateTime2 = LocalDateTime.of(2024, 12, 3, 10, 7);
+        final LocalDateTime localDateTime3 = LocalDateTime.of(2024, 12, 4, 10, 2);
+        final LocalDateTime localDateTime4 = LocalDateTime.of(2024, 12, 5, 10, 6);
+        List<LocalDateTime> attendances = List.of(localDateTime1, localDateTime2, localDateTime3, localDateTime4);
 
-        AttendanceBook attendanceBook = new AttendanceBook(crewAttendances);
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.addCrew(nickname);
+        for (LocalDateTime attendance : attendances) {
+            attendanceBook.addAttendance(nickname, attendance);
+        }
 
-        String name = "빙봉";
-        LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, 23, 13, 1);
+        CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf("빙티");
 
-        assertThatCode(() -> attendanceBook.modify(name, newLocalDateTime)).doesNotThrowAnyException();
+        assertThat(crewAttendance)
+                .isNotNull()
+                .isInstanceOf(CrewAttendance.class);
+        assertThat(crewAttendance.getAttendanceOn(localDateTime1)).isEqualTo(Attendance.of(localDateTime1));
+        assertThat(crewAttendance.getAttendanceOn(localDateTime2)).isEqualTo(Attendance.of(localDateTime2));
+        assertThat(crewAttendance.getAttendanceOn(localDateTime3)).isEqualTo(Attendance.of(localDateTime3));
+        assertThat(crewAttendance.getAttendanceOn(localDateTime4)).isEqualTo(Attendance.of(localDateTime4));
     }
 
-    @DisplayName("유효하지 않은 닉네임 크루 출석 정보 수정 실패")
+    @DisplayName("크루의 출석, 지각, 결석 횟수 확인 테스트")
     @Test
     void test4() {
-        Map<String, CrewAttendance> crewAttendances = new HashMap<>();
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
-        CrewAttendance crewAttendance = new CrewAttendance("빙봉");
-        crewAttendance.add(localDateTime);
-        crewAttendances.put("빙봉", crewAttendance);
+        LocalDateTime today = LocalDateTime.of(2024, 12, 16, 13, 0);
+        String nickname = "빙티";
+        List<LocalDateTime> attendances = List.of(
+                LocalDateTime.of(2024, 12, 2, 13, 0), //출석
+                LocalDateTime.of(2024, 12, 3, 10, 7), //지각
+                LocalDateTime.of(2024, 12, 4, 10, 2), //출석
+                LocalDateTime.of(2024, 12, 5, 10, 6), //지각
+                LocalDateTime.of(2024, 12, 6, 10, 1), //출석
+                LocalDateTime.of(2024, 12, 10, 10, 3), //출석
+                LocalDateTime.of(2024, 12, 13, 10, 2), //출석
+                today
+        ); //결석 3회
 
-        AttendanceBook attendanceBook = new AttendanceBook(crewAttendances);
-
-        String name = "빙티";
-        LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, 22, 13, 1);
-
-        assertThatThrownBy(() -> attendanceBook.modify(name, newLocalDateTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 유효하지 않은 닉네임입니다.");
-
-    }
-
-    @DisplayName("기록이 없는 날짜 출석 정보 수정 실패")
-    @Test
-    void test5() {
-        Map<String, CrewAttendance> crewAttendances = new HashMap<>();
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
-        CrewAttendance crewAttendance = new CrewAttendance("빙봉");
-        crewAttendance.add(localDateTime);
-        crewAttendances.put("빙봉", crewAttendance);
-
-        AttendanceBook attendanceBook = new AttendanceBook(crewAttendances);
-        String name = "빙봉";
-        LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, 22, 13, 1);
-
-        assertThatThrownBy(() -> attendanceBook.modify(name, newLocalDateTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("해당 날짜에 출석 기록이 없습니다.");
-    }
-
-    @DisplayName("크루의 출석 기록 조회")
-    @Test
-    void test7() {
-        LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 3, 9, 58);
-        LocalDateTime localDateTime2 = LocalDateTime.of(2024, 12, 4, 10, 2);
-        LocalDateTime localDateTime3 = LocalDateTime.of(2024, 12, 5, 10, 6);
-        LocalDateTime localDateTime4 = LocalDateTime.of(2024, 12, 6, 10, 1);
-        List<LocalDateTime> localDateTimes =
-                new ArrayList<>(List.of(localDateTime1, localDateTime2, localDateTime3, localDateTime4));
-
-        String crewName = "빙티";
-        CrewAttendance crewAttendance = new CrewAttendance(crewName);
-        localDateTimes.forEach(crewAttendance::add);
-
-        Map<String, CrewAttendance> crewAttendances = new HashMap<>();
-        crewAttendances.put(crewName, crewAttendance);
-        AttendanceBook attendanceBook = new AttendanceBook(crewAttendances);
-
-        Map<LocalDate, AttendanceTimeStatus> attendances =
-                attendanceBook.getAttendanceHistory(crewName, LocalDate.of(2024, 12, 6));
-
-        localDateTimes.add(LocalDateTime.of(2024, 12, 2, 0, 0));
-        List<LocalDate> expectedLocalDates = localDateTimes.stream()
-                .filter(localDateTime -> !localDateTime.equals(localDateTime4))
-                .map(LocalDateTime::toLocalDate)
-                .toList();
-
-        assertThat(attendances).hasSize(4);
-        assertThat(attendances.keySet()).containsAll(expectedLocalDates);
-    }
-
-    @DisplayName("크루의 출석, 지각, 결석 횟수 세기")
-    @Test
-    void test6() {
-        String crewName = "빙티";
-        CrewAttendance crewAttendance = new CrewAttendance(crewName);
-        crewAttendance.add(LocalDateTime.of(2024, 12, 3, 9, 58));
-        crewAttendance.add(LocalDateTime.of(2024, 12, 4, 10, 2));
-        crewAttendance.add(LocalDateTime.of(2024, 12, 5, 10, 6));
-        crewAttendance.add(LocalDateTime.of(2024, 12, 6, 10, 1));
-
-        Map<String, CrewAttendance> crewAttendances = new HashMap<>();
-        crewAttendances.put(crewName, crewAttendance);
-        AttendanceBook attendanceBook = new AttendanceBook(crewAttendances);
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.addCrew(nickname);
+        for (LocalDateTime attendance : attendances) {
+            attendanceBook.addAttendance(nickname, attendance);
+        }
 
         Map<AttendanceStatus, Integer> attendanceStatusCounts =
-                attendanceBook.getAttendanceStatusCounts(crewName, LocalDate.of(2024, 12, 6));
+                attendanceBook.getAttendanceStatusCounts(nickname, today);
 
-        assertThat(attendanceStatusCounts.get(PRESENT)).isEqualTo(2);
-        assertThat(attendanceStatusCounts.get(LATENESS)).isEqualTo(1);
-        assertThat(attendanceStatusCounts.get(ABSENCE)).isEqualTo(1);
+        assertThat(attendanceStatusCounts.get(AttendanceStatus.PRESENT)).isEqualTo(5);
+        assertThat(attendanceStatusCounts.get(AttendanceStatus.LATE)).isEqualTo(2);
+        assertThat(attendanceStatusCounts.get(AttendanceStatus.ABSENT)).isEqualTo(3);
     }
 
-    @DisplayName("크루의 제적 위험 단계 가져오기")
-    @CsvSource(value = {"쿠키,경고", "빙봉,경고", "빙티,면담", "이든,면담", "짱수,해당 없음"})
-    @ParameterizedTest
-    void test8(String crewName, String expectedLevel) {
-        final Map<String, CrewAttendance> crewAttendances = CrewAttendanceTestFixture.createCrewAttendances();
-        AttendanceBook attendanceBook = new AttendanceBook(crewAttendances);
-        LocalDate date = LocalDate.of(2024, 12, 13);
+    @DisplayName("크루의 제적, 면담, 경고 대상자 확인 테스트")
+    @Test
+    void test5() {
+        LocalDateTime today = LocalDateTime.of(2024, 12, 16, 13, 0);
+        String nickname = "빙티";
+        List<LocalDateTime> attendances = List.of(
+                LocalDateTime.of(2024, 12, 2, 13, 0), //출석
+                LocalDateTime.of(2024, 12, 3, 10, 7), //지각
+                LocalDateTime.of(2024, 12, 4, 10, 2), //출석
+                LocalDateTime.of(2024, 12, 5, 10, 6), //지각
+                LocalDateTime.of(2024, 12, 6, 10, 1), //출석
+                LocalDateTime.of(2024, 12, 10, 10, 3), //출석
+                LocalDateTime.of(2024, 12, 13, 10, 2), //출석
+                today
+        ); //결석 3회
 
-        WarningLevel actualLevel = attendanceBook.getCrewWarningLevel(crewName, date);
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.addCrew(nickname);
+        for (LocalDateTime attendance : attendances) {
+            attendanceBook.addAttendance(nickname, attendance);
+        }
 
-        assertThat(actualLevel.getDisplayName()).isEqualTo(expectedLevel);
-    }
+        WarningLevel actual = attendanceBook.getWarningLevelOf(nickname, today);
 
-    @DisplayName("제적 위험 단계 별 해당 크루 찾기")
-    @CsvSource(value = {"WARNING, 빙봉, 쿠키", "SUPERVISED, 빙티, 이든"})
-    @ParameterizedTest
-    void test8(String targetLevel, String crew1, String crew2) {
-        final Map<String, CrewAttendance> crewAttendances = CrewAttendanceTestFixture.createCrewAttendances();
-        AttendanceBook attendanceBook = new AttendanceBook(crewAttendances);
-        LocalDate date = LocalDate.of(2024, 12, 13);
-
-        final Map<WarningLevel, List<CrewAttendance>> crewsByWarningLevel = attendanceBook.getCrewsByWarningLevel(date);
-
-        List<CrewAttendance> crews = crewsByWarningLevel.get(WarningLevel.valueOf(targetLevel));
-        List<String> crewNames = crews.stream().map(CrewAttendance::getName).toList();
-
-        assertThat(crewNames).containsAll(List.of(crew1, crew2));
+        assertThat(actual).isEqualTo(WarningLevel.ONE_ON_ONE);
     }
 }

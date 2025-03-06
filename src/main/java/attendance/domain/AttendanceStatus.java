@@ -1,10 +1,13 @@
 package attendance.domain;
 
 public enum AttendanceStatus {
-    PRESENT("출석"), LATENESS("지각"), ABSENCE("결석");
+    PRESENT("출석"),
+    LATE("지각"),
+    ABSENT("결석");
 
     private final String displayName;
-    AttendanceStatus(String displayName) {
+
+    AttendanceStatus(final String displayName) {
         this.displayName = displayName;
     }
 
