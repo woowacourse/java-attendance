@@ -1,120 +1,122 @@
 package attendance.util;
 
+import static attendance.fixture.TestFixture.makeDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class StringParserTest {
 
-    @DisplayName("시간 문자열을 LocalTime으로 변환한다")
     @Test
-    void parseLocalTimeTest() {
+    void 시간_문자열을_LocalTime으로_파싱한다() {
         // Given
+        String input = "10:01";
+        LocalTime expected = LocalTime.of(10, 1);
 
-        // When
-        LocalTime parsedLocalTime = StringParser.parseLocalTime("11:11");
-
-        // Then
-        assertThat(parsedLocalTime).hasHour(11).hasMinute(11);
+        // When & Then
+        assertThat(StringParser.parseLocalTime(input)).isEqualTo(expected);
     }
 
-    @DisplayName("시간 형식이 HH:MM가 아니라면 예외가 발생한다")
-    @ParameterizedTest
-    @ValueSource(strings = {"11%12", "25:12"})
-    void invalidLocalTimeFormatTest(String input) {
+    @Test
+    void 시간_문자열_형식에_맞지_않은_경우_예외가_발생한다() {
         // Given
+        String input = "10:1";
 
         // When & Then
         assertThatThrownBy(() -> StringParser.parseLocalTime(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 시간이 HH:MM 형식에 맞지 않습니다.");
+                .hasMessageContaining("[ERROR] HH:mm 형식이 아닙니다.");
     }
 
-    @DisplayName("정수 문자열을 정수로 변환한다")
     @Test
-    void parseIntTest() {
+    void 파일_데이터를_객체로_파싱한다() {
         // Given
-        final String input = "11";
+        List<String> lines = List.of(
+                "짱수,2024-12-02 13:00",
+                "빙티,2024-12-02 13:00",
+                "쿠키,2024-12-02 13:01",
+                "이든,2024-12-02 13:02",
+                "빙봉,2024-12-02 13:06",
+                "짱수,2024-12-03 10:00",
+                "빙봉,2024-12-03 10:03",
+                "쿠키,2024-12-03 10:06",
+                "이든,2024-12-03 10:06",
+                "빙티,2024-12-03 10:07"
+        );
+        Map<String, List<LocalDateTime>> expected = Map.of(
+                "짱수", List.of(makeDateTime(2, 13, 0), makeDateTime(3, 10, 0)),
+                "빙티", List.of(makeDateTime(2, 13, 0), makeDateTime(3, 10, 7)),
+                "쿠키", List.of(makeDateTime(2, 13, 1), makeDateTime(3, 10, 6)),
+                "이든", List.of(makeDateTime(2, 13, 2), makeDateTime(3, 10, 6)),
+                "빙봉", List.of(makeDateTime(2, 13, 6), makeDateTime(3, 10, 3))
+        );
 
         // When
-        int parsedInt = StringParser.parseInt(input);
+        Map<String, List<LocalDateTime>> result = StringParser.parseFile(lines);
 
         // Then
-        assertThat(parsedInt).isEqualTo(11);
+        assertThat(result).isEqualTo(expected);
     }
 
-    @DisplayName("정수 문자열이 아니라면 예외가 발생한다")
     @Test
-    void invalidIntFormatTest() {
+    void 파일_데이터_형식이_맞지_않을_경우_예외가_발생한다() {
         // Given
-        final String input = "11일";
+        List<String> lines = List.of(
+                "짱수,2024-12-0213:00"
+        );
+        // When & Then
+        assertThatThrownBy(() -> StringParser.parseFile(lines))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("yyyy-MM-dd HH:mm 형식에 맞춰 작성해주세요.");
+    }
+
+    @Test
+    void 문자열을_숫자로_파싱한다() {
+        // Given
+        String input = "31";
 
         // When & Then
-        Assertions.assertThatThrownBy(() -> StringParser.parseInt(input))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 정수 문자열이여야합니다.");
+        assertThat(StringParser.parseInt(input)).isEqualTo(31);
     }
 
-    @DisplayName("12월 일자 문자열로 받아서 LocalDate로 변환한다")
     @Test
-    void parseLocalDateTest() {
+    void 숫자_문자열이_아닌_경우_예외가_발생한다() {
         // Given
-        final int year = 2024;
-        final int month = 12;
-        final String input = "11";
-
-        // When
-        LocalDate localDate = StringParser.parseLocalDate(year, month, input);
-
-        // Then
-        assertThat(localDate).isEqualTo(LocalDate.of(2024, 12, 11));
-    }
-
-    @DisplayName("유효하지 않은 12월 일자 문자열이라면 예외가 발생한다")
-    @Test
-    void invalidLocalDateFormatTest() {
-        // Given
-        final int year = 2024;
-        final int month = 12;
-        final String input = "40";
+        String input = "31.3";
 
         // When & Then
-        Assertions.assertThatThrownBy(() -> StringParser.parseLocalDate(year, month, input))
+        assertThatThrownBy(() -> StringParser.parseInt(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 유효한 일자이여야합니다.");
+                .hasMessageContaining("[ERROR] 숫자 형식의 문자열이 아닙니다.");
     }
 
-    @DisplayName("날짜와 시간 문자열을 받아서 LocalDateTime으로 변환한다")
     @Test
-    void parseLocalDateTime() {
+    void 현재_날짜와_일자를_받아_LocalDate를_생성한다() {
         // Given
-        final String input = "2024-12-03 10:06";
-
-        // When
-        LocalDateTime localDateTime = StringParser.parseLocalDateTime(input);
-
-        // Then
-        assertThat(localDateTime).isEqualTo(LocalDateTime.of(2024, 12, 3, 10, 6));
-    }
-
-    @DisplayName("유효하지 않은 날짜와 시간 문자열이라면 예외가 발생한다")
-    @Test
-    void invalidLocalDateParseTest() {
-        // Given
-        final String input = "20241203T10:06";
+        LocalDate now = LocalDate.of(2024, 12, 13);
+        String day = "3";
+        LocalDate expected = now.withDayOfMonth(3);
 
         // When & Then
-        Assertions.assertThatThrownBy(() -> StringParser.parseLocalDateTime(input))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 날짜 및 시간이 yyyy-MM-dd HH:mm 형식에 맞지 않습니다.");
+        assertThat(StringParser.parseLocalDate(day, now)).isEqualTo(expected);
     }
 
+    @Test
+    void 존재하지_않은_일자일_경우_예외가_발생한다() {
+        // Given
+        LocalDate now = LocalDate.of(2024, 12, 13);
+        String day = "33";
+
+        // When & Then
+        Assertions.assertThatThrownBy(() -> StringParser.parseLocalDate(day, now))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 존재하지 않은 날짜(일)입니다.");
+    }
 }

@@ -1,4 +1,4 @@
-package attendance.controller.command;
+package attendance.controller;
 
 import attendance.domain.CrewHistories;
 

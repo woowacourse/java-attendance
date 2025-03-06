@@ -1,154 +1,165 @@
 package attendance.domain;
 
-import static attendance.fixture.TestFixture.makeAbsent;
-import static attendance.fixture.TestFixture.makeAttendance;
-import static attendance.fixture.TestFixture.makeDefaultTime;
-import static attendance.fixture.TestFixture.makeLate;
+import static attendance.fixture.TestFixture.makeAttendanceExceptMonday;
+import static attendance.fixture.TestFixture.makeCrewHistory;
+import static attendance.fixture.TestFixture.makeDateTime;
+import static attendance.fixture.TestFixture.makeDecemberDate;
+import static attendance.fixture.TestFixture.makeDefaultAttendanceTime;
+import static attendance.fixture.TestFixture.makeTardinessExceptMonday;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.assertj.core.api.Assertions.entry;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.DisplayName;
+import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
-public class CrewHistoryTest {
+class CrewHistoryTest {
 
-    @DisplayName("출석 데이터를 초기화한다")
-    @Test
-    void loadHistoryTest() {
-        // Given
-        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
-        LocalDateTime attendanceTime = makeAttendance(3);
+    private CrewHistory crewHistory;
 
-        // When
-        crewHistory.loadHistory(attendanceTime);
-
-        // Then
-        assertThat(crewHistory.getAttendance()).containsEntry(LocalDate.from(attendanceTime), attendanceTime);
+    @BeforeEach
+    void setUp() {
+        crewHistory = new CrewHistory(new HashMap<>());
     }
 
-    @DisplayName("출석을 한다")
     @Test
-    void checkAttendanceTest() {
+    void 출석_기록을_저장한다() {
         // Given
-        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
-        LocalDateTime attendanceTime = makeAttendance(3);
+        LocalDateTime attendanceTime = makeDefaultAttendanceTime();
 
         // When
-        crewHistory.attend(attendanceTime);
+        crewHistory.add(attendanceTime);
 
         // Then
-        assertThat(crewHistory.getAttendance()).containsEntry(LocalDate.from(attendanceTime), attendanceTime);
+        assertThat(crewHistory).isEqualTo(makeCrewHistory(attendanceTime));
     }
 
-    @DisplayName("이미 출석한 경우 예외가 발생한다")
     @Test
-    void alreadyAttendanceTest() {
+    void 이미_출석한_경우_예외가_발생한다() {
         // Given
-        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
-        LocalDateTime attendanceTime = makeAttendance(3);
-        crewHistory.attend(attendanceTime);
+        LocalDateTime attendanceTime = makeDefaultAttendanceTime();
+        crewHistory.add(attendanceTime);
 
         // When & Then
-        assertThatThrownBy(() -> crewHistory.attend(attendanceTime))
+        assertThatThrownBy(() -> crewHistory.add(attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 이미 출석했습니다. 수정 기능을 이용해주세요.");
+                .hasMessageContaining("이미 출석했습니다. 수정 기능을 이용해주세요.");
     }
 
-
-    @DisplayName("출석을 수정하고 이전의 출석 기록을 반환한다")
     @Test
-    void modifyAttendanceTest() {
+    void 기록이_존재하지_않는지_확인한다() {
         // Given
-        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
-        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
-        crewHistory.attend(attendanceTime);
+        LocalDate attendanceDate = makeDecemberDate(3);
 
-        LocalDateTime modifyTime = LocalDateTime.of(2024, 12, 3, 9, 50);
-        LocalDate todayDate = LocalDate.now();
+        // When & Then
+        assertThatCode(() -> crewHistory.validateNotExists(attendanceDate))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 기록이_이미_존재할_경우_예외를_발생시킨다() {
+        // Given
+        LocalDateTime attendanceTime = makeDefaultAttendanceTime();
+        crewHistory.add(attendanceTime);
+        LocalDate attendanceDate = LocalDate.from(attendanceTime);
+
+        // When & Then
+        assertThatThrownBy(() -> crewHistory.validateNotExists(attendanceDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 이미 출석했습니다.");
+    }
+
+    @Test
+    void 기록이_존재하는지_확인한다() {
+        // Given
+        crewHistory.add(makeAttendanceExceptMonday(3));
+        LocalDate attendanceDate = makeDecemberDate(3);
+
+        // When & Then
+        assertThatCode(() -> crewHistory.validateExists(attendanceDate))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 기록이_존재하지_않을_경우_예외를_발생시킨다() {
+        // Given
+        LocalDate attendanceDate = makeDecemberDate(3);
+
+        // When & Then
+        assertThatThrownBy(() -> crewHistory.validateExists(attendanceDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 출석 기록이 존재하지 않습니다.");
+    }
+
+    @Test
+    void 출석_기록을_수정한다() {
+        // Given
+        LocalDateTime previousDateTime = makeDateTime(3, 10, 0);
+        crewHistory.add(previousDateTime);
+        LocalDateTime modifyingDateTime = makeDateTime(3, 11, 0);
 
         // When
-        LocalDateTime previousDateTime = crewHistory.modify(modifyTime, todayDate);
+        LocalDateTime inquiringModifyingTime = crewHistory.modify(modifyingDateTime);
 
         // Then
-        assertAll(
-                () -> assertThat(crewHistory.getAttendance()).containsEntry(LocalDate.from(modifyTime), modifyTime),
-                () -> assertThat(previousDateTime).isEqualTo(attendanceTime)
+        Assertions.assertAll(
+                () -> assertThat(inquiringModifyingTime).isEqualTo(previousDateTime),
+                () -> assertThat(crewHistory).isEqualTo(makeCrewHistory(modifyingDateTime))
         );
     }
 
-    @DisplayName("오늘 또는 미래의 수정 일자일 경우 예외가 발생한다")
-    @ParameterizedTest
-    @CsvSource({
-            "2024-12-03",
-            "2024-12-04"
-    })
-    void invalidModifyDateTest(LocalDate todayDate) {
-        // Given
-        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
-        LocalDateTime modifyTime = makeAttendance(4);
-
-        // When & Then
-        assertThatThrownBy(() -> crewHistory.modify(modifyTime, todayDate))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 수정 일자는 어제 기록까지만 수정할 수 있습니다.");
-    }
-
-    @DisplayName("크루별 출석 기록을 확인한다")
     @Test
-    void checkAttendanceHistoryByCrewTest() {
+    void 출석_기록을_조회한다() {
         // Given
-        LocalDate today = LocalDate.of(2024, 12, 19);
-
-        LocalDateTime dateTime1 = makeAttendance(3);
-        LocalDateTime dateTime2 = makeAttendance(4);
-        LocalDateTime todayDateTime = makeAttendance(19);
-        CrewHistory crewHistory = new CrewHistory(Map.of(
-                LocalDate.from(dateTime1), dateTime1,
-                LocalDate.from(dateTime2), dateTime2,
-                LocalDate.from(todayDateTime), todayDateTime
-        ));
+        LocalDateTime previousAttendance = makeDateTime(3, 10, 0);
+        crewHistory.add(previousAttendance);
 
         // When
-        List<LocalDateTime> attendanceHistory = crewHistory.getAttendanceHistory(today);
+        Optional<LocalDateTime> history = crewHistory.find(LocalDate.from(previousAttendance));
 
         // Then
-        assertThat(attendanceHistory).contains(dateTime1, dateTime2);
+        assertThat(history.get()).isEqualTo(previousAttendance);
     }
 
-    @DisplayName("출석 타입별 횟수를 계산한다")
     @Test
-    void countAttendanceStatusTest() {
+    void 출석_기록이_존재하지_않을_경우_빈값을_반환한다() {
         // Given
-        LocalDate todayDate = LocalDate.of(2024, 12, 13);
-        LocalDateTime dateTime1 = makeAttendance(2);
-        LocalDateTime dateTime2 = makeLate(3);
-        LocalDateTime dateTime3 = makeAbsent(4);
-        LocalDateTime dateTime4 = makeDefaultTime(5);
-        LocalDateTime dateTime5 = makeAttendance(6);
-        CrewHistory crewHistory = new CrewHistory(Map.of(
-                LocalDate.from(dateTime1), dateTime1,
-                LocalDate.from(dateTime2), dateTime2,
-                LocalDate.from(dateTime3), dateTime3,
-                LocalDate.from(dateTime4), dateTime4,
-                LocalDate.from(dateTime5), dateTime5
-        ));
+        LocalDateTime previousAttendance = makeDateTime(3, 10, 0);
+        crewHistory.add(previousAttendance);
+        LocalDate todayDate = makeDecemberDate(4);
 
         // When
-        AttendanceCounter attendanceCounter = crewHistory.countAttendanceStatus(todayDate);
+        Optional<LocalDateTime> history = crewHistory.find(todayDate);
 
         // Then
-        assertAll(
-                () -> assertThat(attendanceCounter.getAttendanceCount()).isEqualTo(2),
-                () -> assertThat(attendanceCounter.getLateCount()).isEqualTo(1),
-                () -> assertThat(attendanceCounter.getAbsentCount()).isEqualTo(2)
-        );
+        assertThat(history.isEmpty()).isTrue();
+    }
+
+    @Test
+    void 기록이_없는_날을_결석으로_하여_한달의_출석_기록을_조회한다() {
+        // Given
+        crewHistory = makeCrewHistory(makeAttendanceExceptMonday(2),
+                makeTardinessExceptMonday(4), makeTardinessExceptMonday(5));
+        LocalDate nowDate = LocalDate.of(2024, 12, 6);
+        CampusScheduler campusScheduler = new CampusScheduler();
+
+        // When
+        Map<LocalDateTime, AttendanceState> history = crewHistory.calculateTotalHistory(nowDate,
+                campusScheduler);
+
+        // Then
+        assertThat(history).contains(
+                entry(makeAttendanceExceptMonday(2), AttendanceState.ATTENDANCE),
+                entry(LocalDateTime.of(LocalDate.of(2024, 12, 3), LocalTime.MAX), AttendanceState.ABSENCE),
+                entry(makeTardinessExceptMonday(4), AttendanceState.TARDINESS),
+                entry(makeTardinessExceptMonday(5), AttendanceState.TARDINESS));
     }
 }

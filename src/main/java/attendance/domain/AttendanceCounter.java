@@ -1,39 +1,47 @@
 package attendance.domain;
 
-import java.time.LocalDateTime;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 
 public class AttendanceCounter {
 
-    private final Map<AttendanceStatus, Integer> attendanceByType;
+    private final Map<AttendanceState, Integer> counter;
 
-    public AttendanceCounter(final List<LocalDateTime> history) {
-        this.attendanceByType = initialize();
-
-        for (LocalDateTime attendanceTime : history) {
-            attendanceByType.merge(AttendanceStatus.from(attendanceTime), 1, Integer::sum);
+    public AttendanceCounter(final Map<AttendanceState, Integer> counts) {
+        this.counter = initialize();
+        for (Entry<AttendanceState, Integer> entry : counts.entrySet()) {
+            counter.merge(entry.getKey(), entry.getValue(), Integer::sum);
         }
     }
 
-    private Map<AttendanceStatus, Integer> initialize() {
-        Map<AttendanceStatus, Integer> attendanceByType = new EnumMap<>(AttendanceStatus.class);
-        attendanceByType.put(AttendanceStatus.ATTENDANCE, 0);
-        attendanceByType.put(AttendanceStatus.LATE, 0);
-        attendanceByType.put(AttendanceStatus.ABSENCE, 0);
-        return attendanceByType;
+    public void increase(final AttendanceState attendanceState) {
+        counter.merge(attendanceState, 1, Integer::sum);
     }
 
-    public int getAttendanceCount() {
-        return attendanceByType.get(AttendanceStatus.ATTENDANCE);
+    private Map<AttendanceState, Integer> initialize() {
+        Map<AttendanceState, Integer> counter = new EnumMap<>(AttendanceState.class);
+        for (AttendanceState attendanceState : AttendanceState.values()) {
+            counter.put(attendanceState, 0);
+        }
+        return counter;
     }
 
-    public int getAbsentCount() {
-        return attendanceByType.get(AttendanceStatus.ABSENCE);
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof final AttendanceCounter counter1)) {
+            return false;
+        }
+        return Objects.equals(counter, counter1.counter);
     }
 
-    public int getLateCount() {
-        return attendanceByType.get(AttendanceStatus.LATE);
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(counter);
+    }
+
+    public int getCount(final AttendanceState attendanceState) {
+        return counter.get(attendanceState);
     }
 }

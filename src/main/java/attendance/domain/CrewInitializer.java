@@ -1,9 +1,5 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceStatus.DEFAULT_TIME;
-
-import java.time.Clock;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -12,53 +8,23 @@ import java.util.Map.Entry;
 
 public class CrewInitializer {
 
-    private final Campus campus;
-    private final Clock clock;
-    private final Map<LocalDate, LocalDateTime> attendance;
+    private final Map<String, List<LocalDateTime>> attendances;
 
-    public CrewInitializer(final Campus campus, final Clock clock) {
-        this.campus = campus;
-        this.clock = clock;
-        this.attendance = createInitialAttendance();
+    public CrewInitializer(final Map<String, List<LocalDateTime>> attendances) {
+        this.attendances = attendances;
     }
 
-    public CrewHistories initialize(final Map<String, List<LocalDateTime>> histories) {
-        Map<String, CrewHistory> crewsMap = new HashMap<>();
-        for (Entry<String, List<LocalDateTime>> entry : histories.entrySet()) {
-            addCrewHistory(entry, crewsMap);
+    public CrewHistories initialize() {
+        CrewHistories crewHistories = new CrewHistories(new HashMap<>());
+        for (Entry<String, List<LocalDateTime>> entry : attendances.entrySet()) {
+            addHistory(entry, crewHistories);
         }
-        return new CrewHistories(crewsMap);
+        return crewHistories;
     }
 
-    private void addCrewHistory(final Entry<String, List<LocalDateTime>> entry,
-                                final Map<String, CrewHistory> crewsMap) {
-        CrewHistory crewHistory = getCrew(entry.getKey(), crewsMap);
-        for (LocalDateTime time : entry.getValue()) {
-            crewHistory.loadHistory(time);
+    private void addHistory(final Entry<String, List<LocalDateTime>> entry, final CrewHistories crewHistories) {
+        for (LocalDateTime attendanceTime : entry.getValue()) {
+            crewHistories.addHistory(entry.getKey(), attendanceTime);
         }
-    }
-
-    private Map<LocalDate, LocalDateTime> createInitialAttendance() {
-        Map<LocalDate, LocalDateTime> initialAttendance = new HashMap<>();
-        LocalDate now = LocalDate.now(clock);
-        for (int day = 1; day < now.getDayOfMonth(); day++) {
-            LocalDate date = LocalDate.of(now.getYear(), now.getMonth(), day);
-            putOperationDate(date, initialAttendance);
-        }
-        return initialAttendance;
-    }
-
-    private void putOperationDate(final LocalDate date, final Map<LocalDate, LocalDateTime> initialAttendance) {
-        if (campus.isNotOperationDate(date)) {
-            return;
-        }
-        LocalDateTime dateTime = LocalDateTime.of(date, DEFAULT_TIME);
-        initialAttendance.put(date, dateTime);
-    }
-
-    private CrewHistory getCrew(final String nickname, Map<String, CrewHistory> inputs) {
-        CrewHistory crewHistory = new CrewHistory(new HashMap<>(attendance));
-        inputs.put(nickname, crewHistory);
-        return crewHistory;
     }
 }

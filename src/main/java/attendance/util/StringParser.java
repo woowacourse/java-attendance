@@ -4,43 +4,80 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StringParser {
 
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final String SPLITTER = ",";
+
+    public static LocalTime parseLocalTime(final String input) {
+        try {
+            return LocalTime.parse(input, TIME_FORMATTER);
+        } catch (DateTimeParseException exception) {
+            throw new IllegalArgumentException("[ERROR] HH:mm 형식이 아닙니다.");
+        }
+    }
+
+    public static LocalDate parseLocalDate(final String inputDay, final LocalDate nowDate) {
+        int day = StringParser.parseInt(inputDay);
+        MonthDay monthDay = makeMonthDay(nowDate, day);
+        return LocalDate.of(nowDate.getYear(), monthDay.getMonthValue(), monthDay.getDayOfMonth());
+    }
+
+    private static MonthDay makeMonthDay(final LocalDate now, final int day) {
+        try {
+            return MonthDay.of(now.getMonthValue(), day);
+        } catch (DateTimeException exception) {
+            throw new IllegalArgumentException("[ERROR] 존재하지 않은 날짜(일)입니다.");
+        }
+    }
+
+    public static Map<String, List<LocalDateTime>> parseFile(final List<String> lines) {
+        Map<String, List<LocalDateTime>> result = new HashMap<>();
+        for (String line : lines) {
+            parseLine(line, result);
+        }
+        return result;
+    }
 
     public static int parseInt(final String input) {
         try {
             return Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 정수 문자열이여야합니다.");
+        } catch (NumberFormatException exception) {
+            throw new IllegalArgumentException("[ERROR] 숫자 형식의 문자열이 아닙니다.");
         }
     }
 
-    public static LocalTime parseLocalTime(final String input) {
-        try {
-            return LocalTime.parse(input);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 시간이 HH:MM 형식에 맞지 않습니다.");
+    private static void parseLine(final String line, final Map<String, List<LocalDateTime>> result) {
+        String[] split = line.split(SPLITTER);
+        String nickname = split[0];
+        LocalDateTime attendanceTime = parseLocalDateTime(split[1]);
+
+        createIfNotExists(result, nickname);
+        List<LocalDateTime> times = result.get(nickname);
+        times.add(attendanceTime);
+        result.put(nickname, times);
+    }
+
+    private static void createIfNotExists(final Map<String, List<LocalDateTime>> result, final String nickname) {
+        if (!result.containsKey(nickname)) {
+            result.put(nickname, new ArrayList<>());
         }
     }
 
-    public static LocalDate parseLocalDate(final int year, final int month, final String inputDay) {
-        int day = parseInt(inputDay);
-        try {
-            return LocalDate.of(year, month, day);
-        } catch (DateTimeException e) {
-            throw new IllegalArgumentException("[ERROR] 유효한 일자이여야합니다.");
-        }
-    }
-
-    public static LocalDateTime parseLocalDateTime(final String input) {
+    private static LocalDateTime parseLocalDateTime(final String input) {
         try {
             return LocalDateTime.parse(input, DATE_TIME_FORMATTER);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 날짜 및 시간이 yyyy-MM-dd HH:mm 형식에 맞지 않습니다.");
+        } catch (DateTimeParseException exception) {
+            throw new IllegalArgumentException("[ERROR] yyyy-MM-dd HH:mm 형식에 맞춰 작성해주세요.");
         }
     }
 }

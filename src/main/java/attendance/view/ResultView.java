@@ -1,95 +1,129 @@
 package attendance.view;
 
+import static attendance.domain.AttendanceState.ABSENCE;
+import static attendance.domain.CrewHistory.DEFAULT_TIME;
+
 import attendance.domain.AttendanceCounter;
-import attendance.domain.AttendanceStatus;
-import attendance.domain.WarningLevel;
-import attendance.dto.AttendanceWarning;
-import attendance.util.TimeFormatter;
+import attendance.domain.AttendanceState;
+import attendance.domain.RiskAtExpulsion;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Comparator;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class ResultView {
 
     private static final String LINE = System.lineSeparator();
-    private static final String ATTENDANCE_HISTORY_FORM = "%s (%s)";
-    private static final String MODIFY_HISTORY_FORM = "%s (%s) -> %s (%s) 수정 완료!";
-    private static final String ATTENDANCE_HISTORY_BY_CREW_FORM = "이번 달 %s의 출석 기록입니다.";
-    private static final String ATTENDANCE_STATUS_COUNT_FORM = """
+    private static final Map<AttendanceState, String> ATTENDANCE_STATE_KOREAN = Map.of(
+            AttendanceState.ATTENDANCE, "출석",
+            AttendanceState.TARDINESS, "지각",
+            ABSENCE, "결석"
+    );
+    private static final Map<RiskAtExpulsion, String> RISK_AT_EXPULSION_KOREAN = Map.of(
+            RiskAtExpulsion.WARNING, "경고",
+            RiskAtExpulsion.INTERVIEW, "면담",
+            RiskAtExpulsion.EXPULSION, "제적"
+    );
+
+    private static final String TITLE_ATTENDANCE = "%s (%s)";
+    private static final String TITLE_MODIFYING = "%s (%s) -> %s (%s) 수정 완료!";
+    private static final String TITLE_INQUIRY_CREW = "이번 달 %s의 출석 기록입니다.";
+    private static final String FORMAT_INQUIRY_CREW = "%s (%s)";
+    private static final String DEFAULT_FORMAT = "--:--";
+    private static final String BLANK = " ";
+    private static final String TITLE_ATTENDANCE_STATE_COUNT = """
             출석: %d회
             지각: %d회
-            결석: %d회
-            """;
-    private static final String WARNING_LEVEL_FORM = "%s 대상자입니다.";
-    private static final String DISMISSAL_RESULT_TITLE = "제적 위험자 조회 결과";
-    private static final Comparator<AttendanceWarning> COMPARATOR =
-            Comparator.comparing(AttendanceWarning::warningLevel, WarningLevel.getComparator())
-                    .thenComparing(dto -> WarningLevel.calculateTotalLateCount(dto.lateCount(), dto.absentCount()),
-                            Comparator.reverseOrder())
-                    .thenComparing(AttendanceWarning::nickname);
-    private static final String DISMISSAL_RESULT_FORM = "- %s: 결석 %d회, 지각 %d회 (%s)";
-    private static final Map<WarningLevel, String> WARNING_LEVEL_KOREAN = Map.of(
-            WarningLevel.WARNING, "경고",
-            WarningLevel.INTERVIEW, "면담",
-            WarningLevel.EXPULSION, "제적",
-            WarningLevel.NOT_APPLICABLE, "해당없음"
-    );
-    private static final Map<AttendanceStatus, String> ATTENDANCE_STATUS_KOREAN = Map.of(
-            AttendanceStatus.ATTENDANCE, "출석",
-            AttendanceStatus.LATE, "지각",
-            AttendanceStatus.ABSENCE, "결석"
-    );
+            결석: %d회""";
+    private static final String FORMAT_EXPULSION = "%s 대상자입니다.";
+    private static final String TITLE_EXPULSION = "제적 위험자 조회 결과";
+    private static final String FORMAT_EXPULSION_WITH_COUNT = "- %s: 결석 %d회, 지각 %d회 (%s)";
 
-    public void printAttendanceHistory(final String attendanceTime, final AttendanceStatus attendanceStatus) {
-        System.out.printf(ATTENDANCE_HISTORY_FORM + LINE, attendanceTime,
-                ATTENDANCE_STATUS_KOREAN.get(attendanceStatus));
+    public void showBlankLine() {
+        System.out.println();
     }
 
-    public void printModifyHistory(final String previousTime, final AttendanceStatus previousStatus,
-                                   final String modifyTime, final AttendanceStatus modifyStatus) {
-        System.out.printf(LINE + MODIFY_HISTORY_FORM + LINE, previousTime, ATTENDANCE_STATUS_KOREAN.get(previousStatus),
-                modifyTime, ATTENDANCE_STATUS_KOREAN.get(modifyStatus));
+    public void showAttendance(final LocalDateTime attendanceTime, final AttendanceState attendanceState) {
+        showBlankLine();
+        System.out.printf(TITLE_ATTENDANCE + LINE, TimeFormatter.makeDateTimeMessage(attendanceTime),
+                getAttendanceState(attendanceState));
     }
 
-    public void printAttendanceHistoryResultByCrew(
-            final String nickname,
-            final List<LocalDateTime> attendanceHistory,
-            final AttendanceCounter attendanceCounter
-    ) {
-        System.out.printf(LINE + ATTENDANCE_HISTORY_BY_CREW_FORM + LINE + LINE, nickname);
-        printAttendanceHistories(attendanceHistory);
-        printWarningLevelCount(attendanceCounter);
-        printWarningLevel(WarningLevel.from(attendanceCounter.getAbsentCount(), attendanceCounter.getLateCount()));
+    public void showModifyingAttendance(final LocalDateTime previousDateTime,
+                                        final AttendanceState previousAttendanceState,
+                                        final LocalTime modifyingTime,
+                                        final AttendanceState afterAttendanceState) {
+        showBlankLine();
+        System.out.printf(TITLE_MODIFYING + LINE, TimeFormatter.makeDateTimeMessage(previousDateTime),
+                getAttendanceState(previousAttendanceState), TimeFormatter.makeTimeMessage(modifyingTime),
+                getAttendanceState(afterAttendanceState));
     }
 
-    public void printDismissalResult(final List<AttendanceWarning> dtos) {
-        System.out.println(DISMISSAL_RESULT_TITLE);
-        dtos.stream()
-                .sorted(COMPARATOR)
-                .map(dto -> String.format(DISMISSAL_RESULT_FORM, dto.nickname(),
-                        dto.absentCount(), dto.lateCount(), WARNING_LEVEL_KOREAN.get(dto.warningLevel())))
-                .forEach(System.out::println);
+    public void showAttendanceHistory(final String nickname, final Map<LocalDateTime, AttendanceState> history) {
+        System.out.printf(LINE + TITLE_INQUIRY_CREW + LINE + LINE, nickname);
+        for (Entry<LocalDateTime, AttendanceState> entry : history.entrySet()) {
+            System.out.printf(FORMAT_INQUIRY_CREW + LINE, makeHistoryMessage(entry.getKey()),
+                    getAttendanceState(entry.getValue()));
+        }
     }
 
-    private void printAttendanceHistories(final List<LocalDateTime> attendanceHistory) {
-        attendanceHistory.forEach(localDateTime -> printAttendanceHistory(
-                TimeFormatter.formatDateTime(localDateTime),
-                AttendanceStatus.from(localDateTime)));
+    public void showCountByAttendanceState(final int attendanceCount, final int lateCount, final int absentCount) {
+        System.out.printf(LINE + TITLE_ATTENDANCE_STATE_COUNT + LINE, attendanceCount, lateCount, absentCount);
     }
 
-    private void printWarningLevelCount(final AttendanceCounter attendanceCounter) {
-        System.out.printf(LINE + ATTENDANCE_STATUS_COUNT_FORM + LINE,
-                attendanceCounter.getAttendanceCount(),
-                attendanceCounter.getLateCount(),
-                attendanceCounter.getAbsentCount()
-        );
-    }
-
-    private void printWarningLevel(final WarningLevel warningLevel) {
-        if (warningLevel.equals(WarningLevel.NOT_APPLICABLE)) {
+    public void showExpulsion(final RiskAtExpulsion riskAtExpulsion) {
+        if (riskAtExpulsion == RiskAtExpulsion.NOT_APPLICABLE) {
             return;
         }
-        System.out.printf(WARNING_LEVEL_FORM + LINE, WARNING_LEVEL_KOREAN.get(warningLevel));
+        System.out.printf(LINE + FORMAT_EXPULSION + LINE, getRiskAtExpulsion(riskAtExpulsion));
+    }
+
+    public void showExpulsionCrews(final Map<String, AttendanceCounter> result) {
+        System.out.println(LINE + TITLE_EXPULSION);
+        Map<String, AttendanceCounter> sortedResult = result.entrySet().stream()
+                .sorted(makeComparator())
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (x, y) -> y, LinkedHashMap::new));
+        for (Entry<String, AttendanceCounter> entry : sortedResult.entrySet()) {
+            showExpulsionCrew(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private Comparator<Entry<String, AttendanceCounter>> makeComparator() {
+        return Comparator.comparingInt(
+                        (Entry<String, AttendanceCounter> e) -> e.getValue().getCount(AttendanceState.ABSENCE) * 3
+                                + e.getValue().getCount(AttendanceState.TARDINESS))
+                .reversed()
+                .thenComparing(Entry::getKey);
+    }
+
+    private void showExpulsionCrew(final String nickname, final AttendanceCounter counter) {
+        int absentCount = counter.getCount(ABSENCE);
+        int lateCount = counter.getCount(AttendanceState.TARDINESS);
+        RiskAtExpulsion riskAtExpulsion = RiskAtExpulsion.of(absentCount, lateCount);
+        if (riskAtExpulsion == RiskAtExpulsion.NOT_APPLICABLE) {
+            return;
+        }
+        System.out.printf(FORMAT_EXPULSION_WITH_COUNT + LINE, nickname, absentCount, lateCount,
+                getRiskAtExpulsion(riskAtExpulsion));
+    }
+
+    private String makeHistoryMessage(final LocalDateTime history) {
+        LocalTime time = LocalTime.from(history);
+        if (time.equals(DEFAULT_TIME)) {
+            return TimeFormatter.makeDateMessage(LocalDate.from(history)) + BLANK + DEFAULT_FORMAT;
+        }
+        return TimeFormatter.makeDateTimeMessage(history);
+    }
+
+    private String getAttendanceState(final AttendanceState attendanceState) {
+        return ATTENDANCE_STATE_KOREAN.get(attendanceState);
+    }
+
+    private String getRiskAtExpulsion(final RiskAtExpulsion riskAtExpulsion) {
+        return RISK_AT_EXPULSION_KOREAN.get(riskAtExpulsion);
     }
 }

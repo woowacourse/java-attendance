@@ -1,77 +1,46 @@
 package attendance.domain;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static attendance.fixture.TestFixture.makeAttendanceTime;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class CampusTest {
+class CampusTest {
 
-    @DisplayName("주말이나 공휴일이 아닌지 검증한다")
     @ParameterizedTest
     @CsvSource({
-            "2024-12-03",
-            "2024-12-10"
+            "7,59,false",
+            "8,0,true",
+            "23,0,true",
+            "23,1,false"
     })
-    void operationTimeTest(final LocalDate date) {
+    void 운영_시간인지_확인한다(final int hour, final int minute, final boolean expected) {
         // Given
-        Campus campus = new Campus();
+        LocalTime attendanceTime = makeAttendanceTime(hour, minute);
 
         // When & Then
-        Assertions.assertThatCode(() -> {
-            campus.validateOperationDate(date);
-        }).doesNotThrowAnyException();
+        assertThat(Campus.isOperationTime(attendanceTime)).isEqualTo(expected);
     }
 
-    @DisplayName("운영 시간인지 검증한다")
     @ParameterizedTest
-    @CsvSource({
-            "2024-12-03T08:00",
-            "2024-12-03T23:00"
-    })
-    void operationTimeTest(final LocalDateTime time) {
+    @MethodSource
+    void 교육_시작시간을_조회한다(final DayOfWeek dayOfWeek, final LocalTime expected) {
         // Given
-        Campus campus = new Campus();
 
         // When & Then
-        Assertions.assertThatCode(() -> {
-            campus.validateOperationTime(time);
-        }).doesNotThrowAnyException();
+        assertThat(Campus.getEducationStartTime(dayOfWeek)).isEqualTo(expected);
     }
 
-    @DisplayName("주말이나 공휴일이면 예외가 발생한다")
-    @ParameterizedTest
-    @CsvSource({
-            "2024-12-01",
-            "2024-12-25"
-    })
-    void notOperationDateTest(final LocalDate date) {
-        // Given
-        Campus campus = new Campus();
-
-        // When & Then
-        assertThatThrownBy(() -> campus.validateOperationDate(date))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContainingAll("[ERROR]", "등교일이 아닙니다.");
-    }
-
-    @DisplayName("운영일이나 운영 시간이 아니라면 예외가 발생한다")
-    @ParameterizedTest
-    @CsvSource({
-            "2024-12-03T07:59",
-            "2024-12-03T23:01"
-    })
-    void notOperationTimeTest(final LocalDateTime time) {
-        // Given
-        Campus campus = new Campus();
-
-        // When & Then
-        assertThatThrownBy(() -> campus.validateOperationTime(time))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContainingAll("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+    private static Stream<Arguments> 교육_시작시간을_조회한다() {
+        return Stream.of(
+                Arguments.of(DayOfWeek.MONDAY, LocalTime.of(13, 0)),
+                Arguments.of(DayOfWeek.TUESDAY, LocalTime.of(10, 0))
+        );
     }
 }
