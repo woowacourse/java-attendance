@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -78,11 +80,11 @@ class AttendanceRecordTest {
         @DisplayName("출석 기록으로 같은 날인지 확인한다")
         void should_return_true_when_same_date() {
             // given
-            String date = "11";
-            String time = "10:00";
-            String otherTime = "11:00";
-            AttendanceRecord attendanceRecord = AttendanceRecord.of(date, time);
-            AttendanceRecord otherAttendanceRecord = AttendanceRecord.of(date, otherTime);
+            LocalDate localDate = LocalDate.of(2024, 12, 11);
+            LocalTime time = LocalTime.of(10, 0);
+            LocalTime otherTime = LocalTime.of(11, 0);
+            AttendanceRecord attendanceRecord = new AttendanceRecord(localDate, time);
+            AttendanceRecord otherAttendanceRecord = new AttendanceRecord(localDate, otherTime);
 
             // when
             boolean result = attendanceRecord.isSameDate(otherAttendanceRecord);
@@ -92,14 +94,16 @@ class AttendanceRecordTest {
         }
 
         @ParameterizedTest
-        @DisplayName("날짜 숫자와 출석 기록으로 같은 날인지 확인한다")
-        @CsvSource(value = {"2, 10:00, 2, true", "2, 10:00, 3, false", "11, 10:00, 11, true", "10, 10:00, 11, false"})
-        void should_return_true_when_same_date_by_dateInt(String date, String time, Integer dateInt, boolean expected) {
+        @DisplayName("LocalDate와 같은 날인지 확인한다")
+        @CsvSource(value = {"2024-12-02, 10:00, 2024-12-02, true", "2024-12-02, 10:00, 2024-12-03, false",
+                "2024-12-10, 10:00, 2024-12-10, true", "2024-12-10, 10:00, 2024-12-11, false",})
+        void should_return_true_when_same_date_by_dateInt(LocalDate attendanceDate, LocalTime attendanceTime,
+                                                          LocalDate otherDate, boolean expected) {
             // given
-            AttendanceRecord attendanceRecord = AttendanceRecord.of(date, time);
+            AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceDate, attendanceTime);
 
             // when
-            boolean result = attendanceRecord.isSameDate(dateInt);
+            boolean result = attendanceRecord.isSameDate(otherDate);
 
             // then
             assertThat(result).isEqualTo(expected);

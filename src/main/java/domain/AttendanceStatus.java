@@ -10,7 +10,7 @@ public enum AttendanceStatus {
         final LocalTime time = attendanceRecord.getTime();
         final DayOfWeek dayOfWeek = attendanceRecord.getDate()
                 .getDayOfWeek();
-        if (time == null || time.isAfter(AttendanceTimeInfo.getAbsenceTime(dayOfWeek))) {
+        if (attendanceRecord.isAbsence() || time.isAfter(AttendanceTimeInfo.getAbsenceTime(dayOfWeek))) {
             return ABSENT;
         }
         if (time.isAfter(AttendanceTimeInfo.getLateLocalTime(dayOfWeek))) {

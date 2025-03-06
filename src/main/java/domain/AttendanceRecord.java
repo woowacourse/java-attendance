@@ -1,21 +1,22 @@
 package domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 import util.Current;
 
 public class AttendanceRecord {
-    private final LocalDate date;
-    private final LocalTime time;
+    private final LocalDateTime localDateTime;
+    private final boolean isAbsence;
 
     public AttendanceRecord(LocalDate date, LocalTime time) {
-        this.date = date;
-        this.time = time;
+        this(date, time, false);
     }
 
-    public static AttendanceRecord timeOf(String time) {
-        return new AttendanceRecord(Current.getToday(), LocalTime.parse(time));
+    private AttendanceRecord(LocalDate date, LocalTime time, boolean isAbsence) {
+        this.localDateTime = LocalDateTime.of(date, time);
+        this.isAbsence = isAbsence;
     }
 
     public static AttendanceRecord of(String date, String time) {
@@ -31,23 +32,38 @@ public class AttendanceRecord {
         if (dateStr.length() < 2) {
             dateStr = "0" + dateStr;
         }
-        return new AttendanceRecord(LocalDate.parse(Current.getStringOfThisMonth() + "-" + dateStr), null);
+        return new AttendanceRecord(LocalDate.parse(Current.getStringOfThisMonth() + "-" + dateStr), LocalTime.MIN,
+                true);
+    }
+
+    public static AttendanceRecord from(LocalDate date) {
+        return new AttendanceRecord(date, LocalTime.MIN, true);
     }
 
     public boolean isSameDate(AttendanceRecord attendanceRecord) {
-        return date.equals(attendanceRecord.date);
+        return localDateTime.toLocalDate()
+                .equals(attendanceRecord.localDateTime.toLocalDate());
     }
 
     public boolean isSameDate(Integer dateInt) {
-        return date.getDayOfMonth() == dateInt;
+        return localDateTime.getDayOfMonth() == dateInt;
+    }
+
+    public boolean isSameDate(LocalDate otherDate) {
+        return localDateTime.toLocalDate()
+                .equals(otherDate);
     }
 
     public LocalDate getDate() {
-        return date;
+        return localDateTime.toLocalDate();
     }
 
     public LocalTime getTime() {
-        return time;
+        return localDateTime.toLocalTime();
+    }
+
+    public boolean isAbsence() {
+        return isAbsence;
     }
 
     @Override
@@ -59,16 +75,19 @@ public class AttendanceRecord {
             return false;
         }
         AttendanceRecord that = (AttendanceRecord) o;
-        return Objects.equals(date, that.date) && Objects.equals(time, that.time);
+        return isAbsence == that.isAbsence && Objects.equals(localDateTime, that.localDateTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, time);
+        return Objects.hash(localDateTime, isAbsence);
     }
 
     @Override
     public String toString() {
-        return "AttendanceRecord{" + "date=" + date + ", attendingTime=" + time + '}';
+        return "AttendanceRecord{" +
+                "localDateTime=" + localDateTime +
+                ", isAbsence=" + isAbsence +
+                '}';
     }
 }
