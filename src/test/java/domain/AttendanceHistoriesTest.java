@@ -311,12 +311,12 @@ class AttendanceHistoriesTest {
         }
 
         @Test
-        @DisplayName("결석 5회를 지각 1회를 제적 대상자로 판단할 수 있다.")
+        @DisplayName("결석 5회를 지각 3회를 제적 대상자로 판단할 수 있다.")
         void testGetExpelledStatus() {
             // given
             AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
-                    DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, 1, 5);
-            LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, 6);
+                    DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, 3, 5);
+            LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, 8);
             // when
             DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW, lastDate);
             // then

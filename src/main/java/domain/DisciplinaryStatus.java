@@ -2,11 +2,9 @@ package domain;
 
 public enum DisciplinaryStatus {
     NONE("해당 사항 없음", 0),
-    WARNING("경고", 6),
-    ONE_ON_ONE("면담", 9),
-    EXPELLED("제적", 15);
-
-    private static final int ABSENCE_WEIGHT = 3;
+    WARNING("경고", 2),
+    ONE_ON_ONE("면담", 3),
+    EXPELLED("제적", 5);
 
     private final String name;
     private final int thresholdCount;
@@ -30,7 +28,7 @@ public enum DisciplinaryStatus {
     }
 
     private static int convertToThresholdCount(int absentCount, int tardyCount) {
-        return absentCount * ABSENCE_WEIGHT + tardyCount;
+        return absentCount + AttendanceStatus.convertTardyCountToAbsentCount(tardyCount);
     }
 
     public String getName() {

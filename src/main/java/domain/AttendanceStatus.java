@@ -9,9 +9,9 @@ public enum AttendanceStatus {
     TARDY("지각", 5),
     ABSENT("결석", 30);
 
+    private static final int ABSENCE_WEIGHT = 3;
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     private static final LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0);
-
 
     private final String name;
     private final int thresholdMinute;
@@ -26,6 +26,10 @@ public enum AttendanceStatus {
             return checkAttendanceByDay(attendanceDateTime.toLocalTime(), MONDAY_START_TIME);
         }
         return checkAttendanceByDay(attendanceDateTime.toLocalTime(), DEFAULT_START_TIME);
+    }
+
+    public static int convertTardyCountToAbsentCount(int tardyCount) {
+        return (int) tardyCount / ABSENCE_WEIGHT;
     }
 
     public String getName() {
