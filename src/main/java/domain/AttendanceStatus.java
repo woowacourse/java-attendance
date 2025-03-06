@@ -1,6 +1,8 @@
 package domain;
 
-import global.util.DateUtil;
+import static global.utils.DateTimeUtil.FIXED_RUNNING_DATETIME;
+
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -8,41 +10,38 @@ import java.time.LocalTime;
 public enum AttendanceStatus {
     ATTENDANCE,
     TARDY,
-    ABSENCE;
+    ABSENCE,
+    NONE;
 
-    private static final int ABSENCE_THRESHOLD_MINUTES = 30;
-    private static final int TARDY_THRESHOLD_MINUTES = 5;
+    private final static int TARDY_THRESHOLD_MINUTES = 5;
+    private final static int ABSENCE_THRESHOLD_MINUTES = 30;
+    private final static LocalTime MONDAY_ATTENDANCE_REFERENCE_TIME = LocalTime.of(13, 0);
+    private final static LocalTime NORMAL_ATTENDANCE_REFERENCE_TIME = LocalTime.of(10, 0);
 
-    public static AttendanceStatus attend(LocalDateTime target) {
-        LocalDate targetDate = target.toLocalDate();
-
-        LocalTime attendanceTime = LocalTime.of(10, 0);
-        LocalTime targetTime = target.toLocalTime();
-        if (DateUtil.isNotWorkingDay(targetDate)) {
-            throw new IllegalArgumentException();
-        }
-
-        if (DateUtil.isMonday(targetDate)) {
-            attendanceTime = LocalTime.of(13, 0);
-        }
-        return getAttendanceStatusByTime(attendanceTime, targetTime);
-
+    public static AttendanceStatus evaluateAttendanceNow() {
+        return evaluateAttendance(FIXED_RUNNING_DATETIME);
     }
 
-    private static AttendanceStatus getAttendanceStatusByTime(LocalTime attendanceTime, LocalTime targetTime) {
-        if (targetTime.isAfter(attendanceTime)) {
-            return compareToSpecificTime(attendanceTime, targetTime);
-        }
-        return ATTENDANCE;
+    public static AttendanceStatus evaluateAttendance(LocalDateTime dateTime) {
+        return evaluateAttendance(dateTime.toLocalDate(), dateTime.toLocalTime());
     }
 
-    private static AttendanceStatus compareToSpecificTime(LocalTime attendanceTime, LocalTime targetTime) {
-        if (attendanceTime.plusMinutes(ABSENCE_THRESHOLD_MINUTES).isBefore(targetTime)) {
+    public static AttendanceStatus evaluateAttendance(LocalDate date, LocalTime time) {
+        final LocalTime referenceTime = getAttendanceReferenceTime(date);
+
+        if (time.isAfter(referenceTime.plusMinutes(ABSENCE_THRESHOLD_MINUTES))) {
             return ABSENCE;
         }
-        if (attendanceTime.plusMinutes(TARDY_THRESHOLD_MINUTES).isBefore(targetTime)) {
+        if (time.isAfter(referenceTime.plusMinutes(TARDY_THRESHOLD_MINUTES))) {
             return TARDY;
         }
         return ATTENDANCE;
+    }
+
+    private static LocalTime getAttendanceReferenceTime(LocalDate date) {
+        if (DayOfWeek.MONDAY.equals(date.getDayOfWeek())) {
+            return MONDAY_ATTENDANCE_REFERENCE_TIME;
+        }
+        return NORMAL_ATTENDANCE_REFERENCE_TIME;
     }
 }

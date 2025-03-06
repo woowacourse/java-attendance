@@ -1,40 +1,30 @@
 package domain;
 
 public enum RiskStatus {
-    WARNING(2),
-    COUNSELING(3),
-    EXPULSION(5),
-    NONE(0);
+    DISMISSAL,
+    COUNSELLING,
+    WARNING,
+    NONE;
 
-    private final int absenceThresholdCount;
+    private final static int DISMISSAL_COUNT = 5;
+    private final static int COUNSELLING_COUNT = 3;
+    private final static int WARNING_COUNT = 2;
 
-    RiskStatus(final int absenceThresholdCount) {
-        this.absenceThresholdCount = absenceThresholdCount;
-    }
+    public static RiskStatus evaluateStatus(int tardyCount, int absenceCount) {
+        final int totalCount = tardyCount / 3 + absenceCount;
 
-    public static RiskStatus getRiskStatus(int absenceCount, int tardyCount) {
-        int totalAbsenceCount = calculateTotalAbsenceCount(absenceCount, tardyCount);
-
-        if (totalAbsenceCount > EXPULSION.absenceThresholdCount) {
-            return RiskStatus.EXPULSION;
+        if (totalCount > DISMISSAL_COUNT) {
+            return DISMISSAL;
         }
 
-        if (totalAbsenceCount >= COUNSELING.absenceThresholdCount) {
-            return RiskStatus.COUNSELING;
+        if (totalCount >= COUNSELLING_COUNT) {
+            return COUNSELLING;
         }
 
-        if (totalAbsenceCount == WARNING.absenceThresholdCount) {
-            return RiskStatus.WARNING;
+        if (totalCount == WARNING_COUNT) {
+            return WARNING;
         }
 
-        return RiskStatus.NONE;
-    }
-
-    public static int calculateTotalAbsenceCount(int absenceCount, int tardyCount) {
-        return absenceCount + tardyCount / 3;
-    }
-
-    public boolean hasRisk() {
-        return this != RiskStatus.NONE;
+        return NONE;
     }
 }

@@ -1,84 +1,75 @@
 package view;
 
-import static view.ViewUtil.getAttendanceStatusMessage;
-import static view.ViewUtil.getRiskStatusMessage;
+import static global.utils.DateTimeUtil.convertDateWithDayOfWeekFormat;
+import static global.utils.DateTimeUtil.convertTimeFormat;
+import static view.utils.ViewUtil.getAttendanceStatusMessage;
+import static view.utils.ViewUtil.getEmptyStatusMessage;
+import static view.utils.ViewUtil.getRiskStatusMessage;
 
+import domain.AttendanceDate;
 import domain.AttendanceStatus;
+import domain.Crew;
 import domain.RiskStatus;
-import dto.CrewAttendanceStatusResponse;
-import dto.CrewResponse;
-import global.util.DateUtil;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import domain.RiskStatusResult;
+import global.utils.DateTimeUtil;
 import java.util.List;
-import java.util.Map;
 
 public class OutputView {
-    public void printCrewAttendanceRecord(CrewResponse crewResponse) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n", crewResponse.name());
-        Map<LocalDate, LocalTime> map = crewResponse.attendanceBook();
-        LocalDate currentDate = DateUtil.getFirstDateOfMonth();
-
-        while (!currentDate.isAfter(DateUtil.FIXED_REFERENCE_DATE.toLocalDate())) {
-            if (DateUtil.isWeekday(currentDate)) {
-                System.out.println(getEachDateAttendanceMessage(currentDate, map));
-            }
-            currentDate = currentDate.plusDays(1);
-        }
-
-        System.out.printf("\n%s: %d회\n", getAttendanceStatusMessage(AttendanceStatus.ATTENDANCE), crewResponse.attendanceCount());
-        System.out.printf("%s: %d회\n", getAttendanceStatusMessage(AttendanceStatus.TARDY), crewResponse.tardyCount());
-        System.out.printf("%s: %d회\n\n", getAttendanceStatusMessage(AttendanceStatus.ABSENCE), crewResponse.absenceCount());
-
-        RiskStatus riskStatus = crewResponse.riskStatus();
-
-        if (!riskStatus.equals(RiskStatus.NONE)) {
-            System.out.println(getRiskStatusMessage(riskStatus) + " 대상자입니다.");
-        }
-    }
-
     public void printErrorMessage(Exception e) {
         System.out.println("[ERROR] " + e.getMessage());
     }
 
-    public void printRiskCrews(List<CrewResponse> crewResponseWithRisk) {
+    public void printSelectMenuMessage() {
+        System.out.printf("오늘은 %s입니다. 기능을 선택해 주세요.\n", convertDateWithDayOfWeekFormat(DateTimeUtil.getFixedRunningDate()));
+    }
+
+    public void printEditResultMessage(AttendanceDate originalAttendanceDate, AttendanceDate editedAttendanceDate) {
+        System.out.printf("%s %s (%s) -> %s (%s)\n", convertDateWithDayOfWeekFormat(originalAttendanceDate.getDate()), convertTimeFormat(originalAttendanceDate.getTime()), getAttendanceStatusMessage(originalAttendanceDate.getStatus())
+                , convertTimeFormat(editedAttendanceDate.getTime()), getAttendanceStatusMessage(editedAttendanceDate.getStatus()));
+    }
+
+    public void printAttendResultMessage(AttendanceDate attendanceDate) {
+        if (attendanceDate.getStatus().equals(AttendanceStatus.NONE)) {
+            System.out.printf("%s %s (%s)\n", convertDateWithDayOfWeekFormat(attendanceDate.getDate()), getEmptyStatusMessage(), getAttendanceStatusMessage(attendanceDate.getStatus()));
+            return;
+        }
+        System.out.printf("%s %s (%s)\n", convertDateWithDayOfWeekFormat(attendanceDate.getDate()), convertTimeFormat(attendanceDate.getTime()), getAttendanceStatusMessage(attendanceDate.getStatus()));
+    }
+
+    public void printAttendanceResult(Crew crew) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", crew.getName());
+    }
+
+    public void printAttendanceCountResult(RiskStatusResult riskStatusResult) {
+        System.out.printf("출석 : %d회\n", riskStatusResult.attendanceCount());
+        System.out.printf("지각 : %d회\n", riskStatusResult.tardyCount());
+        System.out.printf("결석 : %d회\n\n", riskStatusResult.absenceCount());
+
+        if (!riskStatusResult.riskStatus().equals(RiskStatus.NONE)) {
+            System.out.printf("%s 대상자입니다.", getRiskStatusMessage(riskStatusResult.riskStatus()));
+        }
+    }
+
+    public void printRiskStatusResult(List<RiskStatusResult> riskStatusResults) {
         System.out.println("제적 위험자 조회 결과");
-        crewResponseWithRisk.stream()
+        sortRiskStatusResult(riskStatusResults).forEach(riskStatusResult -> {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", riskStatusResult.crew().getName(), riskStatusResult.absenceCount(), riskStatusResult.tardyCount(), getRiskStatusMessage(riskStatusResult.riskStatus()));
+        });
+        System.out.println();
+
+    }
+
+    private List<RiskStatusResult> sortRiskStatusResult(List<RiskStatusResult> riskStatusResults) {
+        return riskStatusResults.stream()
                 .sorted((o1, o2) -> {
                     int totalCount1 = o1.absenceCount() + o1.tardyCount() / 3;
                     int totalCount2 = o2.absenceCount() + o2.tardyCount() / 3;
 
                     if (totalCount1 == totalCount2) {
-                        return o1.name().compareTo(o2.name());
+                        return o1.crew().getName().compareTo(o2.crew().getName());
                     }
 
                     return totalCount1 - totalCount2;
-                })
-                .forEach(e -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", e.name(), e.absenceCount(), e.tardyCount(), getRiskStatusMessage(e.riskStatus())));
-    }
-
-    public void printAttendDateAttendanceMessage(LocalDate currentDate, Map<LocalDate, LocalTime> map) {
-        System.out.println(getEachDateAttendanceMessage(currentDate, map));
-    }
-
-    public void printAttendEditMessage(LocalDate date, CrewAttendanceStatusResponse originalResponse, CrewAttendanceStatusResponse currentResponse) {
-        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!\n",
-                DateTimeFormatter.ofPattern("MM월 dd일 E요일").format(date),
-                DateTimeFormatter.ofPattern("hh:mm").format(originalResponse.time()),
-                ViewUtil.getAttendanceStatusMessage(originalResponse.attendanceStatus()),
-                DateTimeFormatter.ofPattern("hh:mm").format(currentResponse.time()),
-                ViewUtil.getAttendanceStatusMessage(currentResponse.attendanceStatus()));
-    }
-
-    private String getEachDateAttendanceMessage(LocalDate currentDate, Map<LocalDate, LocalTime> map) {
-        if (!map.containsKey(currentDate)) {
-            return String.format("%d월 %02d일 %s %s (%s)", currentDate.getMonthValue(), currentDate.getDayOfMonth(),
-                    ViewUtil.getDayOfWeekToMessage(currentDate.getDayOfWeek()), ViewUtil.getNoneAttendanceMessage(), getAttendanceStatusMessage(AttendanceStatus.ABSENCE));
-        }
-        LocalTime attendTime = map.get(currentDate);
-        AttendanceStatus attendanceStatus = AttendanceStatus.attend(DateUtil.assembleDateAndTime(currentDate, attendTime));
-        return String.format("%d월 %02d일 %s %s (%s)", currentDate.getMonthValue(), currentDate.getDayOfMonth(),
-                ViewUtil.getDayOfWeekToMessage(currentDate.getDayOfWeek()), attendTime, getAttendanceStatusMessage(attendanceStatus));
+                }).toList();
     }
 }

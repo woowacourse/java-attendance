@@ -1,67 +1,37 @@
 package domain;
 
-import dto.CrewResponse;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Crews {
-    private final List<Crew> crews;
+    private final Set<Crew> crews;
 
     public Crews() {
-        crews = new ArrayList<>();
+        crews = new HashSet<>();
     }
 
-    public void addCrew(final String name) {
-        crews.add(new Crew(name));
-    }
-
-    public void initAttendStatus(final String name, final LocalDateTime target) {
-        if (!hasCrewName(name)) {
-            addCrew(name);
+    public Crew initCrew(String name) {
+        if (!hasCrew(name)) {
+            Crew crew = new Crew(name);
+            crews.add(crew);
+            return crew;
         }
-        addAttendStatus(name, target);
+        return getCrew(name);
     }
 
-    public void addAttendStatus(final String name, final LocalDateTime target) {
-        Crew crew = findCrewByName(name);
-        crew.addAttendStatus(target);
-    }
-
-    public void editAttendStatus(final String name, final LocalDateTime target) {
-        Crew crew = findCrewByName(name);
-        crew.editAttendStatus(target);
-    }
-
-    public LocalTime getAttendanceTime(final String name, final LocalDate date) {
-        Crew crew = findCrewByName(name);
-        return crew.getAttendanceTime(date);
-    }
-
-    public boolean hasCrewName(final String name) {
+    public boolean hasCrew(String name) {
         return crews.stream().anyMatch(crew -> crew.isNameMatch(name));
     }
 
-    public Crew findCrewByName(final String name) {
+    public Crew getCrew(String name) {
         return crews.stream()
                 .filter(crew -> crew.isNameMatch(name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("크루를 찾을 수 없습니다."));
     }
 
-    public CrewResponse createCrewResponse(final Crew crew) {
-        return crew.createCrewResponse();
-    }
-
-    public List<CrewResponse> getCrewResponseWithRisk() {
-        return crews.stream()
-                .filter(crew ->
-                        crew.calculateRiskStatus()
-                                .hasRisk())
-                .map(Crew::createCrewRiskStatusResponse)
-                .toList();
+    public void validateHasCrew(String name) {
+        if (!hasCrew(name)) {
+            throw new IllegalArgumentException("크루를 찾을 수 없습니다.");
+        }
     }
 }

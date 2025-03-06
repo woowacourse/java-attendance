@@ -1,23 +1,24 @@
 package controller;
 
-import static global.util.DateUtil.FIXED_REFERENCE_DATE;
-import static global.util.DateUtil.assembleDateAndTime;
+import static global.utils.DateTimeUtil.getFixedRunningDate;
+import static global.utils.DateTimeUtil.parseDateOfThisMonth;
+import static global.utils.DateTimeUtil.parseTime;
 
+import domain.AttendanceBook;
+import domain.AttendanceDate;
 import domain.Crew;
 import domain.Crews;
-import dto.CrewAttendanceStatusResponse;
-import global.util.DateUtil;
+import global.utils.DateTimeUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
+import java.util.List;
 import view.InputView;
+import view.Menu;
 import view.OutputView;
-import view.ViewUtil;
 
 public class AttendanceController {
-    InputView inputView;
-    OutputView outputView;
-    Crews crews;
+    private final InputView inputView;
+    private final OutputView outputView;
 
     public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
@@ -25,79 +26,123 @@ public class AttendanceController {
     }
 
     public void start() {
-        crews = initCrews();
-        while (true) {
-            String menu;
-            try {
-                menu = inputView.inputMenu();
-                if (menu.equals("Q")) {
-                    break;
-                }
-                selectMenu(menu);
-            } catch (DateTimeParseException | IllegalArgumentException e) {
-                outputView.printErrorMessage(e);
-            }
+        AttendanceBook attendanceBook = new AttendanceBook();
+        Crews crews = new Crews();
+        inputView.readFile(attendanceBook, crews);
+        selectMenu(attendanceBook, crews);
+    }
 
+    private void selectMenu(AttendanceBook attendanceBook, Crews crews) {
+        outputView.printSelectMenuMessage();
+        try {
+            Menu menuItem = Menu.of(inputView.enterMenuItem());
+            evaluateMenuItem(menuItem, attendanceBook, crews);
+        }
+        catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            selectMenu(attendanceBook, crews);
         }
     }
 
-    public Crews initCrews() {
-        return inputView.getFile();
-    }
-
-    public void selectMenu(String menu) {
-        if (menu.equals("1")) {
-            validateIsNotWorkingDay(FIXED_REFERENCE_DATE.toLocalDate());
-            attendCrew();
-            return;
+    private void evaluateMenuItem(Menu menuItem, AttendanceBook attendanceBook, Crews crews) {
+        if (menuItem.equals(Menu.FIRST)) {
+            attendMenu(attendanceBook, crews);
         }
-        if (menu.equals("2")) {
-            editAttend();
-            return;
+        if (menuItem.equals(Menu.SECOND)) {
+            editMenu(attendanceBook, crews);
         }
-        if (menu.equals("3")) {
-            checkCrewsRecord();
-            return;
+        if (menuItem.equals(Menu.THIRD)) {
+            retrieveAttendanceMenu(attendanceBook, crews);
         }
-        if (menu.equals("4")) {
-            checkRiskCrews();
-            return;
+        if (menuItem.equals(Menu.FOURTH)) {
+            retrieveRiskStatusMenu(attendanceBook, crews);
         }
-        throw new IllegalArgumentException("메뉴는 1, 2, 3, 4, Q만 입력할 수 있습니다.");
     }
 
-    private void checkRiskCrews() {
-        outputView.printRiskCrews(crews.getCrewResponseWithRisk());
+    private void attendMenu(AttendanceBook attendanceBook, Crews crews) {
+        attendanceBook.validateIsWeekday(DateTimeUtil.getFixedRunningDate());
+        attendanceBook.validateIsInRunningTime(DateTimeUtil.getFixedRunningTime());
+        Crew crew = enterCrewName(crews);
+        attendanceBook.validateBeforeAdd(crew);
+        attendanceBook.attend(crew, getFixedRunningDate(), enterAttendanceTime());
+        outputView.printAttendResultMessage(attendanceBook.findAttendanceDateByDate(crew, getFixedRunningDate()));
+        selectMenu(attendanceBook, crews);
     }
 
-    private void checkCrewsRecord() {
-        String name = inputView.inputName();
-        Crew crew = crews.findCrewByName(name);
-        outputView.printCrewAttendanceRecord(crews.createCrewResponse(crew));
+    private void editMenu(AttendanceBook attendanceBook, Crews crews) {
+        attendanceBook.validateIsInRunningTime(DateTimeUtil.getFixedRunningTime());
+        Crew crew = enterCrewNameForEdit(crews);
+        LocalDate date = enterAttendanceDateForEdit(attendanceBook, crew);
+        AttendanceDate originalAttendanceDate = attendanceBook.findAttendanceDateByDate(crew, date);
+        attendanceBook.edit(crew, date, enterAttendanceTimeForEdit());
+        outputView.printEditResultMessage(originalAttendanceDate, attendanceBook.findAttendanceDateByDate(crew, date));
+        selectMenu(attendanceBook, crews);
     }
 
-    public void attendCrew() {
-        String name = inputView.inputName();
-        Crew crew = crews.findCrewByName(name);
-        crew.validateAvailableAttendanceDate(FIXED_REFERENCE_DATE.toLocalDate());
-        LocalTime time = LocalTime.parse(inputView.inputAttendTime());
-        crew.addAttendStatus(assembleDateAndTime(FIXED_REFERENCE_DATE.toLocalDate(), time));
-        outputView.printAttendDateAttendanceMessage(FIXED_REFERENCE_DATE.toLocalDate(), crews.createCrewResponse(crew).attendanceBook());
+    private void retrieveAttendanceMenu(AttendanceBook attendanceBook, Crews crews) {
+        Crew crew = enterCrewName(crews);
+        List<AttendanceDate> attendanceDates = attendanceBook.findAttendanceRecord(crew).getAttendanceDates();
+        outputView.printAttendanceResult(crew);
+        attendanceDates.forEach(outputView::printAttendResultMessage);
+        outputView.printAttendanceCountResult(attendanceBook.getRiskStatusResult(crew));
+        selectMenu(attendanceBook, crews);
     }
 
-    private void editAttend() {
-        String name = inputView.inputEditCrewName();
-        Crew crew = crews.findCrewByName(name);
-        LocalDate date = DateUtil.getDateByInputDay(Integer.parseInt(inputView.inputEditDay()));
-        CrewAttendanceStatusResponse originalResponse = crew.createCrewAttendanceStatusResponse(date);
-        CrewAttendanceStatusResponse editedResponse = crew.editAttendStatus(assembleDateAndTime(date, LocalTime.parse(inputView.inputEditTime())));
-        outputView.printAttendEditMessage(date, originalResponse, editedResponse);
+    private void retrieveRiskStatusMenu(AttendanceBook attendanceBook, Crews crews) {
+        outputView.printRiskStatusResult(attendanceBook.getRiskStatusResults());
+        selectMenu(attendanceBook, crews);
     }
 
-    private void validateIsNotWorkingDay(LocalDate targetDate) {
-        if (DateUtil.isNotWorkingDay(targetDate)) {
-            throw new IllegalArgumentException(String.format("%d월 %02d일 %s은 등교일이 아닙니다.", targetDate.getMonthValue(), targetDate.getDayOfMonth(),
-                    ViewUtil.getDayOfWeekToMessage(targetDate.getDayOfWeek())));
+    private Crew enterCrewName(Crews crews) {
+        try {
+            String name = inputView.enterNickname();
+            crews.validateHasCrew(name);
+            return crews.getCrew(name);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return enterCrewName(crews);
+        }
+    }
+
+    private Crew enterCrewNameForEdit(Crews crews) {
+        try {
+            String name = inputView.enterNicknameForEdit();
+            crews.validateHasCrew(name);
+            return crews.getCrew(name);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return enterCrewNameForEdit(crews);
+        }
+    }
+
+    private LocalTime enterAttendanceTime() {
+        try {
+            return parseTime(inputView.enterAttendanceTime());
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return enterAttendanceTime();
+        }
+    }
+
+    private LocalDate enterAttendanceDateForEdit(AttendanceBook attendanceBook, Crew crew) {
+        try {
+            LocalDate date = parseDateOfThisMonth(inputView.enterAttendanceDateForEdit());
+            attendanceBook.validateIsAvailableAttendance(date);
+            attendanceBook.validateBeforeEdit(crew, date);
+            return date;
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return enterAttendanceDateForEdit(attendanceBook, crew);
+        }
+    }
+
+    private LocalTime enterAttendanceTimeForEdit() {
+        try {
+            return parseTime(inputView.enterAttendanceTimeForEdit());
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return enterAttendanceTimeForEdit();
         }
     }
 }
+

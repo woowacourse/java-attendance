@@ -1,61 +1,56 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceStatusTest {
-    @Test
-    void 출석을_확인한다() {
-        LocalTime targetTime = LocalTime.of(10, 03, 00);
-        LocalDateTime targetDate = LocalDateTime.of(LocalDate.now(), targetTime);
+class AttendanceStatusTest {
 
-        assertThat(AttendanceStatus.attend(targetDate)).isEqualTo(AttendanceStatus.ATTENDANCE);
+    @Test
+    void 실행기준시각의_출석을_확인한다() {
+        assertThat(AttendanceStatus.evaluateAttendanceNow()).isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
     @Test
-    void 지각을_확인한다() {
-        LocalTime targetTime = LocalTime.of(10, 06, 00);
-        LocalDateTime targetDate = LocalDateTime.of(LocalDate.now(), targetTime);
+    void 월요일_13시_35분은_결석한다() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 9, 13, 35, 0);
 
-        assertThat(AttendanceStatus.attend(targetDate)).isEqualTo(AttendanceStatus.TARDY);
+        assertThat(AttendanceStatus.evaluateAttendance(dateTime)).isEqualTo(AttendanceStatus.ABSENCE);
     }
 
     @Test
-    void 지각을_확인한다2() {
-        LocalTime targetTime = LocalTime.of(10, 30, 00);
-        LocalDateTime targetDate = LocalDateTime.of(LocalDate.now(), targetTime);
+    void 월요일_13시_06분은_지각한다() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 9, 13, 6, 0);
 
-        assertThat(AttendanceStatus.attend(targetDate)).isEqualTo(AttendanceStatus.TARDY);
+        assertThat(AttendanceStatus.evaluateAttendance(dateTime)).isEqualTo(AttendanceStatus.TARDY);
     }
 
     @Test
-    void 결석을_확인한다() {
-        LocalTime targetTime = LocalTime.of(10, 31, 00);
-        LocalDateTime targetDate = LocalDateTime.of(LocalDate.now(), targetTime);
+    void 월요일_12시_55분은_출석한다() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 9, 12, 55, 0);
 
-        assertThat(AttendanceStatus.attend(targetDate)).isEqualTo(AttendanceStatus.ABSENCE);
+        assertThat(AttendanceStatus.evaluateAttendance(dateTime)).isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
     @Test
-    void 등교일이_아닐때_출석시_예외를_던진다() {
-        assertThatThrownBy(() -> {
-            AttendanceStatus.attend(LocalDateTime.of(2024, 12, 25, 10, 30));
-        }).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> {
-            AttendanceStatus.attend(LocalDateTime.of(2024, 12, 1, 10, 30));
-        }).isInstanceOf(IllegalArgumentException.class);
+    void 월요일이_아닌_날_10시_35분은_결석한다() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 35, 0);
+
+        assertThat(AttendanceStatus.evaluateAttendance(dateTime)).isEqualTo(AttendanceStatus.ABSENCE);
     }
 
     @Test
-    void 월요일일때_출석을_확인한다() {
-        LocalTime targetTime = LocalTime.of(13, 0, 0);
-        LocalDateTime targetDate = LocalDateTime.of(LocalDate.of(2024, 12, 2), targetTime);
+    void 월요일이_아닌_날_10시_06분은_지각한다() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 6, 0);
 
-        assertThat(AttendanceStatus.attend(targetDate)).isEqualTo(AttendanceStatus.ATTENDANCE);
+        assertThat(AttendanceStatus.evaluateAttendance(dateTime)).isEqualTo(AttendanceStatus.TARDY);
+    }
+
+    @Test
+    void 월요일이_아닌_날_9시_55분은_출석한다() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 9, 55, 0);
+
+        assertThat(AttendanceStatus.evaluateAttendance(dateTime)).isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 }

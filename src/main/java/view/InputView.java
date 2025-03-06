@@ -1,80 +1,79 @@
 package view;
 
-import static global.util.DateUtil.FIXED_REFERENCE_DATE;
-
+import domain.AttendanceBook;
+import domain.Crew;
 import domain.Crews;
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.File;
+import java.io.FileReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class InputView {
-    Scanner scanner;
+    private final Scanner scanner;
 
-    public InputView(Scanner scanner) {
-        this.scanner = scanner;
+    public InputView() {
+        scanner = new Scanner(System.in);
     }
 
-    public String inputMenu() {
-        return inputByMessage(String.format("""
-                오늘은 %d월 %02d일 %s입니다. 기능을 선택해 주세요.
-                1. 출석 확인
-                2. 출석 수정
-                3. 크루별 출석 기록 확인
-                4. 제적 위험자 확인
-                Q. 종료""", FIXED_REFERENCE_DATE.getMonth().getValue(), FIXED_REFERENCE_DATE.getDayOfMonth(), ViewUtil.getDayOfWeekToMessage(
-                FIXED_REFERENCE_DATE.getDayOfWeek())));
-    }
-
-    public String inputByMessage(String message) {
+    public String readLine(String message) {
         System.out.println(message);
         return scanner.nextLine();
     }
 
-    public String inputName() {
-        return inputByMessage("닉네임을 입력해 주세요.");
+    public String readLine() {
+        return scanner.nextLine();
     }
 
-    public String inputAttendTime() {
-        return inputByMessage("등교 시간을 입력해 주세요.");
+    public String enterMenuItem() {
+        return readLine("1. 출석 확인\n2. 출석 수정\n3. 크루별 출석 기록 확인\n4. 제적 위험자 확인\nQ. 종료");
     }
 
-    public Crews getFile() {
+    public String enterNickname() {
+        return readLine("닉네임을 입력해 주세요.");
+    }
+
+    public String enterAttendanceTime() {
+        return readLine("등교 시간을 입력해 주세요.");
+    }
+
+    public String enterNicknameForEdit() {
+        return readLine("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+    }
+
+    public String enterAttendanceDateForEdit() {
+        return readLine("수정하려는 날짜(일)을 입력해 주세요.");
+    }
+
+    public String enterAttendanceTimeForEdit() {
+        return readLine("언제로 변경하겠습니까?");
+    }
+
+    public void readFile(AttendanceBook attendanceBook, Crews crews) {
         try {
-            InputStream inputStream = ClassLoader.getSystemClassLoader().getResource("./attendances.csv").openStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            Crews crews = new Crews();
-            bufferedReader.readLine();
-            String line;
+            BufferedReader bufferedReader = loadFile();
+            String line = bufferedReader.readLine();
             while ((line = bufferedReader.readLine()) != null) {
                 String[] tokens = line.split(",");
-                validateName(tokens[0]);
-                crews.initAttendStatus(tokens[0], LocalDateTime.parse(tokens[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+                Crew crew = crews.initCrew(tokens[0]);
+                attendanceBook.initAttendance(crew, LocalDateTime.parse(tokens[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
             }
-            return crews;
-        } catch (IOException e) {
-            throw new IllegalArgumentException("출석 파일을 불러올 수 없습니다.");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("파일을 불러오는 중 예외가 발생하였습니다.");
         }
     }
 
-    public String inputEditCrewName() {
-        return inputByMessage("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-    }
-
-    public String inputEditDay() {
-        return inputByMessage("수정하려는 날짜(일)를 입력해 주세요.");
-    }
-
-    public String inputEditTime() {
-        return inputByMessage("언제로 변경하겠습니까?");
-    }
-
-    public void validateName(String name) {
-        if (name.length() > 4 || name.length() < 2) {
-            throw new IllegalArgumentException("크루 닉네임은 2자 이상, 4자 이하만 입력할 수 있습니다.");
+    private BufferedReader loadFile() {
+        try {
+            Path filePath = Paths.get("src", "main", "resources", "attendances.csv");
+            File file = filePath.toFile();
+            return new BufferedReader(new FileReader(file));
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("파일을 불러오는 중 예외가 발생하였습니다.");
         }
     }
 }
