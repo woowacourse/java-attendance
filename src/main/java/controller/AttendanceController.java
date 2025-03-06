@@ -5,6 +5,9 @@ import domain.AttendanceRecord;
 import domain.Attendances;
 import domain.NickName;
 import domain.WarningCrews;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +90,12 @@ public class AttendanceController {
 
     private AttendanceRecord inputAttendTime() {
         String attendTime = inputView.inputAttendingTime();
-        return AttendanceRecord.timeOf(attendTime);
+        try {
+            LocalTime time = LocalTime.parse(attendTime);
+            return new AttendanceRecord(Current.getToday(), time);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("올바른 시간 범위 및 형식이 아닙니다. 예시) 09:05");
+        }
     }
 
     private void editProcess(AttendanceManager attendanceManager) {
@@ -109,9 +117,28 @@ public class AttendanceController {
     }
 
     private AttendanceRecord inputEditAttendanceRecord() {
+        LocalDate editDate = inputEditDate();
+        LocalTime editLocalTime = inputEditTime();
+        return new AttendanceRecord(editDate, editLocalTime);
+    }
+
+    private LocalDate inputEditDate() {
         String editDate = inputView.inputEditDate();
+        try {
+            int editDateInt = Integer.parseInt(editDate);
+            return LocalDate.of(Current.getYearOfToday(), Current.getMonthOfToday(), editDateInt);
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException("올바른 날짜 범위 또는 형식이 아닙니다. 예시) 1");
+        }
+    }
+
+    private LocalTime inputEditTime() {
         String editTime = inputView.inputEditTime();
-        return AttendanceRecord.of(editDate, editTime);
+        try {
+            return LocalTime.parse(editTime);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("올바른 시간 범위 또는 형식이 아닙니다. 예시) 09:05");
+        }
     }
 
     private void checkAttendanceProcess(AttendanceManager attendanceManager) {
@@ -151,12 +178,11 @@ public class AttendanceController {
     private void parseAttendanceRecordAndInsert(AttendanceManager attendanceManager, String line) {
         String[] commaSplit = line.split(",");
         NickName nickName = new NickName(commaSplit[0]);
-        String[] barSplit = commaSplit[1].split("-");
-        String[] spaceSplit = barSplit[2].split(" ");
-        String date = spaceSplit[0];
-        String time = spaceSplit[1];
         attendanceManager.register(nickName);
-        AttendanceRecord attendanceRecord = AttendanceRecord.of(date, time);
+        String[] spaceSplit = commaSplit[1].split(" ");
+        LocalDate localDate = LocalDate.parse(spaceSplit[0]);
+        LocalTime localTime = LocalTime.parse(spaceSplit[1]);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(localDate, localTime);
         attendanceManager.attend(nickName, attendanceRecord);
     }
 }
