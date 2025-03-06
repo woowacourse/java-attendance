@@ -30,15 +30,11 @@ public class AttendanceManager {
         validateAttendAbleDate(attendanceRecord);
         validateAttendAbleTime(attendanceRecord);
         Attendances attendances = attendanceManager.get(nickName);
-        attendances.attend(attendanceRecord);
-    }
-
-    public boolean isAttended(NickName nickName, AttendanceRecord checkAttendanceRecord) {
-        validateNameExist(nickName);
-        validateAttendAbleDate(checkAttendanceRecord);
-        validateAttendAbleTime(checkAttendanceRecord);
-        Attendances attendances = attendanceManager.get(nickName);
-        return attendances.isAttended(checkAttendanceRecord);
+        try {
+            attendances.attend(attendanceRecord);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("이미 출석한 닉네임입니다. 수정 기능을 사용해 주세요.");
+        }
     }
 
     public void edit(NickName nickName, AttendanceRecord editAttendanceRecord) {

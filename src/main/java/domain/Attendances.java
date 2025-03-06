@@ -19,10 +19,17 @@ public class Attendances {
     }
 
     public void attend(AttendanceRecord attendanceRecord) {
+        validateIsAlreadyAttended(attendanceRecord);
         attendances.add(attendanceRecord);
     }
 
-    public boolean isAttended(AttendanceRecord checkAttendanceRecord) {
+    private void validateIsAlreadyAttended(AttendanceRecord attendanceRecord) {
+        if (isAttended(attendanceRecord)) {
+            throw new IllegalArgumentException("이미 출석한 날짜입니다.");
+        }
+    }
+
+    private boolean isAttended(AttendanceRecord checkAttendanceRecord) {
         return attendances.stream()
                 .anyMatch(attendanceRecord -> attendanceRecord.isSameDate(checkAttendanceRecord));
     }

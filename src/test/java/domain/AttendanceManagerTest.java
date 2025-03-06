@@ -42,8 +42,6 @@ public class AttendanceManagerTest {
         assertAll(
                 () -> assertThatThrownBy(() -> attendanceManager.attend(nickName, attendanceRecord))
                         .isInstanceOf(IllegalArgumentException.class),
-                () -> assertThatThrownBy(() -> attendanceManager.isAttended(nickName, attendanceRecord))
-                        .isInstanceOf(IllegalArgumentException.class),
                 () -> assertThatThrownBy(() -> attendanceManager.edit(nickName, attendanceRecord))
                         .isInstanceOf(IllegalArgumentException.class),
                 () -> assertThatThrownBy(() -> attendanceManager.checkAttendance(nickName, List.of(11)))
@@ -65,8 +63,6 @@ public class AttendanceManagerTest {
         assertAll(
                 () -> assertThatThrownBy(() -> attendanceManager.attend(nickName, attendanceRecord))
                         .isInstanceOf(IllegalArgumentException.class),
-                () -> assertThatThrownBy(() -> attendanceManager.isAttended(nickName, attendanceRecord))
-                        .isInstanceOf(IllegalArgumentException.class),
                 () -> assertThatThrownBy(() -> attendanceManager.edit(nickName, attendanceRecord))
                         .isInstanceOf(IllegalArgumentException.class)
         );
@@ -85,8 +81,6 @@ public class AttendanceManagerTest {
         // when & then
         assertAll(
                 () -> assertThatThrownBy(() -> attendanceManager.attend(nickName, attendanceRecord))
-                        .isInstanceOf(IllegalArgumentException.class),
-                () -> assertThatThrownBy(() -> attendanceManager.isAttended(nickName, attendanceRecord))
                         .isInstanceOf(IllegalArgumentException.class),
                 () -> assertThatThrownBy(() -> attendanceManager.edit(nickName, attendanceRecord))
                         .isInstanceOf(IllegalArgumentException.class)
@@ -113,24 +107,19 @@ public class AttendanceManagerTest {
             assertThat(attendanceManager).isNotEqualTo(new AttendanceManager());
         }
 
-        @ParameterizedTest
-        @DisplayName("이름, 확인할 출석 기록으로 출석 기록과 동일한 날짜의 출석 기록이 존재하는지 확인할 수 있다")
-        @CsvSource(value = {"11, 11, true", "10, 11, false"})
-        void should_return_true_when_same_date_attended_attendanceRecord(String attendedDate, String checkDate,
-                                                                         boolean expected) {
+        @Test
+        @DisplayName("오늘 출석을 한 경우 예외를 발생시킨다")
+        void should_throw_exception_when_attend_twice() {
             // given
             NickName nickName = new NickName("후우");
             AttendanceManager attendanceManager = new AttendanceManager();
             attendanceManager.register(nickName);
-            AttendanceRecord attendedAttendanceRecord = AttendanceRecord.of(attendedDate, "10:00");
-            attendanceManager.attend(nickName, attendedAttendanceRecord);
-            AttendanceRecord checkAttendanceRecord = AttendanceRecord.of(checkDate, "10:00");
+            AttendanceRecord attendanceRecord = AttendanceRecord.of("11", "10:00");
+            attendanceManager.attend(nickName, attendanceRecord);
 
-            // when
-            boolean result = attendanceManager.isAttended(nickName, checkAttendanceRecord);
-
-            // then
-            assertThat(result).isEqualTo(expected);
+            // when & then
+            assertThatThrownBy(() -> attendanceManager.attend(nickName, attendanceRecord))
+                    .isInstanceOf(IllegalArgumentException.class);
         }
     }
 
@@ -249,7 +238,7 @@ public class AttendanceManagerTest {
             NickName interviewName = new NickName("면담 학생");
             attendanceManager.register(interviewName);
             for (int i = attends.size() - 1; i >= 3; --i) {
-                attendanceManager.attend(expelName, attends.get(i));
+                attendanceManager.attend(interviewName, attends.get(i));
             }
             NickName warningName = new NickName("경고 학생");
             attendanceManager.register(warningName);
