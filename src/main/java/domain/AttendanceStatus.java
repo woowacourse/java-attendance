@@ -1,24 +1,32 @@
 package domain;
 
+import java.time.Duration;
+import java.time.LocalTime;
+
 public enum AttendanceStatus {
     PRESENCE(0),
     LATE(5),
     ABSENCE(30),
     ;
 
-    private final int arrivalTimeLimit;
+    private final long arrivalTimeLimit;
 
-    AttendanceStatus(int arrivalTimeLimit) {
+    AttendanceStatus(long arrivalTimeLimit) {
         this.arrivalTimeLimit = arrivalTimeLimit;
     }
 
-    public static AttendanceStatus timeGapToAttendanceStatus(int minute) {
-        if (minute <= LATE.arrivalTimeLimit) {
-            return PRESENCE;
+    public static AttendanceStatus determineAttendanceStatus(CheckInDate checkInDate, CheckInTime checkInTime) {
+        return determineAttendanceStatus(ClassTime.getClassStartTime(checkInDate.toLocalDate()), checkInTime.toLocalTime());
+    }
+
+    public static AttendanceStatus determineAttendanceStatus(LocalTime classStartTime, LocalTime checkInTime) {
+        long minutesLate = Duration.between(classStartTime, checkInTime).toMinutes();
+        if (minutesLate > ABSENCE.arrivalTimeLimit) {
+            return ABSENCE;
         }
-        if (minute <= ABSENCE.arrivalTimeLimit) {
+        if (minutesLate > LATE.arrivalTimeLimit) {
             return LATE;
         }
-        return ABSENCE;
+        return PRESENCE;
     }
 }

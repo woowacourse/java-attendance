@@ -1,42 +1,41 @@
 package domain;
 
+import exception.AppException;
+
 public class Crew implements Comparable<Crew> {
     private final String name;
 
     private Crew(String name) {
-        validateEmptyName(name);
-        String trimmed = name.trim();
-        validateNameRange(trimmed);
-        this.name = trimmed;
+        validateName(name);
+        this.name = name;
     }
 
     public static Crew of(String name) {
         return new Crew(name);
     }
 
-    private void validateEmptyName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("[ERROR] 크루 이름은 NULL 또는 빈 값일 수 없습니다.");
+    private void validateName(String name) {
+        validateNonNull(name);
+        validateNameLength(name);
+        validateNameLanguage(name);
+    }
+
+    private void validateNonNull(String name) {
+        if (name == null) {
+            throw new AppException("이름은 NULL 이 될 수 없습니다.");
         }
     }
 
-    private void validateNameRange(String name) {
+    private void validateNameLength(String name) {
         if (name.length() < 2 || name.length() > 4) {
-            throw new IllegalArgumentException("[ERROR] 크루 이름은 2글자 이상 4글자 이하여야 합니다.");
+            throw new AppException("이름은 2글자에서 4글자 사이여야 합니다.");
         }
     }
 
-    public boolean isSameName(String name) {
-        return this.name.equals(name);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public int compareTo(Crew o) {
-        return this.name.compareTo(o.name);
+    private void validateNameLanguage(String name) {
+        if (!name.matches("^[가-힣]+$")) {
+            throw new AppException("이름은 한글이어야 합니다.");
+        }
     }
 
     @Override
@@ -50,5 +49,15 @@ public class Crew implements Comparable<Crew> {
     @Override
     public int hashCode() {
         return name.hashCode();
+    }
+
+    @Override
+    public int compareTo(Crew crew) {
+        return name.compareTo(crew.name);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

@@ -1,131 +1,131 @@
 package view;
 
-import controller.AttendanceController;
-import domain.Attendance;
-import domain.AttendanceStatus;
-import domain.CheckInTime;
-import domain.PenaltyStatus;
-import dto.AttendanceLogDetailsDTO;
+import domain.*;
+import exception.AppException;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN);
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    public void printTodayCheckInTime(CheckInTime time) {
-        LocalDateTime localDateTime = time.toLocalDateTime();
-        AttendanceStatus attendanceStatus = time.getAttendanceStatus();
-        System.out.println(formatDateTime(localDateTime) + " (" + attendanceStatusToString(attendanceStatus) + ")");
+    public void printTodayCheckInTime(CheckInDate checkInDate, CheckInTime checkInTime) {
+        AttendanceStatus status = AttendanceStatus.determineAttendanceStatus(checkInDate.getClassStartTime(), checkInTime.toLocalTime());
+        System.out.println(formatDate(checkInDate.toLocalDate())
+                + " " + formatTime(checkInTime.toLocalTime())
+                + " (" + formatAttendanceStatus(status) + ")");
     }
 
-    private String attendanceStatusToString(AttendanceStatus attendanceStatus) {
-        if (attendanceStatus == AttendanceStatus.PRESENCE) {
-            return "출석";
-        }
-        if (attendanceStatus == AttendanceStatus.LATE) {
-            return "지각";
-        }
-        return "결석";
+    public void printModifiedChSeckInTime(CheckInDate checkInDate, CheckInTime beforeTime, CheckInTime afterTime) {
+        AttendanceStatus beforeStatus = AttendanceStatus.determineAttendanceStatus(checkInDate.getClassStartTime(), beforeTime.toLocalTime());
+        AttendanceStatus afterStatus = AttendanceStatus.determineAttendanceStatus(checkInDate.getClassStartTime(), afterTime.toLocalTime());
+        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료! \n"
+                , formatDate(checkInDate.toLocalDate())
+                , formatTime(beforeTime.toLocalTime())
+                , formatAttendanceStatus(beforeStatus)
+                , formatTime(afterTime.toLocalTime())
+                , formatAttendanceStatus(afterStatus)
+        );
     }
 
-    public void printModifyCheckInTime(CheckInTime before, CheckInTime after) {
-        String beforeDateTime = formatDateTime(before.toLocalDateTime());
-        String beforeStatus = attendanceStatusToString(before.getAttendanceStatus());
-        String afterTime = formatTimePart(after.toLocalDateTime());
-        String afterStatus = attendanceStatusToString(after.getAttendanceStatus());
-        System.out.printf("%s (%s) -> %s (%s) 수정 완료! \n", beforeDateTime, beforeStatus, afterTime, afterStatus);
+    public void printAttendanceHistory(String nickname, LocalDate today, CheckInHistory checkInHistory) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n", nickname);
+        for (int i = 1; i < today.getDayOfMonth(); i++) {
+            printAttendanceForDay(i, checkInHistory);
+        }
+        printAttendanceResult(checkInHistory, today);
+        printIsCrewDanger(checkInHistory, today);
     }
 
-    public void printAttendanceLog(AttendanceLogDetailsDTO attendanceLogDetails) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n", attendanceLogDetails.getName());
-
-        List<LocalDateTime> attendanceTimes = attendanceLogDetails.getAttendanceTimes();
-        List<Integer> attendanceDays = attendanceLogDetails.getAttendanceDays();
-
-        for (int i = 1; i < LocalDate.now().getDayOfMonth(); i++) {
-            LocalDate localDate = LocalDate.of(2024, 12, i);
-            if (localDate.getDayOfWeek() == DayOfWeek.SATURDAY
-                    || localDate.getDayOfWeek() == DayOfWeek.SUNDAY
-                    || i == 25) {
-                continue;
-            }
-            if (attendanceDays.contains(i)) {
-                LocalDateTime localDateTime = attendanceTimes.get(attendanceLogDetails.getAttendanceDays().indexOf(i));
-                String dateTime = formatDateTime(localDateTime);
-                String status = attendanceStatusToString(CheckInTime.of(localDateTime).getAttendanceStatus());
-                System.out.printf("%s (%s)\n", dateTime, status);
-                continue;
-            }
-            String datePart = formatDatePart(LocalDateTime.of(2024, 12, i, 0, 0));
-            System.out.printf("%s --:-- (결석)\n", datePart);
-        }
-
-        int presenceCount = attendanceLogDetails.getPresenceCount();
-        int lateCount = attendanceLogDetails.getLateCount();
-        int absenceCount = attendanceLogDetails.getAbsenceCount();
-        PenaltyStatus penaltyStatus = attendanceLogDetails.getPenaltyStatus();
-        String status = penaltyStatusToString(penaltyStatus);
-
-        System.out.println();
-        System.out.println("출석: " + presenceCount + "회");
-        System.out.println("지각: " + lateCount + "회");
-        System.out.println("결석: " + absenceCount + "회");
-        System.out.println();
-
-        if (status != null) {
-            System.out.println(status + " 대상자입니다.");
-        }
-    }
-
-    private String penaltyStatusToString(PenaltyStatus penaltyStatus) {
-        if (penaltyStatus == PenaltyStatus.WARNING) {
-            return "경고";
-        }
-        if (penaltyStatus == PenaltyStatus.INTERVIEWEE) {
-            return "면담";
-        }
-        if (penaltyStatus == PenaltyStatus.EXPULSION) {
-            return "제적";
-        }
-        return null;
-    }
-
-    public void printDangerCrews(List<Attendance> dangerCrews) {
+    public void printDangerCrews(List<DangerCrew> crews) {
         System.out.println("제적 위험자 조회 결과");
 
-        for (Attendance attendance : dangerCrews) {
-            int absenceCount = attendance.countAbsence();
-            int lateCount = attendance.countLate();
-
-            PenaltyStatus penaltyStatus = PenaltyStatus.getPenaltyStatus(absenceCount, lateCount);
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", attendance.getName(), absenceCount, lateCount, penaltyStatusToString(penaltyStatus));
+        for (DangerCrew crew : crews) {
+            int lateCount = crew.getLateCount();
+            int absenceCount = crew.getAbsenceCount();
+            PenaltyStatus status = PenaltyStatus.determinePenalty(lateCount, absenceCount);
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", crew, absenceCount, lateCount, formatPenaltyStatus(status));
         }
     }
 
-    private String formatDateTime(LocalDateTime localDateTime) {
-        String datePart = formatDatePart(localDateTime);
-        String timePart = formatTimePart(localDateTime);
-
-        return datePart + " " + timePart;
+    private void printAttendanceForDay(int day, CheckInHistory checkInHistory) {
+        String datePart = "";
+        String timePart = "--:--";
+        AttendanceStatus status = AttendanceStatus.ABSENCE;
+        try {
+            CheckInDate date = getCheckInDate(day);
+            datePart = formatDate(date.toLocalDate());
+            if (checkInHistory.hasHistory(date)) {
+                CheckInTime checkInTime = checkInHistory.getCheckInTime(date);
+                timePart = formatTime(checkInTime.toLocalTime());
+                status = AttendanceStatus.determineAttendanceStatus(date, checkInTime);
+            }
+        } catch (AppException e) {
+            return;
+        }
+        System.out.printf("%s %s (%s)\n", datePart, timePart, formatAttendanceStatus(status));
     }
 
-    private static String formatDatePart(LocalDateTime localDateTime) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN);
-        String datePart = localDateTime.format(dateFormatter);
 
-        String dayOfWeek = localDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+    private static CheckInDate getCheckInDate(int i) {
+        CheckInDate date;
+        date = CheckInDate.of(2024, 12, i);
+        return date;
+    }
 
+    private void printAttendanceResult(CheckInHistory checkInHistory, LocalDate today) {
+        System.out.println();
+        System.out.println("출석: " + checkInHistory.countPresence(today) + "회");
+        System.out.println("지각: " + checkInHistory.countLate(today) + "회");
+        System.out.println("결석: " + checkInHistory.countAbsence(today) + "회");
+        System.out.println();
+    }
+
+
+    private void printIsCrewDanger(CheckInHistory checkInHistory, LocalDate today) {
+        PenaltyStatus status = checkInHistory.getPenaltyStatus(today);
+        if (status != PenaltyStatus.NONE) {
+            System.out.println(formatPenaltyStatus(status) + " 대상자입니다.");
+        }
+    }
+
+    private String formatAttendanceStatus(AttendanceStatus status) {
+        if (status == AttendanceStatus.PRESENCE) {
+            return "출석";
+        }
+        if (status == AttendanceStatus.LATE) {
+            return "지각";
+        }
+        if (status == AttendanceStatus.ABSENCE) {
+            return "결석";
+        }
+        return "NONE";
+    }
+
+    private String formatPenaltyStatus(PenaltyStatus status) {
+        if (status == PenaltyStatus.WARNING) {
+            return "경고";
+        }
+        if (status == PenaltyStatus.INTERVIEW) {
+            return "면담";
+        }
+        if (status == PenaltyStatus.EXPULSION) {
+            return "제적";
+        }
+        return "NONE";
+    }
+
+    private String formatDate(LocalDate date) {
+        String datePart = date.format(DATE_FORMATTER);
+        String dayOfWeek = date.getDayOfWeek().getDisplayName(java.time.format.TextStyle.FULL, Locale.KOREAN);
         return datePart + " " + dayOfWeek;
     }
 
-    private static String formatTimePart(LocalDateTime localDateTime) {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(AttendanceController.HOUR_MINUTE_FORMAT);
-        String timePart = localDateTime.format(timeFormatter);
-        return timePart;
+    private String formatTime(LocalTime time) {
+        return time.format(TIME_FORMATTER);
     }
 }

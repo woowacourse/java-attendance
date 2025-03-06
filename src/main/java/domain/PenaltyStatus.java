@@ -1,36 +1,39 @@
 package domain;
 
 public enum PenaltyStatus {
-
     WARNING(2),
-    INTERVIEWEE(3),
+    INTERVIEW(3),
     EXPULSION(6),
-    NONE(0);
+    NONE(0),
+    ;
 
-    public static final int LATE_TO_ABSENCE_UNIT = 3;
+    private final int absenceCountLimit;
 
-    private final int penalty;
+    private static final int LATE_TO_ABSENCE_RATIO = 3;
 
-    PenaltyStatus(int penalty) {
-        this.penalty = penalty;
+    PenaltyStatus(int absenceCountLimit) {
+        this.absenceCountLimit = absenceCountLimit;
     }
 
-    public static PenaltyStatus getPenaltyStatus(int absenceCount, int lateCount) {
-        int penaltyCount = convertToAbsence(absenceCount, lateCount);
-
-        if (penaltyCount < WARNING.penalty) {
-            return NONE;
+    public static PenaltyStatus determinePenalty(int lateCount, int absenceCount) {
+        int convertedAbsenceCount = convertLateToAbsence(lateCount, absenceCount);
+        if (convertedAbsenceCount >= EXPULSION.absenceCountLimit) {
+            return EXPULSION;
         }
-        if (penaltyCount < INTERVIEWEE.penalty) {
+        if (convertedAbsenceCount >= INTERVIEW.absenceCountLimit) {
+            return INTERVIEW;
+        }
+        if (convertedAbsenceCount >= WARNING.absenceCountLimit) {
             return WARNING;
         }
-        if (penaltyCount < EXPULSION.penalty) {
-            return INTERVIEWEE;
-        }
-        return EXPULSION;
+        return NONE;
     }
 
-    private static int convertToAbsence(int absenceCount, int lateCount) {
-        return (lateCount / LATE_TO_ABSENCE_UNIT) + absenceCount;
+    public static int convertAbsenceToLate(int lateCount, int absenceCount) {
+        return lateCount + (absenceCount * LATE_TO_ABSENCE_RATIO);
+    }
+
+    private static int convertLateToAbsence(int lateCount, int absenceCount) {
+        return absenceCount + (lateCount / LATE_TO_ABSENCE_RATIO);
     }
 }

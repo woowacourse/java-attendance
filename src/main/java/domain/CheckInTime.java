@@ -1,57 +1,52 @@
 package domain;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import exception.AppException;
+
+import java.time.LocalTime;
 
 public class CheckInTime {
-    private LocalDateTime checkInTime;
+    private final LocalTime checkInTime;
 
-    private CheckInTime(LocalDateTime checkInTime) {
-        validateWorkingDay(checkInTime);
+    public static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
+    public static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
+
+    private CheckInTime(LocalTime checkInTime) {
+        validateCampusTime(checkInTime);
         this.checkInTime = checkInTime;
     }
 
-    private static void validateWorkingDay(LocalDateTime checkInTime) {
-        if (checkInTime.getDayOfWeek() == DayOfWeek.SATURDAY || checkInTime.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            throw new IllegalArgumentException("[ERROR] 주말에는 출근할 수 없습니다.");
-        }
-        if (checkInTime.getDayOfMonth() == 25) {
-            throw new IllegalArgumentException("[ERROR] 공휴일에는 출근할 수 없습니다.");
-        }
-    }
-
-    public static CheckInTime of(LocalDateTime checkInTime) {
+    public static CheckInTime of(LocalTime checkInTime) {
         return new CheckInTime(checkInTime);
     }
 
-    public AttendanceStatus getAttendanceStatus() {
-        int minute = WorkingTime.getMinute(checkInTime);
-        return AttendanceStatus.timeGapToAttendanceStatus(minute);
+    public static CheckInTime of(int hour, int minute) {
+        return new CheckInTime(LocalTime.of(hour, minute));
     }
 
-    public boolean isSameDate(CheckInTime otherTime) {
-        return checkInTime.toLocalDate()
-                .isEqual(
-                        otherTime.checkInTime.toLocalDate()
-                );
+    private void validateCampusTime(LocalTime checkInTime) {
+        if (checkInTime.isBefore(CAMPUS_START_TIME) || checkInTime.isAfter(CAMPUS_END_TIME)) {
+            throw new AppException("캠퍼스 이용 시간은 08시부터 23시까지 입니다.");
+        }
     }
 
-    public boolean isBeforeDate(LocalDateTime otherTime) {
-        return checkInTime.toLocalDate()
-                .isBefore(
-                        otherTime.toLocalDate()
-                );
+    public LocalTime toLocalTime() {
+        return checkInTime;
     }
 
-    public void modify(CheckInTime otherTime) {
-        checkInTime = otherTime.checkInTime;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CheckInTime that = (CheckInTime) o;
+        return checkInTime.equals(that.checkInTime);
     }
 
-    public boolean isNotModifiable(LocalDateTime time) {
-        return checkInTime.isAfter(time);
+    @Override
+    public int hashCode() {
+        return checkInTime.hashCode();
     }
 
-    public LocalDateTime toLocalDateTime() {
-        return LocalDateTime.from(checkInTime);
+    public LocalTime getCheckInTime() {
+        return checkInTime;
     }
 }

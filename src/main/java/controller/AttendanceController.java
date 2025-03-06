@@ -1,137 +1,108 @@
 package controller;
 
-import domain.Attendance;
-import domain.Attendances;
-import domain.CheckInTime;
-import domain.PenaltyStatus;
-import dto.AttendanceLogDetailsDTO;
-import util.AttendanceParser;
+import domain.*;
+import util.AttendanceBookParser;
 import view.InputView;
 import view.OutputView;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AttendanceController {
-
-    private final InputView inputView;
-    private final OutputView outputView;
-
+    public static final String FILE_PATH = "src/main/resources/attendances.csv";
     public static final String YEAR_MONTH_DAY_FORMAT = "yyyy-MM-dd";
     public static final String HOUR_MINUTE_FORMAT = "HH:mm";
 
-    public AttendanceController(InputView inputView,
-                                OutputView outputView) {
+    private final DateProvider dateProvider;
+    private final InputView inputView;
+    private final OutputView outputView;
+    private final AttendanceBook attendanceBook;
+
+    public AttendanceController(DateProvider dateProvider, InputView inputView, OutputView outputView) {
+        this.dateProvider = dateProvider;
         this.inputView = inputView;
         this.outputView = outputView;
+        this.attendanceBook = AttendanceBookParser.parseToAttendanceBook(
+                FILE_PATH,
+                DateTimeFormatter.ofPattern(YEAR_MONTH_DAY_FORMAT),
+                DateTimeFormatter.ofPattern(HOUR_MINUTE_FORMAT)
+        );
     }
 
     public void run() {
-        String filePath = "src/main/resources/attendances.csv";
-        Attendances attendances = AttendanceParser.registerAttendances(
-                filePath,
-                DateTimeFormatter.ofPattern(YEAR_MONTH_DAY_FORMAT + " " + HOUR_MINUTE_FORMAT)
-        );
-        readFeature(attendances);
-    }
-
-    private void readFeature(Attendances attendances) {
-        String featureNumber = "";
-        while (!featureNumber.equals("Q")) {
-            featureNumber = inputView.readFeatureNumber();
-            try {
-                selectFeature(attendances, featureNumber);
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
+        while (true) {
+            String featureNumber = inputView.readFeatureNumber(dateProvider.now());
+            if (readFeatureNumber(featureNumber))
+                break;
         }
     }
 
-    private void selectFeature(Attendances attendances, String featureNumber) {
+    private boolean readFeatureNumber(String featureNumber) {
         if (featureNumber.equals("1")) {
-            checkIn(attendances);
-            return;
+            checkIn();
         }
         if (featureNumber.equals("2")) {
-            modifyCheckInTime(attendances);
-            return;
+            modify();
         }
         if (featureNumber.equals("3")) {
-            readCheckInTime(attendances);
-            return;
+            viewCrewHistory();
         }
         if (featureNumber.equals("4")) {
-            readDangerCrews(attendances);
-            return;
+            viewDangerCrews();
         }
-        throw new IllegalArgumentException("[ERROR] 1, 2, 3, 4, Q 만 입력해주세요.");
+        return featureNumber.equals("Q");
     }
 
-    private void checkIn(Attendances attendances) {
-        String name = inputView.readNickName();
-        Attendance attendanceByName = attendances.findAttendanceByName(name);
-
-        LocalDateTime checkInTime = getCheckInTime();
-        attendanceByName.checkIn(checkInTime);
-
-        outputView.printTodayCheckInTime(CheckInTime.of(checkInTime));
+    private void checkIn() {
+        CheckInDate checkInDate = CheckInDate.of(dateProvider.now());
+        String nickname = inputView.readNickName();
+        CheckInHistory historyByCrew = getCheckInHistoryByName(nickname);
+        CheckInTime checkInTime = getCheckInTime();
+        attendanceBook.checkIn(historyByCrew, checkInDate, checkInTime);
+        outputView.printTodayCheckInTime(checkInDate, checkInTime);
     }
 
-    private LocalDateTime getCheckInTime() {
-        String timeString = inputView.readTimeForCheckIn();
-        LocalTime parsedTime = LocalTime.parse(timeString, DateTimeFormatter.ofPattern(HOUR_MINUTE_FORMAT));
-
-        return LocalDateTime.of(LocalDate.now(), parsedTime);
+    private void modify() {
+        String nickname = inputView.readNickNameForModify();
+        CheckInHistory checkInHistoryByName = getCheckInHistoryByName(nickname);
+        CheckInDate dateToModify = getDayToModify();
+        CheckInTime afterTime = getCheckInTimeForModify();
+        CheckInTime beforeTime = checkInHistoryByName.modifyCheckInTime(dateToModify, afterTime);
+        outputView.printModifiedChSeckInTime(dateToModify, beforeTime, afterTime);
     }
 
-
-    private void modifyCheckInTime(Attendances attendances) {
-        String name = inputView.readNickNameForModify();
-        Attendance attendanceByName = attendances.findAttendanceByName(name);
-
-        LocalDateTime newCheckInTime = getNewCheckInTime();
-        LocalDateTime previousCheckInTime = attendanceByName.modify(newCheckInTime);
-
-        outputView.printModifyCheckInTime(CheckInTime.of(previousCheckInTime), CheckInTime.of(newCheckInTime));
+    private void viewCrewHistory() {
+        String nickname = inputView.readNickName();
+        CheckInHistory checkInHistoryByName = getCheckInHistoryByName(nickname);
+        outputView.printAttendanceHistory(nickname, dateProvider.now(), checkInHistoryByName);
     }
 
-    private LocalDateTime getNewCheckInTime() {
-        int day = Integer.parseInt(inputView.readDateForModify());
-        LocalDate date = LocalDate.of(2024, 12, day);
-        String timeString = inputView.readTimeForModify();
-        LocalTime time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern(HOUR_MINUTE_FORMAT));
-
-        return LocalDateTime.of(date, time);
-    }
-
-
-    private void readCheckInTime(Attendances attendances) {
-        String name = inputView.readNickName();
-        Attendance attendanceByName = attendances.findAttendanceByName(name);
-        AttendanceLogDetailsDTO attendanceLogDetails = getAttendanceLogDetails(attendanceByName);
-        outputView.printAttendanceLog(attendanceLogDetails);
-    }
-
-    private AttendanceLogDetailsDTO getAttendanceLogDetails(Attendance attendance) {
-        List<LocalDateTime> attendanceTimes = attendance.getAttendanceLog();
-        List<Integer> attendanceDays = attendanceTimes.stream().map(LocalDateTime::getDayOfMonth).toList();
-
-        int presenceCount = attendance.countPresence();
-        int lateCount = attendance.countLate();
-        int absenceCount = attendance.countAbsence();
-        PenaltyStatus penaltyStatus = PenaltyStatus.getPenaltyStatus(absenceCount, lateCount);
-
-        return new AttendanceLogDetailsDTO(attendance.getName(), attendanceTimes, attendanceDays, presenceCount, lateCount, absenceCount, penaltyStatus);
-    }
-
-    private void readDangerCrews(Attendances attendances) {
-        List<Attendance> dangerCrews = attendances.findDangerCrews()
-                .stream()
-                .sorted()
-                .toList();
+    private void viewDangerCrews() {
+        List<DangerCrew> dangerCrews = attendanceBook.findDangerCrews(dateProvider.now());
         outputView.printDangerCrews(dangerCrews);
+    }
+
+    private CheckInTime getCheckInTimeForModify() {
+        String time = inputView.readTimeForModify();
+        LocalTime parsedTime = LocalTime.parse(time);
+        return CheckInTime.of(parsedTime);
+    }
+
+    private CheckInDate getDayToModify() {
+        String date = inputView.readDateForModify();
+        int parsedDate = Integer.parseInt(date);
+        return CheckInDate.of(2024, 12, parsedDate);
+    }
+
+    private CheckInHistory getCheckInHistoryByName(String nickname) {
+        Crew crew = Crew.of(nickname);
+        return attendanceBook.findHistoryByCrew(crew);
+    }
+
+    private CheckInTime getCheckInTime() {
+        String time = inputView.readTimeForCheckIn();
+        LocalTime parsedTime = LocalTime.parse(time);
+        return CheckInTime.of(parsedTime);
     }
 }

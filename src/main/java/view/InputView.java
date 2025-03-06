@@ -1,7 +1,6 @@
 package view;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
@@ -9,9 +8,8 @@ import java.util.Scanner;
 public class InputView {
     private final Scanner scanner = new Scanner(System.in);
 
-    public String readFeatureNumber() {
-        LocalDateTime today = LocalDateTime.now();
-        System.out.printf("\n오늘은 %s입니다. 기능을 선택해 주세요.\n", formatDatePart(today));
+    public String readFeatureNumber(LocalDate today) {
+        System.out.printf("\n오늘은 %s입니다. 기능을 선택해 주세요.\n", formatDate(today));
         System.out.println("1. 출석 확인\n" +
                 "2. 출석 수정\n" +
                 "3. 크루별 출석 기록 확인\n" +
@@ -45,11 +43,9 @@ public class InputView {
         return scanner.next();
     }
 
-    private static String formatDatePart(LocalDateTime localDateTime) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN);
-        String datePart = localDateTime.format(dateFormatter);
-
-        String dayOfWeek = localDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+    private static String formatDate(LocalDate date) {
+        String datePart = date.format(OutputView.DATE_FORMATTER);
+        String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
 
         return datePart + " " + dayOfWeek;
     }
