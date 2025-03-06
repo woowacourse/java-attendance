@@ -1,36 +1,39 @@
 package domain;
 
 public enum AbsenceLevel {
-    OUT("제적", 5),
-    MEETING("면담", 3),
-    WARNING("경고", 2),
-    NORMAL("정상", 0);
+    NORMAL("정상", 0),
+    WARNING("경고", 6),
+    MEETING("면담", 9),
+    GET_OUT("제적", 15);
 
-    public static final int LATE_TO_ABSENCE_THRESHOLD = 3;
+    private static final int lateToAbsent = 3;
 
-    private final String level;
-    private final int standard;
+    private final String name;
+    private final int standardForAbsenceLevel;
 
-    AbsenceLevel(String level, int standard) {
-        this.level = level;
-        this.standard = standard;
+    AbsenceLevel(String name, int standardForAbsenceLevel) {
+        this.name = name;
+        this.standardForAbsenceLevel = standardForAbsenceLevel;
     }
 
-    public static AbsenceLevel findAbsenceLevel(int absentCount, int lateCount) {
-        absentCount += (lateCount / LATE_TO_ABSENCE_THRESHOLD);
-        if (absentCount > OUT.standard) {
-            return OUT;
+    public static AbsenceLevel getAbsenceLevel(int lateCount, int absentCount) {
+        if (sumOfCount(absentCount, lateCount) > GET_OUT.standardForAbsenceLevel) {
+            return GET_OUT;
         }
-        if (absentCount >= MEETING.standard) {
+        if (sumOfCount(absentCount, lateCount) >= MEETING.standardForAbsenceLevel) {
             return MEETING;
         }
-        if (absentCount >= WARNING.standard) {
+        if (sumOfCount(absentCount, lateCount) >= WARNING.standardForAbsenceLevel) {
             return WARNING;
         }
         return NORMAL;
     }
 
-    public String getLevel() {
-        return level;
+    private static int sumOfCount(int absentCount, int lateCount) {
+        return lateCount + absentCount * lateToAbsent;
+    }
+
+    public String getName() {
+        return name;
     }
 }

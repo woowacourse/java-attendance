@@ -1,85 +1,101 @@
 package domain;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 
-public class AttendanceHistory implements Comparable<AttendanceHistory> {
+public class AttendanceHistory {
+    private static final LocalTime MONDAY_START = LocalTime.of(13, 0);
+    private static final LocalTime DEFAULT_START = LocalTime.of(10, 0);
+    private static final int LATE_STANDARD = 5;
+    private static final int ABSENT_STANDARD = 30;
 
-    public static final int ABSENT_DEFAULT_HOUR = 23;
-    public static final int ABSENT_DEFAULT_MINUTE = 59;
+    private final Map<String, Attendances> attendanceHistory;
 
-    private static final int START_TIME = 8;
-    private static final int END_TIME = 23;
-
-    private final LocalDateTime attendanceTime;
-    private final AttendanceResult attendanceResult;
-
-    @Override
-    public int compareTo(AttendanceHistory o) {
-        return this.attendanceTime.compareTo(o.attendanceTime);
+    public AttendanceHistory(Map<String, Attendances> attendanceHistory) {
+        this.attendanceHistory = attendanceHistory;
     }
 
-    public AttendanceHistory(LocalDateTime attendanceTime) {
-        validateHistory(attendanceTime);
-        this.attendanceTime = attendanceTime;
-        attendanceResult = getAttendanceResult(attendanceTime);
+    public AttendanceResult checkAttendance(String crew, LocalDateTime attendanceDateTime) {
+        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
+        LocalDate attendanceDate = attendanceDateTime.toLocalDate();
+        LocalTime openTime;
+        isHoliday(attendanceDate);
+        duplicateAttendance(attendanceHistory.get(crew), attendanceDate);
+        validateOperatingTime(attendanceTime);
+        attendanceHistory.put(crew, attendanceHistory.get(crew).add(attendanceDateTime));
+        return AttendanceResult.getAttendanceResult(attendanceDateTime);
+
     }
 
-    private AttendanceResult getAttendanceResult(LocalDateTime attendanceTime) {
-        return AttendanceResult.findAttendanceResult(attendanceTime);
-    }
-
-    public boolean isSameDayOfMonth(LocalDateTime attendanceTIme) {
-        return this.attendanceTime.getDayOfMonth() == attendanceTIme.getDayOfMonth();
-    }
-
-    public boolean isSameMonth(LocalDateTime attendanceTIme) {
-        return this.attendanceTime.getMonthValue() == attendanceTIme.getMonthValue();
-    }
-
-    public boolean isBeforeHistory(LocalDateTime attendanceTIme) {
-        LocalDateTime standardTime = LocalDateTime.of(attendanceTIme.getYear(), attendanceTIme.getMonthValue(),
-                attendanceTIme.getDayOfMonth(), 0, 0);
-        return attendanceTime.isBefore(standardTime);
-    }
-
-    private void validateHistory(LocalDateTime attendanceTime) {
-        Holiday.validate(attendanceTime);
-        validateOpeningHours(attendanceTime);
-    }
-
-    private void validateOpeningHours(LocalDateTime attendanceTime) {
-        LocalTime attendanceTimeLocalTime = attendanceTime.toLocalTime();
-        if (isExceptionTime(attendanceTimeLocalTime)) {
-            return;
-        }
-
-        if (isBefore(attendanceTimeLocalTime) || isAfter(attendanceTimeLocalTime)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다. 해당 시간 내의 시간을 입력해 주세요.");
+    private void duplicateAttendance(Attendances attendances, LocalDate attendanceDate) {
+        if (attendances.haveAttendanceDate(attendanceDate)) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석했습니다.");
         }
     }
 
-    private boolean isExceptionTime(LocalTime attendanceTime) {
-        return attendanceTime.getHour() == ABSENT_DEFAULT_HOUR && attendanceTime.getMinute() == ABSENT_DEFAULT_MINUTE;
+    private void isHoliday(LocalDate attendanceDate) {
+        if (attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY || attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY
+                || Holiday.isHoliday(attendanceDate)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일");
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] %s은 등교일이 아닙니다.", formatter.format(attendanceDate)));
+        }
     }
 
-
-    private static boolean isBefore(LocalTime attendanceTimeLocalTime) {
-        return attendanceTimeLocalTime.isBefore(LocalTime.of(START_TIME, 0));
+    private void validateOperatingTime(LocalTime attendanceTime) {
+        if (!AttendanceTimePolicy.isOperatingTime(attendanceTime)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
+        }
     }
 
-    private static boolean isAfter(LocalTime attendanceTimeLocalTime) {
-        return attendanceTimeLocalTime.isAfter(
-                LocalTime.of(END_TIME, 0));
+    public LocalDateTime editAttendance(String crew, LocalDateTime newAttendanceTime) {
+        isExistName(crew);
+        Attendances attendances = attendanceHistory.get(crew);
+        LocalDateTime oldAttendanceDateTime = attendances.edit(newAttendanceTime.toLocalDate());
+        attendances.add(newAttendanceTime);
+        return oldAttendanceDateTime;
     }
 
-    public LocalDateTime getAttendanceTime() {
-        return attendanceTime;
+    private void isExistName(String crew) {
+        if (!attendanceHistory.containsKey(crew)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 이름입니다.");
+        }
     }
 
-    public AttendanceResult getAttendanceResult() {
-        return attendanceResult;
+    public Attendances getAttendances(String crew) {
+        isExistName(crew);
+        return attendanceHistory.get(crew);
     }
 
+    public int getAttendanceCount(String crew, LocalDate standardDate) {
+        Attendances attendances = attendanceHistory.get(crew);
+        return attendances.getAttendanceCount(standardDate);
+    }
 
+    public int getLateCount(String crew, LocalDate standardDate) {
+        Attendances attendances = attendanceHistory.get(crew);
+        return attendances.getLateCount(standardDate);
+    }
+
+    public int getAbsentCount(String crew, LocalDate standardDate) {
+        Attendances attendances = attendanceHistory.get(crew);
+        return attendances.getAbsentCount(standardDate);
+    }
+
+    public AbsenceLevel getAbsenceLevel(String crew, LocalDate standardDate) {
+        int lateCount = getLateCount(crew, standardDate);
+        int absentCount = getAbsentCount(crew, standardDate);
+        return AbsenceLevel.getAbsenceLevel(lateCount, absentCount);
+    }
+
+    public List<String> getAbsenceLevelCrews(LocalDate standardDate) {
+        return attendanceHistory.keySet().stream()
+                .filter(crew -> getAbsenceLevel(crew, standardDate) != AbsenceLevel.NORMAL)
+                .toList();
+    }
 }
