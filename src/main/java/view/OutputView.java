@@ -28,7 +28,7 @@ public final class OutputView {
     public static void printAttendanceCheck(final LocalDateTime time, final String attendanceStatus) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 dd일 EEEE HH:mm", Locale.KOREAN);
 
-        printF("%n %s (%s)%n", time.format(formatter), RESOURCE_STATUS.getString(attendanceStatus));
+        print("%n %s (%s)%n", time.format(formatter), RESOURCE_STATUS.getString(attendanceStatus));
     }
 
     public static void printEditAttendanceDateTime(final AttendanceRecord beforeRecord,
@@ -39,7 +39,7 @@ public final class OutputView {
         final LocalDateTime afterDateTime = afterAttendanceDateTime.getDateTime();
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 dd일 EEEE HH:mm", Locale.KOREAN);
 
-        printF("%n %s (%s) -> %s (%s) 수정 완료!%n",
+        print("%n %s (%s) -> %s (%s) 수정 완료!%n",
                 beforeDateTime.format(formatter),
                 RESOURCE_STATUS.getString(beforeRecord.getAttendanceStatus().name()),
                 afterDateTime.toLocalTime(),
@@ -63,7 +63,7 @@ public final class OutputView {
         printAttendanceCounts(attendanceRecords);
 
         if (disciplinaryStatus != DisciplinaryStatus.NONE) {
-            printF("%n%s 대상자입니다.%n", RESOURCE_DISCIPLINARY_STATUS.getString(disciplinaryStatus.name()));
+            print("%n%s 대상자입니다.%n", RESOURCE_DISCIPLINARY_STATUS.getString(disciplinaryStatus.name()));
         }
     }
 
@@ -75,12 +75,12 @@ public final class OutputView {
         final AttendanceStatus attendanceStatus = attendanceRecord.getAttendanceStatus();
 
         if (dateTime.toLocalTime().equals(LocalTime.of(0, 0))) {
-            printF("%s --:-- (%s)%n", dateTime.format(absenceFormat),
+            print("%s --:-- (%s)%n", dateTime.format(absenceFormat),
                     RESOURCE_STATUS.getString(attendanceStatus.name()));
             return;
         }
 
-        printF("%s (%s)%n", dateTime.format(formatter), RESOURCE_STATUS.getString(attendanceStatus.name()));
+        print("%s (%s)%n", dateTime.format(formatter), RESOURCE_STATUS.getString(attendanceStatus.name()));
     }
 
     private static void printAttendanceCounts(final AttendanceRecords attendanceRecords) {
@@ -88,13 +88,13 @@ public final class OutputView {
         final int present = attendanceStatusCounts.getAttendance();
         final int late = attendanceStatusCounts.getLate();
         final int absent = attendanceStatusCounts.getAbsence();
-        printF("%n%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.PRESENT.name()), present);
-        printF("%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.LATE.name()), late);
-        printF("%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.ABSENT.name()), absent);
+        print("%n%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.PRESENT.name()), present);
+        print("%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.LATE.name()), late);
+        print("%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.ABSENT.name()), absent);
     }
 
     public static void printRiskMembers(final List<Crew> disciplinaryCrews) {
-        printF("%n제적 위험자 조회 결과%n");
+        print("%n제적 위험자 조회 결과%n");
         disciplinaryCrews.forEach(crew -> {
             final DisciplinaryStatus disciplinaryStatus = crew.getDisciplinaryStatus();
             final String status = RESOURCE_DISCIPLINARY_STATUS.getString(disciplinaryStatus.name());
@@ -104,11 +104,11 @@ public final class OutputView {
             final int absence = attendanceStatusCounts.getAbsence();
             final int late = attendanceStatusCounts.getLate();
 
-            printF("- %s: 결석 %d회, 지각 %d회 (%s)%n", nickname.getValue(), absence, late, status);
+            print("- %s: 결석 %d회, 지각 %d회 (%s)%n", nickname.getValue(), absence, late, status);
         });
     }
 
-    private static void printF(final String message, final Object... args) {
+    private static void print(final String message, final Object... args) {
         System.out.printf(message, args);
     }
 }
