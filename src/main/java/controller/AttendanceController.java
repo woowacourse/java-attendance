@@ -95,6 +95,7 @@ public class AttendanceController {
         AttendanceRecord editAttendanceRecord = inputEditAttendanceRecord();
         AttendanceRecord beforeAttendanceRecord = attendanceManager.getAttendanceRecordOfSameDate(nickName,
                 editAttendanceRecord);
+        attendanceManager.edit(nickName, editAttendanceRecord);
         outputView.printEdit(beforeAttendanceRecord, editAttendanceRecord);
     }
 
