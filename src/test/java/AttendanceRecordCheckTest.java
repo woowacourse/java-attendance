@@ -46,4 +46,3 @@ public class AttendanceRecordCheckTest {
         assertThat(attendanceBook.determinePenaltyStatus(name, nowDate)).isSameAs(Penalty.COUNSEL);
     }
 }
-
