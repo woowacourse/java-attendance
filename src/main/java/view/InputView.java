@@ -1,78 +1,73 @@
 package view;
 
-import domain.Crew;
-import domain.Day;
-
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class InputView {
-    public static final String MENU_REGEX = "[1234Qq]";
-    private final Scanner scanner = new Scanner(System.in);
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
+    private final Scanner scanner;
 
-    public String readMenu(LocalDate date) {
-        System.out.printf("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.%n" +
-                "1. 출석 확인%n" +
-                "2. 출석 수정%n" +
-                "3. 크루별 출석 기록 확인%n" +
-                "4. 제적 위험자 확인%n" +
-                "Q. 종료%n", date.getMonthValue(), date.getDayOfMonth(), Day.getDay(date).getName());
-        String input = scanner.nextLine();
-        validateMenuInput(input);
-        return input.toUpperCase();
+    public InputView(Scanner scanner) {
+        this.scanner = scanner;
     }
 
-    public Crew readNickname() {
-        System.out.println("\n닉네임을 입력해 주세요.");
-        String input = scanner.nextLine();
-        return new Crew(input);
+    public String readMenuSelection(LocalDate currentDate) {
+        System.out.printf("%n오늘은 %s입니다. 기능을 선택해 주세요." + System.lineSeparator() +
+                "1. 출석 확인" + System.lineSeparator() +
+                "2. 출석 수정" + System.lineSeparator() +
+                "3. 크루별 출석 기록 확인" + System.lineSeparator() +
+                "4. 제적 위험자 확인" + System.lineSeparator() +
+                "Q. 종료" + System.lineSeparator(), dateFormatter.format(currentDate));
+        return scanner.nextLine().toUpperCase();
     }
 
-    public LocalTime readCheckInTime() {
+    public String readNickname() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
+
+    public String readCheckInTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         String input = scanner.nextLine();
-        try {
-            return LocalTime.parse(input);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 시간은 24시간 형식으로 입력해 주세요.\n");
-        }
+        validateTime(input);
+        return input;
     }
 
-    public Crew readUpdateNickname() {
-        System.out.println("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        String input = scanner.nextLine();
-        return new Crew(input);
+    public String readUpdateNickname() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return scanner.nextLine();
     }
 
-    public LocalDate readUpdateDate() {
+    public String readUpdateDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         String input = scanner.nextLine();
-        try {
-            int dateNumber = Integer.parseInt(input);
-            return LocalDate.of(2024, 12, dateNumber);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 숫자를 입력해 주세요.\n");
-        } catch (DateTimeException e) {
-            throw new IllegalArgumentException("[ERROR] 1~31 사이의 숫자를 입력해주세요.\n");
-        }
+        validateDate(input);
+        return input;
     }
 
-    public LocalTime readUpdateTime() {
+    public String readUpdateTime() {
         System.out.println("언제로 변경하겠습니까?");
         String input = scanner.nextLine();
+        validateTime(input);
+        return input;
+    }
+
+    private void validateDate(String input) {
         try {
-            return LocalTime.parse(input);
+            LocalDate.parse(String.format("2024-12-%2s", input).replace(" ", "0"));
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 시간은 24시간 형식으로 입력해 주세요.\n");
+            throw new IllegalArgumentException("[ERROR] 유효한 날짜를 입력해 주세요." + System.lineSeparator());
         }
     }
 
-    private void validateMenuInput(String input) {
-        if (!input.matches(MENU_REGEX)) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 메뉴입니다.\n");
+    private void validateTime(String input) {
+        try {
+            LocalTime.parse(input);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 시간은 HH:mm 형식으로 입력해 주세요." + System.lineSeparator());
         }
     }
 }

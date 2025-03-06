@@ -4,32 +4,60 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceRecordTest {
+    @DisplayName("LocalDateTime을 받아 기록 객체를 생성할 수 있다.")
     @Test
-    @DisplayName("출결 기록을 예외 없이 생성한다.")
-    public void attendanceRecordConstructorTest() {
-        assertThatCode(() -> AttendanceRecord.parse("2024-12-02 13:00"))
-                .doesNotThrowAnyException();
+    void instanceTest() {
+        // given
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 0);
+
+        // then
+        assertThatNoException().isThrownBy(() -> new AttendanceRecord(dateTime));
     }
 
+    @DisplayName("LocalDate을 받아 결석으로 처리된 객체를 생성할 수 있다.")
     @Test
-    @DisplayName("문자열 입력값이 등교일이 아닐 경우 예외를 발생시킨다.")
-    public void validateDateStringTest() {
-        assertThatThrownBy(() -> AttendanceRecord.parse("2024-12-25 10:00"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 12월 25일 수요일은 등교일이 아닙니다.");
+    void absentInstanceTest() {
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 2);
+
+        // when
+        AttendanceStatus expectedValue = AttendanceStatus.ABSENT;
+
+        // then
+        assertAll(
+                () -> assertThatNoException().isThrownBy(() -> new AttendanceRecord(date)),
+                () -> assertThat(new AttendanceRecord(date).getAttendanceStatus()).isEqualTo(expectedValue)
+        );
     }
 
+    @DisplayName("출석을 기록하려는 날짜가 등교일이 아닐 경우 예외가 발생한다.")
     @Test
-    @DisplayName("시간 입력값이 등교일이 아닐 경우 예외를 발생한다.")
-    public void validateLocalTimeTest() {
-        assertThatThrownBy(() -> AttendanceRecord.checkIn(LocalTime.of(10, 0), LocalDate.of(2024, 12, 25)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 12월 25일 수요일은 등교일이 아닙니다.");
+    void validateDateTest() {
+        // given
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 25, 10, 0);
+
+        // then
+        assertThatThrownBy(() -> new AttendanceRecord(dateTime)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("등교 시간에 따른 출석 상태를 저장한다.")
+    @Test
+    void attendanceStatusTest() {
+        // given
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 10);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(dateTime);
+
+        // when
+        AttendanceStatus expectedValue = AttendanceStatus.TARDY;
+        AttendanceStatus actualValue = attendanceRecord.getAttendanceStatus();
+
+        // then
+        assertThat(actualValue).isEqualTo(expectedValue);
     }
 }

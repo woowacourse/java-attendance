@@ -7,31 +7,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class AttendanceRecord implements Comparable<AttendanceRecord> {
-    public static final LocalTime ABSENT_TIME = LocalTime.of(14, 0);
+    private static final LocalTime ABSENT_TIME = LocalTime.of(23, 59);
 
     private final LocalDateTime dateTime;
-    private final Attendance attendance;
+    private final AttendanceStatus attendanceStatus;
 
-    private AttendanceRecord(LocalDateTime dateTime) {
-        validateDate(dateTime);
+    public AttendanceRecord(LocalDate date) {
+        this(LocalDateTime.of(date, ABSENT_TIME));
+    }
+
+    public AttendanceRecord(LocalDateTime dateTime) {
+        validate(dateTime.toLocalDate());
         this.dateTime = dateTime;
-        this.attendance = Attendance.getAttendanceStatus(Day.getDay(dateTime.toLocalDate()), dateTime.toLocalTime());
-    }
-
-    public static AttendanceRecord parse(String dateTime) {
-        return new AttendanceRecord(LocalDateTime.parse(dateTime.replace(" ", "T")));
-    }
-
-    public static AttendanceRecord of(LocalDate date, LocalTime time) {
-        return new AttendanceRecord(LocalDateTime.of(date, time));
-    }
-
-    public static AttendanceRecord checkIn(LocalTime time, LocalDate currentDate) {
-        return new AttendanceRecord(LocalDateTime.of(currentDate, time));
-    }
-
-    public static AttendanceRecord asAbsent(LocalDate date) {
-        return new AttendanceRecord(LocalDateTime.of(date, ABSENT_TIME));
+        this.attendanceStatus = AttendanceStatus.getStatus(dateTime.getDayOfWeek(), dateTime.toLocalTime());
     }
 
     public LocalDate getDate() {
@@ -42,23 +30,14 @@ public class AttendanceRecord implements Comparable<AttendanceRecord> {
         return dateTime.toLocalTime();
     }
 
-    public Attendance getAttendance() {
-        return attendance;
+    public AttendanceStatus getAttendanceStatus() {
+        return this.attendanceStatus;
     }
 
-    public boolean isTardy() {
-        return attendance.equals(Attendance.TARDY);
-    }
-
-    public boolean isAbsent() {
-        return attendance.equals(Attendance.ABSENT);
-    }
-
-    private void validateDate(LocalDateTime dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
-        String formattedDateTime = dateTime.format(formatter);
-        if (Day.checkHoliday(dateTime.toLocalDate())) {
-            throw new IllegalArgumentException(String.format("[ERROR] %s은 등교일이 아닙니다.", formattedDateTime));
+    private void validate(LocalDate date) {
+        if (ClassSchedule.isDayOff(date)) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
+            throw new IllegalArgumentException(String.format("[ERROR] %s은 등교일이 아닙니다.%n", dateFormatter.format(date)));
         }
     }
 
@@ -66,22 +45,16 @@ public class AttendanceRecord implements Comparable<AttendanceRecord> {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         AttendanceRecord that = (AttendanceRecord) o;
-        return Objects.equals(dateTime, that.dateTime) && attendance == that.attendance;
+        return Objects.equals(dateTime.toLocalDate(), that.dateTime.toLocalDate()) && attendanceStatus == that.attendanceStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dateTime, attendance);
+        return Objects.hash(dateTime.toLocalDate(), attendanceStatus);
     }
 
     @Override
-    public int compareTo(AttendanceRecord other) {
-        if (other.dateTime.isBefore(dateTime)) {
-            return 1;
-        }
-        if (other.dateTime.equals(dateTime)) {
-            return 0;
-        }
-        return -1;
+    public int compareTo(AttendanceRecord o) {
+        return this.dateTime.toLocalDate().compareTo(o.dateTime.toLocalDate());
     }
 }

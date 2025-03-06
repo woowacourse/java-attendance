@@ -1,15 +1,14 @@
 import controller.AttendanceController;
+import view.InputView;
+import view.OutputView;
 
-import java.time.format.DateTimeParseException;
+import java.util.Scanner;
 
 public class Application {
     public static void main(String[] args) {
-        AttendanceController attendanceController;
-        try {
-            attendanceController = new AttendanceController(args);
-        } catch (DateTimeParseException | ArrayIndexOutOfBoundsException e) {
-            throw new IllegalArgumentException("[ERROR] 프로그램 인수를 YYYY-MM-DD 형식으로 입력해 주세요.");
-        }
+        InputView inputView = new InputView(new Scanner(System.in));
+        OutputView outputView = new OutputView();
+        AttendanceController attendanceController = new AttendanceController(inputView, outputView);
         attendanceController.run();
     }
 }

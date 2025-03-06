@@ -4,77 +4,63 @@ import domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Map;
 
 public class OutputView {
-    public void displayAttendanceRecord(AttendanceRecord attendanceRecord) {
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
+
+    public void printAttendanceRecord(AttendanceRecord attendanceRecord) {
+        AttendanceStatus attendanceStatus = attendanceRecord.getAttendanceStatus();
         LocalDate date = attendanceRecord.getDate();
-        Day day = Day.getDay(date);
         LocalTime time = attendanceRecord.getTime();
-        Attendance attendance = attendanceRecord.getAttendance();
-        System.out.printf("%d월 %02d일 %s %s (%s)",
-                date.getMonthValue(),
-                date.getDayOfMonth(),
-                day.getName(),
-                getDisplayTime(time, attendance),
-                attendance.getName());
+        String displayTime = getDisplayTime(attendanceStatus, time);
+
+        System.out.print(System.lineSeparator() + dateFormatter.format(date) + " " + displayTime + " (" +
+                attendanceStatus.getName() + ")");
     }
 
-    public void displayUpdatedRecord(AttendanceRecord oldRecord, AttendanceRecord newRecord) {
-        LocalTime newTime = newRecord.getTime();
-        Attendance newAttendance = newRecord.getAttendance();
-        displayAttendanceRecord(oldRecord);
-        System.out.printf(" -> %s (%s) 수정 완료!%n", newTime, newAttendance.getName());
+    public void printUpdateResult(AttendanceRecord oldRecord, AttendanceRecord newRecord, LocalTime newTime) {
+        LocalDate date = oldRecord.getDate();
+        LocalTime oldTime = oldRecord.getTime();
+        AttendanceStatus oldAttendanceStatus = oldRecord.getAttendanceStatus();
+        AttendanceStatus newAttendanceStatus = newRecord.getAttendanceStatus();
+
+        System.out.println(System.lineSeparator() + dateFormatter.format(date) + " " +
+                getDisplayTime(oldAttendanceStatus, oldTime) + " (" + oldAttendanceStatus.getName() + ") -> " +
+                getDisplayTime(newAttendanceStatus, newTime) + " (" + newAttendanceStatus.getName() + ") 수정 완료!");
     }
 
-    public void displayRecords(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
-        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", crew.name());
-        displayAttendanceRecords(crew, crewAttendanceRecords);
-        displayAttendanceCount(crew, crewAttendanceRecords);
-        displayDisciplinaryStatus(crew, crewAttendanceRecords);
+    public void printCrewRecord(List<AttendanceRecord> attendanceRecords, Crew crew) {
+        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n", crew.name());
+        attendanceRecords.forEach(this::printAttendanceRecord);
     }
 
-    public void displayWarnedCrews(List<Crew> warnedCrews, CrewAttendanceRecords crewAttendanceRecords) {
-        System.out.println("\n제적 위험자 조회 결과");
-        for (Crew warnedCrew : warnedCrews) {
-            int absentCount = crewAttendanceRecords.getAbsentCount(warnedCrew);
-            int tardyCount = crewAttendanceRecords.getTardyCount(warnedCrew);
-            System.out.printf("- %s: %s %d회, %s %d회 (%s)%n", warnedCrew.name(), Attendance.ABSENT.getName(), absentCount,
-                    Attendance.TARDY.getName(), tardyCount, DisciplinaryStatus.getStatus(absentCount, tardyCount).getName());
+    public void printAttendanceStatusSummary(Map<AttendanceStatus, Integer> summary) {
+        System.out.println(System.lineSeparator());
+        for (AttendanceStatus status : AttendanceStatus.values()) {
+            System.out.printf("%s: %d회%n", status.getName(), summary.get(status));
         }
     }
 
-    private void displayAttendanceRecords(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
-        TreeSet<AttendanceRecord> attendanceRecords = crewAttendanceRecords.getAttendanceRecords(crew);
-        attendanceRecords.forEach((record) -> {
-            displayAttendanceRecord(record);
-            System.out.println();
-        });
-    }
-
-    private void displayAttendanceCount(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
-        System.out.println();
-        Arrays.stream(Attendance.values())
-                .forEach(attendance -> System.out.printf("%s: %d회%n",
-                        attendance.getName(),
-                        crewAttendanceRecords.getAttendanceCount(crew, attendance)));
-        System.out.println();
-    }
-
-    private void displayDisciplinaryStatus(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
-        int tardyCount = crewAttendanceRecords.getAttendanceCount(crew, Attendance.TARDY);
-        int absentCount = crewAttendanceRecords.getAttendanceCount(crew, Attendance.ABSENT);
-        DisciplinaryStatus status = DisciplinaryStatus.getStatus(absentCount, tardyCount);
-        if (status == DisciplinaryStatus.NONE) {
+    public void printWarningStatus(WarningStatus warningStatus) {
+        if (warningStatus == WarningStatus.NONE) {
             return;
         }
-        System.out.printf("%s 대상자입니다.%n", status.getName());
+        System.out.printf("%s 대상자입니다.", warningStatus.getName());
     }
 
-    private String getDisplayTime(LocalTime time, Attendance attendance) {
-        if (attendance == Attendance.ABSENT) {
+    public void printWarnedCrews(List<WarnedCrew> warnedCrews) {
+        System.out.println("제적 위험자 조회 결과");
+        for (WarnedCrew warnedCrew : warnedCrews) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", warnedCrew.name(), warnedCrew.tardyCount(),
+                    warnedCrew.absentCount(), warnedCrew.warningStatus());
+        }
+    }
+
+    private String getDisplayTime(AttendanceStatus attendanceStatus, LocalTime time) {
+        if (attendanceStatus == AttendanceStatus.ABSENT) {
             return "--:--";
         }
         return time.toString();

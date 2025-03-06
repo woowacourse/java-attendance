@@ -1,81 +1,77 @@
 package domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 public class AttendanceRecords {
-    private static final LocalDate FILL_START_DATE = LocalDate.of(2024, 11, 30);
+    private final TreeSet<AttendanceRecord> records = new TreeSet<>();
 
-    private final TreeSet<AttendanceRecord> attendanceRecords = new TreeSet<>();
-
-    public void addRecord(AttendanceRecord attendanceRecord) {
-        attendanceRecords.add(attendanceRecord);
+    public void add(AttendanceRecord record) {
+        records.add(record);
     }
 
-    public boolean hasRecordOfDate(LocalDate date) {
-        return attendanceRecords.stream()
-                .anyMatch((record) -> record.getDate().equals(date));
+    public void update(LocalDate date, LocalTime newTime) {
+        AttendanceRecord oldRecord = getRecordOnDate(date);
+        AttendanceRecord newRecord = new AttendanceRecord(LocalDateTime.of(date, newTime));
+        remove(oldRecord);
+        add(newRecord);
     }
 
-    public AttendanceRecord getRecordAtDate(LocalDate date) {
-        return attendanceRecords.stream()
+    public AttendanceRecord getRecordOnDate(LocalDate date) {
+        return records.stream()
                 .filter(record -> record.getDate().equals(date))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다.\n"));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜에 출석 기록이 없습니다." + System.lineSeparator()));
     }
 
-    public void fillAbsences(LocalDate currentDate) {
-        for (LocalDate date = currentDate.minusDays(1); date.isAfter(FILL_START_DATE); date = date.minusDays(1)) {
-            fillAbsence(date);
+    public boolean hasRecordOnDate(LocalDate date) {
+        return records.stream().anyMatch(record -> record.getDate().equals(date));
+    }
+
+    public int getAttendanceCount(AttendanceStatus status) {
+        return (int) records.stream()
+                .filter(record -> record.getAttendanceStatus() == status)
+                .count();
+    }
+
+    public List<AttendanceRecord> getRecordsUntilBefore(LocalDate currentDate) {
+        return records.stream()
+                .filter(record -> record.getDate().isBefore(currentDate))
+                .toList();
+    }
+
+    public WarningStatus getWarningStatus() {
+        int tardyCount = getAttendanceCount(AttendanceStatus.TARDY);
+        int absentCount = getAttendanceCount(AttendanceStatus.ABSENT);
+        return WarningStatus.getStatus(tardyCount, absentCount);
+    }
+
+    public int getConvertedAbsences() {
+        int tardyCount = getAttendanceCount(AttendanceStatus.TARDY);
+        int absentCount = getAttendanceCount(AttendanceStatus.ABSENT);
+        return WarningStatus.convertTardiesToAbsences(tardyCount, absentCount);
+    }
+
+    public int getTardiesAfterConversion() {
+        int tardyCount = getAttendanceCount(AttendanceStatus.TARDY);
+        return WarningStatus.getTardiesAfterConversion(tardyCount);
+    }
+
+    public Map<AttendanceStatus, Integer> getAttendanceStatusSummary() {
+        Map<AttendanceStatus, Integer> summary = new HashMap<>();
+        for (AttendanceStatus status : AttendanceStatus.values()) {
+            int count = getAttendanceCount(status);
+            summary.put(status, count);
         }
+        return summary;
     }
 
-    public void removeRecord(AttendanceRecord record) {
-        attendanceRecords.remove(record);
-    }
-
-    public void updateRecord(AttendanceRecord oldRecord, AttendanceRecord newRecord) {
-        removeRecord(oldRecord);
-        addRecord(newRecord);
-    }
-
-    public int getTardyCount() {
-        return (int) attendanceRecords.stream()
-                .filter(AttendanceRecord::isTardy)
-                .count();
-    }
-
-    public int getAbsentCount() {
-        return (int) attendanceRecords.stream()
-                .filter(AttendanceRecord::isAbsent)
-                .count();
-    }
-
-    public int getAttendanceCount(Attendance targetAttendance) {
-        return (int) attendanceRecords.stream()
-                .filter(attendanceRecord -> attendanceRecord.getAttendance().equals(targetAttendance))
-                .count();
-    }
-
-    public DisciplinaryStatus getDisciplinaryStatus() {
-        int absentCount = getAbsentCount();
-        int tardyCount = getTardyCount();
-        return DisciplinaryStatus.getStatus(absentCount, tardyCount);
-    }
-
-    public int getConvertedAbsencesAndTardies() {
-        int absentCount = getAbsentCount();
-        int tardyCount = getTardyCount();
-        return DisciplinaryStatus.getConvertedAbsencesAndTardies(absentCount, tardyCount);
-    }
-
-    public TreeSet<AttendanceRecord> getAttendanceRecords() {
-        return attendanceRecords;
-    }
-
-    private void fillAbsence(LocalDate date) {
-        if (!hasRecordOfDate(date) && !Day.checkHoliday(date)) {
-            this.attendanceRecords.add(AttendanceRecord.asAbsent(date));
-        }
+    private void remove(AttendanceRecord record) {
+        records.remove(record);
     }
 }
