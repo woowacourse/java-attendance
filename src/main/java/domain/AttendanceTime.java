@@ -1,41 +1,45 @@
 package domain;
 
-import domain.rule.AttendanceStateRule;
-import domain.rule.AttendanceTimeRule;
+import config.AttendancePolicyConfig;
+import util.FormatUtil;
 
-import java.time.Duration;
 import java.time.LocalTime;
+import java.util.Objects;
 
-public record AttendanceTime(LocalTime time) {
+public class AttendanceTime {
 
-    public AttendanceTime {
+    private final LocalTime time;
+
+    private AttendanceTime(LocalTime time) {
         validate(time);
+        this.time = time;
     }
 
     public static AttendanceTime from(LocalTime time) {
         return new AttendanceTime(time);
     }
 
-    public AttendanceStateRule checkAttendanceState(boolean isSpecialDay) {
-        LocalTime AttendLimitTime = AttendanceTimeRule.getAttendLimitTime(isSpecialDay);
-        long timeDifference = Duration.between(AttendLimitTime, time).toMinutes();
-
-        if (timeDifference > AttendanceStateRule.ABSENT.getLimit()) {
-            return AttendanceStateRule.ABSENT;
-        }
-
-        if (timeDifference > AttendanceStateRule.LATE.getLimit()) {
-            return AttendanceStateRule.LATE;
-        }
-
-        return AttendanceStateRule.ATTEND;
-    }
-
     private void validate(LocalTime time) {
-        validateEnterTime(time);
+        if (AttendancePolicyConfig.getInstance().canAttendTime(time)) {
+            return;
+        }
+        throw new IllegalArgumentException(String.format("%s는 등교할 수 없는 시간입니다.",
+                time.format(FormatUtil.TIME_FORMATTER)));
     }
 
-    private static void validateEnterTime(LocalTime time) {
-        AttendanceTimeRule.validateEnterTime(time);
+    public LocalTime toLocalTime() {
+        return time;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        AttendanceTime that = (AttendanceTime) o;
+        return Objects.equals(time, that.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(time);
     }
 }

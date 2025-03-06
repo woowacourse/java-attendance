@@ -1,39 +1,31 @@
 package domain;
 
-import domain.rule.AbsentRule;
-import domain.rule.AttendanceStateRule;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
-import java.util.HashMap;
-import java.util.Map;
+public class AttendanceStatistics {
 
-public record AttendanceStatistics(
-        String nickname,
-        int attendCount,
-        int lateCount,
-        int absentCount
-) {
-    public static AttendanceStatistics from(String nickname, Map<AttendanceStateRule, Integer> format) {
-        return new AttendanceStatistics(
-                nickname,
-                format.get(AttendanceStateRule.ATTEND),
-                format.get(AttendanceStateRule.LATE),
-                format.get(AttendanceStateRule.ABSENT));
+    private final List<AttendanceCounts> attendanceStatistics;
+
+    private AttendanceStatistics(List<AttendanceCounts> attendanceStatistics) {
+        this.attendanceStatistics = attendanceStatistics;
     }
 
-    public static Map<AttendanceStateRule, Integer> getFormat() {
-        Map<AttendanceStateRule, Integer> statisticsFormat = new HashMap<>();
-
-        for (AttendanceStateRule value : AttendanceStateRule.values()) {
-            statisticsFormat.put(value, 0);
-        }
-        return statisticsFormat;
+    public static AttendanceStatistics from(List<AttendanceCounts> attendanceStatistics) {
+        return new AttendanceStatistics(attendanceStatistics);
     }
 
-    public int getAdjustedAbsentCount() {
-        return absentCount + (lateCount / AbsentRule.LATE_TO_ABSENT_RATIO);
+    public AttendanceStatistics orderByExpulsionRiskLevelAndNickname() {
+        List<AttendanceCounts> sortedList = new ArrayList<>(attendanceStatistics);
+        sortedList.sort(Comparator.comparingInt(AttendanceCounts::getExpulsionRiskLevel).reversed()
+                .thenComparing(attendanceCounts -> attendanceCounts.getNickname().value()));
+
+        return AttendanceStatistics.from(sortedList);
     }
 
-    public int getExpulsionRiskLevel() {
-        return absentCount * AbsentRule.LATE_TO_ABSENT_RATIO + lateCount;
+    public List<AttendanceCounts> getAttendanceStatistics() {
+        return Collections.unmodifiableList(attendanceStatistics);
     }
 }

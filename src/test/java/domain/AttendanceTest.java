@@ -1,7 +1,8 @@
 package domain;
 
-import domain.rule.AttendanceStateRule;
-import domain.rule.AttendanceTimeRule;
+import config.AttendancePolicyConfig;
+import domain.policy.AttendanceStateRule;
+import domain.policy.attend.AttendancePolicy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,36 +14,54 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceTest {
 
+    private final AttendancePolicy attendancePolicy = AttendancePolicyConfig.getInstance();
+
     @Test
-    @DisplayName("출석 상태를 결정할 수 있다")
-    void shouldDetermineAttendanceStateBasedOnTime() {
+    @DisplayName("출석은 자신의 출석 상태를 결정할 수 있다.")
+    void attendanceCanDecideSelfState() {
         // given
-        LocalTime normalAttendanceTime = AttendanceTimeRule.NORMAL_ATTEND_LIMIT_TIME.toLocalTime();
+        Attendance attendance_ATTEND = Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 13)),
+                AttendanceTime.from(LocalTime.of(10, 0))
+        );
 
-        AttendanceDate date = AttendanceDate.from(LocalDate.of(2024, 12, 18));
+        Attendance attendance_LATE = Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 13)),
+                AttendanceTime.from(LocalTime.of(10, 6))
+        );
 
-        AttendanceTime onTime = AttendanceTime.from(normalAttendanceTime);
-        AttendanceTime lateTime = AttendanceTime.from(normalAttendanceTime
-                .plusMinutes(AttendanceStateRule.LATE.getLimit())
-                .plusMinutes(1));
-        AttendanceTime absentTime = AttendanceTime.from(normalAttendanceTime
-                .plusMinutes(AttendanceStateRule.ABSENT.getLimit())
-                .plusMinutes(1));
-
-        Attendance attendanceOnTime = Attendance.from(date, onTime);
-        Attendance attendanceLate = Attendance.from(date, lateTime);
-        Attendance attendanceAbsent = Attendance.from(date, absentTime);
+        Attendance attendance_ABSENT = Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 13)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        );
 
         // when
-        AttendanceStateRule onTimeState = attendanceOnTime.decisionAttendanceState();
-        AttendanceStateRule lateState = attendanceLate.decisionAttendanceState();
-        AttendanceStateRule absentState = attendanceAbsent.decisionAttendanceState();
-
         // then
         assertAll(
-                () -> assertThat(onTimeState).isEqualTo(AttendanceStateRule.ATTEND),
-                () -> assertThat(lateState).isEqualTo(AttendanceStateRule.LATE),
-                () -> assertThat(absentState).isEqualTo(AttendanceStateRule.ABSENT)
+                () -> assertThat(attendance_ATTEND.decideAttendanceState(attendancePolicy))
+                        .isEqualTo(AttendanceStateRule.ATTEND),
+                () -> assertThat(attendance_LATE.decideAttendanceState(attendancePolicy))
+                        .isEqualTo(AttendanceStateRule.LATE),
+                () -> assertThat(attendance_ABSENT.decideAttendanceState(attendancePolicy))
+                        .isEqualTo(AttendanceStateRule.ABSENT)
         );
+    }
+
+    @Test
+    @DisplayName("내부 값이 같다면, 같은 출석으로 취급한다.")
+    void treatedAsTheSameObjectIfValuesAreTheSame() {
+        // given
+        AttendanceDate attendanceDate1 = AttendanceDate.from(LocalDate.of(2024, 12, 13));
+        AttendanceDate attendanceDate2 = AttendanceDate.from(LocalDate.of(2024, 12, 13));
+
+        AttendanceTime attendanceTime1 = AttendanceTime.from(LocalTime.of(10, 10));
+        AttendanceTime attendanceTime2 = AttendanceTime.from(LocalTime.of(10, 10));
+
+        Attendance attendance1 = Attendance.of(attendanceDate1, attendanceTime1);
+        Attendance attendance2 = Attendance.of(attendanceDate2, attendanceTime2);
+
+        // when
+        // then
+        assertThat(attendance1).isEqualTo(attendance2);
     }
 }

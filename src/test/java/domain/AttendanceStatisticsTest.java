@@ -1,80 +1,58 @@
 package domain;
 
-import domain.rule.AbsentRule;
-import domain.rule.AttendanceStateRule;
+import domain.policy.AttendanceStateRule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceStatisticsTest {
 
     @Test
-    @DisplayName("출석 통계를 생성할 수 있다")
-    void createAttendanceStatistics() {
+    @DisplayName("제적 위험도 내림차순, 이름 오름차순으로 정렬할 수 있다.")
+    void canSortByExpulsionRiskAndName() {
         // given
-        String nickname = "강산";
-        int absentCount = 2;
-        int lateCount = 3;
-        Map<AttendanceStateRule, Integer> format = AttendanceStatistics.getFormat();
-        format.put(AttendanceStateRule.ATTEND, 0);
-        format.put(AttendanceStateRule.LATE, lateCount);
-        format.put(AttendanceStateRule.ABSENT, absentCount);
+        AttendanceCounts attendanceCounts1 = AttendanceCounts.initialize(new Nickname("김강산"));
+        AttendanceCounts attendanceCounts2 = AttendanceCounts.initialize(new Nickname("딤칼리"));
+        AttendanceCounts attendanceCounts3 = AttendanceCounts.initialize(new Nickname("님띠용"));
+        AttendanceCounts attendanceCounts4 = AttendanceCounts.initialize(new Nickname("림엠제이"));
+
+        for (int i = 0; i < 10; i++) {
+            attendanceCounts1.increment(AttendanceStateRule.ABSENT);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            attendanceCounts2.increment(AttendanceStateRule.ABSENT);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            attendanceCounts3.increment(AttendanceStateRule.ABSENT);
+        }
+
+        for (int i = 0; i < 2; i++) {
+            attendanceCounts4.increment(AttendanceStateRule.ABSENT);
+        }
+
+
+        AttendanceStatistics attendanceStatistics = AttendanceStatistics.from(List.of(
+                attendanceCounts1,
+                attendanceCounts2,
+                attendanceCounts3,
+                attendanceCounts4));
 
         // when
-        AttendanceStatistics statistics = AttendanceStatistics.from(nickname, format);
+        List<AttendanceCounts> attendanceStatisticsOrderByExpulsionRiskLevelAndNickname =
+                attendanceStatistics.orderByExpulsionRiskLevelAndNickname().getAttendanceStatistics();
 
         // then
-        assertThat(statistics).isNotNull();
-        assertThat(statistics.nickname()).isEqualTo(nickname);
-        assertThat(statistics.attendCount()).isEqualTo(0);
-        assertThat(statistics.lateCount()).isEqualTo(lateCount);
-        assertThat(statistics.absentCount()).isEqualTo(absentCount);
-    }
-
-    @Test
-    @DisplayName("결석 조정 횟수를 계산할 수 있다")
-    void calculateAdjustedAbsentCount() {
-        // given
-        int absentCount = 2;
-        int lateCount = 3;
-        AttendanceStatistics statistics = new AttendanceStatistics("강산", 0, lateCount, absentCount);
-
-        // when
-        int adjustedAbsentCount = statistics.getAdjustedAbsentCount();
-
-        // then
-        int expectedAdjustedAbsentCount = absentCount + (lateCount / AbsentRule.LATE_TO_ABSENT_RATIO);
-        assertThat(adjustedAbsentCount).isEqualTo(expectedAdjustedAbsentCount);
-    }
-
-    @Test
-    @DisplayName("제적 위험도를 계산할 수 있다")
-    void calculateExpulsionRiskLevel() {
-        // given
-        int absentCount = 2;
-        int lateCount = 3;
-        AttendanceStatistics statistics = new AttendanceStatistics("강산", 0, lateCount, absentCount);
-
-        // when
-        int expulsionRiskLevel = statistics.getExpulsionRiskLevel();
-
-        // then
-        int expectedRiskLevel = (absentCount * AbsentRule.LATE_TO_ABSENT_RATIO) + lateCount;
-        assertThat(expulsionRiskLevel).isEqualTo(expectedRiskLevel);
-    }
-
-    @Test
-    @DisplayName("초기 통계 포맷을 가져올 수 있다")
-    void getInitialFormat() {
-        // when
-        Map<AttendanceStateRule, Integer> format = AttendanceStatistics.getFormat();
-
-        // then
-        assertThat(format).isNotNull();
-        assertThat(format.size()).isEqualTo(AttendanceStateRule.values().length);
-        assertThat(format.values()).allMatch(value -> value == 0);
+        assertAll(
+                () -> assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(0).getNickname().value()).isEqualTo("김강산"),
+                () -> assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(1).getNickname().value()).isEqualTo("님띠용"),
+                () -> assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(2).getNickname().value()).isEqualTo("딤칼리"),
+                () -> assertThat(attendanceStatisticsOrderByExpulsionRiskLevelAndNickname.get(3).getNickname().value()).isEqualTo("림엠제이")
+        );
     }
 }

@@ -23,4 +23,18 @@ class TimeMachineTest {
                 .isEqualTo(LocalDate.of(2024, 12, 29))
                 .isNotEqualTo(timeBeforeTimeTravel);
     }
+
+    @Test
+    @DisplayName("올바르지 않은 날짜를 입력한다면 false를 반환하며 메시지를 출력한다.")
+    void whenInvalidDate() {
+        // given
+        LocalDate timeBeforeTimeTravel = TimeMachine.dateOfNow();
+
+        // when
+        boolean result = TimeMachine.timeTravelAt(32);
+
+        // then
+        assertThat(result).isFalse();
+        assertThat(TimeMachine.dateOfNow()).isEqualTo(timeBeforeTimeTravel);
+    }
 }

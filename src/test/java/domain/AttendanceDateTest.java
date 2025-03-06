@@ -1,85 +1,58 @@
 package domain;
 
-import domain.rule.AttendanceDateRule;
+import domain.policy.attend.AttendancePolicy;
+import domain.policy.attend.date.AttendanceDatePolicy;
+import domain.policy.attend.time.AttendanceTimePolicy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceDateTest {
 
-    @Test
-    @DisplayName("유효한 평일 날짜로 AttendanceDate 객체를 생성할 수 있다")
-    void whenValidWeekday() {
-        // given
-        LocalDate validDate = LocalDate.of(2024, 12, 13); // 금요일
-
-        // when
-        AttendanceDate attendanceDate = AttendanceDate.from(validDate);
-
-        // then
-        assertThat(attendanceDate).isNotNull();
-        assertThat(attendanceDate.date()).isEqualTo(validDate);
-    }
+    private final AttendancePolicy attendancePolicy = new AttendancePolicy(
+            new AttendanceDatePolicy(),
+            new AttendanceTimePolicy()
+    );
 
     @Test
-    @DisplayName("등교가 늦는 특별한 날 여부를 확인할 수 있다 (월요일)")
-    void whenSpecialDay() {
+    @DisplayName("출석 날짜는 출석 정책을 통해서 출석 가능한지 확인할 수 있다.")
+    void cannotAttendDateThrowException() {
         // given
-        LocalDate specialDate = LocalDate.of(2024, 12, 16); // 월요일
-        AttendanceDate attendanceDate = AttendanceDate.from(specialDate);
-
-        // when
-        boolean isSpecial = attendanceDate.isSpecialDay();
-
-        // then
-        assertThat(isSpecial).isEqualTo(AttendanceDateRule.isSpecialDay(specialDate));
-    }
-
-    @Test
-    @DisplayName("주말에는 출석할 수 없으며 예외를 던진다")
-    void validateWeekend() {
-        // given
-        LocalDate weekendDate = LocalDate.of(2024, 12, 14); // 토요일
-
-        // when
-        // then
-        assertThatThrownBy(() -> AttendanceDate.from(weekendDate))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("주말에는 출석할 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("주말 여부를 검사할 수 있다")
-    void checkWeekend() {
-        // given
-        DayOfWeek saturday = DayOfWeek.SATURDAY;
-        DayOfWeek sunday = DayOfWeek.SUNDAY;
-        DayOfWeek monday = DayOfWeek.MONDAY;
+        LocalDate holiday = LocalDate.of(2024, 12, 25); // 크리스마스 (공휴일)
+        LocalDate weekend = LocalDate.of(2024, 12, 15); // 토요일
+        LocalDate weekday = LocalDate.of(2024, 12, 16); // 월요일 (정상 근무일, 늦잠 자는 날)
 
         // when
         // then
         assertAll(
-                () -> assertThat(AttendanceDateRule.isWeekend(saturday)).isTrue(),
-                () -> assertThat(AttendanceDateRule.isWeekend(sunday)).isTrue(),
-                () -> assertThat(AttendanceDateRule.isWeekend(monday)).isFalse());
+                () -> assertThatThrownBy(() -> AttendanceDate.from(holiday))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessageContaining("등교일이 아닙니다."),
+
+                () -> assertThatThrownBy(() -> AttendanceDate.from(weekend))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessageContaining("등교일이 아닙니다."),
+
+                () -> assertThatCode(() -> AttendanceDate.from(weekday))
+                        .doesNotThrowAnyException()
+        );
     }
 
     @Test
-    @DisplayName("공휴일에는 출석할 수 없으며 예외를 던진다")
-    void validateHoliday() {
+    @DisplayName("내부 값이 같다면, 같은 출석 날짜으로 취급한다.")
+    void treatedAsTheSameObjectIfValuesAreTheSame() {
         // given
-        LocalDate holidayDate = LocalDate.of(2024, 12, 25);
+        AttendanceDate attendanceDate1 = AttendanceDate.from(LocalDate.of(2024, 12, 13));
+        AttendanceDate attendanceDate2 = AttendanceDate.from(LocalDate.of(2024, 12, 13));
 
         // when
         // then
-        assertThatThrownBy(() -> AttendanceDate.from(holidayDate))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("공휴일에는 출석할 수 없습니다.");
+        assertThat(attendanceDate1).isEqualTo(attendanceDate2);
     }
 }

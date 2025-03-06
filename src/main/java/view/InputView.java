@@ -1,5 +1,7 @@
 package view;
 
+import util.TimeMachine;
+
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -19,10 +21,12 @@ public class InputView {
         return Integer.parseInt(scanner.nextLine());
     }
 
-    public String inputMenu(LocalDate today) {
+    public String inputMenu() {
+        LocalDate today = TimeMachine.dateOfNow();
         String koreanDayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+
         System.out.println();
-        System.out.printf(ViewMessage.SELECT_MENU_INTRO, today.getMonth().getValue(), today.getDayOfMonth(), koreanDayOfWeek);
+        System.out.printf(ViewMessage.SELECT_MENU_INTRO, TimeMachine.FIXED_MONTH, today.getDayOfMonth(), koreanDayOfWeek);
         System.out.print(ViewMessage.SELECT_MENU);
 
         String select = scanner.nextLine();

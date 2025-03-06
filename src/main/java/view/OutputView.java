@@ -1,14 +1,13 @@
 package view;
 
+import config.AttendancePolicyConfig;
 import domain.Attendance;
+import domain.AttendanceCounts;
 import domain.AttendanceDate;
 import domain.AttendanceStatistics;
-import domain.AttendanceTime;
 import domain.Attendances;
-import domain.ExpulsionCandidates;
-import domain.rule.AbsentRule;
-import domain.rule.AttendanceDateRule;
-import domain.rule.AttendanceStateRule;
+import domain.policy.AttendanceStateRule;
+import domain.policy.absent.AbsentRule;
 import util.FormatUtil;
 import util.TimeMachine;
 
@@ -20,10 +19,10 @@ import java.util.stream.IntStream;
 public class OutputView {
 
     public void printAttendance(Attendance attendance) {
-        String date = attendance.toLocalDate().format(FormatUtil.DATE_FORMATTER_KOREAN);
-        String time = attendance.toLocalTime().format(FormatUtil.TIME_FORMATTER);
-        String dayOfWeek = attendance.toLocalDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        String attendanceState = attendance.decisionAttendanceState().getDescription();
+        String date = attendance.getLocalDate().format(FormatUtil.DATE_FORMATTER_KOREAN);
+        String time = attendance.getLocalTime().format(FormatUtil.TIME_FORMATTER);
+        String dayOfWeek = attendance.getLocalDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        String attendanceState = attendance.decideAttendanceState(AttendancePolicyConfig.getInstance()).getDescription();
 
         System.out.printf(ViewMessage.ATTENDANCE + "%n",
                 date,
@@ -33,13 +32,13 @@ public class OutputView {
     }
 
     public void printAttendanceUpdate(Attendance originalAttendance, Attendance updatedAttendance) {
-        String originalDate = originalAttendance.toLocalDate().format(FormatUtil.DATE_FORMATTER_KOREAN);
-        String originalTime = originalAttendance.toLocalTime().format(FormatUtil.TIME_FORMATTER);
-        String originalDayOfWeek = originalAttendance.toLocalDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        String originalAttendanceState = originalAttendance.decisionAttendanceState().getDescription();
+        String originalDate = originalAttendance.getLocalDate().format(FormatUtil.DATE_FORMATTER_KOREAN);
+        String originalTime = originalAttendance.getLocalTime().format(FormatUtil.TIME_FORMATTER);
+        String originalDayOfWeek = originalAttendance.getLocalDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        String originalAttendanceState = originalAttendance.decideAttendanceState(AttendancePolicyConfig.getInstance()).getDescription();
 
-        String updatedTime = updatedAttendance.toLocalTime().format(FormatUtil.TIME_FORMATTER);
-        String updatedAttendanceState = updatedAttendance.decisionAttendanceState().getDescription();
+        String updatedTime = updatedAttendance.getLocalTime().format(FormatUtil.TIME_FORMATTER);
+        String updatedAttendanceState = updatedAttendance.decideAttendanceState(AttendancePolicyConfig.getInstance()).getDescription();
 
         System.out.printf(ViewMessage.ATTENDANCE + " -> " + ViewMessage.UPDATE_COMPLETE + "%n",
                 originalDate,
@@ -57,7 +56,7 @@ public class OutputView {
     public void printAttendances(Attendances attendances) {
         IntStream.range(1, TimeMachine.dateOfNow().getDayOfMonth())
                 .mapToObj(day -> LocalDate.of(TimeMachine.FIXED_YEAR, TimeMachine.FIXED_MONTH, day))
-                .filter(AttendanceDateRule::canAttendDay)
+                .filter(AttendancePolicyConfig.getInstance()::canAttendDate)
                 .map(AttendanceDate::from)
                 .forEach(attendanceDate -> printAttendance(attendances, attendanceDate));
 
@@ -71,9 +70,9 @@ public class OutputView {
         String attendanceState = AttendanceStateRule.ABSENT.getDescription();
 
         if (attendances.existsByDate(attendanceDate)) {
-            AttendanceTime attendanceTime = attendances.findByDate(attendanceDate);
-            time = attendanceTime.time().format(FormatUtil.TIME_FORMATTER);
-            attendanceState = attendanceTime.checkAttendanceState(attendanceDate.isSpecialDay()).getDescription();
+            Attendance attendance = attendances.findByDate(attendanceDate);
+            time = attendance.getLocalTime().format(FormatUtil.TIME_FORMATTER);
+            attendanceState = attendance.decideAttendanceState(AttendancePolicyConfig.getInstance()).getDescription();
         }
 
         System.out.printf(ViewMessage.ATTENDANCE + "%n",
@@ -84,11 +83,11 @@ public class OutputView {
         );
     }
 
-    public void printAttendanceStatistics(AttendanceStatistics attendanceStatistics) {
+    public void printAttendanceStatistics(AttendanceCounts attendanceCounts) {
         System.out.printf(ViewMessage.STATISTICS_FORMAT + "%n",
-                attendanceStatistics.attendCount(),
-                attendanceStatistics.lateCount(),
-                attendanceStatistics.absentCount());
+                attendanceCounts.getCount(AttendanceStateRule.ATTEND),
+                attendanceCounts.getCount(AttendanceStateRule.LATE),
+                attendanceCounts.getCount(AttendanceStateRule.ABSENT));
     }
 
     public void printAbsentPolicy(AbsentRule absentRule) {
@@ -103,13 +102,25 @@ public class OutputView {
         System.out.println(ViewMessage.RISK_OF_EXPULSION_BANNER);
     }
 
-    public void printExpulsionCandidate(ExpulsionCandidates expulsionCandidates) {
-        expulsionCandidates.attendanceStatistics().forEach(expulsionCandidate ->
+    public void printExpulsionCandidate(AttendanceStatistics expulsionCandidates) {
+        expulsionCandidates.getAttendanceStatistics().forEach(expulsionCandidate ->
                 System.out.printf(ViewMessage.RISK_OF_EXPULSION_FORMAT,
-                        expulsionCandidate.nickname(),
-                        expulsionCandidate.absentCount(),
-                        expulsionCandidate.lateCount(),
+                        expulsionCandidate.getNickname().value(),
+                        expulsionCandidate.getCount(AttendanceStateRule.ABSENT),
+                        expulsionCandidate.getCount(AttendanceStateRule.LATE),
                         AbsentRule.calculateAbsentPolicy(expulsionCandidate).getDescription())
         );
+    }
+
+    public void printErrorMessage(String message) {
+        System.out.println(FormatUtil.ERROR_PREFIX + message);
+    }
+
+    public void printUnknownErrorMessage() {
+        printErrorMessage("알 수 없는 오류가 발생했습니다.");
+    }
+
+    public void printInfoMessage(String message) {
+        System.out.println(FormatUtil.INFO_PREFIX + message);
     }
 }

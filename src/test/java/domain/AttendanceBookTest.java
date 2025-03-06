@@ -1,113 +1,224 @@
 package domain;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.FormatUtil;
+import reader.AttendanceFileReader;
 import util.TimeMachine;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceBookTest {
 
-    private AttendanceBook attendanceBook;
-
-    @BeforeEach
-    void setUp() {
-        TimeMachine.timeTravelAt(5);
-
-        List<String> attendanceData = List.of(
-                "강산" + FormatUtil.ATTENDANCE_DATA_DELIMITER + "2024-12-02 09:00",
-                "강산" + FormatUtil.ATTENDANCE_DATA_DELIMITER + "2024-12-03 09:00",
-                "강산" + FormatUtil.ATTENDANCE_DATA_DELIMITER + "2024-12-04 09:00",
-                "고양이" + FormatUtil.ATTENDANCE_DATA_DELIMITER + "2024-12-02 09:10",
-                "고양이" + FormatUtil.ATTENDANCE_DATA_DELIMITER + "2024-12-03 09:10",
-                "고양이" + FormatUtil.ATTENDANCE_DATA_DELIMITER + "2024-12-04 09:10",
-                "결석이" + FormatUtil.ATTENDANCE_DATA_DELIMITER + "2024-12-02 12:00",
-                "결석이" + FormatUtil.ATTENDANCE_DATA_DELIMITER + "2024-12-03 12:00",
-                "결석이" + FormatUtil.ATTENDANCE_DATA_DELIMITER + "2024-12-04 12:00"
-        );
-
-        attendanceBook = AttendanceBook.initialize(attendanceData);
-    }
-
     @Test
-    @DisplayName("출석 데이터를 이용해 출석부를 초기화할 수 있다")
-    void initialize() {
+    @DisplayName("출석부는 출석 정책을 통해서 초기 상태로 생성할 수 있다.")
+    void canInitialize() {
         // given
         // when
         // then
-        assertAll(
-                () -> assertThat(attendanceBook.findAllByNickname("강산")).isNotNull(),
-                () -> assertThat(attendanceBook.findAllByNickname("고양이")).isNotNull()
-        );
-    }
-
-    @Test
-    @DisplayName("기존에 없던 닉네임의 크루도 출석 시간 이용해 출석을 추가할 수 있다")
-    void addWhenExists() {
-        // given
-        AttendanceDate attendanceDate = AttendanceDate.from(TimeMachine.dateOfNow());
-        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.of(10, 0));
-
-        // when
-        // then
-        assertThatCode(() -> attendanceBook.add("이런이름은위에서정말없었습니다", Attendance.from(attendanceDate, attendanceTime)))
+        assertThatCode(AttendanceBook::initialize)
                 .doesNotThrowAnyException();
     }
 
     @Test
-    @DisplayName("닉네임과 출석 시간 이용해 출석을 추가할 수 있다")
-    void addWhenNotExists() {
+    @DisplayName("출석부는 원시 값(문자열 포함)으로 구성된 출석 데이터들을 올바르게 그룹화 할 수 있다.")
+    void canGroupRawAttendancesData() {
         // given
-        AttendanceDate attendanceDate = AttendanceDate.from(TimeMachine.dateOfNow());
-        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.of(10, 0));
+        AttendanceBook attendanceBook = AttendanceBook.initialize();
+        AttendanceFileReader attendanceFileReader = new AttendanceFileReader();
 
         // when
         // then
-        assertThatCode(() -> attendanceBook.add("강산", Attendance.from(attendanceDate, attendanceTime)))
+        assertThatCode(() -> attendanceBook.loadAttendance(attendanceFileReader, AttendanceFileReader.ATTENDANCE_FILE_PATH))
                 .doesNotThrowAnyException();
     }
 
     @Test
-    @DisplayName("닉네임을 이용해 출석 기록을 조회할 수 있다")
-    void findAllByNickname() {
+    @DisplayName("존재하지 않는 닉네임을 통해서 출석 기록들을 저장하고 조회할 수 있다.")
+    void canFindAttendancesByNickname() {
         // given
+        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(2024, 12, 12));
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.of(10, 10));
+        Attendance attendance = Attendance.of(attendanceDate, attendanceTime);
+
+        AttendanceBook attendanceBook = AttendanceBook.initialize();
+        Nickname nickname = Nickname.from("강산");
+
         // when
-        Attendances attendance = attendanceBook.findAllByNickname("강산");
+        attendanceBook.add(nickname, attendance);
+        Attendances attendances = attendanceBook.findByNickname(nickname);
 
         // then
-        assertThat(attendance).isNotNull();
+        assertThat(attendances.findByDate(attendanceDate)).isEqualTo(attendance);
     }
 
     @Test
-    @DisplayName("존재하지 않는 닉네임을 조회하면 예외가 발생한다")
-    void findAllByNickname_ShouldThrowException_WhenNicknameNotFound() {
+    @DisplayName("출석 기록이 존재하지 않는 닉네임을 통해서 출석 기록들을 조회한다면, 예외를 던진다.")
+    void whenFindByNonExistsNicknameThrowException() {
         // given
+        AttendanceBook attendanceBook = AttendanceBook.initialize();
+        Nickname nickname = Nickname.from("강산");
+
         // when
         // then
-        assertThatThrownBy(() -> attendanceBook.findAllByNickname("없음이"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("해당 닉네임으로 출석된 기록이 없습니다.");
+        assertThatThrownBy(() -> attendanceBook.findByNickname(nickname))
+                .hasMessageContaining("해당 닉네임으로 출석된 기록이 없습니다");
     }
 
     @Test
-    @DisplayName("제적 후보자를 조회할 수 있다")
-    void findExpulsionCandidates() {
+    @DisplayName("제적 위험자를 조회할 수 있다. 제적 위험자는 제적자를 포함한다.")
+    void canFindExpulsionCandidates() {
         // given
+        TimeMachine.timeTravelAt(10);
+
+        AttendanceBook attendanceBook = AttendanceBook.initialize();
+        Nickname nickname1 = Nickname.from("강산");
+        Nickname nickname2 = Nickname.from("띠용");
+        Nickname nickname3 = Nickname.from("폰트");
+        Nickname nickname4 = Nickname.from("칼리");
+        Nickname nickname5 = Nickname.from("엠제이");
+
+        // 강산 결석 6번
+        attendanceBook.add(nickname1, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 2)),
+                AttendanceTime.from(LocalTime.of(13, 31))
+        ));
+        attendanceBook.add(nickname1, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 3)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname1, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 4)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname1, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 5)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname1, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 6)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname1, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 9)),
+                AttendanceTime.from(LocalTime.of(13, 31))
+        ));
+
+        // 띠용 결석 5번
+        attendanceBook.add(nickname2, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 2)),
+                AttendanceTime.from(LocalTime.of(13, 31))
+        ));
+        attendanceBook.add(nickname2, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 3)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname2, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 4)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname2, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 5)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname2, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 6)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname2, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 9)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+
+        // 폰트 결석 3번
+        attendanceBook.add(nickname3, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 2)),
+                AttendanceTime.from(LocalTime.of(13, 31))
+        ));
+        attendanceBook.add(nickname3, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 3)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname3, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 4)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname3, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 5)),
+                AttendanceTime.from(LocalTime.of(10, 0))
+        ));
+        attendanceBook.add(nickname3, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 6)),
+                AttendanceTime.from(LocalTime.of(10, 0))
+        ));
+        attendanceBook.add(nickname3, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 9)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+
+        // 칼리 결석 0번
+        attendanceBook.add(nickname4, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 2)),
+                AttendanceTime.from(LocalTime.of(13, 0))
+        ));
+        attendanceBook.add(nickname4, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 3)),
+                AttendanceTime.from(LocalTime.of(10, 0))
+        ));
+        attendanceBook.add(nickname4, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 4)),
+                AttendanceTime.from(LocalTime.of(10, 0))
+        ));
+        attendanceBook.add(nickname4, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 5)),
+                AttendanceTime.from(LocalTime.of(10, 0))
+        ));
+        attendanceBook.add(nickname4, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 6)),
+                AttendanceTime.from(LocalTime.of(10, 0))
+        ));
+        attendanceBook.add(nickname4, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 9)),
+                AttendanceTime.from(LocalTime.of(10, 0))
+        ));
+
+        // 엠제이 결석 6번
+        attendanceBook.add(nickname5, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 2)),
+                AttendanceTime.from(LocalTime.of(13, 31))
+        ));
+        attendanceBook.add(nickname5, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 3)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname5, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 4)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname5, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 5)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname5, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 6)),
+                AttendanceTime.from(LocalTime.of(10, 31))
+        ));
+        attendanceBook.add(nickname5, Attendance.of(
+                AttendanceDate.from(LocalDate.of(2024, 12, 9)),
+                AttendanceTime.from(LocalTime.of(13, 31))
+        ));
+
+
         // when
-        ExpulsionCandidates candidates = attendanceBook.findExpulsionCandidates();
+        // 12월 9일 기준으로 제적 위험자 조회 (칼리 제외 4명이 제적 위험자 예상)
+        AttendanceStatistics expulsionCandidates = attendanceBook.findExpulsionCandidates();
 
         // then
-        assertThat(candidates).isNotNull();
-        assertThat(candidates.attendanceStatistics().size()).isEqualTo(1);
-        assertThat(candidates.attendanceStatistics().getFirst().nickname()).isEqualTo("결석이");
-        assertThat(candidates.attendanceStatistics().getFirst().absentCount()).isEqualTo(2);
+        assertThat(expulsionCandidates.getAttendanceStatistics().size()).isEqualTo(4);
+
     }
 }
