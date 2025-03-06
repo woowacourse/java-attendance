@@ -1,23 +1,22 @@
 package attendance.view;
 
 import static attendance.domain.AttendanceStatus.ABSENT;
-import static attendance.domain.AttendanceStatus.LATE;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.Crew;
 import attendance.domain.CrewAttendance;
+import attendance.domain.WarningCrewDto;
 import attendance.domain.WarningLevel;
 import attendance.util.DateFormatter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class ResultView {
     private static final String CREW_ATTENDANCE_HEADER = "\n이번 달 %s의 출석 기록입니다.\n\n";
@@ -92,37 +91,36 @@ public class ResultView {
                 attendanceBook.getWarningLevelOf(nickname, today).getDisplayName());
     }
 
-    public void printWarningCrews(final LocalDateTime today) {
+    private static void printCrewsOf(final List<WarningCrewDto> warningCrewDtos) {
+        warningCrewDtos.sort(Comparator
+                .comparing((WarningCrewDto::convertedAbsentCount), Comparator.reverseOrder())
+                .thenComparing(WarningCrewDto::crewNickname)
+        );
+        for (WarningCrewDto warningCrewDto : warningCrewDtos) {
+            System.out.print(formatWarningCrew(warningCrewDto));
+        }
+    }
+
+    private static String formatWarningCrew(final WarningCrewDto warningCrewDto) {
+        return String.format(WARNING_CREW_FORMAT,
+                warningCrewDto.crewNickname(),
+                warningCrewDto.absentCount(),
+                warningCrewDto.lateCount(),
+                warningCrewDto.warningLevel().getDisplayName());
+    }
+
+    public void printWarningCrews(final List<WarningCrewDto> warningCrewDtos) {
         System.out.print(WARNING_CREWS_HEADER);
         List<WarningLevel> warningLevels = Arrays.stream(WarningLevel.values())
                 .filter(level -> level != WarningLevel.NONE)
                 .toList();
         for (WarningLevel warningLevel : warningLevels) {
-            printCrewsOf(warningLevel, today);
+            List<WarningCrewDto> warningLevelCrewDtos = new ArrayList<>();
+            warningCrewDtos.stream()
+                    .filter(dto -> dto.warningLevel().equals(warningLevel))
+                    .forEach(warningLevelCrewDtos::add);
+            printCrewsOf(warningLevelCrewDtos);
         }
         System.out.println();
-    }
-
-    private static void printCrewsOf(final WarningLevel warningLevel, final LocalDateTime today) {
-        final Map<Crew, CrewAttendance> crews = warningLevel.getCrews();
-        for (Entry<Crew, CrewAttendance> entry : crews.entrySet()) {
-            Crew crew = entry.getKey();
-            CrewAttendance crewAttendance = entry.getValue();
-            final Map<AttendanceStatus, Integer> attendanceStatusCounts =
-                    crewAttendance.countAttendanceStatusesBefore(today);
-            System.out.print(formatWarningCrew(warningLevel, crew, attendanceStatusCounts));
-        }
-    }
-
-    private static String formatWarningCrew(
-            final WarningLevel warningLevel,
-            final Crew crew,
-            final Map<AttendanceStatus, Integer> attendanceStatusCounts
-    ) {
-        return String.format(WARNING_CREW_FORMAT,
-                crew.nickname(),
-                attendanceStatusCounts.get(ABSENT),
-                attendanceStatusCounts.get(LATE),
-                warningLevel.getDisplayName());
     }
 }

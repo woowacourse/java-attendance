@@ -3,7 +3,10 @@ package attendance.controller;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceLoader;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.Crew;
 import attendance.domain.CrewAttendance;
+import attendance.domain.WarningCrewDto;
 import attendance.domain.WarningLevel;
 import attendance.view.DataSourceReader;
 import attendance.view.InputView;
@@ -11,7 +14,9 @@ import attendance.view.ResultView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceController {
@@ -83,9 +88,23 @@ public class AttendanceController {
 
     private void showWarningCrews(AttendanceBook attendanceBook) {
         LocalDateTime today = LocalDateTime.of(2024, 12, 13, 0, 0);
-        for (WarningLevel warningLevel : WarningLevel.values()) {
-            warningLevel.updateCrews(attendanceBook, today);
+        List<WarningCrewDto> warningCrewDtos = new ArrayList<>();
+        List<Crew> crews = attendanceBook.findAllCrew();
+        for (Crew crew : crews) {
+            CrewAttendance crewAttendance = attendanceBook.getCrewAttendanceOf(crew.nickname());
+            Map<AttendanceStatus, Integer> attendanceStatusCounts = crewAttendance.countAttendanceStatusesBefore(today);
+            warningCrewDtos.add(createWarningCrewDto(crew, attendanceStatusCounts));
         }
-        resultView.printWarningCrews(today);
+        resultView.printWarningCrews(warningCrewDtos);
+    }
+
+    private WarningCrewDto createWarningCrewDto(Crew crew, Map<AttendanceStatus, Integer> attendanceStatusCounts) {
+        return new WarningCrewDto(
+                crew.nickname(),
+                attendanceStatusCounts.get(AttendanceStatus.ABSENT),
+                attendanceStatusCounts.get(AttendanceStatus.LATE),
+                WarningLevel.calculateAbsentCount(attendanceStatusCounts),
+                WarningLevel.calculateBy(attendanceStatusCounts)
+        );
     }
 }

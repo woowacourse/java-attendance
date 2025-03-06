@@ -2,8 +2,8 @@ package attendance.domain;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AttendanceBook {
     private final Map<Crew, CrewAttendance> crews;
@@ -54,9 +54,7 @@ public class AttendanceBook {
         return crews.get(new Crew(nickname));
     }
 
-    public Map<Crew, CrewAttendance> findCrewsBy(final WarningLevel warningLevel, final LocalDateTime today) {
-        return crews.entrySet().stream()
-                .filter(entry -> getWarningLevelOf(entry.getKey().nickname(), today).equals(warningLevel))
-                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    public List<Crew> findAllCrew() {
+        return crews.keySet().stream().toList();
     }
 }
