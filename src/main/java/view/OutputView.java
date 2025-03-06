@@ -24,9 +24,10 @@ public class OutputView {
     }
 
     private String formatAttendanceRecordToAttend(AttendanceRecord attendanceRecord) {
-        return String.format("%s %s %s (%s)%n", formatLocalDate(attendanceRecord.getDate()), formatDayOfWeek(
-                        attendanceRecord.getDate()
-                                .getDayOfWeek()), formatLocalTime(attendanceRecord.getTime()),
+        return String.format("%s %s %s (%s)%n", formatLocalDate(attendanceRecord.getDate()),
+                formatDayOfWeek(attendanceRecord.getDate()
+                        .getDayOfWeek()),
+                formatLocalTime(attendanceRecord.getTime(), attendanceRecord.isAbsence()),
                 formatAttendanceStatus(AttendanceStatus.calculateAttendanceStatus(attendanceRecord)));
     }
 
@@ -38,8 +39,8 @@ public class OutputView {
         return dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 
-    private String formatLocalTime(LocalTime localTime) {
-        if (localTime == null) {
+    private String formatLocalTime(LocalTime localTime, boolean isAbsence) {
+        if (isAbsence) {
             return "--:--";
         }
         return localTime.format(DateTimeFormatter.ofPattern("HH:mm"));
@@ -63,9 +64,10 @@ public class OutputView {
                                                 AttendanceRecord editAttendanceRecord) {
         return String.format("%s %s %s (%s) -> %s (%s) 수정 완료!%n", formatLocalDate(beforeAttendanceRecord.getDate()),
                 formatDayOfWeek(beforeAttendanceRecord.getDate()
-                        .getDayOfWeek()), formatLocalTime(beforeAttendanceRecord.getTime()),
+                        .getDayOfWeek()),
+                formatLocalTime(beforeAttendanceRecord.getTime(), beforeAttendanceRecord.isAbsence()),
                 formatAttendanceStatus(AttendanceStatus.calculateAttendanceStatus(beforeAttendanceRecord)),
-                formatLocalTime(editAttendanceRecord.getTime()),
+                formatLocalTime(editAttendanceRecord.getTime(), editAttendanceRecord.isAbsence()),
                 formatAttendanceStatus(AttendanceStatus.calculateAttendanceStatus(editAttendanceRecord)));
     }
 
@@ -90,7 +92,8 @@ public class OutputView {
         return String.format("""
                         출석: %d회
                         지각: %d회
-                        결석: %d회""", attendanceStatusCount.getCount(AttendanceStatus.ATTENDANT),
+                        결석: %d회""",
+                attendanceStatusCount.getCount(AttendanceStatus.ATTENDANT),
                 attendanceStatusCount.getCount(AttendanceStatus.LATE),
                 attendanceStatusCount.getCount(AttendanceStatus.ABSENT));
     }
