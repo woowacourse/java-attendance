@@ -17,7 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class AttendanceHistoriesTest {
+class AttendanceHistoriesTest {
     private static final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
     private static final LocalDate FIRST_TUESDAY_DATE = LocalDate.of(2025, 2, 11);
     private static final LocalDate DEFAULT_DATE = LocalDate.of(2025, 2, 21);
