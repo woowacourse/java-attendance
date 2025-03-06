@@ -1,51 +1,21 @@
 package domain;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
-public class CrewAttendance {
+public record CrewAttendance(
+        String crewName,
+        AttendanceRecords attendanceRecords
+) {
 
-    private final Crew crew;
-    private final Attendance attendance;
-
-    public CrewAttendance(Crew crew, Attendance attendance) {
-        this.crew = crew;
-        this.attendance = attendance;
+    public AttendanceRecords getAttendanceRecords() {
+        return attendanceRecords;
     }
 
-    public void addAttendance(AttendanceDateTime attendanceDateTime) {
-        attendance.addDateTime(attendanceDateTime);
+    public static CrewAttendance create(String crewName, AttendanceRecords attendanceRecords) {
+        return new CrewAttendance(crewName, attendanceRecords);
     }
 
-    public void updateAttendance(AttendanceDateTime updateAttendanceDateTime) {
-        attendance.updateDateTime(updateAttendanceDateTime);
-    }
-
-    public AttendanceDateTime retrieveDateTime(Date date) {
-        return attendance.retrieveDateTime(date);
-    }
-
-    public List<AttendanceDateTime> retrieveDateTimesOrderByDate() {
-        return attendance.retrieveDateTimesOrderByDate();
-    }
-
-    public AttendanceStatus retrieveAttendanceStatus(Date date) {
-        return attendance.retrieveAttendanceStatus(date);
-    }
-
-    public Map<AttendanceStatus, Integer> retrieveAttendanceStatusCount() {
-        return attendance.calculateAttendanceStatusCount();
-    }
-
-    public boolean isPenalty() {
-        return !retrievePenalty().equals(Penalty.NONE);
-    }
-
-    public Penalty retrievePenalty() {
-        return Penalty.calculatePenalty(attendance.retrieveAttendanceStatuses());
-    }
-
-    public Crew getCrew() {
-        return crew;
+    public boolean equalName(String crewName) {
+        return Objects.equals(this.crewName, crewName);
     }
 }

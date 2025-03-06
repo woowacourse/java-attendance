@@ -1,79 +1,76 @@
 package domain;
 
-import static domain.AttendanceStatus.ABSENCE;
-import static domain.AttendanceStatus.ATTENDANCE;
-import static domain.AttendanceStatus.PERCEPTION;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.Objects;
 
-public class Attendance {
+public class Attendance implements Comparable<Attendance> {
 
-    private static final int STATUS_DEFAULT_COUNT = 0;
+    private final LocalDate attendanceDate;
+    private AttendanceTime attendanceTime;
+    private AttendanceStatus attendanceStatus;
 
-    private final Map<Date, Time> dateTimes;
-
-    public Attendance(Map<Date, Time> dateTimes) {
-        this.dateTimes = new HashMap<>(dateTimes);
+    private Attendance(LocalDate attendanceDate, AttendanceTime attendanceTime, AttendanceStatus attendanceStatus) {
+        this.attendanceDate = attendanceDate;
+        this.attendanceTime = attendanceTime;
+        this.attendanceStatus = attendanceStatus;
     }
 
-    public void addDateTime(AttendanceDateTime attendanceDateTime) {
-        if (isAlreadyExists(attendanceDateTime)) {
-            throw new IllegalArgumentException("해당 날짜의 출석 정보가 이미 존재합니다.");
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    public AttendanceTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
+    public AttendanceStatus getAttendanceStatus() {
+        return attendanceStatus;
+    }
+
+    public void updateAttendance(int updateHour, int updateMinute, AttendanceStatus attendanceStatus) {
+        this.attendanceStatus = attendanceStatus;
+        this.attendanceTime = new AttendanceTime(updateHour, updateMinute);
+    }
+
+    public boolean isEqualDate(Attendance attendance) {
+        return Objects.equals(this.attendanceDate, attendance.attendanceDate);
+    }
+
+    public boolean isEqualDate(LocalDate attendanceDate) {
+        return Objects.equals(this.attendanceDate, attendanceDate);
+    }
+
+    public boolean isBeforeDate(LocalDate date) {
+        return attendanceDate.isBefore(date);
+    }
+
+    public static Attendance create(LocalDate attendanceDate, AttendanceTime attendanceTime, AttendanceStatus attendanceStatus) {
+        return new Attendance(attendanceDate, attendanceTime, attendanceStatus);
+    }
+
+    public static Attendance createAbsenceAttendance(LocalDate attendanceDate) {
+        return new Attendance(attendanceDate, null, AttendanceStatus.ABSENCE);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
-        dateTimes.put(attendanceDateTime.getDate(), attendanceDateTime.getTime());
-    }
-
-    public void updateDateTime(AttendanceDateTime updateAttendanceDateTime) {
-        if (!isAlreadyExists(updateAttendanceDateTime)) {
-            throw new IllegalArgumentException("해당 날짜의 출석 정보가 없습니다.");
+        if (!(o instanceof Attendance that)) {
+            return false;
         }
-        dateTimes.put(updateAttendanceDateTime.getDate(), updateAttendanceDateTime.getTime());
+        return Objects.equals(attendanceDate, that.attendanceDate) && Objects.equals(attendanceTime,
+                that.attendanceTime) && attendanceStatus == that.attendanceStatus;
     }
 
-    private boolean isAlreadyExists(AttendanceDateTime attendanceDateTime) {
-        Time time = dateTimes.get(attendanceDateTime.getDate());
-        return time != null;
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendanceDate, attendanceTime, attendanceStatus);
     }
 
-    public AttendanceDateTime retrieveDateTime(Date date) {
-        return new AttendanceDateTime(date, dateTimes.get(date));
-    }
-
-    public List<AttendanceDateTime> retrieveDateTimesOrderByDate() {
-        return dateTimes.keySet().stream()
-                .map(date -> new AttendanceDateTime(date, dateTimes.get(date)))
-                .sorted()
-                .toList();
-    }
-
-    public AttendanceStatus retrieveAttendanceStatus(Date date) {
-        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(date, dateTimes.get(date));
-        return AttendanceStatus.findByDateTime(attendanceDateTime);
-    }
-
-    public List<AttendanceStatus> retrieveAttendanceStatuses() {
-        return retrieveDateTimesOrderByDate().stream()
-                .map(datetime -> retrieveAttendanceStatus(datetime.getDate()))
-                .toList();
-    }
-
-    public Map<AttendanceStatus, Integer> calculateAttendanceStatusCount() {
-        Map<AttendanceStatus, Integer> attendanceStatusCount = initializeAttendanceMap();
-        List<AttendanceStatus> attendanceStatuses = retrieveDateTimesOrderByDate().stream()
-                .map(dateTime -> new AttendanceDateTime(dateTime.getDate(), dateTimes.get(dateTime.getDate())))
-                .map(AttendanceStatus::findByDateTime)
-                .toList();
-        attendanceStatuses.forEach(status -> attendanceStatusCount.put(status, attendanceStatusCount.get(status) + 1));
-
-        return attendanceStatusCount;
-    }
-
-    private static Map<AttendanceStatus, Integer> initializeAttendanceMap() {
-        return new HashMap<>(Map.of(
-                ATTENDANCE, STATUS_DEFAULT_COUNT,
-                PERCEPTION, STATUS_DEFAULT_COUNT,
-                ABSENCE, STATUS_DEFAULT_COUNT
-        ));
+    @Override
+    public int compareTo(Attendance attendance) {
+        return this.attendanceDate.compareTo(attendance.attendanceDate);
     }
 }

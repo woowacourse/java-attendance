@@ -1,54 +1,40 @@
 package domain;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public enum AttendanceStatus {
-    ATTENDANCE("출석", 0),
-    PERCEPTION("지각", 5),
-    ABSENCE("결석", 30);
+    ATTENDANCE,
+    LATE,
+    ABSENCE;
 
-    private final String name;
-    private final int limitTime;
+    private static final int LATE_LIMIT_MINUTE = 5;
+    private static final int ABSENCE_LIMIT_MINUTE = 30;
 
-    AttendanceStatus(String name, int limitMinute) {
-        this.name = name;
-        this.limitTime = limitMinute;
-    }
-
-    public static AttendanceStatus findByDateTime(AttendanceDateTime attendanceDateTime) {
-        if (attendanceDateTime.isTimeNull()) {
+    public static AttendanceStatus findByStartHourAndAttendanceTime(int dayStartHour, AttendanceTime attendanceTime) {
+        if (isAbsence(dayStartHour, attendanceTime)) {
             return ABSENCE;
         }
-        WorkDay today = attendanceDateTime.getDate().getWorkDay();
-        Time time = attendanceDateTime.getTime();
-        return determineAttendanceStatus(today, time);
-    }
 
-    public boolean isAbsence() {
-        return this == ABSENCE;
-    }
-
-    public boolean isPerception() {
-        return this == PERCEPTION;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    private static AttendanceStatus determineAttendanceStatus(WorkDay today, Time time) {
-        int startHour = today.retrieveWeekdaysStartHour();
-        int hour = time.getHour();
-        int minute = time.getMinute();
-
-        if (hour > startHour || (hour == startHour && minute > ABSENCE.limitTime)) {
-            return ABSENCE;
+        if (isLate(dayStartHour, attendanceTime)) {
+            return LATE;
         }
-        if (hour == startHour && minute > PERCEPTION.limitTime) {
-            return PERCEPTION;
+
+        if (isAttendance(dayStartHour, attendanceTime)) {
+            return ATTENDANCE;
         }
-        return ATTENDANCE;
+
+        throw new IllegalArgumentException("[ERROR] 출석 상태를 판단하지 못했습니다");
+    }
+
+    private static boolean isAbsence(int dayStartHour, AttendanceTime attendanceTime) {
+        return (attendanceTime.isEqualHour(dayStartHour) && attendanceTime.isAfterMinute(ABSENCE_LIMIT_MINUTE))
+                || attendanceTime.isAfterHour(dayStartHour);
+    }
+
+    private static boolean isLate(int dayStartHour, AttendanceTime attendanceTime) {
+        return attendanceTime.isEqualHour(dayStartHour) && attendanceTime.isAfterMinute(LATE_LIMIT_MINUTE);
+    }
+
+    private static boolean isAttendance(int dayStartHour, AttendanceTime attendanceTime) {
+        return (attendanceTime.isEqualHour(dayStartHour) && attendanceTime.isEqualAndBeforeMinute(LATE_LIMIT_MINUTE))
+                || attendanceTime.isBeforeHour(dayStartHour);
     }
 }
