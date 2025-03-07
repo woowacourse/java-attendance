@@ -1,4 +1,4 @@
 package domain;
 
-public record WarningCrew(String name, AttendCount attendCount) {
+public record WarningCrew(NickName nickName, AttendanceStatusCount attendanceStatusCount) {
 }

@@ -1,24 +1,18 @@
 package util;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FileUtil {
-
-    private FileUtil() {
-
-    }
-
-    public static List<String> readFile(URL fileURL) {
-        try (BufferedReader reader = Files.newBufferedReader(Paths.get(fileURL.toURI()))) {
-            return reader.lines().skip(1).toList(); // column name이 존재하는 경우, 제거하기 위함
-        } catch (IOException | URISyntaxException e) {
-            throw new IllegalStateException(String.format("경로 문제: %s", fileURL.getPath()));
+    public static List<String> readlines(String path) {
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            return br.lines()
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new IllegalArgumentException("파일을 읽는데 실패했습니다.");
         }
     }
 }

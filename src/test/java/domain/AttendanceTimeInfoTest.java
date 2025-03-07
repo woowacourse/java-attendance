@@ -1,6 +1,6 @@
 package domain;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class AttendanceTimeInfoTest {
+public class AttendanceTimeInfoTest {
     @Test
     @DisplayName("월요일의 지각 시간을 반환한다")
     void should_return_Late_LocalTime_by_monday() {

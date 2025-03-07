@@ -1,70 +1,36 @@
 package util;
 
-import domain.Attend;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class DateUtil {
+    private static final int CHRISTMAS = 25;
 
-    public static LocalDateTime parsetime(String day, String time) {
-        try {
-            final int parsedDay = Integer.parseInt(day);
-            vaildateDay(parsedDay);
-            var hour = time.substring(0, 2);
-            var min = time.substring(3);
-            return LocalDateTime.of(2024, 12, parsedDay, Integer.parseInt(hour), Integer.parseInt(min));
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("숫자만 입력 가능", e);
-        }
+    public static List<Integer> getAttendAbleDates(int endDay) {
+        return Stream.iterate(1, day -> day + 1)
+                .limit(endDay)
+                .filter(DateUtil::isWeekdays)
+                .filter(i -> i != CHRISTMAS)
+                .toList();
     }
 
-    public static LocalTime parsetime(String time) {
-        var hour = time.substring(0, 2);
-        var min = time.substring(3);
-        return LocalTime.of(Integer.parseInt(hour), Integer.parseInt(min));
+    private static boolean isWeekdays(int day) {
+        DayOfWeek dayOfWeek = LocalDate.of(Current.getYearOfToday(), Current.getMonthOfToday(), day)
+                .getDayOfWeek();
+        return !(dayOfWeek == DayOfWeek.SUNDAY || dayOfWeek == DayOfWeek.SATURDAY);
     }
 
-    public static LocalDate parseDate(String date) {
-        return LocalDate.of(2024, 12, Integer.parseInt(date));
+    public static boolean isAttendAbleDate(int day) {
+        LocalDate targetDate = LocalDate.of(Current.getYearOfToday(), Current.getMonthOfToday(), day);
+        return isAttendAbleDate(targetDate);
     }
 
-    public static boolean isDayEqual(final int day, final LocalDate date) {
-        return date.getDayOfMonth() == day;
-    }
-
-    public static boolean isDayOff(LocalDate holiday) {
-        return holiday.getDayOfWeek().getValue() >= 6 || holiday.getDayOfMonth() == 25;
-    }
-
-    public static boolean isDayOff(int day) {
-        LocalDate targetDate = LocalDate.of(2024, 12, day);
-        return isDayOff(targetDate);
-    }
-
-    public static boolean isDayOff(Attend attend) {
-        return isDayOff(attend.getDay());
-    }
-
-    public static boolean isTimeOff(Attend attend, LocalTime startTime, LocalTime endTime) {
-        return attend.time.isBefore(startTime) || attend.time.isAfter(endTime);
-    }
-
-    public static List<Integer> getAttendUntilDay(int day) {
-        List<Integer> result = new ArrayList<>();
-        for (int i = 1; i <= day; i++) {
-            if (!isDayOff(i)) {
-                result.add(i);
-            }
-        }
-        return result;
-    }
-
-    private static void vaildateDay(final int day) {
-        if (day < 1 || day > 31) {
-            throw new IllegalArgumentException("1-31만 가능");
-        }
+    private static boolean isAttendAbleDate(LocalDate targetDate) {
+        boolean isWeekend = targetDate.getDayOfWeek()
+                .getValue() >= 6;
+        boolean isChristmas = targetDate.getDayOfMonth() == CHRISTMAS;
+        return !(isWeekend || isChristmas);
     }
 }
