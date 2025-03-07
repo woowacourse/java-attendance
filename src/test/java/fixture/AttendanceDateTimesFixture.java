@@ -2,22 +2,24 @@ package fixture;
 
 import domain.AttendanceDateTime;
 import domain.AttendanceDateTimes;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceDateTimesFixture {
-    public static AttendanceDateTimes of(LocalDate startDate, int presentCount, int tardyCount, int absentCount) {
-        AttendanceDateTimeFixture attendanceDateTimeFixture = new AttendanceDateTimeFixture(startDate);
+    public static AttendanceDateTimes of(int presentCount, int tardyCount, int absentCount) {
         List<AttendanceDateTime> attendanceDateTimes = new ArrayList<>();
-        for (int i = 0; i < presentCount; i++) {
-            attendanceDateTimes.add(attendanceDateTimeFixture.createPresentDateTime());
+        List<AttendanceDateTime> presentDates = AttendanceDateTimeFixture.createPresentDates();
+        List<AttendanceDateTime> tardyDates = AttendanceDateTimeFixture.createTardyDates();
+        List<AttendanceDateTime> absentDates = AttendanceDateTimeFixture.createAbsentDates();
+        int globalIndex = 0;
+        for (int i = 0; i < presentCount; i++, globalIndex += 1) {
+            attendanceDateTimes.add(presentDates.get(globalIndex));
         }
-        for (int i = 0; i < tardyCount; i++) {
-            attendanceDateTimes.add(attendanceDateTimeFixture.createTardyDateTime());
+        for (int i = 0; i < tardyCount; i++, globalIndex += 1) {
+            attendanceDateTimes.add(tardyDates.get(globalIndex));
         }
-        for (int i = 0; i < absentCount; i++) {
-            attendanceDateTimes.add(attendanceDateTimeFixture.createAbsentDateTime());
+        for (int i = 0; i < absentCount; i++, globalIndex += 1) {
+            attendanceDateTimes.add(absentDates.get(globalIndex));
         }
         return new AttendanceDateTimes(attendanceDateTimes);
     }

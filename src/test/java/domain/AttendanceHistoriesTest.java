@@ -3,12 +3,12 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import fixture.AttendanceDateTimeFixture;
 import fixture.AttendanceHistoriesFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,12 +19,16 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class AttendanceHistoriesTest {
     private static final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
-    private static final LocalDate FIRST_TUESDAY_DATE = LocalDate.of(2025, 2, 11);
+    private static final LocalDate START_DATE = LocalDate.of(2025, 2, 11);
     private static final LocalDate DEFAULT_DATE = LocalDate.of(2025, 2, 21);
     private static final LocalTime DEFAULT_TIME = LocalTime.of(10, 0);
     private static final Crew DEFAULT_CREW = new Crew("노랑");
     private static final Crew INVALID_CREW = new Crew("포비");
     private static final LocalDateTime DEFAULT_DATE_TIME = LocalDateTime.of(DEFAULT_DATE, DEFAULT_TIME);
+    private static final LocalDate START_DAY_OF_7TH_PERIOD = LocalDate.of(2025, 2, 11);
+    private static final LocalDate LAST_DAY_OF_FEBRUARY = START_DAY_OF_7TH_PERIOD.with(
+            TemporalAdjusters.lastDayOfMonth());
+    private static final int TOTAL_VALID_DATE_COUNT = 13;
 
     private final AttendanceHistories defaultAttendanceHistory = AttendanceHistoriesFixture.createWithSingleAttendance(
             DEFAULT_CREW, DEFAULT_DATE_TIME);
@@ -39,7 +43,7 @@ class AttendanceHistoriesTest {
             LocalTime time = LocalTime.of(10, 5);
             // when
             AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
-                    LocalDateTime.of(FIRST_TUESDAY_DATE, time));
+                    LocalDateTime.of(START_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.PRESENT);
         }
@@ -51,7 +55,7 @@ class AttendanceHistoriesTest {
             LocalTime time = LocalTime.of(10, 30);
             // when
             AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
-                    LocalDateTime.of(FIRST_TUESDAY_DATE, time));
+                    LocalDateTime.of(START_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.TARDY);
         }
@@ -63,7 +67,7 @@ class AttendanceHistoriesTest {
             LocalTime time = LocalTime.of(10, 30, 1);
             // when
             AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
-                    LocalDateTime.of(FIRST_TUESDAY_DATE, time));
+                    LocalDateTime.of(START_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENT);
         }
@@ -233,26 +237,23 @@ class AttendanceHistoriesTest {
     @Nested
     @DisplayName("3.2 닉네임을 입력하면 전날까지의 크루 출결 횟수를 확인할 수 있다.")
     public class GetAttendanceCountTest {
-        private static final LocalDate START_DATE = LocalDate.of(2025, 2, 11);
-        private static final LocalDate LAST_DATE = AttendanceDateTimeFixture.getNthValidDate(START_DATE, 12);
-
         AttendanceHistories attendanceHistoriesForCount = AttendanceHistoriesFixture.createWithMultipleAttendance(
-                DEFAULT_CREW, START_DATE, 3, 4, 5);
+                DEFAULT_CREW, 4, 4, 5);
 
         @Test
         @DisplayName("출석 횟수를 확인할 수 있다.")
         void testGetPresentCount() {
             // given & when
-            int presentCount = attendanceHistoriesForCount.getPresentCount(DEFAULT_CREW, LAST_DATE);
+            int presentCount = attendanceHistoriesForCount.getPresentCount(DEFAULT_CREW, LAST_DAY_OF_FEBRUARY);
             // then
-            assertThat(presentCount).isEqualTo(3);
+            assertThat(presentCount).isEqualTo(4);
         }
 
         @Test
         @DisplayName("지각 횟수를 확인할 수 있다.")
         void testGetTardyCount() {
             // given & when
-            int tardyCount = attendanceHistoriesForCount.getTardyCount(DEFAULT_CREW, LAST_DATE);
+            int tardyCount = attendanceHistoriesForCount.getTardyCount(DEFAULT_CREW, LAST_DAY_OF_FEBRUARY);
             // then
             assertThat(tardyCount).isEqualTo(4);
         }
@@ -261,7 +262,7 @@ class AttendanceHistoriesTest {
         @DisplayName("결석 횟수를 확인할 수 있다.")
         void testGetAbsentCount() {
             // given & when
-            int absentCount = attendanceHistoriesForCount.getAbsentCount(DEFAULT_CREW, LAST_DATE);
+            int absentCount = attendanceHistoriesForCount.getAbsentCount(DEFAULT_CREW, LAST_DAY_OF_FEBRUARY);
             // then
             assertThat(absentCount).isEqualTo(5);
         }
@@ -271,8 +272,8 @@ class AttendanceHistoriesTest {
         void testGetAbsentCountWithEmptyHistory() {
             // given
             AttendanceHistories singleAttendanceHistory = AttendanceHistoriesFixture.createWithSingleAttendance(
-                    DEFAULT_CREW, FIRST_TUESDAY_DATE.atTime(10, 31)); // 화요일 결석
-            LocalDate lastDate = FIRST_TUESDAY_DATE.plusDays(4); // 첫째 주 토요일
+                    DEFAULT_CREW, START_DATE.atTime(10, 31)); // 화요일 결석
+            LocalDate lastDate = START_DATE.plusDays(4); // 첫째 주 토요일
             // when
             int absentCount = singleAttendanceHistory.getAbsentCount(DEFAULT_CREW, lastDate);
             // then
@@ -287,11 +288,13 @@ class AttendanceHistoriesTest {
         @DisplayName("결석 2회를 경고 대상자로 판단할 수 있다.")
         void testGetWarningStatus() {
             // given
+            int absentCount = 2;
+            int presentCount = TOTAL_VALID_DATE_COUNT - absentCount;
             AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
-                    DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, 0, 2);
-            LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, 2);
+                    DEFAULT_CREW, presentCount, 0, absentCount);
             // when
-            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW, lastDate);
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW,
+                    LAST_DAY_OF_FEBRUARY);
             // then
             assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.WARNING);
         }
@@ -301,11 +304,13 @@ class AttendanceHistoriesTest {
         @ValueSource(ints = {3, 4, 5, 6})
         void testGetOneOnOneStatus(int tardyCount) {
             // given
+            int absentCount = 2;
+            int presentCount = TOTAL_VALID_DATE_COUNT - tardyCount - absentCount;
             AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
-                    DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, tardyCount, 2);
-            LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, tardyCount + 2);
+                    DEFAULT_CREW, presentCount, tardyCount, absentCount);
             // when
-            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW, lastDate);
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW,
+                    LAST_DAY_OF_FEBRUARY);
             // then
             assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.ONE_ON_ONE);
         }
@@ -314,11 +319,14 @@ class AttendanceHistoriesTest {
         @DisplayName("결석 5회를 지각 3회를 제적 대상자로 판단할 수 있다.")
         void testGetExpelledStatus() {
             // given
+            int absentCount = 5;
+            int tardyCount = 3;
+            int presentCount = TOTAL_VALID_DATE_COUNT - absentCount - tardyCount;
             AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
-                    DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, 3, 5);
-            LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, 8);
+                    DEFAULT_CREW, presentCount, tardyCount, absentCount);
             // when
-            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW, lastDate);
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW,
+                    LAST_DAY_OF_FEBRUARY);
             // then
             assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.EXPELLED);
         }
@@ -327,11 +335,14 @@ class AttendanceHistoriesTest {
         @DisplayName("결석 1회 지각 2회는 해당 사항 없음으로 판단할 수 있다.")
         void testGetNoneStatus() {
             // given
+            int absentCount = 1;
+            int tardyCount = 2;
+            int presentCount = TOTAL_VALID_DATE_COUNT - absentCount - tardyCount;
             AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
-                    DEFAULT_CREW, FIRST_TUESDAY_DATE, 0, 2, 1);
-            LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, 3);
+                    DEFAULT_CREW, presentCount, tardyCount, absentCount);
             // when
-            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW, lastDate);
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW,
+                    LAST_DAY_OF_FEBRUARY);
             // then
             assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.NONE);
         }
@@ -351,7 +362,7 @@ class AttendanceHistoriesTest {
         @Test
         @DisplayName("출석 횟수를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
         void validateCrewPresenceWhenGetPresentCount() {
-            assertThatThrownBy(() -> defaultAttendanceHistory.getPresentCount(INVALID_CREW, FIRST_TUESDAY_DATE))
+            assertThatThrownBy(() -> defaultAttendanceHistory.getPresentCount(INVALID_CREW, START_DATE))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
         }
@@ -359,7 +370,7 @@ class AttendanceHistoriesTest {
         @Test
         @DisplayName("지각 횟수를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
         void validateCrewPresenceWhenGetTardyCount() {
-            assertThatThrownBy(() -> defaultAttendanceHistory.getTardyCount(INVALID_CREW, FIRST_TUESDAY_DATE))
+            assertThatThrownBy(() -> defaultAttendanceHistory.getTardyCount(INVALID_CREW, START_DATE))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
         }
@@ -367,7 +378,7 @@ class AttendanceHistoriesTest {
         @Test
         @DisplayName("결석 횟수를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
         void validateCrewPresenceWhenGetAbsentCount() {
-            assertThatThrownBy(() -> defaultAttendanceHistory.getAbsentCount(INVALID_CREW, FIRST_TUESDAY_DATE))
+            assertThatThrownBy(() -> defaultAttendanceHistory.getAbsentCount(INVALID_CREW, START_DATE))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
         }
@@ -375,7 +386,7 @@ class AttendanceHistoriesTest {
         @Test
         @DisplayName("제적 위험자 여부를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
         void validateCrewPresenceWhenGetDisciplinaryStatus() {
-            assertThatThrownBy(() -> defaultAttendanceHistory.getDisciplinaryStatusOf(INVALID_CREW, FIRST_TUESDAY_DATE))
+            assertThatThrownBy(() -> defaultAttendanceHistory.getDisciplinaryStatusOf(INVALID_CREW, START_DATE))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
         }
@@ -386,10 +397,9 @@ class AttendanceHistoriesTest {
     void testGetDisciplinedCrews() {
         // given
         AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createDisciplinedCrewsHistory(
-                FIRST_TUESDAY_DATE, 10);
-        LocalDate lastDate = AttendanceDateTimeFixture.getNthValidDate(FIRST_TUESDAY_DATE, 10);
+                START_DATE, TOTAL_VALID_DATE_COUNT);
         // when
-        List<Crew> disciplinedCrews = attendanceHistories.getDisciplinedCrews(lastDate);
+        List<Crew> disciplinedCrews = attendanceHistories.getDisciplinedCrews(LAST_DAY_OF_FEBRUARY);
         // then
         assertThat(disciplinedCrews).containsExactlyInAnyOrder(new Crew("경고크루"), new Crew("제적크루"), new Crew("면담크루"));
     }
