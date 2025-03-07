@@ -52,7 +52,7 @@ public class AttendanceDateTimes {
     }
 
     public int getAbsentCount(LocalDate lastDate) {
-        int totalCount = Campus.countValidDays(lastDate);
+        int totalCount = Campus.getInstance().countValidDays(lastDate);
         return totalCount - getPresentCount(lastDate) - getTardyCount(lastDate);
     }
 

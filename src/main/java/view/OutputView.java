@@ -42,7 +42,7 @@ public class OutputView {
     public void displayAttendanceDateTimes(Crew crew, AttendanceDateTimes attendanceDateTimes, LocalDate today) {
         System.out.printf("%n%s의 출석 기록입니다.%n%n", crew.nickname());
 
-        for (LocalDate date : Campus.getOpenDaysUntil(today)) {
+        for (LocalDate date : Campus.getInstance().getOpenDaysUntil(today)) {
             displayAttendanceDateTime(attendanceDateTimes, date);
         }
     }

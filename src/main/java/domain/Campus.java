@@ -5,24 +5,35 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class Campus {
-    private static final LocalDate START_DATE = LocalDate.of(2025, 2, 11);
+    private static final LocalDate START_DATE_OF_7TH_PERIOD = LocalDate.of(2025, 2, 11);
+    private static final Campus INSTANCE = new Campus(START_DATE_OF_7TH_PERIOD);
 
-    public static int countValidDays(LocalDate lastDate) {
-        return (int) START_DATE.datesUntil(lastDate)
-                .filter(Campus::isOpen)
+    private final LocalDate startDate;
+
+    private Campus(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public static Campus getInstance() {
+        return INSTANCE;
+    }
+
+    public int countValidDays(LocalDate lastDate) {
+        return (int) startDate.datesUntil(lastDate)
+                .filter(this::isOpen)
                 .count();
     }
 
-    public static boolean isOpen(LocalDate attendanceDate) {
+    public boolean isOpen(LocalDate attendanceDate) {
         return attendanceDate.getDayOfWeek() != DayOfWeek.SATURDAY
                 && attendanceDate.getDayOfWeek() != DayOfWeek.SUNDAY
                 && !LegalHoliday.isHoliday(attendanceDate)
                 && !Vacation.isVacation(attendanceDate);
     }
 
-    public static List<LocalDate> getOpenDaysUntil(LocalDate lastDate) {
-        return START_DATE.datesUntil(lastDate)
-                .filter(Campus::isOpen)
+    public List<LocalDate> getOpenDaysUntil(LocalDate lastDate) {
+        return startDate.datesUntil(lastDate)
+                .filter(this::isOpen)
                 .toList();
     }
 }

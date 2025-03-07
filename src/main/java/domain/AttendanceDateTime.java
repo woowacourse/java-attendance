@@ -37,7 +37,7 @@ public class AttendanceDateTime {
     }
 
     private void validateDayOff(LocalDate attendanceDate) {
-        if (!Campus.isOpen(attendanceDate)) {
+        if (!Campus.getInstance().isOpen(attendanceDate)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일");
             throw new IllegalArgumentException(
                     String.format("[ERROR] %s은 등교일이 아닙니다.", formatter.format(attendanceDate)));
