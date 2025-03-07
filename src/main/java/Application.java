@@ -1,18 +1,15 @@
 import controller.AttendanceController;
-import controller.FileController;
-import domain.AttendanceManager;
+import domain.AttendanceBook;
+import java.util.Scanner;
 import view.InputView;
 import view.OutputView;
 
 public class Application {
-
     public static void main(String[] args) {
-        AttendanceManager attendanceManager = new AttendanceManager();
-        FileController fileController = new FileController(attendanceManager);
-        AttendanceController attendanceController = new AttendanceController
-            (new InputView(), new OutputView(), attendanceManager);
+        Scanner scanner = new Scanner(System.in);
+        AttendanceController attendanceController = new AttendanceController(new InputView(scanner), new OutputView(),
+                new AttendanceBook());
 
-        fileController.initializeFile("src/main/resources/attendances.csv");
-        attendanceController.run();
+        attendanceController.runSystem();
     }
 }

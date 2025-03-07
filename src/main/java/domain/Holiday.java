@@ -1,34 +1,37 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import java.util.Arrays;
+import java.util.EnumSet;
 
 public enum Holiday {
+
     CHRISTMAS(12, 25);
 
-    public final int month;
-    public final int day;
+    private static final EnumSet<DayOfWeek> WEEKENDS = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+    private final int month;
+    private final int day;
 
     Holiday(int month, int day) {
         this.month = month;
         this.day = day;
     }
 
-    public static boolean isHoliday(LocalDate localDate) {
-        if (localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN).equals("토")) {
-            return true;
-        }
-        if (localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN).equals("일")) {
-            return true;
-        }
+    public static boolean isHoliday(LocalDate date) {
+        return isWeekend(date) || isPublicHoliday(date);
+    }
 
-        for (Holiday holiday : values()) {
-            if (localDate.getMonthValue() == holiday.month
-                && localDate.getDayOfMonth() == holiday.day) {
-                return true;
-            }
-        }
-        return false;
+    private static boolean isWeekend(LocalDate date) {
+        return WEEKENDS.contains(date.getDayOfWeek());
+    }
+
+    private static boolean isPublicHoliday(LocalDate date) {
+        return Arrays.stream(values())
+                .anyMatch(holiday -> holiday.isSameDate(date));
+    }
+
+    public boolean isSameDate(LocalDate date) {
+        return date.getMonthValue() == this.month && date.getDayOfMonth() == this.day;
     }
 }

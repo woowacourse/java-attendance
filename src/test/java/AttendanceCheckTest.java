@@ -1,93 +1,72 @@
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import domain.AttendanceManager;
-import domain.Records;
-import domain.TimeAndStatus;
+import domain.Attendance;
+import domain.AttendanceBook;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import org.assertj.core.api.Assertions;
+import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendanceCheckTest {
 
-    AttendanceManager attendanceManager = new AttendanceManager();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private AttendanceBook attendanceBook;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
+        attendanceBook = new AttendanceBook();
+
         String name = "빙봉";
-        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-13 13:00", formatter);
-        attendanceManager.createCrew(name, List.of(initialDateAndTime));
+        LocalDate initialDate = LocalDate.of(2024, 12, 13);
+        LocalTime initialTime = LocalTime.of(12, 59);
+        attendanceBook.addCrew(name, initialDate, initialTime);
     }
 
+    @DisplayName("등록된 닉네임을 입력한 경우 예외가 발생하지 않는다.")
     @Test
-    @DisplayName("크루 정보를 출석부에 저장한다.")
-    void should_SaveCrewInfo_When_GivenNameAndDateTime() {
+    void should_NotThrowException_When_ValidNameIsGiven() {
         String name = "빙봉";
-        LocalDateTime attendDateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
+        LocalDate date = LocalDate.of(2024, 12, 16);
+        LocalTime time = LocalTime.of(13, 0);
 
-        attendanceManager.attendCrew(name, attendDateAndTime);
-
-        assertThat(attendanceManager.findByName(name).getAttendanceCount()).isEqualTo(2);
+        assertThatCode(() -> attendanceBook.attendCrew(name, date, time))
+                .doesNotThrowAnyException();
     }
 
+    @DisplayName("등록되지 않은 닉네임을 입력한 경우 예외를 발생한다.")
     @Test
-    @DisplayName("크루의 출석 시간과 상태를 저장한다.")
-    void should_SaveAttendanceTimeAndStatus_When_GivenNameAndDateTime() {
-        String name = "빙봉";
-        LocalDateTime dateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
-        LocalDate localDate = dateAndTime.toLocalDate();
+    void should_ThrowException_When_InvalidNameIsGiven() {
+        String name = "하루";
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalTime time = LocalTime.of(13, 0);
 
-        TimeAndStatus attendTimeStatus = attendanceManager.attendCrew(name, dateAndTime);
-        Records records = attendanceManager.findByName(name);
-        TimeAndStatus expectedTimeStatus = records.findByDate(localDate);
-
-        assertThat(expectedTimeStatus).isEqualTo(attendTimeStatus);
+        assertThatThrownBy(() -> attendanceBook.attendCrew(name, date, time))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContainingAll("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
+    @DisplayName("출석 날짜와 시간을 기반으로 출석 기록을 저장한다.")
     @Test
-    @DisplayName("이미 출석한 경우 수정 기능을 안내한다.")
-    void should_ThrowException_When_AttendanceAlreadyExists() {
+    void should_StoreAttendance_When_GivenDateAndTime() {
         String name = "빙봉";
-        LocalDateTime attendDateAndTime = LocalDateTime.parse("2024-12-13 13:03", formatter);
+        LocalDate date = LocalDate.of(2024, 12, 16);
+        LocalTime time = LocalTime.of(13, 0);
+        Attendance attendance = new Attendance(date, time);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            attendanceManager.attendCrew(name, attendDateAndTime);
-        });
-        Assertions.assertThat(exception.getMessage()).isEqualTo("이미 출석한 경우 수정 기능을 사용하세요.");
+        assertThat(attendanceBook.attendCrew(name, date, time)).isEqualTo(attendance);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"2024-12-14 13:03", "2024-12-25 13:03"})
-    @DisplayName("등교일이 아닌 날 출석하려는 경우 예외를 발생한다.")
-    void should_ThrowException_When_AttendanceIsOnHoliday(String dateAndTime) {
+    @DisplayName("이미 출석한 경우 수정 기능 안내 예외를 발생한다.")
+    @Test
+    void should_ThrowException_When_AttendanceIsAlreadyMarked() {
         String name = "빙봉";
-        LocalDateTime attendDateAndTime = LocalDateTime.parse(dateAndTime, formatter);
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalTime time = LocalTime.of(13, 0);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            attendanceManager.attendCrew(name, attendDateAndTime);
-        });
-        Assertions.assertThat(exception.getMessage()).isEqualTo("등교일이 아닙니다.");
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"2024-12-16 23:01", "2024-12-16 07:59"})
-    @DisplayName("캠퍼스 운영시간이 아닌 경우 예외를 발생한다.")
-    void should_ThrowException_When_OutsideOperatingHours(String attendDateTime) {
-        String name = "빙봉";
-        LocalDateTime attendDateAndTime = LocalDateTime.parse(attendDateTime, formatter);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            attendanceManager.attendCrew(name, attendDateAndTime);
-        });
-        Assertions.assertThat(exception.getMessage()).isEqualTo("캠퍼스 운영시간이 아닙니다.");
+        assertThatThrownBy(() -> attendanceBook.attendCrew(name, date, time))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContainingAll("[ERROR] 이미 출석한 경우 수정 기능을 사용하세요.");
     }
 }

@@ -1,102 +1,65 @@
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import domain.AttendanceManager;
-import domain.AttendanceStatus;
-import domain.Records;
-import domain.TimeAndStatus;
+import domain.Attendance;
+import domain.AttendanceBook;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import org.assertj.core.api.Assertions;
+import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendanceEditTest {
 
-    AttendanceManager attendanceManager = new AttendanceManager();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private AttendanceBook attendanceBook;
 
     @BeforeEach
     void setUp() {
+        attendanceBook = new AttendanceBook();
+
         String name = "빙봉";
-        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
-        attendanceManager.createCrew(name, List.of(initialDateAndTime));
+        LocalDate initialDate = LocalDate.of(2024, 12, 13);
+        LocalTime initialTime = LocalTime.of(12, 59);
+
+        attendanceBook.addCrew(name, initialDate, initialTime);
     }
 
+    @DisplayName("수정 날짜와 시간을 기반으로 출석 기록을 변경한다")
     @Test
-    @DisplayName("출석 상태를 출석에서 지각으로 변경한다.")
-    void should_ChangeStatusToLateness_When_AttendanceEditedLate() {
+    void should_UpdateAttendanceRecord_When_GivenModifiedDateTime() {
         String name = "빙봉";
-        LocalDateTime editedDateAndTime = LocalDateTime.parse("2024-12-16 13:06", formatter);
-        LocalDate localDate = editedDateAndTime.toLocalDate();
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalTime initialTime = LocalTime.of(12, 59);
+        Attendance expectedInitalAttendance = new Attendance(date, initialTime);
+        LocalTime editTime = LocalTime.of(13, 6);
+        Attendance expectedUpdatedAttendance = new Attendance(date, editTime);
 
-        attendanceManager.editCrew(name, editedDateAndTime);
-        TimeAndStatus timeAndStatus = findTimeAndStatus(name, localDate);
-
-        assertThat(timeAndStatus.getStatus()).isEqualTo(AttendanceStatus.LATENESS);
+        assertThat(attendanceBook.findAttendance(name, date)).isEqualTo(expectedInitalAttendance);
+        assertThat(attendanceBook.editCrew(name, date, date, editTime)).isEqualTo(expectedUpdatedAttendance);
     }
 
+    @DisplayName("등록되지 않은 닉네임을 입력한 경우 예외를 발생한다.")
     @Test
-    @DisplayName("출석 상태를 지각에서 출석으로 변경한다.")
-    void should_ChangeStatusToAttendance_When_LatenessEditedAttendance() {
-        String name = "빙봉";
-        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-16 13:07", formatter);
-        LocalDateTime editedDateAndTime = LocalDateTime.parse("2024-12-16 12:59", formatter);
-        LocalDate localDate = editedDateAndTime.toLocalDate();
+    void should_ThrowException_When_InvalidNameIsGiven() {
+        String name = "하루";
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalTime time = LocalTime.of(13, 0);
 
-        attendanceManager.createCrew(name, List.of(initialDateAndTime));
-        attendanceManager.editCrew(name, editedDateAndTime);
-        TimeAndStatus timeAndStatus = findTimeAndStatus(name, localDate);
-
-        assertThat(timeAndStatus.getStatus()).isEqualTo(AttendanceStatus.ATTENDANCE);
+        assertThatThrownBy(() -> attendanceBook.editCrew(name, date, date, time))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContainingAll("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
+    @DisplayName("미래 날짜를 수정하는 경우 예외를 발생한다.")
     @Test
-    @DisplayName("출석하지 않고 수정하는 경우 예외메시지를 출력한다.")
-    void should_ThrowException_When_EditingWithoutExistingAttendance() {
-        String name = "빙봉";
-        LocalDateTime editedDateAndTime = LocalDateTime.parse("2024-12-17 13:03", formatter);
+    void should_ThrowException_When_DateIsInFuture() {
+        String name = "하루";
+        LocalDate nowDate = LocalDate.of(2024, 12, 13);
+        LocalDate date = LocalDate.of(2024, 12, 23);
+        LocalTime time = LocalTime.of(13, 0);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            attendanceManager.editCrew(name, editedDateAndTime);
-        });
-        Assertions.assertThat(exception.getMessage()).isEqualTo("수정 기능은 출석 후 이용 가능합니다.");
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"2024-12-14 13:03", "2024-12-25 13:03"})
-    @DisplayName("수정하려는 날짜가 등교일이 아닌 경우 예외를 발생한다.")
-    void should_ThrowException_When_EditingToHoliday(String dateAndTime) {
-        String name = "빙봉";
-        LocalDateTime editedDateAndTime = LocalDateTime.parse(dateAndTime, formatter);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            attendanceManager.editCrew(name, editedDateAndTime);
-        });
-        Assertions.assertThat(exception.getMessage()).isEqualTo("등교일이 아닙니다.");
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"2024-12-13 23:01", "2024-12-13 07:59"})
-    @DisplayName("캠퍼스 운영시간이 아닌 경우 예외를 발생한다.")
-    void should_ThrowException_When_OutsideOperatingHours(String attendDateTime) {
-        String name = "빙봉";
-        LocalDateTime attendDateAndTime = LocalDateTime.parse(attendDateTime, formatter);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            attendanceManager.editCrew(name, attendDateAndTime);
-        });
-        Assertions.assertThat(exception.getMessage()).isEqualTo("캠퍼스 운영시간이 아닙니다.");
-    }
-
-    private TimeAndStatus findTimeAndStatus(String name, LocalDate localDate) {
-        Records records = attendanceManager.findByName(name);
-        return records.findByDate(localDate);
+        assertThatThrownBy(() -> attendanceBook.editCrew(name, nowDate, date, time))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContainingAll("[ERROR] 현재보다 이전 날짜만 수정 가능합니다.");
     }
 }

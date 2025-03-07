@@ -1,26 +1,37 @@
 package domain;
 
 public enum Penalty {
-    EXPELLED("제적", 6),
-    COUNSELING("면담", 3),
-    WARNING("경고", 2),
-    NONE("패스", 0);
 
-    public final String penalty;
-    public final int count;
+    EXPULSION("제적"),
+    COUNSEL("면담"),
+    WARNING("경고"),
+    PASS("통과");
 
-    Penalty(String penalty, int count) {
-        this.penalty = penalty;
-        this.count = count;
+    private final String description;
+
+    Penalty(String description) {
+        this.description = description;
     }
 
-    public static Penalty check(int absenceCount, int latenessCount) {
+    public static Penalty from(int latenessCount, int absenceCount) {
         absenceCount += latenessCount / 3;
-        for (Penalty penalty : values()) {
-            if (absenceCount >= penalty.count) {
-                return penalty;
-            }
+        if (absenceCount > 5) {
+            return EXPULSION;
         }
-        return NONE;
+        if (absenceCount >= 3) {
+            return COUNSEL;
+        }
+        if (absenceCount >= 2) {
+            return WARNING;
+        }
+        return PASS;
+    }
+
+    public boolean isPenaltyCrew() {
+        return this != PASS;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
