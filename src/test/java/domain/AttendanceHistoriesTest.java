@@ -1,0 +1,406 @@
+package domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import fixture.AttendanceHistoriesFixture;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
+class AttendanceHistoriesTest {
+    private static final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
+    private static final LocalDate START_DATE = LocalDate.of(2025, 2, 11);
+    private static final LocalDate DEFAULT_DATE = LocalDate.of(2025, 2, 21);
+    private static final LocalTime DEFAULT_TIME = LocalTime.of(10, 0);
+    private static final Crew DEFAULT_CREW = new Crew("노랑");
+    private static final Crew INVALID_CREW = new Crew("포비");
+    private static final LocalDateTime DEFAULT_DATE_TIME = LocalDateTime.of(DEFAULT_DATE, DEFAULT_TIME);
+    private static final LocalDate START_DAY_OF_7TH_PERIOD = LocalDate.of(2025, 2, 11);
+    private static final LocalDate LAST_DAY_OF_FEBRUARY = START_DAY_OF_7TH_PERIOD.with(
+            TemporalAdjusters.lastDayOfMonth());
+    private static final int TOTAL_VALID_DATE_COUNT = 13;
+
+    private final AttendanceHistories defaultAttendanceHistory = AttendanceHistoriesFixture.createWithSingleAttendance(
+            DEFAULT_CREW, DEFAULT_DATE_TIME);
+
+    @Nested
+    @DisplayName("1.1 닉네임과 등교 시간을 받으면 오늘 날짜로 출석 기록을 생성할 수 있다.")
+    class AttendanceCheckTest {
+        @Test
+        @DisplayName("화요일은 10시 5분에 출석할 경우 출석으로 처리한다.")
+        void testPresentAttendance() {
+            // given
+            LocalTime time = LocalTime.of(10, 5);
+            // when
+            AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
+                    LocalDateTime.of(START_DATE, time));
+            // then
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.PRESENT);
+        }
+
+        @Test
+        @DisplayName("화요일은 10시 30분에 출석할 경우 지각으로 처리한다.")
+        void testTardyAttendance() {
+            // given
+            LocalTime time = LocalTime.of(10, 30);
+            // when
+            AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
+                    LocalDateTime.of(START_DATE, time));
+            // then
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.TARDY);
+        }
+
+        @Test
+        @DisplayName("화요일은 10시 30분 1초에 출석할 경우 결석으로 처리한다.")
+        void testAbsentAttendance() {
+            // given
+            LocalTime time = LocalTime.of(10, 30, 1);
+            // when
+            AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
+                    LocalDateTime.of(START_DATE, time));
+            // then
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENT);
+        }
+
+        @Test
+        @DisplayName("월요일은 13시 5분에 출석할 경우 출석으로 처리한다.")
+        void testPresentAttendanceOnMonday() {
+            // given
+            LocalTime time = LocalTime.of(13, 5);
+            // when
+            AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
+                    LocalDateTime.of(MONDAY_DATE, time));
+            // then
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.PRESENT);
+        }
+
+        @Test
+        @DisplayName("월요일은 13시 30분에 출석할 경우 지각으로 처리한다.")
+        void testTardyAttendanceOnMonday() {
+            // given
+            LocalTime time = LocalTime.of(13, 30);
+            // when
+            AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
+                    LocalDateTime.of(MONDAY_DATE, time));
+            // then
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.TARDY);
+        }
+
+        @Test
+        @DisplayName("월요일은 13시 30분 1초에 출석할 경우 결석으로 처리한다.")
+        void testAbsentAttendanceOnMonday() {
+            // given
+            LocalTime time = LocalTime.of(13, 30, 1);
+            // when
+            AttendanceStatus attendanceStatus = defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW,
+                    LocalDateTime.of(MONDAY_DATE, time));
+            // then
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENT);
+        }
+    }
+
+    @Test
+    @DisplayName("1.2 이미 출석한 경우 예외를 발생시킬 수 있다.")
+    void testValidateDuplicateAttendance() {
+        assertThatThrownBy(() -> defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW, DEFAULT_DATE_TIME))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
+    }
+
+    @Test
+    @DisplayName("1.3 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+    void testValidateCrewPresenceWhenCheck() {
+        assertThatThrownBy(() -> defaultAttendanceHistory.addAttendanceHistory(INVALID_CREW, DEFAULT_DATE_TIME))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
+
+    @Nested
+    @DisplayName("1.4 등교일이 아닐 경우(주말, 공휴일) 예외를 발생시킬 수 있다.")
+    public class ValidateDayOffTest {
+        @Test
+        @DisplayName("토요일에 등교할 경우 예외를 발생시킬 수 있다.")
+        void testSaturdayException() {
+            // given
+            LocalDate saturday = LocalDate.of(2025, 2, 22);
+            LocalDateTime dateTime = saturday.atTime(DEFAULT_TIME);
+            // when & then
+            assertThatThrownBy(() -> defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW, dateTime))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 2월 22일 토요일은 등교일이 아닙니다.");
+        }
+
+        @Test
+        @DisplayName("일요일에 등교할 경우 예외를 발생시킬 수 있다.")
+        void testSundayException() {
+            // given
+            LocalDate sunday = LocalDate.of(2025, 3, 2);
+            LocalDateTime dateTime = sunday.atTime(DEFAULT_TIME);
+            // when & then
+            assertThatThrownBy(() -> defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW, dateTime))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 3월 2일 일요일은 등교일이 아닙니다.");
+        }
+
+        @Test
+        @DisplayName("법정공휴일에 등교할 경우 예외를 발생시킬 수 있다.")
+        void validateHolidayException() {
+            // given
+            LocalDate holiday = LocalDate.of(2025, 3, 3);
+            LocalDateTime dateTime = holiday.atTime(DEFAULT_TIME);
+            // when & then
+            assertThatThrownBy(() -> defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW, dateTime))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 3월 3일 월요일은 등교일이 아닙니다.");
+        }
+
+        @ParameterizedTest
+        @DisplayName("방학에 등교할 경우 예외를 발생시킬 수 있다.")
+        @CsvSource({"2025-04-07", "2025-04-14", "2025-08-25"})
+        void validateVacationException(LocalDate vacationDate) {
+            // given
+            LocalDateTime dateTime = vacationDate.atTime(10, 0);
+            // when & then
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일");
+            assertThatThrownBy(() -> defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW, dateTime))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining(String.format("[ERROR] %s은 등교일이 아닙니다.", formatter.format(vacationDate)));
+        }
+    }
+
+    @ParameterizedTest
+    @DisplayName("1.5 캠퍼스 운영 시간이 아닐 경우 예외를 발생시킬 수 있다.")
+    @CsvSource({"07:59", "23:01"})
+    void testValidateOperatingTime(LocalTime invalidTime) {
+        // given
+        LocalDateTime dateTime = MONDAY_DATE.atTime(invalidTime);
+        // when & then
+        assertThatThrownBy(() -> defaultAttendanceHistory.addAttendanceHistory(DEFAULT_CREW, dateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
+    }
+
+    @Test
+    @DisplayName("2.1 닉네임, 수정하려는 날짜, 등교 시간을 입력하여 기록을 수정할 수 있다.")
+    void testReplaceAttendanceHistory() {
+        // given
+        LocalDateTime newAttendanceDateTime = DEFAULT_DATE_TIME.plusMinutes(5);
+        // when
+        AttendanceDateTime oldAttendanceDateTime = defaultAttendanceHistory.replaceAttendanceHistory(DEFAULT_CREW,
+                newAttendanceDateTime);
+        // then
+        AttendanceDateTime expectedAttendanceDateTime = new AttendanceDateTime(DEFAULT_DATE_TIME);
+        assertThat(oldAttendanceDateTime).isEqualTo(expectedAttendanceDateTime);
+    }
+
+    @Test
+    @DisplayName("2.2 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+    void testValidateCrewPresenceWhenReplace() {
+        assertThatThrownBy(
+                () -> defaultAttendanceHistory.replaceAttendanceHistory(INVALID_CREW, MONDAY_DATE.atTime(DEFAULT_TIME)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
+
+    @Test
+    @DisplayName("2.3 출석 기록이 없는 날짜를 입력한 경우 예외를 발생시킬 수 있다.")
+    void testValidateDateWhenReplace() {
+        // given & when
+        LocalDateTime dateTime = DEFAULT_DATE_TIME.plusDays(1);
+        // then
+        assertThatThrownBy(() -> defaultAttendanceHistory.replaceAttendanceHistory(DEFAULT_CREW, dateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("3.1 닉네임을 입력하면 전날까지의 출결 기록을 확인할 수 있다.")
+    void testGetAttendanceDateTimes() {
+        // given & when
+        AttendanceDateTimes actualAttendanceDateTimes = defaultAttendanceHistory.getAttendanceDateTimes(DEFAULT_CREW);
+        // then
+        AttendanceDateTimes expectedAttendanceDateTimes = new AttendanceDateTimes(
+                List.of(new AttendanceDateTime(DEFAULT_DATE_TIME)));
+        assertThat(actualAttendanceDateTimes).isEqualTo(expectedAttendanceDateTimes);
+    }
+
+    @Nested
+    @DisplayName("3.2 닉네임을 입력하면 전날까지의 크루 출결 횟수를 확인할 수 있다.")
+    public class GetAttendanceCountTest {
+        AttendanceHistories attendanceHistoriesForCount = AttendanceHistoriesFixture.createWithMultipleAttendance(
+                DEFAULT_CREW, 4, 4, 5);
+
+        @Test
+        @DisplayName("출석 횟수를 확인할 수 있다.")
+        void testGetPresentCount() {
+            // given & when
+            int presentCount = attendanceHistoriesForCount.getPresentCount(DEFAULT_CREW, LAST_DAY_OF_FEBRUARY);
+            // then
+            assertThat(presentCount).isEqualTo(4);
+        }
+
+        @Test
+        @DisplayName("지각 횟수를 확인할 수 있다.")
+        void testGetTardyCount() {
+            // given & when
+            int tardyCount = attendanceHistoriesForCount.getTardyCount(DEFAULT_CREW, LAST_DAY_OF_FEBRUARY);
+            // then
+            assertThat(tardyCount).isEqualTo(4);
+        }
+
+        @Test
+        @DisplayName("결석 횟수를 확인할 수 있다.")
+        void testGetAbsentCount() {
+            // given & when
+            int absentCount = attendanceHistoriesForCount.getAbsentCount(DEFAULT_CREW, LAST_DAY_OF_FEBRUARY);
+            // then
+            assertThat(absentCount).isEqualTo(5);
+        }
+
+        @Test
+        @DisplayName("기록이 없는 날짜는 결석 횟수로 기록된다.")
+        void testGetAbsentCountWithEmptyHistory() {
+            // given
+            AttendanceHistories singleAttendanceHistory = AttendanceHistoriesFixture.createWithSingleAttendance(
+                    DEFAULT_CREW, START_DATE.atTime(10, 31)); // 화요일 결석
+            LocalDate lastDate = START_DATE.plusDays(4); // 첫째 주 토요일
+            // when
+            int absentCount = singleAttendanceHistory.getAbsentCount(DEFAULT_CREW, lastDate);
+            // then
+            assertThat(absentCount).isEqualTo(4); // 화 ~ 금 4회 결석
+        }
+    }
+
+    @Nested
+    @DisplayName("3.3 닉네임을 입력하면 크루의 제적 위험자 여부를 확인할 수 있다.")
+    public class GetDisplayStatusTest {
+        @Test
+        @DisplayName("결석 2회를 경고 대상자로 판단할 수 있다.")
+        void testGetWarningStatus() {
+            // given
+            int absentCount = 2;
+            int presentCount = TOTAL_VALID_DATE_COUNT - absentCount;
+            AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
+                    DEFAULT_CREW, presentCount, 0, absentCount);
+            // when
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW,
+                    LAST_DAY_OF_FEBRUARY);
+            // then
+            assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.WARNING);
+        }
+
+        @ParameterizedTest(name = "결석 2회 지각 {0}회를 면담 대상자로 판단할 수 있다.")
+        @DisplayName("결석 2회 지각 n회를 면담 대상자로 판단할 수 있다.")
+        @ValueSource(ints = {3, 4, 5, 6})
+        void testGetOneOnOneStatus(int tardyCount) {
+            // given
+            int absentCount = 2;
+            int presentCount = TOTAL_VALID_DATE_COUNT - tardyCount - absentCount;
+            AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
+                    DEFAULT_CREW, presentCount, tardyCount, absentCount);
+            // when
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW,
+                    LAST_DAY_OF_FEBRUARY);
+            // then
+            assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.ONE_ON_ONE);
+        }
+
+        @Test
+        @DisplayName("결석 5회를 지각 3회를 제적 대상자로 판단할 수 있다.")
+        void testGetExpelledStatus() {
+            // given
+            int absentCount = 5;
+            int tardyCount = 3;
+            int presentCount = TOTAL_VALID_DATE_COUNT - absentCount - tardyCount;
+            AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
+                    DEFAULT_CREW, presentCount, tardyCount, absentCount);
+            // when
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW,
+                    LAST_DAY_OF_FEBRUARY);
+            // then
+            assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.EXPELLED);
+        }
+
+        @Test
+        @DisplayName("결석 1회 지각 2회는 해당 사항 없음으로 판단할 수 있다.")
+        void testGetNoneStatus() {
+            // given
+            int absentCount = 1;
+            int tardyCount = 2;
+            int presentCount = TOTAL_VALID_DATE_COUNT - absentCount - tardyCount;
+            AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createWithMultipleAttendance(
+                    DEFAULT_CREW, presentCount, tardyCount, absentCount);
+            // when
+            DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(DEFAULT_CREW,
+                    LAST_DAY_OF_FEBRUARY);
+            // then
+            assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.NONE);
+        }
+    }
+
+    @Nested
+    @DisplayName("3.4 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+    public class ValidCrewTest {
+        @Test
+        @DisplayName("출결 기록을 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+        void validateCrewPresenceWhenGetHistory() {
+            assertThatThrownBy(() -> defaultAttendanceHistory.getAttendanceDateTimes(INVALID_CREW))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+
+        @Test
+        @DisplayName("출석 횟수를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+        void validateCrewPresenceWhenGetPresentCount() {
+            assertThatThrownBy(() -> defaultAttendanceHistory.getPresentCount(INVALID_CREW, START_DATE))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+
+        @Test
+        @DisplayName("지각 횟수를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+        void validateCrewPresenceWhenGetTardyCount() {
+            assertThatThrownBy(() -> defaultAttendanceHistory.getTardyCount(INVALID_CREW, START_DATE))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+
+        @Test
+        @DisplayName("결석 횟수를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+        void validateCrewPresenceWhenGetAbsentCount() {
+            assertThatThrownBy(() -> defaultAttendanceHistory.getAbsentCount(INVALID_CREW, START_DATE))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+
+        @Test
+        @DisplayName("제적 위험자 여부를 확인할 때 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+        void validateCrewPresenceWhenGetDisciplinaryStatus() {
+            assertThatThrownBy(() -> defaultAttendanceHistory.getDisciplinaryStatusOf(INVALID_CREW, START_DATE))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+    }
+
+    @Test
+    @DisplayName("4.1 제적 위험자에 해당하는 크루들을 확인할 수 있다.")
+    void testGetDisciplinedCrews() {
+        // given
+        AttendanceHistories attendanceHistories = AttendanceHistoriesFixture.createDisciplinedCrewsHistory(
+                START_DATE, TOTAL_VALID_DATE_COUNT);
+        // when
+        List<Crew> disciplinedCrews = attendanceHistories.getDisciplinedCrews(LAST_DAY_OF_FEBRUARY);
+        // then
+        assertThat(disciplinedCrews).containsExactlyInAnyOrder(new Crew("경고크루"), new Crew("제적크루"), new Crew("면담크루"));
+    }
+}

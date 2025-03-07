@@ -1,98 +1,100 @@
 package controller;
 
-import domain.AttendanceRecord;
+import domain.AttendanceDateTime;
+import domain.AttendanceDateTimes;
+import domain.AttendanceHistories;
+import domain.AttendanceHistoryGenerator;
 import domain.Crew;
-import domain.CrewAttendanceRecords;
-import domain.CsvParsingGenerator;
+import domain.DisciplinaryStatus;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
+import view.FileInputView;
 import view.InputView;
+import view.Menu;
 import view.OutputView;
 
 public class AttendanceController {
-    private static final int START_DATE_INDEX = 0;
-    private static final String QUIT_MENU = "[Qq]";
-    private static final LocalDate SYSTEM_START = LocalDate.of(2024, 12, 1);
-    private static final LocalDate SYSTEM_END = LocalDate.of(2024, 12, 31);
-
-    private final Map<String, Runnable> menu = Map.of(
-            "1", this::checkIn,
-            "2", this::updateAttendance,
-            "3", this::checkAttendanceRecords,
-            "4", this::checkDisciplinaryStatus);
-    private final InputView inputView = new InputView();
     private final OutputView outputView = new OutputView();
-    private final LocalDate systemDate;
-    private final CrewAttendanceRecords crewAttendanceRecords;
+    private final InputView inputView = new InputView();
+    private final FileInputView fileInputView = new FileInputView();
+    private final Map<Menu, Runnable> menuTable = new EnumMap<>(Menu.class);
+    private final AttendanceHistories attendanceHistories;
+    private LocalDate today = LocalDate.now();
 
-    public AttendanceController(String[] args) {
-        this.systemDate = parseSystemDate(args[START_DATE_INDEX]);
-        this.crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), systemDate);
+    public AttendanceController() {
+        this.attendanceHistories = loadCsvData();
+        menuTable.put(Menu.CHECK_IN, this::checkIn);
+        menuTable.put(Menu.UPDATE_ATTENDANCE, this::updateAttendance);
+        menuTable.put(Menu.CHECK_ATTENDANCE_RECORDS, this::checkAttendanceRecords);
+        menuTable.put(Menu.CHECK_DISCIPLINED_CREWS, this::checkDisciplinedCrews);
+        menuTable.put(Menu.QUIT, this::quit);
     }
-
 
     public void run() {
-        String menuInput;
         do {
-            menuInput = retryUntilSuccess(() -> {
-                String input = inputView.readMenu(systemDate);
-                menu.get(input).run();
-                return input;
+            today = LocalDate.now();
+            retryUntilSuccess(() -> {
+                outputView.displayMenu(today);
+                Menu menuInput = inputView.readMenu();
+                menuTable.get(menuInput).run();
             });
-        } while (!menuInput.matches(QUIT_MENU));
+        } while (true);
     }
 
-    public void checkIn() {
-        Crew crew = inputView.readNickname();
-        LocalTime time = inputView.readCheckInTime();
-        AttendanceRecord attendanceRecord = crewAttendanceRecords.checkIn(crew, time, systemDate);
-        outputView.displayAttendanceRecord(attendanceRecord);
+    private void checkIn() {
+        String nickname = inputView.readNickname();
+        LocalTime inputTime = inputView.readCheckInTime();
+        LocalDateTime checkInDateTime = today.atTime(inputTime);
+        attendanceHistories.addAttendanceHistory(new Crew(nickname), checkInDateTime);
+        outputView.displayAttendanceRecord(checkInDateTime);
     }
 
-    public void updateAttendance() {
-        Crew crew = inputView.readUpdateNickname();
-        LocalDate date = inputView.readUpdateDate();
-        LocalTime time = inputView.readUpdateTime();
-        AttendanceRecord newRecord = AttendanceRecord.of(date, time);
-        AttendanceRecord oldRecord = crewAttendanceRecords.updateAttendanceRecord(crew, newRecord);
-        outputView.displayUpdatedRecord(oldRecord, newRecord);
+    private void updateAttendance() {
+        String nickname = inputView.readUpdateNickname();
+        LocalDate updateDate = inputView.readUpdateDate();
+        LocalTime updateTime = inputView.readUpdateTime();
+        LocalDateTime newAttendanceDateTime = LocalDateTime.of(updateDate, updateTime);
+        AttendanceDateTime oldAttendanceDateTime = attendanceHistories.replaceAttendanceHistory(new Crew(nickname),
+                newAttendanceDateTime);
+        outputView.displayUpdateResult(oldAttendanceDateTime, newAttendanceDateTime);
     }
 
-    public void checkAttendanceRecords() {
-        Crew crew = inputView.readNickname();
-        outputView.displayAttendanceRecords(crew, crewAttendanceRecords);
-    }
-
-    public void checkDisciplinaryStatus() {
-        outputView.displayWarnedCrews(crewAttendanceRecords.getWarnedCrews(), crewAttendanceRecords);
-    }
-
-    private String retryUntilSuccess(Supplier<String> supplier) {
-        while (true) {
-            try {
-                return supplier.get();
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
+    private void checkAttendanceRecords() {
+        String nickname = inputView.readNickname();
+        Crew crew = new Crew(nickname);
+        AttendanceDateTimes attendanceDateTimes = attendanceHistories.getAttendanceDateTimes(crew);
+        outputView.displayAttendanceDateTimes(crew, attendanceDateTimes, today);
+        outputView.displayAttendanceCount(crew, attendanceHistories, today);
+        DisciplinaryStatus disciplinaryStatus = attendanceHistories.getDisciplinaryStatusOf(crew, today);
+        if (disciplinaryStatus != DisciplinaryStatus.NONE) {
+            outputView.displayDisciplinedStatus(disciplinaryStatus);
         }
     }
 
-    private LocalDate parseSystemDate(String systemDateInput) {
+    private void checkDisciplinedCrews() {
+        List<Crew> disciplinedCrews = attendanceHistories.getDisciplinedCrews(today);
+        outputView.displayDisciplinedCrews(disciplinedCrews, attendanceHistories, today);
+    }
+
+    private void quit() {
+        System.exit(0);
+    }
+
+    private AttendanceHistories loadCsvData() {
+        Map<String, List<LocalDateTime>> rawAttendanceData = fileInputView.readAttendanceFile();
+        return AttendanceHistoryGenerator.generate(rawAttendanceData);
+    }
+
+    private void retryUntilSuccess(Runnable runnable) {
         try {
-            LocalDate systemDate = LocalDate.parse(systemDateInput);
-            validatePeriod(systemDate);
-            return systemDate;
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 프로그램 인수를 2024-12-dd 형식으로 입력해 주세요.");
-        }
-    }
-
-    private void validatePeriod(LocalDate systemDate) {
-        if (systemDate.isBefore(SYSTEM_START) || systemDate.isAfter(SYSTEM_END)) {
-            throw new IllegalArgumentException("[ERROR] 시스템은 12월 1일~31일 사이에만 작동합니다.");
+            runnable.run();
+        } catch (IllegalArgumentException e) {
+            System.out.printf("%s%n", e.getMessage());
+            retryUntilSuccess(runnable);
         }
     }
 }
