@@ -2,10 +2,9 @@ package controller;
 
 import controller.command.AttendanceCommand;
 import domain.Command;
-import domain.CrewGenerator;
-import domain.Crews;
+import domain.crew.CrewGenerator;
+import domain.crew.Crews;
 import java.time.LocalDateTime;
-import util.CsvReader;
 import util.Loop;
 import view.InputView;
 
@@ -35,20 +34,21 @@ public class AttendanceCommandController {
     private final CrewGenerator crewGenerator;
 
     public AttendanceCommandController() {
-        this.crewGenerator = new CrewGenerator(REFERENCE_YEAR, REFERENCE_MONTH);
+        this.crewGenerator = new CrewGenerator();
     }
 
     public void run() {
-        final Crews crews = crewGenerator.generate(CsvReader.readFile(CSV_PATH), SYSTEM_DATE_TIME.toLocalDate());
+        final Crews crews = crewGenerator.generate(CSV_PATH);
 
         Loop.run(() -> {
-            final Command commandEnum = Command.findByCommandNumber(InputView.readCommand(SYSTEM_DATE_TIME));
-            final AttendanceCommand command = commandEnum.getCommandInstance();
+            final String commandNumber = InputView.readCommand();
+            final Command command = Command.findByCommandNumber(commandNumber);
+            final AttendanceCommand commandInstance = command.getInstance();
 
-            if (command == null) {
+            if (commandInstance == null) {
                 return false;
             }
-            command.execute(crews);
+            commandInstance.execute(crews);
             return true;
         });
     }

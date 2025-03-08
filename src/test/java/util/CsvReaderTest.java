@@ -1,30 +1,30 @@
 package util;
 
-import java.util.HashMap;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
-import java.util.Map;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CsvReaderTest {
-
+    @DisplayName("파일을 정상적으로 읽어온다")
     @Test
-    void 파일을_정상적으로_가져온다() {
-        List<String[]> parsedResult = CsvReader.readFile("src/main/resources/attendances.csv");
+    void getValidFile() {
+        // given
+        final List<String[]> testData = List.of(
+                new String[]{"쿠키", "2024-12-13 10:08"},
+                new String[]{"빙봉", "2024-12-13 10:07"},
+                new String[]{"빙티", "2024-12-13 10:07"}
+        );
+        final List<String[]> data = CsvReader.readFile("src/test/resources/attendances-test.csv");
 
-        Map<String, String> attendances = new HashMap<>();
-        for (int i = 0; i < 4; i++) {
-            attendances.put(parsedResult.get(i)[0], parsedResult.get(i)[1]);
-        }
-        Map<String, String> expectedResult = new HashMap<>();
-        expectedResult.put("쿠키", "2024-12-13 10:08");
-        expectedResult.put("빙봉", "2024-12-13 10:07");
-        expectedResult.put("빙티", "2024-12-13 10:07");
-        expectedResult.put("이든", "2024-12-13 10:07");
+        // when
+        // then
+        for (int i = 0; i < data.size(); i++) {
+            final String[] items = data.get(i);
 
-        for (String nickname : expectedResult.keySet()) {
-            String localDateTime = attendances.get(nickname);
-            Assertions.assertThat(localDateTime).isEqualTo(expectedResult.get(nickname));
+            assertThat(items[0]).isEqualTo(testData.get(i)[0]);
+            assertThat(items[1]).isEqualTo(testData.get(i)[1]);
         }
     }
 }

@@ -1,56 +1,50 @@
 package domain;
 
+import controller.command.AttendanceByCrew;
+import controller.command.AttendanceCheck;
 import controller.command.AttendanceCommand;
-import controller.command.AttendanceRecordByCrewCommand;
-import controller.command.CheckAttendanceCommand;
-import controller.command.ConfirmationOfThoseAtRiskOfExpulsion;
-import controller.command.EditAttendanceCommand;
-import error.CustomIllegalArgumentException;
+import controller.command.AttendanceEdit;
+import controller.command.RiskMembers;
 import java.util.Arrays;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 public enum Command {
+    CHECK(AttendanceCheck::new),
+    EDIT(AttendanceEdit::new),
+    VIEW_ATTENDANCE_BY_CREW(AttendanceByCrew::new),
+    VIEW_AT_RISK_MEMBERS(RiskMembers::new),
+    QUIT(null);
 
-    CHECK_ATTENDEES("출석 확인", "1", CheckAttendanceCommand::new),
-    EDIT_ATTENDANCE("출석 수정", "2", EditAttendanceCommand::new),
-    CHECK_THE_ATTENDANCE_RECORD_BY_CREW("크루별 출석 기록 확인", "3", AttendanceRecordByCrewCommand::new),
-    CONFIRMATION_OF_THOSE_AT_RISK_OF_EXPULSION("제적 위험자 확인", "4", ConfirmationOfThoseAtRiskOfExpulsion::new),
-    QUIT("종료", "Q", null);
-
-    private final String commandName;
-    private final String commandNumber;
     private final CommandMapper mapper;
 
-    Command(final String commandName, final String commandNumber, final CommandMapper mapper) {
-        this.commandName = commandName;
-        this.commandNumber = commandNumber;
+    Command(final CommandMapper mapper) {
         this.mapper = mapper;
     }
 
+    public static Command findByCommandNumber(final String inputCommandNumber) {
+        try {
+            final ResourceBundle resourceBundle = ResourceBundle.getBundle("command");
+            final String inputCommand = resourceBundle.getString(inputCommandNumber);
 
-    public static Command findByCommandNumber(final String commandNumber) {
-        return Arrays.stream(Command.values())
-                .filter(c -> c.commandNumber.equals(commandNumber))
-                .findFirst()
-                .orElseThrow(() -> new CustomIllegalArgumentException("알맞은 명령어를 입력하세요."));
+            return Arrays.stream(Command.values())
+                    .filter(command -> command.name().equals(inputCommand))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 명령어입니다. 1, 2, 3, 4, Q중에 선택해주세요."));
+        } catch (final MissingResourceException e) {
+            throw new IllegalArgumentException("존재하지 않는 명령어입니다. 1, 2, 3, 4, Q중에 선택해주세요.");
+        }
     }
 
-    public String getCommandNumber() {
-        return commandNumber;
-    }
-
-    public AttendanceCommand getCommandInstance() {
+    public AttendanceCommand getInstance() {
         if (mapper == null) {
             return null;
         }
         return mapper.apply();
     }
 
-    public String getCommandName() {
-        return commandName;
-    }
-
     @FunctionalInterface
     public interface CommandMapper {
-        AttendanceCommand apply();
+        controller.command.AttendanceCommand apply();
     }
 }

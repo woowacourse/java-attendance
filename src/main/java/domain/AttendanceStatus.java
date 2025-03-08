@@ -1,56 +1,51 @@
 package domain;
 
+import domain.dateTime.AttendanceDateTime;
+import domain.dateTime.AttendanceTimePolicy;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
+    PRESENT,
+    LATE,
+    ABSENT;
 
-    ATTENDANCE("출석"),
-    TARDINESS("지각"),
-    ABSENCE("결석");
+    private static final int LATE_CUTOFF = 30;
+    private static final int ATTENDANCE_CUTOFF = 5;
 
-    private static final LocalTime START_TIME = LocalTime.of(8, 0);
-    private static final LocalTime END_TIME = LocalTime.of(23, 0);
+    public static AttendanceStatus findByAttendanceDateTime(
+            final AttendanceDateTime attendanceDateTime,
+            final AttendanceTimePolicy attendanceTimePolicy
+    ) {
+        final LocalTime attendanceTime = attendanceTimePolicy.getAttendanceTime();
+        final LocalTime entranceTime = attendanceDateTime.getDateTime()
+                .toLocalTime();
 
-    private final String displayName;
-
-    AttendanceStatus(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public static AttendanceStatus findByAttendanceTime(Week day, LocalTime attendanceTime) {
-        if (isAbsence(attendanceTime)) {
-            return ABSENCE;
+        if (isNotWithinOperatingHours(entranceTime)) {
+            return ABSENT;
         }
-        if (isAttendance(day, attendanceTime)) {
-            return ATTENDANCE;
+        if (isPresent(entranceTime, attendanceTime)) {
+            return PRESENT;
         }
-        if (isTardiness(day, attendanceTime)) {
-            return TARDINESS;
+        if (isLate(entranceTime, attendanceTime)) {
+            return LATE;
         }
-        return ABSENCE;
+        return ABSENT;
     }
 
-    private static boolean isAbsence(final LocalTime attendanceTime) {
-        return attendanceTime.isBefore(START_TIME) || attendanceTime.isAfter(END_TIME);
+    private static boolean isNotWithinOperatingHours(final LocalTime entranceTime) {
+        return entranceTime.isBefore(AttendanceTimePolicy.START_TIME) || entranceTime.isAfter(
+                AttendanceTimePolicy.END_TIME);
     }
 
-    private static boolean isAttendance(final Week day, final LocalTime attendanceTime) {
-        return isWithinTimeRange(attendanceTime, day.getAttendanceTime(), 5);
+    private static boolean isPresent(final LocalTime entranceTime, final LocalTime attendanceTime) {
+        return !entranceTime.isAfter(getCutoffTime(attendanceTime, ATTENDANCE_CUTOFF));
     }
 
-    private static boolean isTardiness(final Week day, final LocalTime attendanceTime) {
-        final LocalTime attendanceDeadline = day.getAttendanceTime().plusMinutes(5);
-        return attendanceTime.isAfter(attendanceDeadline)
-                && isWithinTimeRange(attendanceTime, day.getAttendanceTime(), 30);
+    private static boolean isLate(final LocalTime entranceTime, final LocalTime attendanceTime) {
+        return !entranceTime.isAfter(getCutoffTime(attendanceTime, LATE_CUTOFF));
     }
 
-    private static boolean isWithinTimeRange(final LocalTime attendanceTime, final LocalTime baseTime,
-                                             int rangeMinutes) {
-        final LocalTime adjustedTime = baseTime.plusMinutes(rangeMinutes);
-        return !attendanceTime.isAfter(adjustedTime);
-    }
-
-    public String getDisplayName() {
-        return displayName;
+    private static LocalTime getCutoffTime(final LocalTime attendanceTime, final int maxMinutes) {
+        return attendanceTime.plusMinutes(maxMinutes);
     }
 }

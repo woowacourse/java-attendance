@@ -8,7 +8,7 @@ public final class Loop {
     private Loop() {
     }
 
-    public static void run(LoopBody body) {
+    public static void run(final LoopBody body) {
         int tryCount = 0;
 
         while (body.execute()) {

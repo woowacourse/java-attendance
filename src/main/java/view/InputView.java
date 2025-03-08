@@ -1,69 +1,66 @@
 package view;
 
-
-import domain.Command;
-import domain.Week;
-import error.CustomIllegalArgumentException;
+import controller.AttendanceCommandController;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Scanner;
 
 public final class InputView {
 
-    private static Scanner scanner = new Scanner(System.in);
-
     private InputView() {
     }
 
-    public static String readCommand(final LocalDateTime dateTime) {
-        System.out.println(String.format(dateTime.format(Week.NON_SCHOOL_DAY_FORMAT) + "입니다. 기능을 선택해주세요."));
-        for (Command command : Command.values()) {
-            System.out.println(String.format("%s. %s", command.getCommandNumber(), command.getCommandName()));
+    private static final Scanner scanner = new Scanner(System.in);
 
-        }
-        final String input = scanner.nextLine();
-        validateInput(input);
+    public static String readCommand() {
+        final LocalDateTime referenceDateTime = AttendanceCommandController.SYSTEM_DATE_TIME;
+        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("오늘은 MM월 dd일 EEEE", Locale.KOREAN);
 
-        return input;
+        print("%n%s입니다. 기능을 선택해 주세요.%n", referenceDateTime.format(dateTimeFormatter));
+        print("1. 출석 확인%n");
+        print("2. 출석 수정%n");
+        print("3. 크루별 출석 기록 확인%n");
+        print("4. 제적 위험자 확인%n");
+        print("Q. 종료%n");
+        return readInput();
     }
 
-    public static String readNickName() {
-        System.out.println("닉네임을 입력해 주세요.");
-        String input = scanner.nextLine();
-        validateInput(input);
-        return input;
-    }
-
-    public static String readUpdateNickName() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        String input = scanner.nextLine();
-        validateInput(input);
-        return input;
+    public static String readNickname() {
+        print("닉네임을 입력해 주세요.%n");
+        return readInput();
     }
 
     public static String readTime() {
-        System.out.println("등교 시간을 입력해 주세요.");
-        String input = scanner.nextLine();
-        validateInput(input);
-        return input;
+        print("등교 시간을 입력해 주세요.%n");
+        return readInput();
     }
 
-    public static String readUpdateDateTime() {
-        System.out.println("언제로 변경하겠습니까?");
-        String input = scanner.nextLine();
-        validateInput(input);
-        return input;
+    public static String readNicknameForEdit() {
+        print("출석을 수정하려는 크루의 닉네임을 입력해 주세요.%n");
+        return readInput();
     }
 
-    public static String readUpdateDate() {
-        System.out.println("수정하려는 날짜(일)을 입력해 주세요.");
-        String input = scanner.nextLine();
-        validateInput(input);
-        return input;
+    public static String readEditDate() {
+        print("수정하려는 날짜(일)를 입력해 주세요.%n");
+        return readInput();
     }
 
-    private static void validateInput(final String input) {
+    public static String readTimeForEdit() {
+        print("언제로 변경하겠습니까?%n");
+        return readInput();
+    }
+
+    private static String readInput() {
+        final String input = scanner.nextLine();
+
         if (input.isBlank()) {
-            throw new CustomIllegalArgumentException("값을 입력해주세요.");
+            throw new IllegalArgumentException("빈 값을 입력할 수 없습니다.");
         }
+        return input;
+    }
+
+    private static void print(final String message, final Object... args) {
+        System.out.printf(message, args);
     }
 }

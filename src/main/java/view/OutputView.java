@@ -1,120 +1,114 @@
 package view;
 
-import domain.AttendanceDto;
 import domain.AttendanceStatus;
-import domain.CrewDto;
-import domain.Punishment;
-import domain.Week;
+import domain.DisciplinaryStatus;
+import domain.crew.Crew;
+import domain.crew.Nickname;
+import domain.dateTime.AttendanceDateTime;
+import domain.record.AttendanceRecord;
+import domain.record.AttendanceRecords;
+import domain.record.AttendanceStatusCounts;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import util.DateUtil;
 
 public final class OutputView {
 
-    private static final int ABSENCE_HOUR = 0;
+    private static final ResourceBundle RESOURCE_STATUS = ResourceBundle.getBundle("attendanceStatus");
+    private static final ResourceBundle RESOURCE_DISCIPLINARY_STATUS = ResourceBundle.getBundle("disciplinaryStatus");
 
     private OutputView() {
     }
 
-    public static void printAttendance(AttendanceDto attendanceSummary) {
-        final LocalDateTime localDateTime = attendanceSummary.attendanceDateTime();
-        final AttendanceStatus attendanceStatus = attendanceSummary.attendanceStatus();
-        final String format = String.format("%s (%s)", localDateTime.format(Week.KOREAN_DATE_TIME_FORMAT),
-                attendanceStatus.getDisplayName());
+    public static void printAttendanceCheck(final LocalDateTime time, final String attendanceStatus) {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 dd일 EEEE HH:mm", Locale.KOREAN);
 
-        printMessageWithLineSeparator(format);
+        print("%n %s (%s)%n", time.format(formatter), RESOURCE_STATUS.getString(attendanceStatus));
     }
 
-    public static void printUpdateAttendance(final AttendanceDto oldAttendanceSummary,
-                                             final AttendanceDto newAttendanceSummary) {
-        final LocalDateTime oldDateTime = oldAttendanceSummary.attendanceDateTime();
-        final String oldStatus = getStatusDisplayName(oldAttendanceSummary);
-        final LocalDateTime newDateTime = newAttendanceSummary.attendanceDateTime();
-        final String newStatus = getStatusDisplayName(newAttendanceSummary);
+    public static void printEditAttendanceDateTime(final AttendanceRecord beforeRecord,
+                                                   final AttendanceRecord afterRecord) {
+        final AttendanceDateTime beforeAttendanceDateTime = beforeRecord.getAttendanceDateTime();
+        final LocalDateTime beforeDateTime = beforeAttendanceDateTime.getDateTime();
+        final AttendanceDateTime afterAttendanceDateTime = afterRecord.getAttendanceDateTime();
+        final LocalDateTime afterDateTime = afterAttendanceDateTime.getDateTime();
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 dd일 EEEE HH:mm", Locale.KOREAN);
 
-        final String oldFormat = String.format("%s (%s)", oldDateTime.format(Week.KOREAN_DATE_TIME_FORMAT), oldStatus);
-        final String newFormat = String.format("%s (%s)", newDateTime.toLocalDate(), newStatus);
-        final String finalFormat = String.format("%s -> %s 수정 완료!", oldFormat, newFormat);
-
-        printMessageWithLineSeparator(finalFormat);
-    }
-
-    private static String getStatusDisplayName(final AttendanceDto oldAttendanceSummary) {
-        final AttendanceStatus attendanceStatus = oldAttendanceSummary.attendanceStatus();
-        return attendanceStatus.getDisplayName();
-    }
-
-    public static void printCrewAttendances(final CrewDto crewDto,
-                                            List<AttendanceDto> attendanceSummaries) {
-        final String nickname = crewDto.nickname();
-        final Punishment punishment = crewDto.punishment();
-        final String titleFormat = "이번 달 %s의 출석 기록입니다.";
-
-        printMessageWithLineSeparator(String.format(titleFormat, nickname));
-        printAttendances(attendanceSummaries);
-        printCountAboutAttendance(crewDto);
-        printMessageWithLineSeparator(String.format("%s 대상자입니다.", punishment.getPunishmentName()));
-    }
-
-    private static void printAttendances(List<AttendanceDto> attendanceSummaries) {
-        for (AttendanceDto attendanceSummary : attendanceSummaries) {
-            final LocalDateTime attendanceDateTime = attendanceSummary.attendanceDateTime();
-            String formattedDateTime = adjustFormat(attendanceDateTime);
-
-            printMessage(formattedDateTime);
-        }
-    }
-
-    private static String adjustFormat(LocalDateTime localDateTime) {
-        if (localDateTime.getHour() == ABSENCE_HOUR) {
-            return localDateTime.format(Week.ABSENCE_FORMAT);
-        }
-        return localDateTime.format(Week.KOREAN_DATE_TIME_FORMAT);
-    }
-
-    private static void printCountAboutAttendance(final CrewDto crewDto) {
-        final String countFormat = "%s: %d회";
-
-        printMessage(
-                String.format(
-                        countFormat,
-                        AttendanceStatus.ATTENDANCE.getDisplayName(),
-                        crewDto.attendanceCount()
-                )
+        print("%n %s (%s) -> %s (%s) 수정 완료!%n",
+                beforeDateTime.format(formatter),
+                RESOURCE_STATUS.getString(beforeRecord.getAttendanceStatus().name()),
+                afterDateTime.toLocalTime(),
+                RESOURCE_STATUS.getString(afterRecord.getAttendanceStatus().name())
         );
-        printMessage(
-                String.format(countFormat, AttendanceStatus.TARDINESS.getDisplayName(),
-                        crewDto.tardinessCount()));
-        printMessage(
-                String.format(countFormat, AttendanceStatus.ABSENCE.getDisplayName(), crewDto.absenceCount()));
     }
 
-    public static void printAllExpulsion(final List<CrewDto> crewDtos) {
-        printMessageWithLineSeparator("제적 위험자 조회");
+    public static void printValidAttendances(final LocalDateTime localDateTime,
+                                             final AttendanceRecords attendanceRecords,
+                                             final DisciplinaryStatus disciplinaryStatus) {
+        final int endOfDay = localDateTime.getDayOfMonth() - 1;
+        final int year = localDateTime.getYear();
+        final int month = localDateTime.getMonthValue();
+        final List<Integer> validDays = DateUtil.calculateValidDays(year, month, endOfDay);
 
-        for (CrewDto crewDto : crewDtos) {
-            final String nickname = crewDto.nickname();
-            final int absenceCount = crewDto.absenceCount();
-            final int tardinessCount = crewDto.tardinessCount();
-            final Punishment punishment = crewDto.punishment();
-            final String punishmentDisplayName = punishment.getPunishmentName();
+        validDays.forEach(day -> {
+            final AttendanceRecord attendanceRecord = attendanceRecords.findByDate(LocalDate.of(year, month, day));
 
-            if (punishment.equals(Punishment.NONE)) {
-                continue;
-            }
-            final String outputFormat = "- %s: 결석 %d회, 지각 %d회 (%s)";
-            printMessage(String.format(outputFormat, nickname, absenceCount, tardinessCount, punishmentDisplayName));
+            printAttendanceInRecord(attendanceRecord);
+        });
+        printAttendanceCounts(attendanceRecords);
+
+        if (disciplinaryStatus != DisciplinaryStatus.NONE) {
+            print("%n%s 대상자입니다.%n", RESOURCE_DISCIPLINARY_STATUS.getString(disciplinaryStatus.name()));
         }
     }
 
-    private static void printMessage(String message) {
-        System.out.println(message);
+    private static void printAttendanceInRecord(final AttendanceRecord attendanceRecord) {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 dd일 EEEE HH:mm", Locale.KOREAN);
+        final DateTimeFormatter absenceFormat = DateTimeFormatter.ofPattern("M월 dd일 EEEE", Locale.KOREAN);
+        final AttendanceDateTime attendanceDateTime = attendanceRecord.getAttendanceDateTime();
+        final LocalDateTime dateTime = attendanceDateTime.getDateTime();
+        final AttendanceStatus attendanceStatus = attendanceRecord.getAttendanceStatus();
+
+        if (dateTime.toLocalTime().equals(LocalTime.of(0, 0))) {
+            print("%s --:-- (%s)%n", dateTime.format(absenceFormat),
+                    RESOURCE_STATUS.getString(attendanceStatus.name()));
+            return;
+        }
+
+        print("%s (%s)%n", dateTime.format(formatter), RESOURCE_STATUS.getString(attendanceStatus.name()));
     }
 
-    private static void printMessageWithLineSeparator(String message) {
-        System.out.println(separateLine() + message + separateLine());
+    private static void printAttendanceCounts(final AttendanceRecords attendanceRecords) {
+        final AttendanceStatusCounts attendanceStatusCounts = attendanceRecords.getAttendanceStatusCounts();
+        final int present = attendanceStatusCounts.getAttendance();
+        final int late = attendanceStatusCounts.getLate();
+        final int absent = attendanceStatusCounts.getAbsence();
+        print("%n%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.PRESENT.name()), present);
+        print("%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.LATE.name()), late);
+        print("%s: %d회%n", RESOURCE_STATUS.getString(AttendanceStatus.ABSENT.name()), absent);
     }
 
-    private static String separateLine() {
-        return System.lineSeparator();
+    public static void printRiskMembers(final List<Crew> disciplinaryCrews) {
+        print("%n제적 위험자 조회 결과%n");
+        disciplinaryCrews.forEach(crew -> {
+            final DisciplinaryStatus disciplinaryStatus = crew.getDisciplinaryStatus();
+            final String status = RESOURCE_DISCIPLINARY_STATUS.getString(disciplinaryStatus.name());
+            final Nickname nickname = crew.getNickname();
+            final AttendanceRecords attendanceRecords = crew.getAttendanceRecords();
+            final AttendanceStatusCounts attendanceStatusCounts = attendanceRecords.getAttendanceStatusCounts();
+            final int absence = attendanceStatusCounts.getAbsence();
+            final int late = attendanceStatusCounts.getLate();
+
+            print("- %s: 결석 %d회, 지각 %d회 (%s)%n", nickname.getValue(), absence, late, status);
+        });
+    }
+
+    private static void print(final String message, final Object... args) {
+        System.out.printf(message, args);
     }
 }
